@@ -1,0 +1,9 @@
+MatrixGame - Space Rangers 2 Planetary Battles Engine.
+
+According to the copyright holder's permission, the source code of the MatrixGame engine itself (the content of the MatrixGame and MatrixLib directories) is released as open source and should continue to be distributed under the GNU General Public License v2 or a newer one.
+
+This repository also includes third-party libraries, classes and modules from other open source and freeware software such as libjpg, libpng, zlib, VirtualDub, and some others. They are located in the ThirdParty directory (except VirtualDub's sharpen.cpp and asharpen.asm which are parts of the MatrixLib/Bitmap) and are distributed under the licenses and terms specified in their header files and no one in Elemental Games, Katauri Interactive, or CHK-Games claims authorship or any other proprietary or exclusive rights, nor can change original distribution terms.
+
+The project is designed to be built using CMake. You will need MS Visual Studio 2010 or 2012 (for newer, frankly, not tested) to build this project, as well as a fair amount of patience. Depending on the build options, the output should either contain an executable file that can be run independently or a library for connecting directly to the SR2 engine.
+
+Original sources: http://snk-games.net/matrixgame.tar.gz
