@@ -889,7 +889,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         memcpy(&m_LastScans[0], &m_LastScans[1], sizeof(SKeyScan) * (MAX_SCANS - 1));
         m_LastScans[MAX_SCANS - 1].scan = scan;
         m_LastScans[MAX_SCANS - 1].time = g_MatrixMap->GetTime();
-/*
+#ifdef CHEATS_ON
         if (m_LastScans[MAX_SCANS - 1].scan == KEY_N)
             if (m_LastScans[MAX_SCANS - 2].scan == KEY_O)
                 if (m_LastScans[MAX_SCANS - 3].scan == KEY_C)
@@ -1166,7 +1166,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             _asm mov [eax],  eax
                             return;
                         }
-*/
+#endif
     }
 
     if(scan == KEY_ENTER && down){
