@@ -723,25 +723,29 @@ bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,CMatrixMa
  
             CPoint tp;
             if(r->GetReturnCoords(tp)) {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
                 other_cnt++;
             }
             if(r->GetMoveToCoords(tp)) {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
                 other_cnt++;
             } else {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=CPoint(r->GetMapPosX(),r->GetMapPosY());
                 other_cnt++;
             }
         } else if(obj->GetObjectType() == OBJECT_TYPE_CANNON && obj->AsCannon()->m_CurrState != CANNON_DIP && obj!=skip)
         {
-            ASSERT(other_cnt<200);
+            // ASSERT(other_cnt<200);
+            if (other_cnt >= 200) return false;
  
             other_size[other_cnt]=4;
             other_des[other_cnt]=m_RN.GetPlace(obj->AsCannon()->m_Place)->m_Pos;
@@ -760,7 +764,8 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
     CPoint other_des[200];
 
     for(int i=0;i<robot->GetEnv()->m_BadCoordCnt;i++) {
-        ASSERT(other_cnt<200);
+        // ASSERT(other_cnt<200);
+        if (other_cnt >= 200) return false;
         other_size[other_cnt]=4;
         other_des[other_cnt]=robot->GetEnv()->m_BadCoord[i];
         other_cnt++;
@@ -771,7 +776,8 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
         if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->AsRobot()->m_CurrState != ROBOT_DIP) {
             CMatrixRobotAI * r=(CMatrixRobotAI*)obj;
 
-            ASSERT(other_cnt<200);
+            // ASSERT(other_cnt<200);
+            if (other_cnt >= 200) return false;
             other_size[other_cnt]=4;
             other_des[other_cnt].x=r->GetMapPosX();
             other_des[other_cnt].y=r->GetMapPosY();
@@ -779,30 +785,35 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
 
             CPoint tp;
             if(r->GetReturnCoords(tp)) {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
                 other_cnt++;
             }
             if(r->GetReturnCoords(tp)) {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
                 other_cnt++;
             }
             if(r->GetMoveToCoords(tp)) {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
                 other_cnt++;
             } else {
-                ASSERT(other_cnt<200);
+                // ASSERT(other_cnt<200);
+                if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=CPoint(r->GetMapPosX(),r->GetMapPosY());
                 other_cnt++;
             }
         } else if(obj->GetObjectType() == OBJECT_TYPE_CANNON && obj->AsCannon()->m_CurrState != CANNON_DIP) {
-            ASSERT(other_cnt<200);
+            // ASSERT(other_cnt<200);
+            if (other_cnt >= 200) return false;
 
             other_size[other_cnt]=4;
             other_des[other_cnt]=m_RN.GetPlace(obj->AsCannon()->m_Place)->m_Pos;
