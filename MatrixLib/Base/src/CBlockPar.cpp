@@ -657,6 +657,117 @@ const CWStr & CBlockPar::BlockGetName(int no) const
 	}
 }
 
+void ExtractNameAttr(const CWStr & parname, CWStr & name, bool & replace)
+{
+	if (parname.GetCountPar(L"!")>1)
+	{
+		parname.GetStrPar(name, 0,L"!");
+		replace = parname.GetStrPar(1,L"!").Equal(L"r");
+	}
+	else
+	{
+		name.Set(parname);
+		replace = false;
+	}
+}
+
+void CBlockPar::BlockMerge(CBlockPar & bp)
+{
+	DTRACE();
+
+	CWStr realname(m_Heap);
+	bool replace = false;
+
+	if (bp.m_Sort && m_Sort)
+	{
+		int i = 0;
+		while (i < bp.m_ArrayCnt)
+		{
+			CBlockParUnit *el = bp.m_Array[i];
+
+			ExtractNameAttr(el->m_Name, realname, replace);
+			
+			int no = ArrayFind(realname);
+			if (no >= 0)
+			{
+				int j = 0;
+				int count = 0;
+				while (count < el->m_FastCnt)
+				{
+					CBlockParUnit *src = bp.m_Array[i+j];
+					CBlockParUnit *tgt = m_Array[no+j];
+
+					if (src->m_Type == tgt->m_Type)
+					{
+						if (src->m_Type == 1)
+						{
+							if (!src->m_Par->IsEmpty())
+							{
+								tgt->CopyFrom(*src);
+								tgt->m_Name.Set(realname);
+							}
+						}
+						else if (src->m_Type == 2)
+						{
+							if (src->m_Block->m_Cnt > 0)
+								if (replace)
+								{
+									tgt->CopyFrom(*src);
+									tgt->m_Name.Set(realname);
+								}
+								else
+									tgt->m_Block->BlockMerge(*src->m_Block);
+						}
+						
+						++count;
+						if (count >= m_Array[no]->m_FastCnt)
+							break;
+					}
+
+					++j;
+				}
+
+				i += count;
+			}
+			else
+			{
+				CBlockParUnit *tgt = UnitAdd();
+				tgt->CopyFrom(*el);
+				tgt->m_Name.Set(realname);
+				ArrayAdd(tgt);
+				
+				++i;
+			}
+		}
+	}
+	else
+	{
+		CBlockParUnit *el = bp.m_First;
+
+		while (el != nullptr)
+		{
+			ExtractNameAttr(el->m_Name, realname, replace);
+
+			if (el->m_Type == 1)
+				ParSetAdd(realname, *el->m_Par);
+			else if (el->m_Type == 2)
+			{
+				CBlockPar *tgt = BlockGetNE(realname);
+				if (tgt != nullptr)
+					tgt->BlockMerge(*el->m_Block);
+				else
+				{
+					tgt = BlockAdd(realname);
+					tgt->CopyFrom(*el->m_Block);
+				}
+			}
+
+			el = el->m_Next;
+		}
+	}
+	
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
