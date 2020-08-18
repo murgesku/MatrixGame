@@ -165,6 +165,8 @@ class BASE_API CBlockPar : public CMain {
         const CBlockPar * BlockGet(int no) const;
         const CWStr & BlockGetName(int no) const;
 
+		void BlockMerge(CBlockPar & bp);
+
 		//////////////////////////////////////////////////////////////
 		const CWStr & ParPathGet(const wchar * path, int pathlen);
 		const CWStr & ParPathGet(const CWStr & path)														{ return ParPathGet(path.Get(),path.GetLen()); }
