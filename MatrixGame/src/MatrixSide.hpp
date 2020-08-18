@@ -6,8 +6,8 @@
 #pragma once
 
 #include "VectorObject.hpp"
-#include "MatrixEffect.hpp"
-#include "MatrixRoadNetwork.hpp"
+#include "Effects/MatrixEffect.hpp"
+#include "Logic/MatrixRoadNetwork.hpp"
 #include "MatrixConfig.hpp"
 
 //#define MAX_ROBOTS_BUILD        10

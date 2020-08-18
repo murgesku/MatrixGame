@@ -11,7 +11,7 @@
 #include "MatrixObjectBuilding.hpp"
 #include "MatrixFlyer.hpp"
 #include "ShadowStencil.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 
 
 float   CMatrixCannon::GetSeekRadius(void)

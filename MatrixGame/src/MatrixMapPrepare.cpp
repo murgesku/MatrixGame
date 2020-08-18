@@ -15,7 +15,7 @@
 #include "MatrixFlyer.hpp"
 #include "MatrixShadowManager.hpp"
 #include "ShadowStencil.hpp"
-#include "CConstructor.h"
+#include "Interface/CConstructor.h"
 
 void CMatrixMap::PointCalcNormals(int x,int y)
 {

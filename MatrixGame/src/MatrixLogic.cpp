@@ -8,10 +8,10 @@
 #include "MatrixObject.hpp"
 #include "MatrixObjectBuilding.hpp"
 #include "MatrixRobot.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 #include "MatrixFlyer.hpp"
 #include "MatrixObjectCannon.hpp"
-#include "MatrixHint.hpp"
+#include "Interface/MatrixHint.hpp"
 #include <stdio.h>
 #include "MatrixGameDll.hpp"
 

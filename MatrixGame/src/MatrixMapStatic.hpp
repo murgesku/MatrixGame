@@ -11,7 +11,7 @@ typedef CMatrixMapGroup *PCMatrixMapGroup;
 //#define SHOW_ASSIGNED_GROUPS    6
 //#define SHOW_ASSIGNED_GROUPS    3
 
-#include "MatrixEffect.hpp"
+#include "Effects/MatrixEffect.hpp"
 
 // Ресурс объекта
 #define MR_Graph                SETBIT(0)          // Графика

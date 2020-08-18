@@ -44,11 +44,5 @@ set(BASE_HEADERS
 target_sources(Base PRIVATE ${BASE_SOURCES} ${BASE_HEADERS})
 target_include_directories(Base PUBLIC include)
 
-target_compile_options(Base PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
-    $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
-)
-target_compile_definitions(Base PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_DEFINITIONS}>
-    $<$<CONFIG:Debug>:${DEBUG_COMPILE_DEFINITIONS}>
-)
+target_compile_options(Base PRIVATE ${COMPILE_OPTIONS})
+target_compile_definitions(Base PRIVATE ${COMPILE_DEFINITIONS})

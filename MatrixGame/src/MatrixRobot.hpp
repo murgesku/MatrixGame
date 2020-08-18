@@ -9,9 +9,9 @@
 #include "MatrixObject.hpp"
 #include "MatrixObjectRobot.hpp"
 #include "MatrixObjectBuilding.hpp"
-#include "MatrixEnvironment.h"
-#include "MatrixTactics.h"
-#include "MatrixAIGroup.h"
+#include "Logic/MatrixEnvironment.h"
+#include "Logic/MatrixTactics.h"
+#include "Logic/MatrixAIGroup.h"
 
 #if defined _DEBUG || defined _TRACE
 #define CHECK_ROBOT_POS() { if (m_MapX < 0 || m_MapX >= g_MatrixMap->m_SizeMove.x || m_MapY < 0 || m_MapY >= g_MatrixMap->m_SizeMove.y) _asm int 3 }

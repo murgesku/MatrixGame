@@ -19,11 +19,5 @@ set(BITMAP_HEADERS
 target_sources(Bitmap PRIVATE ${BITMAP_SOURCES} ${BITMAP_HEADERS})
 target_include_directories(Bitmap PUBLIC include)
 
-target_compile_options(Bitmap PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
-    $<$<CONFIG:Debug>: ${DEBUG_COMPILE_OPTIONS}>
-)
-target_compile_definitions(Bitmap PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_DEFINITIONS}>
-    $<$<CONFIG:Debug>: ${DEBUG_COMPILE_DEFINITIONS}>
-)
+target_compile_options(Bitmap PRIVATE ${COMPILE_OPTIONS})
+target_compile_definitions(Bitmap PRIVATE ${COMPILE_DEFINITIONS})

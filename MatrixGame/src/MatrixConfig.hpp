@@ -6,7 +6,7 @@
 #ifndef MATRIX_CONFIG_INCLUDE
 #define MATRIX_CONFIG_INCLUDE
 
-#include "MatrixEffect.hpp"
+#include "Effects/MatrixEffect.hpp"
 #include "MatrixMapStatic.hpp"
 
 

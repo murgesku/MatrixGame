@@ -8,16 +8,16 @@
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
 #include "MatrixFlyer.hpp"
-#include "MatrixEffect.hpp"
-#include "CInterface.h"
+#include "Effects/MatrixEffect.hpp"
+#include "Interface/CInterface.h"
 #include "MatrixMultiSelection.hpp"
 #include "MatrixMapStatic.hpp"
-#include "CIFaceMenu.h"
+#include "Interface/CIFaceMenu.h"
 #include "MatrixGameDll.hpp"
 #include "MatrixInstantDraw.hpp"
-#include "MatrixHint.hpp"
+#include "Interface/MatrixHint.hpp"
 #include "MatrixObjectCannon.hpp"
-#include "CCounter.h"
+#include "Interface/CCounter.h"
 
 #include <time.h>
 #include <sys/timeb.h>

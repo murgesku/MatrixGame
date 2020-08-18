@@ -104,11 +104,5 @@ if(MSVC)
     source_group("Bitmap\\Header Files" FILES ${BITMAP_HEADERS})
 endif()
 
-target_compile_options(MatrixLib PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
-    $<$<CONFIG:Debug>: ${DEBUG_COMPILE_OPTIONS}>
-)
-target_compile_definitions(MatrixLib PRIVATE
-    $<$<CONFIG:Release>:${RELEASE_COMPILE_DEFINITIONS}>
-    $<$<CONFIG:Debug>: ${DEBUG_COMPILE_DEFINITIONS}>
-)
+target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})
+target_compile_definitions(MatrixLib PRIVATE ${COMPILE_DEFINITIONS})

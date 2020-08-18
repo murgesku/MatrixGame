@@ -6,10 +6,10 @@
 #include "stdafx.h"
 #include "MatrixRobot.hpp"
 #include "MatrixObjectBuilding.hpp"
-#include "MatrixRule.h"
+#include "Logic/MatrixRule.h"
 #include "MatrixObjectCannon.hpp"
 #include "MatrixFlyer.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 
 
 

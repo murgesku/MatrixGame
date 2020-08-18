@@ -9,7 +9,7 @@
 #include "MatrixObjectBuilding.hpp"
 #include "VectorObject.hpp"
 #include "MatrixRobot.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 #include "ShadowStencil.hpp"
 #include "MatrixFormGame.hpp"
 #include "MatrixObjectCannon.hpp"

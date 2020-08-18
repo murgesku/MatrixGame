@@ -8,7 +8,7 @@
 #include "MatrixMap.hpp"
 #include "MatrixConfig.hpp"
 #include "MatrixProgressBar.hpp"
-#include "MatrixEffect.hpp"
+#include "Effects/MatrixEffect.hpp"
 
 
 

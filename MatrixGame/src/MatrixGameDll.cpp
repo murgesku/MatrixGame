@@ -9,7 +9,7 @@
 #include "MatrixMap.hpp"
 #include "MatrixFormGame.hpp"
 #include "MatrixCamera.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 
 #include <stdio.h>
 #include <time.h>

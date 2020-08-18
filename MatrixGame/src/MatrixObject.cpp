@@ -9,7 +9,7 @@
 #include "MatrixShadowManager.hpp"
 #include "ShadowStencil.hpp"
 #include "MatrixSkinManager.hpp"
-#include "CConstructor.h"
+#include "Interface/CConstructor.h"
 
 // При перемещении объекта не нужно заного расчитывать проэкционную текстуру
 

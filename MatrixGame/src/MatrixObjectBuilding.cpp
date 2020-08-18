@@ -9,11 +9,11 @@
 #include "MatrixRenderPipeline.hpp"
 #include "MatrixObject.hpp"
 #include "MatrixFlyer.hpp"
-#include "MatrixAIGroup.h"
+#include "Logic/MatrixAIGroup.h"
 #include "MatrixRobot.hpp"
 #include "MatrixSkinManager.hpp"
 #include "MatrixObjectCannon.hpp"
-#include "CInterface.h"
+#include "Interface/CInterface.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

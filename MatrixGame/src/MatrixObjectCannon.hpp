@@ -6,7 +6,7 @@
 #pragma once
 
 #include "MatrixProgressBar.hpp"
-#include "MatrixEffect.hpp"
+#include "Effects/MatrixEffect.hpp"
 
 class CMatrixBuilding;
 class CMatrixRovotAI;

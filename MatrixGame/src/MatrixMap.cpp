@@ -19,11 +19,11 @@
 #include "MatrixTerSurface.hpp"
 #include "MatrixSkinManager.hpp"
 #include "MatrixSoundManager.hpp"
-#include "MatrixHint.hpp"
+#include "Interface/MatrixHint.hpp"
 #include "MatrixInstantDraw.hpp"
 
-#include "CInterface.h"
-#include "MatrixTactics.h"
+#include "Interface/CInterface.h"
+#include "Logic/MatrixTactics.h"
 #include "MatrixGameDll.hpp"
 #include "MatrixSampleStateManager.hpp"
 
