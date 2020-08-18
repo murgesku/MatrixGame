@@ -1331,7 +1331,7 @@ void CMatrixBuilding::Maintenance(void)
         for (;cnt > 0; --cnt)
         {
             botpar_i = g_MatrixMap->Rnd(0,bp->BlockCount()-1);
-            sc = bp->BlockGetName(botpar_i).GetInt();
+            sc = bp->BlockGet(botpar_i)->ParGet(L"BotScore").GetInt();
             if (score + sc > 130) continue;
             break;
         }
