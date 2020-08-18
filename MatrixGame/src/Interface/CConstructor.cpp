@@ -1370,10 +1370,10 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
 
     int i;
     for(i=0;i<cnt;i++) {
-        str=bp.ParGet(i);
+        str=bp.ParGetName(i);
         if(str.GetCountPar(L",")<2) continue;
 
-        m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor=bp.ParGetName(i).GetInt();
+        m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor=bp.ParGet(i).GetInt();
         if(m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor<1) ERROR_S2(L"LoadAIRobotType Pripor no=",CWStr(i).Get());
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nType=MRT_CHASSIS;
