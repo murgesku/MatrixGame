@@ -1364,7 +1364,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
 
     CWStr str(g_MatrixHeap),str2(g_MatrixHeap);
 
-    int k,u;
+    int u;
     int cnt=bp.ParCount();
     m_AIRobotTypeList=(SSpecialBot *)HAllocClear(cnt*sizeof(SSpecialBot),g_MatrixHeap);
 
@@ -1533,6 +1533,171 @@ float SSpecialBot::DifWeapon(SSpecialBot & other)
         }
     }
     return cntr/cnt;
+}
+
+bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
+{
+    int MIN_PAR_CNT;
+    if (with_hp)
+        MIN_PAR_CNT = 4;
+    else
+        MIN_PAR_CNT = 2;
+
+    if (parname.GetCountPar(L",") < MIN_PAR_CNT)
+        return false;
+
+    m_Pripor = parval;
+    if (m_Pripor < 1) m_Pripor = 1;
+
+    CWStr str(g_MatrixHeap);
+
+    // Initialization ////////////////////////////////////////////////////////////////////////////////////
+
+    m_Chassis.m_nType = MRT_CHASSIS;
+    m_Chassis.m_nKind = RUK_UNKNOWN;
+
+    m_Armor.m_Unit.m_nType =MRT_ARMOR;
+    m_Armor.m_Unit.m_nKind = RUK_UNKNOWN;
+    m_Armor.m_MaxCommonWeaponCnt = 0;
+    m_Armor.m_MaxExtraWeaponCnt = 0;
+
+    m_Head.m_nType = MRT_WEAPON;
+    m_Head.m_nKind = RUK_UNKNOWN;
+
+    m_HaveBomb = false;
+    m_HaveRepair = false;
+
+    for (int u=0; u<MAX_WEAPON_CNT; ++u)
+    {
+        m_Weapon[u].m_Unit.m_nType = MRT_EMPTY;
+        m_Weapon[u].m_Unit.m_nKind = RUK_UNKNOWN;
+        m_Weapon[u].m_Pos = u;
+    }
+
+    for (int k=0; k<MAX_RESOURCES; ++k)
+        m_Resources[k] = 0;
+
+    // Chassis ///////////////////////////////////////////////////////////////////////////////////////////
+
+    str = parname.GetStrPar(0,L",");
+    str.Trim();
+    
+    if (str==L"Pneumatic" || str==L"P") m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
+    else if (str==L"Whell" || str==L"W") m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
+    else if (str==L"Track" || str==L"T") m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
+    else if (str==L"Hovercraft" || str==L"H") m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
+    else if (str==L"Antigravity" || str==L"A") m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+    else
+        return false;
+
+    m_Chassis.m_Price.SetPrice(m_Chassis.m_nType, m_Chassis.m_nKind);
+    for (int k=0; k<MAX_RESOURCES; ++k)
+        m_Resources[k] += m_Chassis.m_Price.m_Resources[k];
+    
+    // Armor /////////////////////////////////////////////////////////////////////////////////////////////
+
+    str = parname.GetStrPar(1,L",");
+    str.Trim();
+
+    if (str==L"1") m_Armor.m_Unit.m_nKind = RUK_ARMOR_6;
+    else if (str==L"1S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_PASSIVE;
+    else if (str==L"2") m_Armor.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
+    else if (str==L"2S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
+    else if (str==L"3") m_Armor.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
+    else if (str == L"4S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+    else
+        return false;
+
+    m_Armor.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].common;
+    m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].extra;
+    m_Armor.m_Unit.m_Price.SetPrice(m_Armor.m_Unit.m_nType, m_Armor.m_Unit.m_nKind);
+    for (int k=0; k<MAX_RESOURCES; ++k)
+        m_Resources[k] += m_Armor.m_Unit.m_Price.m_Resources[k];
+    
+    // Hitpoints & Strength //////////////////////////////////////////////////////////////////////////////
+
+    if (with_hp)
+    {
+        int num;
+        
+        num = parname.GetIntPar(2, L",");
+
+        if (num <= 0) m_Hitpoints = -1.0f;
+        else m_Hitpoints = (float)num;
+
+        num = parname.GetIntPar(3, L",");
+
+        if (num < 0) m_Strength = -1.0f;
+        else m_Strength = (float)num;
+    }
+
+    // Weapons ///////////////////////////////////////////////////////////////////////////////////////////
+
+    if (parname.GetCountPar(L",") >= MIN_PAR_CNT+1)
+    {
+        str = parname.GetStrPar(MIN_PAR_CNT,L",");
+        str.Trim();
+
+        if (str.GetLen() > m_Armor.m_MaxCommonWeaponCnt + m_Armor.m_MaxExtraWeaponCnt)
+            return false;
+
+        int cntnormal=0;
+        int cntextra=0;
+
+        for (int u=0; u<str.GetLen(); u++)
+        {
+            wchar ch = str.GetBuf()[u];
+            if (ch==L'G') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN; }
+            else if (ch==L'C') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_CANNON; }
+            else if (ch==L'M') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MISSILE; }
+            else if (ch==L'F') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_FLAMETHROWER; }
+            else if (ch==L'O') { cntextra++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MORTAR; }
+            else if (ch==L'L') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_LASER; }
+            else if (ch==L'B') { cntextra++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_BOMB; m_HaveBomb = true; }
+            else if (ch==L'P') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_PLASMA; }
+            else if (ch==L'E') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_ELECTRIC; }
+            else if (ch==L'R') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_REPAIR; m_HaveRepair = true; }
+            else
+                return false;
+
+            m_Weapon[u].m_Unit.m_nType = MRT_WEAPON;
+
+            m_Weapon[u].m_Unit.m_Price.SetPrice(m_Weapon[u].m_Unit.m_nType, m_Weapon[u].m_Unit.m_nKind);
+            for (int k=0; k<MAX_RESOURCES; k++)
+                m_Resources[k] += m_Weapon[u].m_Unit.m_Price.m_Resources[k];
+        }
+
+        if (cntnormal > m_Armor.m_MaxCommonWeaponCnt)
+            return false;
+        if (cntextra > m_Armor.m_MaxExtraWeaponCnt)
+            return false;
+    }
+
+    // Head //////////////////////////////////////////////////////////////////////////////////////////////
+
+    if (parname.GetCountPar(L",") >= MIN_PAR_CNT+2)
+    {
+        str = parname.GetStrPar(MIN_PAR_CNT+1,L",");
+        str.Trim();
+
+        if (str==L"Strength" || str==L"S") m_Head.m_nKind = RUK_HEAD_BLOCKER;
+        else if (str==L"Dynamo" || str==L"D") m_Head.m_nKind = RUK_HEAD_DYNAMO;
+        else if (str==L"Locator" || str==L"L") m_Head.m_nKind = RUK_HEAD_LOCKATOR;
+        else if (str==L"Firewall" || str==L"F") m_Head.m_nKind = RUK_HEAD_FIREWALL;
+        //else if(str==L"Rapid" || str==L"R") m_Head.m_nKind=RUK_HEAD_RAPID;
+        //else if(str==L"Design" || str==L"D") m_Head.m_nKind=RUK_HEAD_DESIGN;
+        //else if(str==L"Speaker" || str==L"P") m_Head.m_nKind=RUK_HEAD_SPEAKER;
+        else
+            return false;
+
+        m_Head.m_Price.SetPrice(m_Head.m_nType, m_Head.m_nKind);
+        for(int k=0; k<MAX_RESOURCES; k++)
+            m_Resources[k] += m_Head.m_Price.m_Resources[k];
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    return true;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

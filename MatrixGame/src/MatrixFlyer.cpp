@@ -1159,12 +1159,12 @@ void    CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder o
     m_TrajectoryTargetAngle = ang;
 
 
-    CBlockPar * bp = NULL;
+    CBlockPar * bp = nullptr;
+    CBlockPar * tpl = nullptr;
     if (order == FO_GIVE_BOT)
     {
         bp = g_MatrixData->BlockGet(PAR_SOURCE_FLYER_ORDERS)->BlockGet(PAR_SOURCE_FLYER_ORDERS_GIVE_BOT);
-
-
+        tpl = bp->BlockGet(L"Templates");
 
         float dist = (float)bp->ParGet(L"Distance").GetDouble() + FSRND(150);
         float height = (float)bp->ParGet(L"Height").GetDouble();
@@ -1197,24 +1197,10 @@ void    CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder o
         SSpecialBot bot;
         ZeroMemory(&bot, sizeof(SSpecialBot));
 
-        CBlockPar *botpar = bp->BlockGet(botpar_i);
+        if (!bot.BuildFromPar(tpl->ParGetName(botpar_i), tpl->ParGet(botpar_i).GetInt(), true))
+            ERROR_S2(L"Helicopter bot_no=",CWStr(botpar_i).Get());
 
-        bot.m_Chassis.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotChassis").GetInt();
-        bot.m_Armor.m_Unit.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotArmor").GetInt();
-        bot.m_Head.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotHead").GetInt();
-
-        int wcnt = 0;
-        int cnt = botpar->ParCount();
-        int i = 0;
-        for (int p=0;p<cnt;++p)
-        {
-            if (botpar->ParGetName(p) == L"BotWeapon")
-            {
-                bot.m_Weapon[i++].m_Unit.m_nKind = (ERobotUnitKind)botpar->ParGet(p).GetInt();
-            }
-        }
-
-        bot.m_Strength = (float)botpar->ParGet(L"BotStrength").GetDouble();
+        if (bot.m_Strength == -1.0f) bot.CalcStrength();
 
         CMatrixRobotAI *r = bot.GetRobot(m_Pos, PLAYER_SIDE);
         g_MatrixMap->AddObject(r,true);
@@ -1231,12 +1217,9 @@ void    CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder o
         core->m_GeoCenter = (minv + maxv) * 0.5f;
         core->m_Radius = D3DXVec3Length(&(minv - maxv));
 
-
-
         core->Release();
 
-        r->InitMaxHitpoint((float)botpar->ParGet(L"BotHitpoint").GetDouble());
-
+        if (bot.m_Hitpoints != -1.0f) r->InitMaxHitpoint(bot.m_Hitpoints);
 
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
         g_MatrixMap->GetPlayerSide()->PGOrderAttack(g_MatrixMap->GetPlayerSide()->RobotToLogicGroup(r),g_MatrixMap->m_RN.m_Place[place].m_Pos /*bpos*/,NULL);
