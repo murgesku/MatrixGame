@@ -1310,7 +1310,7 @@ void CMatrixBuilding::Maintenance(void)
 
     float angle = FSRND(M_PI);
 
-    CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_FLYER_ORDERS)->BlockGet(PAR_SOURCE_FLYER_ORDERS_GIVE_BOT);
+    CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_FLYER_ORDERS)->BlockGet(PAR_SOURCE_FLYER_ORDERS_GIVE_BOT)->BlockGet(L"Templates");
 
     int score = 0;
 
@@ -1330,8 +1330,8 @@ void CMatrixBuilding::Maintenance(void)
         int sc = 0;
         for (;cnt > 0; --cnt)
         {
-            botpar_i = g_MatrixMap->Rnd(0,bp->BlockCount()-1);
-            sc = bp->BlockGet(botpar_i)->ParGet(L"BotScore").GetInt();
+            botpar_i = g_MatrixMap->Rnd(0,bp->ParCount()-1);
+            sc = bp->ParGet(botpar_i).GetInt();
             if (score + sc > 130) continue;
             break;
         }

@@ -67,6 +67,7 @@ struct SSpecialBot {
     int                 m_Resources[MAX_RESOURCES];                                     //titan, electronics, energy, plasma
 
     int                 m_Pripor;
+    float               m_Hitpoints;
     float               m_Strength;
     bool                m_HaveBomb;
     bool                m_HaveRepair;
@@ -79,6 +80,8 @@ struct SSpecialBot {
 
     void CalcStrength(void);                                 // Расчитываем силу робота
     float DifWeapon(SSpecialBot & other);                    //  0..1 на сколько отличается оружие у роботов
+
+    bool BuildFromPar(const CWStr & parname, int parval, bool with_hp=false);
 
     CMatrixRobotAI*     GetRobot(const D3DXVECTOR3 &pos, int side);
 };

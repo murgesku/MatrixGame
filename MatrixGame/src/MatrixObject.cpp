@@ -1379,34 +1379,21 @@ void CMatrixMapObject::LogicTakt(int ms)
                 // spawn robot!
                 CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
 
-                int robot = g_MatrixMap->Rnd(temp.GetStrPar(1,L",").GetIntPar(2,L":"), temp.GetStrPar(1,L",").GetIntPar(3,L":"));
-
                 CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
-                CBlockPar *botpar = bpr->BlockGetNE(CWStr(robot, g_CacheHeap));
-                if (botpar == NULL)
-                {
-                    botpar = bpr->BlockGet(g_MatrixMap->Rnd(0,bpr->BlockCount()-1));
-                }
+
+                int robot;
+                if (!temp.GetStrPar(1,L",").TrimFull().IsEmpty())
+                    robot = g_MatrixMap->Rnd(temp.GetStrPar(1,L",").GetIntPar(2,L":"), temp.GetStrPar(1,L",").GetIntPar(3,L":"));
+                else
+                    robot = g_MatrixMap->Rnd(0,bpr->ParCount()-1);
 
                 SSpecialBot bot;
                 ZeroMemory(&bot, sizeof(SSpecialBot));
 
-                bot.m_Chassis.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotChassis").GetInt();
-                bot.m_Armor.m_Unit.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotArmor").GetInt();
-                bot.m_Head.m_nKind = (ERobotUnitKind)botpar->ParGet(L"BotHead").GetInt();
+                if (!bot.BuildFromPar(bpr->ParGetName(robot), bpr->ParGet(robot).GetInt(), true))
+                    ERROR_S2(L"Spawner bot_no=", CWStr(robot).Get());
 
-                int wcnt = 0;
-                int cnt = botpar->ParCount();
-                int i = 0;
-                for (int p=0;p<cnt;++p)
-                {
-                    if (botpar->ParGetName(p) == L"BotWeapon")
-                    {
-                        bot.m_Weapon[i++].m_Unit.m_nKind = (ERobotUnitKind)botpar->ParGet(p).GetInt();
-                    }
-                }
-
-                CMatrixRobotAI *r = bot.GetRobot(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, botpar->ParGet(L"BotSide").GetInt());
+                CMatrixRobotAI *r = bot.GetRobot(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, 4 /* Terron? */);
                 g_MatrixMap->AddObject(r,true);
                 r->CreateTextures();
 
@@ -1421,7 +1408,7 @@ void CMatrixMapObject::LogicTakt(int ms)
                 m_SpawnRobotCore->m_Radius = D3DXVec3Length(&(minv - maxv));
 
 
-                r->InitMaxHitpoint((float)botpar->ParGet(L"BotHitpoint").GetDouble());
+                if (bot.m_Hitpoints != -1.0f) r->InitMaxHitpoint(bot.m_Hitpoints);
 
                 m_Graph->SetAnimById(temp.GetStrPar(1,L",").GetIntPar(6,L":"),0);
 
