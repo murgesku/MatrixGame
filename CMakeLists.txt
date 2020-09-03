@@ -10,8 +10,9 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-option(MATRIXGAME_BUILD_DLL ON)
-option(MATRIXGAME_CHEATS OFF)
+option(MATRIXGAME_BUILD_DLL "Build dll" ON)
+option(MATRIXGAME_CHEATS "Enable cheats support" OFF)
+option(MATRIXGAME_FAIR_ARCADE "Disable weapon range bonus for player in arcade mode" OFF)
 
 if(MSVC)
     find_package(DIRECTX9 REQUIRED)
@@ -43,10 +44,14 @@ if(MSVC)
     if(NOT MATRIXGAME_BUILD_DLL)
         target_compile_definitions(MatrixGame PUBLIC $<$<CONFIG:Release>:EXE_VERSION>)
     endif()
+endif()
 
-    if(MATRIXGAME_CHEATS)
-        target_compile_definitions(MatrixGame PRIVATE CHEATS_ON)
-    endif()
+if(MATRIXGAME_CHEATS)
+    target_compile_definitions(MatrixGame PRIVATE CHEATS_ON)
+endif()
+
+if(MATRIXGAME_FAIR_ARCADE)
+    target_compile_definitions(MatrixGame PRIVATE FAIR_ARCADE)
 endif()
 
 # add_subdirectory(MatrixLib/3G)
