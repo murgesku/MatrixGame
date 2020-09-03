@@ -206,6 +206,57 @@ static void static_init(void)
 
 }
 
+void LoadModList(CWStr & modlist)
+{
+    DTRACE();
+
+    CWStr modcfg_name(g_MatrixHeap);
+    CBlockPar modcfg(g_MatrixHeap);
+    
+    if (CFile::FileExist(modcfg_name, L"Mods\\ModCFG.txt"))
+    {
+        modcfg.LoadFromTextFile(L"Mods\\ModCFG.txt");
+        modlist.Set(modcfg.ParGet(L"CurrentMod"));
+    }
+    else
+        modlist.Set(L"");
+}
+
+void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, const wchar * bp_name)
+{
+    DTRACE();
+
+    CWStr curmod(g_MatrixHeap);
+    CWStr moddata_name(g_MatrixHeap);
+
+    CBlockPar moddata(g_MatrixHeap);
+
+    for (int i=0; i<modlist.GetCountPar(L","); ++i)
+    {
+        curmod = modlist.GetStrPar(i, L",");
+        curmod.Trim();
+
+        moddata_name.Clear();
+        moddata_name += L"Mods\\";
+        moddata_name += curmod;
+        moddata_name += L"\\";
+        moddata_name += FILE_CONFIGURATION_LOCATION;
+        if (lang!=NULL)
+        {
+            moddata_name += lang;
+            moddata_name += L"\\";
+        }
+        moddata_name += L"Robots\\";
+        moddata_name += bp_name;
+
+        if (CFile::FileExist(moddata_name, moddata_name.Get()))
+        {
+            moddata.LoadFromTextFile(moddata_name);
+            base_bp.BlockMerge(moddata);
+        }
+    }
+}
+
 void MatrixGameInit(HINSTANCE inst,HWND wnd,wchar * map,SRobotsSettings * set,wchar * lang,wchar * txt_start,wchar * txt_win,wchar * txt_loss, wchar *planet)
 {
     static_init();
@@ -216,6 +267,9 @@ void MatrixGameInit(HINSTANCE inst,HWND wnd,wchar * map,SRobotsSettings * set,wc
 
     CFile::AddPackFile(L"DATA\\robots.pkg", NULL);
     CFile::OpenPackFiles();
+
+    CWStr modlist(g_MatrixHeap);
+    LoadModList(modlist);
 
     CLoadProgress   lp;
     g_LoadProgress = &lp;
@@ -257,6 +311,8 @@ DCP();
         g_MatrixData->LoadFromTextFile(L"cfg\\robots\\data.txt");
     }
 
+    // The code for loading data configs from mods
+    LoadCfgFromMods(modlist, *g_MatrixData, lang, L"data.txt");
 
     {
         CBlockPar *repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
@@ -315,8 +371,6 @@ DCP();
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
         }
     }
-    
-
 
 DCP();
 
@@ -424,12 +478,16 @@ DCP();
     {
         bpi.LoadFromTextFile(IF_PATH);
 
-
+    // The code for loading iface configs from mods
+    LoadCfgFromMods(modlist, bpi, lang, L"iface.txt");
 
 	//CStorage stor(g_CacheHeap);
     //stor.StoreBlockPar(L"if", bpi);
     //stor.StoreBlockPar(L"da", *g_MatrixData);
     //stor.Save(FILE_CONFIGURATION, true);
+#ifdef _DEBUG
+    g_MatrixData->SaveInTextFile(L"g_MatrixData.txt");
+#endif
     }
 
 

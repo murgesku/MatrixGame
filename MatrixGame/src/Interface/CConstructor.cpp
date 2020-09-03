@@ -1458,7 +1458,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     m_Chassis.m_nType = MRT_CHASSIS;
     m_Chassis.m_nKind = RUK_UNKNOWN;
 
-    m_Armor.m_Unit.m_nType =MRT_ARMOR;
+    m_Armor.m_Unit.m_nType = MRT_ARMOR;
     m_Armor.m_Unit.m_nKind = RUK_UNKNOWN;
     m_Armor.m_MaxCommonWeaponCnt = 0;
     m_Armor.m_MaxExtraWeaponCnt = 0;
@@ -1506,7 +1506,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     else if (str==L"2") m_Armor.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
     else if (str==L"2S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
     else if (str==L"3") m_Armor.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
-    else if (str == L"4S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+    else if (str==L"4S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
     else
         return false;
 
@@ -1540,13 +1540,13 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
         str = parname.GetStrPar(MIN_PAR_CNT,L",");
         str.Trim();
 
-        if (str.GetLen() > m_Armor.m_MaxCommonWeaponCnt + m_Armor.m_MaxExtraWeaponCnt)
+        if (str.GetLen() > (m_Armor.m_MaxCommonWeaponCnt + m_Armor.m_MaxExtraWeaponCnt))
             return false;
 
         int cntnormal=0;
         int cntextra=0;
 
-        for (int u=0; u<str.GetLen(); u++)
+        for (int u=0; u<str.GetLen(); ++u)
         {
             wchar ch = str.GetBuf()[u];
             if (ch==L'G') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN; }
@@ -1565,7 +1565,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
             m_Weapon[u].m_Unit.m_nType = MRT_WEAPON;
 
             m_Weapon[u].m_Unit.m_Price.SetPrice(m_Weapon[u].m_Unit.m_nType, m_Weapon[u].m_Unit.m_nKind);
-            for (int k=0; k<MAX_RESOURCES; k++)
+            for (int k=0; k<MAX_RESOURCES; ++k)
                 m_Resources[k] += m_Weapon[u].m_Unit.m_Price.m_Resources[k];
         }
 
@@ -1593,7 +1593,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
             return false;
 
         m_Head.m_Price.SetPrice(m_Head.m_nType, m_Head.m_nKind);
-        for(int k=0; k<MAX_RESOURCES; k++)
+        for(int k=0; k<MAX_RESOURCES; ++k)
             m_Resources[k] += m_Head.m_Price.m_Resources[k];
     }
 
