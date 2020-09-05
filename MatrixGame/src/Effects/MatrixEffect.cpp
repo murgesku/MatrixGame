@@ -13,6 +13,9 @@
 
 #define M_PI       3.14159265358979323846
 
+float ARCADEBOT_WEAPON_COEFF = 1.2f;
+float DEFBOT_WEAPON_COEFF = 1.0f;
+
 DWORD              CMatrixEffect::m_before_draw_done;
 CDebris           *CMatrixEffect::m_Debris;
 int                CMatrixEffect::m_DebrisCnt;
@@ -296,6 +299,11 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
     ELIST_INIT(EFFECT_FIREANIM);
 
     m_Heap = HNew(NULL) CHeap();
+
+    // init weapon range modificators
+
+    ARCADEBOT_WEAPON_COEFF = bp_in.BlockGet(L"Constants")->ParGet(L"ARCADEBOT_WEAPON_COEFF").GetDouble();
+    DEFBOT_WEAPON_COEFF = bp_in.BlockGet(L"Constants")->ParGet(L"DEFBOT_WEAPON_COEFF").GetDouble();
 
     // init debris
 

@@ -15,12 +15,8 @@
 #define VOLCANO_FIRE_KONUS_RADIUS 5
 #define VOLCANO_FIRE_KONUS_LENGTH 5
 
-#ifdef FAIR_ARCADE
-#define ARCADEBOT_WEAPON_COEFF      1.0f
-#else
-#define ARCADEBOT_WEAPON_COEFF      1.2f
-#endif
-#define DEFBOT_WEAPON_COEFF         1.0f
+extern float ARCADEBOT_WEAPON_COEFF;
+extern float DEFBOT_WEAPON_COEFF;
 
 //#define WD_PLASMA           300
 //#define WD_VOLCANO          300
