@@ -478,17 +478,18 @@ DCP();
     {
         bpi.LoadFromTextFile(IF_PATH);
 
-    // The code for loading iface configs from mods
-    LoadCfgFromMods(modlist, bpi, lang, L"iface.txt");
-
-	//CStorage stor(g_CacheHeap);
+    //CStorage stor(g_CacheHeap);
     //stor.StoreBlockPar(L"if", bpi);
     //stor.StoreBlockPar(L"da", *g_MatrixData);
     //stor.Save(FILE_CONFIGURATION, true);
+    }
+
+    // The code for loading iface configs from mods
+    LoadCfgFromMods(modlist, bpi, lang, L"iface.txt");
+
 #ifdef _DEBUG
     g_MatrixData->SaveInTextFile(L"g_MatrixData.txt");
 #endif
-    }
 
 
     g_ConfigHistory = HNew(g_MatrixHeap) CHistory;
