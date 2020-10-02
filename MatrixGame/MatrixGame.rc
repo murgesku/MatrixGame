@@ -27,8 +27,8 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,2,2,2
- PRODUCTVERSION 2,2,2,2
+ FILEVERSION 2,2,2,5
+ PRODUCTVERSION 2,2,2,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -45,11 +45,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "CHK-Games LLC"
             VALUE "FileDescription", "SR2 Planetary battles engine"
-            VALUE "FileVersion", "2.2.2.2"
+            VALUE "FileVersion", "2.2.2.5"
             VALUE "InternalName", "MatrixGame.rc"
             VALUE "LegalCopyright", "Copyright (C) 2012"
             VALUE "ProductName", "SR2"
-            VALUE "ProductVersion", "2.2.2.2"
+            VALUE "ProductVersion", "2.2.2.5"
         END
     END
     BLOCK "VarFileInfo"
