@@ -685,6 +685,12 @@ void CBlockPar::BlockMerge(CBlockPar & bp)
 		{
 			CBlockParUnit *el = bp.m_Array[i];
 
+			if (el->m_Type == 0)
+			{
+				++i;
+				continue;
+			}
+
 			ExtractNameAttr(el->m_Name, realname, replace);
 			
 			int no = ArrayFind(realname);
@@ -735,6 +741,11 @@ void CBlockPar::BlockMerge(CBlockPar & bp)
 				tgt->CopyFrom(*el);
 				tgt->m_Name.Set(realname);
 				ArrayAdd(tgt);
+
+				if (el->m_Type == 1)
+					++m_CntPar;
+				else if (el->m_Type == 2)
+					++m_CntBlock;
 				
 				++i;
 			}
@@ -746,6 +757,12 @@ void CBlockPar::BlockMerge(CBlockPar & bp)
 
 		while (el != nullptr)
 		{
+			if (el->m_Type == 0)
+			{
+				el = el->m_Next;
+				continue;
+			}
+
 			ExtractNameAttr(el->m_Name, realname, replace);
 
 			if (el->m_Type == 1)
