@@ -3158,6 +3158,22 @@ void CIFaceList::CreateItemPrice(int *price)
     while(interfaces){
         if(interfaces->m_strName == IF_BASE){
             float x = 22, y = 243, z = 0.00001f;
+
+            CIFaceElement* pElement = interfaces->m_FirstElement;
+
+            while (pElement)
+            {
+                if (pElement->m_strName == IF_BASE_UNIT_PANEL)
+                {
+                    x = pElement->m_xPos;
+                    y = pElement->m_yPos;
+                    z = pElement->m_zPos;
+
+                    break;
+                }
+                pElement = pElement->m_NextElement;
+            }
+
             CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
             CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
             CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
@@ -3244,10 +3260,26 @@ void CIFaceList::CreateSummPrice(int multiplier)
     while(interfaces){
         if(interfaces->m_strName == IF_BASE){
             float x = 200, y = 352, z = 0.00001f;
+
+            CIFaceElement* pElement = interfaces->m_FirstElement;
+
+            while (pElement)
+            {
+                if (pElement->m_strName == IF_BASE_SUMM_PANEL)
+                {
+                    x = pElement->m_xPos;
+                    y = pElement->m_yPos;
+                    z = pElement->m_zPos;
+
+                    break;
+                }
+                pElement = pElement->m_NextElement;
+            }
+
             if(fuck == 3){
-                x = 235;
+                x += 35;
             }else if(fuck == 2){
-                x = 250;
+                x += 50;
             }
             CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
             CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
