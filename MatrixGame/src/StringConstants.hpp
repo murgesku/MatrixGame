@@ -528,6 +528,7 @@
 #define PAR_SOURCE_CAMERA_ROTANGLEMAX           L"CamRotAngleMax"
 #define PAR_SOURCE_CAMERA_DISTMIN               L"CamDistMin"
 #define PAR_SOURCE_CAMERA_DISTMAX               L"CamDistMax"
+#define PAR_SOURCE_CAMERA_DISTDEFAULT           L"CamDistDefault"
 #define PAR_SOURCE_CAMERA_ANGLEPARAM            L"CamAngleParam"
 #define PAR_SOURCE_CAMERA_HEIGHT                L"CamHeight"
 
