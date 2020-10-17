@@ -150,6 +150,8 @@ void CFlamePuff::Takt(float step)
     float k = m_Time * m_Owner->_m_TTL;
     if (k > 0.3f)
     {
+        //Создаётся дым, зависящий от продолжительности выпуска огня
+        //Определяет количество спрайтов дыма, которые выдуваются во время стрельбы
         while (m_Time > m_NextSmokeTime)
         {
             m_NextSmokeTime += 100;
