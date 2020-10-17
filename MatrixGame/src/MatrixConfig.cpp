@@ -1040,6 +1040,7 @@ void CMatrixConfig::ReadParams(void)
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTANGLEMAX) m_CamParams[index].m_CamRotAngleMax = GRAD2RAD((float)bp_c->ParGet(j).GetDouble());
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_DISTMIN) m_CamParams[index].m_CamDistMin = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_DISTMAX) m_CamParams[index].m_CamDistMax = (float)bp_c->ParGet(j).GetDouble();
+                    else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_DISTDEFAULT) m_CamParams[index].m_CamDistDefault = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ANGLEPARAM) m_CamParams[index].m_CamAngleParam = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_HEIGHT) m_CamParams[index].m_CamHeight = (float)bp_c->ParGet(j).GetDouble();
                 }
