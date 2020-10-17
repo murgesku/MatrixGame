@@ -163,11 +163,15 @@ void CFlamePuff::Takt(float step)
     //if (k > 0.3f)
     //{
     //}
+
+    //Здесь задаётся скейл радиуса огненного эффекта
+    //Можно устроить визуально ооочень большой костёр!
     float scale = (k * FLAME_SCALE_FACTOR) + 1.5f;
     //float _scale = FLAME_DIST_FACTOR / scale;
     float mk = 1.0f - k;
 
     D3DXVECTOR3 oldpos = m_Pos;
+    //Здесь задаётся удлинение вылетающей вперёд струи пламени в зависимости от скорости движения робота
     m_Pos += (m_Speed * float(step)) + (float(step) * m_Dir * mk*mk * FLAME_DIR_SPEED);
 
     m_Scale = scale*scale;
