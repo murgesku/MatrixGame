@@ -659,7 +659,7 @@ CMatrixCamera::CMatrixCamera(void)
     for (int i=0; i<CAMERA_PARAM_CNT; ++i)
     {
         m_AngleParam[i] = g_Config.m_CamParams[i].m_CamAngleParam;
-		m_DistParam[i] = 1.0f;
+        m_DistParam[i] = g_Config.m_CamParams[i].m_CamDistDefault;
     }
 
     m_AngleX = LerpAng();
