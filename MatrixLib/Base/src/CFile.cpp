@@ -9,6 +9,7 @@
 
 namespace Base {
 
+#ifndef MAXEXP_EXPORTS
 CPackCollection *CFile::m_Packs;
 int             CFile::m_PacksRef;
 
@@ -43,17 +44,22 @@ void CFile::ReleasePackFiles(void)
         m_Packs = NULL;
     }
 }
+#endif
 
 CFile::CFile(CHeap * heap):CMain(),m_FileName(heap)
 {
+#ifndef MAXEXP_EXPORTS 
     m_PackHandle = 0xFFFFFFFF;
+#endif
 	m_Handle=INVALID_HANDLE_VALUE;
 	m_Open=0;
 }
 
 CFile::CFile(const CWStr & filename,CHeap * heap):CMain(),m_FileName(heap)
 {
+#ifndef MAXEXP_EXPORTS 
     m_PackHandle = 0xFFFFFFFF;
+#endif
 	m_Handle=INVALID_HANDLE_VALUE;
 	m_Open=0;
 	Init(filename);
@@ -61,7 +67,9 @@ CFile::CFile(const CWStr & filename,CHeap * heap):CMain(),m_FileName(heap)
 
 CFile::CFile(const wchar * filename,CHeap * heap):CMain(),m_FileName(heap)
 {
+#ifndef MAXEXP_EXPORTS 
     m_PackHandle = 0xFFFFFFFF;
+#endif
 	m_Handle=INVALID_HANDLE_VALUE;
 	m_Open=0;
 	Init(filename);
@@ -69,7 +77,9 @@ CFile::CFile(const wchar * filename,CHeap * heap):CMain(),m_FileName(heap)
 
 CFile::CFile(const wchar * filename,int len,CHeap * heap):CMain(),m_FileName(heap)
 {
+#ifndef MAXEXP_EXPORTS 
     m_PackHandle = 0xFFFFFFFF;
+#endif
 	m_Handle=INVALID_HANDLE_VALUE;
 	m_Open=0;
 	Init(filename,len);
@@ -125,6 +135,8 @@ void CFile::OpenRead(DWORD shareMode)
         {
 		    m_Handle=CreateFileA(CStr(m_FileName, m_FileName.GetHeap()).Get(),GENERIC_READ,shareMode,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
         }
+
+#ifndef MAXEXP_EXPORTS
 		if (m_Handle==INVALID_HANDLE_VALUE)
         {
             // so, real file not found. may be it is in packet?
@@ -142,8 +154,9 @@ void CFile::OpenRead(DWORD shareMode)
                 ++m_PacksRef;
 
             }
-        }
 
+        }
+#endif
 	}
 	m_Open++;
 }
@@ -214,12 +227,14 @@ void CFile::Close(void)
 	--m_Open;
 	if(m_Open<=0)
     {
+#ifndef MAXEXP_EXPORTS
         if (m_PackHandle != 0xFFFFFFFF)
         {
             m_Packs->Close(m_PackHandle);
             m_PackHandle = 0xFFFFFFFF;
             --m_PacksRef;
         }
+#endif
 		if(m_Handle!=INVALID_HANDLE_VALUE)
         {
             CloseHandle(m_Handle);
@@ -232,10 +247,14 @@ void CFile::Close(void)
 DWORD CFile::Size(void) const
 {
 	DWORD lo = 0xFFFFFFFF;
+
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->GetSize(m_PackHandle);
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = GetFileSize(m_Handle,NULL);
@@ -251,11 +270,15 @@ DWORD CFile::Size(void) const
 __int64 CFile::SizeFull(void) const
 {
 	DWORD lo = 0xFFFFFFFF, hi;
+
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->GetSize(m_PackHandle);
         hi = 0;
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = GetFileSize(m_Handle,&hi);
@@ -272,11 +295,15 @@ __int64 CFile::PointerFull(void) const
 {
 	DWORD lo = 0xFFFFFFFF;
     LONG hi;
+
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->GetPos(m_PackHandle);
         hi = 0;
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = SetFilePointer(m_Handle,0,&hi, FILE_CURRENT);
@@ -294,10 +321,13 @@ void CFile::PointerFull(__int64 zn,int from) const
 {
 	LONG lo=LONG(zn & 0xffffffff),hi=DWORD(zn>>32);
 
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->SetPos(m_PackHandle, lo, from);
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = SetFilePointer(m_Handle,lo,&hi, from);
@@ -312,10 +342,14 @@ void CFile::PointerFull(__int64 zn,int from) const
 DWORD CFile::Pointer(void) const
 {
 	DWORD lo = 0xFFFFFFFF;
+
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->GetPos(m_PackHandle);
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = SetFilePointer(m_Handle,0,NULL, FILE_CURRENT);
@@ -329,10 +363,13 @@ DWORD CFile::Pointer(void) const
 
 void CFile::Pointer(DWORD lo,int from) const
 {
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         lo = m_Packs->SetPos(m_PackHandle, lo, from);
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
         lo = SetFilePointer(m_Handle,lo,NULL, from);
@@ -347,10 +384,14 @@ void CFile::Pointer(DWORD lo,int from) const
 void CFile::Read(void * buf,DWORD kolbyte)
 {
     bool ok = false;
+
+#ifndef MAXEXP_EXPORTS
 	if (m_PackHandle != 0xFFFFFFFF)
     {
         ok = m_Packs->Read(m_PackHandle, buf, kolbyte);
     }
+#endif
+
     if (m_Handle != INVALID_HANDLE_VALUE)
     {
 	    DWORD temp;
@@ -520,6 +561,7 @@ bool CFile::FileExist(CWStr & outname,const wchar * mname,const wchar * exts,boo
         if (FileExistA(outname,mname,exts,withpar)) return true;
     }
 
+#ifndef MAXEXP_EXPORTS
     // real file not found... may be it is in pack file
 
     if (!m_Packs) return false; 
@@ -569,7 +611,7 @@ bool CFile::FileExist(CWStr & outname,const wchar * mname,const wchar * exts,boo
         }
 
     }
-
+#endif
 
     return false;
 

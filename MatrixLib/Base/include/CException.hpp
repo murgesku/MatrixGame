@@ -23,7 +23,7 @@ class CWStr;
 #ifdef _TRACE
 #define ASSERT(zn) {if((zn)==0) ERROR_E;}
 #else
-#define ASSERT(zn) {if((zn)==0) _asm int 3}
+#define ASSERT(zn) {if((zn)==0) __debugbreak();}
 #endif
 #endif
 

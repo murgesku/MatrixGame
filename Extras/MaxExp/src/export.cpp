@@ -11,7 +11,6 @@
 //* Copyright (c) 1997, All Rights Reserved. 
 //***************************************************************************
 
-#include "stdafx.h"
 #include "main.hpp"
 
 void ConvertMatrix(SVOMatrix & out,Matrix3 & in)

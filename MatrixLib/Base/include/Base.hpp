@@ -15,11 +15,14 @@
 #include "CBuf.hpp"
 #include "CBlockPar.hpp"
 #include "Registry.hpp"
+
+#ifndef MAXEXP_EXPORTS
 #include "CReminder.hpp"
 #include "CDWORDMap.hpp"
 #include "CRC32.hpp"
 #include "CStorage.hpp"
 #include "Pack.hpp"
+#endif
 
 #include "Tracer.hpp"
 

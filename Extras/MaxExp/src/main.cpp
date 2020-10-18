@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
 #include "3dsmaxport.h"

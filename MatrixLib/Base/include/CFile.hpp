@@ -13,7 +13,9 @@
 
 namespace Base {
 
+#ifndef MAXEXP_EXPORTS 
 class CPackCollection;
+#endif
 
 
 typedef void (*ENUM_FILES)(const CWStr &name, DWORD user);
@@ -21,11 +23,13 @@ typedef void (*ENUM_FILES)(const CWStr &name, DWORD user);
 
 class BASE_API CFile : public CMain 
 {
-
+#ifndef MAXEXP_EXPORTS 
     static CPackCollection *m_Packs;
     static int              m_PacksRef;
 
     DWORD   m_PackHandle;
+#endif
+
 	HANDLE  m_Handle;	    // Handle файла
 	CWStr   m_FileName;	    // Имя файла
 	int     m_Open;			// Кол-во вызовов Open
@@ -40,13 +44,17 @@ public:
 
     static void StaticInit(void)
     {
+#ifndef MAXEXP_EXPORTS 
         m_Packs = NULL;
         m_PacksRef = 0;
+#endif
     }
 
+#ifndef MAXEXP_EXPORTS 
     static void AddPackFile(const wchar *name, CHeap *heap);
     static void OpenPackFiles(void);
     static void ReleasePackFiles(void);
+#endif
 
     static void FindFiles(const CWStr & folderfrom, const wchar *files, ENUM_FILES ef, DWORD user);
 

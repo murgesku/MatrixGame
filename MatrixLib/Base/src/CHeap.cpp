@@ -279,9 +279,9 @@ void CHeap::Create(int initsize, int maxsize, dword flags)
 
 void CHeap::AllocationError(int zn)
 {
-    _asm int 3
+    __debugbreak();
 #ifdef _DEBUG
-        _asm int 3
+    __debugbreak();
 #else
     
     wchar buf[256];
