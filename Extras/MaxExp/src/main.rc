@@ -7,19 +7,19 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-//#include "afxres.h"
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian resources
+// Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-#ifdef _WIN32
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -27,7 +27,7 @@ LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_PAROBJ, DIALOG
     BEGIN
@@ -81,112 +81,76 @@ IDD_PAROBJ DIALOGEX 0, 0, 108, 45
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,12,25,10
+    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,12,25,10
     GROUPBOX        "Export",IDC_STATIC,3,2,102,40
     LTEXT           "Group:",IDC_STATIC,8,26,22,8
-    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_PARGROUP DIALOGEX 0, 0, 108, 190
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "On",IDC_PARGROUP_EXPORT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,136,25,10
-    CONTROL         "",IDC_PARGROUP_NAME,"CustEdit",WS_GROUP | WS_TABSTOP,8,
-                    12,90,12
+    CONTROL         "On",IDC_PARGROUP_EXPORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,136,25,10
+    CONTROL         "",IDC_PARGROUP_NAME,"CustEdit",WS_GROUP | WS_TABSTOP,8,12,90,12
     LTEXT           "File:",IDC_STATIC,8,151,14,8
-    CONTROL         "",IDC_PARGROUP_FILE,"CustButton",WS_TABSTOP,25,149,73,
-                    12
-    CONTROL         "Default",IDC_PARGROUP_TEXTUREDEFAULT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,8,40,39,10
+    CONTROL         "",IDC_PARGROUP_FILE,"CustButton",WS_TABSTOP,25,149,73,12
+    CONTROL         "Default",IDC_PARGROUP_TEXTUREDEFAULT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,40,39,10
     GROUPBOX        "Edge",IDC_STATIC,3,56,101,39
-    CONTROL         "Off",IDC_PARGROUP_EDGEOFF,"Button",BS_AUTORADIOBUTTON,8,
-                    66,23,10
-    CONTROL         "All",IDC_PARGROUP_EDGEALL,"Button",BS_AUTORADIOBUTTON,
-                    35,66,22,10
-    CONTROL         "Optimize",IDC_PARGROUP_EDGEOPTIMIZE,"Button",
-                    BS_AUTORADIOBUTTON,58,66,39,10
-    CONTROL         "",IDC_PARGROUP_EDGEFACTOR_EDIT,"CustEdit",WS_TABSTOP,39,
-                    79,50,12
-    CONTROL         "",IDC_PARGROUP_EDITFACTOR_SPINNER,"SpinnerControl",0x0,
-                    90,79,7,12
+    CONTROL         "Off",IDC_PARGROUP_EDGEOFF,"Button",BS_AUTORADIOBUTTON,8,66,23,10
+    CONTROL         "All",IDC_PARGROUP_EDGEALL,"Button",BS_AUTORADIOBUTTON,35,66,22,10
+    CONTROL         "Optimize",IDC_PARGROUP_EDGEOPTIMIZE,"Button",BS_AUTORADIOBUTTON,58,66,39,10
+    CONTROL         "",IDC_PARGROUP_EDGEFACTOR_EDIT,"CustEdit",WS_TABSTOP,39,79,50,12
+    CONTROL         "",IDC_PARGROUP_EDITFACTOR_SPINNER,"SpinnerControl",0x0,90,79,7,12
     LTEXT           "Factor:",IDC_STATIC,8,79,23,8
-    CONTROL         "More",IDC_PARGROUP_MORE,"CustButton",WS_TABSTOP,9,106,
-                    88,12
+    CONTROL         "More",IDC_PARGROUP_MORE,"CustButton",WS_TABSTOP,9,106,88,12
     GROUPBOX        "Export",IDC_STATIC,3,125,101,60
-    CONTROL         "Export",IDC_PARGROUP_EXPORTBEGIN,"CustButton",
-                    WS_TABSTOP,8,165,90,12
+    CONTROL         "Export",IDC_PARGROUP_EXPORTBEGIN,"CustButton",WS_TABSTOP,8,165,90,12
     GROUPBOX        "Texture",IDC_STATIC,3,30,101,25
     GROUPBOX        "Name:",IDC_STATIC,3,2,101,27
     GROUPBOX        "Other",IDC_STATIC,3,96,101,28
 END
 
 IDD_PARGROUP_EXT DIALOGEX 0, 0, 204, 185
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Group additional property"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,89,164,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,147,164,50,14
-    CONTROL         "",IDC_PARGROUP_EXT_ANIM,"RichEdit20A",ES_MULTILINE | 
-                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | 
-                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,16,
-                    190,68
-    LTEXT           "Animation:        Example: 1,Name1=[50,0-100:10]",
-                    IDC_STATIC,7,7,162,8
-    LTEXT           "Rename:            Exaple: tex\\land.png=Land.Tex1",
-                    IDC_STATIC,7,87,163,8
-    CONTROL         "",IDC_PARGROUP_EXT_RENAME,"RichEdit20A",ES_MULTILINE | 
-                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | 
-                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,97,
-                    190,62
+    CONTROL         "",IDC_PARGROUP_EXT_ANIM,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,16,190,68
+    LTEXT           "Animation:        Example: 1,Name1=[50,0-100:10]",IDC_STATIC,7,7,162,8
+    LTEXT           "Rename:            Exaple: tex\\land.png=Land.Tex1",IDC_STATIC,7,87,163,8
+    CONTROL         "",IDC_PARGROUP_EXT_RENAME,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,97,190,62
 END
 
 IDD_PARCENTER DIALOGEX 0, 0, 108, 161
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,12,25,10
+    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,12,25,10
     GROUPBOX        "Export",IDC_STATIC,3,2,102,40
     LTEXT           "Group:",IDC_STATIC,8,26,22,8
-    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "Max size",IDC_STATIC,3,43,102,55
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_X_EDIT,"CustEdit",WS_TABSTOP,24,
-                    54,65,12
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_X_SPINNER,"SpinnerControl",0x0,
-                    90,54,7,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_X_EDIT,"CustEdit",WS_TABSTOP,24,54,65,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_X_SPINNER,"SpinnerControl",0x0,90,54,7,12
     LTEXT           "X:",IDC_STATIC,8,57,8,8
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_Y_EDIT,"CustEdit",WS_TABSTOP,24,
-                    68,65,12
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_Y_SPINNER,"SpinnerControl",0x0,
-                    90,68,7,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_Y_EDIT,"CustEdit",WS_TABSTOP,24,68,65,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_Y_SPINNER,"SpinnerControl",0x0,90,68,7,12
     LTEXT           "Y:",IDC_STATIC,8,71,8,8
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_Z_EDIT,"CustEdit",WS_TABSTOP,24,
-                    82,65,12
-    CONTROL         "",IDC_PARCENTER_MAXSIZE_Z_SPINNER,"SpinnerControl",0x0,
-                    90,82,7,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_Z_EDIT,"CustEdit",WS_TABSTOP,24,82,65,12
+    CONTROL         "",IDC_PARCENTER_MAXSIZE_Z_SPINNER,"SpinnerControl",0x0,90,82,7,12
     LTEXT           "Z:",IDC_STATIC,8,84,8,8
     GROUPBOX        "Scale",IDC_STATIC,3,99,102,57
-    CONTROL         "",IDC_PARCENTER_SCALE_X_EDIT,"CustEdit",WS_TABSTOP,24,
-                    110,65,12
-    CONTROL         "",IDC_PARCENTER_SCALE_X_SPINNER,"SpinnerControl",0x0,90,
-                    110,7,12
+    CONTROL         "",IDC_PARCENTER_SCALE_X_EDIT,"CustEdit",WS_TABSTOP,24,110,65,12
+    CONTROL         "",IDC_PARCENTER_SCALE_X_SPINNER,"SpinnerControl",0x0,90,110,7,12
     LTEXT           "X:",IDC_STATIC,8,112,8,8
-    CONTROL         "",IDC_PARCENTER_SCALE_Y_EDIT,"CustEdit",WS_TABSTOP,24,
-                    124,65,12
-    CONTROL         "",IDC_PARCENTER_SCALE_Y_SPINNER,"SpinnerControl",0x0,90,
-                    124,7,12
+    CONTROL         "",IDC_PARCENTER_SCALE_Y_EDIT,"CustEdit",WS_TABSTOP,24,124,65,12
+    CONTROL         "",IDC_PARCENTER_SCALE_Y_SPINNER,"SpinnerControl",0x0,90,124,7,12
     LTEXT           "Y:",IDC_STATIC,8,127,8,8
-    CONTROL         "",IDC_PARCENTER_SCALE_Z_EDIT,"CustEdit",WS_TABSTOP,24,
-                    139,65,12
-    CONTROL         "",IDC_PARCENTER_SCALE_Z_SPINNER,"SpinnerControl",0x0,90,
-                    139,7,12
+    CONTROL         "",IDC_PARCENTER_SCALE_Z_EDIT,"CustEdit",WS_TABSTOP,24,139,65,12
+    CONTROL         "",IDC_PARCENTER_SCALE_Z_SPINNER,"SpinnerControl",0x0,90,139,7,12
     LTEXT           "Z:",IDC_STATIC,8,141,8,8
 END
 
@@ -194,20 +158,15 @@ IDD_PARMATRIX DIALOGEX 0, 0, 108, 103
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,12,25,10
+    CONTROL         "On",IDC_PAROBJ_EXPORT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,12,25,10
     GROUPBOX        "Export",IDC_STATIC,3,2,102,40
     LTEXT           "Group:",IDC_STATIC,8,26,22,8
-    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | 
-                    WS_VSCROLL | WS_TABSTOP
-    CONTROL         "",IDC_PARMATRIX_NAME,"CustEdit",WS_GROUP | WS_TABSTOP,8,
-                    53,90,12
+    COMBOBOX        IDC_PAROBJ_GROUP,34,24,66,84,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_PARMATRIX_NAME,"CustEdit",WS_GROUP | WS_TABSTOP,8,53,90,12
     GROUPBOX        "Name:",IDC_STATIC,4,43,101,27
     GROUPBOX        "Id:",IDC_STATIC,4,71,101,27
-    CONTROL         "",IDC_PARMATRIX_ID_EDIT,"CustEdit",WS_TABSTOP,8,80,82,
-                    12
-    CONTROL         "",IDC_PARMATRIX_ID_SPINNER,"SpinnerControl",0x0,91,80,6,
-                    12
+    CONTROL         "",IDC_PARMATRIX_ID_EDIT,"CustEdit",WS_TABSTOP,8,80,82,12
+    CONTROL         "",IDC_PARMATRIX_ID_SPINNER,"SpinnerControl",0x0,91,80,6,12
 END
 
 
@@ -216,7 +175,7 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PARGROUP_NAME       "Name"
     IDS_PARGROUP_PAR        "Parameters"
@@ -225,7 +184,7 @@ BEGIN
     IDS_PARGROUP_FILETYPE   "VO(*.vo)|*.vo"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PARGROUP_FILENAME   "vo"
     IDS_PARGROUP_TEXTUREDEFAULT "TextureDefault"
@@ -242,18 +201,16 @@ BEGIN
     IDS_PARMATRIX_ID        "Id"
 END
 
-#endif    // Russian resources
+#endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -261,7 +218,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -269,6 +226,14 @@ BEGIN
         RIGHTMARGIN, 165
         TOPMARGIN, 7
         BOTTOMMARGIN, 69
+    END
+
+    IDD_EGEXPORT_DLG, DIALOG
+    BEGIN
+    END
+
+    IDD_EGEXPORT_DLG2, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -285,8 +250,7 @@ CAPTION "About ASCII Export"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,60,55,50,14
-    RTEXT           "EG Exporter\nVersion 1.0\n\nCopyright (c) 2003 Elemental Games",
-                    IDC_STATIC,10,13,151,36
+    RTEXT           "EG Exporter\nVersion 1.0\n\nCopyright (c) 2003 Elemental Games",IDC_STATIC,10,13,151,36
     GROUPBOX        "",IDC_STATIC,7,7,158,44
 END
 
@@ -297,14 +261,9 @@ FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "Close",IDOK,280,234,50,14
     PUSHBUTTON      "Build",IDBUILD,209,234,50,14
-    CONTROL         "",IDC_CFG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | 
-                    ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | 
-                    WS_HSCROLL | WS_TABSTOP,7,24,326,90
-    COMBOBOX        IDC_SELECTCFG,7,8,327,188,CBS_DROPDOWN | WS_VSCROLL | 
-                    WS_TABSTOP
-    CONTROL         "",IDC_LOG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | 
-                    ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_BORDER | 
-                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,8,115,326,115
+    CONTROL         "",IDC_CFG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,24,326,90
+    COMBOBOX        IDC_SELECTCFG,7,8,327,188,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_LOG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,8,115,326,115
     PUSHBUTTON      "Help",IDC_BUTTON_HELP,15,234,50,14
 END
 
@@ -313,9 +272,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "EG Export"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         "",IDC_LOG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | 
-                    ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_BORDER | 
-                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,8,7,326,235
+    CONTROL         "",IDC_LOG,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,8,7,326,235
 END
 
 
@@ -332,7 +289,9 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""afxres.h""\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "\0"
 END
 
@@ -340,13 +299,24 @@ END
 BEGIN
     "\r\n"
     "#include ""veroverrides.hpp""\r\n"
-    "#include ""C:\\3dsmax5\\maxsdk\\include\\MAXVERSION.R""\r\n"
+    "#include ""C:\\Program Files (x86)\\Autodesk\\3ds Max 2012\\maxsdk\\include\\MAXVERSION.R""\r\n"
     "\0"
 END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (U.S.) resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_EGEXPORT_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -358,7 +328,7 @@ END
 //
 
 #include "veroverrides.hpp"
-#include "MAXVERSION.R"
+#include "C:\Program Files (x86)\Autodesk\3ds Max 2012\maxsdk\include\MAXVERSION.R"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

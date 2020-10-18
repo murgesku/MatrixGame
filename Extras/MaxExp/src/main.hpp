@@ -413,11 +413,11 @@ extern void ExportGroupGetRename(Base::CWStr & value,INode *node=NULL);
 extern int ExportGroupCount(INode *node=NULL);
 extern bool ExportGroupGetName(Base::CWStr & tstr,int no,int & nocur,INode *node=NULL);
 extern bool ExportGroupGetProp(int no,int & nocur,INode *node,
-                               Base::CWStr & name,int & export,Base::CWStr & file,bool & textureDefault,int & edgetype,double & edgefactor,Base::CWStr & anim);
+                               Base::CWStr & name,int & exp,Base::CWStr & file,bool & textureDefault,int & edgetype,double & edgefactor,Base::CWStr & anim);
 extern bool ExportCenterGetProp(const Base::CWStr & group,TimeValue timev,INode *node,
                                 double & maxsizex,double & maxsizey,double & maxsizez,float & scalex,float & scaley,float & scalez,Matrix3 & center);
 extern bool ExportObjGetProp(INode *node,
-                             Base::CWStr & group, int & export);
+                             Base::CWStr & group, int & exp);
 extern bool ExportMatrixGetProp(INode *node, const Base::CWStr & group,
                                 int & id, Base::CWStr & name);
 

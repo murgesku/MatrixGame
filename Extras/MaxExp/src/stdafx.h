@@ -4,8 +4,8 @@
 
 #include <windows.h>
 #include <Richedit.h>
-#include "..\..\..\Lib\Base\Src\stdafx.h"
-#include "..\..\..\Lib\Base\Src\base.hpp"
+#include "..\..\..\MatrixLib\Base\src\stdafx.h"
+#include "..\..\..\MatrixLib\Base\include\Base.hpp"
 
 #include "Max.h"
 #include "resource.hpp"
