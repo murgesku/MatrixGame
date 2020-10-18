@@ -26,7 +26,7 @@ class CForm : public CMain {
 		CForm * m_FormNext;
 
 	protected:
-		CWStr m_Name;		// Нужно всегда задавать имя для дочерних классов
+		CWStr m_Name;		// РќСѓР¶РЅРѕ РІСЃРµРіРґР° Р·Р°РґР°РІР°С‚СЊ РёРјСЏ РґР»СЏ РґРѕС‡РµСЂРЅРёС… РєР»Р°СЃСЃРѕРІ
 
 	public:
 

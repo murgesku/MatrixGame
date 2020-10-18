@@ -159,9 +159,9 @@ enum ESpotType
     SPOT_POINTLIGHT = 4,
     SPOT_VORONKA = 5,
     SPOT_TURRET = 6,
-    SPOT_SOLE_TRACK = 7,  // следы гусениц
-    SPOT_SOLE_WHEEL = 8,  // следы колес
-    SPOT_SOLE_PNEUMATIC = 9,  // следы ног
+    SPOT_SOLE_TRACK = 7,  // СЃР»РµРґС‹ РіСѓСЃРµРЅРёС†
+    SPOT_SOLE_WHEEL = 8,  // СЃР»РµРґС‹ РєРѕР»РµСЃ
+    SPOT_SOLE_PNEUMATIC = 9,  // СЃР»РµРґС‹ РЅРѕРі
 
     SPOT_TYPES_CNT,
     ESpotType_FORCE_DWORD = 0x7FFFFFFF
@@ -252,8 +252,8 @@ enum EEffectType
 #define WEAPFLAGS_FIRE      SETBIT(1)
 #define WEAPFLAGS_FIREWAS   SETBIT(2)
 #define WEAPFLAGS_HITWAS    SETBIT(3)   // only for instant weapons (LASER, VOLCANO, LIGHTENING)
-#define WEAPFLAGS_SND_OFF   SETBIT(4)   // выключать при FireEnd (использовать на зацикленных звуках (Laser, lightening))
-#define WEAPFLAGS_SND_SKIP  SETBIT(5)   // если звук уже звучит, пропускать (volcano)
+#define WEAPFLAGS_SND_OFF   SETBIT(4)   // РІС‹РєР»СЋС‡Р°С‚СЊ РїСЂРё FireEnd (РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅР° Р·Р°С†РёРєР»РµРЅРЅС‹С… Р·РІСѓРєР°С… (Laser, lightening))
+#define WEAPFLAGS_SND_SKIP  SETBIT(5)   // РµСЃР»Рё Р·РІСѓРє СѓР¶Рµ Р·РІСѓС‡РёС‚, РїСЂРѕРїСѓСЃРєР°С‚СЊ (volcano)
 
 // only repair flags
 #define ERF_LOST_TARGET     SETBIT(1)

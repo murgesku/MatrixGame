@@ -15,10 +15,10 @@ extern bool g_TestLocal;
 #define MAX_UNIT_ON_PATH   64
 
 struct SMatrixPathUnit {
-    float sx,sy;    // Начало (мировые координаты но кратные GLOBAL_SCALE_MOVE)
-    float ex,ey;    // Конец (мировые координаты но кратные GLOBAL_SCALE_MOVE)
-    float vx,vy;    // Направление (нормализированно)
-    float length;   // Длина
+    float sx,sy;    // РќР°С‡Р°Р»Рѕ (РјРёСЂРѕРІС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅРѕ РєСЂР°С‚РЅС‹Рµ GLOBAL_SCALE_MOVE)
+    float ex,ey;    // РљРѕРЅРµС† (РјРёСЂРѕРІС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅРѕ РєСЂР°С‚РЅС‹Рµ GLOBAL_SCALE_MOVE)
+    float vx,vy;    // РќР°РїСЂР°РІР»РµРЅРёРµ (РЅРѕСЂРјР°Р»РёР·РёСЂРѕРІР°РЅРЅРѕ)
+    float length;   // Р”Р»РёРЅР°
 };
 
 struct SMatrixPath;
@@ -29,9 +29,9 @@ struct SMatrixPathObj {
 
     SMatrixPath * m_Path;
 
-    float cx,cy;    // Где объект сейчас находится
-    float tx,ty;    // Где объект будит находится
-    float radius;   // Радиус объекта идущего по пути
+    float cx,cy;    // Р“РґРµ РѕР±СЉРµРєС‚ СЃРµР№С‡Р°СЃ РЅР°С…РѕРґРёС‚СЃСЏ
+    float tx,ty;    // Р“РґРµ РѕР±СЉРµРєС‚ Р±СѓРґРёС‚ РЅР°С…РѕРґРёС‚СЃСЏ
+    float radius;   // Р Р°РґРёСѓСЃ РѕР±СЉРµРєС‚Р° РёРґСѓС‰РµРіРѕ РїРѕ РїСѓС‚Рё
     int nsh;
     int size;
 
@@ -46,7 +46,7 @@ struct SMatrixPath  {
 
     SMatrixPathObj * m_Owner;
 
-    float m_StartX,m_StartY;    // Boundbox для пути
+    float m_StartX,m_StartY;    // Boundbox РґР»СЏ РїСѓС‚Рё
     float m_EndX,m_EndY;
 };
 
@@ -120,15 +120,15 @@ class CMatrixMapLogic : public CMatrixMap {
 
         void SetWeightFromTo(int size,int x1,int y1,int x2,int y2);
         int FindLocalPath(int nsh,int size,
-                            int mx,int my, // Начальная точка
-                            int * zonepath,int zonepathcnt, // Список зон через которые нужной найти путь
-                            int dx,int dy, // Точка назначения
-                            CPoint * path, // Рассчитанный путь
-                            int other_cnt, // Кол-во путей от других роботов
-                            int * other_size,           // Список размеров в других путях
-                            CPoint * * other_path_list, // Список указателей на другие пути
-                            int * other_path_cnt,       // Список кол-во элементов в других путях
-                            CPoint * other_des,          // Список конечных точек в других путях
+                            int mx,int my, // РќР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР°
+                            int * zonepath,int zonepathcnt, // РЎРїРёСЃРѕРє Р·РѕРЅ С‡РµСЂРµР· РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕР№ РЅР°Р№С‚Рё РїСѓС‚СЊ
+                            int dx,int dy, // РўРѕС‡РєР° РЅР°Р·РЅР°С‡РµРЅРёСЏ
+                            CPoint * path, // Р Р°СЃСЃС‡РёС‚Р°РЅРЅС‹Р№ РїСѓС‚СЊ
+                            int other_cnt, // РљРѕР»-РІРѕ РїСѓС‚РµР№ РѕС‚ РґСЂСѓРіРёС… СЂРѕР±РѕС‚РѕРІ
+                            int * other_size,           // РЎРїРёСЃРѕРє СЂР°Р·РјРµСЂРѕРІ РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
+                            CPoint * * other_path_list, // РЎРїРёСЃРѕРє СѓРєР°Р·Р°С‚РµР»РµР№ РЅР° РґСЂСѓРіРёРµ РїСѓС‚Рё
+                            int * other_path_cnt,       // РЎРїРёСЃРѕРє РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
+                            CPoint * other_des,          // РЎРїРёСЃРѕРє РєРѕРЅРµС‡РЅС‹С… С‚РѕС‡РµРє РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
                             bool test);
 
         void SetZoneAccess(int * list,int cnt,bool value);

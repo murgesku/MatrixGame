@@ -44,7 +44,7 @@ struct SMOProps
     float               distance;   // temporary. use it for your own purpose. initialy it is and distance between start and end pos
     FIRE_END_HANDLER    endhandler;
     DWORD               uservalue;
-    //SObjectCore        *attacker;  // attacker    // ха, вроде не нужно :)
+    //SObjectCore        *attacker;  // attacker    // С…Р°, РІСЂРѕРґРµ РЅРµ РЅСѓР¶РЅРѕ :)
     int                 side;      // side of attacker (if it dead)
     union
     {

@@ -26,7 +26,7 @@
 //char *sss4 = MAKESTR(ZEXTERN)
 //char *sss5 = MAKESTR(OF)
 
-// @rdesc - размер сжатых данных  0 - ошибка
+// @rdesc - СЂР°Р·РјРµСЂ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С…  0 - РѕС€РёР±РєР°
 //static int OKGF_ZLib_Compress(BYTE * desbuf,BYTE * soubuf,int len_sou_and_des_buf,int fSpeed)
 //{
 //
@@ -41,9 +41,9 @@
 //    return deslen+8;
 //}
 
-// if desbuf==NULL then return размер выходного буфера
-// return размер выходного буфера
-// return 0 если ошибка
+// if desbuf==NULL then return СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ Р±СѓС„РµСЂР°
+// return СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ Р±СѓС„РµСЂР°
+// return 0 РµСЃР»Рё РѕС€РёР±РєР°
 static int OKGF_ZLib_UnCompress(BYTE * desbuf,int lendesbuf,BYTE * soubuf,int lensoubuf)
 {
     DWORD deslen=lendesbuf;
@@ -72,9 +72,9 @@ static int OKGF_ZLib_UnCompress(BYTE * desbuf,int lendesbuf,BYTE * soubuf,int le
 //    return deslen+8;
 //}
 
-// if desbuf==NULL then return размер выходного буфера
-// return размер выходного буфера
-// return 0 если ошибка
+// if desbuf==NULL then return СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ Р±СѓС„РµСЂР°
+// return СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ Р±СѓС„РµСЂР°
+// return 0 РµСЃР»Рё РѕС€РёР±РєР°
 int OKGF_ZLib_UnCompress2(BYTE * desbuf,int len_des_buf,BYTE * soubuf,int len_sou_buf)
 {
     DWORD deslen=len_des_buf;
@@ -106,7 +106,7 @@ namespace Base {
 
 
 //**********************************************************************
-//***************** КЛАСС - КАТАЛОГ ************************************
+//***************** РљР›РђРЎРЎ - РљРђРўРђР›РћР“ ************************************
 //**********************************************************************
 
 CHsFolder::CHsFolder(const CStr &Name, CHeap *heap):m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap)
@@ -167,10 +167,10 @@ SFileRec  *  CHsFolder::GetFreeRec(void) const
 //    m_FolderRec.m_Recnum:=0;
 //    m_FolderRec.m_RecSize:=sizeof(TFileRecEC);
 //    m_FolderRec.m_Size:=sizeof(TFolderRecEC)+m_FolderRec.m_RecSize*m_FolderRec.m_Recnum;
-//    // Теперь необходимо прочитать данные, связанные с хранимыми файлами в данной папке
+//    // РўРµРїРµСЂСЊ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕС‡РёС‚Р°С‚СЊ РґР°РЅРЅС‹Рµ, СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ С…СЂР°РЅРёРјС‹РјРё С„Р°Р№Р»Р°РјРё РІ РґР°РЅРЅРѕР№ РїР°РїРєРµ
 //    m_Files:=nil;
 //    m_ToSave:=true;
-//    // А теперь необходимо обновить информацию в родительской папке о размере и положении
+//    // Рђ С‚РµРїРµСЂСЊ РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІРёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕР№ РїР°РїРєРµ Рѕ СЂР°Р·РјРµСЂРµ Рё РїРѕР»РѕР¶РµРЅРёРё
 //    UpdateFileRec;
 //end;
 
@@ -180,13 +180,13 @@ bool   CHsFolder::ReadFolder(DWORD Handle, DWORD Offset)
 
     if (m_Files) return false;
 
-    // Читаем заголовок папки
+    // Р§РёС‚Р°РµРј Р·Р°РіРѕР»РѕРІРѕРє РїР°РїРєРё
     SetFilePointer((HANDLE)Handle,Offset,NULL,FILE_BEGIN);
     BOOL res = ::ReadFile((HANDLE)Handle,&m_FolderRec,sizeof(SFolderRec),&temp,NULL);
     if (res == FALSE || temp != sizeof(SFolderRec)) return false;
     if (sizeof(SFileRec) != m_FolderRec.m_RecSize) return false;
 
-    // Теперь необходимо прочитать данные, связанные с хранимыми файлами в данной папке
+    // РўРµРїРµСЂСЊ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕС‡РёС‚Р°С‚СЊ РґР°РЅРЅС‹Рµ, СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ С…СЂР°РЅРёРјС‹РјРё С„Р°Р№Р»Р°РјРё РІ РґР°РЅРЅРѕР№ РїР°РїРєРµ
     int sz = m_FolderRec.m_Recnum*m_FolderRec.m_RecSize;
     m_Files = (SFileRec *)HAllocClear(sz, m_Heap);
 
@@ -206,8 +206,8 @@ bool   CHsFolder::ReadFolder(DWORD Handle, DWORD Offset)
         m_Files[i].m_NType = m_Files[i].m_Type;
     }
 
-    // Вся информация о файлах в текущей директории прочитана
-    // Теперь читаем информацию о вложенных папках
+    // Р’СЃСЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„Р°Р№Р»Р°С… РІ С‚РµРєСѓС‰РµР№ РґРёСЂРµРєС‚РѕСЂРёРё РїСЂРѕС‡РёС‚Р°РЅР°
+    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІР»РѕР¶РµРЅРЅС‹С… РїР°РїРєР°С…
     for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
     {
         if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0)
@@ -281,7 +281,7 @@ bool    CHsFolder::FileExists(const CStr &name) const
 //        exit;
 //    end;
 //    if remainder<>'' then exit;
-//    { Установка нового типа файла }
+//    { РЈСЃС‚Р°РЅРѕРІРєР° РЅРѕРІРѕРіРѕ С‚РёРїР° С„Р°Р№Р»Р° }
 //    if NType=FILEEC_COMPRESSED then
 //    begin
 //        PFile.m_NType:=PFile.m_Type;
@@ -400,7 +400,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //        PFile.m_Free:=1;
 //    end;
 //    m_FolderRec.m_Size:=sizeof(TFolderRecEC)+m_FolderRec.m_RecSize*m_FolderRec.m_Recnum;
-//    // Теперь обновляем информацию о файле директории в родительской папке
+//    // РўРµРїРµСЂСЊ РѕР±РЅРѕРІР»СЏРµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„Р°Р№Р»Рµ РґРёСЂРµРєС‚РѕСЂРёРё РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕР№ РїР°РїРєРµ
 //    m_ToSave:=true;
 //    m_ToUpdate:=false;
 //    UpdateFileRec;
@@ -408,7 +408,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //end;
 
 //////////////////////////////////////////////////////////////////////////
-/////////////////  Функция добавления новой директории  //////////////////
+/////////////////  Р¤СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»РµРЅРёСЏ РЅРѕРІРѕР№ РґРёСЂРµРєС‚РѕСЂРёРё  //////////////////
 //////////////////////////////////////////////////////////////////////////
 
 //Function    CHsFolder.CreateFolder(name:string):boolean;
@@ -422,7 +422,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    remainder:=GetRemainderStr(name,'/\');
 //    beginning:=GetBeginningStr(name,'/\');
 //    PFile:=GetFileRec(beginning);
-//    // Если директории с таким именем не существует, создаем новую
+//    // Р•СЃР»Рё РґРёСЂРµРєС‚РѕСЂРёРё СЃ С‚Р°РєРёРј РёРјРµРЅРµРј РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, СЃРѕР·РґР°РµРј РЅРѕРІСѓСЋ
 //    if PFile=nil then
 //    begin
 //        if length(beginning)>=MAX_FILENAME_LENGTH then
@@ -452,12 +452,12 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //        Result:=PFolder.CreateFolder(remainder);
 //        exit;
 //    end;
-//    // Файл или директория с таким именем уже существует
+//    // Р¤Р°Р№Р» РёР»Рё РґРёСЂРµРєС‚РѕСЂРёСЏ СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
 //    if PFile.m_Type<>FILEEC_FOLDER then exit;
 //    Result:=true;
 //    if remainder='' then exit;
 //    PFolder:=CHsFolder(PFile.m_Extra);
-//    if PFolder=nil then raise Exception.Create('Логическая директория физически не существует :'+beginning);
+//    if PFolder=nil then raise Exception.Create('Р›РѕРіРёС‡РµСЃРєР°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ С„РёР·РёС‡РµСЃРєРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ :'+beginning);
 //    Result:=PFolder.CreateFolder(remainder);
 //end;
 
@@ -477,7 +477,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    remainder:=GetRemainderStr(name,'/\');
 //    beginning:=GetBeginningStr(name,'/\');
 //    PFile:=GetFileRec(beginning);
-//    // Если часть пути к файлу не существует - создаем новую
+//    // Р•СЃР»Рё С‡Р°СЃС‚СЊ РїСѓС‚Рё Рє С„Р°Р№Р»Сѓ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - СЃРѕР·РґР°РµРј РЅРѕРІСѓСЋ
 //    if PFile=nil then
 //    begin
 //        if length(beginning)>=MAX_FILENAME_LENGTH then
@@ -489,7 +489,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //            ReAllocFileRecs(m_FolderRec.m_Recnum+10);
 //            PFile:=GetFreeRec;
 //        end;
-//        // Проверяем на необходимость создания записи для файла
+//        // РџСЂРѕРІРµСЂСЏРµРј РЅР° РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ СЃРѕР·РґР°РЅРёСЏ Р·Р°РїРёСЃРё РґР»СЏ С„Р°Р№Р»Р°
 //        if remainder='' then
 //        begin
 //            strcopy(PFile.m_Name,PChar(UpperCase(beginning)));
@@ -503,7 +503,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //            PFile.m_Size:=size+4;
 //            PFile.m_RealSize:=size;
 //            m_ToUpdate:=true;
-//            // Обновление директории
+//            // РћР±РЅРѕРІР»РµРЅРёРµ РґРёСЂРµРєС‚РѕСЂРёРё
 //            UpdateFileRec;
 //            Result:=true;
 //            exit;
@@ -525,7 +525,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //        Result:=PFolder.AddFileEx(remainder,date,size,ftype);
 //        exit;
 //    end;
-//    // Файл или директория с таким именем уже существует
+//    // Р¤Р°Р№Р» РёР»Рё РґРёСЂРµРєС‚РѕСЂРёСЏ СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
 //    if remainder='' then
 //    begin
 //        PFile.m_Offset:=0;
@@ -536,7 +536,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    end;
 //    if PFile.m_Type<>FILEEC_FOLDER then exit;
 //    PFolder:=CHsFolder(PFile.m_Extra);
-//    if PFolder=nil then raise Exception.Create('Логическая директория физически не существует :'+beginning);
+//    if PFolder=nil then raise Exception.Create('Р›РѕРіРёС‡РµСЃРєР°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ С„РёР·РёС‡РµСЃРєРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ :'+beginning);
 //    Result:=PFolder.AddFileEx(remainder,date,size,ftype);
 //end;
 //
@@ -590,15 +590,15 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    Err:=FindFirst(name+'*.*',faAnyFile,S);
 //    while Err=0 do
 //    begin
-//        //**************** Директория ******************
+//        //**************** Р”РёСЂРµРєС‚РѕСЂРёСЏ ******************
 //        if (S.Name<>'.') and (S.Name<>'..') then
 //        begin
 //            if ((S.Attr and faDirectory)=faDirectory) then
 //            begin
-//                if not AddPath(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления пути в пакетный файл: '+name+S.Name);
+//                if not AddPath(name+S.Name,ftype) then raise Exception.Create('РћС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ РїСѓС‚Рё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»: '+name+S.Name);
 //            end else
 //            begin
-//                if not AddFile(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления файла в пакетный файл: '+name+S.Name);
+//                if not AddFile(name+S.Name,ftype) then raise Exception.Create('РћС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ С„Р°Р№Р»Р° РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»: '+name+S.Name);
 //            end;
 //        end;
 //        Err:=FindNext(S);
@@ -613,7 +613,7 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    date:DWORD;
 //    size:DWORD;
 //begin
-//    // Проверяем размер файла и т.д.
+//    // РџСЂРѕРІРµСЂСЏРµРј СЂР°Р·РјРµСЂ С„Р°Р№Р»Р° Рё С‚.Рґ.
 //    Result:=false;
 //    date:=0;
 //    Handle:=CreateFile(PChar(name),
@@ -650,9 +650,9 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
     if (PFile == NULL) return 0xFFFFFFFF;
 
     //DWORD size,temp;
-    //BYTE *soubuf,compbuf; // Иходный буфер и буфер для сжатых данных
-    //DWORD compsize;  // Размер сжатого блока данных <65536
-    //DWORD totalsize; // Общий размер сжатых данных + длина (4 байта)
+    //BYTE *soubuf,compbuf; // РС…РѕРґРЅС‹Р№ Р±СѓС„РµСЂ Рё Р±СѓС„РµСЂ РґР»СЏ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С…
+    //DWORD compsize;  // Р Р°Р·РјРµСЂ СЃР¶Р°С‚РѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… <65536
+    //DWORD totalsize; // РћР±С‰РёР№ СЂР°Р·РјРµСЂ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С… + РґР»РёРЅР° (4 Р±Р°Р№С‚Р°)
 
     if (PFile->m_Type == FILEEC_FOLDER)
     {
@@ -662,8 +662,8 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
     }
     if (!rem.IsEmpty()) return 0xFFFFFFFF;
 
-    // Нашли файл - теперь необходимо вычислить размер этого файла
-    // Случай 1 - файл уже упакован и сжат, а его свойства не были изменены внутри пакета
+    // РќР°С€Р»Рё С„Р°Р№Р» - С‚РµРїРµСЂСЊ РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹С‡РёСЃР»РёС‚СЊ СЂР°Р·РјРµСЂ СЌС‚РѕРіРѕ С„Р°Р№Р»Р°
+    // РЎР»СѓС‡Р°Р№ 1 - С„Р°Р№Р» СѓР¶Рµ СѓРїР°РєРѕРІР°РЅ Рё СЃР¶Р°С‚, Р° РµРіРѕ СЃРІРѕР№СЃС‚РІР° РЅРµ Р±С‹Р»Рё РёР·РјРµРЅРµРЅС‹ РІРЅСѓС‚СЂРё РїР°РєРµС‚Р°
     if (PFile->m_Offset != 0 && PFile->m_Type == FILEEC_COMPRESSED)
     {
         return PFile->m_Size-4;
@@ -671,10 +671,10 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
 
     ERROR_S(L"Error getting compressed file size");
 
-    //// В любом из двух следующих случаев файл следует пережать в памяти
+    //// Р’ Р»СЋР±РѕРј РёР· РґРІСѓС… СЃР»РµРґСѓСЋС‰РёС… СЃР»СѓС‡Р°РµРІ С„Р°Р№Р» СЃР»РµРґСѓРµС‚ РїРµСЂРµР¶Р°С‚СЊ РІ РїР°РјСЏС‚Рё
     //if (PFile->m_Offset == 0)
     //{
-    //    // Случай 2 - файл еще не был упакован в пакет, а потому лежит на диске
+    //    // РЎР»СѓС‡Р°Р№ 2 - С„Р°Р№Р» РµС‰Рµ РЅРµ Р±С‹Р» СѓРїР°РєРѕРІР°РЅ РІ РїР°РєРµС‚, Р° РїРѕС‚РѕРјСѓ Р»РµР¶РёС‚ РЅР° РґРёСЃРєРµ
     //    Handle:=CreateFile(PChar(GetFullPath(filename)),
     //                      GENERIC_READ,
     //                      FILE_SHARE_READ,nil,
@@ -688,13 +688,13 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
     //    if temp=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
     //end else
     //begin
-    //    // Случай 3 - файл уже упакован, но его свойства были изменены
+    //    // РЎР»СѓС‡Р°Р№ 3 - С„Р°Р№Р» СѓР¶Рµ СѓРїР°РєРѕРІР°РЅ, РЅРѕ РµРіРѕ СЃРІРѕР№СЃС‚РІР° Р±С‹Р»Рё РёР·РјРµРЅРµРЅС‹
     //    temp:=SetFilePointer(Handle,PFile.m_Offset,nil,FILE_BEGIN);
     //    if temp=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
     //    if not Windows.ReadFile(Handle,size,4,temp,nil) then
     //        raise Exception.Create('Calc size error :'+GetFullPath(filename));
     //end;
-    //// Сжимаем файл
+    //// РЎР¶РёРјР°РµРј С„Р°Р№Р»
     //soubuf:=AllocMem(65536);
     //compbuf:=AllocMem(72112);
 
@@ -745,8 +745,8 @@ DWORD   CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename)
     }
     if (!rem.IsEmpty()) return 0xFFFFFFFF;
 
-    // Нашли файл - теперь необходимо вычислить размер этого файла
-    // Случай 1 - файл уже упакован
+    // РќР°С€Р»Рё С„Р°Р№Р» - С‚РµРїРµСЂСЊ РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹С‡РёСЃР»РёС‚СЊ СЂР°Р·РјРµСЂ СЌС‚РѕРіРѕ С„Р°Р№Р»Р°
+    // РЎР»СѓС‡Р°Р№ 1 - С„Р°Р№Р» СѓР¶Рµ СѓРїР°РєРѕРІР°РЅ
 
     if (PFile->m_Offset!=0)
     {
@@ -755,7 +755,7 @@ DWORD   CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename)
 
     ERROR_S(L"Error getting decompressed file size");
 
-//    // Случай 2 - файл еще не упакован - ищем его на диске
+//    // РЎР»СѓС‡Р°Р№ 2 - С„Р°Р№Р» РµС‰Рµ РЅРµ СѓРїР°РєРѕРІР°РЅ - РёС‰РµРј РµРіРѕ РЅР° РґРёСЃРєРµ
 //    Handle:=CreateFile(PChar(GetFullPath(filename)),
 //                      GENERIC_READ,
 //                      FILE_SHARE_READ,nil,
@@ -795,7 +795,7 @@ void  CHsFolder::UpdateFileRec(void)
     }
 }
 
-//******** Функция возвращает новое смещение в файле **************//
+//******** Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРІРѕРµ СЃРјРµС‰РµРЅРёРµ РІ С„Р°Р№Р»Рµ **************//
 //Function    CHsFolder.PackFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
 //Var
 //    H:DWORD;
@@ -812,10 +812,10 @@ void  CHsFolder::UpdateFileRec(void)
 //                  0);
 //    if H=INVALID_HANDLE_VALUE then exit;
 //    size:=SetFilePointer(H,0,nil,FILE_END);
-//    if size=$FFFFFFFF then raise Exception.Create('Ошибка упаковки файла :'+name);
+//    if size=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+name);
 //    SetFilePointer(H,0,nil,FILE_BEGIN);
 //    temp:=SetFilePointer(Handle,Offset,nil,FILE_BEGIN);
-//    if temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки файла :'+name);
+//    if temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+name);
 //    temp:=0;
 //    WriteFile(Handle,size,4,temp,nil);
 //    buf:=AllocMem(65536);
@@ -836,11 +836,11 @@ void  CHsFolder::UpdateFileRec(void)
 //Function    CHsFolder.PackAndCompressFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
 //Var
 //    H:DWORD;
-//    size:DWORD;      // Размер сжимаемого блока данных
+//    size:DWORD;      // Р Р°Р·РјРµСЂ СЃР¶РёРјР°РµРјРѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С…
 //    temp:DWORD;
-//    soubuf,compbuf:Pointer; // Иходный буфер и буфер для сжатых данных
-//    compsize:DWORD;  // Размер сжатого блока данных <65536
-//    totalsize:DWORD; // Общий размер сжатых данных + длина (4 байта)
+//    soubuf,compbuf:Pointer; // РС…РѕРґРЅС‹Р№ Р±СѓС„РµСЂ Рё Р±СѓС„РµСЂ РґР»СЏ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С…
+//    compsize:DWORD;  // Р Р°Р·РјРµСЂ СЃР¶Р°С‚РѕРіРѕ Р±Р»РѕРєР° РґР°РЅРЅС‹С… <65536
+//    totalsize:DWORD; // РћР±С‰РёР№ СЂР°Р·РјРµСЂ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С… + РґР»РёРЅР° (4 Р±Р°Р№С‚Р°)
 //begin
 //    {$ifdef SUPPORT_COMPRESSION_OFF}
 //    raise Exception.Create('Compression is not supported');
@@ -854,52 +854,52 @@ void  CHsFolder::UpdateFileRec(void)
 //                  0);
 //    if H=INVALID_HANDLE_VALUE then exit;
 //    size:=SetFilePointer(H,0,nil,FILE_END);
-//    if size=$FFFFFFFF then raise Exception.Create('Ошибка упаковки файла :'+name);
+//    if size=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+name);
 //    SetFilePointer(H,0,nil,FILE_BEGIN);
 //    temp:=SetFilePointer(Handle,Offset,nil,FILE_BEGIN);
-//    if temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки файла :'+name);
+//    if temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+name);
 //
-//    //************* Новый алгоритм сжатия файла ***************//
+//    //************* РќРѕРІС‹Р№ Р°Р»РіРѕСЂРёС‚Рј СЃР¶Р°С‚РёСЏ С„Р°Р№Р»Р° ***************//
 //    soubuf:=AllocMem(65536);
 //    compbuf:=AllocMem(72112);
 //
 //    totalsize:=4;
-//    if not WriteFile(Handle, totalsize, 4, temp, nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
+//    if not WriteFile(Handle, totalsize, 4, temp, nil) then raise Exception.Create('РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С„Р°Р№Р»Р°:'+name);
 //
 //    while size>65536 do
 //    begin
-//        if not ReadFile(H,soubuf^,65536,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия файла:'+name);
+//        if not ReadFile(H,soubuf^,65536,temp,nil) then raise Exception.Create('РћС€РёР±РєР° С‡С‚РµРЅРёСЏ РґР°РЅРЅС‹С… РґР»СЏ СЃР¶Р°С‚РёСЏ С„Р°Р№Р»Р°:'+name);
 //        {$ifndef SUPPORT_COMPRESSION_OFF}
 //        compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,65536);
 //        {$else}
 //        {$endif}
-//        if (compsize=0) then raise Exception.Create('Ошибка сжатия файла:'+name);
+//        if (compsize=0) then raise Exception.Create('РћС€РёР±РєР° СЃР¶Р°С‚РёСЏ С„Р°Р№Р»Р°:'+name);
 //        temp:=0;
 //        totalsize:=totalsize+compsize+4;
-//        if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
-//        if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
+//        if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С„Р°Р№Р»Р°:'+name);
+//        if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С„Р°Р№Р»Р°:'+name);
 //        size:=size-65536;
 //    end;
-//    if not ReadFile(H,soubuf^,size,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия файла:'+name);
+//    if not ReadFile(H,soubuf^,size,temp,nil) then raise Exception.Create('РћС€РёР±РєР° С‡С‚РµРЅРёСЏ РґР°РЅРЅС‹С… РґР»СЏ СЃР¶Р°С‚РёСЏ С„Р°Р№Р»Р°:'+name);
 //    {$ifndef SUPPORT_COMPRESSION_OFF}
 //    compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,size);
 //    {$else}
 //    {$endif}
-//    if (compsize=0) then raise Exception.Create('Ошибка сжатия файла:'+name);
+//    if (compsize=0) then raise Exception.Create('РћС€РёР±РєР° СЃР¶Р°С‚РёСЏ С„Р°Р№Р»Р°:'+name);
 //    temp:=0;
 //    totalsize:=totalsize+compsize+4;
-//    if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
-//    if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
+//    if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С„Р°Р№Р»Р°:'+name);
+//    if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('РћС€РёР±РєР° Р·Р°РїРёСЃРё РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С„Р°Р№Р»Р°:'+name);
 ////    size:=0;
 //
-//    if SetFilePointer(Handle,Offset,nil,FILE_BEGIN)<>Offset then raise Exception.Create('Ошибка позиционирования в пакетном файле');
+//    if SetFilePointer(Handle,Offset,nil,FILE_BEGIN)<>Offset then raise Exception.Create('РћС€РёР±РєР° РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёСЏ РІ РїР°РєРµС‚РЅРѕРј С„Р°Р№Р»Рµ');
 //    WriteFile(Handle,totalsize,4,temp,nil);
 //    Result:=Offset+totalsize;
 //    FreeMem(soubuf);
 //    FreeMem(compbuf);
 //    CloseHandle(H);
 //
-//    // Сжатие файла
+//    // РЎР¶Р°С‚РёРµ С„Р°Р№Р»Р°
 //end;
 //
 //Function    CHsFolder.DecodeFile(Handle:DWORD;PFile:PFileRecEC;Offset:DWORD):DWORD;
@@ -917,18 +917,18 @@ void  CHsFolder::UpdateFileRec(void)
 //    ucompbuf:=AllocMem(65536);
 //    soupos:=PFile.m_Offset;
 //    despos:=Offset;
-//    { Чтение размера сжатого файла }
+//    { Р§С‚РµРЅРёРµ СЂР°Р·РјРµСЂР° СЃР¶Р°С‚РѕРіРѕ С„Р°Р№Р»Р° }
 //    temp:=SetFilePointer(Handle,soupos,nil,FILE_BEGIN);
 //    if temp=$FFFFFFFF then raise Exception.Create('Decode file error :'+PFile.m_RealName);
 //    if not ReadFile(Handle,size,4,temp,nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
 //    soupos:=soupos+4;
-//    { Запись размера файла }
+//    { Р—Р°РїРёСЃСЊ СЂР°Р·РјРµСЂР° С„Р°Р№Р»Р° }
 //    temp:=SetFilePointer(Handle,despos,nil,FILE_BEGIN);
 //    if temp=$FFFFFFFF then raise Exception.Create('Decode file error :'+PFile.m_RealName);
 //    if not WriteFile(Handle,PFile.m_RealSize,4,temp,nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
 //    despos:=despos+4;
 //    size:=size-4;
-//    { расжатие файла }
+//    { СЂР°СЃР¶Р°С‚РёРµ С„Р°Р№Р»Р° }
 //    while size>0 do
 //    begin
 //        temp:=SetFilePointer(Handle,soupos,nil,FILE_BEGIN);
@@ -1019,7 +1019,7 @@ void  CHsFolder::UpdateFileRec(void)
 //
 //    Result:=despos;
 //end;
-////******** Функция возвращает новое смещение в файле **************//
+////******** Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРІРѕРµ СЃРјРµС‰РµРЅРёРµ РІ С„Р°Р№Р»Рµ **************//
 //Function    CHsFolder.Pack(Handle:DWORD;Offset:DWORD;PInt:PInteger;PStr:PString):DWORD;
 //Var
 //    Temp:DWORD;
@@ -1029,14 +1029,14 @@ void  CHsFolder::UpdateFileRec(void)
 //    nOffset:DWORD;
 //    FolderOffset:DWORD;
 //begin
-//    // Определяем место положения директории в пакетном файле
+//    // РћРїСЂРµРґРµР»СЏРµРј РјРµСЃС‚Рѕ РїРѕР»РѕР¶РµРЅРёСЏ РґРёСЂРµРєС‚РѕСЂРёРё РІ РїР°РєРµС‚РЅРѕРј С„Р°Р№Р»Рµ
 //    FolderOffset:=0;
 //    if (not m_ToSave) then
 //    begin
 //        if m_Parent<>nil then
 //        begin
 //            PFile:=m_Parent.GetFileRec(m_RealName);
-//            if PFile=nil then raise Exception.Create('Ошибка в файловой системе пакетного файла');
+//            if PFile=nil then raise Exception.Create('РћС€РёР±РєР° РІ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРµ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°');
 //            FolderOffset:=PFile.m_Offset;
 //        end else if not m_ToUpdate then FolderOffset:=$FFFFFFFF;
 //    end;
@@ -1049,13 +1049,13 @@ void  CHsFolder::UpdateFileRec(void)
 //    if (m_ToSave) or (m_ToUpdate) then
 //    begin
 //        Temp:=SetFilePointer(Handle,FolderOffset,nil,FILE_BEGIN);
-//        if Temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки директории :'+GetFullPath(''));
+//        if Temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё РґРёСЂРµРєС‚РѕСЂРёРё :'+GetFullPath(''));
 //        WriteFile(Handle,m_FolderRec,sizeof(TFolderRecEC),temp,nil);
 //        WriteFile(Handle,m_Files^,m_FolderRec.m_RecSize*m_FolderRec.m_RecNum,
 //                  temp,nil);
 //    end;
 //
-//    { Перепаковка файлов внутри главного пакетного файла }
+//    { РџРµСЂРµРїР°РєРѕРІРєР° С„Р°Р№Р»РѕРІ РІРЅСѓС‚СЂРё РіР»Р°РІРЅРѕРіРѕ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р° }
 //    for i:=0 to m_FolderRec.m_Recnum-1 do
 //    begin
 //        PFile:=GetFileRec(i);
@@ -1065,7 +1065,7 @@ void  CHsFolder::UpdateFileRec(void)
 //            begin
 //                PFolder:=CHsFolder(PFile.m_Extra);
 //                if PFolder=nil then
-//                    raise Exception.Create('Неустранимая ошибка');
+//                    raise Exception.Create('РќРµСѓСЃС‚СЂР°РЅРёРјР°СЏ РѕС€РёР±РєР°');
 //                nOffset:=PFolder.Pack(Handle,Offset,PInt,PStr);
 //                PFile.m_Offset:=Offset;
 //                Offset:=nOffset;
@@ -1089,7 +1089,7 @@ void  CHsFolder::UpdateFileRec(void)
 //            end;
 //        end else if (PFile.m_Type<>PFile.m_NType) and (PFile.m_Free=0) then
 //        begin
-//            { Расжатие / Сжатие внутренних файлов пакета }
+//            { Р Р°СЃР¶Р°С‚РёРµ / РЎР¶Р°С‚РёРµ РІРЅСѓС‚СЂРµРЅРЅРёС… С„Р°Р№Р»РѕРІ РїР°РєРµС‚Р° }
 //            if PInt<>nil then Inc(PInt^);
 //            if PStr<>nil then PStr^:=GetFullPath(PFile.m_RealName+'');
 //            if PFile.m_NType=FILEEC_COMPRESSED then
@@ -1115,7 +1115,7 @@ void  CHsFolder::UpdateFileRec(void)
 //            begin
 //                PFolder:=CHsFolder(PFile.m_Extra);
 //                if PFolder=nil then
-//                    raise Exception.Create('Неустранимая ошибка');
+//                    raise Exception.Create('РќРµСѓСЃС‚СЂР°РЅРёРјР°СЏ РѕС€РёР±РєР°');
 //                nOffset:=PFolder.Pack(Handle,Offset,PInt,PStr);
 //                Offset:=nOffset;
 //            end else
@@ -1129,7 +1129,7 @@ void  CHsFolder::UpdateFileRec(void)
 //    if (m_ToSave) or (m_ToUpdate) then
 //    begin
 //        Temp:=SetFilePointer(Handle,FolderOffset,nil,FILE_BEGIN);
-//        if Temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки директории :'+GetFullPath(''));
+//        if Temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё РґРёСЂРµРєС‚РѕСЂРёРё :'+GetFullPath(''));
 //        WriteFile(Handle,m_FolderRec,sizeof(TFolderRecEC),temp,nil);
 //        WriteFile(Handle,m_Files^,m_FolderRec.m_RecSize*m_FolderRec.m_RecNum,
 //                  temp,nil);
@@ -1147,14 +1147,14 @@ void  CHsFolder::UpdateFileRec(void)
 //    PDestFile:PFileRecEC;
 //    Files:Pointer;
 //begin
-//    // ******** Ищем все используемые записи в директории ********
+//    // ******** РС‰РµРј РІСЃРµ РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ Р·Р°РїРёСЃРё РІ РґРёСЂРµРєС‚РѕСЂРёРё ********
 //    count:=0;
 //    for i:=0 to m_FolderRec.m_Recnum-1 do
 //    begin
 //        PFile:=GetFileRec(i);
 //        if PFile.m_Free=0 then inc(count);
 //    end;
-//    // ******** Переписываем файлы в новую память ****************
+//    // ******** РџРµСЂРµРїРёСЃС‹РІР°РµРј С„Р°Р№Р»С‹ РІ РЅРѕРІСѓСЋ РїР°РјСЏС‚СЊ ****************
 //    Files:=AllocMem(DWORD(count)*m_FolderRec.m_RecSize);
 //    count:=0;
 //    for i:=0 to m_FolderRec.m_Recnum-1 do
@@ -1167,12 +1167,12 @@ void  CHsFolder::UpdateFileRec(void)
 //            inc(count);
 //        end;
 //    end;
-//    // ******** Теперь инициализируем структуру директории *******
+//    // ******** РўРµРїРµСЂСЊ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃС‚СЂСѓРєС‚СѓСЂСѓ РґРёСЂРµРєС‚РѕСЂРёРё *******
 //    FreeMem(m_Files);
 //    m_Files:=Files;
 //    m_FolderRec.m_Recnum:=count;
 //    m_FolderRec.m_Size:=GetFolderSize;
-//    // Теперь обновляем информацию о файле директории в родительской папке
+//    // РўРµРїРµСЂСЊ РѕР±РЅРѕРІР»СЏРµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„Р°Р№Р»Рµ РґРёСЂРµРєС‚РѕСЂРёРё РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕР№ РїР°РїРєРµ
 //    UpdateFileRec;
 //end;
 //
@@ -1185,8 +1185,8 @@ void  CHsFolder::UpdateFileRec(void)
 //    PFile:PFileRecEC;
 //begin
 //    PFile:=GetFileRec(name);
-//    if SouHandle=$FFFFFFFF then raise Exception.Create('Пакетный файл должен быть открыт при процессе сжатия');
-//    if PFile.m_Offset=0 then raise Exception.Create('Нельзя сжимать несобранный пакетный файл');
+//    if SouHandle=$FFFFFFFF then raise Exception.Create('РџР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚ РїСЂРё РїСЂРѕС†РµСЃСЃРµ СЃР¶Р°С‚РёСЏ');
+//    if PFile.m_Offset=0 then raise Exception.Create('РќРµР»СЊР·СЏ СЃР¶РёРјР°С‚СЊ РЅРµСЃРѕР±СЂР°РЅРЅС‹Р№ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»');
 //    souptr:=PFile.m_Offset;
 //    desptr:=Offset;
 //    temp:=0;
@@ -1223,7 +1223,7 @@ void  CHsFolder::UpdateFileRec(void)
 //    CompressFolder;
 //    StartOffset:=Offset;
 //    Temp:=SetFilePointer(Handle,StartOffset,nil,FILE_BEGIN);
-//    if Temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки директории :'+GetFullPath(''));
+//    if Temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё РґРёСЂРµРєС‚РѕСЂРёРё :'+GetFullPath(''));
 //    WriteFile(Handle,m_FolderRec,sizeof(TFolderRecEC),temp,nil);
 //    WriteFile(Handle,m_Files^,m_FolderRec.m_RecSize*m_FolderRec.m_RecNum,
 //              temp,nil);
@@ -1238,7 +1238,7 @@ void  CHsFolder::UpdateFileRec(void)
 //            begin
 //                PFolder:=CHsFolder(PFile.m_Extra);
 //                if PFolder=nil then
-//                    raise Exception.Create('Неустранимая ошибка :'+PFile.m_Name);
+//                    raise Exception.Create('РќРµСѓСЃС‚СЂР°РЅРёРјР°СЏ РѕС€РёР±РєР° :'+PFile.m_Name);
 //                nOffset:=PFolder.Compress(SouHandle,Handle,Offset,PInt,PStr);
 //                PFile.m_Offset:=Offset;
 //                Offset:=nOffset;
@@ -1255,7 +1255,7 @@ void  CHsFolder::UpdateFileRec(void)
 //    end;
 //
 //    Temp:=SetFilePointer(Handle,StartOffset,nil,FILE_BEGIN);
-//    if Temp=$FFFFFFFF then raise Exception.Create('Ошибка упаковки директории :'+GetFullPath(''));
+//    if Temp=$FFFFFFFF then raise Exception.Create('РћС€РёР±РєР° СѓРїР°РєРѕРІРєРё РґРёСЂРµРєС‚РѕСЂРёРё :'+GetFullPath(''));
 //    WriteFile(Handle,m_FolderRec,sizeof(TFolderRecEC),temp,nil);
 //    WriteFile(Handle,m_Files^,m_FolderRec.m_RecSize*m_FolderRec.m_RecNum,
 //              temp,nil);
@@ -1274,8 +1274,8 @@ void  CHsFolder::UpdateFileRec(void)
 //begin
 //    Result:=false;
 //    PFile:=GetFileRec(name);
-//    if SouHandle=$FFFFFFFF then raise Exception.Create('Пакетный файл должен быть открыт при процессе распаковки');
-//    if PFile.m_Offset=0 then raise Exception.Create('Нельзя распаковывать несобранный пакетный файл');
+//    if SouHandle=$FFFFFFFF then raise Exception.Create('РџР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚ РїСЂРё РїСЂРѕС†РµСЃСЃРµ СЂР°СЃРїР°РєРѕРІРєРё');
+//    if PFile.m_Offset=0 then raise Exception.Create('РќРµР»СЊР·СЏ СЂР°СЃРїР°РєРѕРІС‹РІР°С‚СЊ РЅРµСЃРѕР±СЂР°РЅРЅС‹Р№ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»');
 //    path:=GetFullPath(name);
 //    Handle:=CreateFile(PChar(path),
 //                  GENERIC_WRITE,
@@ -1325,9 +1325,9 @@ void  CHsFolder::UpdateFileRec(void)
 //    {$endif}
 //    Result:=false;
 //    PFile:=GetFileRec(name);
-//    if PFile=nil then raise Exception.Create('Ошибка в файловой системе пакетного файла');
-//    if SouHandle=$FFFFFFFF then raise Exception.Create('Пакетный файл должен быть открыт при процессе распаковки');
-//    if PFile.m_Offset=0 then raise Exception.Create('Нельзя распаковывать несобранный пакетный файл');
+//    if PFile=nil then raise Exception.Create('РћС€РёР±РєР° РІ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРµ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°');
+//    if SouHandle=$FFFFFFFF then raise Exception.Create('РџР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕС‚РєСЂС‹С‚ РїСЂРё РїСЂРѕС†РµСЃСЃРµ СЂР°СЃРїР°РєРѕРІРєРё');
+//    if PFile.m_Offset=0 then raise Exception.Create('РќРµР»СЊР·СЏ СЂР°СЃРїР°РєРѕРІС‹РІР°С‚СЊ РЅРµСЃРѕР±СЂР°РЅРЅС‹Р№ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»');
 //    path:=GetFullPath(name);
 //    Handle:=CreateFile(PChar(path),
 //                  GENERIC_WRITE,
@@ -1337,7 +1337,7 @@ void  CHsFolder::UpdateFileRec(void)
 //                  0);
 //    if Handle=INVALID_HANDLE_VALUE then exit;
 //
-//    //********* Новый алгоритм рассжатия ************/
+//    //********* РќРѕРІС‹Р№ Р°Р»РіРѕСЂРёС‚Рј СЂР°СЃСЃР¶Р°С‚РёСЏ ************/
 //    SetFilePointer(SouHandle,PFile.m_Offset+4,nil,FILE_BEGIN);
 //    size:=PFile.m_Size-4;
 //    ucompsize:=PFile.m_RealSize;
@@ -1351,7 +1351,7 @@ void  CHsFolder::UpdateFileRec(void)
 //        ucompblocksize:=OKGF_ZLib_UnCompress2(ucompbuf,65536,soubuf,blocksize);
 //        {$else}
 //        {$endif}
-//        if (ucompsize<>0) and (ucompblocksize=0) then raise Exception.Create('Ошибка распаковки файла :'+path);
+//        if (ucompsize<>0) and (ucompblocksize=0) then raise Exception.Create('РћС€РёР±РєР° СЂР°СЃРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+path);
 //        WriteFile(Handle,ucompbuf^,ucompblocksize,temp,nil);
 //        size:=size-4-blocksize;
 //        ucompsize:=ucompsize-ucompblocksize;
@@ -1359,10 +1359,10 @@ void  CHsFolder::UpdateFileRec(void)
 //    FreeMem(soubuf);
 //    FreeMem(ucompbuf);
 //    CloseHandle(Handle);
-//    if ucompsize<>0 then raise Exception.Create('Ошибка : неверный размер расжатого файла :'+path);
+//    if ucompsize<>0 then raise Exception.Create('РћС€РёР±РєР° : РЅРµРІРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ СЂР°СЃР¶Р°С‚РѕРіРѕ С„Р°Р№Р»Р° :'+path);
 //    Result:=true;
 //
-//    //********* Старый алгоритм рассжатия *************/
+//    //********* РЎС‚Р°СЂС‹Р№ Р°Р»РіРѕСЂРёС‚Рј СЂР°СЃСЃР¶Р°С‚РёСЏ *************/
 //
 //{    SetFilePointer(SouHandle,PFile.m_Offset+4,nil,FILE_BEGIN);
 //    size:=PFile.m_Size-4;
@@ -1372,7 +1372,7 @@ void  CHsFolder::UpdateFileRec(void)
 //
 //    ReadFile(SouHandle,soubuf^,size,temp,nil);
 //    ucompsize:=OKGF_ZLib_UnCompress2(ucompbuf,ucompsize,soubuf,size);
-//    if ucompsize=0 then raise Exception.Create('Ошибка распаковки файла :'+path);
+//    if ucompsize=0 then raise Exception.Create('РћС€РёР±РєР° СЂР°СЃРїР°РєРѕРІРєРё С„Р°Р№Р»Р° :'+path);
 //    WriteFile(Handle,ucompbuf^,ucompsize,temp,nil);
 //    ///////////////////////// ??????????????????????????????
 //    FreeMem(soubuf);
@@ -1406,7 +1406,7 @@ void  CHsFolder::UpdateFileRec(void)
 //            begin
 //                if not UnpackFolder(PFile.m_RealName+'') then exit;
 //                PFolder:=CHsFolder(PFile.m_Extra);
-//                if PFolder=nil then raise Exception.Create('Ошибка в файловой системе пакетного файла');
+//                if PFolder=nil then raise Exception.Create('РћС€РёР±РєР° РІ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРµ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°');
 //                if not PFolder.Unpack(SouHandle,PInt,PStr) then exit;
 //            end else
 //            begin
@@ -1515,7 +1515,7 @@ int   CHsFolder::FindNext(SSearchRec &S)
 
 
 //**********************************************************************
-//***************** КЛАСС -ПАКЕТНЫЙ ФАЙЛ *******************************
+//***************** РљР›РђРЎРЎ -РџРђРљР•РўРќР«Р™ Р¤РђР™Р› *******************************
 //**********************************************************************
 
 CPackFile::CPackFile(CHeap *heap, const wchar *name):m_Heap(heap),m_FileName(name,heap)
@@ -1567,7 +1567,7 @@ bool  CPackFile::OpenPacketFile(void)
     }
 #endif
 
-    // Открываем файл для записи/чтения
+    // РћС‚РєСЂС‹РІР°РµРј С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё/С‡С‚РµРЅРёСЏ
     if (IS_UNICODE())
     {
         m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -1584,7 +1584,7 @@ bool  CPackFile::OpenPacketFile(void)
         m_Handle = 0xFFFFFFFF;
         return false;
     }
-    // Теперь читаем данные о местоположении корневого каталога
+    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Рѕ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРё РєРѕСЂРЅРµРІРѕРіРѕ РєР°С‚Р°Р»РѕРіР°
     DWORD temp = 0;
     if (!::ReadFile((HANDLE)m_Handle,&m_RootOffset,4,&temp,NULL))
     {
@@ -1594,7 +1594,7 @@ bool  CPackFile::OpenPacketFile(void)
         m_Handle = 0xFFFFFFFF;
         return false;
     }
-    // Теперь читаем данные о корневой папке
+    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Рѕ РєРѕСЂРЅРµРІРѕР№ РїР°РїРєРµ
     m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle,m_RootOffset))
     {
@@ -1645,7 +1645,7 @@ bool CPackFile::ClosePacketFile(void)
 //    }
 //#endif
 //
-//    // Открываем файл для записи/чтения
+//    // РћС‚РєСЂС‹РІР°РµРј С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё/С‡С‚РµРЅРёСЏ
 //    if (IS_UNICODE())
 //    {
 //        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
@@ -1662,7 +1662,7 @@ bool CPackFile::ClosePacketFile(void)
 //        m_Handle = 0xFFFFFFFF;
 //        return false;
 //    }
-//    // Теперь читаем данные о корневой папке
+//    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Рѕ РєРѕСЂРЅРµРІРѕР№ РїР°РїРєРµ
 //    m_RootOffset = 4;
 //    m_RootFolder = HNew (m_Heap) CHsFolder(CStr(m_Heap));
 //    m_RootFolder->AllocEmptyFolder();
@@ -1684,7 +1684,7 @@ bool    CPackFile::OpenPacketFileEx()
     }
 #endif
 
-    // Открываем файл для записи/чтения
+    // РћС‚РєСЂС‹РІР°РµРј С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё/С‡С‚РµРЅРёСЏ
     if (IS_UNICODE())
     {
         m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -1701,7 +1701,7 @@ bool    CPackFile::OpenPacketFileEx()
         m_Handle = 0xFFFFFFFF;
         return false;
     }
-    // Теперь читаем данные о местоположении корневого каталога
+    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Рѕ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРё РєРѕСЂРЅРµРІРѕРіРѕ РєР°С‚Р°Р»РѕРіР°
     DWORD temp = 0;
     if (!::ReadFile((HANDLE)m_Handle,&m_RootOffset,4,&temp,NULL))
     {
@@ -1711,7 +1711,7 @@ bool    CPackFile::OpenPacketFileEx()
         m_Handle = 0xFFFFFFFF;
         return false;
     }
-    // Теперь читаем данные о корневой папке
+    // РўРµРїРµСЂСЊ С‡РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Рѕ РєРѕСЂРЅРµРІРѕР№ РїР°РїРєРµ
     m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle,m_RootOffset))
     {
@@ -1758,7 +1758,7 @@ DWORD   CPackFile::Open(const CStr &filename,DWORD modeopen)
     {
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
-        // *** Если файл не найден, то пытаемся найти его на диске *** //
+        // *** Р•СЃР»Рё С„Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ, С‚Рѕ РїС‹С‚Р°РµРјСЃСЏ РЅР°Р№С‚Рё РµРіРѕ РЅР° РґРёСЃРєРµ *** //
         WIN32_FIND_DATAA fd;
         HANDLE h = FindFirstFileA(filename.Get(), &fd);
         if (h = INVALID_HANDLE_VALUE) return 0xFFFFFFFF;
@@ -1792,7 +1792,7 @@ DWORD   CPackFile::Open(const CStr &filename,DWORD modeopen)
 #endif
     }
 
-    // *** Файл был найден внутри пакетного файла - открываем его для чтения ***
+    // *** Р¤Р°Р№Р» Р±С‹Р» РЅР°Р№РґРµРЅ РІРЅСѓС‚СЂРё РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р° - РѕС‚РєСЂС‹РІР°РµРј РµРіРѕ РґР»СЏ С‡С‚РµРЅРёСЏ ***
     if (m_Handle == 0xFFFFFFFF) return 0xFFFFFFFF;
     
     m_Handles[H].m_Handle = m_Handle;
@@ -1896,15 +1896,15 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
    
     if (m_Handles[Handle].m_Free) return false;
 
-    // *** Установка указателя на нужную позицию
+    // *** РЈСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РЅСѓР¶РЅСѓСЋ РїРѕР·РёС†РёСЋ
     if (m_Handles[Handle].m_Compressed)
     {
-        //  Определение номера блока, с которого начинаются читаемые данные
+        //  РћРїСЂРµРґРµР»РµРЅРёРµ РЅРѕРјРµСЂР° Р±Р»РѕРєР°, СЃ РєРѕС‚РѕСЂРѕРіРѕ РЅР°С‡РёРЅР°СЋС‚СЃСЏ С‡РёС‚Р°РµРјС‹Рµ РґР°РЅРЅС‹Рµ
         BYTE *SouPtr = m_Handles[Handle].m_DesBuf;
         BYTE *DesPtr = (BYTE *)buf;
         while (Size)
         {
-            // Определяем номер блока, чтение которого надо произвести с диска
+            // РћРїСЂРµРґРµР»СЏРµРј РЅРѕРјРµСЂ Р±Р»РѕРєР°, С‡С‚РµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ РЅР°РґРѕ РїСЂРѕРёР·РІРµСЃС‚Рё СЃ РґРёСЃРєР°
 
             IntOffset = m_Handles[Handle].m_Offset-m_Handles[Handle].m_StartOffset;
             Block = IntOffset >> 16; // 65536
@@ -1915,7 +1915,7 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
                 IntBlockSize = 65536-IntBlockOffset;
             }
 
-            // Если блок не был расжат заранее, то расжимаем его
+            // Р•СЃР»Рё Р±Р»РѕРє РЅРµ Р±С‹Р» СЂР°СЃР¶Р°С‚ Р·Р°СЂР°РЅРµРµ, С‚Рѕ СЂР°СЃР¶РёРјР°РµРј РµРіРѕ
             if (m_Handles[Handle].m_Blocknumber != Block)
             {
                 CompSize = SetCompressedBlockPointer(m_Handles[Handle].m_StartOffset,Block);
@@ -1927,7 +1927,7 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
 
                 m_Handles[Handle].m_Blocknumber = Block;
             }
-            // Теперь нам необходимо прочитать часть данных в буфер, указанный пользователем
+            // РўРµРїРµСЂСЊ РЅР°Рј РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕС‡РёС‚Р°С‚СЊ С‡Р°СЃС‚СЊ РґР°РЅРЅС‹С… РІ Р±СѓС„РµСЂ, СѓРєР°Р·Р°РЅРЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
             memcpy(DesPtr, SouPtr + IntBlockOffset, IntBlockSize);
             DesPtr += IntBlockSize;
             Size -= IntBlockSize;
@@ -1958,7 +1958,7 @@ bool  CPackFile::Write(DWORD Handle, const void *buf,int Size)
     }
     if (m_Handles[Handle].m_Free) return false;
 
-    // *** Установка указателя на нужную позицию
+    // *** РЈСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РЅСѓР¶РЅСѓСЋ РїРѕР·РёС†РёСЋ
     if (m_Handles[Handle].m_Compressed)
     {
         ERROR_S(L"Error writing compressed file");
@@ -1988,7 +1988,7 @@ bool  CPackFile::SetPos(DWORD Handle, DWORD Pos, int ftype)
     }
     if (m_Handles[Handle].m_Free) return false;
 
-    // Пересчет позиции
+    // РџРµСЂРµСЃС‡РµС‚ РїРѕР·РёС†РёРё
     if (ftype==FILE_CURRENT)
     {
         Pos += m_Handles[Handle].m_Offset - m_Handles[Handle].m_StartOffset;
@@ -2016,7 +2016,7 @@ bool  CPackFile::SetPos(DWORD Handle, DWORD Pos, int ftype)
         if (Error==0xFFFFFFFF)
         {
             ERROR_S(L"Unable to set file pointer.");
-            //then raise Exception.Create('Ошибка установки указателя в пакетном файле :'+m_filename);
+            //then raise Exception.Create('РћС€РёР±РєР° СѓСЃС‚Р°РЅРѕРІРєРё СѓРєР°Р·Р°С‚РµР»СЏ РІ РїР°РєРµС‚РЅРѕРј С„Р°Р№Р»Рµ :'+m_filename);
         }
         m_Handles[Handle].m_Offset = Error;
     }
@@ -2090,7 +2090,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //    inblock:TBlockParEC;
 //begin
 //    Result:=true;
-//    // Добавление всех файлов, ссылки на которые есть в текущем блоке
+//    // Р”РѕР±Р°РІР»РµРЅРёРµ РІСЃРµС… С„Р°Р№Р»РѕРІ, СЃСЃС‹Р»РєРё РЅР° РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РІ С‚РµРєСѓС‰РµРј Р±Р»РѕРєРµ
 //    for i:=0 to block.Par_Count-1 do
 //    begin
 //        value:=block.Par_Get(i);
@@ -2110,7 +2110,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //            Result:=true;
 //        end;
 //    end;
-//    // Просмотр всех вложенных блоков
+//    // РџСЂРѕСЃРјРѕС‚СЂ РІСЃРµС… РІР»РѕР¶РµРЅРЅС‹С… Р±Р»РѕРєРѕРІ
 //    for i:=0 to block.Block_Count-1 do
 //    begin
 //        inblock:=block.Block_Get(i);
@@ -2127,7 +2127,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //    inblock:TBlockParEC;
 //begin
 //    Result:=true;
-//    // Добавление всех файлов, ссылки на которые есть в текущем блоке
+//    // Р”РѕР±Р°РІР»РµРЅРёРµ РІСЃРµС… С„Р°Р№Р»РѕРІ, СЃСЃС‹Р»РєРё РЅР° РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РІ С‚РµРєСѓС‰РµРј Р±Р»РѕРєРµ
 //    for i:=0 to block.Par_Count-1 do
 //    begin
 //        value:=block.Par_Get(i);
@@ -2146,7 +2146,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //            Result:=true;
 //        end;
 //    end;
-//    // Просмотр всех вложенных блоков
+//    // РџСЂРѕСЃРјРѕС‚СЂ РІСЃРµС… РІР»РѕР¶РµРЅРЅС‹С… Р±Р»РѕРєРѕРІ
 //    for i:=0 to block.Block_Count-1 do
 //    begin
 //        inblock:=block.Block_Get(i);
@@ -2242,7 +2242,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //    Windows.WriteFile(Handle,RootOffset,4,Temp,nil);
 //    m_RootFolder.Compress(m_Handle,Handle,4,PInt,PStr);
 //    CloseHandle(Handle);
-//    ClosePacketFileEx; // Для обновления содержимого
+//    ClosePacketFileEx; // Р”Р»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ
 //    OpenPacketFileEx;
 //    Result:=true;
 //end;
@@ -2265,7 +2265,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //        Windows.WriteFile(m_Handle,m_RootOffset,4,Temp,nil);
 //    end;
 //    m_RootFolder.Pack(m_Handle,Pos,PInt,PStr);
-//    ClosePacketFileEx; // Для обновления содержимого
+//    ClosePacketFileEx; // Р”Р»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ
 //    OpenPacketFileEx;
 //    Result:=true;
 //end;
@@ -2315,7 +2315,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
-//    // Создание структуры каталогов, если это необходимо
+//    // РЎРѕР·РґР°РЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РєР°С‚Р°Р»РѕРіРѕРІ, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
 //    remainder:=desname;
 //    path:='';
 //    Repeat
@@ -2329,7 +2329,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //                CreateDirectory(PChar(path),nil);
 //        end;
 //    until remainder='';
-//    // Открывает файл для записи
+//    // РћС‚РєСЂС‹РІР°РµС‚ С„Р°Р№Р» РґР»СЏ Р·Р°РїРёСЃРё
 //    DesHandle:=CreateFile(PChar(desname),
 //                          GENERIC_WRITE,
 //                          0,nil,
@@ -2344,7 +2344,7 @@ bool    CPackFile::FileExists(const CStr &path)
 //        exit;
 //    end;
 //    Size:=GetSize(SouHandle);
-//    // Копируем данные
+//    // РљРѕРїРёСЂСѓРµРј РґР°РЅРЅС‹Рµ
 //    Buf:=AllocMem(65536);
 //    while Size>65536 do
 //    begin
@@ -2388,7 +2388,7 @@ int     CPackFile::FindFirst(const CStr &path,DWORD Attr, SSearchRec &S)
 
 
 //**********************************************************************
-//***************** КЛАСС - КОЛЛЕКЦИЯ ПАКЕТНЫХ ФАЙЛОВ ******************
+//***************** РљР›РђРЎРЎ - РљРћР›Р›Р•РљР¦РРЇ РџРђРљР•РўРќР«РҐ Р¤РђР™Р›РћР’ ******************
 //**********************************************************************
 
 void    CPackCollection::Clear(void)
@@ -2436,7 +2436,7 @@ bool CPackCollection::OpenPacketFiles(void)
 
     if (ff < fe)
     {
-        //*********** Ошибка открытия одного из пакетных файлов **********
+        //*********** РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ РѕРґРЅРѕРіРѕ РёР· РїР°РєРµС‚РЅС‹С… С„Р°Р№Р»РѕРІ **********
         PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
         for(;fff < ff; ++fff)
         {
@@ -2469,7 +2469,7 @@ bool CPackCollection::OpenPacketFilesEx(void)
 
     if (ff < fe)
     {
-        //*********** Ошибка открытия одного из пакетных файлов **********
+        //*********** РћС€РёР±РєР° РѕС‚РєСЂС‹С‚РёСЏ РѕРґРЅРѕРіРѕ РёР· РїР°РєРµС‚РЅС‹С… С„Р°Р№Р»РѕРІ **********
         PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
         for(;fff < ff; ++fff)
         {
@@ -2492,7 +2492,7 @@ bool  CPackCollection::ClosePacketFilesEx(void)
 }
 
 
-//******** Процедуры для работы файлами ***********//
+//******** РџСЂРѕС†РµРґСѓСЂС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ С„Р°Р№Р»Р°РјРё ***********//
 
 bool  CPackCollection::FileExists(const CStr &name)
 {
@@ -2516,7 +2516,7 @@ bool  CPackCollection::PathExists(const CStr &path)
     return false;
 }
 
-//******* работа с виртуальными номерами объектов CPackFile
+//******* СЂР°Р±РѕС‚Р° СЃ РІРёСЂС‚СѓР°Р»СЊРЅС‹РјРё РЅРѕРјРµСЂР°РјРё РѕР±СЉРµРєС‚РѕРІ CPackFile
 DWORD CPackCollection::Open(const CStr&name, DWORD modeopen)
 {
     DWORD Handle;

@@ -13,7 +13,7 @@
 class CVertexBuffer : public CWorldObject
 {
     int           _vsize;   // one vertex size
-    int           _count_verts; // количество вершин в буфере
+    int           _count_verts; // РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ РІ Р±СѓС„РµСЂРµ
     IDirect3DVertexBuffer9 *_buffer;
 
 public:

@@ -83,7 +83,7 @@ class BASE_API CWStr : public CMain
         
         CHeap * GetHeap(void) const	{ return m_Data->m_Heap; }
 
-		// Clear - Очищает строку
+		// Clear - РћС‡РёС‰Р°РµС‚ СЃС‚СЂРѕРєСѓ
 		void Clear(void)					{ ModifyLenNoCopy(GetHeap(), 0); }
 
         void SetLen(int len) {ModifyLen(m_Data->m_Heap,len); m_Data->Data()[len] = 0;};
@@ -126,34 +126,34 @@ class BASE_API CWStr : public CMain
 		bool IsOnlyInt(void) const;
 		bool IsEmpty(void)	const				{ return GetLen() == 0; }
 
-		CWStr & Trim(void);						// Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-		CWStr & TrimFull(void);					// Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
-		void TabToSpace(void);					// Конвертит 0x9 в 0x20
+		CWStr & Trim(void);						// РЈРґР°Р»СЏРµС‚ РІ РЅР°С‡Р°Р»Рµ Рё РІ РєРѕРЅС†Рµ СЃРёРјРІРѕР»С‹ 0x20,0x9,0x0d,0x0a
+		CWStr & TrimFull(void);					// Trim() Рё РІ СЃРµСЂРµРґРёРЅРµ СЃС‚СЂРѕРєРё СѓРґРѕР»СЏРµС‚ РїРѕРІС‚РѕСЂСЏСЋС‰РёРµСЃСЏ 0x20,0x9
+		void TabToSpace(void);					// РљРѕРЅРІРµСЂС‚РёС‚ 0x9 РІ 0x20
 
-		CWStr & Del(int sme,int len); // Удалить символы
-		CWStr & Insert(int sme,const CWStr & istr) // Вставить символы
+		CWStr & Del(int sme,int len); // РЈРґР°Р»РёС‚СЊ СЃРёРјРІРѕР»С‹
+		CWStr & Insert(int sme,const CWStr & istr) // Р’СЃС‚Р°РІРёС‚СЊ СЃРёРјРІРѕР»С‹
         {
             return Insert(sme,istr.Get(), istr.GetLen());
         }
-        CWStr & Insert(int sme,const wchar *str, int len); // Вставить символы
-        CWStr & Insert(int sme,const wchar *str) // Вставить символы
+        CWStr & Insert(int sme,const wchar *str, int len); // Р’СЃС‚Р°РІРёС‚СЊ СЃРёРјРІРѕР»С‹
+        CWStr & Insert(int sme,const wchar *str) // Р’СЃС‚Р°РІРёС‚СЊ СЃРёРјРІРѕР»С‹
         {
             return Insert(sme,str, WStrLen(str));
         }
-		CWStr & Replace(CWStr & substr,const CWStr & strreplace); // Заменить часть строки ну другую
+		CWStr & Replace(CWStr & substr,const CWStr & strreplace); // Р—Р°РјРµРЅРёС‚СЊ С‡Р°СЃС‚СЊ СЃС‚СЂРѕРєРё РЅСѓ РґСЂСѓРіСѓСЋ
 
-        int Find(const wchar * substr, int slen,int sme=0) const;// Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
+        int Find(const wchar * substr, int slen,int sme=0) const;// РџРѕРёСЃРє РїРѕРґСЃС‚СЂРѕРєРё. return = СЃРјРµС‰РµРЅРёРµ РѕС‚ РЅР°С‡Р°Р»Р°  -1 = РџРѕРґСЃС‚СЂРѕРєР° РЅРµ РЅР°Р№РґРµРЅР°
         int Find(const CWStr & substr,int sme=0) const	{return Find(substr.Get(), substr.GetLen(), sme);}
         int Find(const wchar * substr,int sme=0) const	{return Find(substr, WStrLen(substr), sme);}
-		int FindR(wchar ch,int sme=-1) const;		// Поиск символа в обратном порядке. return = смещение от начала  -1 = Подстрока не найдена
+		int FindR(wchar ch,int sme=-1) const;		// РџРѕРёСЃРє СЃРёРјРІРѕР»Р° РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ. return = СЃРјРµС‰РµРЅРёРµ РѕС‚ РЅР°С‡Р°Р»Р°  -1 = РџРѕРґСЃС‚СЂРѕРєР° РЅРµ РЅР°Р№РґРµРЅР°
 
 		void LowerCase(int sme=0,int len=-1);
 		void UpperCase(int sme=0,int len=-1);
 
 		CWStr & Format(const wchar * format,...);
 
-			// Функции для работы с параметрами
-		// Примеры :
+			// Р¤СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё
+		// РџСЂРёРјРµСЂС‹ :
 		//      Str="count=5,7"    GetCountPar("=,")      return 3
 		//      Str="count=5,7"    GetStrPar(str,1,"=")   str="5,7"
 		//      Str="count=5,7"    GetIntPar(2,"=,")      return 7

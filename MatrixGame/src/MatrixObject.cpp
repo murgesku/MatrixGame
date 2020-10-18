@@ -11,7 +11,7 @@
 #include "MatrixSkinManager.hpp"
 #include "Interface/CConstructor.h"
 
-// Ïðè ïåðåìåùåíèè îáúåêòà íå íóæíî çàíîãî ðàñ÷èòûâàòü ïðîýêöèîííóþ òåêñòóðó
+// ÐŸÑ€Ð¸ Ð¿ÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚Ð° Ð½Ðµ Ð½ÑƒÐ¶Ð½Ð¾ Ð·Ð°Ð½Ð¾Ð³Ð¾ Ñ€Ð°ÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¾ÑÐºÑ†Ð¸Ð¾Ð½Ð½ÑƒÑŽ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñƒ
 
 CMatrixMapObject::SObjectShadowTexture   *CMatrixMapObject::m_ShadowTextures;
 int                     CMatrixMapObject::m_ShadowTexturesCount;
@@ -968,7 +968,7 @@ void    CMatrixMapObject::Init(int ids)
         m_ShadowStencil = NULL;
     }
 
-    // TODO : ñäåëàòü, ÷òîáû ãåîìåòðèÿ ïðîåêöèîííîé òåêñòóðû íå ïåðåñ÷èòûâàëàñü ïðè ñìåíå îáúåêòà
+    // TODO : ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð³ÐµÐ¾Ð¼ÐµÑ‚Ñ€Ð¸Ñ Ð¿Ñ€Ð¾ÐµÐºÑ†Ð¸Ð¾Ð½Ð½Ð¾Ð¹ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñ‹ Ð½Ðµ Ð¿ÐµÑ€ÐµÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°Ð»Ð°ÑÑŒ Ð¿Ñ€Ð¸ ÑÐ¼ÐµÐ½Ðµ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°
 
 	if(m_ShadowProj)
     {
@@ -1585,7 +1585,7 @@ void CMatrixMapObject::LogicTakt(int ms)
                 {
                     // replace object
                     Init(temp.GetIntPar(1,L","));
-                    m_BehFlag = BEHF_STATIC; // ñãîðåëà :(
+                    m_BehFlag = BEHF_STATIC; // ÑÐ³Ð¾Ñ€ÐµÐ»Ð° :(
                 } else
                 {
                     if (m_BurnSkin->m_Tex->Flags() & TF_ALPHATEST)

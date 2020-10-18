@@ -65,8 +65,8 @@ class WINDOW_API CWindow : public Base::CMain {
 		void WndCreate(void);
 		void WndDestroy(void);
 
-		void Add(CWindow * w);							// Сменить родительское окно
-		void Delete(CWindow * w);						// Удалить из родительского окна
+		void Add(CWindow * w);							// РЎРјРµРЅРёС‚СЊ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРµ РѕРєРЅРѕ
+		void Delete(CWindow * w);						// РЈРґР°Р»РёС‚СЊ РёР· СЂРѕРґРёС‚РµР»СЊСЃРєРѕРіРѕ РѕРєРЅР°
 		CWindow * Parent(void)							{ return m_Parent; }
 
 		virtual void CalcNewSize(Base::CPoint & newsize);

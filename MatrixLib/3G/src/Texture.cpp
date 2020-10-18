@@ -353,7 +353,7 @@ void CTexture::Load(void)
 {
     DTRACE();
 
-    if (FLAG(m_Flags, TF_LOST)) return; // нехуй тут делать. текстура потеряна блять!
+    if (FLAG(m_Flags, TF_LOST)) return; // РЅРµС…СѓР№ С‚СѓС‚ РґРµР»Р°С‚СЊ. С‚РµРєСЃС‚СѓСЂР° РїРѕС‚РµСЂСЏРЅР° Р±Р»СЏС‚СЊ!
 
     ASSERT(!IsLoaded());
 	//Unload();

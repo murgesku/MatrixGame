@@ -106,7 +106,7 @@ long __stdcall ExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo)
                                    NULL,
                                    NULL))
     {
-      //DebugPrint("Не удалось записать файл дампа '%'\n", fn);
+      //DebugPrint("РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїРёСЃР°С‚СЊ С„Р°Р№Р» РґР°РјРїР° '%'\n", fn);
     }
 
     CloseHandle(hFile);
@@ -114,7 +114,7 @@ long __stdcall ExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo)
   else
   {
     //
-    //DebugPrint("Не удалось создать файл дампа '%'\n", fn);
+    //DebugPrint("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ С„Р°Р№Р» РґР°РјРїР° '%'\n", fn);
   }
   */
   return EXCEPTION_EXECUTE_HANDLER;

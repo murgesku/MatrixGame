@@ -376,7 +376,7 @@ bool CBlockPar::ParSetNE(const wchar * name, int namelen, const wchar * zn, int 
 	return false;
 }
 
-bool CBlockPar::ParDeleteNE(const wchar * name, int namelen) // нужно оптимизировать
+bool CBlockPar::ParDeleteNE(const wchar * name, int namelen) // РЅСѓР¶РЅРѕ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ
 {
     DTRACE();
     CBlockParUnit * el=m_First;
@@ -391,7 +391,7 @@ bool CBlockPar::ParDeleteNE(const wchar * name, int namelen) // нужно оптимизиро
     return false;
 }
 
-void CBlockPar::ParDelete(int no) // нужно оптимизировать
+void CBlockPar::ParDelete(int no) // РЅСѓР¶РЅРѕ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ
 {
     DTRACE();
     CBlockParUnit * el=m_First;

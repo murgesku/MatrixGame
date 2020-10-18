@@ -574,7 +574,7 @@ public:
     SWeaponDamage   m_ObjectDamages[WEAPON_COUNT];
     SWeaponDamage   m_FlyerDamages[WEAPON_COUNT];
 
-    float           m_WeaponStrengthAI[WEAPON_COUNT]; // Сила оружия, по которому AI ориентируется, какой робот сильнее.
+    float           m_WeaponStrengthAI[WEAPON_COUNT]; // РЎРёР»Р° РѕСЂСѓР¶РёСЏ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ AI РѕСЂРёРµРЅС‚РёСЂСѓРµС‚СЃСЏ, РєР°РєРѕР№ СЂРѕР±РѕС‚ СЃРёР»СЊРЅРµРµ.
 
     float           m_WeaponRadius[WEAPON_COUNT];
     int             m_WeaponCooldown[WEAPON_COUNT];

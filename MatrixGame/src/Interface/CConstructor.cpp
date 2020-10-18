@@ -535,7 +535,7 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
     }else if(type == MRT_ARMOR){
         //
         if(old_cfg){
-            //восстанавливаем обычные ружбайки
+            //РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕР±С‹С‡РЅС‹Рµ СЂСѓР¶Р±Р°Р№РєРё
             int pilon = 0;
             for(int i=0;i < MAX_WEAPON_CNT && pilon < m_Armor.m_MaxCommonWeaponCnt;i++){
                 if(old_cfg->m_Weapon[i].m_nKind && !(old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)){
@@ -546,7 +546,7 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
                         SuperDjeans(MRT_WEAPON, ERobotUnitKind(0), i);
                 }
             }
-            //восстанавливаем супер оружие
+            //РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃСѓРїРµСЂ РѕСЂСѓР¶РёРµ
             if(m_Armor.m_MaxExtraWeaponCnt){
                 for(int i=0;i < MAX_WEAPON_CNT;i++){
                     if((old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)){
@@ -1478,7 +1478,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
 
     m_AIRobotTypeList=(SSpecialBot *)HAllocEx(m_AIRobotTypeList,m_AIRobotTypeCnt*sizeof(SSpecialBot),g_MatrixHeap);
 
-    // Сортируем по силе
+    // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ СЃРёР»Рµ
     for(i=0;i<m_AIRobotTypeCnt-1;i++) {
         for(u=i+1;u<m_AIRobotTypeCnt;u++) {
             if(m_AIRobotTypeList[u].m_Strength>m_AIRobotTypeList[i].m_Strength) {
@@ -1496,7 +1496,7 @@ void SSpecialBot::ClearAIRobotType()
     m_AIRobotTypeCnt=0;
 }
 
-void SSpecialBot::CalcStrength()                                 // Расчитываем силу робота
+void SSpecialBot::CalcStrength()                                 // Р Р°СЃС‡РёС‚С‹РІР°РµРј СЃРёР»Сѓ СЂРѕР±РѕС‚Р°
 {
     m_Strength=0.0f;
 

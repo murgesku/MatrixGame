@@ -5,24 +5,24 @@
 
 struct SVOHeader {
 	DWORD m_Id;				// 0x00006f76
-	DWORD m_Ver;			// Версия
-	DWORD m_Flags;			// {1-16 битный индекс иначе 32 битный} {2-default texture}
+	DWORD m_Ver;			// Р’РµСЂСЃРёСЏ
+	DWORD m_Flags;			// {1-16 Р±РёС‚РЅС‹Р№ РёРЅРґРµРєСЃ РёРЅР°С‡Рµ 32 Р±РёС‚РЅС‹Р№} {2-default texture}
 	DWORD r1;
-	DWORD m_MaterialCnt;	// Список материалов(текстур) SMaterial
-	DWORD m_MaterialSme;	// Положение от начала заголовка
-	DWORD m_GroupCnt;		// Инвормация по группам (Смещение верши и треугольников)
+	DWORD m_MaterialCnt;	// РЎРїРёСЃРѕРє РјР°С‚РµСЂРёР°Р»РѕРІ(С‚РµРєСЃС‚СѓСЂ) SMaterial
+	DWORD m_MaterialSme;	// РџРѕР»РѕР¶РµРЅРёРµ РѕС‚ РЅР°С‡Р°Р»Р° Р·Р°РіРѕР»РѕРІРєР°
+	DWORD m_GroupCnt;		// РРЅРІРѕСЂРјР°С†РёСЏ РїРѕ РіСЂСѓРїРїР°Рј (РЎРјРµС‰РµРЅРёРµ РІРµСЂС€Рё Рё С‚СЂРµСѓРіРѕР»СЊРЅРёРєРѕРІ)
 	DWORD m_GroupSme;
-	DWORD m_VerCnt;			// Список всех вершин SVertexNorTex
+	DWORD m_VerCnt;			// РЎРїРёСЃРѕРє РІСЃРµС… РІРµСЂС€РёРЅ SVertexNorTex
 	DWORD m_VerSme;
-	DWORD m_TriCnt;			// Список всех треугольников. Кол-во индексов (3 индкса для каждого трегольника по 2 или 4 байта взависимости от флага)
+	DWORD m_TriCnt;			// РЎРїРёСЃРѕРє РІСЃРµС… С‚СЂРµСѓРіРѕР»СЊРЅРёРєРѕРІ. РљРѕР»-РІРѕ РёРЅРґРµРєСЃРѕРІ (3 РёРЅРґРєСЃР° РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚СЂРµРіРѕР»СЊРЅРёРєР° РїРѕ 2 РёР»Рё 4 Р±Р°Р№С‚Р° РІР·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С„Р»Р°РіР°)
 	DWORD m_TriSme;
-	DWORD m_FrameCnt;		// Список кадров SVOFrame
+	DWORD m_FrameCnt;		// РЎРїРёСЃРѕРє РєР°РґСЂРѕРІ SVOFrame
 	DWORD m_FrameSme;
-	DWORD m_AnimCnt;		// Список анимаций SVOAnimHeader
+	DWORD m_AnimCnt;		// РЎРїРёСЃРѕРє Р°РЅРёРјР°С†РёР№ SVOAnimHeader
 	DWORD m_AnimSme;
-	DWORD m_MatrixCnt;		// Список матриц SVOExpMatrixHeader
+	DWORD m_MatrixCnt;		// РЎРїРёСЃРѕРє РјР°С‚СЂРёС† SVOExpMatrixHeader
 	DWORD m_MatrixSme;
-	DWORD m_EdgeCnt;		// Список всех граней
+	DWORD m_EdgeCnt;		// РЎРїРёСЃРѕРє РІСЃРµС… РіСЂР°РЅРµР№
 	DWORD m_EdgeSme;
 };
 
@@ -31,7 +31,7 @@ struct SVOGroup {
 	DWORD m_Flags;			// 0-list
 	DWORD m_VerCnt;
 	DWORD m_VerStart;
-	DWORD m_TriCnt;			// Кол-во индексов
+	DWORD m_TriCnt;			// РљРѕР»-РІРѕ РёРЅРґРµРєСЃРѕРІ
 	DWORD m_TriStart;
 	DWORD r1;
 	DWORD r2;
@@ -39,7 +39,7 @@ struct SVOGroup {
 
 struct SVOFrame {
 	DWORD m_GroupIndexCnt;
-	DWORD m_GroupIndexSme;	// Каждый индекс 4-байтный указатель
+	DWORD m_GroupIndexSme;	// РљР°Р¶РґС‹Р№ РёРЅРґРµРєСЃ 4-Р±Р°Р№С‚РЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ
 	float m_CenterX,m_CenterY,m_CenterZ;
 	float m_RadiusCenter;
 	float m_MinX,m_MinY,m_MinZ;
@@ -66,7 +66,7 @@ struct SVOAnimUnit {
 struct SVOExpMatrixHeader {
 	DWORD m_Id;
 	wchar m_Name[32];
-	DWORD m_MatrixSme; // Спиок SVOMatrix   (кол-во по количеству m_FrameCnt)
+	DWORD m_MatrixSme; // РЎРїРёРѕРє SVOMatrix   (РєРѕР»-РІРѕ РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ m_FrameCnt)
 	DWORD r1;
 	DWORD r2;
 };

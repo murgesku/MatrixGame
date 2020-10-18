@@ -1142,7 +1142,7 @@ void EGExp::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					TSTR str;
 					node->EvalWorldState(timev).obj->GetClassName(str);
 
-					Log(Base::CWStr().Format(L"У грани не 2 триугольника. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
+					Log(Base::CWStr().Format(L"Face has not 2 tris. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
 						Base::CWStr(Base::CStr(node->NodeName())).Get(),
@@ -3785,7 +3785,7 @@ void EGExp2::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					TSTR str;
 					node->EvalWorldState(timev).obj->GetClassName(str);
 
-					Log(Base::CWStr().Format(L"У грани не 2 триугольника. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
+					Log(Base::CWStr().Format(L"РЈ РіСЂР°РЅРё РЅРµ 2 С‚СЂРёСѓРіРѕР»СЊРЅРёРєР°. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
 						Base::CWStr(Base::CStr(node->NodeName())).Get(),

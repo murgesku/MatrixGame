@@ -18,12 +18,12 @@ struct SRobotsSettings
 {   
 	long  FDirect3D;
     long  FD3DDevice;
-    // можно менять во время игры
+    // РјРѕР¶РЅРѕ РјРµРЅСЏС‚СЊ РІРѕ РІСЂРµРјСЏ РёРіСЂС‹
     bool    m_ShowStencilShadows;
     bool    m_ShowProjShadows;
-    bool    m_IzvratMS;                // извратный selection объектов
+    bool    m_IzvratMS;                // РёР·РІСЂР°С‚РЅС‹Р№ selection РѕР±СЉРµРєС‚РѕРІ
 
-    // нужен рестарт
+    // РЅСѓР¶РµРЅ СЂРµСЃС‚Р°СЂС‚
     bool    m_LandTexturesGloss;
     bool    m_ObjTexturesGloss;
     bool    m_SoftwareCursor;

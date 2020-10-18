@@ -18,17 +18,17 @@ namespace Base {
 class BASE_API CBuf : public CMain {
 	public:
 		CHeap * m_Heap;
-		int m_Len;	// Кол-во данных
-		int m_Max;	// Размер буфера
-		int m_Add;  // На сколько увеличивается буфер
-		int m_Pointer; // Указатель
-		BYTE * m_Buf; // Буфер
+		int m_Len;	// РљРѕР»-РІРѕ РґР°РЅРЅС‹С…
+		int m_Max;	// Р Р°Р·РјРµСЂ Р±СѓС„РµСЂР°
+		int m_Add;  // РќР° СЃРєРѕР»СЊРєРѕ СѓРІРµР»РёС‡РёРІР°РµС‚СЃСЏ Р±СѓС„РµСЂ
+		int m_Pointer; // РЈРєР°Р·Р°С‚РµР»СЊ
+		BYTE * m_Buf; // Р‘СѓС„РµСЂ
 	public:
 		CBuf(CHeap * heap=NULL, int add = 32);
 		~CBuf();
 
 		void Clear(void);
-		void ClearFull(void); // А также освобождает память
+		void ClearFull(void); // Рђ С‚Р°РєР¶Рµ РѕСЃРІРѕР±РѕР¶РґР°РµС‚ РїР°РјСЏС‚СЊ
 
         void    SetGranula(int sz) {m_Add = sz;}
 

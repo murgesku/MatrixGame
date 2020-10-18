@@ -1224,7 +1224,7 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
 
                 if(m_TrueColor.m_ColoredCnt == MAX_ZAHVAT_POINTS)
                 {
-                    // äîçàõâàò
+                    // Ð´Ð¾Ð·Ð°Ñ…Ð²Ð°Ñ‚
                     int side = by->GetSide();
                     //if (side == PLAYER_SIDE)
                     //    CSound::Play(S_ENEMY_FACTORY_CAPTURED);

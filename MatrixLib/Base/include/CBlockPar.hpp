@@ -36,8 +36,8 @@ class BASE_API CBlockParUnit : public CMain {
 			CBlockPar * m_Block;
 		};
 
-		int m_FastFirst; // Ñìåùåíèå äî ïåðâîãî ýëåìåíòà ñ îäèíàêîâûì èìåíåì
-		int m_FastCnt;	 // Êîëè÷åñòâî ñ îäèíàêîâûì èìåíåì. Èíèöèàëèçèðîâàíî òîëüêî äëÿ ïåðâîãî
+		int m_FastFirst; // Ð¡Ð¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð´Ð¾ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð° Ñ Ð¾Ð´Ð¸Ð½Ð°ÐºÐ¾Ð²Ñ‹Ð¼ Ð¸Ð¼ÐµÐ½ÐµÐ¼
+		int m_FastCnt;	 // ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ Ð¾Ð´Ð¸Ð½Ð°ÐºÐ¾Ð²Ñ‹Ð¼ Ð¸Ð¼ÐµÐ½ÐµÐ¼. Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¾ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð´Ð»Ñ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾
 	public:
 		CBlockParUnit(CHeap * heap=NULL);
 		~CBlockParUnit();
@@ -80,9 +80,9 @@ class BASE_API CBlockPar : public CMain {
         void UnitDel(CBlockParUnit * el);
 		CBlockParUnit * UnitGet(const wchar * path, int path_len=-1);
 
-		int ArrayFind(const wchar * name, int namelen) const; // -1-íå íàéäåí   >=0-Ïåðâûé þíèò ñ ýòèì íàçâàíèåì
+		int ArrayFind(const wchar * name, int namelen) const; // -1-Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½   >=0-ÐŸÐµÑ€Ð²Ñ‹Ð¹ ÑŽÐ½Ð¸Ñ‚ Ñ ÑÑ‚Ð¸Ð¼ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÐµÐ¼
 		int ArrayFind(const CWStr & name) const			{ return ArrayFind(name.Get(),name.GetLen()); }
-		int ArrayFindInsertIndex(CBlockParUnit * ael); // À òàêæå èíèöèàëèçèðóåò ael->m_Fast*
+		int ArrayFindInsertIndex(CBlockParUnit * ael); // Ð Ñ‚Ð°ÐºÐ¶Ðµ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€ÑƒÐµÑ‚ ael->m_Fast*
         void ArrayAdd(CBlockParUnit * el);
         void ArrayDel(CBlockParUnit * el);
 	public:

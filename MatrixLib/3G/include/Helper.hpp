@@ -6,7 +6,7 @@
 #ifndef HELPER_INCLUDE
 #define HELPER_INCLUDE
 
-// Класс для отображения дебуг информации в 3D
+// РљР»Р°СЃСЃ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РґРµР±СѓРі РёРЅС„РѕСЂРјР°С†РёРё РІ 3D
 
 #if (defined _DEBUG) &&  !(defined _RELDEBUG)
 
@@ -79,8 +79,8 @@ class CHelper : public CMain
 		void Clear(void);
 		void Line(const D3DXVECTOR3 & start,const D3DXVECTOR3 & end,DWORD color1=0xffffffff,DWORD color2=0xffffffff);
         void BoundBox(const D3DXVECTOR3 & mins,const D3DXVECTOR3 & maxs,DWORD color=0xffffffff);
-		SHelperVertex * Lines(int cnt); // cnt-кол-во линий. (точек=cnt*2)
-		SHelperVertex * LineStrip(int cnt); // cnt-кол-во линий. (точек=cnt*2-2)
+		SHelperVertex * Lines(int cnt); // cnt-РєРѕР»-РІРѕ Р»РёРЅРёР№. (С‚РѕС‡РµРє=cnt*2)
+		SHelperVertex * LineStrip(int cnt); // cnt-РєРѕР»-РІРѕ Р»РёРЅРёР№. (С‚РѕС‡РµРє=cnt*2-2)
 		void Sphere(const D3DXVECTOR3 &pos, float radius, int cnt_rings, DWORD color);
 		void Cone(D3DXVECTOR3 vFrom, D3DXVECTOR3 vTo, float rFrom, float rTo, DWORD colorFrom, DWORD colorTo, int seg_cnt);
 		void ConeUpdate(D3DXVECTOR3 vFrom, D3DXVECTOR3 vTo, float rFrom, float rTo, DWORD colorFrom, DWORD colorTo);

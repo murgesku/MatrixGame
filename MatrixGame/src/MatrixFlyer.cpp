@@ -300,7 +300,7 @@ void  CMatrixFlyer::CalcMatrix(void)
         SMatrixFlyerUnit *u = m_Units + i;
         if (u->m_Type == FLYER_UNIT_VINT)
         {
-            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Vint.m_MatrixID);  // êðåïëåíèå âèíòà
+            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Vint.m_MatrixID);  // ÐºÑ€ÐµÐ¿Ð»ÐµÐ½Ð¸Ðµ Ð²Ð¸Ð½Ñ‚Ð°
 
             BuildRotateMatrix(rm, D3DXVECTOR3(0,0,0), *(D3DXVECTOR3*)&m->_31, u->m_Vint.m_Angle);
             *(D3DXVECTOR3*)&rm._41 = *(D3DXVECTOR3*)&m->_41;
@@ -339,7 +339,7 @@ void  CMatrixFlyer::CalcMatrix(void)
             D3DXVECTOR3 spos, sdir;
 
             D3DXMatrixRotationX(&rm, u->m_Engine.m_Angle);
-            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Engine.m_MatrixID);  // êðåïëåíèå äâèæêà
+            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Engine.m_MatrixID);  // ÐºÑ€ÐµÐ¿Ð»ÐµÐ½Ð¸Ðµ Ð´Ð²Ð¸Ð¶ÐºÐ°
             *(D3DXVECTOR3*)&rm._41 = *(D3DXVECTOR3*)&m->_41;
             u->m_Matrix = rm * m_Core->m_Matrix;
             if (u->m_Engine.m_Inversed)
@@ -356,7 +356,7 @@ void  CMatrixFlyer::CalcMatrix(void)
         } else if (u->m_Type == FLYER_UNIT_WEAPON)
         {
             // weapon 1
-            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Weapon.m_MatrixID);  // êðåïëåíèå îðóæèÿ
+            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(u->m_Weapon.m_MatrixID);  // ÐºÑ€ÐµÐ¿Ð»ÐµÐ½Ð¸Ðµ Ð¾Ñ€ÑƒÐ¶Ð¸Ñ
             D3DXMATRIX rm1;
             D3DXMatrixRotationX(&rm, u->m_Weapon.m_AngleX);
             D3DXMatrixRotationZ(&rm1, u->m_Weapon.m_AngleZ);
@@ -1422,7 +1422,7 @@ void CMatrixFlyer::LogicTakt(int takt)
 
             // current matrix
             const D3DXMATRIX *mw = w->m_Graph->GetMatrixByName(L"Fire");
-            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(w->m_Weapon.m_MatrixID);  // êðåïëåíèå îðóæèÿ
+            const D3DXMATRIX *m = m_Units[0].m_Graph->GetMatrixById(w->m_Weapon.m_MatrixID);  // ÐºÑ€ÐµÐ¿Ð»ÐµÐ½Ð¸Ðµ Ð¾Ñ€ÑƒÐ¶Ð¸Ñ
             D3DXMATRIX rm0, rm1;
             D3DXMatrixRotationX(&rm0, w->m_Weapon.m_AngleX);
             D3DXMatrixRotationZ(&rm1, w->m_Weapon.m_AngleZ);

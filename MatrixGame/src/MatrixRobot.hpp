@@ -125,7 +125,7 @@ enum OrderType
 	ROT_EMPTY_ORDER,
 	ROT_MOVE_TO,
 	ROT_MOVE_TO_BACK,
-    ROT_MOVE_RETURN,          // Робот пропускает другого робота затем возвращается в эту позицию
+    ROT_MOVE_RETURN,          // Р РѕР±РѕС‚ РїСЂРѕРїСѓСЃРєР°РµС‚ РґСЂСѓРіРѕРіРѕ СЂРѕР±РѕС‚Р° Р·Р°С‚РµРј РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РІ СЌС‚Сѓ РїРѕР·РёС†РёСЋ
     ROT_STOP_MOVE,
 	ROT_FIRE,
 	ROT_STOP_FIRE,
@@ -244,7 +244,7 @@ class CMatrixRobotAI : public CMatrixRobot {
     int                 m_ColsWeight2;
     int                 m_Cols;
     int                 m_Team;
-    int                 m_GroupLogic;                       // dab. В какой лагической группе находится робот
+    int                 m_GroupLogic;                       // dab. Р’ РєР°РєРѕР№ Р»Р°РіРёС‡РµСЃРєРѕР№ РіСЂСѓРїРїРµ РЅР°С…РѕРґРёС‚СЃСЏ СЂРѕР±РѕС‚
     int                 m_Group;
     int                 m_OrdersInPool;
     SOrder              m_OrdersList[MAX_ORDERS];
@@ -253,46 +253,46 @@ class CMatrixRobotAI : public CMatrixRobot {
     int                 m_CaptureCandidatesCnt;
 
 	int                 m_MapX,m_MapY;                      //
-	int                 m_ZoneCur;				            // Зона в которой находится робот
-	int                 m_DesX,m_DesY;		                // Точка в которую хочет встать робот
-	int                 m_ZoneDes;				            // Зона в которую стремится робот
-	int                 m_ZonePathNext;			            // Следующая зона в пути 
-	int                 m_ZonePathCnt;			            // Количество зон (включительно начальную и конечную) до m_ZoneDes
-	int                 m_ZoneNear;				            // Ближайшая зона от той в которой находится робот по напровлению к m_ZoneDes
-	int                 m_MovePathCnt;			            // Количество точек в пути движения
-	int                 m_MovePathCur;			            // Текущая точка в пути движения
-    int*                m_ZonePath;			                // Список зон до m_ZoneDes
-    CPoint              m_MovePath[MatrixPathMoveMax];      // Путь движения
-    float               m_MovePathDist;                     // Длина расчитанного пути
-    float               m_MovePathDistFollow;               // Сколько робот прошол по пути
+	int                 m_ZoneCur;				            // Р—РѕРЅР° РІ РєРѕС‚РѕСЂРѕР№ РЅР°С…РѕРґРёС‚СЃСЏ СЂРѕР±РѕС‚
+	int                 m_DesX,m_DesY;		                // РўРѕС‡РєР° РІ РєРѕС‚РѕСЂСѓСЋ С…РѕС‡РµС‚ РІСЃС‚Р°С‚СЊ СЂРѕР±РѕС‚
+	int                 m_ZoneDes;				            // Р—РѕРЅР° РІ РєРѕС‚РѕСЂСѓСЋ СЃС‚СЂРµРјРёС‚СЃСЏ СЂРѕР±РѕС‚
+	int                 m_ZonePathNext;			            // РЎР»РµРґСѓСЋС‰Р°СЏ Р·РѕРЅР° РІ РїСѓС‚Рё 
+	int                 m_ZonePathCnt;			            // РљРѕР»РёС‡РµСЃС‚РІРѕ Р·РѕРЅ (РІРєР»СЋС‡РёС‚РµР»СЊРЅРѕ РЅР°С‡Р°Р»СЊРЅСѓСЋ Рё РєРѕРЅРµС‡РЅСѓСЋ) РґРѕ m_ZoneDes
+	int                 m_ZoneNear;				            // Р‘Р»РёР¶Р°Р№С€Р°СЏ Р·РѕРЅР° РѕС‚ С‚РѕР№ РІ РєРѕС‚РѕСЂРѕР№ РЅР°С…РѕРґРёС‚СЃСЏ СЂРѕР±РѕС‚ РїРѕ РЅР°РїСЂРѕРІР»РµРЅРёСЋ Рє m_ZoneDes
+	int                 m_MovePathCnt;			            // РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє РІ РїСѓС‚Рё РґРІРёР¶РµРЅРёСЏ
+	int                 m_MovePathCur;			            // РўРµРєСѓС‰Р°СЏ С‚РѕС‡РєР° РІ РїСѓС‚Рё РґРІРёР¶РµРЅРёСЏ
+    int*                m_ZonePath;			                // РЎРїРёСЃРѕРє Р·РѕРЅ РґРѕ m_ZoneDes
+    CPoint              m_MovePath[MatrixPathMoveMax];      // РџСѓС‚СЊ РґРІРёР¶РµРЅРёСЏ
+    float               m_MovePathDist;                     // Р”Р»РёРЅР° СЂР°СЃС‡РёС‚Р°РЅРЅРѕРіРѕ РїСѓС‚Рё
+    float               m_MovePathDistFollow;               // РЎРєРѕР»СЊРєРѕ СЂРѕР±РѕС‚ РїСЂРѕС€РѕР» РїРѕ РїСѓС‚Рё
     D3DXVECTOR2         m_MoveTestPos;
     int                 m_MoveTestChange;
 
-    float               m_Strength;                         // Сила робота
+    float               m_Strength;                         // РЎРёР»Р° СЂРѕР±РѕС‚Р°
 
     int                 m_NextTimeAblaze;
     int                 m_NextTimeShorted;
     D3DXVECTOR3         m_CollAvoid;
 
-    float               m_SpeedWaterCorr;                   // коррекция скорости при движении по воде
-    float               m_SpeedSlopeCorrDown;               // коррекция скорости при движении с горы
-    float               m_SpeedSlopeCorrUp;                 // коррекция скорости при движении в гору
+    float               m_SpeedWaterCorr;                   // РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё РїСЂРё РґРІРёР¶РµРЅРёРё РїРѕ РІРѕРґРµ
+    float               m_SpeedSlopeCorrDown;               // РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё РїСЂРё РґРІРёР¶РµРЅРёРё СЃ РіРѕСЂС‹
+    float               m_SpeedSlopeCorrUp;                 // РєРѕСЂСЂРµРєС†РёСЏ СЃРєРѕСЂРѕСЃС‚Рё РїСЂРё РґРІРёР¶РµРЅРёРё РІ РіРѕСЂСѓ
 
-	float               m_maxSpeed;		                    // максимально развиваемая скорость
-    float               m_maxHullSpeed;                     // скорость поворота HULL'a
-    float               m_maxRotationSpeed;                 // скорость вращения робота на месте
+	float               m_maxSpeed;		                    // РјР°РєСЃРёРјР°Р»СЊРЅРѕ СЂР°Р·РІРёРІР°РµРјР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ
+    float               m_maxHullSpeed;                     // СЃРєРѕСЂРѕСЃС‚СЊ РїРѕРІРѕСЂРѕС‚Р° HULL'a
+    float               m_maxRotationSpeed;                 // СЃРєРѕСЂРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ СЂРѕР±РѕС‚Р° РЅР° РјРµСЃС‚Рµ
     float               m_MaxFireDist;
     float               m_MinFireDist;
     float               m_RepairDist;
     float               m_SyncMul;
     int                 m_CtrlGroup;
-    SBotWeapon          m_Weapons[MAX_WEAPON_CNT];          // установленное оружие
+    SBotWeapon          m_Weapons[MAX_WEAPON_CNT];          // СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕРµ РѕСЂСѓР¶РёРµ
     int                 m_WeaponsCnt;
 
     //CMatrixMapStatic*   m_FireTarget;
 //    int                 m_GatherPeriod;
     CInfo               m_Environment;
-    int                 m_HaveRepair;                       // 0-нет 1-есть чинилка 2-все оружия это чинилка (не учитывается бомба)
+    int                 m_HaveRepair;                       // 0-РЅРµС‚ 1-РµСЃС‚СЊ С‡РёРЅРёР»РєР° 2-РІСЃРµ РѕСЂСѓР¶РёСЏ СЌС‚Рѕ С‡РёРЅРёР»РєР° (РЅРµ СѓС‡РёС‚С‹РІР°РµС‚СЃСЏ Р±РѕРјР±Р°)
 
     D3DXVECTOR3         m_WeaponDir;
     DWORD               m_nLastCollideFrame;
@@ -309,8 +309,8 @@ public:
     float               m_BombProtect;      // 0 .. 1   (0 - no protection, 1 - full protection)
     float               m_AimProtect;       // 0 .. 1   (0 - no protection, 1 - full protection)
 
-    float               m_GroupSpeed;                       // скорость робота в группе
-    float               m_ColSpeed;                         // скорость робота если впереди другой робот
+    float               m_GroupSpeed;                       // СЃРєРѕСЂРѕСЃС‚СЊ СЂРѕР±РѕС‚Р° РІ РіСЂСѓРїРїРµ
+    float               m_ColSpeed;                         // СЃРєРѕСЂРѕСЃС‚СЊ СЂРѕР±РѕС‚Р° РµСЃР»Рё РІРїРµСЂРµРґРё РґСЂСѓРіРѕР№ СЂРѕР±РѕС‚
 
     void                CreateTextures();
     CTextureManaged*    GetBigTexture()                            { return m_BigTexture; }
@@ -358,8 +358,8 @@ public:
     void        SetWeaponToArcadedCoeff();
     void        SetWeaponToDefaultCoeff();
 
-    float       GetStrength(void)                                   { return m_Strength; } // Сила робота
-    void        CalcStrength(void);                                 // Расчитываем силу робота
+    float       GetStrength(void)                                   { return m_Strength; } // РЎРёР»Р° СЂРѕР±РѕС‚Р°
+    void        CalcStrength(void);                                 // Р Р°СЃС‡РёС‚С‹РІР°РµРј СЃРёР»Сѓ СЂРѕР±РѕС‚Р°
 
     bool        PLIsInPlace(void) const;
 
@@ -415,21 +415,21 @@ public:
     static bool SphereToAABBCheck(const D3DXVECTOR2 &sphere_p, const D3DXVECTOR2 &vMin, const D3DXVECTOR2 &vMax, float &d, float &dx, float &dy);
     D3DXVECTOR3 SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMapMove *smm, const CPoint &cell, BYTE corner); //, bool revers_x, bool revers_y);
 
-    void ZoneCurFind(void);		                    // Найти зону в которой находится робот (Out: m_ZoneCur)
-	void ZonePathCalc(void);	                    // Рассчитать путь до m_ZoneDes (In: m_ZoneCur,m_ZoneDes) (Out: m_ZonePathCnt,m_ZonePath)
-	void ZoneMoveCalc(void);                        // Рассчитать путь движения до ближайшей зоны (In: m_ZoneCur,m_ZoneNear) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
+    void ZoneCurFind(void);		                    // РќР°Р№С‚Рё Р·РѕРЅСѓ РІ РєРѕС‚РѕСЂРѕР№ РЅР°С…РѕРґРёС‚СЃСЏ СЂРѕР±РѕС‚ (Out: m_ZoneCur)
+	void ZonePathCalc(void);	                    // Р Р°СЃСЃС‡РёС‚Р°С‚СЊ РїСѓС‚СЊ РґРѕ m_ZoneDes (In: m_ZoneCur,m_ZoneDes) (Out: m_ZonePathCnt,m_ZonePath)
+	void ZoneMoveCalc(void);                        // Р Р°СЃСЃС‡РёС‚Р°С‚СЊ РїСѓС‚СЊ РґРІРёР¶РµРЅРёСЏ РґРѕ Р±Р»РёР¶Р°Р№С€РµР№ Р·РѕРЅС‹ (In: m_ZoneCur,m_ZoneNear) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
     float CalcPathLength(void);
-    //void ZoneMoveCalcTo(void);	                // Рассчитать путь в нутрии текущей зоны до точки назначения (In: m_DesX,m_DesY) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
-	void MoveByMovePath(int ms);	                // Двигаться по пути движения
+    //void ZoneMoveCalcTo(void);	                // Р Р°СЃСЃС‡РёС‚Р°С‚СЊ РїСѓС‚СЊ РІ РЅСѓС‚СЂРёРё С‚РµРєСѓС‰РµР№ Р·РѕРЅС‹ РґРѕ С‚РѕС‡РєРё РЅР°Р·РЅР°С‡РµРЅРёСЏ (In: m_DesX,m_DesY) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
+	void MoveByMovePath(int ms);	                // Р”РІРёРіР°С‚СЊСЃСЏ РїРѕ РїСѓС‚Рё РґРІРёР¶РµРЅРёСЏ
     void MoveToRndBuilding();
 
 
-    void CalcRobotMass();                           // вычисляет массу, скорость, силу робота
-    bool Seek(const D3DXVECTOR3 &dest,bool & rotate,bool end_path, bool back=false);// поиск вектора смещения робота
-	void RotateHull(const D3DXVECTOR3 &direction);  // поворот башни
-    bool RotateRobot(const D3DXVECTOR3 &dest, float * rotateangle=NULL);      // поворот робота
-	void Decelerate();                              // замедление
-    void RobotWeaponInit();                         // инициализация оружия
+    void CalcRobotMass();                           // РІС‹С‡РёСЃР»СЏРµС‚ РјР°СЃСЃСѓ, СЃРєРѕСЂРѕСЃС‚СЊ, СЃРёР»Сѓ СЂРѕР±РѕС‚Р°
+    bool Seek(const D3DXVECTOR3 &dest,bool & rotate,bool end_path, bool back=false);// РїРѕРёСЃРє РІРµРєС‚РѕСЂР° СЃРјРµС‰РµРЅРёСЏ СЂРѕР±РѕС‚Р°
+	void RotateHull(const D3DXVECTOR3 &direction);  // РїРѕРІРѕСЂРѕС‚ Р±Р°С€РЅРё
+    bool RotateRobot(const D3DXVECTOR3 &dest, float * rotateangle=NULL);      // РїРѕРІРѕСЂРѕС‚ СЂРѕР±РѕС‚Р°
+	void Decelerate();                              // Р·Р°РјРµРґР»РµРЅРёРµ
+    void RobotWeaponInit();                         // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РѕСЂСѓР¶РёСЏ
     void HitTo(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos);
     
     void RotateRobotLeft() { SETFLAG(m_ObjectState, ROBOT_FLAG_ROT_LEFT);  }
@@ -497,7 +497,7 @@ public:
     void GetLost(const D3DXVECTOR3 &v);
 //
 
-    void RobotSpawn(CMatrixBuilding *pBase);    // spawn робота		
+    void RobotSpawn(CMatrixBuilding *pBase);    // spawn СЂРѕР±РѕС‚Р°		
     void DIPTakt(float ms);                     // death in progress takt
 
 	virtual void LogicTakt(int cms);

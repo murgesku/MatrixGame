@@ -133,8 +133,8 @@ struct SPlane
     }
 };
 
-//PURPOSE		: Ïðîâåðÿåò ñ êàêîé ñòîðîíû ëèíèè íàõîäèòñÿ òî÷êà
-//RETURN VALUE	: True åñëè ñïðàâà èëè íà ëèíèè, False â îñòàëüíûõ ñëó÷àÿõ
+//PURPOSE		: ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÑ‚ Ñ ÐºÐ°ÐºÐ¾Ð¹ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ñ‹ Ð»Ð¸Ð½Ð¸Ð¸ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ñ‚Ð¾Ñ‡ÐºÐ°
+//RETURN VALUE	: True ÐµÑÐ»Ð¸ ÑÐ¿Ñ€Ð°Ð²Ð° Ð¸Ð»Ð¸ Ð½Ð° Ð»Ð¸Ð½Ð¸Ð¸, False Ð² Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ñ… ÑÐ»ÑƒÑ‡Ð°ÑÑ…
 __forceinline bool PointLineCatch(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, const D3DXVECTOR2 &p)
 {
 	D3DXVECTOR2 d1, d2;
@@ -149,8 +149,8 @@ __forceinline bool PointLineCatch(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, co
 	return res > 0;
 }
 
-//PURPISE		:Ïðîâåðÿò ïîïàëà ëè òî÷êà âíóòðü 2D AABB
-//RETURN VALUE	: True åñëè ïîïàëà
+//PURPISE		:ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÑ‚ Ð¿Ð¾Ð¿Ð°Ð»Ð° Ð»Ð¸ Ñ‚Ð¾Ñ‡ÐºÐ° Ð²Ð½ÑƒÑ‚Ñ€ÑŒ 2D AABB
+//RETURN VALUE	: True ÐµÑÐ»Ð¸ Ð¿Ð¾Ð¿Ð°Ð»Ð°
 __forceinline bool PointToAABB(const D3DXVECTOR2 &AABB_pos, const D3DXVECTOR2 &p, int nAABB_height, int nAABB_width)
 {
 
@@ -175,23 +175,23 @@ __forceinline float DistOtrezokPoint(const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p
 bool IntersectTriangle(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, const D3DXVECTOR3 & v0, const D3DXVECTOR3 & v1, const D3DXVECTOR3 &v2, float & t, float & u, float & v);
 float DistLinePoint(const D3DXVECTOR3 & l1,const D3DXVECTOR3 & l2,const D3DXVECTOR3 & p);
 void CalcPick(CPoint mp, D3DXMATRIX & matProj, D3DXMATRIX & matView, D3DXVECTOR3 * vpos, D3DXVECTOR3 * vdir);
-bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, D3DXVECTOR2 & out); // òî÷êà ïåðåñå÷åíèÿ=out
-bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, float * t, float * u); // òî÷êà ïåðåñå÷åíèÿ=s1+(e1-s1)*t èëè s2+(e2-s2)*u.  Åñëè t>=0 and t<=1.0 òî òî÷êà ïåðåñå÷åíèÿ ìåæäó s1 è e1
+bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, D3DXVECTOR2 & out); // Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ=out
+bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, float * t, float * u); // Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ=s1+(e1-s1)*t Ð¸Ð»Ð¸ s2+(e2-s2)*u.  Ð•ÑÐ»Ð¸ t>=0 and t<=1.0 Ñ‚Ð¾ Ñ‚Ð¾Ñ‡ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ Ð¼ÐµÐ¶Ð´Ñƒ s1 Ð¸ e1
 
-bool IsIntersectRect(float sx1,float sy1,float ex1,float ey1,float sx2,float sy2,float ex2,float ey2,float * sx,float * sy); // True - åñëè äâà ïðÿìîóãîëüíèêà ïåðåñåêàþòñÿ sx,sy - íàïðàâëåíèå è âåëè÷èíà çàñòóïà
+bool IsIntersectRect(float sx1,float sy1,float ex1,float ey1,float sx2,float sy2,float ex2,float ey2,float * sx,float * sy); // True - ÐµÑÐ»Ð¸ Ð´Ð²Ð° Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÐºÐ°ÑŽÑ‚ÑÑ sx,sy - Ð½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¸ Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ð° Ð·Ð°ÑÑ‚ÑƒÐ¿Ð°
 
 bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, float &t);
 bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 & s, const D3DXVECTOR2 & e, float &t1);
 
 
-__forceinline double AngleNorm(double a) // Íîðìèðîâàòü óãîë. Âîçðàùàåò îò -pi äî +pi
+__forceinline double AngleNorm(double a) // ÐÐ¾Ñ€Ð¼Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ÑƒÐ³Ð¾Ð». Ð’Ð¾Ð·Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð¾Ñ‚ -pi Ð´Ð¾ +pi
 {
     while(a>pi_f) a -= 2.0*M_PI;
     while(a<=-pi_f) a += 2.0*M_PI;
     return a;
 }
 
-__forceinline double AngleDist(double from,double to) // Äèñòàíöèÿ ìåæäó óãëàìè. Âîçðàùàåò îò -pi äî +pi
+__forceinline double AngleDist(double from,double to) // Ð”Ð¸ÑÑ‚Ð°Ð½Ñ†Ð¸Ñ Ð¼ÐµÐ¶Ð´Ñƒ ÑƒÐ³Ð»Ð°Ð¼Ð¸. Ð’Ð¾Ð·Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð¾Ñ‚ -pi Ð´Ð¾ +pi
 {
 	while (from < 0.0) from += 2.0*M_PI;
 	while (to < 0.0) to += 2.0*M_PI;
@@ -237,7 +237,7 @@ __forceinline bool IsVec3Equal(const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1, flo
     return true;
 }
 
-// ZakkeR: ×åñòíî ñòûðèë èç ñûðüêîâ HL2
+// ZakkeR: Ð§ÐµÑÑ‚Ð½Ð¾ ÑÑ‚Ñ‹Ñ€Ð¸Ð» Ð¸Ð· ÑÑ‹Ñ€ÑŒÐºÐ¾Ð² HL2
 // Math routines done in optimized assembly math package routines
 void inline SinCos( float radians, float *sine, float *cosine )
 {
@@ -461,16 +461,16 @@ class CTrajectory : public CMain
 
 public:
 
-    void Init1(const D3DXVECTOR3 *points, int pcnt);    // ïðèìåðíî
-    void Init2(const D3DXVECTOR3 *points, int pcnt);    // òî÷íî
+    void Init1(const D3DXVECTOR3 *points, int pcnt);    // Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ð½Ð¾
+    void Init2(const D3DXVECTOR3 *points, int pcnt);    // Ñ‚Ð¾Ñ‡Ð½Ð¾
 
-    void Continue1(const D3DXVECTOR3 *points, int pcnt);    // ïðèìåðíî
-    void Continue2(const D3DXVECTOR3 *points, int pcnt);    // òî÷íî
+    void Continue1(const D3DXVECTOR3 *points, int pcnt);    // Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ð½Ð¾
+    void Continue2(const D3DXVECTOR3 *points, int pcnt);    // Ñ‚Ð¾Ñ‡Ð½Ð¾
 
 
     CTrajectory(void):m_CurSeg(0), m_CurSegT(0), m_SegAlloc(0), m_SegCnt(0), m_CurSegLen(-1) {m_Segments = NULL; m_Len = -1;};   
     CTrajectory(CHeap *heap):m_CurSeg(0), m_CurSegT(0), m_SegAlloc(0), m_SegCnt(0), m_CurSegLen(-1) {m_Heap = heap; m_Segments = NULL; m_Len = -1;};   
-    CTrajectory(CHeap *heap, D3DXVECTOR3 *points, int pcnt):m_Heap(heap),m_Len(-1),m_Segments(NULL), m_CurSegLen(-1) {Init2(points, pcnt); }   // init2 // òî÷íî
+    CTrajectory(CHeap *heap, D3DXVECTOR3 *points, int pcnt):m_Heap(heap),m_Len(-1),m_Segments(NULL), m_CurSegLen(-1) {Init2(points, pcnt); }   // init2 // Ñ‚Ð¾Ñ‡Ð½Ð¾
     
 
     ~CTrajectory() {if (m_Segments) {HFree(m_Segments, m_Heap);}};

@@ -24,7 +24,7 @@ class CCacheData : public CMain {
 		CacheClass m_Type;
 		CWStr m_Name;
 
-		int m_Ref;			// Кол-во ссылок на эти данные. (Для временных данных)
+		int m_Ref;			// РљРѕР»-РІРѕ СЃСЃС‹Р»РѕРє РЅР° СЌС‚Рё РґР°РЅРЅС‹Рµ. (Р”Р»СЏ РІСЂРµРјРµРЅРЅС‹С… РґР°РЅРЅС‹С…)
 
         static bool   m_dip;    // cache del in progress
 	public:

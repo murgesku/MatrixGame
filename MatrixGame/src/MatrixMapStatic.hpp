@@ -13,18 +13,18 @@ typedef CMatrixMapGroup *PCMatrixMapGroup;
 
 #include "Effects/MatrixEffect.hpp"
 
-// Ресурс объекта
-#define MR_Graph                SETBIT(0)          // Графика
-#define MR_Matrix               SETBIT(1)               // Матрица
-#define MR_Pos                  SETBIT(2)              // Положение
-#define MR_Rotate               SETBIT(3)       // Ориентация
-#define MR_ShadowStencil        SETBIT(4)       // Стенсильные тени
-//#define MR_ShadowProj           SETBIT(5)       // Проекционные тени
-#define MR_ShadowProjGeom       SETBIT(6)       // Проекционные тени: геометрия
-#define MR_ShadowProjTex        SETBIT(7)       // Проекционные тени: текстуры
-#define MR_MiniMap              SETBIT(8)       // Присутствие на миникарте
+// Р РµСЃСѓСЂСЃ РѕР±СЉРµРєС‚Р°
+#define MR_Graph                SETBIT(0)          // Р“СЂР°С„РёРєР°
+#define MR_Matrix               SETBIT(1)               // РњР°С‚СЂРёС†Р°
+#define MR_Pos                  SETBIT(2)              // РџРѕР»РѕР¶РµРЅРёРµ
+#define MR_Rotate               SETBIT(3)       // РћСЂРёРµРЅС‚Р°С†РёСЏ
+#define MR_ShadowStencil        SETBIT(4)       // РЎС‚РµРЅСЃРёР»СЊРЅС‹Рµ С‚РµРЅРё
+//#define MR_ShadowProj           SETBIT(5)       // РџСЂРѕРµРєС†РёРѕРЅРЅС‹Рµ С‚РµРЅРё
+#define MR_ShadowProjGeom       SETBIT(6)       // РџСЂРѕРµРєС†РёРѕРЅРЅС‹Рµ С‚РµРЅРё: РіРµРѕРјРµС‚СЂРёСЏ
+#define MR_ShadowProjTex        SETBIT(7)       // РџСЂРѕРµРєС†РёРѕРЅРЅС‹Рµ С‚РµРЅРё: С‚РµРєСЃС‚СѓСЂС‹
+#define MR_MiniMap              SETBIT(8)       // РџСЂРёСЃСѓС‚СЃС‚РІРёРµ РЅР° РјРёРЅРёРєР°СЂС‚Рµ
 
-//#define MR_GraphSort          SETBIT(1)          // Сортировка графики
+//#define MR_GraphSort          SETBIT(1)          // РЎРѕСЂС‚РёСЂРѕРІРєР° РіСЂР°С„РёРєРё
 
 typedef enum
 {
@@ -42,26 +42,26 @@ typedef enum
 
 #define UNDER_ATTACK_IDLE_TIME  120000
 
-#define OBJECT_STATE_ABLAZE    SETBIT(0)   // горит
-#define OBJECT_STATE_SHORTED   SETBIT(1)   // закорочен
-#define OBJECT_STATE_INVISIBLE SETBIT(2)   // невидимый
-#define OBJECT_STATE_INTERFACE SETBIT(3)   // рисуется в интерфейсе
+#define OBJECT_STATE_ABLAZE    SETBIT(0)   // РіРѕСЂРёС‚
+#define OBJECT_STATE_SHORTED   SETBIT(1)   // Р·Р°РєРѕСЂРѕС‡РµРЅ
+#define OBJECT_STATE_INVISIBLE SETBIT(2)   // РЅРµРІРёРґРёРјС‹Р№
+#define OBJECT_STATE_INTERFACE SETBIT(3)   // СЂРёСЃСѓРµС‚СЃСЏ РІ РёРЅС‚РµСЂС„РµР№СЃРµ
 
 #define OBJECT_STATE_INVULNERABLE       SETBIT(3)
-#define OBJECT_STATE_SHADOW_SPECIAL     SETBIT(4)   // параметры для русчета тени загружаются
-#define OBJECT_STATE_TRACE_INVISIBLE    SETBIT(5)   // объект невидим для TRACE_SKIP_INVISIBLE объектов
-#define OBJECT_STATE_DIP                SETBIT(6)  // используется в StaticDelete
+#define OBJECT_STATE_SHADOW_SPECIAL     SETBIT(4)   // РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ СЂСѓСЃС‡РµС‚Р° С‚РµРЅРё Р·Р°РіСЂСѓР¶Р°СЋС‚СЃСЏ
+#define OBJECT_STATE_TRACE_INVISIBLE    SETBIT(5)   // РѕР±СЉРµРєС‚ РЅРµРІРёРґРёРј РґР»СЏ TRACE_SKIP_INVISIBLE РѕР±СЉРµРєС‚РѕРІ
+#define OBJECT_STATE_DIP                SETBIT(6)  // РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ StaticDelete
 
 // comon flags
 
 // only mesh flags
-#define OBJECT_STATE_BURNED             SETBIT(10)   // сгоревший (для мешей)
-#define OBJECT_STATE_EXPLOSIVE          SETBIT(11)   // ломается со взрывом (для мешей)
-#define OBJECT_STATE_NORMALIZENORMALS   SETBIT(12)   // нормализовывать нормали (для мешей)
-#define OBJECT_STATE_SPECIAL            SETBIT(13)   // специальный объект: смерть требуется для победы
-#define OBJECT_STATE_TERRON_EXPL        SETBIT(14)   // террон взрывается
-#define OBJECT_STATE_TERRON_EXPL1       SETBIT(15)   // террон взрывается 1
-#define OBJECT_STATE_TERRON_EXPL2       SETBIT(16)   // террон взрывается 2
+#define OBJECT_STATE_BURNED             SETBIT(10)   // СЃРіРѕСЂРµРІС€РёР№ (РґР»СЏ РјРµС€РµР№)
+#define OBJECT_STATE_EXPLOSIVE          SETBIT(11)   // Р»РѕРјР°РµС‚СЃСЏ СЃРѕ РІР·СЂС‹РІРѕРј (РґР»СЏ РјРµС€РµР№)
+#define OBJECT_STATE_NORMALIZENORMALS   SETBIT(12)   // РЅРѕСЂРјР°Р»РёР·РѕРІС‹РІР°С‚СЊ РЅРѕСЂРјР°Р»Рё (РґР»СЏ РјРµС€РµР№)
+#define OBJECT_STATE_SPECIAL            SETBIT(13)   // СЃРїРµС†РёР°Р»СЊРЅС‹Р№ РѕР±СЉРµРєС‚: СЃРјРµСЂС‚СЊ С‚СЂРµР±СѓРµС‚СЃСЏ РґР»СЏ РїРѕР±РµРґС‹
+#define OBJECT_STATE_TERRON_EXPL        SETBIT(14)   // С‚РµСЂСЂРѕРЅ РІР·СЂС‹РІР°РµС‚СЃСЏ
+#define OBJECT_STATE_TERRON_EXPL1       SETBIT(15)   // С‚РµСЂСЂРѕРЅ РІР·СЂС‹РІР°РµС‚СЃСЏ 1
+#define OBJECT_STATE_TERRON_EXPL2       SETBIT(16)   // С‚РµСЂСЂРѕРЅ РІР·СЂС‹РІР°РµС‚СЃСЏ 2
 
 
 // only cannon flags. use its values for other objects
@@ -246,8 +246,8 @@ protected:
             bool        found;
         };
 
-        DWORD           m_ObjectState;      // битовый набор.
-        DWORD           m_RChange;          // Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
+        DWORD           m_ObjectState;      // Р±РёС‚РѕРІС‹Р№ РЅР°Р±РѕСЂ.
+        DWORD           m_RChange;          // РљР°РєРѕР№ СЂРµСЃСѓСЂСЃ РѕР±СЉРµРєС‚Р° РёР·РјРµРЅРёР»СЃСЏ. РџСЂРё СЃРѕР·РґР°РЅРЅРёРё РєР»Р°СЃСЃР° СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РІ 0xffffffff
 
         SObjectCore    *m_Core;
 
@@ -271,14 +271,14 @@ protected:
         int              m_InCnt;
 
 
-        float           m_CamDistSq;    // квадрат растояния до камеры. вычисляется только в графическом такте.
+        float           m_CamDistSq;    // РєРІР°РґСЂР°С‚ СЂР°СЃС‚РѕСЏРЅРёСЏ РґРѕ РєР°РјРµСЂС‹. РІС‹С‡РёСЃР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ РіСЂР°С„РёС‡РµСЃРєРѕРј С‚Р°РєС‚Рµ.
 
         int             m_NearBaseCnt;
 
         // for visibility
         void            WillDraw(void)
         {
-            // TODO : доделать!!!
+            // TODO : РґРѕРґРµР»Р°С‚СЊ!!!
             return;
             // remove from previous list of visibility
             LIST_DEL(this, m_FirstVisOld, m_LastVisOld, m_PrevVis, m_NextVis);
@@ -436,7 +436,7 @@ public:
 #endif
 #endif
 
-        // logic temp: list of static objects, у которых временно вызывается логический такт
+        // logic temp: list of static objects, Сѓ РєРѕС‚РѕСЂС‹С… РІСЂРµРјРµРЅРЅРѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ Р»РѕРіРёС‡РµСЃРєРёР№ С‚Р°РєС‚
         __forceinline bool    InLT(void) { return (m_PrevLogicTemp!=NULL) || (m_NextLogicTemp!=NULL) || (this==m_FirstLogicTemp); }
         __forceinline void    AddLT(void) {if (!InLT()) {LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
         __forceinline void    DelLT(void) {if (InLT()) {LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
@@ -454,7 +454,7 @@ public:
 
         void    StaticTakt(int ms);
 
-        virtual void RNeed(dword need)=0;                       // Запрашиваем нужные ресурсы объекта
+        virtual void RNeed(dword need)=0;                       // Р—Р°РїСЂР°С€РёРІР°РµРј РЅСѓР¶РЅС‹Рµ СЂРµСЃСѓСЂСЃС‹ РѕР±СЉРµРєС‚Р°
 
         virtual void Takt(int cms) = 0;
         virtual void LogicTakt(int cms) = 0;

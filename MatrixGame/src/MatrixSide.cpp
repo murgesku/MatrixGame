@@ -24,17 +24,17 @@
 #include "Interface/CCounter.h"
 #include <time.h>
 
-// robot->GetEnv()->m_Place -   место куда робот идет или где стоит. 
-//                              <0 - роботу нужно назначить приказ
-//                              >=0 - должен быть низкоуровневый приказ роботу. есть исключение: роботу не был отдан приказ так как предыдущий нельзя было прервать CanBreakOrder==false. в этом случае когда CanBreakOrder станет true выполнится кода: robot->GetEnv()->m_Place=-1
+// robot->GetEnv()->m_Place -   РјРµСЃС‚Рѕ РєСѓРґР° СЂРѕР±РѕС‚ РёРґРµС‚ РёР»Рё РіРґРµ СЃС‚РѕРёС‚. 
+//                              <0 - СЂРѕР±РѕС‚Сѓ РЅСѓР¶РЅРѕ РЅР°Р·РЅР°С‡РёС‚СЊ РїСЂРёРєР°Р·
+//                              >=0 - РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РЅРёР·РєРѕСѓСЂРѕРІРЅРµРІС‹Р№ РїСЂРёРєР°Р· СЂРѕР±РѕС‚Сѓ. РµСЃС‚СЊ РёСЃРєР»СЋС‡РµРЅРёРµ: СЂРѕР±РѕС‚Сѓ РЅРµ Р±С‹Р» РѕС‚РґР°РЅ РїСЂРёРєР°Р· С‚Р°Рє РєР°Рє РїСЂРµРґС‹РґСѓС‰РёР№ РЅРµР»СЊР·СЏ Р±С‹Р»Рѕ РїСЂРµСЂРІР°С‚СЊ CanBreakOrder==false. РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РєРѕРіРґР° CanBreakOrder СЃС‚Р°РЅРµС‚ true РІС‹РїРѕР»РЅРёС‚СЃСЏ РєРѕРґР°: robot->GetEnv()->m_Place=-1
 
 inline bool PrepareBreakOrder(CMatrixMapStatic * robot);
 inline bool IsLiveUnit(CMatrixMapStatic * obj);
 inline CPoint GetMapPos(CMatrixMapStatic * obj);
 inline D3DXVECTOR2 GetWorldPos(CMatrixMapStatic * obj);
-inline bool IsToPlace(CMatrixRobotAI * robot,int place);    // Движется ли робот к назначенному месту
-inline bool IsInPlace(CMatrixRobotAI * robot,int place);    // Если робот стоит на месте
-inline bool IsInPlace(CMatrixRobotAI * robot);              // Если робот стоит на месте
+inline bool IsToPlace(CMatrixRobotAI * robot,int place);    // Р”РІРёР¶РµС‚СЃСЏ Р»Рё СЂРѕР±РѕС‚ Рє РЅР°Р·РЅР°С‡РµРЅРЅРѕРјСѓ РјРµСЃС‚Сѓ
+inline bool IsInPlace(CMatrixRobotAI * robot,int place);    // Р•СЃР»Рё СЂРѕР±РѕС‚ СЃС‚РѕРёС‚ РЅР° РјРµСЃС‚Рµ
+inline bool IsInPlace(CMatrixRobotAI * robot);              // Р•СЃР»Рё СЂРѕР±РѕС‚ СЃС‚РѕРёС‚ РЅР° РјРµСЃС‚Рµ
 inline int RobotPlace(CMatrixRobotAI * robot);
 inline int CannonPlace(CMatrixCannon * cannon);
 inline int ObjPlace(CMatrixMapStatic * obj);
@@ -1848,10 +1848,10 @@ void CMatrixSideUnit::Regroup()
     int i,u,t,k;
     D3DXVECTOR2 v1,v2;
 
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int subl[MAX_ROBOTS];            // В какую подгруппу входит робот
-    int rlcnt=0;                     // Кол-во роботов на карте
-    int subcnt=0;                    // Кол-во подгрупп
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int subl[MAX_ROBOTS];            // Р’ РєР°РєСѓСЋ РїРѕРґРіСЂСѓРїРїСѓ РІС…РѕРґРёС‚ СЂРѕР±РѕС‚
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int subcnt=0;                    // РљРѕР»-РІРѕ РїРѕРґРіСЂСѓРїРї
 
     int tl[MAX_ROBOTS];
     int tlcnt=0,tlsme=0;
@@ -1859,7 +1859,7 @@ void CMatrixSideUnit::Regroup()
     for(i=0;i<MAX_ROBOTS;i++) subl[i]=-1;
     for(i=0;i<MAX_LOGIC_GROUP;i++) m_LogicGroup[i].RobotsCnt(0);
 
-    // Запоминаем всех роботов
+    // Р—Р°РїРѕРјРёРЅР°РµРј РІСЃРµС… СЂРѕР±РѕС‚РѕРІ
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->GetSide()==m_Id) {
@@ -1874,7 +1874,7 @@ void CMatrixSideUnit::Regroup()
         obj = obj->GetNextLogic();
     }
 
-    // Делим на подгруппы для разделения. Растояние между роботами должно быть не более 400
+    // Р”РµР»РёРј РЅР° РїРѕРґРіСЂСѓРїРїС‹ РґР»СЏ СЂР°Р·РґРµР»РµРЅРёСЏ. Р Р°СЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ СЂРѕР±РѕС‚Р°РјРё РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РЅРµ Р±РѕР»РµРµ 400
     for(u=0;u<rlcnt;u++) {
         if(subl[u]>=0) continue;
 
@@ -1903,7 +1903,7 @@ void CMatrixSideUnit::Regroup()
             tlsme++;
         }
     }
-    // Разделяем
+    // Р Р°Р·РґРµР»СЏРµРј
     for(u=0;u<MAX_LOGIC_GROUP;u++) {
         if(m_LogicGroup[u].RobotsCnt()<0) continue;
         tlcnt=0;
@@ -1916,11 +1916,11 @@ void CMatrixSideUnit::Regroup()
             }
         }
         for(i=1;i<tlcnt;i++) {
-            // Ищем пустую группу
+            // РС‰РµРј РїСѓСЃС‚СѓСЋ РіСЂСѓРїРїСѓ
             for(k=0;k<MAX_LOGIC_GROUP;k++) if(m_LogicGroup[k].RobotsCnt()<=0) break;
             if(k>=MAX_LOGIC_GROUP) break;
 
-            // Копируем группу
+            // РљРѕРїРёСЂСѓРµРј РіСЂСѓРїРїСѓ
             for(t=0;t<rlcnt;t++) {
                 if(rl[t]->GetGroupLogic()!=u) continue;
                 if(subl[t]==tl[0]) {
@@ -1931,7 +1931,7 @@ void CMatrixSideUnit::Regroup()
             }
             if(t>=rlcnt) break;
 
-            // Переносим роботов в новую группу
+            // РџРµСЂРµРЅРѕСЃРёРј СЂРѕР±РѕС‚РѕРІ РІ РЅРѕРІСѓСЋ РіСЂСѓРїРїСѓ
             for(t=0;t<rlcnt;t++) {
                 if(rl[t]->GetGroupLogic()!=u) continue;
                 if(subl[t]!=tl[i]) continue;
@@ -1942,7 +1942,7 @@ void CMatrixSideUnit::Regroup()
         }
         if(i<tlcnt) break;
     }
-    // Если робот не в группе то создаем для него новую группу
+    // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РІ РіСЂСѓРїРїРµ С‚Рѕ СЃРѕР·РґР°РµРј РґР»СЏ РЅРµРіРѕ РЅРѕРІСѓСЋ РіСЂСѓРїРїСѓ
     for(t=0;t<rlcnt;t++) {
         if(rl[t]->GetGroupLogic()>=0 && rl[t]->GetGroupLogic()<MAX_LOGIC_GROUP) continue;
 
@@ -1956,7 +1956,7 @@ void CMatrixSideUnit::Regroup()
         rl[t]->SetGroupLogic(i);
 
     }
-    // Объеденяем группы если растояние между ними меньше 300
+    // РћР±СЉРµРґРµРЅСЏРµРј РіСЂСѓРїРїС‹ РµСЃР»Рё СЂР°СЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РЅРёРјРё РјРµРЅСЊС€Рµ 300
     for(u=0;u<MAX_LOGIC_GROUP;u++) {
         if(m_LogicGroup[u].RobotsCnt()<=0) continue;
         if(m_LogicGroup[u].m_Team<0) continue;
@@ -1967,7 +1967,7 @@ void CMatrixSideUnit::Regroup()
 
             if(m_LogicGroup[u].m_Team!=m_LogicGroup[t].m_Team) continue;
 
-            // Проверяем
+            // РџСЂРѕРІРµСЂСЏРµРј
             for(i=0;i<rlcnt;i++) {
                 if(rl[i]->GetGroupLogic()!=u) continue;
 
@@ -1980,9 +1980,9 @@ void CMatrixSideUnit::Regroup()
                 if(k<rlcnt) break;
             }
 
-            // Объеденяем
+            // РћР±СЉРµРґРµРЅСЏРµРј
             if(i<rlcnt) {
-                if(m_LogicGroup[u].m_Action.m_Type==mlat_None) { // Выбираем лучшую для которой приказ останется
+                if(m_LogicGroup[u].m_Action.m_Type==mlat_None) { // Р’С‹Р±РёСЂР°РµРј Р»СѓС‡С€СѓСЋ РґР»СЏ РєРѕС‚РѕСЂРѕР№ РїСЂРёРєР°Р· РѕСЃС‚Р°РЅРµС‚СЃСЏ
                     SMatrixLogicGroup temp=m_LogicGroup[u]; m_LogicGroup[u]=m_LogicGroup[t]; m_LogicGroup[t]=temp;
                 }
                 
@@ -1998,7 +1998,7 @@ void CMatrixSideUnit::Regroup()
     }
 
 #if (defined _DEBUG) &&  !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
-    // Отображаем хелперы
+    // РћС‚РѕР±СЂР°Р¶Р°РµРј С…РµР»РїРµСЂС‹
     dword colors[10]={0xffff0000,0xff00ff00,0xff0000ff,0xffffff00,0xffff00ff,0xff00ffff, 0xff800000,0xff008000,0xff000080,0xff808000};
 //    CHelper::DestroyByGroup(101);
 //if(m_Id==PLAYER_SIDE)
@@ -2093,7 +2093,7 @@ void CMatrixSideUnit::EscapeFromBomb()
     CMatrixRobotAI * rb[MAX_ROBOTS*3];
     float min_dist_enemy[MAX_ROBOTS*3];
     int rbcnt=0;
-    float escape_radius=250.0f*1.2f; // С запасом
+    float escape_radius=250.0f*1.2f; // РЎ Р·Р°РїР°СЃРѕРј
     int escape_dist=Float2Int(escape_radius/GLOBAL_SCALE_MOVE)+4;
     CPoint tp,tp2;
     int i;
@@ -2180,7 +2180,7 @@ void CMatrixSideUnit::EscapeFromBomb()
 
         for(i=0;i<rbcnt;i++) {
             if(robot==rb[i]) continue;
-            if(rb[i]->GetSide()==m_Id && mde<min_dist_enemy[i]) continue; // Роботы впереди бомбы не отступают. Они прикрывают пока робот с бомбой дойдет до врага.
+            if(rb[i]->GetSide()==m_Id && mde<min_dist_enemy[i]) continue; // Р РѕР±РѕС‚С‹ РІРїРµСЂРµРґРё Р±РѕРјР±С‹ РЅРµ РѕС‚СЃС‚СѓРїР°СЋС‚. РћРЅРё РїСЂРёРєСЂС‹РІР°СЋС‚ РїРѕРєР° СЂРѕР±РѕС‚ СЃ Р±РѕРјР±РѕР№ РґРѕР№РґРµС‚ РґРѕ РІСЂР°РіР°.
             float dist=POW2(rpx-rb[i]->m_PosX)+POW2(rpy-rb[i]->m_PosY);
             if(dist<POW2(escape_radius)) break;
         }
@@ -2336,7 +2336,7 @@ void CMatrixSideUnit::GroupNoTeamRobot()
 
         m_LogicGroup[g].m_Action.m_Region=g_MatrixMap->GetRegion(Float2Int(cx/GLOBAL_SCALE_MOVE),Float2Int(cy/GLOBAL_SCALE_MOVE));
         if(m_LogicGroup[g].m_Action.m_Region<0) m_LogicGroup[g].m_Action.m_Region=g_MatrixMap->GetRegion(Float2Int(rl[i]->m_PosX/GLOBAL_SCALE_MOVE),Float2Int(rl[i]->m_PosY/GLOBAL_SCALE_MOVE));
-        if(m_LogicGroup[g].m_Action.m_Region<0) ERROR_S(L"Робот стоит на запрещенной территории");
+        if(m_LogicGroup[g].m_Action.m_Region<0) ERROR_S(L"Robot stands in prohibited area");
     }
 }
 
@@ -2440,7 +2440,7 @@ void CMatrixSideUnit::CalcMaxSpeed()
 
             pr[u]-=minpr;
 
-            if(pr[u]<COLLIDE_BOT_R*10.0f) continue; // Отстающие, скорость не уменьшают
+            if(pr[u]<COLLIDE_BOT_R*10.0f) continue; // РћС‚СЃС‚Р°СЋС‰РёРµ, СЃРєРѕСЂРѕСЃС‚СЊ РЅРµ СѓРјРµРЅСЊС€Р°СЋС‚
 
             rl[u]->m_GroupSpeed*=0.6f+0.4f*((maxpr-pr[u]))/(maxpr-COLLIDE_BOT_R*10.0f);
         }
@@ -2475,14 +2475,14 @@ void CMatrixSideUnit::TaktHL()
     CMatrixMapStatic * ms;
 //    SMatrixRegion * mr;
     SMatrixPlace * place;
-    CMatrixRobotAI * rl[MAX_ROBOTS];    // Список роботов на карте
-    int rlcnt;                          // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS];    // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt;                          // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     int ourbasecnt=0;
 
     if(m_Region==NULL) m_Region=(SMatrixLogicRegion *)HAllocClear(sizeof(SMatrixLogicRegion)*g_MatrixMap->m_RN.m_RegionCnt,g_MatrixHeap);
     if(m_RegionIndex==NULL) m_RegionIndex=(int *)HAllocClear(sizeof(int)*g_MatrixMap->m_RN.m_RegionCnt,g_MatrixHeap);
 
-    // Запускаем высшую логику раз в 100 тактов
+    // Р—Р°РїСѓСЃРєР°РµРј РІС‹СЃС€СѓСЋ Р»РѕРіРёРєСѓ СЂР°Р· РІ 100 С‚Р°РєС‚РѕРІ
     if(m_LastTaktHL!=0 && (g_MatrixMap->GetTime()-m_LastTaktHL)<100) return;
     m_LastTaktHL=g_MatrixMap->GetTime();
 
@@ -2496,14 +2496,14 @@ if(timeGetTime()-lastsave>1000) {
     HListPrint(L"#save_mem.xls");
 }*/
 
-    // Расчет с кем воюем
+    // Р Р°СЃС‡РµС‚ СЃ РєРµРј РІРѕСЋРµРј
 
 
     if (m_NextWarSideCalcTime < g_MatrixMap->GetTime())
     {
         if (m_WarSide < 0 || g_MatrixMap->Rnd(0,2))
         {
-            // Ищем сначала самого слабого, чтобы побыстрее забить его и нарастить силы.
+            // РС‰РµРј СЃРЅР°С‡Р°Р»Р° СЃР°РјРѕРіРѕ СЃР»Р°Р±РѕРіРѕ, С‡С‚РѕР±С‹ РїРѕР±С‹СЃС‚СЂРµРµ Р·Р°Р±РёС‚СЊ РµРіРѕ Рё РЅР°СЂР°СЃС‚РёС‚СЊ СЃРёР»С‹.
             m_WarSide = -1;
             float mst=1e20f;
             if(m_Strength>0)
@@ -2519,7 +2519,7 @@ if(timeGetTime()-lastsave>1000) {
                 }
             }
 
-            // Если слабого нет то бем самого сильного, чтобы он не стал еще сильней.
+            // Р•СЃР»Рё СЃР»Р°Р±РѕРіРѕ РЅРµС‚ С‚Рѕ Р±РµРј СЃР°РјРѕРіРѕ СЃРёР»СЊРЅРѕРіРѕ, С‡С‚РѕР±С‹ РѕРЅ РЅРµ СЃС‚Р°Р» РµС‰Рµ СЃРёР»СЊРЅРµР№.
             if(m_WarSide<0) {
                 mst=-1e20f;
                 for(i=0;i<g_MatrixMap->m_SideCnt;i++)
@@ -2555,7 +2555,7 @@ if(timeGetTime()-lastsave>1000) {
         m_NextWarSideCalcTime = g_MatrixMap->GetTime() + 60000;
     }
 
-    // Собираем статистику
+    // РЎРѕР±РёСЂР°РµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
     m_RobotsCnt=0;
 
     for(i=0;i<MAX_LOGIC_GROUP;i++) {
@@ -2655,7 +2655,7 @@ if(timeGetTime()-lastsave>1000) {
                             m_Region[i].m_EnemyRobotCnt++;
                             if(ms->GetSide()==m_WarSide) m_Region[i].m_WarEnemyRobotCnt++;
                             float d=ms->AsRobot()->GetStrength();
-                            //if(ms->GetSide()!=PLAYER_SIDE) d*=1.5; // Завышаем опасность между компьютерами. Чтобы они воевали не межу собой, а против игрока.
+                            //if(ms->GetSide()!=PLAYER_SIDE) d*=1.5; // Р—Р°РІС‹С€Р°РµРј РѕРїР°СЃРЅРѕСЃС‚СЊ РјРµР¶РґСѓ РєРѕРјРїСЊСЋС‚РµСЂР°РјРё. Р§С‚РѕР±С‹ РѕРЅРё РІРѕРµРІР°Р»Рё РЅРµ РјРµР¶Сѓ СЃРѕР±РѕР№, Р° РїСЂРѕС‚РёРІ РёРіСЂРѕРєР°.
                             m_Region[i].m_Danger+=d*m_DangerMul;
 
                         } else m_Region[i].m_OurRobotCnt++;
@@ -2713,7 +2713,7 @@ if(timeGetTime()-lastsave>1000) {
                         if(ms->GetSide()==m_WarSide) m_Region[i].m_WarEnemyCannonCnt++;
 
                         float d=((CMatrixCannon *)ms)->GetStrength();
-                        //if(ms->GetSide()!=PLAYER_SIDE) d*=1.5; // Завышаем опасность между компьютерами. Чтобы они воевали не межу собой, а против игрока.
+                        //if(ms->GetSide()!=PLAYER_SIDE) d*=1.5; // Р—Р°РІС‹С€Р°РµРј РѕРїР°СЃРЅРѕСЃС‚СЊ РјРµР¶РґСѓ РєРѕРјРїСЊСЋС‚РµСЂР°РјРё. Р§С‚РѕР±С‹ РѕРЅРё РІРѕРµРІР°Р»Рё РЅРµ РјРµР¶Сѓ СЃРѕР±РѕР№, Р° РїСЂРѕС‚РёРІ РёРіСЂРѕРєР°.
 
                         m_Region[i].m_DangerAdd+=d*m_DangerMul;
                     } else m_Region[i].m_OurCannonCnt++;
@@ -2723,7 +2723,7 @@ if(timeGetTime()-lastsave>1000) {
         ms=ms->GetNextLogic();
     }
 
-    // Выращиваем опасность
+    // Р’С‹СЂР°С‰РёРІР°РµРј РѕРїР°СЃРЅРѕСЃС‚СЊ
     for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
         if(m_Region[i].m_Danger<=0) continue;
 
@@ -2782,7 +2782,7 @@ if(timeGetTime()-lastsave>1000) {
 
 //        if(!m_Team[i].m_WarCalc) m_Team[i].m_War=false;
 
-        // Сортируем список по кол-во роботов
+        // РЎРѕСЂС‚РёСЂСѓРµРј СЃРїРёСЃРѕРє РїРѕ РєРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ
         for(t=0;t<m_Team[i].m_RegionListCnt-1;t++) {
             for(u=t+1;u<m_Team[i].m_RegionListCnt;u++) {
                 if(m_Team[i].m_RegionListRobots[u]>m_Team[i].m_RegionListRobots[t]) {
@@ -2812,14 +2812,14 @@ if(timeGetTime()-lastsave>1000) {
         if(cr<0) cr=m_Team[i].m_RegionList[0];
 
 //        int cr=GetRegion(m_Team[i].m_CenterMass);
-        // Если регион назначения занят и текущий регион возле региона назначения, то считаем что текущий регион равен региону назначения
+        // Р•СЃР»Рё СЂРµРіРёРѕРЅ РЅР°Р·РЅР°С‡РµРЅРёСЏ Р·Р°РЅСЏС‚ Рё С‚РµРєСѓС‰РёР№ СЂРµРіРёРѕРЅ РІРѕР·Р»Рµ СЂРµРіРёРѕРЅР° РЅР°Р·РЅР°С‡РµРЅРёСЏ, С‚Рѕ СЃС‡РёС‚Р°РµРј С‡С‚Рѕ С‚РµРєСѓС‰РёР№ СЂРµРіРёРѕРЅ СЂР°РІРµРЅ СЂРµРіРёРѕРЅСѓ РЅР°Р·РЅР°С‡РµРЅРёСЏ
         if(m_Team[i].m_Action.m_Type!=mlat_None && m_Team[i].m_Action.m_Region>=0 && m_Team[i].m_Action.m_Region!=cr && g_MatrixMap->m_RN.IsNerestRegion(cr,m_Team[i].m_Action.m_Region)) {
 
             SMatrixRegion * region=g_MatrixMap->m_RN.GetRegion(m_Team[i].m_Action.m_Region);
             for(u=0;u<region->m_PlaceCnt;u++) GetPlacePtr(region->m_Place[u])->m_Data=0;
 
-            // Находим роботов, текущей команды, места которые не в регионе назначения
-            // + помечаем занетые места
+            // РќР°С…РѕРґРёРј СЂРѕР±РѕС‚РѕРІ, С‚РµРєСѓС‰РµР№ РєРѕРјР°РЅРґС‹, РјРµСЃС‚Р° РєРѕС‚РѕСЂС‹Рµ РЅРµ РІ СЂРµРіРёРѕРЅРµ РЅР°Р·РЅР°С‡РµРЅРёСЏ
+            // + РїРѕРјРµС‡Р°РµРј Р·Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р°
             rlcnt=0;
             ms = CMatrixMapStatic::GetFirstLogic();
             while(ms) {
@@ -2834,7 +2834,7 @@ if(timeGetTime()-lastsave>1000) {
                 ms=ms->GetNextLogic();
             }
 
-            // Проверяем, можем ли разместить хоть одного работа в регионе назначения
+            // РџСЂРѕРІРµСЂСЏРµРј, РјРѕР¶РµРј Р»Рё СЂР°Р·РјРµСЃС‚РёС‚СЊ С…РѕС‚СЊ РѕРґРЅРѕРіРѕ СЂР°Р±РѕС‚Р° РІ СЂРµРіРёРѕРЅРµ РЅР°Р·РЅР°С‡РµРЅРёСЏ
             if(rlcnt>0) {
                 for(t=0;t<rlcnt;t++) {
                     for(u=0;u<region->m_PlaceCnt;u++) {
@@ -2854,7 +2854,7 @@ if(timeGetTime()-lastsave>1000) {
             m_Team[i].m_RegionMass=cr;
         }
 
-        // Находим следующий регион в пути
+        // РќР°С…РѕРґРёРј СЃР»РµРґСѓСЋС‰РёР№ СЂРµРіРёРѕРЅ РІ РїСѓС‚Рё
         if(m_Team[i].m_Action.m_Type!=mlat_None) {
             for(u=0;u<m_Team[i].m_Action.m_RegionPathCnt;u++) {
                 if(m_Team[i].m_Action.m_RegionPath[u]==m_Team[i].m_RegionMass) {
@@ -2862,7 +2862,7 @@ if(timeGetTime()-lastsave>1000) {
                     break;
                 }
             }
-            // Если текущий регион не в пути, то ищем ближайший к пути
+            // Р•СЃР»Рё С‚РµРєСѓС‰РёР№ СЂРµРіРёРѕРЅ РЅРµ РІ РїСѓС‚Рё, С‚Рѕ РёС‰РµРј Р±Р»РёР¶Р°Р№С€РёР№ Рє РїСѓС‚Рё
             if(m_Team[i].m_Action.m_RegionPathCnt>=2 && u>=m_Team[i].m_Action.m_RegionPathCnt) {
                 for(u=0;u<g_MatrixMap->m_RN.m_RegionCnt;u++) {
                     m_Region[u].m_Data=0;
@@ -3002,7 +3002,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Стоит ли ждать пока команда соберется
+    // РЎС‚РѕРёС‚ Р»Рё Р¶РґР°С‚СЊ РїРѕРєР° РєРѕРјР°РЅРґР° СЃРѕР±РµСЂРµС‚СЃСЏ
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_GroupCnt<=1) { m_Team[i].SetWaitUnion(false); continue; }
         if(m_Team[i].m_RobotCnt<=1) { m_Team[i].SetWaitUnion(false); continue; }
@@ -3031,7 +3031,7 @@ if(timeGetTime()-lastsave>1000) {
         mg=mg->m_NextGroup;
     }*/
 
-    // Как далеко роботы врага
+    // РљР°Рє РґР°Р»РµРєРѕ СЂРѕР±РѕС‚С‹ РІСЂР°РіР°
     cnt=0; sme=0; dist=0;
     
     for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
@@ -3060,7 +3060,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Как далеко постройки врага
+    // РљР°Рє РґР°Р»РµРєРѕ РїРѕСЃС‚СЂРѕР№РєРё РІСЂР°РіР°
     cnt=0; sme=0; dist=0;
     
     for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
@@ -3089,7 +3089,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Как далеко от наших баз
+    // РљР°Рє РґР°Р»РµРєРѕ РѕС‚ РЅР°С€РёС… Р±Р°Р·
     cnt=0; sme=0; dist=0;
     
     for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
@@ -3118,7 +3118,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Регион отступления
+    // Р РµРіРёРѕРЅ РѕС‚СЃС‚СѓРїР»РµРЅРёСЏ
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
         if(m_Team[i].m_RegionMass<0) continue;
@@ -3140,7 +3140,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Находим ближайшие базы (нужно переписать с учетом непроходимости тоесть по m_OurBaseDist)
+    // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РёРµ Р±Р°Р·С‹ (РЅСѓР¶РЅРѕ РїРµСЂРµРїРёСЃР°С‚СЊ СЃ СѓС‡РµС‚РѕРј РЅРµРїСЂРѕС…РѕРґРёРјРѕСЃС‚Рё С‚РѕРµСЃС‚СЊ РїРѕ m_OurBaseDist)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RegionMass<0) continue;
 
@@ -3159,13 +3159,13 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Строим робота
+    // РЎС‚СЂРѕРёРј СЂРѕР±РѕС‚Р°
     BuildRobot();
 
-    // Строим пушки
+    // РЎС‚СЂРѕРёРј РїСѓС€РєРё
     BuildCannon();
 
-    // Отвага
+    // РћС‚РІР°РіР°
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
 
@@ -3196,11 +3196,11 @@ if(timeGetTime()-lastsave>1000) {
 //        }
     }
 
-    // Регионы для продвижения вперед
+    // Р РµРіРёРѕРЅС‹ РґР»СЏ РїСЂРѕРґРІРёР¶РµРЅРёСЏ РІРїРµСЂРµРґ
 //    UpdateTargetRegion();
 //    CalcForwardRegion();
 
-    // Проверяем корректна ли текущая задача
+    // РџСЂРѕРІРµСЂСЏРµРј РєРѕСЂСЂРµРєС‚РЅР° Р»Рё С‚РµРєСѓС‰Р°СЏ Р·Р°РґР°С‡Р°
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
 
@@ -3235,7 +3235,7 @@ if(timeGetTime()-lastsave>1000) {
             if(!m_Team[i].IslOk()) { DMTeam(i,m_Team[i].m_Action.m_Type,-1,L"m_RegionMass==m_Action.m_Region"); }
             if(m_Team[i].IslOk() && m_Team[i].IsWar()) { DMTeam(i,m_Team[i].m_Action.m_Type,-1,L"m_War==true"); m_Team[i].SetlOk(false); }
 
-            // Если идем мимо завода, то захватываем его.
+            // Р•СЃР»Рё РёРґРµРј РјРёРјРѕ Р·Р°РІРѕРґР°, С‚Рѕ Р·Р°С…РІР°С‚С‹РІР°РµРј РµРіРѕ.
             if(m_Team[i].IslOk() && m_Team[i].m_RegionMass>=0 && (m_Region[m_Team[i].m_RegionMass].m_NeutralBuildingCnt>0 || m_Region[m_Team[i].m_RegionMass].m_EnemyBuildingCnt>0)) {
                 for(u=0;u<m_TeamCnt;u++) {
                     if(u==i) continue;
@@ -3259,7 +3259,7 @@ if(timeGetTime()-lastsave>1000) {
                 }
             }
 
-            // Если не все роботы пришли в регион, но есть завод, который надо захватить, то меняем приказ на захват.
+            // Р•СЃР»Рё РЅРµ РІСЃРµ СЂРѕР±РѕС‚С‹ РїСЂРёС€Р»Рё РІ СЂРµРіРёРѕРЅ, РЅРѕ РµСЃС‚СЊ Р·Р°РІРѕРґ, РєРѕС‚РѕСЂС‹Р№ РЅР°РґРѕ Р·Р°С…РІР°С‚РёС‚СЊ, С‚Рѕ РјРµРЅСЏРµРј РїСЂРёРєР°Р· РЅР° Р·Р°С…РІР°С‚.
             if(m_Team[i].IslOk() && (m_Region[m_Team[i].m_Action.m_Region].m_NeutralBuildingCnt>0 || m_Region[m_Team[i].m_Action.m_Region].m_EnemyBuildingCnt>0)) {
                 ms = CMatrixMapStatic::GetFirstLogic();
                 while(ms) {
@@ -3325,7 +3325,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Находим всевозможные варианты продвижения вперед.
+    // РќР°С…РѕРґРёРј РІСЃРµРІРѕР·РјРѕР¶РЅС‹Рµ РІР°СЂРёР°РЅС‚С‹ РїСЂРѕРґРІРёР¶РµРЅРёСЏ РІРїРµСЂРµРґ.
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].IslOk()) continue;
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3350,13 +3350,13 @@ if(timeGetTime()-lastsave>1000) {
 
                 if(g_MatrixMap->m_RN.m_Region[m_RegionIndex[sme]].m_NearMove[t] & m_Team[i].Move()) continue;
 
-                if(!m_Team[i].m_Brave && m_Team[i].m_Strength<m_Region[u].m_Danger*0.7) continue; // Если регион слишком опасный, то пропускаем
+                if(!m_Team[i].m_Brave && m_Team[i].m_Strength<m_Region[u].m_Danger*0.7) continue; // Р•СЃР»Рё СЂРµРіРёРѕРЅ СЃР»РёС€РєРѕРј РѕРїР°СЃРЅС‹Р№, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                 m_Region[u].m_Data=1+dist;
                 m_RegionIndex[cnt]=u;
                 cnt++;
 
-                // Команды не должны идти в один регион (недоделанно)
+                // РљРѕРјР°РЅРґС‹ РЅРµ РґРѕР»Р¶РЅС‹ РёРґС‚Рё РІ РѕРґРёРЅ СЂРµРіРёРѕРЅ (РЅРµРґРѕРґРµР»Р°РЅРЅРѕ)
                 for(k=0;k<m_TeamCnt;k++) {
                     if(k==i) continue;
                     if(m_Team[k].m_RobotCnt<=0) continue;
@@ -3423,7 +3423,7 @@ if(timeGetTime()-lastsave>1000) {
         }
         BestAction(i);
     }
-    // Если вариантов продвижения вперед нет. То создаем вариант защиты.
+    // Р•СЃР»Рё РІР°СЂРёР°РЅС‚РѕРІ РїСЂРѕРґРІРёР¶РµРЅРёСЏ РІРїРµСЂРµРґ РЅРµС‚. РўРѕ СЃРѕР·РґР°РµРј РІР°СЂРёР°РЅС‚ Р·Р°С‰РёС‚С‹.
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
         if(m_Team[i].IslOk()) continue;
@@ -3439,7 +3439,7 @@ if(timeGetTime()-lastsave>1000) {
         m_Team[i].m_ActionCnt++;
     }
 
-/*    // Если вариантов продвижения вперед нет. То создаем вариант двигаться на вражескую базу или завод.
+/*    // Р•СЃР»Рё РІР°СЂРёР°РЅС‚РѕРІ РїСЂРѕРґРІРёР¶РµРЅРёСЏ РІРїРµСЂРµРґ РЅРµС‚. РўРѕ СЃРѕР·РґР°РµРј РІР°СЂРёР°РЅС‚ РґРІРёРіР°С‚СЊСЃСЏ РЅР° РІСЂР°Р¶РµСЃРєСѓСЋ Р±Р°Р·Сѓ РёР»Рё Р·Р°РІРѕРґ.
     skipregioncnt=0;
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3469,7 +3469,7 @@ if(timeGetTime()-lastsave>1000) {
         skipregioncnt++;
     }*/
 
-    // Находим всевозможные варианты действий
+    // РќР°С…РѕРґРёРј РІСЃРµРІРѕР·РјРѕР¶РЅС‹Рµ РІР°СЂРёР°РЅС‚С‹ РґРµР№СЃС‚РІРёР№
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].IslOk()) continue;
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3564,7 +3564,7 @@ if(timeGetTime()-lastsave>1000) {
             (m_Region[m_Team[i].m_RegionMass].m_NeutralBuildingCnt>0 || m_Region[m_Team[i].m_RegionMass].m_EnemyBuildingCnt>0) && 
             m_Team[i].m_ActionCnt<16) 
         {
-            // Если другая группа уже захватывает в этом регионе, то вариант не создаем
+            // Р•СЃР»Рё РґСЂСѓРіР°СЏ РіСЂСѓРїРїР° СѓР¶Рµ Р·Р°С…РІР°С‚С‹РІР°РµС‚ РІ СЌС‚РѕРј СЂРµРіРёРѕРЅРµ, С‚Рѕ РІР°СЂРёР°РЅС‚ РЅРµ СЃРѕР·РґР°РµРј
             for(u=0;u<m_TeamCnt;u++) {
                 if(u==i) continue;
                 if(!m_Team[u].IslOk()) continue;
@@ -3584,7 +3584,7 @@ if(timeGetTime()-lastsave>1000) {
         }
     }
 
-    // Находим лучший вариант
+    // РќР°С…РѕРґРёРј Р»СѓС‡С€РёР№ РІР°СЂРёР°РЅС‚
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].IslOk()) continue;
 
@@ -3629,10 +3629,10 @@ if(!g_TestLocal) {
         }
     }
 
-    // Перегруппируем один раз за такт, так как статистика становится не правильной.
+    // РџРµСЂРµРіСЂСѓРїРїРёСЂСѓРµРј РѕРґРёРЅ СЂР°Р· Р·Р° С‚Р°РєС‚, С‚Р°Рє РєР°Рє СЃС‚Р°С‚РёСЃС‚РёРєР° СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РЅРµ РїСЂР°РІРёР»СЊРЅРѕР№.
     int changeok=false;
 
-    // Если отступаем, то пытаемся найти подмогу
+    // Р•СЃР»Рё РѕС‚СЃС‚СѓРїР°РµРј, С‚Рѕ РїС‹С‚Р°РµРјСЃСЏ РЅР°Р№С‚Рё РїРѕРґРјРѕРіСѓ
     if(!changeok)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].IslOk()) continue;
@@ -3640,7 +3640,7 @@ if(!g_TestLocal) {
         if(m_Team[i].m_Action.m_Type!=mlat_Retreat) continue;
         if(m_Team[i].m_RegionFarDanger<0) continue;
 
-        // Создаем список групп, которые можно присоединить
+        // РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє РіСЂСѓРїРї, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РЅРѕ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊ
         int gi[MAX_LOGIC_GROUP];
         int gid[MAX_LOGIC_GROUP];
         int gicnt=0;
@@ -3665,7 +3665,7 @@ if(!g_TestLocal) {
                 gid[gicnt]=g_MatrixMap->m_RN.FindPathInRegionRun(m_Team[i].Move(),rr,m_Team[i].m_Action.m_Region,path,8,false);
                 if(gid[gicnt]<=0) continue;
 
-                for(t=0;t<gid[gicnt];t++) { // Врагов на пути не должно быть
+                for(t=0;t<gid[gicnt];t++) { // Р’СЂР°РіРѕРІ РЅР° РїСѓС‚Рё РЅРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ
                     if(m_Region[path[t]].m_EnemyRobotCnt) break;
                     if(t>=4 && m_Region[path[t]].m_Danger>0) break;
                 }
@@ -3673,13 +3673,13 @@ if(!g_TestLocal) {
 
             } else gid[gicnt]=0;
 
-            if(gid[gicnt]>=5) continue; // Слишком далеко
+            if(gid[gicnt]>=5) continue; // РЎР»РёС€РєРѕРј РґР°Р»РµРєРѕ
 
             gi[gicnt]=u;
             gicnt++;
         }
 
-        // Сортируем по дальности
+        // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ РґР°Р»СЊРЅРѕСЃС‚Рё
         for(u=0;u<gicnt-1;u++) {
             for(t=u+1;t<gicnt;t++) {
                 if(gid[t]<gid[u]) {
@@ -3689,7 +3689,7 @@ if(!g_TestLocal) {
             }
         }
 
-        // Объединяем
+        // РћР±СЉРµРґРёРЅСЏРµРј
         for(u=0;u<gicnt;u++) {
             ms = CMatrixMapStatic::GetFirstLogic();
             while(ms) {
@@ -3713,7 +3713,7 @@ if(!g_TestLocal) {
         break;
     }
 
-    // Обедняем, если группа дерется, сил у нее мало, а рядом группа, которая не воюет
+    // РћР±РµРґРЅСЏРµРј, РµСЃР»Рё РіСЂСѓРїРїР° РґРµСЂРµС‚СЃСЏ, СЃРёР» Сѓ РЅРµРµ РјР°Р»Рѕ, Р° СЂСЏРґРѕРј РіСЂСѓРїРїР°, РєРѕС‚РѕСЂР°СЏ РЅРµ РІРѕСЋРµС‚
     if(!changeok && (g_MatrixMap->GetTime()-m_LastTeamChange)>3000)
     for(i=0;i<m_TeamCnt;i++) {
 //        if(m_Team[i].m_lOk) continue;
@@ -3751,7 +3751,7 @@ if(!g_TestLocal) {
         break;
     }
 
-    // Объединяем группы если они близко, и если есть опасность для обеих групп
+    // РћР±СЉРµРґРёРЅСЏРµРј РіСЂСѓРїРїС‹ РµСЃР»Рё РѕРЅРё Р±Р»РёР·РєРѕ, Рё РµСЃР»Рё РµСЃС‚СЊ РѕРїР°СЃРЅРѕСЃС‚СЊ РґР»СЏ РѕР±РµРёС… РіСЂСѓРїРї
     if(!changeok && (g_MatrixMap->GetTime()-m_LastTeamChange)>3000)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3794,27 +3794,27 @@ if(!g_TestLocal) {
         break;
     }
 
-    // Перераспределяем роботов для пустой группы, если нет опасности
+    // РџРµСЂРµСЂР°СЃРїСЂРµРґРµР»СЏРµРј СЂРѕР±РѕС‚РѕРІ РґР»СЏ РїСѓСЃС‚РѕР№ РіСЂСѓРїРїС‹, РµСЃР»Рё РЅРµС‚ РѕРїР°СЃРЅРѕСЃС‚Рё
     if(!changeok && (g_MatrixMap->GetTime()-m_LastTeamChange)>3000)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt>0) continue;
 
-        // Находим подходящую команду с максимальным кол-во роботов
+        // РќР°С…РѕРґРёРј РїРѕРґС…РѕРґСЏС‰СѓСЋ РєРѕРјР°РЅРґСѓ СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј РєРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ
         k=-1;
         for(u=0;u<m_TeamCnt;u++) {
-            if(m_Team[u].m_RobotCnt<2) continue; // Делить нечего
-            if(m_Team[u].m_Action.m_Type!=mlat_Forward && m_Team[u].m_Action.m_Type!=mlat_Capture) continue; // Группа занята более важными делами
+            if(m_Team[u].m_RobotCnt<2) continue; // Р”РµР»РёС‚СЊ РЅРµС‡РµРіРѕ
+            if(m_Team[u].m_Action.m_Type!=mlat_Forward && m_Team[u].m_Action.m_Type!=mlat_Capture) continue; // Р“СЂСѓРїРїР° Р·Р°РЅСЏС‚Р° Р±РѕР»РµРµ РІР°Р¶РЅС‹РјРё РґРµР»Р°РјРё
             if(m_Team[u].m_RegionFarDanger>=0) continue;
             if(m_Team[u].IsRegroupOnlyAfterWar()) continue;
 
             if(k<0) k=u;
             else if(m_Team[u].m_RobotCnt>m_Team[k].m_RobotCnt) k=u;
         }
-        if(k<0) break; // Делить нечего
+        if(k<0) break; // Р”РµР»РёС‚СЊ РЅРµС‡РµРіРѕ
 
         ClearTeam(i);
 
-        if(m_Team[k].m_GroupCnt==1) { // Делим по роботам
+        if(m_Team[k].m_GroupCnt==1) { // Р”РµР»РёРј РїРѕ СЂРѕР±РѕС‚Р°Рј
             u=m_Team[k].m_RobotCnt/2;
 
             ms = CMatrixMapStatic::GetFirstLogic();
@@ -3828,7 +3828,7 @@ if(!g_TestLocal) {
                 ms=ms->GetNextLogic();
             }
             
-        } else { // Делим по группам
+        } else { // Р”РµР»РёРј РїРѕ РіСЂСѓРїРїР°Рј
             u=m_Team[k].m_GroupCnt/2;
 
             for(t=0;t<MAX_LOGIC_GROUP && u;t++) {
@@ -3854,7 +3854,7 @@ if(!g_TestLocal) {
         break;
     }
 
-    // Перераспределяем если команды близко, но численность роботов не равная, и нет опасности
+    // РџРµСЂРµСЂР°СЃРїСЂРµРґРµР»СЏРµРј РµСЃР»Рё РєРѕРјР°РЅРґС‹ Р±Р»РёР·РєРѕ, РЅРѕ С‡РёСЃР»РµРЅРЅРѕСЃС‚СЊ СЂРѕР±РѕС‚РѕРІ РЅРµ СЂР°РІРЅР°СЏ, Рё РЅРµС‚ РѕРїР°СЃРЅРѕСЃС‚Рё
     if(!changeok && (g_MatrixMap->GetTime()-m_LastTeamChange)>3000)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3893,7 +3893,7 @@ if(!g_TestLocal) {
             ms=ms->GetNextLogic();
         }
 
-        m_Team[i].m_Action.m_Type=mlat_None; // Отменяем приказ, так как он может существенно поменяться, так как место и положение роботов изменилось
+        m_Team[i].m_Action.m_Type=mlat_None; // РћС‚РјРµРЅСЏРµРј РїСЂРёРєР°Р·, С‚Р°Рє РєР°Рє РѕРЅ РјРѕР¶РµС‚ СЃСѓС‰РµСЃС‚РІРµРЅРЅРѕ РїРѕРјРµРЅСЏС‚СЊСЃСЏ, С‚Р°Рє РєР°Рє РјРµСЃС‚Рѕ Рё РїРѕР»РѕР¶РµРЅРёРµ СЂРѕР±РѕС‚РѕРІ РёР·РјРµРЅРёР»РѕСЃСЊ
         m_Team[i].m_ActionTime=g_MatrixMap->GetTime();
 
         changeok=true;
@@ -3901,7 +3901,7 @@ if(!g_TestLocal) {
         break;
     }
 
-    // Объединяем радом стоящие группы, которые находятся в защите. Разбить новую группу можно только после войны.
+    // РћР±СЉРµРґРёРЅСЏРµРј СЂР°РґРѕРј СЃС‚РѕСЏС‰РёРµ РіСЂСѓРїРїС‹, РєРѕС‚РѕСЂС‹Рµ РЅР°С…РѕРґСЏС‚СЃСЏ РІ Р·Р°С‰РёС‚Рµ. Р Р°Р·Р±РёС‚СЊ РЅРѕРІСѓСЋ РіСЂСѓРїРїСѓ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РїРѕСЃР»Рµ РІРѕР№РЅС‹.
     if(!changeok && (g_MatrixMap->GetTime()-m_LastTeamChange)>3000)
     for(i=0;i<m_TeamCnt;i++) {
         if(m_Team[i].m_RobotCnt<=0) continue;
@@ -3943,7 +3943,7 @@ if(!g_TestLocal) {
 //if(m_RobotsCnt>0) DM(CWStr().Format(L"Res2 Side=<i>",m_Id).Get(),CWStr().Format(L"<i> <i> <i> <i>",m_Resources[0],m_Resources[1],m_Resources[2],m_Resources[3]).Get());
 //#endif
 
-    // Отображаем
+    // РћС‚РѕР±СЂР°Р¶Р°РµРј
 #if (defined _DEBUG) &&  !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
 //    if(m_Id==PLAYER_SIDE)
     for(i=0;i<m_TeamCnt;i++) {
@@ -3958,7 +3958,7 @@ if(!g_TestLocal) {
         float z=g_MatrixMap->GetZ(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y);
         CHelper::Create(0,DWORD(m_Team+i))->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,z),D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,z+30-2.0f*i),4.0f+1.0f*i,4.0f+1.0f*i,colors[i],colors[i],5);
 
-        //// Отображаем путь по регионам
+        //// РћС‚РѕР±СЂР°Р¶Р°РµРј РїСѓС‚СЊ РїРѕ СЂРµРіРёРѕРЅР°Рј
         //for(u=1;u<m_Team[i].m_Action.m_RegionPathCnt;u++) {
         //    tp=g_MatrixMap->m_RN.m_Region[m_Team[i].m_Action.m_RegionPath[u-1]].m_Center;
         //    D3DXVECTOR3 v1=D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,g_MatrixMap->GetZ(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y)+100.0f);
@@ -3967,7 +3967,7 @@ if(!g_TestLocal) {
 
         //    CHelper::Create(0,DWORD(m_Team+i))->Line(v1,v2,colors[i],colors[i]);
         //}
-        //// Отображаем путь по дорогам
+        //// РћС‚РѕР±СЂР°Р¶Р°РµРј РїСѓС‚СЊ РїРѕ РґРѕСЂРѕРіР°Рј
         //for(u=1;u<m_Team[i].m_RoadPath->m_Header[0].m_Cnt;u++) {
         //    tp=m_Team[i].m_RoadPath->m_Units[u-1].m_Crotch->m_Center;
         //    D3DXVECTOR3 v1=D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,g_MatrixMap->GetZ(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y)+80.0f);
@@ -3976,7 +3976,7 @@ if(!g_TestLocal) {
 
         //    CHelper::Create(0,DWORD(m_Team+i))->Cone(v1,v2,1.0f,1.0f,colors[i],colors[i],5);
         //}
-        //// Отображаем следующий регион
+        //// РћС‚РѕР±СЂР°Р¶Р°РµРј СЃР»РµРґСѓСЋС‰РёР№ СЂРµРіРёРѕРЅ
         //if(m_Team[i].m_RegionNext>=0) {
         //    tp=g_MatrixMap->m_RN.m_Region[m_Team[i].m_RegionNext].m_Center;
         //    D3DXVECTOR3 v1=D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,g_MatrixMap->GetZ(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y));
@@ -4223,14 +4223,14 @@ void CMatrixSideUnit::TaktTL()
     CMatrixMapStatic * obj;
     CPoint tp;
 
-    CMatrixRobotAI * rl[MAX_ROBOTS];    // Список роботов на карте
-    int rlcnt;                          // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS];    // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt;                          // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     int team;
 
     if(m_LastTaktTL!=0 && (g_MatrixMap->GetTime()-m_LastTaktTL)<10) return;
     m_LastTaktTL=g_MatrixMap->GetTime();
 
-    // Для всех мест рассчитываем коэффициент вражеских объектов в зоне поражения
+    // Р”Р»СЏ РІСЃРµС… РјРµСЃС‚ СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј РєРѕСЌС„С„РёС†РёРµРЅС‚ РІСЂР°Р¶РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РІ Р·РѕРЅРµ РїРѕСЂР°Р¶РµРЅРёСЏ
     if(m_LastTaktUnderfire==0 || (g_MatrixMap->GetTime()-m_LastTaktUnderfire)>500) {
         m_LastTaktUnderfire=g_MatrixMap->GetTime();
 
@@ -4286,7 +4286,7 @@ void CMatrixSideUnit::TaktTL()
         }
     }
 
-    // Проверяем завершился ли приказ который нельзя прервать
+    // РџСЂРѕРІРµСЂСЏРµРј Р·Р°РІРµСЂС€РёР»СЃСЏ Р»Рё РїСЂРёРєР°Р· РєРѕС‚РѕСЂС‹Р№ РЅРµР»СЊР·СЏ РїСЂРµСЂРІР°С‚СЊ
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(obj->IsLiveRobot() && obj->GetSide()==m_Id) {
@@ -4296,7 +4296,7 @@ void CMatrixSideUnit::TaktTL()
                 GetEnv(obj)->m_Place=-1;
             }
 
-            if(GetEnv(obj)->m_Place>=0 && obj->AsRobot()->CanBreakOrder() && !obj->AsRobot()->GetCaptureFactory() && !IsToPlace(obj->AsRobot(),GetEnv(obj)->m_Place)) { // Если не синхронизировано место и то куда идем то место отчищаем
+            if(GetEnv(obj)->m_Place>=0 && obj->AsRobot()->CanBreakOrder() && !obj->AsRobot()->GetCaptureFactory() && !IsToPlace(obj->AsRobot(),GetEnv(obj)->m_Place)) { // Р•СЃР»Рё РЅРµ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅРѕ РјРµСЃС‚Рѕ Рё С‚Рѕ РєСѓРґР° РёРґРµРј С‚Рѕ РјРµСЃС‚Рѕ РѕС‚С‡РёС‰Р°РµРј
                 GetEnv(obj)->m_Place=-1;
             }
         }
@@ -4312,7 +4312,7 @@ void CMatrixSideUnit::TaktTL()
     for(int g=0;g<MAX_LOGIC_GROUP;g++) {
         if(m_LogicGroup[g].RobotsCnt()<=0) continue;
 
-        // Создаем список роботов в группе
+        // РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РІ РіСЂСѓРїРїРµ
         rlcnt=0;
         obj = CMatrixMapStatic::GetFirstLogic();
         while(obj) {
@@ -4330,21 +4330,21 @@ void CMatrixSideUnit::TaktTL()
 //        ASSERT(team>=0);
         m_LogicGroup[g].RobotsCnt(rlcnt);
 
-        bool orderok=true; // Приказ не изменился, данные корректны
+        bool orderok=true; // РџСЂРёРєР°Р· РЅРµ РёР·РјРµРЅРёР»СЃСЏ, РґР°РЅРЅС‹Рµ РєРѕСЂСЂРµРєС‚РЅС‹
 //        bool up_change_order=!((m_LogicGroup[g].m_Action.m_Type==m_Team[team].m_Action.m_Type) && (m_LogicGroup[g].m_Action.m_Region==m_Team[team].m_Action.m_Region));
 
         //m_LogicGroup[g].m_Action=m_Team[team].m_Action;
 
-        // Проверяем корректный ли текущий приказ
+        // РџСЂРѕРІРµСЂСЏРµРј РєРѕСЂСЂРµРєС‚РЅС‹Р№ Р»Рё С‚РµРєСѓС‰РёР№ РїСЂРёРєР°Р·
         while(true) {
             if(m_LogicGroup[g].m_Action.m_Type==mlat_None) {
                 CopyOrder(team,g);
                 if(m_LogicGroup[g].m_Action.m_Type!=mlat_None) { orderok=false; continue; }
 
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Capture) {
-                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился, то повинуемся
+                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Р•СЃР»Рё РїСЂРёРєР°Р· РёР·РјРµРЅРёР»СЃСЏ, С‚Рѕ РїРѕРІРёРЅСѓРµРјСЃСЏ
 
-                if(m_Region[m_LogicGroup[g].m_Action.m_Region].m_NeutralBuildingCnt<=0 && m_Region[m_LogicGroup[g].m_Action.m_Region].m_EnemyBuildingCnt<=0) { // Если нечего захватывать, меняем приказ
+                if(m_Region[m_LogicGroup[g].m_Action.m_Region].m_NeutralBuildingCnt<=0 && m_Region[m_LogicGroup[g].m_Action.m_Region].m_EnemyBuildingCnt<=0) { // Р•СЃР»Рё РЅРµС‡РµРіРѕ Р·Р°С…РІР°С‚С‹РІР°С‚СЊ, РјРµРЅСЏРµРј РїСЂРёРєР°Р·
                     if(m_LogicGroup[g].m_Action.m_Region!=m_Team[team].m_RegionMass) m_LogicGroup[g].m_Action.m_Type=mlat_Forward;
                     else m_LogicGroup[g].m_Action.m_Type=mlat_None;
                     orderok=false;
@@ -4373,11 +4373,11 @@ void CMatrixSideUnit::TaktTL()
                         }
                     }
                 } else {
-                    // Если все роботы группы заняты то приказ захвата считается успешным
+                    // Р•СЃР»Рё РІСЃРµ СЂРѕР±РѕС‚С‹ РіСЂСѓРїРїС‹ Р·Р°РЅСЏС‚С‹ С‚Рѕ РїСЂРёРєР°Р· Р·Р°С…РІР°С‚Р° СЃС‡РёС‚Р°РµС‚СЃСЏ СѓСЃРїРµС€РЅС‹Рј
                     for(i=0;i<rlcnt;i++) if(rl[i]->CanBreakOrder()) break;
                     if(i>=rlcnt) orderok=true;
 
-                    // Если другая команда захватывает завод и группа в регионе то приказ считаем успешным
+                    // Р•СЃР»Рё РґСЂСѓРіР°СЏ РєРѕРјР°РЅРґР° Р·Р°С…РІР°С‚С‹РІР°РµС‚ Р·Р°РІРѕРґ Рё РіСЂСѓРїРїР° РІ СЂРµРіРёРѕРЅРµ С‚Рѕ РїСЂРёРєР°Р· СЃС‡РёС‚Р°РµРј СѓСЃРїРµС€РЅС‹Рј
                     if(!orderok) {
                         for(i=0;i<rlcnt;i++) {
                             if(!PlaceInRegion(rl[i],rl[i]->GetEnv()->m_Place,m_LogicGroup[g].m_Action.m_Region)) break;
@@ -4399,14 +4399,14 @@ void CMatrixSideUnit::TaktTL()
                 }
 
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Defence) {
-                if(!m_LogicGroup[g].IsWar()) { // Если не в состоянии войны
+                if(!m_LogicGroup[g].IsWar()) { // Р•СЃР»Рё РЅРµ РІ СЃРѕСЃС‚РѕСЏРЅРёРё РІРѕР№РЅС‹
                     for(i=0;i<rlcnt;i++) {
                         if(rl[i]->GetEnv()->GetEnemyCnt()) break;
                     }
                     if(i<rlcnt && !m_LogicGroup[g].IsWar()) orderok=false;
 
                     if(orderok) {
-                        if(team>=0 && !CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился и нет больше врагов, то повинуемся
+                        if(team>=0 && !CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Р•СЃР»Рё РїСЂРёРєР°Р· РёР·РјРµРЅРёР»СЃСЏ Рё РЅРµС‚ Р±РѕР»СЊС€Рµ РІСЂР°РіРѕРІ, С‚Рѕ РїРѕРІРёРЅСѓРµРјСЃСЏ
 
                         for(i=0;i<rlcnt;i++) {
                             if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
@@ -4421,19 +4421,19 @@ void CMatrixSideUnit::TaktTL()
 
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Attack) {
                 u=0;
-                if(!m_LogicGroup[g].IsWar()) { // Если не в состоянии войны
+                if(!m_LogicGroup[g].IsWar()) { // Р•СЃР»Рё РЅРµ РІ СЃРѕСЃС‚РѕСЏРЅРёРё РІРѕР№РЅС‹
                     orderok=false; 
                 } else {
                     for(i=0;i<rlcnt && orderok;i++) {
-                        if(rl[i]->GetEnv()->GetEnemyCnt()) { // Видит ли робот врага
+                        if(rl[i]->GetEnv()->GetEnemyCnt()) { // Р’РёРґРёС‚ Р»Рё СЂРѕР±РѕС‚ РІСЂР°РіР°
                             u++;
                         } else {
-                            // Робот находится в регионе назночения или идет туда
+                            // Р РѕР±РѕС‚ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЂРµРіРёРѕРЅРµ РЅР°Р·РЅРѕС‡РµРЅРёСЏ РёР»Рё РёРґРµС‚ С‚СѓРґР°
                             if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
                         }
                     }
                 }
-                if(u==0 && orderok) { // Если нечего делать, но приказ остался, значит поблизости воюют - спешим им на помощь
+                if(u==0 && orderok) { // Р•СЃР»Рё РЅРµС‡РµРіРѕ РґРµР»Р°С‚СЊ, РЅРѕ РїСЂРёРєР°Р· РѕСЃС‚Р°Р»СЃСЏ, Р·РЅР°С‡РёС‚ РїРѕР±Р»РёР·РѕСЃС‚Рё РІРѕСЋСЋС‚ - СЃРїРµС€РёРј РёРј РЅР° РїРѕРјРѕС‰СЊ
                     obj = CMatrixMapStatic::GetFirstLogic();
                     while(obj) {
                         if(obj->IsLiveRobot() && obj->GetSide()==m_Id && GetObjTeam(obj)==team && GetGroupLogic(obj)!=g) {
@@ -4447,22 +4447,22 @@ void CMatrixSideUnit::TaktTL()
                         obj = obj->GetNextLogic();
                     }
                 }
-                if(u==0 && m_Team[team].m_Action.m_Type!=mlat_Attack && !CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился и нет больше врагов, то повинуемся
+                if(u==0 && m_Team[team].m_Action.m_Type!=mlat_Attack && !CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Р•СЃР»Рё РїСЂРёРєР°Р· РёР·РјРµРЅРёР»СЃСЏ Рё РЅРµС‚ Р±РѕР»СЊС€Рµ РІСЂР°РіРѕРІ, С‚Рѕ РїРѕРІРёРЅСѓРµРјСЃСЏ
 
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Forward) {
-                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился, то повинуемся
+                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Р•СЃР»Рё РїСЂРёРєР°Р· РёР·РјРµРЅРёР»СЃСЏ, С‚Рѕ РїРѕРІРёРЅСѓРµРјСЃСЏ
 //                u=0;
                 for(i=0;i<rlcnt && orderok;i++) {
-                    // Робот находится в регионе назночения или идет туда
+                    // Р РѕР±РѕС‚ РЅР°С…РѕРґРёС‚СЃСЏ РІ СЂРµРіРёРѕРЅРµ РЅР°Р·РЅРѕС‡РµРЅРёСЏ РёР»Рё РёРґРµС‚ С‚СѓРґР°
                     if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
 
 //                    if(IsInPlace(rl[i])) u++;
                 }
-//                if(orderok && u==rlcnt) { // Если все пришли
+//                if(orderok && u==rlcnt) { // Р•СЃР»Рё РІСЃРµ РїСЂРёС€Р»Рё
 //                }
 
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Retreat) {
-                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился, то повинуемся
+                if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Р•СЃР»Рё РїСЂРёРєР°Р· РёР·РјРµРЅРёР»СЃСЏ, С‚Рѕ РїРѕРІРёРЅСѓРµРјСЃСЏ
 
                 for(i=0;i<rlcnt && orderok;i++) {
                     if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
@@ -4473,14 +4473,14 @@ void CMatrixSideUnit::TaktTL()
         if(orderok) continue;
 
         if(m_LogicGroup[g].m_Action.m_Type==mlat_Attack && !m_LogicGroup[g].IsWar()) {
-            if(!m_LogicGroup[g].IsWar()) { // Если приказ только что установился то старые места не действительны
+            if(!m_LogicGroup[g].IsWar()) { // Р•СЃР»Рё РїСЂРёРєР°Р· С‚РѕР»СЊРєРѕ С‡С‚Рѕ СѓСЃС‚Р°РЅРѕРІРёР»СЃСЏ С‚Рѕ СЃС‚Р°СЂС‹Рµ РјРµСЃС‚Р° РЅРµ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅС‹
                 for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_Place=-1;
             }
         }
 
         m_LogicGroup[g].SetWar(false);
 
-        // Назначаем новый приказ
+        // РќР°Р·РЅР°С‡Р°РµРј РЅРѕРІС‹Р№ РїСЂРёРєР°Р·
         if(m_LogicGroup[g].m_Action.m_Type==mlat_Defence) {
 
             for(i=0;i<rlcnt;i++) {
@@ -4505,7 +4505,7 @@ void CMatrixSideUnit::TaktTL()
             m_LogicGroup[g].SetWar(true);
 
 /*            for(i=0;i<rlcnt;i++) {
-                if(rl[i]->GetEnv()->GetEnemyCnt()<=0) { // Если робот не видит врага идем в регион
+                if(rl[i]->GetEnv()->GetEnemyCnt()<=0) { // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РІРёРґРёС‚ РІСЂР°РіР° РёРґРµРј РІ СЂРµРіРёРѕРЅ
                     SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
                 }
             }*/
@@ -4536,7 +4536,7 @@ void CMatrixSideUnit::TaktTL()
 
 //            for(i=0;i<rlcnt;i++) rl[i]->BreakAllOrders();
 
-            // Распределяем кто какие заводы захватывает
+            // Р Р°СЃРїСЂРµРґРµР»СЏРµРј РєС‚Рѕ РєР°РєРёРµ Р·Р°РІРѕРґС‹ Р·Р°С…РІР°С‚С‹РІР°РµС‚
             obj = CMatrixMapStatic::GetFirstLogic();
             while(obj) {
                 if(obj->IsLiveBuilding() && obj->GetSide()!=m_Id && obj->AsBuilding()->CanBeCaptured())
@@ -4573,7 +4573,7 @@ void CMatrixSideUnit::TaktTL()
                 }
                 obj = obj->GetNextLogic();
             }
-            // Остальных растовляем по местам
+            // РћСЃС‚Р°Р»СЊРЅС‹С… СЂР°СЃС‚РѕРІР»СЏРµРј РїРѕ РјРµСЃС‚Р°Рј
             for(i=0;i<rlcnt;i++) {
                 if(rl[i]->FindOrderLikeThat(ROT_CAPTURE_FACTORY)) continue;
 
@@ -4635,8 +4635,8 @@ void CMatrixSideUnit::WarTL(int group)
     int i,u;//,x,y;
     byte mm=0;
     CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int rlcnt=0;                     // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     bool rlokmove[MAX_ROBOTS];
 
     BufPrepare();
@@ -4652,12 +4652,12 @@ void CMatrixSideUnit::WarTL(int group)
     }
     if(rlcnt<0) return;
 
-    // Находим врага для всей группы
+    // РќР°С…РѕРґРёРј РІСЂР°РіР° РґР»СЏ РІСЃРµР№ РіСЂСѓРїРїС‹
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->GetEnv()->m_TargetAttack==rl[i]) rl[i]->GetEnv()->m_TargetAttack=NULL;
 
         if(!rl[i]->GetEnv()->m_TargetAttack) {
-            // Находим ближайшего незакрытого врага
+            // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµР·Р°РєСЂС‹С‚РѕРіРѕ РІСЂР°РіР°
             float mindist=1e10f;
             CEnemy * enemyfind=NULL;
             CEnemy * enemy=rl[i]->GetEnv()->m_FirstEnemy;
@@ -4665,7 +4665,7 @@ void CMatrixSideUnit::WarTL(int group)
                 if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy!=rl[i]) {
                     float cd=Dist2(GetWorldPos(enemy->m_Enemy),GetWorldPos(rl[i]));
                     if(cd<mindist) {
-                        // Проверяем не закрыт ли он своими
+                        // РџСЂРѕРІРµСЂСЏРµРј РЅРµ Р·Р°РєСЂС‹С‚ Р»Рё РѕРЅ СЃРІРѕРёРјРё
                         D3DXVECTOR3 des,from,dir,p;
                         float t,dist;
 
@@ -4697,7 +4697,7 @@ void CMatrixSideUnit::WarTL(int group)
                 }
                 enemy=enemy->m_NextEnemy;
             }
-            // Если не нашли открытого ищем закрытого
+            // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё РѕС‚РєСЂС‹С‚РѕРіРѕ РёС‰РµРј Р·Р°РєСЂС‹С‚РѕРіРѕ
             if(!enemyfind) {
                 enemy=rl[i]->GetEnv()->m_FirstEnemy;
                 while(enemy) {
@@ -4714,7 +4714,7 @@ void CMatrixSideUnit::WarTL(int group)
 
             if(enemyfind) {
                 rl[i]->GetEnv()->m_TargetAttack=enemyfind->m_Enemy;
-                // Если новая цель пушка то меняем позицию
+                // Р•СЃР»Рё РЅРѕРІР°СЏ С†РµР»СЊ РїСѓС€РєР° С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                 if(rl[i]->GetEnv()->m_TargetAttack->IsLiveActiveCannon()) {
                     rl[i]->GetEnv()->m_Place=-1; 
                 }
@@ -4722,13 +4722,13 @@ void CMatrixSideUnit::WarTL(int group)
         }
     }
 
-    // Проверяем правильно ли роботы идут
+    // РџСЂРѕРІРµСЂСЏРµРј РїСЂР°РІРёР»СЊРЅРѕ Р»Рё СЂРѕР±РѕС‚С‹ РёРґСѓС‚
     bool moveok=true;
     for(i=0;i<rlcnt;i++) {
         rlokmove[i]=true;
         
-        if(!rl[i]->CanBreakOrder()) continue; // Пропускаем если робот не может прервать текущий приказ
-        if(!rl[i]->GetEnv()->m_TargetAttack) { // Если у робота нет цели то идем в регион назначения
+        if(!rl[i]->CanBreakOrder()) continue; // РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ РїСЂРµСЂРІР°С‚СЊ С‚РµРєСѓС‰РёР№ РїСЂРёРєР°Р·
+        if(!rl[i]->GetEnv()->m_TargetAttack) { // Р•СЃР»Рё Сѓ СЂРѕР±РѕС‚Р° РЅРµС‚ С†РµР»Рё С‚Рѕ РёРґРµРј РІ СЂРµРіРёРѕРЅ РЅР°Р·РЅР°С‡РµРЅРёСЏ
             if(GetDesRegion(rl[i])!=m_LogicGroup[group].m_Action.m_Region) {
                 if(!PlaceInRegion(rl[i],rl[i]->GetEnv()->m_Place,m_LogicGroup[group].m_Action.m_Region)) {
                     if(CanChangePlace(rl[i])) {
@@ -4779,9 +4779,9 @@ void CMatrixSideUnit::WarTL(int group)
         }*/
     }
 
-    // Назначаем движение
+    // РќР°Р·РЅР°С‡Р°РµРј РґРІРёР¶РµРЅРёРµ
     if(!moveok) {
-        // Находим центр и радиус
+        // РќР°С…РѕРґРёРј С†РµРЅС‚СЂ Рё СЂР°РґРёСѓСЃ
         CPoint center,tp2,tp=CPoint(0,0);
         int f=0;
         for(i=0;i<rlcnt;i++) {
@@ -4814,7 +4814,7 @@ void CMatrixSideUnit::WarTL(int group)
         
         bool cplr=true;
         
-        // Находим место
+        // РќР°С…РѕРґРёРј РјРµСЃС‚Рѕ
         int listcnt;
         if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),center,radius,false,m_PlaceList,&listcnt)==0) {
             for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
@@ -4856,7 +4856,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         //    }
         //}
         //if(!rect.IsEmpty()) {
-            // Помечаем уже занетые места
+            // РџРѕРјРµС‡Р°РµРј СѓР¶Рµ Р·Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р°
 //            g_MatrixMap->m_RN.ActionDataPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax),0);
 /*            for(i=0;i<rlcnt;i++) {
                 if(!rlokmove[i]) continue;
@@ -4871,11 +4871,11 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 obj = obj->GetNextLogic();
             }
 
-            // Находим лучшее место для каждого робота
+            // РќР°С…РѕРґРёРј Р»СѓС‡С€РµРµ РјРµСЃС‚Рѕ РґР»СЏ РєР°Р¶РґРѕРіРѕ СЂРѕР±РѕС‚Р°
 //            CRect plr=g_MatrixMap->m_RN.CorrectRectPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax));
             for(i=0;i<rlcnt;i++) {
                 if(rlokmove[i]) continue;
-                if(!rl[i]->GetEnv()->m_TargetAttack) continue; // Если нет цели, то пропускаем
+                if(!rl[i]->GetEnv()->m_TargetAttack) continue; // Р•СЃР»Рё РЅРµС‚ С†РµР»Рё, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                 bool havebomb=rl[i]->HaveBomb();
 
@@ -4908,9 +4908,9 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             int iplace=m_PlaceList[u];
                             SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+iplace;
 
-                            if(place->m_Data) continue; // Занетые места игнорируем
-                            if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
-                            if(rl[i]->GetEnv()->IsBadPlace(iplace)) continue; // Плохое место пропускаем
+                            if(place->m_Data) continue; // Р—Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р° РёРіРЅРѕСЂРёСЂСѓРµРј
+                            if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
+                            if(rl[i]->GetEnv()->IsBadPlace(iplace)) continue; // РџР»РѕС…РѕРµ РјРµСЃС‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                             float pcx=GLOBAL_SCALE_MOVE*place->m_Pos.x+(GLOBAL_SCALE_MOVE*4.0f/2.0f); // Center place
                             float pcy=GLOBAL_SCALE_MOVE*place->m_Pos.y+(GLOBAL_SCALE_MOVE*4.0f/2.0f);
@@ -4920,30 +4920,30 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
                             float k=(pvx*tvx+pvy*tvy)*tsize2o;
                             if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
-//                                if(k>1.5) continue; // Места за врагом не расматриваем
+//                                if(k>1.5) continue; // РњРµСЃС‚Р° Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
 
                             } else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()!=OBJECT_TYPE_BUILDING) {
-                            if(k>0.95) continue; // Места за врагом не расматриваем
+                            if(k>0.95) continue; // РњРµСЃС‚Р° Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
 
                             } else if(!havebomb) {
-                                if(k>1.2) continue; // Места сильно за врагом не расматриваем
+                                if(k>1.2) continue; // РњРµСЃС‚Р° СЃРёР»СЊРЅРѕ Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
                             }
-//                            if(k>0.95) continue; // Места за врагом не расматриваем
-//                            if(k<0.0) continue; // Места за роботом игнорируем
+//                            if(k>0.95) continue; // РњРµСЃС‚Р° Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
+//                            if(k<0.0) continue; // РњРµСЃС‚Р° Р·Р° СЂРѕР±РѕС‚РѕРј РёРіРЅРѕСЂРёСЂСѓРµРј
                             float m=(-pvx*tvy+pvy*tvx)*tsize2o;
-                            float distfrom2=POW2(-m*tvy)+POW2(m*tvx); // Дистанция отклонения
-                            float distplace2=POW2(tvx-pcx/*pvx*/)+POW2(tvy-pcx/*pvy*/); // Дистанция от места до врага
-//                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                            float distfrom2=POW2(-m*tvy)+POW2(m*tvx); // Р”РёСЃС‚Р°РЅС†РёСЏ РѕС‚РєР»РѕРЅРµРЅРёСЏ
+                            float distplace2=POW2(tvx-pcx/*pvx*/)+POW2(tvy-pcx/*pvy*/); // Р”РёСЃС‚Р°РЅС†РёСЏ РѕС‚ РјРµСЃС‚Р° РґРѕ РІСЂР°РіР°
+//                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Р РѕР±РѕС‚ РґРѕР»Р¶РµРЅ РґРѕСЃС‚РѕРІР°С‚СЊ РІСЂР°РіР°
                             if((placebest<0) || (rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON && (rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE)>enemy_fire_dist)) {
-                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Р РѕР±РѕС‚ РґРѕР»Р¶РµРЅ РґРѕСЃС‚РѕРІР°С‚СЊ РІСЂР°РіР°
                             } else {
-                                if(distplace2>POW2(0.95*rl[i]->GetMinFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                                if(distplace2>POW2(0.95*rl[i]->GetMinFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Р РѕР±РѕС‚ РґРѕР»Р¶РµРЅ РґРѕСЃС‚РѕРІР°С‚СЊ РІСЂР°РіР°
                             }
 
                             if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_ROBOTAI) {
-                                if(distfrom2>POW2(200+100)) continue; // Робот не должен отклонится слишком далеко
+                                if(distfrom2>POW2(200+100)) continue; // Р РѕР±РѕС‚ РЅРµ РґРѕР»Р¶РµРЅ РѕС‚РєР»РѕРЅРёС‚СЃСЏ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ
 //                            } else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_BUILDING) {
-//                                if(distfrom2>POW2(300+100)) continue; // Робот не должен отклонится слишком далеко
+//                                if(distfrom2>POW2(300+100)) continue; // Р РѕР±РѕС‚ РЅРµ РґРѕР»Р¶РµРЅ РѕС‚РєР»РѕРЅРёС‚СЃСЏ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ
                             }
 
                             int underfire=place->m_Underfire;
@@ -4952,18 +4952,18 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, D3DXVECTOR3(pcx,pcy,g_MatrixMap->GetZ(pcx,pcy)+20.0f) /*rl[i]->GetGeoCenter()*/, PointOfAim(rl[i]->GetEnv()->m_TargetAttack), TRACE_OBJECT|TRACE_NONOBJECT|TRACE_OBJECTSPHERE|TRACE_SKIP_INVISIBLE, rl[i]);
                             bool close=(IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE);
 
-                            if(placebest>=0) { // Если уже найдено место то выбираем наилучшее
+                            if(placebest>=0) { // Р•СЃР»Рё СѓР¶Рµ РЅР°Р№РґРµРЅРѕ РјРµСЃС‚Рѕ С‚Рѕ РІС‹Р±РёСЂР°РµРј РЅР°РёР»СѓС‡С€РµРµ
                                 if(havebomb) {
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
+                                    if(distplace2>s_f1) continue; // РњРµСЃС‚Рѕ РґР°Р»СЊС€Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
                                 } else if(close!=s_close) {
                                     if(close) continue;
                                 } else if(!underfire && s_underfire);
                                 else if(underfire && !s_underfire) continue;
-                                else if(underfire) { // Если под обстрелом
-                                    if(underfire>s_underfire) continue; // Место более обстреливоемое пропускаем
-                                    if(distplace2<s_f1) continue; // Место ближе предыдущего пропускаем
-                                } else { // Если вне радиуса поражения противника
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
+                                else if(underfire) { // Р•СЃР»Рё РїРѕРґ РѕР±СЃС‚СЂРµР»РѕРј
+                                    if(underfire>s_underfire) continue; // РњРµСЃС‚Рѕ Р±РѕР»РµРµ РѕР±СЃС‚СЂРµР»РёРІРѕРµРјРѕРµ РїСЂРѕРїСѓСЃРєР°РµРј
+                                    if(distplace2<s_f1) continue; // РњРµСЃС‚Рѕ Р±Р»РёР¶Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
+                                } else { // Р•СЃР»Рё РІРЅРµ СЂР°РґРёСѓСЃР° РїРѕСЂР°Р¶РµРЅРёСЏ РїСЂРѕС‚РёРІРЅРёРєР°
+                                    if(distplace2>s_f1) continue; // РњРµСЃС‚Рѕ РґР°Р»СЊС€Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
                                 }
                             }
 
@@ -5000,7 +5000,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         continue;
                     }
 
-                } else { // Не нашли
+                } else { // РќРµ РЅР°С€Р»Рё
                     rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
 
                     int iplace;
@@ -5010,8 +5010,8 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         iplace=m_PlaceList[u];
                         place=g_MatrixMap->m_RN.m_Place+iplace;
 
-                        if(place->m_Data) continue; // Занетые места игнорируем
-                        if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
+                        if(place->m_Data) continue; // Р—Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р° РёРіРЅРѕСЂРёСЂСѓРµРј
+                        if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
                         break;
                     }
                     if(u<listcnt) {
@@ -5020,7 +5020,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         if(PrepareBreakOrder(rl[i])) {
                             rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
                 }
-                    } else { // Расширяем
+                    } else { // Р Р°СЃС€РёСЂСЏРµРј
                         if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
 
                         for(u=0;u<listcnt;u++) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
@@ -5035,7 +5035,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         }
     }
 
-    // Корректируем точку выстрела
+    // РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚РѕС‡РєСѓ РІС‹СЃС‚СЂРµР»Р°
     D3DXVECTOR3 des,from,dir,p;
     float t,dist;
 
@@ -5050,7 +5050,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
             des=PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-            // Не стрелять из прямого оружия, если на пути к цели свои
+            // РќРµ СЃС‚СЂРµР»СЏС‚СЊ РёР· РїСЂСЏРјРѕРіРѕ РѕСЂСѓР¶РёСЏ, РµСЃР»Рё РЅР° РїСѓС‚Рё Рє С†РµР»Рё СЃРІРѕРё
             from=rl[i]->GetGeoCenter();
             dist=sqrt(POW2(from.x-des.x)+POW2(from.y-des.y)+POW2(from.z-des.z));
 
@@ -5106,7 +5106,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
             }
 
             if(fireline) { 
-                // Если у цели голова Firewall то в нее сложнее попасть
+                // Р•СЃР»Рё Сѓ С†РµР»Рё РіРѕР»РѕРІР° Firewall С‚Рѕ РІ РЅРµРµ СЃР»РѕР¶РЅРµРµ РїРѕРїР°СЃС‚СЊ
                 /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
@@ -5148,25 +5148,25 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 //CHelper::DestroyByGroup(DWORD(this)+6);
 //CHelper::Create(10,DWORD(this)+6)->Cone(rl[i]->GetGeoCenter(),des,1.0f,1.0f,0xffffffff,0xffffffff,3);
 
-                // Если стоим на месте
+                // Р•СЃР»Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ
                 if(IsInPlace(rl[i])) {
-                    // Если несколько врагов и в цель не попадаем в течении долгого времени, то переназначаем цель
+                    // Р•СЃР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РІСЂР°РіРѕРІ Рё РІ С†РµР»СЊ РЅРµ РїРѕРїР°РґР°РµРј РІ С‚РµС‡РµРЅРёРё РґРѕР»РіРѕРіРѕ РІСЂРµРјРµРЅРё, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј С†РµР»СЊ
                     if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
                         env->m_TargetAttack=NULL;
                     }
-                    // Если один враг и в цель не попадаем в течении долгого времени и стоим на месте, то переназначаем место
+                    // Р•СЃР»Рё РѕРґРёРЅ РІСЂР°Рі Рё РІ С†РµР»СЊ РЅРµ РїРѕРїР°РґР°РµРј РІ С‚РµС‡РµРЅРёРё РґРѕР»РіРѕРіРѕ РІСЂРµРјРµРЅРё Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј РјРµСЃС‚Рѕ
                     if(env->m_EnemyCnt==1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
                         env->AddBadPlace(env->m_Place);
                         env->m_Place=-1;
                     }
-                    // Если очень долго не попадаем в цель, то меняем позицию
+                    // Р•СЃР»Рё РѕС‡РµРЅСЊ РґРѕР»РіРѕ РЅРµ РїРѕРїР°РґР°РµРј РІ С†РµР»СЊ, С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                     if((curTime-env->m_TargetChange)>2000 && (curTime-env->m_LastHitTarget)>10000) {
                         env->AddBadPlace(env->m_Place);
                         env->m_Place=-1;
                     }
                 } else env->m_TargetChange=curTime;
             } else {
-                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // Ищем робота для починки
+                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // РС‰РµРј СЂРѕР±РѕС‚Р° РґР»СЏ РїРѕС‡РёРЅРєРё
                     D3DXVECTOR2 v,v2;
 
                     if(rl[i]->GetEnv()->m_Target && IsLiveUnit(rl[i]->GetEnv()->m_Target) && rl[i]->GetEnv()->m_Target->GetSide()==m_Id && rl[i]->GetEnv()->m_Target->NeedRepair()) {
@@ -5195,13 +5195,13 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 if(rl[i]->GetEnv()->TargetType()==2) rl[i]->Fire(PointOfAim(rl[i]->GetEnv()->m_Target),2);
                 else rl[i]->StopFire();
 
-                // Если стоим на месте
+                // Р•СЃР»Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ
                 if(IsInPlace(rl[i])) {
-                    // Если несколько врагов, а текущий долго закрыт своими, то переназначаем цель
+                    // Р•СЃР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РІСЂР°РіРѕРІ, Р° С‚РµРєСѓС‰РёР№ РґРѕР»РіРѕ Р·Р°РєСЂС‹С‚ СЃРІРѕРёРјРё, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј С†РµР»СЊ
                     if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>4000) { 
                         env->m_TargetAttack=NULL;
                     }
-                    // Если долго закрыт своими, то меняем позицию
+                    // Р•СЃР»Рё РґРѕР»РіРѕ Р·Р°РєСЂС‹С‚ СЃРІРѕРёРјРё, С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                     if((curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>6000) {
                         if(CanChangePlace(rl[i])) {
                             env->AddBadPlace(env->m_Place);
@@ -5218,7 +5218,7 @@ void CMatrixSideUnit::RepairTL(int group)
 {
     int i,rlcnt=0;
     CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     D3DXVECTOR2 v,v2;
 
     obj = CMatrixMapStatic::GetFirstLogic();
@@ -5231,7 +5231,7 @@ void CMatrixSideUnit::RepairTL(int group)
     }
     if(rlcnt<=0) return;
 
-    // Если нет цели для починки, то ищем ее
+    // Р•СЃР»Рё РЅРµС‚ С†РµР»Рё РґР»СЏ РїРѕС‡РёРЅРєРё, С‚Рѕ РёС‰РµРј РµРµ
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->GetRepairDist()<=0) continue;
         if(rl[i]->GetEnv()->m_Target && rl[i]->GetEnv()->m_Target->IsLive() && rl[i]->GetEnv()->m_Target->NeedRepair()) {
@@ -5256,7 +5256,7 @@ void CMatrixSideUnit::RepairTL(int group)
         }
     }
 
-    // Корректируем точку выстрела
+    // РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚РѕС‡РєСѓ РІС‹СЃС‚СЂРµР»Р°
     for(i=0;i<rlcnt;i++) {
         if(!rl[i]->GetEnv()->m_Target) continue;
 
@@ -5266,32 +5266,32 @@ void CMatrixSideUnit::RepairTL(int group)
     }
 }
 
-// Назначаем место в регионе или место близкие к этому региону
+// РќР°Р·РЅР°С‡Р°РµРј РјРµСЃС‚Рѕ РІ СЂРµРіРёРѕРЅРµ РёР»Рё РјРµСЃС‚Рѕ Р±Р»РёР·РєРёРµ Рє СЌС‚РѕРјСѓ СЂРµРіРёРѕРЅСѓ
 void CMatrixSideUnit::AssignPlace(CMatrixRobotAI * robot,int region)
 {
     int i,u;
     CMatrixMapStatic * obj;
     SMatrixPlace * place;
 
-    // Если текущее место в регионе, то оно нас устраивает
+    // Р•СЃР»Рё С‚РµРєСѓС‰РµРµ РјРµСЃС‚Рѕ РІ СЂРµРіРёРѕРЅРµ, С‚Рѕ РѕРЅРѕ РЅР°СЃ СѓСЃС‚СЂР°РёРІР°РµС‚
     if(PlaceInRegion(robot,robot->GetEnv()->m_Place,region)) return;
 
-	// В текущем регионе помечаем все места как пустые
+	// Р’ С‚РµРєСѓС‰РµРј СЂРµРіРёРѕРЅРµ РїРѕРјРµС‡Р°РµРј РІСЃРµ РјРµСЃС‚Р° РєР°Рє РїСѓСЃС‚С‹Рµ
     SMatrixRegion * uregion=g_MatrixMap->m_RN.GetRegion(region);
     for(i=0;i<uregion->m_PlaceAllCnt;i++) GetPlacePtr(uregion->m_PlaceAll[i])->m_Data=0;
 
-	// Помечаем занятые места кроме текущего робота
+	// РџРѕРјРµС‡Р°РµРј Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р° РєСЂРѕРјРµ С‚РµРєСѓС‰РµРіРѕ СЂРѕР±РѕС‚Р°
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(IsLiveUnit(obj) && obj!=robot) ObjPlaceData(obj,1);
         obj = obj->GetNextLogic();
     }
 
-    // Находим пустое место
+    // РќР°С…РѕРґРёРј РїСѓСЃС‚РѕРµ РјРµСЃС‚Рѕ
     for(u=0;u<uregion->m_PlaceAllCnt;u++) {
         place=GetPlacePtr(uregion->m_PlaceAll[u]);
         if(place->m_Data) continue;
-        if(!CanMove(place->m_Move,robot)) continue; // Если робот не может стоять на этом месте, то пропускаем
+        if(!CanMove(place->m_Move,robot)) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
         robot->GetEnv()->m_Place=uregion->m_PlaceAll[u];
         place->m_Data=1;
@@ -5299,7 +5299,7 @@ void CMatrixSideUnit::AssignPlace(CMatrixRobotAI * robot,int region)
     }
 }
 
-// Назначаем места в регионе или места близкие к этому региону
+// РќР°Р·РЅР°С‡Р°РµРј РјРµСЃС‚Р° РІ СЂРµРіРёРѕРЅРµ РёР»Рё РјРµСЃС‚Р° Р±Р»РёР·РєРёРµ Рє СЌС‚РѕРјСѓ СЂРµРіРёРѕРЅСѓ
 void CMatrixSideUnit::AssignPlace(int group,int region)
 {
     float f;
@@ -5309,16 +5309,16 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
     SMatrixPlace * place;
     byte mm=0;
 
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int rlcnt=0;                     // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
 
     BufPrepare();
 
-	// В текущем регионе помечаем все места как пустые
+	// Р’ С‚РµРєСѓС‰РµРј СЂРµРіРёРѕРЅРµ РїРѕРјРµС‡Р°РµРј РІСЃРµ РјРµСЃС‚Р° РєР°Рє РїСѓСЃС‚С‹Рµ
     SMatrixRegion * uregion=g_MatrixMap->m_RN.GetRegion(region);
     for(i=0;i<uregion->m_PlaceAllCnt;i++) GetPlacePtr(uregion->m_PlaceAll[i])->m_Data=0;
 
-	// Помечаем занятые места кроме роботов текущей группы
+	// РџРѕРјРµС‡Р°РµРј Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р° РєСЂРѕРјРµ СЂРѕР±РѕС‚РѕРІ С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїС‹
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(obj->IsLiveRobot()) {
@@ -5335,7 +5335,7 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
 
     SortRobotList(rl,rlcnt);
 
-    // Рассчитываем вектор на врага
+    // Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј РІРµРєС‚РѕСЂ РЅР° РІСЂР°РіР°
     D3DXVECTOR2 venemy;
     int cr=rl[0]->GetRegion();
     int r=FindNearRegionWithUTR(cr,NULL,0,4+32+64);
@@ -5360,7 +5360,7 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
     vcenter.x=float(tp.x);
     vcenter.y=float(tp.y);
 
-    // Создаем список пустых мест
+    // РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє РїСѓСЃС‚С‹С… РјРµСЃС‚
     int listcnt=0;
     SMatrixRegion * pregion=g_MatrixMap->m_RN.m_Region+region;
     for(i=0;i<pregion->m_PlaceCnt;i++) {
@@ -5368,7 +5368,7 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
         m_PlaceList[listcnt]=pregion->m_Place[i];
         listcnt++;
     }
-    for(i=0;i<listcnt-1;i++) { // Сортеруем по дальности
+    for(i=0;i<listcnt-1;i++) { // РЎРѕСЂС‚РµСЂСѓРµРј РїРѕ РґР°Р»СЊРЅРѕСЃС‚Рё
         place=g_MatrixMap->m_RN.m_Place+m_PlaceList[i];
         float pr1=venemy.x*(place->m_Pos.x-vcenter.x)+venemy.y*(place->m_Pos.y-vcenter.y);
         for(u=i+1;u<listcnt;u++) {
@@ -5381,7 +5381,7 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
         }
     }
 
-    // Назначаем места
+    // РќР°Р·РЅР°С‡Р°РµРј РјРµСЃС‚Р°
     for(t=0;t<rlcnt;t++) {
         for(i=0;i<listcnt;i++) {
             place=g_MatrixMap->m_RN.m_Place+m_PlaceList[i];
@@ -5392,12 +5392,12 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
         if(i<listcnt) {
             place->m_Data=1;
             rl[t]->GetEnv()->m_Place=m_PlaceList[i];
-        } else { // Если не нашли то расширяем список
+        } else { // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё С‚Рѕ СЂР°СЃС€РёСЂСЏРµРј СЃРїРёСЃРѕРє
             for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
 
             if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
 
-            for(i=0;i<listcnt-1;i++) { // Сортеруем по дальности
+            for(i=0;i<listcnt-1;i++) { // РЎРѕСЂС‚РµСЂСѓРµРј РїРѕ РґР°Р»СЊРЅРѕСЃС‚Рё
                 place=g_MatrixMap->m_RN.m_Place+m_PlaceList[i];
                 float pr1=venemy.x*(place->m_Pos.x-vcenter.x)+venemy.y*(place->m_Pos.y-vcenter.y);
                 for(u=i+1;u<listcnt;u++) {
@@ -5425,7 +5425,7 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
         }
     }
 
-/*    // Помечаем места которые устраивают
+/*    // РџРѕРјРµС‡Р°РµРј РјРµСЃС‚Р° РєРѕС‚РѕСЂС‹Рµ СѓСЃС‚СЂР°РёРІР°СЋС‚
     t=0;
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->GetEnv()->m_Place>=0 && GetPlacePtr(rl[i]->GetEnv()->m_Place)->m_Region==region && GetPlacePtr(rl[i]->GetEnv()->m_Place)->m_Data==0) {
@@ -5435,13 +5435,13 @@ void CMatrixSideUnit::AssignPlace(int group,int region)
     }
     if(t==rlcnt) return;
 
-    // Назначаем остальные места
+    // РќР°Р·РЅР°С‡Р°РµРј РѕСЃС‚Р°Р»СЊРЅС‹Рµ РјРµСЃС‚Р°
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->GetEnv()->m_Place<0) {
             for(u=0;u<uregion->m_PlaceAllCnt;u++) {
                 place=GetPlacePtr(uregion->m_PlaceAll[u]);
                 if(place->m_Data) continue;
-                if(!CanMove(place->m_Move,rl[i])) continue; // Если робот не может стоять на этом месте то, пропускаем
+                if(!CanMove(place->m_Move,rl[i])) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ, РїСЂРѕРїСѓСЃРєР°РµРј
 
                 rl[i]->GetEnv()->m_Place=uregion->m_PlaceAll[u];
                 place->m_Data=1;
@@ -5467,7 +5467,7 @@ void CMatrixSideUnit::SortRobotList(CMatrixRobotAI * * rl,int rlcnt)
     int rlrcnt=0;
     int rlbcnt=0;
 
-    // Сортируем по силе
+    // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ СЃРёР»Рµ
     for(i=0;i<rlcnt-1;i++) {
         for(u=i+1;u<rlcnt;u++) {
             if(rl[u]->GetStrength()<rl[i]->GetStrength()) {
@@ -5476,7 +5476,7 @@ void CMatrixSideUnit::SortRobotList(CMatrixRobotAI * * rl,int rlcnt)
         }
     }
 
-    // Роботы с чинилкой, бомбой, и без, в разных списках
+    // Р РѕР±РѕС‚С‹ СЃ С‡РёРЅРёР»РєРѕР№, Р±РѕРјР±РѕР№, Рё Р±РµР·, РІ СЂР°Р·РЅС‹С… СЃРїРёСЃРєР°С…
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->HaveBomb()) {
             rlb[rlbcnt]=rl[i];
@@ -5490,7 +5490,7 @@ void CMatrixSideUnit::SortRobotList(CMatrixRobotAI * * rl,int rlcnt)
         }
     }
 
-    // Обедняем списки. Каждый 2 робот с бомбой. Каждый 3 робот с чинилкой, начиная от роботы с бомбой.
+    // РћР±РµРґРЅСЏРµРј СЃРїРёСЃРєРё. РљР°Р¶РґС‹Р№ 2 СЂРѕР±РѕС‚ СЃ Р±РѕРјР±РѕР№. РљР°Р¶РґС‹Р№ 3 СЂРѕР±РѕС‚ СЃ С‡РёРЅРёР»РєРѕР№, РЅР°С‡РёРЅР°СЏ РѕС‚ СЂРѕР±РѕС‚С‹ СЃ Р±РѕРјР±РѕР№.
     rlcnt=0;
     int s_normal=0,s_bomb=0,s_repair=0;
     int i_bomb=0,i_repair=0;
@@ -5542,11 +5542,11 @@ bool CMatrixSideUnit::PlaceInRegion(CMatrixRobotAI * robot, int place,int region
 
     if(place<0) return false;
 
-    // Место в регионе
+    // РњРµСЃС‚Рѕ РІ СЂРµРіРёРѕРЅРµ
     SMatrixPlace * pl=GetPlacePtr(place);
     if(pl->m_Region==region) return true;
 
-    // Если свободное место в регионе то возращаем false
+    // Р•СЃР»Рё СЃРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ РІ СЂРµРіРёРѕРЅРµ С‚Рѕ РІРѕР·СЂР°С‰Р°РµРј false
     SMatrixRegion * uregion=g_MatrixMap->m_RN.GetRegion(region);
 
     for(i=0;i<uregion->m_PlaceCnt;i++) {
@@ -5565,11 +5565,11 @@ bool CMatrixSideUnit::PlaceInRegion(CMatrixRobotAI * robot, int place,int region
     for(i=0;i<uregion->m_PlaceCnt;i++) {
         pl=GetPlacePtr(uregion->m_Place[i]);
         if(pl->m_Data) continue;
-        if(!CanMove(pl->m_Move,robot)) continue; // Если робот не может стоять на этом месте то пропускаем
+        if(!CanMove(pl->m_Move,robot)) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
         return false;
     }
 
-    // Ближайшее место к региону
+    // Р‘Р»РёР¶Р°Р№С€РµРµ РјРµСЃС‚Рѕ Рє СЂРµРіРёРѕРЅСѓ
     for(i=uregion->m_PlaceCnt;i<uregion->m_PlaceAllCnt;i++) {
         if(uregion->m_PlaceAll[i]==place) return true;
     }
@@ -5582,7 +5582,7 @@ bool CMatrixSideUnit::PlaceInRegion(CMatrixRobotAI * robot, int place,int region
 float CMatrixSideUnit::BuildRobotMinStrange(CMatrixBuilding * base)
 {
     int i;
-    // Расчитываем минимальную силу робота для постройки. (Учитывается поблизости силу вражеских роботов)
+    // Р Р°СЃС‡РёС‚С‹РІР°РµРј РјРёРЅРёРјР°Р»СЊРЅСѓСЋ СЃРёР»Сѓ СЂРѕР±РѕС‚Р° РґР»СЏ РїРѕСЃС‚СЂРѕР№РєРё. (РЈС‡РёС‚С‹РІР°РµС‚СЃСЏ РїРѕР±Р»РёР·РѕСЃС‚Рё СЃРёР»Сѓ РІСЂР°Р¶РµСЃРєРёС… СЂРѕР±РѕС‚РѕРІ)
     int baseregion=GetRegion(base);
     float minstrange=0.0f;
     CMatrixMapStatic * mps = CMatrixMapStatic::GetFirstLogic();
@@ -5603,7 +5603,7 @@ float CMatrixSideUnit::BuildRobotMinStrange(CMatrixBuilding * base)
         }
         mps = mps->GetNextLogic();
     }
-    return max(0.0f,minstrange*0.7f); // Занижаем минимальную силу
+    return max(0.0f,minstrange*0.7f); // Р—Р°РЅРёР¶Р°РµРј РјРёРЅРёРјР°Р»СЊРЅСѓСЋ СЃРёР»Сѓ
 }
 
 void CMatrixSideUnit::BuildRobot(void)
@@ -5616,8 +5616,8 @@ void CMatrixSideUnit::BuildRobot(void)
     int wr[MAX_RESOURCES];
     for(r=0;r<MAX_RESOURCES;r++) wr[r]=0;
 
-    // Собираем информацию
-    // Выбираем базу для рождения
+    // РЎРѕР±РёСЂР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ
+    // Р’С‹Р±РёСЂР°РµРј Р±Р°Р·Сѓ РґР»СЏ СЂРѕР¶РґРµРЅРёСЏ
     cnt=0;
     CMatrixMapStatic* mps = CMatrixMapStatic::GetFirstLogic();
     while(mps){
@@ -5673,16 +5673,16 @@ void CMatrixSideUnit::BuildRobot(void)
     if(cnt>=GetMaxSideRobots()) return;
     if(!base) return;
 
-    if(base->m_BS.GetItemsCnt()>0) return; // Если в очереди есть робот то больше пока не строим
+    if(base->m_BS.GetItemsCnt()>0) return; // Р•СЃР»Рё РІ РѕС‡РµСЂРµРґРё РµСЃС‚СЊ СЂРѕР±РѕС‚ С‚Рѕ Р±РѕР»СЊС€Рµ РїРѕРєР° РЅРµ СЃС‚СЂРѕРёРј
 
-    // Время сколько можно подождать
+    // Р’СЂРµРјСЏ СЃРєРѕР»СЊРєРѕ РјРѕР¶РЅРѕ РїРѕРґРѕР¶РґР°С‚СЊ
     int waittime=10000;
     if(m_Region[GetRegion(base)].m_EnemyRobotDist>=0) waittime=10000*max(0,m_Region[GetRegion(base)].m_EnemyRobotDist-1);
     else if(m_Region[GetRegion(base)].m_EnemyBuildingDist>=0) waittime=10000*max(0,m_Region[GetRegion(base)].m_EnemyBuildingDist-1);
 
-    waittime=Float2Int(m_WaitResMul*float(min(waittime,40000))); // Нет смысла долго ждять.
+    waittime=Float2Int(m_WaitResMul*float(min(waittime,40000))); // РќРµС‚ СЃРјС‹СЃР»Р° РґРѕР»РіРѕ Р¶РґСЏС‚СЊ.
 
-    // Сколько нужно ждать до запланированного робота
+    // РЎРєРѕР»СЊРєРѕ РЅСѓР¶РЅРѕ Р¶РґР°С‚СЊ РґРѕ Р·Р°РїР»Р°РЅРёСЂРѕРІР°РЅРЅРѕРіРѕ СЂРѕР±РѕС‚Р°
     int waitend=-1;
     if(m_WaitResForBuildRobot>=0) {
         waitend=0;
@@ -5695,20 +5695,20 @@ void CMatrixSideUnit::BuildRobot(void)
         }
     }
 
-    // Сколько будет ресурсов, если немного подождать
+    // РЎРєРѕР»СЊРєРѕ Р±СѓРґРµС‚ СЂРµСЃСѓСЂСЃРѕРІ, РµСЃР»Рё РЅРµРјРЅРѕРіРѕ РїРѕРґРѕР¶РґР°С‚СЊ
     int mr=0;
     for(r=0;r<MAX_RESOURCES;r++) mr+=min(2000,m_Resources[r]);
     mr=Float2Int(float(mr/MAX_RESOURCES)*0.6f);
 
     for(r=0;r<MAX_RESOURCES;r++) {
-//        if(m_Resources[r]<mr) {  // Не ждем то чего слишком мало
+//        if(m_Resources[r]<mr) {  // РќРµ Р¶РґРµРј С‚Рѕ С‡РµРіРѕ СЃР»РёС€РєРѕРј РјР°Р»Рѕ
 //            wr[r]=m_Resources[r];
 //        } else {
             wr[r]=(RESOURCES_INCOME*wr[r]+(RESOURCES_INCOME_BASE*GetResourceForceUp()/100*basecnt))*(waittime/g_Config.m_Timings[r])+m_Resources[r];
 //        }
     }
 
-    // Создаем список роботов, которые можем построить сразу, и список, если подождем немного
+    // РЎРѕР·РґР°РµРј СЃРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ РјРѕР¶РµРј РїРѕСЃС‚СЂРѕРёС‚СЊ СЃСЂР°Р·Сѓ, Рё СЃРїРёСЃРѕРє, РµСЃР»Рё РїРѕРґРѕР¶РґРµРј РЅРµРјРЅРѕРіРѕ
     int * list=(int *)HAlloc(SSpecialBot::m_AIRobotTypeCnt*sizeof(int)*2,g_MatrixHeap);
     int * lwait=list+SSpecialBot::m_AIRobotTypeCnt;
     cnt=0;
@@ -5731,12 +5731,12 @@ void CMatrixSideUnit::BuildRobot(void)
         if(nobomb && SSpecialBot::m_AIRobotTypeList[i].m_HaveBomb) continue;
         if(norepair && SSpecialBot::m_AIRobotTypeList[i].m_HaveRepair) continue;
         if(!norepair && !SSpecialBot::m_AIRobotTypeList[i].m_HaveRepair) continue;
-        if(SSpecialBot::m_AIRobotTypeList[i].m_Strength<minstrange) continue; // Сила должна быть больше минимальной
+        if(SSpecialBot::m_AIRobotTypeList[i].m_Strength<minstrange) continue; // РЎРёР»Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ РјРёРЅРёРјР°Р»СЊРЅРѕР№
 
         for(r=0;r<MAX_RESOURCES;r++) if(m_Resources[r]<SSpecialBot::m_AIRobotTypeList[i].m_Resources[r]) break;
         
         if(r>=MAX_RESOURCES) {
-            // Одинаковых роботов не строим, так как не разнообразно и не красиво.
+            // РћРґРёРЅР°РєРѕРІС‹С… СЂРѕР±РѕС‚РѕРІ РЅРµ СЃС‚СЂРѕРёРј, С‚Р°Рє РєР°Рє РЅРµ СЂР°Р·РЅРѕРѕР±СЂР°Р·РЅРѕ Рё РЅРµ РєСЂР°СЃРёРІРѕ.
                 if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast])>0.6);
                 else if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast2>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast2])>0.8);
 //                else if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast3>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast3])>0.9);
@@ -5747,7 +5747,7 @@ void CMatrixSideUnit::BuildRobot(void)
         } else {
             for(r=0;r<MAX_RESOURCES;r++) if(wr[r]<SSpecialBot::m_AIRobotTypeList[i].m_Resources[r]) break;
             if(r>=MAX_RESOURCES) {
-                // Одинаковых роботов не строим, так как не разнообразно и не красиво.
+                // РћРґРёРЅР°РєРѕРІС‹С… СЂРѕР±РѕС‚РѕРІ РЅРµ СЃС‚СЂРѕРёРј, С‚Р°Рє РєР°Рє РЅРµ СЂР°Р·РЅРѕРѕР±СЂР°Р·РЅРѕ Рё РЅРµ РєСЂР°СЃРёРІРѕ.
                     if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast])>0.6);
                     else if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast2>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast2])>0.8);
 //                    else if(/*bt==0 &&*/ i!=m_WaitResForBuildRobot && m_BuildRobotLast3>=0 && SSpecialBot::m_AIRobotTypeList[i].DifWeapon(SSpecialBot::m_AIRobotTypeList[m_BuildRobotLast3])>0.9);
@@ -5762,7 +5762,7 @@ void CMatrixSideUnit::BuildRobot(void)
 //    }
     if(cnt+lwcnt<=0) { HFree(list,g_MatrixHeap); return; }
 
-    // Если дождались ожидаемого робота, то строим его
+    // Р•СЃР»Рё РґРѕР¶РґР°Р»РёСЃСЊ РѕР¶РёРґР°РµРјРѕРіРѕ СЂРѕР±РѕС‚Р°, С‚Рѕ СЃС‚СЂРѕРёРј РµРіРѕ
     if(m_WaitResForBuildRobot>=0) {
         for(i=0;i<cnt;i++) if(list[i]==m_WaitResForBuildRobot) break;
         if(i<cnt) {
@@ -5785,13 +5785,13 @@ void CMatrixSideUnit::BuildRobot(void)
         }
     }
 
-    // Если периуд слишко большой, то сбрасываем ожидаемого робота
+    // Р•СЃР»Рё РїРµСЂРёСѓРґ СЃР»РёС€РєРѕ Р±РѕР»СЊС€РѕР№, С‚Рѕ СЃР±СЂР°СЃС‹РІР°РµРј РѕР¶РёРґР°РµРјРѕРіРѕ СЂРѕР±РѕС‚Р°
     if(waitend>=0 && waitend>waittime) { 
         DMSide(L"BuildRobot CancelWaitRobotStrange=<f>",SSpecialBot::m_AIRobotTypeList[m_WaitResForBuildRobot].m_Strength);
         m_WaitResForBuildRobot=-1;
     }
 
-    // Ожидаем пока накопятся ресурсы
+    // РћР¶РёРґР°РµРј РїРѕРєР° РЅР°РєРѕРїСЏС‚СЃСЏ СЂРµСЃСѓСЂСЃС‹
     if(m_WaitResForBuildRobot>=0) {
         HFree(list,g_MatrixHeap);
         return;
@@ -5800,14 +5800,14 @@ void CMatrixSideUnit::BuildRobot(void)
     DMSide(L"BuildRobot MinStrange=<f>",minstrange);
     DMSide(L"BuildRobot ImmediatelyCnt=<i> WaitCnt=<i>",cnt,lwcnt);
 
-    // Стоит ли ожидать
+    // РЎС‚РѕРёС‚ Р»Рё РѕР¶РёРґР°С‚СЊ
     if(cnt>0 && lwcnt>0 && SSpecialBot::m_AIRobotTypeList[lwait[0]].m_Strength*0.6>SSpecialBot::m_AIRobotTypeList[list[0]].m_Strength) {
-        // выбираем из лучших, случайно по приоритету
+        // РІС‹Р±РёСЂР°РµРј РёР· Р»СѓС‡С€РёС…, СЃР»СѓС‡Р°Р№РЅРѕ РїРѕ РїСЂРёРѕСЂРёС‚РµС‚Сѓ
         for(i=1;i<lwcnt;i++) if(SSpecialBot::m_AIRobotTypeList[lwait[i]].m_Strength<0.7*SSpecialBot::m_AIRobotTypeList[lwait[0]].m_Strength) break;
         lwcnt=i;
 
         for(r=0;r<MAX_RESOURCES;r++) if(m_Resources[r]<mr) break;
-        if(r<MAX_RESOURCES) { // Сортируем по ресурсам которых мало
+        if(r<MAX_RESOURCES) { // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ СЂРµСЃСѓСЂСЃР°Рј РєРѕС‚РѕСЂС‹С… РјР°Р»Рѕ
 
             for(i=0;i<lwcnt-1;i++) {
                 ik=0;
@@ -5848,13 +5848,13 @@ void CMatrixSideUnit::BuildRobot(void)
         m_WaitResForBuildRobot=lwait[i];
         DMSide(L"BuildRobot WaitRobotStrange=<f>",SSpecialBot::m_AIRobotTypeList[m_WaitResForBuildRobot].m_Strength);
 
-    } else if(cnt>0) { // Строим сразу
-        // выбираем из лучших, случайно по приоритету
+    } else if(cnt>0) { // РЎС‚СЂРѕРёРј СЃСЂР°Р·Сѓ
+        // РІС‹Р±РёСЂР°РµРј РёР· Р»СѓС‡С€РёС…, СЃР»СѓС‡Р°Р№РЅРѕ РїРѕ РїСЂРёРѕСЂРёС‚РµС‚Сѓ
         for(i=1;i<cnt;i++) if(SSpecialBot::m_AIRobotTypeList[list[i]].m_Strength<0.7*SSpecialBot::m_AIRobotTypeList[list[0]].m_Strength) break;
         cnt=i;
 
         for(r=0;r<MAX_RESOURCES;r++) if(m_Resources[r]<mr) break;
-        if(r<MAX_RESOURCES) { // Сортируем по ресурсам которых мало
+        if(r<MAX_RESOURCES) { // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ СЂРµСЃСѓСЂСЃР°Рј РєРѕС‚РѕСЂС‹С… РјР°Р»Рѕ
 
             for(i=0;i<cnt-1;i++) {
                 ik=0;
@@ -5927,20 +5927,20 @@ void CMatrixSideUnit::BuildCannon(void)
 
     if(m_RobotsCnt<maxrobot && curcannoncnt>=m_RobotsCnt) return;
 
-    // Ищем здание для постройки пушки
+    // РС‰РµРј Р·РґР°РЅРёРµ РґР»СЏ РїРѕСЃС‚СЂРѕР№РєРё РїСѓС€РєРё
     mps = CMatrixMapStatic::GetFirstLogic();
     while(mps){
         if(mps->GetSide() == m_Id && mps->IsLiveBuilding()) {
             CMatrixBuilding * cb=mps->AsBuilding();
 
             while(true) {
-                if(cb->HaveMaxTurrets()) break; //  Пропускаем если все места заняты
-                if(BuildRobotMinStrange(cb)>0) break; // Пропускаем если слишком опасно
+                if(cb->HaveMaxTurrets()) break; //  РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё РІСЃРµ РјРµСЃС‚Р° Р·Р°РЅСЏС‚С‹
+                if(BuildRobotMinStrange(cb)>0) break; // РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё СЃР»РёС€РєРѕРј РѕРїР°СЃРЅРѕ
 
                 int r=GetRegion(mps);
 
                 if(building) {
-                    if(m_Region[r].m_EnemyRobotDist>=mdist) break; // Здание наиболее близкое к фронту
+                    if(m_Region[r].m_EnemyRobotDist>=mdist) break; // Р—РґР°РЅРёРµ РЅР°РёР±РѕР»РµРµ Р±Р»РёР·РєРѕРµ Рє С„СЂРѕРЅС‚Сѓ
                 }
 
                 mdist=m_Region[r].m_EnemyRobotDist;
@@ -5982,9 +5982,9 @@ void CMatrixSideUnit::BuildCannon(void)
 
     int r;
     for(r=0;r<MAX_RESOURCES;r++) if(g_Config.m_CannonsProps[curtype].m_Resources[r]>m_Resources[r]) break;
-    if(r<MAX_RESOURCES) return; // Нехватает ресурсов
+    if(r<MAX_RESOURCES) return; // РќРµС…РІР°С‚Р°РµС‚ СЂРµСЃСѓСЂСЃРѕРІ
 
-    if(building->m_BS.GetItemsCnt()>0) return; // Если уже что-то строится, то не строим
+    if(building->m_BS.GetItemsCnt()>0) return; // Р•СЃР»Рё СѓР¶Рµ С‡С‚Рѕ-С‚Рѕ СЃС‚СЂРѕРёС‚СЃСЏ, С‚Рѕ РЅРµ СЃС‚СЂРѕРёРј
 
     CPoint plist[MAX_PLACES];
     int plistcnt=building->GetPlacesForTurrets(plist);
@@ -6042,7 +6042,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
     CMatrixRobotAI * robot,* robot2;
     bool orderok[MAX_LOGIC_GROUP];
 
-    // Запускаем логику раз в 100 тактов
+    // Р—Р°РїСѓСЃРєР°РµРј Р»РѕРіРёРєСѓ СЂР°Р· РІ 100 С‚Р°РєС‚РѕРІ
     if(m_LastTaktHL!=0 && (g_MatrixMap->GetTime()-m_LastTaktHL)<100) return;
     m_LastTaktHL=g_MatrixMap->GetTime();
 
@@ -6050,7 +6050,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
 
     EscapeFromBomb();
 
-    // Для всех мест рассчитываем коэффициент вражеских объектов в зоне поражения
+    // Р”Р»СЏ РІСЃРµС… РјРµСЃС‚ СЂР°СЃСЃС‡РёС‚С‹РІР°РµРј РєРѕСЌС„С„РёС†РёРµРЅС‚ РІСЂР°Р¶РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ РІ Р·РѕРЅРµ РїРѕСЂР°Р¶РµРЅРёСЏ
     if(m_LastTaktUnderfire==0 || (g_MatrixMap->GetTime()-m_LastTaktUnderfire)>500) {
         m_LastTaktUnderfire=g_MatrixMap->GetTime();
 
@@ -6106,7 +6106,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
     }
     }
 
-    // Собираем статистику
+    // РЎРѕР±РёСЂР°РµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
     for(i=0;i<MAX_LOGIC_GROUP;i++) m_PlayerGroup[i].m_RobotCnt=0;
 
     obj = CMatrixMapStatic::GetFirstLogic();
@@ -6126,7 +6126,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
         obj = obj->GetNextLogic();
     }
 
-    // Проверяем коректна ли цель
+    // РџСЂРѕРІРµСЂСЏРµРј РєРѕСЂРµРєС‚РЅР° Р»Рё С†РµР»СЊ
     for(i=0;i<MAX_LOGIC_GROUP;i++) {
         if(m_PlayerGroup[i].m_RobotCnt<=0) continue;
         if(!m_PlayerGroup[i].m_Obj) continue;
@@ -6138,7 +6138,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
         }
         if(!obj || !obj->IsLive()) m_PlayerGroup[i].m_Obj=NULL;
 
-        // Если цель атаки близко, то заносим во врагов
+        // Р•СЃР»Рё С†РµР»СЊ Р°С‚Р°РєРё Р±Р»РёР·РєРѕ, С‚Рѕ Р·Р°РЅРѕСЃРёРј РІРѕ РІСЂР°РіРѕРІ
         if((m_PlayerGroup[i].Order()==mpo_Attack || m_PlayerGroup[i].Order()==mpo_AutoAttack || m_PlayerGroup[i].Order()==mpo_AutoDefence) && m_PlayerGroup[i].m_Obj && m_PlayerGroup[i].m_Obj->IsLive()) {
             tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
@@ -6165,7 +6165,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
         else if(!FirePL(i)) RepairPL(i);
     }
 
-    // Успешно ли выполняется текущий приказ
+    // РЈСЃРїРµС€РЅРѕ Р»Рё РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ С‚РµРєСѓС‰РёР№ РїСЂРёРєР°Р·
     for(i=0;i<MAX_LOGIC_GROUP;i++) {
         if(onlygroup>=0 && i!=onlygroup) continue;
         if(m_PlayerGroup[i].m_RobotCnt<=0) continue;
@@ -6252,12 +6252,12 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 if(m_PlayerGroup[i].m_Obj==obj && obj->IsLiveBuilding() && obj->GetSide()!=m_Id) t=1;
                 obj = obj->GetNextLogic();
             }
-            if(!t) { // Нечего захватывать
+            if(!t) { // РќРµС‡РµРіРѕ Р·Р°С…РІР°С‚С‹РІР°С‚СЊ
                 PGOrderStop(i);
                 continue;
             }
             orderok[i]=(u>0);
-            // Если приказ захватить базу, но есть пушки, то атаковать пушки
+            // Р•СЃР»Рё РїСЂРёРєР°Р· Р·Р°С…РІР°С‚РёС‚СЊ Р±Р°Р·Сѓ, РЅРѕ РµСЃС‚СЊ РїСѓС€РєРё, С‚Рѕ Р°С‚Р°РєРѕРІР°С‚СЊ РїСѓС€РєРё
             if(m_PlayerGroup[i].m_Obj->IsBase() && m_PlayerGroup[i].m_Obj->AsBuilding()->m_TurretsHave) {
                 obj = CMatrixMapStatic::GetFirstLogic();
                 while(obj) {
@@ -6299,7 +6299,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                     continue;
                 }
             }
-            if(orderok[i]) { // Проверяем у всех ли правильно назначено место
+            if(orderok[i]) { // РџСЂРѕРІРµСЂСЏРµРј Сѓ РІСЃРµС… Р»Рё РїСЂР°РІРёР»СЊРЅРѕ РЅР°Р·РЅР°С‡РµРЅРѕ РјРµСЃС‚Рѕ
                 obj = CMatrixMapStatic::GetFirstLogic();
                 while(obj) {
                     if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
@@ -6343,11 +6343,11 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 }
                 obj = obj->GetNextLogic();
             }
-            if(!m_PlayerGroup[i].IsWar() && prevwar) { // Если до этого находились в состоянии войны, то заново назначаем маршрут
+            if(!m_PlayerGroup[i].IsWar() && prevwar) { // Р•СЃР»Рё РґРѕ СЌС‚РѕРіРѕ РЅР°С…РѕРґРёР»РёСЃСЊ РІ СЃРѕСЃС‚РѕСЏРЅРёРё РІРѕР№РЅС‹, С‚Рѕ Р·Р°РЅРѕРІРѕ РЅР°Р·РЅР°С‡Р°РµРј РјР°СЂС€СЂСѓС‚
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Р•СЃР»Рё РЅРµС‚ РІРѕР№РЅС‹, Рё РїСЂР°РІРёР»СЊРЅРѕ РёРґРµРј РїРѕ РјРµСЃС‚Р°, РїСЂРѕРІРµСЂСЏРµРј, СЃРёР»СЊРЅРѕ Р»Рё РёР·РјРµРЅРёР»Р° С†РµР»СЊ СЃРІРѕСЋ РїРѕР·РёС†РёСЋ
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
@@ -6390,7 +6390,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 PGOrderStop(i);
                 continue;
             }
-            if(orderok[i]) { // и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(orderok[i]) { // Рё РїСЂР°РІРёР»СЊРЅРѕ РёРґРµРј РїРѕ РјРµСЃС‚Р°, РїСЂРѕРІРµСЂСЏРµРј, СЃРёР»СЊРЅРѕ Р»Рё РёР·РјРµРЅРёР»Р° С†РµР»СЊ СЃРІРѕСЋ РїРѕР·РёС†РёСЋ
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
@@ -6453,12 +6453,12 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 if(m_PlayerGroup[i].m_Obj==obj && obj->IsLiveBuilding() && obj->GetSide()!=m_Id) t=1;
                 obj = obj->GetNextLogic();
             }
-            if(!t) { // Нечего захватывать
+            if(!t) { // РќРµС‡РµРіРѕ Р·Р°С…РІР°С‚С‹РІР°С‚СЊ
                 orderok[i]=false;
                 continue;
             }
             orderok[i]=(u>0);
-            if(orderok[i]) { // Проверяем у всех ли правильно назначено место
+            if(orderok[i]) { // РџСЂРѕРІРµСЂСЏРµРј Сѓ РІСЃРµС… Р»Рё РїСЂР°РІРёР»СЊРЅРѕ РЅР°Р·РЅР°С‡РµРЅРѕ РјРµСЃС‚Рѕ
                 obj = CMatrixMapStatic::GetFirstLogic();
                 while(obj) {
                     if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
@@ -6502,7 +6502,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Р•СЃР»Рё РЅРµС‚ РІРѕР№РЅС‹, Рё РїСЂР°РІРёР»СЊРЅРѕ РёРґРµРј РїРѕ РјРµСЃС‚Р°, РїСЂРѕРІРµСЂСЏРµРј, СЃРёР»СЊРЅРѕ Р»Рё РёР·РјРµРЅРёР»Р° С†РµР»СЊ СЃРІРѕСЋ РїРѕР·РёС†РёСЋ
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
@@ -6546,7 +6546,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, идет ли цель в регион назначения.
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Р•СЃР»Рё РЅРµС‚ РІРѕР№РЅС‹, Рё РїСЂР°РІРёР»СЊРЅРѕ РёРґРµРј РїРѕ РјРµСЃС‚Р°, РїСЂРѕРІРµСЂСЏРµРј, РёРґРµС‚ Р»Рё С†РµР»СЊ РІ СЂРµРіРёРѕРЅ РЅР°Р·РЅР°С‡РµРЅРёСЏ.
                 if(!m_PlayerGroup[i].m_Obj->AsRobot()->GetMoveToCoords(tp)) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
                 int reg=g_MatrixMap->GetRegion(tp);
 
@@ -6561,7 +6561,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
     }
     }
 
-    // Применяем приказ
+    // РџСЂРёРјРµРЅСЏРµРј РїСЂРёРєР°Р·
     for(i=0;i<MAX_LOGIC_GROUP;i++) {
         if(onlygroup>=0 && i!=onlygroup) continue;
         if(m_PlayerGroup[i].m_RobotCnt<=0) continue;
@@ -6833,10 +6833,10 @@ void CMatrixSideUnit::RepairPL(int group)
     int i,u,t;
     CPoint tp;
     CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     bool rlok[MAX_ROBOTS];
     bool ok;
-    int rlcnt=0;                     // Кол-во роботов на карте
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     byte mm=0;
     int listcnt;
     SMatrixPlace * place;
@@ -6862,7 +6862,7 @@ void CMatrixSideUnit::RepairPL(int group)
             else rl[i]->GetEnv()->m_Target=m_PlayerGroup[group].m_Obj;
         }
 
-        // Проверяем достает ли ченилка
+        // РџСЂРѕРІРµСЂСЏРµРј РґРѕСЃС‚Р°РµС‚ Р»Рё С‡РµРЅРёР»РєР°
         ok=true;
         for(i=0;i<rlcnt;i++) {
             if(rl[i]->GetRepairDist()<=0) continue;
@@ -6878,14 +6878,14 @@ void CMatrixSideUnit::RepairPL(int group)
             }
         }
 
-        // Назначаем новые места, если кто-нибудь не достает
+        // РќР°Р·РЅР°С‡Р°РµРј РЅРѕРІС‹Рµ РјРµСЃС‚Р°, РµСЃР»Рё РєС‚Рѕ-РЅРёР±СѓРґСЊ РЅРµ РґРѕСЃС‚Р°РµС‚
         if(!ok) {
             if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),GetMapPos(m_PlayerGroup[group].m_Obj),Float2Int(rl[0]->GetRepairDist()*INVERT(GLOBAL_SCALE_MOVE)),false,m_PlaceList,&listcnt)==0) {
                 for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
                 return;
             }
 
-            // Помечаем занятые места
+            // РџРѕРјРµС‡Р°РµРј Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р°
             for(t=0;t<listcnt;t++) {
                 g_MatrixMap->m_RN.m_Place[m_PlaceList[t]].m_Data=0;
             }
@@ -6895,7 +6895,7 @@ void CMatrixSideUnit::RepairPL(int group)
                 obj = obj->GetNextLogic();
             }
 
-            // Находим места
+            // РќР°С…РѕРґРёРј РјРµСЃС‚Р°
             u=0;
             for(i=0;i<rlcnt;i++) {
                 if(rlok[i]) continue;
@@ -6911,7 +6911,7 @@ void CMatrixSideUnit::RepairPL(int group)
                     v2=GetWorldPos(m_PlayerGroup[group].m_Obj);
                     if((POW2(v.x-v2.x)+POW2(v.y-v2.y))<POW2(rl[i]->GetRepairDist())) break;
                 }
-                if(u>=listcnt) { // Если роботы не влазят
+                if(u>=listcnt) { // Р•СЃР»Рё СЂРѕР±РѕС‚С‹ РЅРµ РІР»Р°Р·СЏС‚
                     for(u=i;u<rlcnt;u++) {
                         rl[u]->GetEnv()->m_Place=-1;
                         rl[u]->GetEnv()->m_PlaceAdd=CPoint(-1,-1);
@@ -6926,9 +6926,9 @@ void CMatrixSideUnit::RepairPL(int group)
                             break;
                         }
                         if(u>=listcnt) {
-                            // Выращиваем список
+                            // Р’С‹СЂР°С‰РёРІР°РµРј СЃРїРёСЃРѕРє
                             if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
-                            // Помечаем занятые места
+                            // РџРѕРјРµС‡Р°РµРј Р·Р°РЅСЏС‚С‹Рµ РјРµСЃС‚Р°
                             for(t=0;t<listcnt;t++) {
                                 g_MatrixMap->m_RN.m_Place[m_PlaceList[t]].m_Data=0;
                             }
@@ -6963,7 +6963,7 @@ void CMatrixSideUnit::RepairPL(int group)
         }
 
     } else {
-        // Если нет цели для починки, то ищем ее
+        // Р•СЃР»Рё РЅРµС‚ С†РµР»Рё РґР»СЏ РїРѕС‡РёРЅРєРё, С‚Рѕ РёС‰РµРј РµРµ
         for(i=0;i<rlcnt;i++) {
             if(rl[i]->GetRepairDist()<=0) continue;
             if(rl[i]->GetEnv()->m_Target && rl[i]->GetEnv()->m_Target->IsLive() && rl[i]->GetEnv()->m_Target->NeedRepair()) {
@@ -6989,7 +6989,7 @@ void CMatrixSideUnit::RepairPL(int group)
         }
     }
 
-    // Корректируем точку выстрела
+    // РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚РѕС‡РєСѓ РІС‹СЃС‚СЂРµР»Р°
     for(i=0;i<rlcnt;i++) {
         if(!rl[i]->GetEnv()->m_Target) continue;
 
@@ -7004,8 +7004,8 @@ bool CMatrixSideUnit::FirePL(int group)
     bool rv=false;
     int i;
     CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int rlcnt=0;                     // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
 
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
@@ -7017,7 +7017,7 @@ bool CMatrixSideUnit::FirePL(int group)
     }
     if(rlcnt<=0) return false;
 
-    // Находим врага для всей группы
+    // РќР°С…РѕРґРёРј РІСЂР°РіР° РґР»СЏ РІСЃРµР№ РіСЂСѓРїРїС‹
     for(i=0;i<rlcnt;i++) {
         if(rl[i]->GetEnv()->m_TargetAttack && rl[i]->GetEnv()->SearchEnemy(rl[i]->GetEnv()->m_TargetAttack)) {
             float cd=Dist2(GetWorldPos(rl[i]->GetEnv()->m_TargetAttack),GetWorldPos(rl[i]));
@@ -7027,13 +7027,13 @@ bool CMatrixSideUnit::FirePL(int group)
             float mindist=1e10f;
             CEnemy * enemyfind=NULL;
             CEnemy * enemy=NULL;
-            // Находим ближайшего незакрытого врага
+            // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµР·Р°РєСЂС‹С‚РѕРіРѕ РІСЂР°РіР°
             enemy=rl[i]->GetEnv()->m_FirstEnemy;
             while(enemy) {
                 if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy!=rl[i]) {
                     float cd=Dist2(GetWorldPos(enemy->m_Enemy),GetWorldPos(rl[i]));
                     if(cd<mindist) {
-                        // Проверяем не закрыт ли он своими
+                        // РџСЂРѕРІРµСЂСЏРµРј РЅРµ Р·Р°РєСЂС‹С‚ Р»Рё РѕРЅ СЃРІРѕРёРјРё
                         D3DXVECTOR3 des,from,dir,p;
                         float t,dist;
 
@@ -7065,7 +7065,7 @@ bool CMatrixSideUnit::FirePL(int group)
                 }
                 enemy=enemy->m_NextEnemy;
             }
-            // Если не нашли открытого ищем закрытого
+            // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё РѕС‚РєСЂС‹С‚РѕРіРѕ РёС‰РµРј Р·Р°РєСЂС‹С‚РѕРіРѕ
             if(!enemyfind) {
                 enemy=rl[i]->GetEnv()->m_FirstEnemy;
                 while(enemy) {
@@ -7086,7 +7086,7 @@ bool CMatrixSideUnit::FirePL(int group)
         }
     }
 
-    // Корректируем точку выстрела
+    // РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚РѕС‡РєСѓ РІС‹СЃС‚СЂРµР»Р°
     D3DXVECTOR3 des,from,dir,p;
     float t,dist;
 
@@ -7099,7 +7099,7 @@ bool CMatrixSideUnit::FirePL(int group)
 
             des=PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-            // Не стрелять из прямого оружия, если на пути к цели свои
+            // РќРµ СЃС‚СЂРµР»СЏС‚СЊ РёР· РїСЂСЏРјРѕРіРѕ РѕСЂСѓР¶РёСЏ, РµСЃР»Рё РЅР° РїСѓС‚Рё Рє С†РµР»Рё СЃРІРѕРё
             from=rl[i]->GetGeoCenter();
             dist=sqrt(POW2(from.x-des.x)+POW2(from.y-des.y)+POW2(from.z-des.z));
 
@@ -7156,7 +7156,7 @@ bool CMatrixSideUnit::FirePL(int group)
             if(fireline) { 
                 rv=true;
 
-                // Если у цели голова Firewall то в нее сложнее попасть
+                // Р•СЃР»Рё Сѓ С†РµР»Рё РіРѕР»РѕРІР° Firewall С‚Рѕ РІ РЅРµРµ СЃР»РѕР¶РЅРµРµ РїРѕРїР°СЃС‚СЊ
                 /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
@@ -7193,7 +7193,7 @@ bool CMatrixSideUnit::FirePL(int group)
                 env->m_Target=env->m_TargetAttack;
                 rl[i]->Fire(des); 
             } else {
-                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // Ищем робота для починки
+                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // РС‰РµРј СЂРѕР±РѕС‚Р° РґР»СЏ РїРѕС‡РёРЅРєРё
                     D3DXVECTOR2 v,v2;
 
                     if(rl[i]->GetEnv()->m_Target && IsLiveUnit(rl[i]->GetEnv()->m_Target) && rl[i]->GetEnv()->m_Target->GetSide()==m_Id && rl[i]->GetEnv()->m_Target->NeedRepair()) {
@@ -7235,8 +7235,8 @@ void CMatrixSideUnit::WarPL(int group)
     int i,u;//,x,y;
     byte mm=0;
     CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int rlcnt=0;                     // Кол-во роботов на карте
+    CMatrixRobotAI * rl[MAX_ROBOTS]; // РЎРїРёСЃРѕРє СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
+    int rlcnt=0;                     // РљРѕР»-РІРѕ СЂРѕР±РѕС‚РѕРІ РЅР° РєР°СЂС‚Рµ
     bool rlokmove[MAX_ROBOTS];
 
     BufPrepare();
@@ -7252,7 +7252,7 @@ void CMatrixSideUnit::WarPL(int group)
     }
     if(rlcnt<0) return;
 
-    // Находим врага для всей группы
+    // РќР°С…РѕРґРёРј РІСЂР°РіР° РґР»СЏ РІСЃРµР№ РіСЂСѓРїРїС‹
     for(i=0;i<rlcnt;i++) {
         if(m_PlayerGroup[group].Order()==mpo_Attack && m_PlayerGroup[group].m_Obj && m_PlayerGroup[group].m_Obj!=rl[i] && m_PlayerGroup[group].m_Obj->IsLive() && m_PlayerGroup[group].m_Obj!=rl[i]->GetEnv()->m_TargetAttack) {
             if(rl[i]->GetEnv()->SearchEnemy(m_PlayerGroup[group].m_Obj)) {
@@ -7290,18 +7290,18 @@ void CMatrixSideUnit::WarPL(int group)
             float mindist=1e10f;
             CEnemy * enemyfind=NULL;
             CEnemy * enemy=NULL;
-            // Находим цель которую указал игрок
+            // РќР°С…РѕРґРёРј С†РµР»СЊ РєРѕС‚РѕСЂСѓСЋ СѓРєР°Р·Р°Р» РёРіСЂРѕРє
             if(m_PlayerGroup[group].m_Obj && m_PlayerGroup[group].m_Obj!=rl[i]) {
                 enemyfind=rl[i]->GetEnv()->SearchEnemy(m_PlayerGroup[group].m_Obj);
             }
-            // Находим ближайшего незакрытого врага
+            // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РµРіРѕ РЅРµР·Р°РєСЂС‹С‚РѕРіРѕ РІСЂР°РіР°
             if(!enemyfind) {
                 enemy=rl[i]->GetEnv()->m_FirstEnemy;
                 while(enemy) {
                     if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy!=rl[i]) {
                         float cd=Dist2(GetWorldPos(enemy->m_Enemy),GetWorldPos(rl[i]));
                         if(cd<mindist) {
-                            // Проверяем не закрыт ли он своими
+                            // РџСЂРѕРІРµСЂСЏРµРј РЅРµ Р·Р°РєСЂС‹С‚ Р»Рё РѕРЅ СЃРІРѕРёРјРё
                             D3DXVECTOR3 des,from,dir,p;
                             float t,dist;
 
@@ -7334,7 +7334,7 @@ void CMatrixSideUnit::WarPL(int group)
                     enemy=enemy->m_NextEnemy;
                 }
             }
-            // Если не нашли открытого ищем закрытого
+            // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё РѕС‚РєСЂС‹С‚РѕРіРѕ РёС‰РµРј Р·Р°РєСЂС‹С‚РѕРіРѕ
             if(!enemyfind) {
                 enemy=rl[i]->GetEnv()->m_FirstEnemy;
                 while(enemy) {
@@ -7351,7 +7351,7 @@ void CMatrixSideUnit::WarPL(int group)
 
             if(enemyfind) {
                 rl[i]->GetEnv()->m_TargetAttack=enemyfind->m_Enemy;
-                // Если новая цель пушка или завод, то меняем позицию
+                // Р•СЃР»Рё РЅРѕРІР°СЏ С†РµР»СЊ РїСѓС€РєР° РёР»Рё Р·Р°РІРѕРґ, С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                 if(rl[i]->GetEnv()->m_TargetAttack->IsLiveActiveCannon() || rl[i]->GetEnv()->m_TargetAttack->IsLiveBuilding()) {
                     rl[i]->GetEnv()->m_Place=-1; 
                 }
@@ -7359,13 +7359,13 @@ void CMatrixSideUnit::WarPL(int group)
         }
     }
 
-    // Проверяем правильно ли роботы идут
+    // РџСЂРѕРІРµСЂСЏРµРј РїСЂР°РІРёР»СЊРЅРѕ Р»Рё СЂРѕР±РѕС‚С‹ РёРґСѓС‚
     bool moveok=true;
     for(i=0;i<rlcnt;i++) {
         rlokmove[i]=true;
         
-        if(!rl[i]->CanBreakOrder()) continue; // Пропускаем если робот не может прервать текущий приказ
-        if(!rl[i]->GetEnv()->m_TargetAttack) { // Если у робота нет цели то ждем завершение состояния войныы
+        if(!rl[i]->CanBreakOrder()) continue; // РџСЂРѕРїСѓСЃРєР°РµРј РµСЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ РїСЂРµСЂРІР°С‚СЊ С‚РµРєСѓС‰РёР№ РїСЂРёРєР°Р·
+        if(!rl[i]->GetEnv()->m_TargetAttack) { // Р•СЃР»Рё Сѓ СЂРѕР±РѕС‚Р° РЅРµС‚ С†РµР»Рё С‚Рѕ Р¶РґРµРј Р·Р°РІРµСЂС€РµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РІРѕР№РЅС‹С‹
 /*            if(GetDesRegion(rl[i])!=m_LogicGroup[group].m_Action.m_Region) {
                 if(!PlaceInRegion(rl[i],rl[i]->GetEnv()->m_Place,m_LogicGroup[group].m_Action.m_Region)) {
                     if(CanChangePlace(rl[i])) {
@@ -7416,10 +7416,10 @@ void CMatrixSideUnit::WarPL(int group)
         }*/
     }
 
-    // Назначаем движение
+    // РќР°Р·РЅР°С‡Р°РµРј РґРІРёР¶РµРЅРёРµ
     if(!moveok) {
-        // Находим место
-        // Находим центр и радиус
+        // РќР°С…РѕРґРёРј РјРµСЃС‚Рѕ
+        // РќР°С…РѕРґРёРј С†РµРЅС‚СЂ Рё СЂР°РґРёСѓСЃ
         CPoint center,tp2,tp=CPoint(0,0);
         int f=0;
         for(i=0;i<rlcnt;i++) {
@@ -7452,7 +7452,7 @@ void CMatrixSideUnit::WarPL(int group)
         
         bool cplr=true;
         
-        // Находим место
+        // РќР°С…РѕРґРёРј РјРµСЃС‚Рѕ
         int listcnt;
         if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),center,radius,false,m_PlaceList,&listcnt)==0) {
             for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
@@ -7495,7 +7495,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         //    }
         //}
         //if(!rect.IsEmpty()) {
-            // Помечаем уже занетые места
+            // РџРѕРјРµС‡Р°РµРј СѓР¶Рµ Р·Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р°
 //            g_MatrixMap->m_RN.ActionDataPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax),0);
 /*            for(i=0;i<rlcnt;i++) {
                 if(!rlokmove[i]) continue;
@@ -7509,11 +7509,11 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 obj = obj->GetNextLogic();
             }
 
-            // Находим лучшее место для каждого робота
+            // РќР°С…РѕРґРёРј Р»СѓС‡С€РµРµ РјРµСЃС‚Рѕ РґР»СЏ РєР°Р¶РґРѕРіРѕ СЂРѕР±РѕС‚Р°
 //            CRect plr=g_MatrixMap->m_RN.CorrectRectPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax));
             for(i=0;i<rlcnt;i++) {
                 if(rlokmove[i]) continue;
-                if(!rl[i]->GetEnv()->m_TargetAttack) continue; // Если нет цели, то пропускаем
+                if(!rl[i]->GetEnv()->m_TargetAttack) continue; // Р•СЃР»Рё РЅРµС‚ С†РµР»Рё, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                 bool havebomb=rl[i]->HaveBomb();
 
@@ -7550,9 +7550,9 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             int iplace=m_PlaceList[u];
                             SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+iplace;
 
-                            if(place->m_Data) continue; // Занетые места игнорируем
-                            if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
-                            if(rl[i]->GetEnv()->IsBadPlace(iplace)) continue; // Плохое место пропускаем
+                            if(place->m_Data) continue; // Р—Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р° РёРіРЅРѕСЂРёСЂСѓРµРј
+                            if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
+                            if(rl[i]->GetEnv()->IsBadPlace(iplace)) continue; // РџР»РѕС…РѕРµ РјРµСЃС‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                             float pcx=GLOBAL_SCALE_MOVE*place->m_Pos.x+(GLOBAL_SCALE_MOVE*4.0f/2.0f); // Center place
                             float pcy=GLOBAL_SCALE_MOVE*place->m_Pos.y+(GLOBAL_SCALE_MOVE*4.0f/2.0f);
@@ -7562,31 +7562,31 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
                             float k=(pvx*tvx+pvy*tvy)*tsize2o;
                             if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
-//                                if(k>1.5) continue; // Места за врагом не расматриваем
+//                                if(k>1.5) continue; // РњРµСЃС‚Р° Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
 
                             } else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()!=OBJECT_TYPE_BUILDING) {
-                                if(k>0.95) continue; // Места за врагом не расматриваем
+                                if(k>0.95) continue; // РњРµСЃС‚Р° Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
 
                             } else if(!havebomb) {
-                                if(k>1.2) continue; // Места сильно за врагом не расматриваем
+                                if(k>1.2) continue; // РњРµСЃС‚Р° СЃРёР»СЊРЅРѕ Р·Р° РІСЂР°РіРѕРј РЅРµ СЂР°СЃРјР°С‚СЂРёРІР°РµРј
                             }
-//                            if(k<0.0) continue; // Места за роботом игнорируем
+//                            if(k<0.0) continue; // РњРµСЃС‚Р° Р·Р° СЂРѕР±РѕС‚РѕРј РёРіРЅРѕСЂРёСЂСѓРµРј
                             float m=(-pvx*tvy+pvy*tvx)*tsize2o;
-                            float distfrom2=POW2(-m*tvy)+POW2(m*tvx); // Дистанция отклонения
-                            float distplace2=POW2(tvx-pcx/*pvx*/)+POW2(tvy-pcx/*pvy*/); // Дистанция от места до врага
+                            float distfrom2=POW2(-m*tvy)+POW2(m*tvx); // Р”РёСЃС‚Р°РЅС†РёСЏ РѕС‚РєР»РѕРЅРµРЅРёСЏ
+                            float distplace2=POW2(tvx-pcx/*pvx*/)+POW2(tvy-pcx/*pvy*/); // Р”РёСЃС‚Р°РЅС†РёСЏ РѕС‚ РјРµСЃС‚Р° РґРѕ РІСЂР°РіР°
                             if((placebest<0) || (rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON && (rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE)>enemy_fire_dist)) {
-                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Р РѕР±РѕС‚ РґРѕР»Р¶РµРЅ РґРѕСЃС‚РѕРІР°С‚СЊ РІСЂР°РіР°
                             } else {
-                                if(distplace2>POW2(0.95*rl[i]->GetMinFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                                if(distplace2>POW2(0.95*rl[i]->GetMinFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Р РѕР±РѕС‚ РґРѕР»Р¶РµРЅ РґРѕСЃС‚РѕРІР°С‚СЊ РІСЂР°РіР°
                             }
 
                             if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_ROBOTAI) {
-                                if(distfrom2>POW2(200+100)) continue; // Робот не должен отклонится слишком далеко
+                                if(distfrom2>POW2(200+100)) continue; // Р РѕР±РѕС‚ РЅРµ РґРѕР»Р¶РµРЅ РѕС‚РєР»РѕРЅРёС‚СЃСЏ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ
 //                            } else {
-//                                if(distfrom2>POW2(300+100)) continue; // Робот не должен отклонится слишком далеко
+//                                if(distfrom2>POW2(300+100)) continue; // Р РѕР±РѕС‚ РЅРµ РґРѕР»Р¶РµРЅ РѕС‚РєР»РѕРЅРёС‚СЃСЏ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ
                             }
 
-                            //// Если место слишком близко к постройке, то игнорируем
+                            //// Р•СЃР»Рё РјРµСЃС‚Рѕ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РїРѕСЃС‚СЂРѕР№РєРµ, С‚Рѕ РёРіРЅРѕСЂРёСЂСѓРµРј
                             //if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_BUILDING) {
                             //    if(distplace2<POW2(200)) continue;
                             //}
@@ -7597,18 +7597,18 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, D3DXVECTOR3(pcx,pcy,g_MatrixMap->GetZ(pcx,pcy)+20.0f)/*rl[i]->GetGeoCenter()*/, PointOfAim(rl[i]->GetEnv()->m_TargetAttack), TRACE_OBJECT|TRACE_NONOBJECT|TRACE_OBJECTSPHERE|TRACE_SKIP_INVISIBLE, rl[i]);
                             bool close=(IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE);
 
-                            if(placebest>=0) { // Если уже найдено место то выбираем наилучшее
+                            if(placebest>=0) { // Р•СЃР»Рё СѓР¶Рµ РЅР°Р№РґРµРЅРѕ РјРµСЃС‚Рѕ С‚Рѕ РІС‹Р±РёСЂР°РµРј РЅР°РёР»СѓС‡С€РµРµ
                                 if(havebomb) {
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
+                                    if(distplace2>s_f1) continue; // РњРµСЃС‚Рѕ РґР°Р»СЊС€Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
                                 } else if(close!=s_close) {
                                     if(close) continue;
                                 } else if(!underfire && s_underfire);
                                 else if(underfire && !s_underfire) continue;
-                                else if(underfire) { // Если под обстрелом
-                                    if(underfire>s_underfire) continue; // Место более обстреливоемое пропускаем
-                                    if(distplace2<s_f1) continue; // Место ближе предыдущего пропускаем
-                                } else { // Если вне радиуса поражения противника
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
+                                else if(underfire) { // Р•СЃР»Рё РїРѕРґ РѕР±СЃС‚СЂРµР»РѕРј
+                                    if(underfire>s_underfire) continue; // РњРµСЃС‚Рѕ Р±РѕР»РµРµ РѕР±СЃС‚СЂРµР»РёРІРѕРµРјРѕРµ РїСЂРѕРїСѓСЃРєР°РµРј
+                                    if(distplace2<s_f1) continue; // РњРµСЃС‚Рѕ Р±Р»РёР¶Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
+                                } else { // Р•СЃР»Рё РІРЅРµ СЂР°РґРёСѓСЃР° РїРѕСЂР°Р¶РµРЅРёСЏ РїСЂРѕС‚РёРІРЅРёРєР°
+                                    if(distplace2>s_f1) continue; // РњРµСЃС‚Рѕ РґР°Р»СЊС€Рµ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РїСЂРѕРїСѓСЃРєР°РµРј
                                 }
                             }
 
@@ -7643,7 +7643,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         i=-1;
                         continue;
                     }
-                } else { // Не нашли
+                } else { // РќРµ РЅР°С€Р»Рё
                     rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
 
                     int iplace;
@@ -7653,8 +7653,8 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         iplace=m_PlaceList[u];
                         place=g_MatrixMap->m_RN.m_Place+iplace;
 
-                        if(place->m_Data) continue; // Занетые места игнорируем
-                        if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
+                        if(place->m_Data) continue; // Р—Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р° РёРіРЅРѕСЂРёСЂСѓРµРј
+                        if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
                         break;
                     }
                     if(u<listcnt) {
@@ -7663,7 +7663,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                         if(PrepareBreakOrder(rl[i])) {
                             rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
                         }
-                    } else { // Расширяем
+                    } else { // Р Р°СЃС€РёСЂСЏРµРј
                         if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
 
                         for(u=0;u<listcnt;u++) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
@@ -7679,7 +7679,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         }
     }
 
-    // Корректируем точку выстрела
+    // РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј С‚РѕС‡РєСѓ РІС‹СЃС‚СЂРµР»Р°
     D3DXVECTOR3 des,from,dir,p;
     float t,dist;
 
@@ -7694,7 +7694,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
             des=PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-            // Не стрелять из прямого оружия, если на пути к цели свои
+            // РќРµ СЃС‚СЂРµР»СЏС‚СЊ РёР· РїСЂСЏРјРѕРіРѕ РѕСЂСѓР¶РёСЏ, РµСЃР»Рё РЅР° РїСѓС‚Рё Рє С†РµР»Рё СЃРІРѕРё
             from=rl[i]->GetGeoCenter();
             dist=sqrt(POW2(from.x-des.x)+POW2(from.y-des.y)+POW2(from.z-des.z));
 
@@ -7750,7 +7750,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
             }
 
             if(fireline) { 
-                // Если у цели голова Firewall то в нее сложнее попасть
+                // Р•СЃР»Рё Сѓ С†РµР»Рё РіРѕР»РѕРІР° Firewall С‚Рѕ РІ РЅРµРµ СЃР»РѕР¶РЅРµРµ РїРѕРїР°СЃС‚СЊ
                 /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
@@ -7788,25 +7788,25 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 env->m_LastFire=curTime; 
                 rl[i]->Fire(des); 
 
-                // Если стоим на месте
+                // Р•СЃР»Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ
                 if(IsInPlace(rl[i])) {
-                    // Если несколько врагов и в цель не попадаем в течении долгого времени, то переназначаем цель
+                    // Р•СЃР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РІСЂР°РіРѕРІ Рё РІ С†РµР»СЊ РЅРµ РїРѕРїР°РґР°РµРј РІ С‚РµС‡РµРЅРёРё РґРѕР»РіРѕРіРѕ РІСЂРµРјРµРЅРё, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј С†РµР»СЊ
                     if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
                         env->m_TargetAttack=NULL;
                     }
-                    // Если один враг и в цель не попадаем в течении долгого времени и стоим на месте, то переназначаем место
+                    // Р•СЃР»Рё РѕРґРёРЅ РІСЂР°Рі Рё РІ С†РµР»СЊ РЅРµ РїРѕРїР°РґР°РµРј РІ С‚РµС‡РµРЅРёРё РґРѕР»РіРѕРіРѕ РІСЂРµРјРµРЅРё Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј РјРµСЃС‚Рѕ
                     if(env->m_EnemyCnt==1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
                         env->AddBadPlace(env->m_Place);
                         env->m_Place=-1;
                     }
-                    // Если очень долго не попадаем в цель, то меняем позицию
+                    // Р•СЃР»Рё РѕС‡РµРЅСЊ РґРѕР»РіРѕ РЅРµ РїРѕРїР°РґР°РµРј РІ С†РµР»СЊ, С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                     if((curTime-env->m_TargetChange)>2000 && (curTime-env->m_LastHitTarget)>10000) {
                         env->AddBadPlace(env->m_Place);
                         env->m_Place=-1;
                     }
                 } else env->m_TargetChange=curTime;
             } else {
-                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // Ищем робота для починки
+                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // РС‰РµРј СЂРѕР±РѕС‚Р° РґР»СЏ РїРѕС‡РёРЅРєРё
                     D3DXVECTOR2 v,v2;
 
                     if(rl[i]->GetEnv()->m_Target && IsLiveUnit(rl[i]->GetEnv()->m_Target) && rl[i]->GetEnv()->m_Target->GetSide()==m_Id && rl[i]->GetEnv()->m_Target->NeedRepair()) {
@@ -7835,13 +7835,13 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 if(rl[i]->GetEnv()->TargetType()==2) rl[i]->Fire(PointOfAim(rl[i]->GetEnv()->m_Target),2);
                 else rl[i]->StopFire();
 
-                // Если стоим на месте
+                // Р•СЃР»Рё СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ
                 if(IsInPlace(rl[i])) {
-                    // Если несколько врагов, а текущий долго закрыт своими, то переназначаем цель
+                    // Р•СЃР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РІСЂР°РіРѕРІ, Р° С‚РµРєСѓС‰РёР№ РґРѕР»РіРѕ Р·Р°РєСЂС‹С‚ СЃРІРѕРёРјРё, С‚Рѕ РїРµСЂРµРЅР°Р·РЅР°С‡Р°РµРј С†РµР»СЊ
                     if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>4000) { 
                         env->m_TargetAttack=NULL;
                     }
-                    // Если долго закрыт своими, то меняем позицию
+                    // Р•СЃР»Рё РґРѕР»РіРѕ Р·Р°РєСЂС‹С‚ СЃРІРѕРёРјРё, С‚Рѕ РјРµРЅСЏРµРј РїРѕР·РёС†РёСЋ
                     if((curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>6000) {
                         if(CanChangePlace(rl[i])) {
                         env->AddBadPlace(env->m_Place);
@@ -8137,7 +8137,7 @@ void CMatrixSideUnit::PGOrderAttack(int no,const CPoint & tp,CMatrixMapStatic * 
     }
 
     if(terget_obj) {
-        // Точка сбора подальше от базы а то могут вместе с ней зарватся
+        // РўРѕС‡РєР° СЃР±РѕСЂР° РїРѕРґР°Р»СЊС€Рµ РѕС‚ Р±Р°Р·С‹ Р° С‚Рѕ РјРѕРіСѓС‚ РІРјРµСЃС‚Рµ СЃ РЅРµР№ Р·Р°СЂРІР°С‚СЃСЏ
         if(terget_obj->GetObjectType()==OBJECT_TYPE_BUILDING /*&& ((CMatrixBuilding *)terget_obj)->m_Kind==0*/) {
             switch(((CMatrixBuilding *)terget_obj)->m_Angle) {
                 case 0: m_PlayerGroup[no].m_To.y+=20; break;
@@ -8670,8 +8670,8 @@ void CMatrixSideUnit::PGAssignPlace(int no,CPoint & center)
                 for(x=plr.left;x<plr.right;x++,plist++) {
                     SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+plist->m_Sme;
                     for(u=0;u<plist->m_Cnt;u++,place++) {
-                        if(place->m_Data) continue; // Занетые места игнорируем
-                        if(!CanMove(place->m_Move,robot)) continue; // Если робот не может стоять на этом месте, то пропускаем
+                        if(place->m_Data) continue; // Р—Р°РЅРµС‚С‹Рµ РјРµСЃС‚Р° РёРіРЅРѕСЂРёСЂСѓРµРј
+                        if(!CanMove(place->m_Move,robot)) continue; // Р•СЃР»Рё СЂРѕР±РѕС‚ РЅРµ РјРѕР¶РµС‚ СЃС‚РѕСЏС‚СЊ РЅР° СЌС‚РѕРј РјРµСЃС‚Рµ, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                         int t=POW2(place->m_Pos.x-center.x)+POW2(place->m_Pos.y-center.y);
                         if(t<mindist) {
@@ -8843,7 +8843,7 @@ void CMatrixSideUnit::PGCalcStat()
         ms=ms->GetNextLogic();
     }
 
-    // Выращиваем опасность
+    // Р’С‹СЂР°С‰РёРІР°РµРј РѕРїР°СЃРЅРѕСЃС‚СЊ
     for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
         if(m_Region[i].m_Danger<=0) continue;
 
@@ -8917,8 +8917,8 @@ void CMatrixSideUnit::PGFindCaptureFactory(int no)
     }
     if(regionmass<0) return;
 
-    // В текущем регионе
-    if(strength>=m_Region[regionmass].m_Danger*1.0) { // Если регион слишком опасный, то пропускаем
+    // Р’ С‚РµРєСѓС‰РµРј СЂРµРіРёРѕРЅРµ
+    if(strength>=m_Region[regionmass].m_Danger*1.0) { // Р•СЃР»Рё СЂРµРіРёРѕРЅ СЃР»РёС€РєРѕРј РѕРїР°СЃРЅС‹Р№, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
         obj = CMatrixMapStatic::GetFirstLogic();
         while(obj) {
             if(obj->IsLiveBuilding() && (obj->GetSide()!=m_Id) && GetRegion(obj)==regionmass) {
@@ -8933,7 +8933,7 @@ void CMatrixSideUnit::PGFindCaptureFactory(int no)
         }
     }
 
-    // В других регионах (безопасных/опасных)
+    // Р’ РґСЂСѓРіРёС… СЂРµРіРёРѕРЅР°С… (Р±РµР·РѕРїР°СЃРЅС‹С…/РѕРїР°СЃРЅС‹С…)
     for(int type=0;type<=1;type++) { 
         for(u=0;u<g_MatrixMap->m_RN.m_RegionCnt;u++) {
             m_Region[u].m_Data=0;
@@ -8953,13 +8953,13 @@ void CMatrixSideUnit::PGFindCaptureFactory(int no)
 
                 if(g_MatrixMap->m_RN.m_Region[m_RegionIndex[sme]].m_NearMove[t] & mm) continue;
 
-                if(type==0 && strength<m_Region[u].m_Danger*1.0) continue; // Если регион слишком опасный, то пропускаем
+                if(type==0 && strength<m_Region[u].m_Danger*1.0) continue; // Р•СЃР»Рё СЂРµРіРёРѕРЅ СЃР»РёС€РєРѕРј РѕРїР°СЃРЅС‹Р№, С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј
 
                 m_Region[u].m_Data=1+dist;
                 m_RegionIndex[cnt]=u;
                 cnt++;
 
-                // Группы не должны идти в один регион
+                // Р“СЂСѓРїРїС‹ РЅРµ РґРѕР»Р¶РЅС‹ РёРґС‚Рё РІ РѕРґРёРЅ СЂРµРіРёРѕРЅ
                 for(k=0;k<MAX_LOGIC_GROUP;k++) {
                     if(k==no) continue;
                     if(m_PlayerGroup[k].m_RobotCnt<=0) continue;
@@ -9029,7 +9029,7 @@ void CMatrixSideUnit::PGFindAttackTarget(int no)
     }
     if(regionmass<0) return;
 
-    // В текущем регионе
+    // Р’ С‚РµРєСѓС‰РµРј СЂРµРіРёРѕРЅРµ
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(IsLiveUnit(obj) && (obj->GetSide()!=m_Id) && GetRegion(obj)==regionmass) {
@@ -9043,8 +9043,8 @@ void CMatrixSideUnit::PGFindAttackTarget(int no)
         obj = obj->GetNextLogic();
     }
 
-    // В других регионах
-    for(int withourgroup=0;withourgroup<=1;withourgroup++) { // (с учетом/без учета своих групп)
+    // Р’ РґСЂСѓРіРёС… СЂРµРіРёРѕРЅР°С…
+    for(int withourgroup=0;withourgroup<=1;withourgroup++) { // (СЃ СѓС‡РµС‚РѕРј/Р±РµР· СѓС‡РµС‚Р° СЃРІРѕРёС… РіСЂСѓРїРї)
         for(u=0;u<g_MatrixMap->m_RN.m_RegionCnt;u++) {
             m_Region[u].m_Data=0;
         }
@@ -9068,7 +9068,7 @@ void CMatrixSideUnit::PGFindAttackTarget(int no)
                 cnt++;
 
                 if(withourgroup==0) {
-                    // Группы не должны идти в один регион
+                    // Р“СЂСѓРїРїС‹ РЅРµ РґРѕР»Р¶РЅС‹ РёРґС‚Рё РІ РѕРґРёРЅ СЂРµРіРёРѕРЅ
                     for(k=0;k<MAX_LOGIC_GROUP;k++) {
                         if(k==no) continue;
                         if(m_PlayerGroup[k].m_RobotCnt<=0) continue;
@@ -9110,7 +9110,7 @@ void CMatrixSideUnit::PGFindAttackTarget(int no)
         }
     }
 
-    // Если нет врагов идем уничтожать вражескую базу
+    // Р•СЃР»Рё РЅРµС‚ РІСЂР°РіРѕРІ РёРґРµРј СѓРЅРёС‡С‚РѕР¶Р°С‚СЊ РІСЂР°Р¶РµСЃРєСѓСЋ Р±Р°Р·Сѓ
     for(u=0;u<g_MatrixMap->m_RN.m_RegionCnt;u++) {
         m_Region[u].m_Data=0;
     }
@@ -9188,7 +9188,7 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no)
     }
     if(regionmass<0) return;
 
-    // В текущем регионе
+    // Р’ С‚РµРєСѓС‰РµРј СЂРµРіРёРѕРЅРµ
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj) {
         if(IsLiveUnit(obj) && (obj->GetSide()!=m_Id) && GetRegion(obj)==regionmass) {
@@ -9203,8 +9203,8 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no)
         obj = obj->GetNextLogic();
     }
 
-    // От наших баз/От текущего места
-    // с учетом/без учета своих групп
+    // РћС‚ РЅР°С€РёС… Р±Р°Р·/РћС‚ С‚РµРєСѓС‰РµРіРѕ РјРµСЃС‚Р°
+    // СЃ СѓС‡РµС‚РѕРј/Р±РµР· СѓС‡РµС‚Р° СЃРІРѕРёС… РіСЂСѓРїРї
     for(int type=0;type<=3;type++) { 
         cnt=0; sme=0;
         if(type==0 || type==1) {
@@ -9244,7 +9244,7 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no)
                 cnt++;
 
                 if(type==0 || type==2) {
-                    // Группы не должны идти в один регион
+                    // Р“СЂСѓРїРїС‹ РЅРµ РґРѕР»Р¶РЅС‹ РёРґС‚Рё РІ РѕРґРёРЅ СЂРµРіРёРѕРЅ
                     for(k=0;k<MAX_LOGIC_GROUP;k++) {
                         if(k==no) continue;
                         if(m_PlayerGroup[k].m_RobotCnt<=0) continue;

@@ -175,8 +175,8 @@ struct SVisGroup
 
             for (int i = 0; i < pointsCount; ++i, ++tempPoints)
             {
-                if (!tempPoints->invisible) continue; // не нужно проверять видимые части
-                if (tempPoints->invisibleNow) continue; // уже пометили как невидимую
+                if (!tempPoints->invisible) continue; // РЅРµ РЅСѓР¶РЅРѕ РїСЂРѕРІРµСЂСЏС‚СЊ РІРёРґРёРјС‹Рµ С‡Р°СЃС‚Рё
+                if (tempPoints->invisibleNow) continue; // СѓР¶Рµ РїРѕРјРµС‚РёР»Рё РєР°Рє РЅРµРІРёРґРёРјСѓСЋ
 
                 bool vv = PointLineCatch(p20, p21, D3DXVECTOR2(tempPoints->p.x,tempPoints->p.y));
                 if (vv == ppcam) continue;
@@ -193,7 +193,7 @@ struct SVisGroup
 
         STempPoints *tempPoints = points;
 
-        // реально не видно, бля
+        // СЂРµР°Р»СЊРЅРѕ РЅРµ РІРёРґРЅРѕ, Р±Р»СЏ
         for (int i = 0; i < pointsCount; ++i, ++tempPoints)
         {
             tempPoints->invisible = tempPoints->invisible & tempPoints->invisibleNow;

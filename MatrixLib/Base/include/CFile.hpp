@@ -26,9 +26,9 @@ class BASE_API CFile : public CMain
     static int              m_PacksRef;
 
     DWORD   m_PackHandle;
-	HANDLE  m_Handle;	    // Handle файла
-	CWStr   m_FileName;	    // Имя файла
-	int     m_Open;			// Кол-во вызовов Open
+	HANDLE  m_Handle;	    // Handle С„Р°Р№Р»Р°
+	CWStr   m_FileName;	    // РРјСЏ С„Р°Р№Р»Р°
+	int     m_Open;			// РљРѕР»-РІРѕ РІС‹Р·РѕРІРѕРІ Open
 
 
 public:
@@ -82,9 +82,9 @@ public:
     static bool FileExist(CWStr & outname,const wchar * mname,const wchar * exts = NULL,bool withpar = false);
 };
 
-// У пути всегда наконце символ "\"
-// Пустой путь без символа "\" (пустая строка)
-BASE_API void CorrectFilePath(CWStr & filepath); // Если нужно добовляет в конец символ "\"
+// РЈ РїСѓС‚Рё РІСЃРµРіРґР° РЅР°РєРѕРЅС†Рµ СЃРёРјРІРѕР» "\"
+// РџСѓСЃС‚РѕР№ РїСѓС‚СЊ Р±РµР· СЃРёРјРІРѕР»Р° "\" (РїСѓСЃС‚Р°СЏ СЃС‚СЂРѕРєР°)
+BASE_API void CorrectFilePath(CWStr & filepath); // Р•СЃР»Рё РЅСѓР¶РЅРѕ РґРѕР±РѕРІР»СЏРµС‚ РІ РєРѕРЅРµС† СЃРёРјРІРѕР» "\"
 BASE_API CWStr GetFilePath(const CWStr & filepath);
 
 }

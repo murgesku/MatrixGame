@@ -14,7 +14,7 @@ class CCoordSystem;
 
 class CWorldObject : public CMain , public CListInterface<CWorldObject>
 {
-    CCoordSystem *_owner;   // координатная система - владелец
+    CCoordSystem *_owner;   // РєРѕРѕСЂРґРёРЅР°С‚РЅР°СЏ СЃРёСЃС‚РµРјР° - РІР»Р°РґРµР»РµС†
 
 public:
     CWorldObject(CCoordSystem * cs):

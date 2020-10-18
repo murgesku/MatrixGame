@@ -121,7 +121,7 @@ struct SChassisData
 
 struct SMatrixRobotUnit
 {
-	ERobotUnitType m_Type;		// 0-empty 1-Шасси 2-Оружие 3-Броня 4-голова
+	ERobotUnitType m_Type;		// 0-empty 1-РЁР°СЃСЃРё 2-РћСЂСѓР¶РёРµ 3-Р‘СЂРѕРЅСЏ 4-РіРѕР»РѕРІР°
 
 	CVectorObjectAnim * m_Graph;
 	D3DXMATRIX m_Matrix;
@@ -167,14 +167,14 @@ struct SPneumaticData
 
 class CMatrixRobot : public CMatrixMapStatic {
         EAnimation  m_Animation;
-		CMatrixBuilding *m_Base; //база из который вышел робот
+		CMatrixBuilding *m_Base; //Р±Р°Р·Р° РёР· РєРѕС‚РѕСЂС‹Р№ РІС‹С€РµР» СЂРѕР±РѕС‚
 
 protected:
         // hitpoint
         CMatrixProgressBar m_PB;
         int         m_ShowHitpointTime;
         float       m_HitPoint;
-	    float       m_HitPointMax;  // Максимальное кол-во здоровья
+	    float       m_HitPointMax;  // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»-РІРѕ Р·РґРѕСЂРѕРІСЊСЏ
         float       m_MaxHitPointInversed; // for normalized calcs
 
 
@@ -215,7 +215,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 //Steering behavior's try
-		D3DXVECTOR3 m_Velocity;//вектор скорости, длина равна скорости, направление движения
+		D3DXVECTOR3 m_Velocity;//РІРµРєС‚РѕСЂ СЃРєРѕСЂРѕСЃС‚Рё, РґР»РёРЅР° СЂР°РІРЅР° СЃРєРѕСЂРѕСЃС‚Рё, РЅР°РїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёСЏ
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////

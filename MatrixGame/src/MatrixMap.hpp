@@ -22,7 +22,7 @@
 #define MatrixPathMoveMax 256
 
 #define ROBOT_WEAPONS_PER_ROBOT_CNT     10
-#define ROBOT_MOVECELLS_PER_SIZE    4   // размер стороны квадрата робота в ячейках сетки проходимости
+#define ROBOT_MOVECELLS_PER_SIZE    4   // СЂР°Р·РјРµСЂ СЃС‚РѕСЂРѕРЅС‹ РєРІР°РґСЂР°С‚Р° СЂРѕР±РѕС‚Р° РІ СЏС‡РµР№РєР°С… СЃРµС‚РєРё РїСЂРѕС…РѕРґРёРјРѕСЃС‚Рё
 
 #define DRAW_SHADOWS_DISTANCE_SQ    ((1024)*(1024))
 
@@ -94,16 +94,16 @@ struct SMatrixMapPoint {
 };
 
 /*struct SMatrixMapZone {
-	int m_BeginX,m_BeginY;			// Начало роста
-	int m_CenterX,m_CenterY;		// Центр масс
-	bool m_Building;				// В зоне есть здание
+	int m_BeginX,m_BeginY;			// РќР°С‡Р°Р»Рѕ СЂРѕСЃС‚Р°
+	int m_CenterX,m_CenterY;		// Р¦РµРЅС‚СЂ РјР°СЃСЃ
+	bool m_Building;				// Р’ Р·РѕРЅРµ РµСЃС‚СЊ Р·РґР°РЅРёРµ
 	int m_Size;						// Cnt in unit
-	int m_Perim;					// Периметр
+	int m_Perim;					// РџРµСЂРёРјРµС‚СЂ
 	CRect m_Rect;					// Bound zone
 
-	int m_NearZoneCnt;				// Кол-во ближайших зон
-	int m_NearZone[8];				// Ближайшие зоны
-	int m_NearZoneConnectSize[8];	// Длина соединения с ближайшими зонами
+	int m_NearZoneCnt;				// РљРѕР»-РІРѕ Р±Р»РёР¶Р°Р№С€РёС… Р·РѕРЅ
+	int m_NearZone[8];				// Р‘Р»РёР¶Р°Р№С€РёРµ Р·РѕРЅС‹
+	int m_NearZoneConnectSize[8];	// Р”Р»РёРЅР° СЃРѕРµРґРёРЅРµРЅРёСЏ СЃ Р±Р»РёР¶Р°Р№С€РёРјРё Р·РѕРЅР°РјРё
 
 	int m_FPLevel;
 	int m_FPWt;
@@ -143,7 +143,7 @@ struct SMatrixMapMove {
 
     int m_Find;
     int m_Weight;
-	DWORD m_Stop;	// (1-нельзя пройти) 1-Shasi1(Пневматика) 2-Shasi2(Колеса) 4-Shasi3(Гусеницы) 8-Shasi4(Подушка) 16-Shasi5(Крылья)
+	DWORD m_Stop;	// (1-РЅРµР»СЊР·СЏ РїСЂРѕР№С‚Рё) 1-Shasi1(РџРЅРµРІРјР°С‚РёРєР°) 2-Shasi2(РљРѕР»РµСЃР°) 4-Shasi3(Р“СѓСЃРµРЅРёС†С‹) 8-Shasi4(РџРѕРґСѓС€РєР°) 16-Shasi5(РљСЂС‹Р»СЊСЏ)
                     // <<0-size 1       <<6-size 2       <<12-size 3       <<18-size 4        <<24-size 5
 
     BYTE GetType(int nsh) const

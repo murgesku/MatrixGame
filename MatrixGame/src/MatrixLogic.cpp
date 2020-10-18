@@ -410,7 +410,7 @@ void CMatrixMapLogic::PrepareBuf()
 //		zonecnt--;
 //	}
 //
-//	// Куда не можем попасть делаем непроходящими
+//	// РљСѓРґР° РЅРµ РјРѕР¶РµРј РїРѕРїР°СЃС‚СЊ РґРµР»Р°РµРј РЅРµРїСЂРѕС…РѕРґСЏС‰РёРјРё
 ////	mu=UnitGet(0,0);
 ////	for(y=0;y<m_Size.y;y++) {
 ////		for(x=0;x<m_Size.x;x++,mu++) {
@@ -1215,15 +1215,15 @@ void CMatrixMapLogic::SetWeightFromTo(int size,int x1,int y1,int x2,int y2)
 }
 
 int CMatrixMapLogic::FindLocalPath(int nsh,int size,
-                            int mx,int my, // Начальная точка
-                            int * zonepath,int zonepathcnt, // Список зон через которые нужной найти путь
-                            int dx,int dy, // Точка назначения
-                            CPoint * path, // Рассчитанный путь
-                            int other_cnt, // Кол-во путей от других роботов
-                            int * other_size,           // Список размеров в других путях
-                            CPoint * * other_path_list, // Список указателей на другие пути
-                            int * other_path_cnt,       // Список кол-во элементов в других путях
-                            CPoint * other_des,          // Список конечных точек в других путях
+                            int mx,int my, // РќР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР°
+                            int * zonepath,int zonepathcnt, // РЎРїРёСЃРѕРє Р·РѕРЅ С‡РµСЂРµР· РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕР№ РЅР°Р№С‚Рё РїСѓС‚СЊ
+                            int dx,int dy, // РўРѕС‡РєР° РЅР°Р·РЅР°С‡РµРЅРёСЏ
+                            CPoint * path, // Р Р°СЃСЃС‡РёС‚Р°РЅРЅС‹Р№ РїСѓС‚СЊ
+                            int other_cnt, // РљРѕР»-РІРѕ РїСѓС‚РµР№ РѕС‚ РґСЂСѓРіРёС… СЂРѕР±РѕС‚РѕРІ
+                            int * other_size,           // РЎРїРёСЃРѕРє СЂР°Р·РјРµСЂРѕРІ РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
+                            CPoint * * other_path_list, // РЎРїРёСЃРѕРє СѓРєР°Р·Р°С‚РµР»РµР№ РЅР° РґСЂСѓРіРёРµ РїСѓС‚Рё
+                            int * other_path_cnt,       // РЎРїРёСЃРѕРє РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
+                            CPoint * other_des,          // РЎРїРёСЃРѕРє РєРѕРЅРµС‡РЅС‹С… С‚РѕС‡РµРє РІ РґСЂСѓРіРёС… РїСѓС‚СЏС…
                             bool test)
 {
     SMatrixMapMove * smm2,* smm;
@@ -1269,12 +1269,12 @@ int CMatrixMapLogic::FindLocalPath(int nsh,int size,
 	}
 
     for(i=0;i<other_cnt;i++) {
-        // Робот идет по маршруту 10%-60%
+        // Р РѕР±РѕС‚ РёРґРµС‚ РїРѕ РјР°СЂС€СЂСѓС‚Сѓ 10%-60%
 /*        CPoint * pl=other_path_list[i];
         for(u=1;u<other_path_cnt[i];u++,pl++) {
             SetWeightFromTo(other_size[i],pl->x,pl->y,(pl+1)->x,(pl+1)->y); 
         }*/
-        // Куда робот становится 200%
+        // РљСѓРґР° СЂРѕР±РѕС‚ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ 200%
         int sx=max(0,other_des[i].x-(other_size[i]-1));
         int sy=max(0,other_des[i].y-(other_size[i]-1));
         int ex=min(m_SizeMove.x,other_des[i].x+other_size[i]);
@@ -1285,7 +1285,7 @@ int CMatrixMapLogic::FindLocalPath(int nsh,int size,
                 if(smm->m_Weight<200) smm->m_Weight=200;
             }
         }
-        // Где робот стоит 30%
+        // Р“РґРµ СЂРѕР±РѕС‚ СЃС‚РѕРёС‚ 30%
         if(other_path_cnt[i]>0) {
             int sx=max(0,other_path_list[i]->x-(other_size[i]-1));
             int sy=max(0,other_path_list[i]->y-(other_size[i]-1));
@@ -1453,7 +1453,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
 
     PrepareBuf();
 
-    for(int i=0;i<m_RN.m_Zone[zstart].m_NearZoneCnt;i++) { // Если конец в соседней зоне
+    for(int i=0;i<m_RN.m_Zone[zstart].m_NearZoneCnt;i++) { // Р•СЃР»Рё РєРѕРЅРµС† РІ СЃРѕСЃРµРґРЅРµР№ Р·РѕРЅРµ
         if(m_RN.m_Zone[zstart].m_NearZone[i]==zend) {
             path[0]=zstart;
             path[1]=zend;
@@ -1463,7 +1463,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
 
     int accesscnt=0;
 
-    if(route) { // Устанавливаем доступ
+    if(route) { // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РґРѕСЃС‚СѓРї
         for(int i=1;i<route->m_Header[routeno].m_Cnt;i++) {
             CMatrixRoad *road=route->m_Units[routeno*m_RN.m_CrotchCnt+i].m_Road;
 
@@ -1505,7 +1505,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
     SMatrixMapZone * zone=m_RN.m_Zone;
     while(cnt) { zone->m_FPLevel=0; zone++; cnt--; }
 
-    // Ищем путь от конца до дороги или до начально зоны
+    // РС‰РµРј РїСѓС‚СЊ РѕС‚ РєРѕРЅС†Р° РґРѕ РґРѕСЂРѕРіРё РёР»Рё РґРѕ РЅР°С‡Р°Р»СЊРЅРѕ Р·РѕРЅС‹
     sme=0;
     level=1;
     cnt=1;
@@ -1521,7 +1521,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
             if(zone->m_NearZoneMove[i] & (1<<nsh)) continue;
             newzone=zone->m_NearZone[i];
             zone2=m_RN.m_Zone+newzone;
-            if(newzone==zstart || zone2->m_Access) { // Нашли
+            if(newzone==zstart || zone2->m_Access) { // РќР°С€Р»Рё
                 zonefindok=newzone;
                 sme=cnt;
                 break;
@@ -1541,11 +1541,11 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
         }
     }
 
-    if(zonefindok<0) { // Не нашли ни какого пути
+    if(zonefindok<0) { // РќРµ РЅР°С€Р»Рё РЅРё РєР°РєРѕРіРѕ РїСѓС‚Рё
         SetZoneAccess(m_ZoneIndexAccess,accesscnt,false);
         return 0;
 
-    } else if(zonefindok==zstart) { // Нашли путь до начальной зоны
+    } else if(zonefindok==zstart) { // РќР°С€Р»Рё РїСѓС‚СЊ РґРѕ РЅР°С‡Р°Р»СЊРЅРѕР№ Р·РѕРЅС‹
         path[0]=zstart;
         cnt=1;
         curzone=zstart;
@@ -1573,7 +1573,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
         SetZoneAccess(m_ZoneIndexAccess,accesscnt,false);
         return cnt;
 
-    } else { // Нашли путь до дароги
+    } else { // РќР°С€Р»Рё РїСѓС‚СЊ РґРѕ РґР°СЂРѕРіРё
         curzone=zonefindok;
         zone=m_RN.m_Zone+curzone;
 
@@ -1610,7 +1610,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
         }
     }
 
-    // Ищем путь от начала до дороги
+    // РС‰РµРј РїСѓС‚СЊ РѕС‚ РЅР°С‡Р°Р»Р° РґРѕ РґРѕСЂРѕРіРё
     for(int i=0;i<cnt;i++) m_RN.m_Zone[m_ZoneIndex[i]].m_FPLevel=0;
     sme=0;
     level=1;
@@ -1627,7 +1627,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
             if(zone->m_NearZoneMove[i] & (1<<nsh)) continue;
             newzone=zone->m_NearZone[i];
             zone2=m_RN.m_Zone+newzone;
-            if(zone2->m_Access) { // Нашли
+            if(zone2->m_Access) { // РќР°С€Р»Рё
                 zonefindok=newzone;
                 sme=cnt;
                 break;
@@ -1647,10 +1647,10 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
         }
     }
 
-    if(zonefindok<0) { // Не нашли ни какого пути
+    if(zonefindok<0) { // РќРµ РЅР°С€Р»Рё РЅРё РєР°РєРѕРіРѕ РїСѓС‚Рё
         SetZoneAccess(m_ZoneIndexAccess,accesscnt,false);
         return 0;
-    } else { // Нашли путь до дароги
+    } else { // РќР°С€Р»Рё РїСѓС‚СЊ РґРѕ РґР°СЂРѕРіРё
         curzone=zonefindok;
         zone=m_RN.m_Zone+curzone;
 
@@ -1687,7 +1687,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
         }
     }
 
-    // Ищем путь от конца до начала
+    // РС‰РµРј РїСѓС‚СЊ РѕС‚ РєРѕРЅС†Р° РґРѕ РЅР°С‡Р°Р»Р°
     for(int i=0;i<cnt;i++) m_RN.m_Zone[m_ZoneIndex[i]].m_FPLevel=0;
 
 #if (defined _DEBUG) &&  !(defined _RELDEBUG)
@@ -1743,7 +1743,7 @@ for(int i=0;i<route->m_Header[routeno].m_Cnt;i++) {
             if(zone->m_NearZoneMove[i] & (1<<nsh)) continue;
             newzone=zone->m_NearZone[i];
             zone2=m_RN.m_Zone+newzone;
-            if(newzone==zstart) { // Нашли
+            if(newzone==zstart) { // РќР°С€Р»Рё
                 zonefindok=newzone;
                 sme=cnt;
                 break;
@@ -1764,11 +1764,11 @@ for(int i=0;i<route->m_Header[routeno].m_Cnt;i++) {
         }
     }
 
-    if(zonefindok<0) { // Не нашли ни какого пути
+    if(zonefindok<0) { // РќРµ РЅР°С€Р»Рё РЅРё РєР°РєРѕРіРѕ РїСѓС‚Рё
         SetZoneAccess(m_ZoneIndexAccess,accesscnt,false);
         return 0;
 
-    } else { // Нашли полный путь
+    } else { // РќР°С€Р»Рё РїРѕР»РЅС‹Р№ РїСѓС‚СЊ
         path[0]=zstart;
         cnt=1;
         curzone=zstart;
@@ -1929,7 +1929,7 @@ int CMatrixMapLogic::OptimizeMovePath(int nsh,int size,int cnt,CPoint * path)
 	} os[MatrixPathMoveMax];
 	int oscnt=0;
 
-    // Находим все углы (путь меняет направление)
+    // РќР°С…РѕРґРёРј РІСЃРµ СѓРіР»С‹ (РїСѓС‚СЊ РјРµРЅСЏРµС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ)
 	CPoint prevangle,curangle;
 	prevangle.x=path[1].x-path[0].x;
 	prevangle.y=path[1].y-path[0].y;
@@ -1962,7 +1962,7 @@ int CMatrixMapLogic::OptimizeMovePath(int nsh,int size,int cnt,CPoint * path)
 		return 2;
 	}*/
 
-    // Выращиваем углы во все сторонный
+    // Р’С‹СЂР°С‰РёРІР°РµРј СѓРіР»С‹ РІРѕ РІСЃРµ СЃС‚РѕСЂРѕРЅРЅС‹Р№
 	bool loopagain=true;
 	while(loopagain) {
 		loopagain=false;
@@ -1988,7 +1988,7 @@ int CMatrixMapLogic::OptimizeMovePath(int nsh,int size,int cnt,CPoint * path)
 		}
 	}
 
-    // Удаляем повторяющиеся направления
+    // РЈРґР°Р»СЏРµРј РїРѕРІС‚РѕСЂСЏСЋС‰РёРµСЃСЏ РЅР°РїСЂР°РІР»РµРЅРёСЏ
 
 /*	cnt=OptimizeMovePath_Delete(cnt,path,os[oscnt-1].iend,cnt-1);
 	if(oscnt==1) {
@@ -2168,7 +2168,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
         (*listcnt)++;
         if(fromplace==toplace) findend=0;
 
-        // ищем места в заданном радиусе
+        // РёС‰РµРј РјРµСЃС‚Р° РІ Р·Р°РґР°РЅРЅРѕРј СЂР°РґРёСѓСЃРµ
         while(sme<cnt) {
             place=m_RN.GetPlace(m_ZoneIndex[sme]);
             for(i=0;i<place->m_NearCnt;i++) {
@@ -2191,7 +2191,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
             sme++;
         }
 
-        // можем ли дойти до начальной точки
+        // РјРѕР¶РµРј Р»Рё РґРѕР№С‚Рё РґРѕ РЅР°С‡Р°Р»СЊРЅРѕР№ С‚РѕС‡РєРё
         sme=0;
         dist=0;
         next=cnt;
@@ -2230,7 +2230,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
     cnt=0;
     sme=0;
 
-    // ищем места в заданном радиусе
+    // РёС‰РµРј РјРµСЃС‚Р° РІ Р·Р°РґР°РЅРЅРѕРј СЂР°РґРёСѓСЃРµ
     CRect rc;
     rc.left=to.x-radius-ROBOT_MOVECELLS_PER_SIZE;
     rc.top=to.y-radius-ROBOT_MOVECELLS_PER_SIZE;
@@ -2257,7 +2257,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
         }
     }
 
-    // кластеризуем
+    // РєР»Р°СЃС‚РµСЂРёР·СѓРµРј
     findend=-1;
     oldcnt=cnt;
     clcnt=0;
@@ -2307,7 +2307,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
     }
     cnt=oldcnt;
 
-    // ищем путь от кластеров до начальной точки
+    // РёС‰РµРј РїСѓС‚СЊ РѕС‚ РєР»Р°СЃС‚РµСЂРѕРІ РґРѕ РЅР°С‡Р°Р»СЊРЅРѕР№ С‚РѕС‡РєРё
     sme=0;
     dist=0;
 
@@ -2345,7 +2345,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
 
     if(outdist) *outdist=dist*16;
 
-    // создаем конечный список
+    // СЃРѕР·РґР°РµРј РєРѕРЅРµС‡РЅС‹Р№ СЃРїРёСЃРѕРє
     *listcnt=0;
     for(i=0;i<oldcnt;i++) {
         if((m_ZoneDataZero[m_ZoneIndex[i]] & 0x7fff0000)==u) {
@@ -3138,12 +3138,12 @@ bool CMatrixMapLogic::PathIntersect(SMatrixPath * path,float cx,float cy,float r
         float vy=cy-pu->sy;
 
         float dp=vx*pu->vx+vy*pu->vy;
-        if(dp>=0.0f && dp<=pu->length) { // Сфера между точками
+        if(dp>=0.0f && dp<=pu->length) { // РЎС„РµСЂР° РјРµР¶РґСѓ С‚РѕС‡РєР°РјРё
             dp=-vx*pu->vy+vy*pu->vx;
             if(dp<POW2(radius+path->m_Owner->radius)) return true;
         } else {
-            if((POW2(pu->sx-cx)+POW2(pu->sy-cy))<POW2(radius+path->m_Owner->radius)) return true; // Пересекается начало
-            if((POW2(pu->ex-cx)+POW2(pu->ey-cy))<POW2(radius+path->m_Owner->radius)) return true; // Пересекается конец
+            if((POW2(pu->sx-cx)+POW2(pu->sy-cy))<POW2(radius+path->m_Owner->radius)) return true; // РџРµСЂРµСЃРµРєР°РµС‚СЃСЏ РЅР°С‡Р°Р»Рѕ
+            if((POW2(pu->ex-cx)+POW2(pu->ey-cy))<POW2(radius+path->m_Owner->radius)) return true; // РџРµСЂРµСЃРµРєР°РµС‚СЃСЏ РєРѕРЅРµС†
         }
     }
     return false;
@@ -3179,7 +3179,7 @@ void CMatrixMapLogic::CalcCannonPlace(void)
     while(obj) {
         if(obj->IsCannon()) {
             obj->AsCannon()->m_Place=m_RN.FindInPL(CPoint(Float2Int(obj->AsCannon()->m_Pos.x/GLOBAL_SCALE_MOVE),Float2Int(obj->AsCannon()->m_Pos.y/GLOBAL_SCALE_MOVE)));
-            if(obj->AsCannon()->m_Place<0) ERROR_E; // Место не найдено
+            if(obj->AsCannon()->m_Place<0) ERROR_E; // РњРµСЃС‚Рѕ РЅРµ РЅР°Р№РґРµРЅРѕ
         }
         obj = obj->GetNextLogic();
     }
