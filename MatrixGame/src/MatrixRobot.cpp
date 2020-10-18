@@ -1598,7 +1598,7 @@ void CMatrixRobotAI::ZonePathCalc()
 		m_ZonePathNext=1;
 	} else m_ZonePathNext=-1;
 
-    if(GetSide()!=PLAYER_SIDE && m_ZoneCur!=m_ZoneDes && m_ZonePathCnt<=0) { // Если дойти не можем, то меняем команду
+    if(GetSide()!=PLAYER_SIDE && m_ZoneCur!=m_ZoneDes && m_ZonePathCnt<=0) { // Р•СЃР»Рё РґРѕР№С‚Рё РЅРµ РјРѕР¶РµРј, С‚Рѕ РјРµРЅСЏРµРј РєРѕРјР°РЅРґСѓ
         SetTeam(g_MatrixMap->GetSideById(GetSide())->ClacSpawnTeam(GetRegion(),m_Unit[0].m_Kind-1));
         SetGroupLogic(-1);
     }
@@ -1749,7 +1749,7 @@ void CMatrixRobotAI::MoveByMovePath(int ms)
 		}
 	}
 
-    // Если долго стоим на месте, то перерассчитать маршрут
+    // Р•СЃР»Рё РґРѕР»РіРѕ СЃС‚РѕРёРј РЅР° РјРµСЃС‚Рµ, С‚Рѕ РїРµСЂРµСЂР°СЃСЃС‡РёС‚Р°С‚СЊ РјР°СЂС€СЂСѓС‚
     if((POW2(m_MoveTestPos.x-m_PosX)+POW2(m_MoveTestPos.y-m_PosY))>POW2(5.0f)) {
         m_MoveTestPos.x=m_PosX;
         m_MoveTestPos.y=m_PosY;
@@ -2920,13 +2920,13 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
 
                 if(!pCurrBot->IsAutomaticMode()) 
                 {
-                    if(data->robot->GetColsWeight2()<200*tm) { // Если недавно столкнулись
+                    if(data->robot->GetColsWeight2()<200*tm) { // Р•СЃР»Рё РЅРµРґР°РІРЅРѕ СЃС‚РѕР»РєРЅСѓР»РёСЃСЊ
                         float vd2=POW2(pCurrBot->m_Velocity.x)+POW2(pCurrBot->m_Velocity.y);
-                        if(vd2>POW2(0.0001f)) { // Если робот движется
-                            if((vx*-vDist.x+vy*-vDist.y)>0) { // И он находится впереди
-                                if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // И движется приблезительно в одну сторону
+                        if(vd2>POW2(0.0001f)) { // Р•СЃР»Рё СЂРѕР±РѕС‚ РґРІРёР¶РµС‚СЃСЏ
+                            if((vx*-vDist.x+vy*-vDist.y)>0) { // Р РѕРЅ РЅР°С…РѕРґРёС‚СЃСЏ РІРїРµСЂРµРґРё
+                                if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // Р РґРІРёР¶РµС‚СЃСЏ РїСЂРёР±Р»РµР·РёС‚РµР»СЊРЅРѕ РІ РѕРґРЅСѓ СЃС‚РѕСЂРѕРЅСѓ
 
-                                    if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов моежт двигатся
+                                    if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // РўРѕР»СЊРєРѕ РѕРґРёРЅ РёР· РґРІСѓС… СЂРѕР±РѕС‚РѕРІ РјРѕРµР¶С‚ РґРІРёРіР°С‚СЃСЏ
                                     else {
                                         data->stop=true;
                                         data->far_col=true;
@@ -3014,11 +3014,11 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
                 if(!pCurrBot->IsAutomaticMode()) 
                 {
                     float vd2=POW2(pCurrBot->m_Velocity.x)+POW2(pCurrBot->m_Velocity.y);
-                    if(vd2>POW2(0.0001f)) { // Если робот движется
-                        if((vx*-vDist.x+vy*-vDist.y)>0) { // И он находится впереди
-                            if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // И движется приблезительно в одну сторону
+                    if(vd2>POW2(0.0001f)) { // Р•СЃР»Рё СЂРѕР±РѕС‚ РґРІРёР¶РµС‚СЃСЏ
+                        if((vx*-vDist.x+vy*-vDist.y)>0) { // Р РѕРЅ РЅР°С…РѕРґРёС‚СЃСЏ РІРїРµСЂРµРґРё
+                            if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // Р РґРІРёР¶РµС‚СЃСЏ РїСЂРёР±Р»РµР·РёС‚РµР»СЊРЅРѕ РІ РѕРґРЅСѓ СЃС‚РѕСЂРѕРЅСѓ
 
-                                if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов моежт двигатся
+                                if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // РўРѕР»СЊРєРѕ РѕРґРёРЅ РёР· РґРІСѓС… СЂРѕР±РѕС‚РѕРІ РјРѕРµР¶С‚ РґРІРёРіР°С‚СЃСЏ
                                 else {
                                     data->far_col=true;
                                     data->robot->m_ColSpeed=min(data->robot->m_GroupSpeed,pCurrBot->m_GroupSpeed*0.5f);
@@ -3122,7 +3122,7 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
             //        m_CollAvoid = D3DXVECTOR3(1, 0, 0);
             //}
         }else if(o.x != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.x) > fabs(o.y))*/){
-            //это условие избыточно, оно зарезервировано для возможных изменений
+            //СЌС‚Рѕ СѓСЃР»РѕРІРёРµ РёР·Р±С‹С‚РѕС‡РЅРѕ, РѕРЅРѕ Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ РґР»СЏ РІРѕР·РјРѕР¶РЅС‹С… РёР·РјРµРЅРµРЅРёР№
 
             if(o.x > 0){
                 if(sign2 < 0){
@@ -3138,7 +3138,7 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
                 }
             }
         }else if(o.y != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.y) > fabs(o.x))*/){
-            //это условие избыточно, оно зарезервировано для возможных изменений
+            //СЌС‚Рѕ СѓСЃР»РѕРІРёРµ РёР·Р±С‹С‚РѕС‡РЅРѕ, РѕРЅРѕ Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ РґР»СЏ РІРѕР·РјРѕР¶РЅС‹С… РёР·РјРµРЅРµРЅРёР№
             if(o.y > 0){
                 if(sign1 < 0){
                     m_CollAvoid += D3DXVECTOR3(-1, 0, 0);
@@ -3617,7 +3617,7 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 //
 //				if(PointToAABB(vCellLu, vLu, (int)GLOBAL_SCALE, (int)GLOBAL_SCALE))
 //				{
-//				//Угол принадлежащий vLu лежит внутри ячейки
+//				//РЈРіРѕР» РїСЂРёРЅР°РґР»РµР¶Р°С‰РёР№ vLu Р»РµР¶РёС‚ РІРЅСѓС‚СЂРё СЏС‡РµР№РєРё
 //					D3DXVECTOR3 vTmp	= CornerLineToAABBIntersection(vLu, vRu, vCellLu, vCellLd, vCellRu, vCellRd);
 //					D3DXVECTOR3 vTmp2	= CornerLineToAABBIntersection(vLu, vLd, vCellLu, vCellLd, vCellRu, vCellRd);
 //					if(D3DXVec3LengthSq(&vTmp) < D3DXVec3LengthSq(&vTmp2))
@@ -3629,7 +3629,7 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 //						vLuCorPrev = vLuCor;
 //					
 //				}else if(PointToAABB(vCellLu, vRu, (int)GLOBAL_SCALE, (int)GLOBAL_SCALE)){
-//				//Угол принадлежащий vRu лежит внутри ячейки
+//				//РЈРіРѕР» РїСЂРёРЅР°РґР»РµР¶Р°С‰РёР№ vRu Р»РµР¶РёС‚ РІРЅСѓС‚СЂРё СЏС‡РµР№РєРё
 //					D3DXVECTOR3 vTmp	= CornerLineToAABBIntersection(vRu, vLu, vCellLu, vCellLd, vCellRu, vCellRd);
 //					D3DXVECTOR3 vTmp2	= CornerLineToAABBIntersection(vRu, vRd, vCellLu, vCellLd, vCellRu, vCellRd);
 //
@@ -3642,7 +3642,7 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 //						vRuCorPrev = vRuCor;
 //
 //				} else if (PointToAABB(vCellLu, vLd, (int)GLOBAL_SCALE, (int)GLOBAL_SCALE)){
-//				//Угол принадлежащий vLd лежит внутри ячейки
+//				//РЈРіРѕР» РїСЂРёРЅР°РґР»РµР¶Р°С‰РёР№ vLd Р»РµР¶РёС‚ РІРЅСѓС‚СЂРё СЏС‡РµР№РєРё
 //					D3DXVECTOR3 vTmp	= CornerLineToAABBIntersection(vLd, vLu, vCellLu, vCellLd, vCellRu, vCellRd);
 //					D3DXVECTOR3 vTmp2	= CornerLineToAABBIntersection(vLd, vRd, vCellLu, vCellLd, vCellRu, vCellRd);
 //
@@ -3655,7 +3655,7 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 //						vLdCorPrev = vLdCor;
 //
 //				} else if (PointToAABB(vCellLu, vRd, (int)GLOBAL_SCALE, (int)GLOBAL_SCALE)){
-//				//Угол принадлежащий vRd лежит внутри ячейки
+//				//РЈРіРѕР» РїСЂРёРЅР°РґР»РµР¶Р°С‰РёР№ vRd Р»РµР¶РёС‚ РІРЅСѓС‚СЂРё СЏС‡РµР№РєРё
 //					D3DXVECTOR3 vTmp	= CornerLineToAABBIntersection(vRd, vRu, vCellLu, vCellLd, vCellRu, vCellRd);
 //					D3DXVECTOR3 vTmp2	= CornerLineToAABBIntersection(vRd, vLd, vCellLu, vCellLd, vCellRu, vCellRd);
 //
@@ -4035,7 +4035,7 @@ void CMatrixRobotAI::HitTo(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos)
         //    side->m_Team[GetTeam()].m_War=true;
         //}
 
-        if(hit->GetObjectType()==OBJECT_TYPE_ROBOTAI) { // Если робот стреляет в пушку и мы в него попали то робот переключается на нас.
+        if(hit->GetObjectType()==OBJECT_TYPE_ROBOTAI) { // Р•СЃР»Рё СЂРѕР±РѕС‚ СЃС‚СЂРµР»СЏРµС‚ РІ РїСѓС€РєСѓ Рё РјС‹ РІ РЅРµРіРѕ РїРѕРїР°Р»Рё С‚Рѕ СЂРѕР±РѕС‚ РїРµСЂРµРєР»СЋС‡Р°РµС‚СЃСЏ РЅР° РЅР°СЃ.
             CMatrixRobotAI * robot=(CMatrixRobotAI *)hit;
 
             if(robot!=this && robot->GetSide()!=GetSide() && !robot->m_Environment.SearchEnemy(this)) robot->m_Environment.AddToList(this);
@@ -4491,7 +4491,7 @@ void CMatrixRobotAI::GatherInfo(int type)
     DCP();
         if(this!=obj && obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->GetSide()==GetSide()) {
     DCP();
-            if(obj->AsRobot()->m_GroupLogic==m_GroupLogic) { // Если водной группе
+            if(obj->AsRobot()->m_GroupLogic==m_GroupLogic) { // Р•СЃР»Рё РІРѕРґРЅРѕР№ РіСЂСѓРїРїРµ
     DCP();
                 CEnemy * enemie = obj->AsRobot()->m_Environment.m_FirstEnemy;
                 while(enemie){
@@ -4501,7 +4501,7 @@ void CMatrixRobotAI::GatherInfo(int type)
                     }
                     enemie=enemie->m_NextEnemy;
                 }
-            } else if(obj->AsRobot()->GetTeam()==GetTeam() && obj->AsRobot()->GetRegion()==r ) { // Если в одной команде и в одном регионе
+            } else if(obj->AsRobot()->GetTeam()==GetTeam() && obj->AsRobot()->GetRegion()==r ) { // Р•СЃР»Рё РІ РѕРґРЅРѕР№ РєРѕРјР°РЅРґРµ Рё РІ РѕРґРЅРѕРј СЂРµРіРёРѕРЅРµ
             CEnemy * enemie = obj->AsRobot()->m_Environment.m_FirstEnemy;
             while(enemie){
     DCP();
@@ -5308,7 +5308,7 @@ bool CMatrixRobotAI::IsSelected()
     return false;
 }
 
-void CMatrixRobotAI::CalcStrength()                                 // Расчитываем силу робота
+void CMatrixRobotAI::CalcStrength()                                 // Р Р°СЃС‡РёС‚С‹РІР°РµРј СЃРёР»Сѓ СЂРѕР±РѕС‚Р°
 {
     m_Strength=0;
 

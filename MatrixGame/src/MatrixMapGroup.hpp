@@ -124,7 +124,7 @@ class CMatrixMapGroup : public CMain
     CMatrixShadowProj **m_Shadows;
     int                 m_ShadowsCnt;
 
-    float           m_CamDistSq;    // квадрат растояния до камеры. вычисляется только в графическом такте.
+    float           m_CamDistSq;    // РєРІР°РґСЂР°С‚ СЂР°СЃС‚РѕСЏРЅРёСЏ РґРѕ РєР°РјРµСЂС‹. РІС‹С‡РёСЃР»СЏРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ РіСЂР°С„РёС‡РµСЃРєРѕРј С‚Р°РєС‚Рµ.
 
 
     SObjectCore     *m_RenderShadowObject;

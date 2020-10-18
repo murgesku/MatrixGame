@@ -748,7 +748,7 @@ void CMatrixEffectExplosion::Takt(float step)
         {
             if (deb->light.effect == NULL || deb->fire.effect == NULL)
             {
-                // ýôôåêò ñêîí÷àëñÿ.
+                // ÑÑ„Ñ„ÐµÐºÑ‚ ÑÐºÐ¾Ð½Ñ‡Ð°Ð»ÑÑ.
                 deb->ttl = 1;
                 continue;
             }

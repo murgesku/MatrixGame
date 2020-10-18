@@ -78,8 +78,8 @@ struct SSpecialBot {
     static void LoadAIRobotType(CBlockPar & bp);
     static void ClearAIRobotType(void);
 
-    void CalcStrength(void);                                 // Расчитываем силу робота
-    float DifWeapon(SSpecialBot & other);                    //  0..1 на сколько отличается оружие у роботов
+    void CalcStrength(void);                                 // Р Р°СЃС‡РёС‚С‹РІР°РµРј СЃРёР»Сѓ СЂРѕР±РѕС‚Р°
+    float DifWeapon(SSpecialBot & other);                    //  0..1 РЅР° СЃРєРѕР»СЊРєРѕ РѕС‚Р»РёС‡Р°РµС‚СЃСЏ РѕСЂСѓР¶РёРµ Сѓ СЂРѕР±РѕС‚РѕРІ
 
     bool BuildFromPar(const CWStr & parname, int parval, bool with_hp=false);
 

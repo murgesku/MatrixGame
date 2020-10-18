@@ -174,7 +174,7 @@ bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 & s
     d = (b*b) - (4.0f*c);
     if (d<0)
     {
-        //íåò ïåðåñå÷åíèÿ
+        //Ð½ÐµÑ‚ Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ
         return false;
     }
 
@@ -182,7 +182,7 @@ bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 & s
 
     float t1,t2;
 
-    //Âû÷èñÿåì t1 è t2 (Ýòî äëèíà ëó÷à èç íà÷àëüíîé òî÷êè
+    //Ð’Ñ‹Ñ‡Ð¸ÑÑÐµÐ¼ t1 Ð¸ t2 (Ð­Ñ‚Ð¾ Ð´Ð»Ð¸Ð½Ð° Ð»ÑƒÑ‡Ð° Ð¸Ð· Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ñ‚Ð¾Ñ‡ÐºÐ¸
     t1 = ( d - b ) * 0.5f ;
     t2 = ( - d - b ) * 0.5f;
 
@@ -221,13 +221,13 @@ bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 & s
     d = (b*b) - (4.0f*c);
     if (d<0)
     {
-        //íåò ïåðåñå÷åíèÿ
+        //Ð½ÐµÑ‚ Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ
         return false;
     }
 
     d = float(sqrt(d));
 
-    //Âû÷èñÿåì t1 è t2 (Ýòî äëèíà ëó÷à èç íà÷àëüíîé òî÷êè
+    //Ð’Ñ‹Ñ‡Ð¸ÑÑÐµÐ¼ t1 Ð¸ t2 (Ð­Ñ‚Ð¾ Ð´Ð»Ð¸Ð½Ð° Ð»ÑƒÑ‡Ð° Ð¸Ð· Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ñ‚Ð¾Ñ‡ÐºÐ¸
     t1 = ( - b - d) * 0.5f ;
     float t2 = ( - b + d) * 0.5f;
 

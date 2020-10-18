@@ -9,13 +9,13 @@
 //#include "3g.hpp"
 #include "Cache.hpp"
 
-//#define TF_NORMAL	SETBIT(0)		// У текстуры есть пиксели без alpha и прозрачности
-//#define TF_TRANS	SETBIT(1)		// У текстуры есть прозрачные пиксели
-//#define TF_ALPHA	SETBIT(2)		// У текстуры есть alpha пиксели
-#define TF_NOMIPMAP	SETBIT(3)		// Если этот флаг стоит, то мипмэпы не будут генериться
+//#define TF_NORMAL	SETBIT(0)		// РЈ С‚РµРєСЃС‚СѓСЂС‹ РµСЃС‚СЊ РїРёРєСЃРµР»Рё Р±РµР· alpha Рё РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚Рё
+//#define TF_TRANS	SETBIT(1)		// РЈ С‚РµРєСЃС‚СѓСЂС‹ РµСЃС‚СЊ РїСЂРѕР·СЂР°С‡РЅС‹Рµ РїРёРєСЃРµР»Рё
+//#define TF_ALPHA	SETBIT(2)		// РЈ С‚РµРєСЃС‚СѓСЂС‹ РµСЃС‚СЊ alpha РїРёРєСЃРµР»Рё
+#define TF_NOMIPMAP	SETBIT(3)		// Р•СЃР»Рё СЌС‚РѕС‚ С„Р»Р°Рі СЃС‚РѕРёС‚, С‚Рѕ РјРёРїРјСЌРїС‹ РЅРµ Р±СѓРґСѓС‚ РіРµРЅРµСЂРёС‚СЊСЃСЏ
 
-#define TF_ALPHATEST    SETBIT(4)       // При наложении текстуры включить Alpha Test
-#define TF_ALPHABLEND   SETBIT(5)       // При наложении текстуры включить Alpha Blend
+#define TF_ALPHATEST    SETBIT(4)       // РџСЂРё РЅР°Р»РѕР¶РµРЅРёРё С‚РµРєСЃС‚СѓСЂС‹ РІРєР»СЋС‡РёС‚СЊ Alpha Test
+#define TF_ALPHABLEND   SETBIT(5)       // РџСЂРё РЅР°Р»РѕР¶РµРЅРёРё С‚РµРєСЃС‚СѓСЂС‹ РІРєР»СЋС‡РёС‚СЊ Alpha Blend
 
 #define TF_LOST         SETBIT(6)       // texture lost. m_Tex is SM texture
 #define TF_COMPRESSED   SETBIT(7)

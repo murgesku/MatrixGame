@@ -879,7 +879,7 @@ void CMatrixRoadNetwork::CalcZoneColor()
 
     int i,t,u;
 
-    // Назначить цвета для зон.
+    // РќР°Р·РЅР°С‡РёС‚СЊ С†РІРµС‚Р° РґР»СЏ Р·РѕРЅ.
     const int colorscnt=5;
 //  DWORD colors[colorscnt]={0x8000ff00,0x8000ff40,0x8000ff80,0x8000ffC0,0x8000c000,0x8000c040,0x8000c080,0x8000c0C0,0x80008000,0x80008040,0x80008080,0x800080C0};
     DWORD colors[colorscnt+1]={0x8000ff00,0x80ffff00,0x8000ff80,0x8080ff00,0x8000ffff,0x800000ff};
@@ -1485,7 +1485,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
 //DWORD colors[colorscnt]={0xff00ff00,0xffffff00,0xff00ff80,0xff80ff00,0xff00ffff,0xff0000ff,0xff0080ff};
 
 //HelperDestroyByGroup(2);
-    // Находим границы
+    // РќР°С…РѕРґРёРј РіСЂР°РЅРёС†С‹
     for(i=0;i<m_ZoneCnt;i++) {
         if(m_Zone[i].m_Road) continue;
         for(u=0;u<m_Zone[i].m_NearZoneCnt;u++) {
@@ -1503,7 +1503,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
         }
     }
 
-    // Растем
+    // Р Р°СЃС‚РµРј
     bool findok=true;
     int level=1;
     while(findok) {
@@ -1538,7 +1538,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
 
                         ap[ap_cnt].path=(int *)HAllocClearEx(ap[ap_cnt].path,(zt[i].level2*2+4)*sizeof(int),m_Heap);
 
-                        // Поиск первого пути
+                        // РџРѕРёСЃРє РїРµСЂРІРѕРіРѕ РїСѓС‚Рё
                         int len=MRN_CAR_BuildPath(this,zt,zt[i].road,ap[ap_cnt].path,i);
                         for(t=0;t<(len>>1);t++) {
                             int swap=ap[ap_cnt].path[t];
@@ -1546,7 +1546,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
                             ap[ap_cnt].path[len-t-1]=swap;
                         }
 
-                        // Поиск второго пути
+                        // РџРѕРёСЃРє РІС‚РѕСЂРѕРіРѕ РїСѓС‚Рё
                         ap[ap_cnt].len=len-1+MRN_CAR_BuildPath(this,zt,zt[m_Zone[i].m_NearZone[u]].road,ap[ap_cnt].path+len-1,i);
 
                         ap_cnt++;
@@ -1567,7 +1567,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
         level++;
     }
 
-    // Расчитываем дальность
+    // Р Р°СЃС‡РёС‚С‹РІР°РµРј РґР°Р»СЊРЅРѕСЃС‚СЊ
     for(i=0;i<ap_cnt;i++) {
         ap[i].dist=0;
         for(u=1;u<ap[i].len;u++) {
@@ -1575,14 +1575,14 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
         }
     }
 
-    // Сортируем по дальности
+    // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ РґР°Р»СЊРЅРѕСЃС‚Рё
     for(i=0;i<ap_cnt-2;i++) {
         for(u=i+1;u<ap_cnt;u++) {
             if(ap[i].dist>ap[u].dist) { SAddPath_CAR t=ap[i]; ap[i]=ap[u]; ap[u]=t; }
         }
     }
 
-    // Удаляем лишние если начало и конец одинаковые
+    // РЈРґР°Р»СЏРµРј Р»РёС€РЅРёРµ РµСЃР»Рё РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РѕРґРёРЅР°РєРѕРІС‹Рµ
     int distdel=16;
     int distdel2=distdel*distdel;
     for(i=0;i<ap_cnt;i++) {
@@ -1605,7 +1605,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
         }
     }
 
-    // Удаляем если дистанция между начало и концом по основной дороге маленькая
+    // РЈРґР°Р»СЏРµРј РµСЃР»Рё РґРёСЃС‚Р°РЅС†РёСЏ РјРµР¶РґСѓ РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅС†РѕРј РїРѕ РѕСЃРЅРѕРІРЅРѕР№ РґРѕСЂРѕРіРµ РјР°Р»РµРЅСЊРєР°СЏ
     int * zpath=(int *)HAlloc(m_ZoneCnt*sizeof(int),m_Heap);
     for(i=0;i<ap_cnt;i++) {
         if(ap[i].len<2) continue;
@@ -1616,7 +1616,7 @@ void CMatrixRoadNetwork::CreateAdditionalRoad()
     }
     HFree(zpath,m_Heap);
 
-    // Создаем дороги
+    // РЎРѕР·РґР°РµРј РґРѕСЂРѕРіРё
     for(i=0;i<ap_cnt;i++) {
         if(ap[i].len<2) continue;
         CreateCrotchAndRoadByPath(ap[i].path,ap[i].len);
@@ -1687,7 +1687,7 @@ bool CMatrixRoadNetwork::IsValidate(bool exception)
 
     for(int i=0;i<m_ZoneCnt;i++) m_Zone[i].m_FPLevel=0;
 
-    // Розвилки должны иметь правельные не нулевые указатели
+    // Р РѕР·РІРёР»РєРё РґРѕР»Р¶РЅС‹ РёРјРµС‚СЊ РїСЂР°РІРµР»СЊРЅС‹Рµ РЅРµ РЅСѓР»РµРІС‹Рµ СѓРєР°Р·Р°С‚РµР»Рё
     CMatrixCrotch * crotch=m_CrotchFirst;
     while(crotch) {
         for(int i=0;i<crotch->m_RoadCnt;i++) {
@@ -1703,7 +1703,7 @@ bool CMatrixRoadNetwork::IsValidate(bool exception)
         crotch=crotch->m_Next;
     }
 
-    // На одной зоне не должнобыть более одной развилки
+    // РќР° РѕРґРЅРѕР№ Р·РѕРЅРµ РЅРµ РґРѕР»Р¶РЅРѕР±С‹С‚СЊ Р±РѕР»РµРµ РѕРґРЅРѕР№ СЂР°Р·РІРёР»РєРё
     for(int i=0;i<m_ZoneCnt;i++) {
         if(m_Zone[i].m_FPLevel>1) {
             if(exception) ERROR_E; else return false; 
@@ -1711,7 +1711,7 @@ bool CMatrixRoadNetwork::IsValidate(bool exception)
         m_Zone[i].m_FPLevel=0;
     }
 
-    // Дороги должны иметь правельные не нулевые указатели
+    // Р”РѕСЂРѕРіРё РґРѕР»Р¶РЅС‹ РёРјРµС‚СЊ РїСЂР°РІРµР»СЊРЅС‹Рµ РЅРµ РЅСѓР»РµРІС‹Рµ СѓРєР°Р·Р°С‚РµР»Рё
     CMatrixRoad * road=m_RoadFirst;
     while(road) {
         if(!IsCrotchExist(road->m_Start)) {
@@ -1730,7 +1730,7 @@ bool CMatrixRoadNetwork::IsValidate(bool exception)
         road=road->m_Next;
     }
 
-    // На одной зоне вне разилок не должнобыть более одной дороги
+    // РќР° РѕРґРЅРѕР№ Р·РѕРЅРµ РІРЅРµ СЂР°Р·РёР»РѕРє РЅРµ РґРѕР»Р¶РЅРѕР±С‹С‚СЊ Р±РѕР»РµРµ РѕРґРЅРѕР№ РґРѕСЂРѕРіРё
     for(int i=0;i<m_ZoneCnt;i++) {
         if(!FindCrotchByZone(i) && m_Zone[i].m_FPLevel>1) {
             if(exception) ERROR_E; else return false; 
@@ -1849,7 +1849,7 @@ CMatrixRoadRoute * CMatrixRoadNetwork::GetRoute(CMatrixCrotch * cstart,CMatrixCr
 
 void CMatrixRoadNetwork::FindPathFromCrotchToRegion(byte mm,CMatrixCrotch * cstart,int region,CMatrixRoadRoute * rr,bool test)
 {
-    // cstart в rr не добовляется
+    // cstart РІ rr РЅРµ РґРѕР±РѕРІР»СЏРµС‚СЃСЏ
     int i;
     if(cstart->m_Region==region) return;
 
@@ -1880,8 +1880,8 @@ void CMatrixRoadNetwork::FindPathFromCrotchToRegion(byte mm,CMatrixCrotch * csta
         for(i=0;i<crotch->m_RoadCnt;i++) {
             crotch2=crotch->m_Road[i]->GetOtherCrotch(crotch);
             if(crotch2->m_Data) continue;
-                if(type==0 && crotch2->m_Region!=cstart->m_Region && crotch2->m_Region!=region && crotch2->m_Region>=0) continue; // В другие регионы не заглядываем
-                if((type==0 || type==1) && crotch->m_Road[i]->m_Move & mm) continue; // Если хоть один робот не проходит то пропускаем.
+                if(type==0 && crotch2->m_Region!=cstart->m_Region && crotch2->m_Region!=region && crotch2->m_Region>=0) continue; // Р’ РґСЂСѓРіРёРµ СЂРµРіРёРѕРЅС‹ РЅРµ Р·Р°РіР»СЏРґС‹РІР°РµРј
+                if((type==0 || type==1) && crotch->m_Road[i]->m_Move & mm) continue; // Р•СЃР»Рё С…РѕС‚СЊ РѕРґРёРЅ СЂРѕР±РѕС‚ РЅРµ РїСЂРѕС…РѕРґРёС‚ С‚Рѕ РїСЂРѕРїСѓСЃРєР°РµРј.
 
 #if (defined _DEBUG) &&  !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
 if(test && !g_TestLocal) {
@@ -2108,10 +2108,10 @@ void CMatrixRoadNetwork::CalcNearRegion(int no)
             crotch2=crotch->m_Road[i]->GetOtherCrotch(crotch);
             if(crotch2->m_Data & 0x20000000) continue;
 
-            if(crotch2->m_Data>=0x10000000) { // не кому не принадлежит
+            if(crotch2->m_Data>=0x10000000) { // РЅРµ РєРѕРјСѓ РЅРµ РїСЂРёРЅР°РґР»РµР¶РёС‚
                 cl[clcnt]=crotch2;
                 clcnt++;
-            } else if(crotch2->m_Data!=no) { // Принодлежит другому региону
+            } else if(crotch2->m_Data!=no) { // РџСЂРёРЅРѕРґР»РµР¶РёС‚ РґСЂСѓРіРѕРјСѓ СЂРµРіРёРѕРЅСѓ
                 for(u=0;u<rlcnt;u++) if(rl[u]==crotch2->m_Data) break;
                 if(u>=rlcnt) {
                     rl[rlcnt]=crotch2->m_Data;
@@ -2122,7 +2122,7 @@ void CMatrixRoadNetwork::CalcNearRegion(int no)
         }
     }
 
-    // Сортируем по дальности
+    // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ РґР°Р»СЊРЅРѕСЃС‚Рё
     for(i=0;i<rlcnt-1;i++) {
         for(u=i+1;u<rlcnt;u++) {
             if(region->m_Center.Dist2(GetRegion(rl[i])->m_Center)>region->m_Center.Dist2(GetRegion(rl[u])->m_Center)) {
@@ -2131,7 +2131,7 @@ void CMatrixRoadNetwork::CalcNearRegion(int no)
         }
     }
 
-    // Сохраняем
+    // РЎРѕС…СЂР°РЅСЏРµРј
     for(i=0;i<16 && i<rlcnt;i++) {
         region->m_Near[i]=rl[i];
         region->m_NearCnt++;
@@ -2216,17 +2216,17 @@ int CMatrixRoadNetwork::FindNerestRegionByRadius(const CPoint & tp, int curregio
     int i,r;
 
     if(curregion>=0) {
-        // Проверяем текущий регион
+        // РџСЂРѕРІРµСЂСЏРµРј С‚РµРєСѓС‰РёР№ СЂРµРіРёРѕРЅ
         if(POW2(m_Region[curregion].m_RadiusPlace)>=m_Region[curregion].m_Center.Dist2(tp)) return curregion;
 
-        // Проверяем ближайшие регионы
+        // РџСЂРѕРІРµСЂСЏРµРј Р±Р»РёР¶Р°Р№С€РёРµ СЂРµРіРёРѕРЅС‹
         for(i=0;i<m_Region[curregion].m_NearCnt;i++) {
             r=m_Region[curregion].m_Near[i];
             if(POW2(m_Region[r].m_RadiusPlace)>=m_Region[r].m_Center.Dist2(tp)) return r;
         }
     }
 
-    // Находим ближайший
+    // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РёР№
     int mindist=1000000000;
     r=-1;
     for(i=0;i<m_RegionCnt;i++) {

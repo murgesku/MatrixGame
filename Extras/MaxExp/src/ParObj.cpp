@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
 #include "iparamm2.h"
@@ -19,7 +18,7 @@ class ParObjMod : public Modifier {
         void DeleteThis()               { delete this; }
 		void GetClassName(TSTR& s)      { s = "EG.Exp.Obj"; }
 		virtual Class_ID ClassID()      { return PAROBJ_CLASS_ID; }		
-		RefTargetHandle Clone(RemapDir& remap = NoRemap());
+		RefTargetHandle Clone(RemapDir& remap = DefaultRemapDir());
 		TCHAR * GetObjectName()         { return "EG.Exp.Obj"; }
 		void BeginEditParams(IObjParam  *ip, ULONG flags,Animatable *prev);
 		void EndEditParams(IObjParam *ip,ULONG flags,Animatable *next);		
@@ -77,7 +76,7 @@ class ParObjDlgProc : public ParamMap2UserDlgProc {
         ParObjMod *ob;
 
         ParObjDlgProc(ParObjMod *o) { ob = o; }
-        BOOL DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+        INT_PTR DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             switch(msg) {
                 case WM_INITDIALOG: {
                     
@@ -218,7 +217,7 @@ IOResult ParObjMod::Save(ISave *isave)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 extern bool ExportObjGetProp(INode *node,
-                             Base::CWStr & group, int & export)
+                             Base::CWStr & group, int & exp)
 {
     Object * obj = node->GetObjectRef();
     if(obj && (obj->SuperClassID() == GEN_DERIVOB_CLASS_ID)) {
@@ -232,7 +231,7 @@ extern bool ExportObjGetProp(INode *node,
 
             group=((ParObjMod *)mod)->m_Group;
 
-            ((ParObjMod *)mod)->m_PBlock->GetValue(egpb_Export,0,export,FOREVER);
+            ((ParObjMod *)mod)->m_PBlock->GetValue(egpb_Export,0,exp,FOREVER);
 
             return true;
         }

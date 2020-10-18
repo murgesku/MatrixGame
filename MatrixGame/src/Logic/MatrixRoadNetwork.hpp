@@ -30,7 +30,7 @@ class CMatrixRoad : public Base::CMain {
 
         byte m_Move;
 
-        int m_Data;                 // Данные для расчета
+        int m_Data;                 // Р”Р°РЅРЅС‹Рµ РґР»СЏ СЂР°СЃС‡РµС‚Р°
     public:
         CMatrixRoad(void);
         ~CMatrixRoad();
@@ -74,12 +74,12 @@ class CMatrixCrotch : public Base::CMain {
         int m_RoadCnt;
         CMatrixRoad * m_Road[16];
 
-        int m_Island;               // Номер острова
-        int m_Region;               // Номер региона. -1 - не в регионе
-        int m_Data;                 // Данные для расчета
+        int m_Island;               // РќРѕРјРµСЂ РѕСЃС‚СЂРѕРІР°
+        int m_Region;               // РќРѕРјРµСЂ СЂРµРіРёРѕРЅР°. -1 - РЅРµ РІ СЂРµРіРёРѕРЅРµ
+        int m_Data;                 // Р”Р°РЅРЅС‹Рµ РґР»СЏ СЂР°СЃС‡РµС‚Р°
 
         bool m_Select;
-        bool m_Critical;            // Важная зона (рядом база, завод)
+        bool m_Critical;            // Р’Р°Р¶РЅР°СЏ Р·РѕРЅР° (СЂСЏРґРѕРј Р±Р°Р·Р°, Р·Р°РІРѕРґ)
 
     public:
         CMatrixCrotch(void);
@@ -92,22 +92,22 @@ class CMatrixCrotch : public Base::CMain {
 };
 
 struct SMatrixMapZone {
-	Base::CPoint m_Center;	            // Центр
-//	bool m_Critical;                // Важная зона (рядом база, завод)
-//    int m_Group;                  // Сгрупперованные зоны между узкими проходами
-//    int m_Island;                 // Остров
+	Base::CPoint m_Center;	            // Р¦РµРЅС‚СЂ
+//	bool m_Critical;                // Р’Р°Р¶РЅР°СЏ Р·РѕРЅР° (СЂСЏРґРѕРј Р±Р°Р·Р°, Р·Р°РІРѕРґ)
+//    int m_Group;                  // РЎРіСЂСѓРїРїРµСЂРѕРІР°РЅРЅС‹Рµ Р·РѕРЅС‹ РјРµР¶РґСѓ СѓР·РєРёРјРё РїСЂРѕС…РѕРґР°РјРё
+//    int m_Island;                 // РћСЃС‚СЂРѕРІ
 	int m_Size;					    // Cnt in unit
-	int m_Perim;                    // Периметр
+	int m_Perim;                    // РџРµСЂРёРјРµС‚СЂ
 	Base::CRect m_Rect;				    // Bound zone
-    byte m_Move;                    // (1-нельзя пройти) 1-Shasi1(Пневматика) 2-Shasi2(Колеса) 4-Shasi3(Гусеницы) 8-Shasi4(Подушка) 16-Shasi5(Крылья)
-    bool m_Road;                    // По этой зоне проходит дорога
-    bool m_Bottleneck;              // Узкое место для всех видов шаси
+    byte m_Move;                    // (1-РЅРµР»СЊР·СЏ РїСЂРѕР№С‚Рё) 1-Shasi1(РџРЅРµРІРјР°С‚РёРєР°) 2-Shasi2(РљРѕР»РµСЃР°) 4-Shasi3(Р“СѓСЃРµРЅРёС†С‹) 8-Shasi4(РџРѕРґСѓС€РєР°) 16-Shasi5(РљСЂС‹Р»СЊСЏ)
+    bool m_Road;                    // РџРѕ СЌС‚РѕР№ Р·РѕРЅРµ РїСЂРѕС…РѕРґРёС‚ РґРѕСЂРѕРіР°
+    bool m_Bottleneck;              // РЈР·РєРѕРµ РјРµСЃС‚Рѕ РґР»СЏ РІСЃРµС… РІРёРґРѕРІ С€Р°СЃРё
     bool m_Access;
     //byte dummy; // only for align
 
-	int m_NearZoneCnt;              // Кол-во ближних зон
-	int m_NearZone[64];             // Список ближних зон
-	int m_NearZoneConnectSize[64];  // Длина связи межу ближними зонами
+	int m_NearZoneCnt;              // РљРѕР»-РІРѕ Р±Р»РёР¶РЅРёС… Р·РѕРЅ
+	int m_NearZone[64];             // РЎРїРёСЃРѕРє Р±Р»РёР¶РЅРёС… Р·РѕРЅ
+	int m_NearZoneConnectSize[64];  // Р”Р»РёРЅР° СЃРІСЏР·Рё РјРµР¶Сѓ Р±Р»РёР¶РЅРёРјРё Р·РѕРЅР°РјРё
     byte m_NearZoneMove[64];
 
     byte m_PlaceCnt;
@@ -166,7 +166,7 @@ struct SMatrixPlace {
     byte m_Move;
     byte m_BorderLeft,m_BorderTop,m_BorderRight,m_BorderBottom,m_BorderCnt;
     byte m_EdgeLeft,m_EdgeTop,m_EdgeRight,m_EdgeBottom,m_EdgeCnt;
-    bool m_Blockade[3*3]; // Непроходимая стена относительно места
+    bool m_Blockade[3*3]; // РќРµРїСЂРѕС…РѕРґРёРјР°СЏ СЃС‚РµРЅР° РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РјРµСЃС‚Р°
 
     byte m_Cannon;
 
@@ -176,12 +176,12 @@ struct SMatrixPlace {
     int m_Near[16];
     byte m_NearMove[16];
 
-    // Нужны только в редакторе карт
+    // РќСѓР¶РЅС‹ С‚РѕР»СЊРєРѕ РІ СЂРµРґР°РєС‚РѕСЂРµ РєР°СЂС‚
     bool m_Empty;
     int m_EmptyNext;
     int m_Rank;
 
-    // Нужны только в игре
+    // РќСѓР¶РЅС‹ С‚РѕР»СЊРєРѕ РІ РёРіСЂРµ
     int m_Data;
     byte m_Underfire;
 };

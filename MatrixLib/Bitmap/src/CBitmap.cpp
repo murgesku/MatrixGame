@@ -180,9 +180,9 @@ void CBitmap::BitmapDuplicate(CBitmap & des)
 
 void BuildByMask(DWORD m,DWORD * s,DWORD * cb,DWORD * c)
 {
-	*s=0; // пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-	*cb=0;// пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
-	*c=0; // пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	*s=0; // Р±РёС‚ РґРѕ РЅР°С‡Р°Р»Р°
+	*cb=0;// Р±РёС‚ РІ С†РІРµС‚Рµ
+	*c=0; // РєРѕР»-РІРѕ С†РІРµС‚РѕРІ
 	if(m) {
 		for (; !(m & 1); (*s)++, m >>= 1);
 		for (; m & 1; (*cb)++, m >>= 1);
@@ -1280,7 +1280,7 @@ void CBitmap::MergeByMask(	const Base::CPoint & pdes,const Base::CPoint & size,
 				if(*m==0) *des=*sou2;
 				else if(*m==255) *des=*sou1;
 				else *des=   byte((DWORD(*sou1)*(DWORD(*m)<<8))>>16)
-							+byte((DWORD(*sou2)*(DWORD(255-*m)<<8))>>16); // не совсем точная формула =(
+							+byte((DWORD(*sou2)*(DWORD(255-*m)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 
 			}
 		}
@@ -1473,19 +1473,19 @@ void CBitmap::MergeWithAlphaPM(const Base::CPoint & pdes,const Base::CPoint & si
 			else if(alpha==255) { *(dword *)des=color; continue; }
 
 			color=   dword(*sou)
-						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 			if(color<255) *des=byte(color); else *des=255;
 			sou++; des++;
 			color=   dword(*sou)
-						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 			if(color<255) *des=byte(color); else *des=255;
 			sou++; des++;
 			color=   dword(*sou)
-						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+						+byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 			if(color<255) *des=byte(color); else *des=255;
 			sou++; des++;
 
-			*des+=byte(((255-*des)*(DWORD(alpha)<<8))>>16); // не совсем точная формула =(
+			*des+=byte(((255-*des)*(DWORD(alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 
 //			if(dword(*des)+dword(alpha)>255) *des=255;
 //			else *des+=alpha;
@@ -1541,7 +1541,7 @@ void CBitmap::MergeWithAlphaPM(const Base::CPoint & pdes,const Base::CPoint & si
             {
                 float A = alpha / 255.0f;
 
-			    //*des=   byte((DWORD(B)*(DWORD(alpha)<<8))>>16)+byte((DWORD(oB)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+			    //*des=   byte((DWORD(B)*(DWORD(alpha)<<8))>>16)+byte((DWORD(oB)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 
                 int oiB = Float2Int(float(B) + float(oB) * (1.0f - A));
                 int oiG = Float2Int(float(G) + float(oG) * (1.0f - A));
@@ -1554,10 +1554,10 @@ void CBitmap::MergeWithAlphaPM(const Base::CPoint & pdes,const Base::CPoint & si
                 
                 /*
                 *des=   byte((DWORD(*sou)*(DWORD(alpha)<<8))>>16)
-						    +byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+						    +byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 			    sou++; des++;
 			    *des=   byte((DWORD(*sou)*(DWORD(alpha)<<8))>>16)
-						    +byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // не совсем точная формула =(
+						    +byte((DWORD(*des)*(DWORD(255-alpha)<<8))>>16); // РЅРµ СЃРѕРІСЃРµРј С‚РѕС‡РЅР°СЏ С„РѕСЂРјСѓР»Р° =(
 			    sou++; des++;
 
 			    *des+=byte(((255-*des)*(DWORD(alpha)<<8))>>16);

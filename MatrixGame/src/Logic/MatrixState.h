@@ -12,7 +12,7 @@
 //{
 //    CMatrixLogicSlot*   m_ParentSlot;
 //public:
-//    //список правил
+//    //СЃРїРёСЃРѕРє РїСЂР°РІРёР»
 //    CMatrixRule*        m_FirstRule;
 //    CMatrixRule*        m_LastRule;
 //

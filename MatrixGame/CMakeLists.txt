@@ -4,6 +4,8 @@ else()
     add_executable(MatrixGame)
 endif()
 
+include_directories(AFTER ${DIRECTX9_INCLUDE_DIRS})
+
 macro(add_matrix_directory DIRECTORY)
     file(GLOB DIR_SOURCES ${DIRECTORY}/*.cpp ${DIRECTORY}/*.c)
     file(GLOB DIR_HEADERS ${DIRECTORY}/*.hpp ${DIRECTORY}/*.h)

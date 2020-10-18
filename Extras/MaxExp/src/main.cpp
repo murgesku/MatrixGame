@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
+#include "3dsmaxport.h"
 
 HINSTANCE hInstance;
 int controlsInit = FALSE;
@@ -10,15 +10,18 @@ static BOOL exportSelected;
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL,ULONG fdwReason,LPVOID lpvReserved) 
 {
-	hInstance = hinstDLL;
+    if (fdwReason == DLL_PROCESS_ATTACH)
+    {
+        hInstance = hinstDLL;
+        DisableThreadLibraryCalls(hInstance);
+    }
 
-	// Initialize the custom controls. This should be done only once.
-	if (!controlsInit) {
-		controlsInit = TRUE;
-		InitCustomControls(hInstance);
-		InitCommonControls();
-	}
-	
+    if (!controlsInit)
+    {
+        controlsInit = true;
+        InitCommonControls();
+    }
+
 	return (TRUE);
 }
 
@@ -37,7 +40,7 @@ __declspec( dllexport ) int LibNumberClasses()
 __declspec( dllexport ) ClassDesc* LibClassDesc(int i) 
 {
 	switch(i) {
-//		case 0: return GetEGExpDesc();
+		//case 0: return GetEGExpDesc();
         case 0: return GetParObjModClassDesc();
         case 1: return GetParGroupModClassDesc();
         case 2: return GetParCenterModClassDesc();
@@ -329,7 +332,7 @@ const TCHAR * EGExp::Ext(int n)
 {
 	switch(n) {
 	case 0:
-		return _T("vo");
+		return _T("VO");
 	}
 	return _T("");
 }
@@ -437,11 +440,11 @@ static INT_PTR CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 	ISpinnerControl  *spin;
 	HWND cw;
 
-	EGExp *exp = (EGExp*)GetWindowLongPtr(hWnd,GWLP_USERDATA); 
+	EGExp *exp = (EGExp*)GetWindowLongPtr(hWnd,GWLP_USERDATA);
 	switch (msg) {
 		case WM_INITDIALOG: {
 			exp = (EGExp*)lParam;
-			SetWindowLongPtr(hWnd,GWLP_USERDATA,lParam); 
+			SetWindowLongPtr(hWnd, GWLP_USERDATA, lParam);
 			CenterWindow(hWnd, GetParent(hWnd)); 
 
 			cw=GetDlgItem(hWnd, IDC_SELECTCFG);
@@ -451,8 +454,8 @@ static INT_PTR CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 			}
 
 			cw=GetDlgItem(hWnd, IDC_CFG);
-			SetWindowLongPtr(cw,GWLP_USERDATA,lParam);
-			exp->m_OldProc = (WNDPROC) SetWindowLong(cw, GWL_WNDPROC, (LONG) EditSubclassProc); 
+			SetWindowLongPtr(cw, GWLP_USERDATA, lParam);
+			exp->m_OldProc = (WNDPROC) SetWindowLongPtr(cw, GWLP_WNDPROC, (LONG) EditSubclassProc); 
 
 			SETTEXTEX ste; ste.codepage=1200; ste.flags=ST_DEFAULT;
 			Base::CBuf buf; exp->m_Cfg.SaveInText(buf); buf.Word(0);
@@ -473,7 +476,7 @@ static INT_PTR CALLBACK ExportDlgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 		}
 		case WM_DESTROY: {
 			cw=GetDlgItem(hWnd, IDC_CFG);
-			SetWindowLong(cw,GWL_WNDPROC,(LONG)exp->m_OldProc); 
+			SetWindowLongPtr(cw,GWLP_WNDPROC,(LONG)exp->m_OldProc); 
 		}
 
 		case CC_SPINNER_CHANGE:

@@ -32,8 +32,8 @@ void CMatrixCannon::FireHandler(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, D
 
     if (oc->m_Object && FLAG(flags,FEHF_DAMAGE_ROBOT))
     {
-        // попадание!
-        // обновим тайминг косой стрельбы
+        // РїРѕРїР°РґР°РЅРёРµ!
+        // РѕР±РЅРѕРІРёРј С‚Р°Р№РјРёРЅРі РєРѕСЃРѕР№ СЃС‚СЂРµР»СЊР±С‹
         oc->m_Object->AsCannon()->m_TimeFromFire = CANNON_TIME_FROM_FIRE;
     }
 
@@ -808,7 +808,7 @@ static bool FindTarget(const D3DXVECTOR3 & center, CMatrixMapStatic *ms, DWORD u
 
         if (cel == ms)
         {
-            // ландшафт не помеха. тогда может объект за зданием или за другой батвой?
+            // Р»Р°РЅРґС€Р°С„С‚ РЅРµ РїРѕРјРµС…Р°. С‚РѕРіРґР° РјРѕР¶РµС‚ РѕР±СЉРµРєС‚ Р·Р° Р·РґР°РЅРёРµРј РёР»Рё Р·Р° РґСЂСѓРіРѕР№ Р±Р°С‚РІРѕР№?
             cel = g_MatrixMap->Trace(NULL, center, ms->GetGeoCenter(), TRACE_BUILDING|TRACE_CANNON|TRACE_OBJECT, d->skip);
             if (cel == NULL)
             {
@@ -1009,7 +1009,7 @@ void CMatrixCannon::LogicTakt(int takt)
         m_FireNextThinkTime = g_MatrixMap->GetTime() + CANNON_FIRE_THINK_PERIOD;
     }
 
-    if (itstime) // время пить херши :)
+    if (itstime) // РІСЂРµРјСЏ РїРёС‚СЊ С…РµСЂС€Рё :)
     {
         // Seek new target
         // seek side target
@@ -1042,7 +1042,7 @@ void CMatrixCannon::LogicTakt(int takt)
 
         } else
         {
-            // цель не найдена (уехала далеко наверное)
+            // С†РµР»СЊ РЅРµ РЅР°Р№РґРµРЅР° (СѓРµС…Р°Р»Р° РґР°Р»РµРєРѕ РЅР°РІРµСЂРЅРѕРµ)
 
             if (m_TargetCore) m_TargetCore->Release();
             m_TargetCore = NULL;
@@ -1054,17 +1054,17 @@ void CMatrixCannon::LogicTakt(int takt)
     {
 
 no_target:
-        // цели нет. 
+        // С†РµР»Рё РЅРµС‚. 
 
         if (m_NullTargetTime > 0)
         {
-            // стрелять надо...
+            // СЃС‚СЂРµР»СЏС‚СЊ РЅР°РґРѕ...
 
-            // делаем вид, что стреляем мимо...
+            // РґРµР»Р°РµРј РІРёРґ, С‡С‚Рѕ СЃС‚СЂРµР»СЏРµРј РјРёРјРѕ...
             m_TimeFromFire -= takt;
             if (m_TimeFromFire < 0) m_TimeFromFire = 0;
 
-            // продолжаем стрельбу в течении m_NullTargetTime времени
+            // РїСЂРѕРґРѕР»Р¶Р°РµРј СЃС‚СЂРµР»СЊР±Сѓ РІ С‚РµС‡РµРЅРёРё m_NullTargetTime РІСЂРµРјРµРЅРё
             m_NullTargetTime -= takt;
             if (m_NullTargetTime <=0)
             {
@@ -1082,13 +1082,13 @@ no_target:
 
         } else
         {
-            // все, стрельба окончена. обновим тайминг косой стрельбы
+            // РІСЃРµ, СЃС‚СЂРµР»СЊР±Р° РѕРєРѕРЅС‡РµРЅР°. РѕР±РЅРѕРІРёРј С‚Р°Р№РјРёРЅРі РєРѕСЃРѕР№ СЃС‚СЂРµР»СЊР±С‹
             m_TimeFromFire = CANNON_TIME_FROM_FIRE;
             m_TargetDisp = D3DXVECTOR3(0,0,0);
 
         }
 
-        // отрабатываем логику оружия.
+        // РѕС‚СЂР°Р±Р°С‚С‹РІР°РµРј Р»РѕРіРёРєСѓ РѕСЂСѓР¶РёСЏ.
         bool firewas = false;
         for (int i=0; i<m_WeaponCnt; ++i) 
         {
@@ -1119,8 +1119,8 @@ no_target:
         return;
     } else
     {
-        // цель есть!!!
-        // доварачиваем дуло
+        // С†РµР»СЊ РµСЃС‚СЊ!!!
+        // РґРѕРІР°СЂР°С‡РёРІР°РµРј РґСѓР»Рѕ
 
         bool matchz =false;
         bool matchx =false;
@@ -1221,7 +1221,7 @@ no_target:
         RChange(MR_Matrix|MR_ShadowStencil|MR_ShadowProjTex);
         RNeed(MR_Matrix);
 
-        // доварачиваем оружие
+        // РґРѕРІР°СЂР°С‡РёРІР°РµРј РѕСЂСѓР¶РёРµ
 
         for (int i=0; i<m_WeaponCnt; ++i) 
         {
@@ -1231,11 +1231,11 @@ no_target:
             }
         }
 
-        // а проверм-ка, надо ли стрелять....
+        // Р° РїСЂРѕРІРµСЂРј-РєР°, РЅР°РґРѕ Р»Рё СЃС‚СЂРµР»СЏС‚СЊ....
 
         if (!g_Config.m_CannonsLogic)
         {
-             // логику вообще отрубили :(
+             // Р»РѕРіРёРєСѓ РІРѕРѕР±С‰Рµ РѕС‚СЂСѓР±РёР»Рё :(
 
             m_TargetCore->Release();
             m_TargetCore = NULL;
@@ -1243,26 +1243,26 @@ no_target:
             goto no_target;
         }
 
-        if (!itstime) goto no_target; // не время палить во все стороны :)
+        if (!itstime) goto no_target; // РЅРµ РІСЂРµРјСЏ РїР°Р»РёС‚СЊ РІРѕ РІСЃРµ СЃС‚РѕСЂРѕРЅС‹ :)
 
         if (!matchx || !matchz)
         {
-            // еще не навелись...
+            // РµС‰Рµ РЅРµ РЅР°РІРµР»РёСЃСЊ...
             goto no_target; 
         }
 
-        // проверка попадания цели в зону поражения
+        // РїСЂРѕРІРµСЂРєР° РїРѕРїР°РґР°РЅРёСЏ С†РµР»Рё РІ Р·РѕРЅСѓ РїРѕСЂР°Р¶РµРЅРёСЏ
 
         float dq = D3DXVec3LengthSq(&(m_TargetCore->m_GeoCenter - GetGeoCenter()));
         float ddq = m_Weapons[0]->GetWeaponDist();
         if (dq > POW2(ddq))
         {
-            // нет, не дострелим, ей богу не дострелим... 
+            // РЅРµС‚, РЅРµ РґРѕСЃС‚СЂРµР»РёРј, РµР№ Р±РѕРіСѓ РЅРµ РґРѕСЃС‚СЂРµР»РёРј... 
             goto no_target;
         }
 
 
-        // и все-таки еще разик проверим :)
+        // Рё РІСЃРµ-С‚Р°РєРё РµС‰Рµ СЂР°Р·РёРє РїСЂРѕРІРµСЂРёРј :)
 
         for (int i=0; i<m_WeaponCnt; ++i) 
         {
@@ -1274,7 +1274,7 @@ no_target:
                 float dist = DistOtrezokPoint(m_FireFrom[i], hp, m_TargetCore->m_GeoCenter);
                 if (dist > (m_TargetCore->m_Radius * 2))
                 {
-                    // так. все равно промажем.
+                    // С‚Р°Рє. РІСЃРµ СЂР°РІРЅРѕ РїСЂРѕРјР°Р¶РµРј.
                     goto no_target;
                 }
             }
@@ -1282,7 +1282,7 @@ no_target:
 
     }
 
-    // yo yo! цель в зоне обстрела!!! жмем на гашетку!
+    // yo yo! С†РµР»СЊ РІ Р·РѕРЅРµ РѕР±СЃС‚СЂРµР»Р°!!! Р¶РјРµРј РЅР° РіР°С€РµС‚РєСѓ!
 
 /*    if (m_TargetCore && m_TargetCore->m_Object && m_TargetCore->m_Object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
     {
@@ -1295,7 +1295,7 @@ no_target:
     }*/
 
 
-    m_NullTargetTime = CANNON_NULL_TARGET_TIME; // типа, чтобы стрелять еще после потери цели...
+    m_NullTargetTime = CANNON_NULL_TARGET_TIME; // С‚РёРїР°, С‡С‚РѕР±С‹ СЃС‚СЂРµР»СЏС‚СЊ РµС‰Рµ РїРѕСЃР»Рµ РїРѕС‚РµСЂРё С†РµР»Рё...
 
     for (int i=0; i<m_WeaponCnt; ++i) 
     {
@@ -1305,7 +1305,7 @@ no_target:
         }
     }
 
-    // и отрабатываем логику
+    // Рё РѕС‚СЂР°Р±Р°С‚С‹РІР°РµРј Р»РѕРіРёРєСѓ
     bool firewas = false;
     for (int i=0; i<m_WeaponCnt; ++i) 
     {
@@ -1336,8 +1336,8 @@ no_target:
     m_TimeFromFire -= takt;
     if (m_TimeFromFire <= 0)
     {
-        // стреляем мимо!
-        // корректируем дуло
+        // СЃС‚СЂРµР»СЏРµРј РјРёРјРѕ!
+        // РєРѕСЂСЂРµРєС‚РёСЂСѓРµРј РґСѓР»Рѕ
         m_TargetDisp = D3DXVECTOR3(FSRND(m_TargetCore->m_Radius*0.5f),FSRND(m_TargetCore->m_Radius*0.5f),FSRND(m_TargetCore->m_Radius*0.5f));
         m_TimeFromFire = CANNON_TIME_FROM_FIRE;
     }

@@ -29,26 +29,26 @@ class /* BITMAP_API */ CBitmap : public Base::CMain {
 	private:
 		Base::CHeap * m_Heap;
 
-		Base::CPoint m_Pos;				// Смещение изображения
-		Base::CPoint m_Size;				// Размер изображения
+		Base::CPoint m_Pos;				// РЎРјРµС‰РµРЅРёРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+		Base::CPoint m_Size;				// Р Р°Р·РјРµСЂ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 
 		int m_Format;				// BMF_*
-		int m_BytePP;				// Байт на пиксель
-		int m_BitPP;				// Бит на пиксель
-		dword m_MColor[4];			// Маска для каждой компоненты цвета
+		int m_BytePP;				// Р‘Р°Р№С‚ РЅР° РїРёРєСЃРµР»СЊ
+		int m_BitPP;				// Р‘РёС‚ РЅР° РїРёРєСЃРµР»СЊ
+		dword m_MColor[4];			// РњР°СЃРєР° РґР»СЏ РєР°Р¶РґРѕР№ РєРѕРјРїРѕРЅРµРЅС‚С‹ С†РІРµС‚Р°
 
-		void * m_Data;				// Изображение
-		int m_Pitch;				// Байт на одну строку
-		bool m_DataExt;				// True - внешние данные
+		void * m_Data;				// РР·РѕР±СЂР°Р¶РµРЅРёРµ
+		int m_Pitch;				// Р‘Р°Р№С‚ РЅР° РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ
+		bool m_DataExt;				// True - РІРЅРµС€РЅРёРµ РґР°РЅРЅС‹Рµ
 
-		void * m_AddData[4];		// Дополнительные данные к изображению
-		bool m_AddDataExt[4];		// True - Дополнительные данные во внешнем буфере
+		void * m_AddData[4];		// Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ Рє РёР·РѕР±СЂР°Р¶РµРЅРёСЋ
+		bool m_AddDataExt[4];		// True - Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ РІРѕ РІРЅРµС€РЅРµРј Р±СѓС„РµСЂРµ
 		int m_AddDataVal[4];		//
 
 		dword m_UserData;
 
-		HBITMAP m_WindowBitmap;		// Windows-кий bitmap
-		HDC m_WindowDC;				// Context windows-кого bitmap-а
+		HBITMAP m_WindowBitmap;		// Windows-РєРёР№ bitmap
+		HDC m_WindowDC;				// Context windows-РєРѕРіРѕ bitmap-Р°
 	public:
 		CBitmap(Base::CHeap * heap=NULL);
 		~CBitmap();
@@ -137,7 +137,7 @@ class /* BITMAP_API */ CBitmap : public Base::CMain {
             c = *(DWORD *)((BYTE *)m_Data + (y * m_Pitch + x * m_BytePP));
             if (m_Format==BMF_PALATE)
             {
-                return 0; // не работаем с палитровыми изображениями
+                return 0; // РЅРµ СЂР°Р±РѕС‚Р°РµРј СЃ РїР°Р»РёС‚СЂРѕРІС‹РјРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏРјРё
             }
             DWORD mask = 0xFF;
             if (m_BytePP == 2) mask = 0x0000FFFF;

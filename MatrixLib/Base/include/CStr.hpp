@@ -60,13 +60,13 @@ class BASE_API CStr : public CMain
 //		CStr(BYTE zn, CHeap * heap=NULL);
 		~CStr() { ClearFull(); }
 		
-		// Clear - Очищает строку
+		// Clear - РћС‡РёС‰Р°РµС‚ СЃС‚СЂРѕРєСѓ
 		void Clear(void);
 
-		// ClearFull - Очищает строку и удаляет буфер
+		// ClearFull - РћС‡РёС‰Р°РµС‚ СЃС‚СЂРѕРєСѓ Рё СѓРґР°Р»СЏРµС‚ Р±СѓС„РµСЂ
 		void ClearFull(void) { if(m_Str!=NULL) { HFree(m_Str,m_Heap); m_Str=NULL; } m_Len=m_MaxLen=0; }
 
-		void SetLen(int len); // Установить длину строки (Выделение памяти если нужно)
+		void SetLen(int len); // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РґР»РёРЅСѓ СЃС‚СЂРѕРєРё (Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РµСЃР»Рё РЅСѓР¶РЅРѕ)
         void SetZeroLenNoTream(void) {m_Len = 0; m_Str[0] = 0;};
 
 		void Set(const CStr & cstr);
@@ -106,17 +106,17 @@ class BASE_API CStr : public CMain
 		bool IsOnlyInt(void) const;
 		bool IsEmpty(void)	const					{ return m_Len<1; }
 
-		CStr & Trim(void);						// Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-		CStr & TrimFull(void);					// Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
-		void TabToSpace(void);					// Конвертит 0x9 в 0x20
+		CStr & Trim(void);						// РЈРґР°Р»СЏРµС‚ РІ РЅР°С‡Р°Р»Рµ Рё РІ РєРѕРЅС†Рµ СЃРёРјРІРѕР»С‹ 0x20,0x9,0x0d,0x0a
+		CStr & TrimFull(void);					// Trim() Рё РІ СЃРµСЂРµРґРёРЅРµ СЃС‚СЂРѕРєРё СѓРґРѕР»СЏРµС‚ РїРѕРІС‚РѕСЂСЏСЋС‰РёРµСЃСЏ 0x20,0x9
+		void TabToSpace(void);					// РљРѕРЅРІРµСЂС‚РёС‚ 0x9 РІ 0x20
 
-		void Del(int sme,int len); // Удалить символы
-        void Insert(int sme,const char*tstr, int slen); // Вставить символы
+		void Del(int sme,int len); // РЈРґР°Р»РёС‚СЊ СЃРёРјРІРѕР»С‹
+        void Insert(int sme,const char*tstr, int slen); // Р’СЃС‚Р°РІРёС‚СЊ СЃРёРјРІРѕР»С‹
         void Insert(int sme,const char*tstr) {Insert(sme,tstr,(int)strlen(tstr));};
         void Insert(int sme,const CStr & tstr) {Insert(sme,tstr.Get(), tstr.Len());};
-		void Replace(const CStr & substr,const CStr & strreplace); // Заменить часть строки ну другую
+		void Replace(const CStr & substr,const CStr & strreplace); // Р—Р°РјРµРЅРёС‚СЊ С‡Р°СЃС‚СЊ СЃС‚СЂРѕРєРё РЅСѓ РґСЂСѓРіСѓСЋ
 
-        int Find(const char * substr,int sublen, int sme=0) const; // Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
+        int Find(const char * substr,int sublen, int sme=0) const; // РџРѕРёСЃРє РїРѕРґСЃС‚СЂРѕРєРё. return = СЃРјРµС‰РµРЅРёРµ РѕС‚ РЅР°С‡Р°Р»Р°  -1 = РџРѕРґСЃС‚СЂРѕРєР° РЅРµ РЅР°Р№РґРµРЅР°
         int Find(const CStr & substr,int sme=0) const {return Find(substr.Get(), substr.Len(), sme);};
         int FindR(const char * substr, int sublen) const;
         int FindR(const char * substr) const {return FindR(substr, (int)strlen(substr));};

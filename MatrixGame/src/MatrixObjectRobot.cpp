@@ -285,7 +285,7 @@ float CMatrixRobot::Z_From_Pos(void)
 
         if (roboz < WATER_LEVEL - 100)
         {
-            // утонула? :(
+            // СѓС‚РѕРЅСѓР»Р°? :(
             MustDie();
         }
     } else
@@ -370,7 +370,7 @@ DCP();
 #ifdef _DEBUG
                 _asm int 3
 #endif
-                ERROR_S(L"Вылет!");
+                ERROR_S(L"Crash!");
             }
 #endif
             DCP();

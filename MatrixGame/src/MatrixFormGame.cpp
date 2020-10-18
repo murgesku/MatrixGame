@@ -1296,12 +1296,12 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             CMatrixRobotAI* robot = ps->GetArcadedObject()->AsRobot();
 
             if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BOOM]) & 0x8000)==0x8000)){
-                //"E" - Âçîðâàòü.
+                //"E" - Ð’Ð·Ð¾Ñ€Ð²Ð°Ñ‚ÑŒ.
                 robot->BigBoom(); 
                 return;
             }
             if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000)==0x8000)){
-                //"Esc", "Ïðîáåë","Enter" - Âîéòè è âûéòè èç ðîáîòà.
+                //"Esc", "ÐŸÑ€Ð¾Ð±ÐµÐ»","Enter" - Ð’Ð¾Ð¹Ñ‚Ð¸ Ð¸ Ð²Ñ‹Ð¹Ñ‚Ð¸ Ð¸Ð· Ñ€Ð¾Ð±Ð¾Ñ‚Ð°.
                 g_IFaceList->LiveRobot();
                 return;
             }
@@ -1309,18 +1309,18 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         {
             CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
             if(!FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE)/*!IS_PREORDERING_NOSELECT*/){
-                //Åñëè ìû íå â ðåæèìå ïðèêàçà
+                //Ð•ÑÐ»Ð¸ Ð¼Ñ‹ Ð½Ðµ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ Ð¿Ñ€Ð¸ÐºÐ°Ð·Ð°
 
                 if(ps->GetCurGroup() && (ps->m_CurrSel == ROBOT_SELECTED || ps->m_CurrSel == GROUP_SELECTED)){
-                    //Ñòðàòåãè÷åñêèé ðåæèì - âûáðàíà ãðóïïà
+                    //Ð¡Ñ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ Ñ€ÐµÐ¶Ð¸Ð¼ - Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð° Ð³Ñ€ÑƒÐ¿Ð¿Ð°
                     if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000)==0x8000)){
-                        //"Esc", "Ïðîáåë","Enter" - Âîéòè è âûéòè èç ðîáîòà.
+                        //"Esc", "ÐŸÑ€Ð¾Ð±ÐµÐ»","Enter" - Ð’Ð¾Ð¹Ñ‚Ð¸ Ð¸ Ð²Ñ‹Ð¹Ñ‚Ð¸ Ð¸Ð· Ñ€Ð¾Ð±Ð¾Ñ‚Ð°.
                         CMatrixMapStatic* obj = ps->GetCurGroup()->GetObjectByN(ps->GetCurSelNum());
                         ps->GetCurSelGroup()->RemoveAll();
                         ps->CreateGroupFromCurrent(obj);
                         g_IFaceList->EnterRobot(false);
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_ATTACK]) & 0x8000)==0x8000)){
-                        //a"U"to attack - Ïðîãðàììà àòàêè.
+                        //a"U"to attack - ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° Ð°Ñ‚Ð°ÐºÐ¸.
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON)){
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
@@ -1330,7 +1330,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             ps->PGOrderAutoAttack(ps->SelGroupToLogicGroup());
                         }
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_CAPTURE]) & 0x8000)==0x8000)){
-                        //"C"apture - Ïðîãðàììà çàõâàòà.
+                        //"C"apture - ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° Ð·Ð°Ñ…Ð²Ð°Ñ‚Ð°.
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON)){
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
@@ -1340,7 +1340,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             ps->PGOrderAutoCapture(ps->SelGroupToLogicGroup());
                         }
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_DEFEND]) & 0x8000)==0x8000)){
-                        //"D"efender - Ïðîãðàììà Îõðàíÿòü Protect
+                        //"D"efender - ÐŸÑ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° ÐžÑ…Ñ€Ð°Ð½ÑÑ‚ÑŒ Protect
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON)){
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
@@ -1350,27 +1350,27 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             ps->PGOrderAutoDefence(ps->SelGroupToLogicGroup());
                         }
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_MOVE]) & 0x8000)==0x8000)){
-                        //"M"ove - Äâèãàòüñÿ
+                        //"M"ove - Ð”Ð²Ð¸Ð³Ð°Ñ‚ÑŒÑÑ
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_STOP]) & 0x8000)==0x8000)){
-                        //"S"top - Ñòîÿòü
+                        //"S"top - Ð¡Ñ‚Ð¾ÑÑ‚ÑŒ
                         ps->PGOrderStop(ps->SelGroupToLogicGroup());
                         ps->SelectedGroupBreakOrders();
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CAPTURE]) & 0x8000)==0x8000)){
-                        //Ta"K"e - Çàõâàòèòü
+                        //Ta"K"e - Ð—Ð°Ñ…Ð²Ð°Ñ‚Ð¸Ñ‚ÑŒ
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_PATROL]) & 0x8000)==0x8000)){
-                        //"P"atrol - Ïàòðóëèðîâàòü
+                        //"P"atrol - ÐŸÐ°Ñ‚Ñ€ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_PATROL);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }else if(ps->GetCurGroup()->GetBombersCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_EXPLODE]) & 0x8000)==0x8000)){
-                        //"E"xplode - Âçîðâàòü
+                        //"E"xplode - Ð’Ð·Ð¾Ñ€Ð²Ð°Ñ‚ÑŒ
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }else if(ps->GetCurGroup()->GetRepairsCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_REPAIR]) & 0x8000)==0x8000)){
-                        //"R"epair - ×èíèòü
+                        //"R"epair - Ð§Ð¸Ð½Ð¸Ñ‚ÑŒ
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_REPAIR);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ATTACK]) & 0x8000)==0x8000)){
@@ -1379,17 +1379,17 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }
                 }else if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED){
-                    //Ñòðàòåãè÷åñêèé ðåæèì - âûáðàíà Áàçà\Çàâîä                    
+                    //Ð¡Ñ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ Ñ€ÐµÐ¶Ð¸Ð¼ - Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð° Ð‘Ð°Ð·Ð°\Ð—Ð°Ð²Ð¾Ð´                    
                     CMatrixBuilding* bld = (CMatrixBuilding*)ps->m_ActiveObject;
                     
                     if(bld->IsBase() &&  !ps->m_ConstructPanel->IsActive() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000)==0x8000)){
-                        //"B"ase - Âõîä â ïîñòðîéêó ðîáîòà
+                        //"B"ase - Ð’Ñ…Ð¾Ð´ Ð² Ð¿Ð¾ÑÑ‚Ñ€Ð¾Ð¹ÐºÑƒ Ñ€Ð¾Ð±Ð¾Ñ‚Ð°
                         g_IFaceList->m_RCountControl->Reset();
                         g_IFaceList->m_RCountControl->CheckUp();
                         ps->m_ConstructPanel->ActivateAndSelect();
 
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000)==0x8000)){
-                        //"T"urrel - Ïåðåõîä â ìåíþ âûáîðà òóðåëåé
+                        //"T"urrel - ÐŸÐµÑ€ÐµÑ…Ð¾Ð´ Ð² Ð¼ÐµÐ½ÑŽ Ð²Ñ‹Ð±Ð¾Ñ€Ð° Ñ‚ÑƒÑ€ÐµÐ»ÐµÐ¹
                         CPoint pl[MAX_PLACES];
                         bool cant_build_tu = false;
 
@@ -1416,7 +1416,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
 
                             }
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_HELP]) & 0x8000)==0x8000)){
-                        //"Í"elp - Âûçîâ ïîäêðåïëåíèÿ
+                        //"Ð"elp - Ð’Ñ‹Ð·Ð¾Ð² Ð¿Ð¾Ð´ÐºÑ€ÐµÐ¿Ð»ÐµÐ½Ð¸Ñ
                         bld->Maintenance();
                     }else if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->IsActive() && ps->m_ConstructPanel->m_FocusedElement){
                         int key = 0;
@@ -1493,28 +1493,28 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     }
                 }
             }else{
-                //Åñëè ìû â ðåæèìå ïðèêàçà èëè ïîñòðîéêè ïóøêè
+                //Ð•ÑÐ»Ð¸ Ð¼Ñ‹ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ Ð¿Ñ€Ð¸ÐºÐ°Ð·Ð° Ð¸Ð»Ð¸ Ð¿Ð¾ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸ Ð¿ÑƒÑˆÐºÐ¸
 
                 if(FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE) && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET) && ps->m_CurrentAction != BUILDING_TURRET){
                     //player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources)
-                    //Ìåíþ âûáîðà òóðåëåé:
+                    //ÐœÐµÐ½ÑŽ Ð²Ñ‹Ð±Ð¾Ñ€Ð° Ñ‚ÑƒÑ€ÐµÐ»ÐµÐ¹:
                     if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_CANNON]) & 0x8000)==0x8000)){
-                        //"C"annon - Òóðåëü
+                        //"C"annon - Ð¢ÑƒÑ€ÐµÐ»ÑŒ
                         g_IFaceList->BeginBuildTurret(1);
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_GUN]) & 0x8000)==0x8000)){
-                        //"G"un - Ïóøêà
+                        //"G"un - ÐŸÑƒÑˆÐºÐ°
                         g_IFaceList->BeginBuildTurret(2);
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_LASER]) & 0x8000)==0x8000)){
-                        //"L"azer - Ëàçåð
+                        //"L"azer - Ð›Ð°Ð·ÐµÑ€
                         g_IFaceList->BeginBuildTurret(3);
                     }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_ROCKET]) & 0x8000)==0x8000)){
-                        //"R"ocket - Ðàêåòíèöà
+                        //"R"ocket - Ð Ð°ÐºÐµÑ‚Ð½Ð¸Ñ†Ð°
                         g_IFaceList->BeginBuildTurret(4);
                     }
                 }
 
                 if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000)==0x8000)){
-                    //Êàíöåë
+                    //ÐšÐ°Ð½Ñ†ÐµÐ»
                     if(ps->m_CurrentAction == BUILDING_TURRET){
                         ps->m_CannonForBuild.Delete();
                         ps->m_CurrentAction = NOTHING_SPECIAL;
@@ -1522,12 +1522,12 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     g_IFaceList->ResetOrderingMode();
                 }
             }
-            //Îáùåå äëÿ ñòðàòåãè÷åñêîãî ðåæèìà
+            //ÐžÐ±Ñ‰ÐµÐµ Ð´Ð»Ñ ÑÑ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ‡ÐµÑÐºÐ¾Ð³Ð¾ Ñ€ÐµÐ¶Ð¸Ð¼Ð°
             if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMIN]) & 0x8000)==0x8000)){
-                //ïðèáëèçèòü êàðòó
+                //Ð¿Ñ€Ð¸Ð±Ð»Ð¸Ð·Ð¸Ñ‚ÑŒ ÐºÐ°Ñ€Ñ‚Ñƒ
                 g_MatrixMap->m_Minimap.ButtonZoomIn(NULL);
             }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMOUT]) & 0x8000)==0x8000)){
-                //îòäàëèòü êàðòó
+                //Ð¾Ñ‚Ð´Ð°Ð»Ð¸Ñ‚ÑŒ ÐºÐ°Ñ€Ñ‚Ñƒ
                 g_MatrixMap->m_Minimap.ButtonZoomOut(NULL);
             }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH1]) & 0x8000)==0x8000)){
                 //","

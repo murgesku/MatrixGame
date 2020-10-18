@@ -54,7 +54,7 @@ class CMatrixGroup;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //class CMatrixTactics: public CBaseTactics
 //{
-//    //Тип тактики
+//    //РўРёРї С‚Р°РєС‚РёРєРё
 //    TacticsType         m_Type;
 //    CMatrixMapStatic*   m_Target;
 //    int                 m_Region;
@@ -62,11 +62,11 @@ class CMatrixGroup;
 //
 //public:
 //    
-//    //список слотов с логикой
+//    //СЃРїРёСЃРѕРє СЃР»РѕС‚РѕРІ СЃ Р»РѕРіРёРєРѕР№
 //    CMatrixLogicSlot *m_FirstSlot;
 //    CMatrixLogicSlot *m_LastSlot;
 //
-//    //указатели на соседние элементы
+//    //СѓРєР°Р·Р°С‚РµР»Рё РЅР° СЃРѕСЃРµРґРЅРёРµ СЌР»РµРјРµРЅС‚С‹
 //    CMatrixTactics *m_PrevTactics;
 //    CMatrixTactics *m_NextTactics;
 //

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
 #include "iparamm2.h"
@@ -21,7 +20,7 @@ class ParGroupMod : public Modifier {
         void DeleteThis()               { delete this; }
 		void GetClassName(TSTR& s)      { s = "EG.Exp.Group"; }
 		virtual Class_ID ClassID()      { return PARGROUP_CLASS_ID; }		
-		RefTargetHandle Clone(RemapDir& remap = NoRemap());
+		RefTargetHandle Clone(RemapDir& remap = DefaultRemapDir());
 		TCHAR * GetObjectName()         { return "EG.Exp.Group"; }
 		void BeginEditParams(IObjParam  *ip, ULONG flags,Animatable *prev);
 		void EndEditParams(IObjParam *ip,ULONG flags,Animatable *next);		
@@ -97,7 +96,7 @@ class ParGroupDlgProc : public ParamMap2UserDlgProc {
         ParGroupMod *ob;
 
         ParGroupDlgProc(ParGroupMod *o) { ob = o; }
-        BOOL DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+        INT_PTR DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             if(msg==WM_COMMAND && LOWORD(wParam)==IDC_PARGROUP_MORE) {
 
                 DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_PARGROUP_EXT), GetCOREInterface()->GetMAXHWnd(), DlgExt, (LPARAM)ob);
@@ -375,7 +374,7 @@ extern bool ExportGroupGetName(Base::CWStr & tstr,int no,int & nocur,INode *node
             if(!idok) continue;
 
             if(no==nocur) {
-                TCHAR * ach;
+                const TCHAR * ach;
                 ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Name,0,ach,FOREVER);
                 tstr=Base::CWStr(Base::CStr(ach));
                 return true;
@@ -390,7 +389,7 @@ extern bool ExportGroupGetName(Base::CWStr & tstr,int no,int & nocur,INode *node
 }
 
 extern bool ExportGroupGetProp(int no,int & nocur,INode *node,
-                               Base::CWStr & name,int & export,Base::CWStr & file,bool & textureDefault,int & edgetype,double & edgefactor,Base::CWStr & anim)
+                               Base::CWStr & name,int & exp,Base::CWStr & file,bool & textureDefault,int & edgetype,double & edgefactor,Base::CWStr & anim)
 
 {
     if(node==NULL) { node=GetCOREInterface()->GetRootNode(); nocur=0; }
@@ -406,12 +405,12 @@ extern bool ExportGroupGetProp(int no,int & nocur,INode *node,
             if(!idok) continue;
 
             if(no==nocur) {
-                TCHAR * ach;
+                const TCHAR * ach;
 
                 ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Name,0,ach,FOREVER);
                 name=Base::CWStr(Base::CStr(ach));
 
-                ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Export,0,export,FOREVER);
+                ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Export,0,exp,FOREVER);
 
                 file=((ParGroupMod *)mod)->m_ExportFile;
 
@@ -433,7 +432,7 @@ extern bool ExportGroupGetProp(int no,int & nocur,INode *node,
     }
 
     for (int c = 0; c < node->NumberOfChildren(); c++) {
-        if(ExportGroupGetProp(no,nocur,node->GetChildNode(c),name,export,file,textureDefault,edgetype,edgefactor,anim)) return true;
+        if(ExportGroupGetProp(no,nocur,node->GetChildNode(c),name,exp,file,textureDefault,edgetype,edgefactor,anim)) return true;
 	}
     return false;
 }

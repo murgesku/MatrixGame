@@ -721,12 +721,12 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                                 }else if(t_code == L"iw4text_sNormal"){
                                     g_PopupWeaponNormal[4].text = text;
                                 }else if(t_code == L"iw5text_sNormal"){
-	                                //iw5text_sNormal=ìîðòèðà
+	                                //iw5text_sNormal=Ð¼Ð¾Ñ€Ñ‚Ð¸Ñ€Ð°
                                     g_PopupWeaponExtern[1].text = text;
                                 }else if(t_code == L"iw6text_sNormal"){
                                     g_PopupWeaponNormal[5].text = text;
                                 }else if(t_code == L"iw7text_sNormal"){
-	                                //iw7text_sNormal=áîìáà
+	                                //iw7text_sNormal=Ð±Ð¾Ð¼Ð±Ð°
                                     g_PopupWeaponExtern[2].text = text;
                                 }else if(t_code == L"iw8text_sNormal"){
                                     g_PopupWeaponNormal[6].text = text;
@@ -1780,7 +1780,7 @@ void CInterface::Init(void)
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }else if(pElement->m_strName == IF_RVALUE_LABEL){
-                    if(/*êîëè÷åñòâî ðîáîòîâ èçìåíèëîñü*/robots != player_side->GetSideRobots() || /*ìàêñèìàëüíîå êîëè÷åñòâî èçìåíèëîñü*/max_robots != player_side->GetMaxSideRobots()){
+                    if(/*ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ€Ð¾Ð±Ð¾Ñ‚Ð¾Ð² Ð¸Ð·Ð¼ÐµÐ½Ð¸Ð»Ð¾ÑÑŒ*/robots != player_side->GetSideRobots() || /*Ð¼Ð°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ð¾Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð¸Ð·Ð¼ÐµÐ½Ð¸Ð»Ð¾ÑÑŒ*/max_robots != player_side->GetMaxSideRobots()){
                         robots = player_side->GetSideRobots();
                         max_robots = player_side->GetMaxSideRobots();
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(robots);
@@ -2957,21 +2957,21 @@ void CIFaceList::LogicTakt(int ms)
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
     //Cursor logic
-    if(/*åñëè ìû â àðêàäíîì ðåæèìå*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot()){
-        if(/*åñëè êóðñîð íà èíòåðôåéñå*/g_IFaceList->m_InFocus == INTERFACE){
-            //óñòàíàâëèâàåì êóðñîð ARROW
+    if(/*ÐµÑÐ»Ð¸ Ð¼Ñ‹ Ð² Ð°Ñ€ÐºÐ°Ð´Ð½Ð¾Ð¼ Ñ€ÐµÐ¶Ð¸Ð¼Ðµ*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot()){
+        if(/*ÐµÑÐ»Ð¸ ÐºÑƒÑ€ÑÐ¾Ñ€ Ð½Ð° Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐµ*/g_IFaceList->m_InFocus == INTERFACE){
+            //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ ARROW
             g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
         }else{
-            if(/*åñëè ÷òîëèáî âðàæåñêîå ïîä êóðñîðîì*/g_MatrixMap->IsTraceNonPlayerObj()){
-                if(/*îðóæèå äîñòðåëèâàåò*/((CMatrixRobotAI*)ps->GetArcadedObject())->CheckFireDist(g_MatrixMap->m_TraceStopPos)){
-                    //óñòàíàâëèâàåì êóðñîð CROSS_RED
+            if(/*ÐµÑÐ»Ð¸ Ñ‡Ñ‚Ð¾Ð»Ð¸Ð±Ð¾ Ð²Ñ€Ð°Ð¶ÐµÑÐºÐ¾Ðµ Ð¿Ð¾Ð´ ÐºÑƒÑ€ÑÐ¾Ñ€Ð¾Ð¼*/g_MatrixMap->IsTraceNonPlayerObj()){
+                if(/*Ð¾Ñ€ÑƒÐ¶Ð¸Ðµ Ð´Ð¾ÑÑ‚Ñ€ÐµÐ»Ð¸Ð²Ð°ÐµÑ‚*/((CMatrixRobotAI*)ps->GetArcadedObject())->CheckFireDist(g_MatrixMap->m_TraceStopPos)){
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
                 }else{
-                    //óñòàíàâëèâàåì êóðñîð CROSS_YELLOW
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_YELLOW
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_YELLOW);
                 }
             }else{
-                //óñòàíàâëèâàåì êóðñîð CROSS_BLUE
+                //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_BLUE
                 g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
             }
         }
@@ -2981,29 +2981,29 @@ void CIFaceList::LogicTakt(int ms)
         if((mp.x >=0 && mp.x <g_ScreenX && mp.y >=0 && mp.y <g_ScreenY) && ((mp.x < MOUSE_BORDER) || (mp.x > (g_ScreenX - MOUSE_BORDER)) || (mp.y < MOUSE_BORDER) || (mp.y > (g_ScreenY - MOUSE_BORDER)) )){
             g_MatrixMap->m_Cursor.Select(CURSOR_STAR);
         }else{
-            if(/*ïðèêàç ÀÒÀÊÎÂÀÒÜ*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|PREORDER_BOMB)){
-                if(/*ïîä ïðèöåëîì íàõîäèòñÿ âðàæåñêèé îáúåêò*/g_MatrixMap->IsTraceNonPlayerObj()){
-                    //óñòàíàâëèâàåì êóðñîð CROSS_RED
+            if(/*Ð¿Ñ€Ð¸ÐºÐ°Ð· ÐÐ¢ÐÐšÐžÐ’ÐÐ¢Ð¬*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|PREORDER_BOMB)){
+                if(/*Ð¿Ð¾Ð´ Ð¿Ñ€Ð¸Ñ†ÐµÐ»Ð¾Ð¼ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ð²Ñ€Ð°Ð¶ÐµÑÐºÐ¸Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚*/g_MatrixMap->IsTraceNonPlayerObj()){
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
                 }else{
-                    //óñòàíàâëèâàåì êóðñîð CROSS_BLUE
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_BLUE
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
                 }
-            }else if(/*ïðèêàç çàõâàòûâàòü*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE)){
-                if(/*ïîä ïðèöåëîì íàõîäèòñÿ íå èãðîêîâñêîå çäàíèå*/IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj) && 
+            }else if(/*Ð¿Ñ€Ð¸ÐºÐ°Ð· Ð·Ð°Ñ…Ð²Ð°Ñ‚Ñ‹Ð²Ð°Ñ‚ÑŒ*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE)){
+                if(/*Ð¿Ð¾Ð´ Ð¿Ñ€Ð¸Ñ†ÐµÐ»Ð¾Ð¼ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ð½Ðµ Ð¸Ð³Ñ€Ð¾ÐºÐ¾Ð²ÑÐºÐ¾Ðµ Ð·Ð´Ð°Ð½Ð¸Ðµ*/IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj) && 
                     g_MatrixMap->m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING && 
                     g_MatrixMap->m_TraceStopObj->GetSide() != PLAYER_SIDE){
-                    //óñòàíàâëèâàåì êóðñîð CROSS_RED
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
                 }else{
-                    //óñòàíàâëèâàåì êóðñîð CROSS_BLUE
+                    //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_BLUE
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
                 }
-            }else if(/*ïðèêàç ïàòðóëü èëè èäòè*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE|PREORDER_PATROL|PREORDER_REPAIR)){
-                //óñòàíàâëèâàåì êóðñîð CROSS_BLUE
+            }else if(/*Ð¿Ñ€Ð¸ÐºÐ°Ð· Ð¿Ð°Ñ‚Ñ€ÑƒÐ»ÑŒ Ð¸Ð»Ð¸ Ð¸Ð´Ñ‚Ð¸*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE|PREORDER_PATROL|PREORDER_REPAIR)){
+                //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ CROSS_BLUE
                 g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
             }else{
-                //óñòàíàâëèâàåì êóðñîð ARROW
+                //ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÐºÑƒÑ€ÑÐ¾Ñ€ ARROW
                 g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
             }
         }

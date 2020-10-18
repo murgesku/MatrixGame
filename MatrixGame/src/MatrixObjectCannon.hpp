@@ -84,7 +84,7 @@ protected:
         CMatrixProgressBar m_PB;
         int         m_ShowHitpointTime;
         float       m_HitPoint;
-	    float       m_HitPointMax;  // Максимальное кол-во здоровья
+	    float       m_HitPointMax;  // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»-РІРѕ Р·РґРѕСЂРѕРІСЊСЏ
         union
         {
             float       m_MaxHitPointInversed; // for normalized calcs
@@ -101,7 +101,7 @@ public:
 		CMatrixBuilding *m_ParentBuilding;
         D3DXVECTOR2 m_Pos;
 
-        int m_Place;                    // Место, в котором установлена пушка. (Всегда должно быть инициализировано)
+        int m_Place;                    // РњРµСЃС‚Рѕ, РІ РєРѕС‚РѕСЂРѕРј СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РїСѓС€РєР°. (Р’СЃРµРіРґР° РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРѕ)
 private:
 		int m_Side;		// 1-8
 public:

@@ -32,7 +32,7 @@ enum EFileType
 };
 
 #define MAX_VIRTUAL_HANDLE_COUNT_BITS   4
-#define MAX_FILENAME_LENGTH         63 // Максимальная длина имени файла
+#define MAX_FILENAME_LENGTH         63 // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° РёРјРµРЅРё С„Р°Р№Р»Р°
 
 
 
@@ -41,39 +41,39 @@ enum EFileType
 
 struct SFileRec
 {
-    DWORD   m_Size;                 // Размер файла (+4) - это размер блока
-    DWORD   m_RealSize;             // Настоящий размер файла (не сжатого)
-    char    m_Name[MAX_FILENAME_LENGTH];      // Имя файла
-    char    m_RealName[MAX_FILENAME_LENGTH];  // Имя файла в файловой системе с учетом регистров
-    EFileType   m_Type;                 // Тип файла, на который указывает запись
-    EFileType   m_NType;                // Тип который должен быть присвоен файлу
-    DWORD   m_Free;                 // Свободна данная структура или занята
-    DWORD   m_Date;                 // Дата и время файла
-    DWORD   m_Offset;               // Смещение данных относительно начала файла
-    DWORD   m_Extra;                // Данные во время работы объекта
+    DWORD   m_Size;                 // Р Р°Р·РјРµСЂ С„Р°Р№Р»Р° (+4) - СЌС‚Рѕ СЂР°Р·РјРµСЂ Р±Р»РѕРєР°
+    DWORD   m_RealSize;             // РќР°СЃС‚РѕСЏС‰РёР№ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р° (РЅРµ СЃР¶Р°С‚РѕРіРѕ)
+    char    m_Name[MAX_FILENAME_LENGTH];      // РРјСЏ С„Р°Р№Р»Р°
+    char    m_RealName[MAX_FILENAME_LENGTH];  // РРјСЏ С„Р°Р№Р»Р° РІ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРµ СЃ СѓС‡РµС‚РѕРј СЂРµРіРёСЃС‚СЂРѕРІ
+    EFileType   m_Type;                 // РўРёРї С„Р°Р№Р»Р°, РЅР° РєРѕС‚РѕСЂС‹Р№ СѓРєР°Р·С‹РІР°РµС‚ Р·Р°РїРёСЃСЊ
+    EFileType   m_NType;                // РўРёРї РєРѕС‚РѕСЂС‹Р№ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїСЂРёСЃРІРѕРµРЅ С„Р°Р№Р»Сѓ
+    DWORD   m_Free;                 // РЎРІРѕР±РѕРґРЅР° РґР°РЅРЅР°СЏ СЃС‚СЂСѓРєС‚СѓСЂР° РёР»Рё Р·Р°РЅСЏС‚Р°
+    DWORD   m_Date;                 // Р”Р°С‚Р° Рё РІСЂРµРјСЏ С„Р°Р№Р»Р°
+    DWORD   m_Offset;               // РЎРјРµС‰РµРЅРёРµ РґР°РЅРЅС‹С… РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РЅР°С‡Р°Р»Р° С„Р°Р№Р»Р°
+    DWORD   m_Extra;                // Р”Р°РЅРЅС‹Рµ РІРѕ РІСЂРµРјСЏ СЂР°Р±РѕС‚С‹ РѕР±СЉРµРєС‚Р°
 };
 typedef SFileRec *PSFileRec;
 
 struct SFolderRec
 {
-    DWORD   m_Size;             // Размер всей директории
-    DWORD   m_Recnum;           // Количество записей в ней
-    DWORD   m_RecSize;          // Размер одной записи файла
+    DWORD   m_Size;             // Р Р°Р·РјРµСЂ РІСЃРµР№ РґРёСЂРµРєС‚РѕСЂРёРё
+    DWORD   m_Recnum;           // РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ РІ РЅРµР№
+    DWORD   m_RecSize;          // Р Р°Р·РјРµСЂ РѕРґРЅРѕР№ Р·Р°РїРёСЃРё С„Р°Р№Р»Р°
 };
 typedef SFolderRec *PSFolderRec;
 
 struct SFileHandleRec
 {
 
-    DWORD   m_Handle;       // Логический номер файла
-    DWORD   m_StartOffset;  // Смещение начала файла относительно начала пакетного файла
-    DWORD   m_Offset;       // Настоящее смещение
-    DWORD   m_Size;         // Размер файла
-    BYTE   *m_SouBuf;       // Буфер для чтения сжатых данных
-    BYTE   *m_DesBuf;       // Буфер для расжатых данных
-    int     m_Blocknumber;  // Номер блока в сжатом файле
-    bool    m_Free;         // Запись свободна
-    bool    m_Compressed;   // Является ли файл сжатым
+    DWORD   m_Handle;       // Р›РѕРіРёС‡РµСЃРєРёР№ РЅРѕРјРµСЂ С„Р°Р№Р»Р°
+    DWORD   m_StartOffset;  // РЎРјРµС‰РµРЅРёРµ РЅР°С‡Р°Р»Р° С„Р°Р№Р»Р° РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РЅР°С‡Р°Р»Р° РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°
+    DWORD   m_Offset;       // РќР°СЃС‚РѕСЏС‰РµРµ СЃРјРµС‰РµРЅРёРµ
+    DWORD   m_Size;         // Р Р°Р·РјРµСЂ С„Р°Р№Р»Р°
+    BYTE   *m_SouBuf;       // Р‘СѓС„РµСЂ РґР»СЏ С‡С‚РµРЅРёСЏ СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С…
+    BYTE   *m_DesBuf;       // Р‘СѓС„РµСЂ РґР»СЏ СЂР°СЃР¶Р°С‚С‹С… РґР°РЅРЅС‹С…
+    int     m_Blocknumber;  // РќРѕРјРµСЂ Р±Р»РѕРєР° РІ СЃР¶Р°С‚РѕРј С„Р°Р№Р»Рµ
+    bool    m_Free;         // Р—Р°РїРёСЃСЊ СЃРІРѕР±РѕРґРЅР°
+    bool    m_Compressed;   // РЇРІР»СЏРµС‚СЃСЏ Р»Рё С„Р°Р№Р» СЃР¶Р°С‚С‹Рј
     WORD    dummy00;    // align
 };
 
@@ -98,15 +98,15 @@ class CHsFolder : public CMain
 {
     CHeap       *m_Heap;
 
-    CStr        m_Name;             // Имя папки без учета регистров
-    CStr        m_RealName;         // Имя папки с учетом регистров
+    CStr        m_Name;             // РРјСЏ РїР°РїРєРё Р±РµР· СѓС‡РµС‚Р° СЂРµРіРёСЃС‚СЂРѕРІ
+    CStr        m_RealName;         // РРјСЏ РїР°РїРєРё СЃ СѓС‡РµС‚РѕРј СЂРµРіРёСЃС‚СЂРѕРІ
     SFolderRec  m_FolderRec;
     CHsFolder  *m_Parent;
-    SFileRec   *m_Files;            // Память, связанная с файлами
-    //bool        m_ToUpdate;         // Необходимо обновить информацию в пакетном файле
-    //bool        m_ToSave;           // Необходимо записать на новое место в пакетный файл
+    SFileRec   *m_Files;            // РџР°РјСЏС‚СЊ, СЃРІСЏР·Р°РЅРЅР°СЏ СЃ С„Р°Р№Р»Р°РјРё
+    //bool        m_ToUpdate;         // РќРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІРёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РІ РїР°РєРµС‚РЅРѕРј С„Р°Р№Р»Рµ
+    //bool        m_ToSave;           // РќРµРѕР±С…РѕРґРёРјРѕ Р·Р°РїРёСЃР°С‚СЊ РЅР° РЅРѕРІРѕРµ РјРµСЃС‚Рѕ РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»
 
-    SFileRec *  GetFileRec(int ind) const // Возвращает запись по номеру
+    SFileRec *  GetFileRec(int ind) const // Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РїРёСЃСЊ РїРѕ РЅРѕРјРµСЂСѓ
     {
         if (DWORD(ind)<m_FolderRec.m_Recnum)
         {
@@ -117,35 +117,35 @@ class CHsFolder : public CMain
 
 
     SFileRec *  GetFreeRec(void) const;
-    bool        AddFileEx(const CStr &name,DWORD date, DWORD size, EFileType ftype); // Добавляет файл в пакетный файл
+    bool        AddFileEx(const CStr &name,DWORD date, DWORD size, EFileType ftype); // Р”РѕР±Р°РІР»СЏРµС‚ С„Р°Р№Р» РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»
 public:
-    CHsFolder(const CStr &name, CHeap *heap);                    // Создает пустую папку, не пригодную к работе
-    CHsFolder(const CStr &name,CHsFolder *Parent, CHeap *heap);  // Создает пустую папку, не пригодную к работе
-    ~CHsFolder() {Clear();};                                     // Уничтожает все данные, связанные с объектом
+    CHsFolder(const CStr &name, CHeap *heap);                    // РЎРѕР·РґР°РµС‚ РїСѓСЃС‚СѓСЋ РїР°РїРєСѓ, РЅРµ РїСЂРёРіРѕРґРЅСѓСЋ Рє СЂР°Р±РѕС‚Рµ
+    CHsFolder(const CStr &name,CHsFolder *Parent, CHeap *heap);  // РЎРѕР·РґР°РµС‚ РїСѓСЃС‚СѓСЋ РїР°РїРєСѓ, РЅРµ РїСЂРёРіРѕРґРЅСѓСЋ Рє СЂР°Р±РѕС‚Рµ
+    ~CHsFolder() {Clear();};                                     // РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РІСЃРµ РґР°РЅРЅС‹Рµ, СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ РѕР±СЉРµРєС‚РѕРј
 
-    bool    ReadFolder(DWORD Handle, DWORD Offset); // Читает данные из пакетного файла
+    bool    ReadFolder(DWORD Handle, DWORD Offset); // Р§РёС‚Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°
     //void    AllocEmptyFolder(void);
 
-    void    Clear(void);                            // Очищает память и информацию о файлах
-    bool    FileExists(const CStr &name) const;     // Существует ли указанный файл
-    bool    PathExists(const CStr &name) const;     // Существует ли указанный путь
-    SFileRec*   GetFileRec(const CStr &name) const;       // Возвращает запись по имени файла
-    SFileRec*   GetFileRecEx(const CStr &name) const;     // Возвращает запись по пути файла
+    void    Clear(void);                            // РћС‡РёС‰Р°РµС‚ РїР°РјСЏС‚СЊ Рё РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„Р°Р№Р»Р°С…
+    bool    FileExists(const CStr &name) const;     // РЎСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ С„Р°Р№Р»
+    bool    PathExists(const CStr &name) const;     // РЎСѓС‰РµСЃС‚РІСѓРµС‚ Р»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ РїСѓС‚СЊ
+    SFileRec*   GetFileRec(const CStr &name) const;       // Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РїРёСЃСЊ РїРѕ РёРјРµРЅРё С„Р°Р№Р»Р°
+    SFileRec*   GetFileRecEx(const CStr &name) const;     // Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РїРёСЃСЊ РїРѕ РїСѓС‚Рё С„Р°Р№Р»Р°
     CHsFolder*  GetFolderEx(const CStr &path);
-    int         FileRecsNumber(void) const         // Возвращает количество записей в директории
+    int         FileRecsNumber(void) const         // Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ РІ РґРёСЂРµРєС‚РѕСЂРёРё
     {
         return m_FolderRec.m_Recnum;
     }
 
-    //bool        ReAllocFileRecs(int number);        // Изменяет количество записей в директории (только в сторону увеличения)
-    void        UpdateFileRec(void);                // Обновляет информацию во внутренней файловой системе
+    //bool        ReAllocFileRecs(int number);        // РР·РјРµРЅСЏРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ РІ РґРёСЂРµРєС‚РѕСЂРёРё (С‚РѕР»СЊРєРѕ РІ СЃС‚РѕСЂРѕРЅСѓ СѓРІРµР»РёС‡РµРЅРёСЏ)
+    void        UpdateFileRec(void);                // РћР±РЅРѕРІР»СЏРµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РІРѕ РІРЅСѓС‚СЂРµРЅРЅРµР№ С„Р°Р№Р»РѕРІРѕР№ СЃРёСЃС‚РµРјРµ
 
     SFolderRec*  GetFolderRec(void)
     {
         return &m_FolderRec;
     }
 
-        //*** Функции, используемые при упаковке в пакетный файл
+        //*** Р¤СѓРЅРєС†РёРё, РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СѓРїР°РєРѕРІРєРµ РІ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р»
 
     //bool    CreateFolder(const CStr &name);
     //bool    AddPath(const CStr &name);
@@ -179,7 +179,7 @@ public:
     //DWORD   Compress(DWORD SouHandle,DWORD Handle,DWORD Offset,int *PInt,const CStr &PStr);
     //void    CompressFolder(void);
 
-    //    //*** Функции, используемые при распаковке пакетного файла
+    //    //*** Р¤СѓРЅРєС†РёРё, РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СЂР°СЃРїР°РєРѕРІРєРµ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°
     //bool    UnpackFile(DWORD SouHandle,const CStr &name);
     //bool    UnpackCompressedFile(DWORD SouHandle,const CStr &name);
     //bool    UnpackFolder(const CStr &name);
@@ -187,7 +187,7 @@ public:
 
     void    ListFileNames(FILENAME_CALLBACK_FUNC Func);
 
-        //*** Функции, используемые при установке типа файла *****
+        //*** Р¤СѓРЅРєС†РёРё, РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ С‚РёРїР° С„Р°Р№Р»Р° *****
     //void    SetFileType(const CStr &name, EFileType NType);
     //void    SetFolderType(const CStr &name, EFileType NType);
 
@@ -195,32 +195,32 @@ public:
 };
 
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
-#define PFFLAG_EMPTY    SETBIT(0)       // Структура физически не связана ни с каким файлом
+#define PFFLAG_EMPTY    SETBIT(0)       // РЎС‚СЂСѓРєС‚СѓСЂР° С„РёР·РёС‡РµСЃРєРё РЅРµ СЃРІСЏР·Р°РЅР° РЅРё СЃ РєР°РєРёРј С„Р°Р№Р»РѕРј
 #endif
 
 class CPackFile : public CMain
 {
 public:
     CHeap          *m_Heap;
-    CWStr           m_FileName;                 // Имя пакетного файла
+    CWStr           m_FileName;                 // РРјСЏ РїР°РєРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°
 
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     DWORD           m_Flags;
 #endif
 
-        // Позволяет создавать виртуальные пакеты в памяти - не связаны с файлом
-    DWORD           m_Handle;                   // Файловый номер
-    CHsFolder      *m_RootFolder;               // Корневой каталог
+        // РџРѕР·РІРѕР»СЏРµС‚ СЃРѕР·РґР°РІР°С‚СЊ РІРёСЂС‚СѓР°Р»СЊРЅС‹Рµ РїР°РєРµС‚С‹ РІ РїР°РјСЏС‚Рё - РЅРµ СЃРІСЏР·Р°РЅС‹ СЃ С„Р°Р№Р»РѕРј
+    DWORD           m_Handle;                   // Р¤Р°Р№Р»РѕРІС‹Р№ РЅРѕРјРµСЂ
+    CHsFolder      *m_RootFolder;               // РљРѕСЂРЅРµРІРѕР№ РєР°С‚Р°Р»РѕРі
     SFileHandleRec  m_Handles[MAX_VIRTUAL_HANDLE_COUNT];
-    DWORD           m_RootOffset;               // Смещение корневого каталога относительно начала файла
-    //DWORD           m_WorkFileSize;             // Размер рабочего файла (не пакетного)
-    //DWORD           m_WorkFileOffset;           // Смещение рабочего файла
-    //DWORD           m_WorkFileStartOffset;      // Начальное смещение рабочего файла
-    //DWORD           m_ID;                       // Идентификационный номер пакета в группе.
+    DWORD           m_RootOffset;               // РЎРјРµС‰РµРЅРёРµ РєРѕСЂРЅРµРІРѕРіРѕ РєР°С‚Р°Р»РѕРіР° РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РЅР°С‡Р°Р»Р° С„Р°Р№Р»Р°
+    //DWORD           m_WorkFileSize;             // Р Р°Р·РјРµСЂ СЂР°Р±РѕС‡РµРіРѕ С„Р°Р№Р»Р° (РЅРµ РїР°РєРµС‚РЅРѕРіРѕ)
+    //DWORD           m_WorkFileOffset;           // РЎРјРµС‰РµРЅРёРµ СЂР°Р±РѕС‡РµРіРѕ С„Р°Р№Р»Р°
+    //DWORD           m_WorkFileStartOffset;      // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРјРµС‰РµРЅРёРµ СЂР°Р±РѕС‡РµРіРѕ С„Р°Р№Р»Р°
+    //DWORD           m_ID;                       // РРґРµРЅС‚РёС„РёРєР°С†РёРѕРЅРЅС‹Р№ РЅРѕРјРµСЂ РїР°РєРµС‚Р° РІ РіСЂСѓРїРїРµ.
     
     int             GetFreeHandle(void);
     
-    // Устанавливает указатель в файл - возвращает размер сжатого блока
+    // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РІ С„Р°Р№Р» - РІРѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·РјРµСЂ СЃР¶Р°С‚РѕРіРѕ Р±Р»РѕРєР°
     DWORD           SetCompressedBlockPointer(DWORD StartOffset,int nBlock);
 public:
     CPackFile(CHeap *heap, const wchar *name);
@@ -228,18 +228,18 @@ public:
 
     const CWStr GetName(void) const {return m_FileName;}
 
-        // ******* Процедуры работы с пакетным файлом ******** //
-    bool    OpenPacketFile(void);               // Открывает пакетный файл и считывает данные чтение
-    bool    ClosePacketFile(void);              // Закрывает пакетный файл и уничтожает посторонние объекты чтение
-    //bool    CreatePacketFileEx(void);               // Создает новый пакетный файл чтение/запись
-    bool    OpenPacketFileEx(void);             // Открывает пакетный файл и считывает данные запись/чтение
-    bool    ClosePacketFileEx(void)            // Закрывает пакетный файл и уничтожает посторонние объекты запись/чтение
+        // ******* РџСЂРѕС†РµРґСѓСЂС‹ СЂР°Р±РѕС‚С‹ СЃ РїР°РєРµС‚РЅС‹Рј С„Р°Р№Р»РѕРј ******** //
+    bool    OpenPacketFile(void);               // РћС‚РєСЂС‹РІР°РµС‚ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» Рё СЃС‡РёС‚С‹РІР°РµС‚ РґР°РЅРЅС‹Рµ С‡С‚РµРЅРёРµ
+    bool    ClosePacketFile(void);              // Р—Р°РєСЂС‹РІР°РµС‚ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» Рё СѓРЅРёС‡С‚РѕР¶Р°РµС‚ РїРѕСЃС‚РѕСЂРѕРЅРЅРёРµ РѕР±СЉРµРєС‚С‹ С‡С‚РµРЅРёРµ
+    //bool    CreatePacketFileEx(void);               // РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» С‡С‚РµРЅРёРµ/Р·Р°РїРёСЃСЊ
+    bool    OpenPacketFileEx(void);             // РћС‚РєСЂС‹РІР°РµС‚ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» Рё СЃС‡РёС‚С‹РІР°РµС‚ РґР°РЅРЅС‹Рµ Р·Р°РїРёСЃСЊ/С‡С‚РµРЅРёРµ
+    bool    ClosePacketFileEx(void)            // Р—Р°РєСЂС‹РІР°РµС‚ РїР°РєРµС‚РЅС‹Р№ С„Р°Р№Р» Рё СѓРЅРёС‡С‚РѕР¶Р°РµС‚ РїРѕСЃС‚РѕСЂРѕРЅРЅРёРµ РѕР±СЉРµРєС‚С‹ Р·Р°РїРёСЃСЊ/С‡С‚РµРЅРёРµ
     {
         return ClosePacketFile();
     }
     DWORD   GetHandle(void) const {return m_Handle;}
     void    Clear(void);
-        //***** Процедуры работы с файлами -- позиционирование указателя в файл ложится на объект PackFile
+        //***** РџСЂРѕС†РµРґСѓСЂС‹ СЂР°Р±РѕС‚С‹ СЃ С„Р°Р№Р»Р°РјРё -- РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёРµ СѓРєР°Р·Р°С‚РµР»СЏ РІ С„Р°Р№Р» Р»РѕР¶РёС‚СЃСЏ РЅР° РѕР±СЉРµРєС‚ PackFile
     DWORD   Open(const CStr &filename,DWORD modeopen=GENERIC_READ|GENERIC_WRITE);
     bool    Close(DWORD Handle);
     bool    Read(DWORD Handle, void *buf,int Size);
@@ -251,7 +251,7 @@ public:
     DWORD   GetSize(DWORD Handle);
     DWORD   GetHandle(DWORD Handle);
 
-        //***** Общесистемные процедуры работы с файлами ****
+        //***** РћР±С‰РµСЃРёСЃС‚РµРјРЅС‹Рµ РїСЂРѕС†РµРґСѓСЂС‹ СЂР°Р±РѕС‚С‹ СЃ С„Р°Р№Р»Р°РјРё ****
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
     bool    PathExists(const CStr &path);
@@ -280,7 +280,7 @@ public:
         return 0xFFFFFFFF;
     }
 
-        //***** Процедуры работы с пакетным файлом **********
+        //***** РџСЂРѕС†РµРґСѓСЂС‹ СЂР°Р±РѕС‚С‹ СЃ РїР°РєРµС‚РЅС‹Рј С„Р°Р№Р»РѕРј **********
     //bool    AddFile(const CStr &name);
     //bool    AddFile(const CStr &name,EFileType ftype);
     //bool    AddFiles(CBlockPar &block, CStr &log);
@@ -310,7 +310,7 @@ public:
         }
     }
 
-        //*** Функции, используемые при установке типа файла *****
+        //*** Р¤СѓРЅРєС†РёРё, РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ С‚РёРїР° С„Р°Р№Р»Р° *****
     //void    SetFileType(const CStr &name, EFileType NType)
     //{
     //    if (m_RootFolder == NULL) return;
@@ -353,20 +353,20 @@ public:
     CPackCollection(CHeap *heap):m_Heap(heap), m_PackFiles(heap) {}
     ~CPackCollection() { Clear(); };
 
-    //******** Процедуры работы со списком пакетных файлом ********//
+    //******** РџСЂРѕС†РµРґСѓСЂС‹ СЂР°Р±РѕС‚С‹ СЃРѕ СЃРїРёСЃРєРѕРј РїР°РєРµС‚РЅС‹С… С„Р°Р№Р»РѕРј ********//
     void    Clear(void);
     void    AddPacketFile(const wchar *filename);
     void    DelPacketFile(const wchar *filename);
-    //******** Процедуры для работы с пакетными файлами ***********//
+    //******** РџСЂРѕС†РµРґСѓСЂС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїР°РєРµС‚РЅС‹РјРё С„Р°Р№Р»Р°РјРё ***********//
     bool        OpenPacketFiles(void);
     bool        ClosePacketFiles(void);
     bool        OpenPacketFilesEx(void);
     bool        ClosePacketFilesEx(void);
     CPackFile*  GetPacketFile(int i) {return m_PackFiles.Buff<PCPackFile>()[i];};
-    //******** Процедуры для работы файлами ***********//
+    //******** РџСЂРѕС†РµРґСѓСЂС‹ РґР»СЏ СЂР°Р±РѕС‚С‹ С„Р°Р№Р»Р°РјРё ***********//
     bool        FileExists(const CStr &name);
     bool        PathExists(const CStr &path);
-    //******* работа с виртуальными номерами объектов CPackFile
+    //******* СЂР°Р±РѕС‚Р° СЃ РІРёСЂС‚СѓР°Р»СЊРЅС‹РјРё РЅРѕРјРµСЂР°РјРё РѕР±СЉРµРєС‚РѕРІ CPackFile
     DWORD       Open(const CStr&name, DWORD modeopen=GENERIC_READ);
     bool        Close(DWORD Handle);
     bool        Read(DWORD Handle, void *Buf, int Size);
@@ -375,7 +375,7 @@ public:
     DWORD       GetPos(DWORD Handle) ;
     DWORD       GetSize(DWORD Handle) ;
     DWORD       GetHandle(DWORD Handle);
-    //******* работа с извлекаемыми файлами *********************
+    //******* СЂР°Р±РѕС‚Р° СЃ РёР·РІР»РµРєР°РµРјС‹РјРё С„Р°Р№Р»Р°РјРё *********************
     //bool        UnpackFile(const CStr&souname) {UnpackFile(souname,souname);};
     //bool        UnpackFile(const CStr&souname,const CStr&desname);
 

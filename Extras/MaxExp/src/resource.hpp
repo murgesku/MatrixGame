@@ -100,6 +100,10 @@
 #define IDC_PARGROUP_EDGEFACTOR_EDIT    1170
 #define IDC_PARGROUP_EDITFACTOR_SPINNER 1171
 
+#ifndef IDC_STATIC
+#define IDC_STATIC				        -1
+#endif
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

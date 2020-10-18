@@ -153,10 +153,10 @@ struct SMatrixFlyerUnit
 #define FLYER_MANUAL                SETBIT(11)
 #define FLYER_BODY_MATRIX_DONE      SETBIT(12)
 #define FLYER_IN_SPAWN              SETBIT(13)
-#define FLYER_BREAKING              SETBIT(14)  // тормозит (в стратегическом режиме сход с траектории)
+#define FLYER_BREAKING              SETBIT(14)  // С‚РѕСЂРјРѕР·РёС‚ (РІ СЃС‚СЂР°С‚РµРіРёС‡РµСЃРєРѕРј СЂРµР¶РёРјРµ СЃС…РѕРґ СЃ С‚СЂР°РµРєС‚РѕСЂРёРё)
 #define FLYER_SGROUP                SETBIT(15)
 #define FLYER_SARCADE               SETBIT(16)
-#define FLYER_IN_SPAWN_SPINUP       SETBIT(17) // раскручивает лопасти
+#define FLYER_IN_SPAWN_SPINUP       SETBIT(17) // СЂР°СЃРєСЂСѓС‡РёРІР°РµС‚ Р»РѕРїР°СЃС‚Рё
 
 
 struct SFlyerTaktData;
@@ -252,7 +252,7 @@ class CMatrixFlyer : public CMatrixMapStatic
     CMatrixProgressBar m_PB;
     int         m_ShowHitpointTime;
     float       m_HitPoint;
-	float       m_HitPointMax;  // Максимальное кол-во здоровья
+	float       m_HitPointMax;  // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»-РІРѕ Р·РґРѕСЂРѕРІСЊСЏ
     float       m_MaxHitPointInversed; // for normalized calcs
 
     // carrying

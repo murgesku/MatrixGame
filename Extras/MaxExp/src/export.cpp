@@ -11,7 +11,6 @@
 //* Copyright (c) 1997, All Rights Reserved. 
 //***************************************************************************
 
-#include "stdafx.h"
 #include "main.hpp"
 
 void ConvertMatrix(SVOMatrix & out,Matrix3 & in)
@@ -298,7 +297,8 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 				for(int u=0;u<bframes.Len()/8;u++) {
 					int curframe=bframes.Int(); bframes.Int();
 					if(curframe<framestart || curframe>frameend) throw L"Anim error";
-					for(int t=0;t<framecnt;t++) if(framelist[t]==curframe) break;
+                    int t;
+					for(t=0;t<framecnt;t++) if(framelist[t]==curframe) break;
 					if(t>=framecnt) {
 						framelist[framecnt]=curframe;
 						framecnt++;
@@ -480,6 +480,7 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 		gr=m_GroupFirst;
 		while(gr!=NULL) {
 			if(gr->m_Id[0].x==gt_Ver) {
+                int i;
 				for(i=0;i<vergroupcnt;i++) {
 					if(vergrouplist[i*2+0]==gr->m_Buf.Len() && memcmp((BYTE *)bufout.Get()+vergrouplist[i*2+1],gr->m_Buf.Get(),gr->m_Buf.Len())==0) break;
 				}
@@ -513,6 +514,7 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 				DWORD * ibuf=(DWORD *)gr->m_Buf.Get();
 				if(smeindex>0) while(cnt>0) { *ibuf+=smeindex; ibuf++; cnt--; }
 */
+                int i;
 				for(i=0;i<trigroupcnt;i++) {
 					if(trigrouplist[i*2+0]==gr->m_Buf.Len() && memcmp((BYTE *)bufout.Get()+trigrouplist[i*2+1],gr->m_Buf.Get(),gr->m_Buf.Len())==0) break;
 				}
@@ -598,10 +600,10 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 		he.m_FrameCnt=framecnt;
 		voframe.m_MinX=1e30f; voframe.m_MinY=1e30f; voframe.m_MinZ=1e30f;
 		voframe.m_MaxX=-1e30f; voframe.m_MaxY=-1e30f; voframe.m_MaxZ=-1e30f;
-		for(i=0;i<framecnt;i++) {
+		for(int i=0;i<framecnt;i++) {
 			bufout.BufAdd(&voframe,sizeof(SVOFrame));
 		}
-		for(i=0;i<framecnt;i++) {
+		for(int i=0;i<framecnt;i++) {
 			int sme=bufout.Pointer();
 			int cnt=0;
 			gr=m_GroupFirst;
@@ -685,10 +687,10 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 		ZeroMemory(&voanimh,sizeof(SVOAnimHeader));
 		he.m_AnimSme=bufout.Pointer();
 		he.m_AnimCnt=animcnt;
-		for(i=0;i<animcnt;i++) {
+		for(int i=0;i<animcnt;i++) {
 			bufout.BufAdd(&voanimh,sizeof(SVOAnimHeader));
 		}
-		for(i=0;i<animcnt;i++) {
+		for(int i=0;i<animcnt;i++) {
 			ZeroMemory(&voanimh,sizeof(SVOAnimHeader));
 
 			tstr=group->ParPathGet(Base::CWStr(L"Anim:")+Base::CWStr(i));
@@ -713,7 +715,8 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 				int cf=bframes.Int();
 				int ct=bframes.Int();
 
-				for(int t=0;t<framecnt;t++) if(framelist[t]==cf) { cf=t; break; }
+                int t;
+				for(t=0;t<framecnt;t++) if(framelist[t]==cf) { cf=t; break; }
 				if(t>=framecnt) throw L"Error in anim";
 
 				tstr+=L",";
@@ -726,7 +729,7 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 
 			tstr=Base::CWStr().Format(L"Anim=<i>,<s>",voanimh.m_Id,voanimh.m_Name);
 			bframes.Pointer(0);
-			for(u=0;u<bframes.Len()/8;u++) {
+			for(int u=0;u<bframes.Len()/8;u++) {
 				bframes.Int();
 				tstr+=L",";
 				tstr+=Base::CWStr(bframes.Int());
@@ -755,7 +758,7 @@ void EGExp::ExportSimple(Base::CBlockPar * group)
 			}
 			gr=gr->m_Next;
 		}
-		for(i=0;i<matrixcnt;i++) {
+		for(int i=0;i<matrixcnt;i++) {
 			for(int u=0;u<framecnt;u++) {
 				gr=GroupFind(Base::CPoint(gt_ExpMatrix,u),Base::CPoint(gt_ExpMatrix,matrixlist[i]));
 
@@ -1138,7 +1141,7 @@ void EGExp::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					TSTR str;
 					node->EvalWorldState(timev).obj->GetClassName(str);
 
-					Log(Base::CWStr().Format(L"У грани не 2 триугольника. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
+					Log(Base::CWStr().Format(L"Face has not 2 tris. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
 						Base::CWStr(Base::CStr(node->NodeName())).Get(),
@@ -2904,7 +2907,7 @@ Base::CWStr EGExp2::RenameByCfg(Base::CWStr & str)
 
 void EGExp2::ExportSimpleGroup()
 {
-    int no,export;
+    int no,exp;
     Base::CWStr tstr;
     int cnt=ExportGroupCount();
     for(int i=0;i<cnt;i++) {
@@ -2913,7 +2916,7 @@ void EGExp2::ExportSimpleGroup()
         m_Anim.Clear();
         tstr.Clear();
 
-        if(ExportGroupGetProp(i,no,NULL,m_GroupName,export,m_FileName,m_TextureDefault,m_EdgeExport,m_EdgeExportFactor,tstr) && export) {
+        if(ExportGroupGetProp(i,no,NULL,m_GroupName,exp,m_FileName,m_TextureDefault,m_EdgeExport,m_EdgeExportFactor,tstr) && exp) {
             m_Anim.Clear();
             m_Anim.LoadFromText(tstr.Get());
 
@@ -2990,7 +2993,8 @@ void EGExp2::ExportSimple()
 				for(int u=0;u<bframes.Len()/8;u++) {
 					int curframe=bframes.Int(); bframes.Int();
 					if(curframe<framestart || curframe>frameend) throw L"Anim error";
-					for(int t=0;t<framecnt;t++) if(framelist[t]==curframe) break;
+                    int t;
+					for(t=0;t<framecnt;t++) if(framelist[t]==curframe) break;
 					if(t>=framecnt) {
 						framelist[framecnt]=curframe;
 						framecnt++;
@@ -3176,6 +3180,7 @@ void EGExp2::ExportSimple()
 		gr=m_GroupFirst;
 		while(gr!=NULL) {
 			if(gr->m_Id[0].x==gt_Ver) {
+                int i;
 				for(i=0;i<vergroupcnt;i++) {
 					if(vergrouplist[i*2+0]==gr->m_Buf.Len() && memcmp((BYTE *)bufout.Get()+vergrouplist[i*2+1],gr->m_Buf.Get(),gr->m_Buf.Len())==0) break;
 				}
@@ -3209,6 +3214,7 @@ void EGExp2::ExportSimple()
 				DWORD * ibuf=(DWORD *)gr->m_Buf.Get();
 				if(smeindex>0) while(cnt>0) { *ibuf+=smeindex; ibuf++; cnt--; }
 */
+                int i;
 				for(i=0;i<trigroupcnt;i++) {
 					if(trigrouplist[i*2+0]==gr->m_Buf.Len() && memcmp((BYTE *)bufout.Get()+trigrouplist[i*2+1],gr->m_Buf.Get(),gr->m_Buf.Len())==0) break;
 				}
@@ -3294,10 +3300,10 @@ void EGExp2::ExportSimple()
 		he.m_FrameCnt=framecnt;
 		voframe.m_MinX=1e30f; voframe.m_MinY=1e30f; voframe.m_MinZ=1e30f;
 		voframe.m_MaxX=-1e30f; voframe.m_MaxY=-1e30f; voframe.m_MaxZ=-1e30f;
-		for(i=0;i<framecnt;i++) {
+		for(int i=0;i<framecnt;i++) {
 			bufout.BufAdd(&voframe,sizeof(SVOFrame));
 		}
-		for(i=0;i<framecnt;i++) {
+		for(int i=0;i<framecnt;i++) {
 			int sme=bufout.Pointer();
 			int cnt=0;
 			gr=m_GroupFirst;
@@ -3381,10 +3387,10 @@ void EGExp2::ExportSimple()
 		ZeroMemory(&voanimh,sizeof(SVOAnimHeader));
 		he.m_AnimSme=bufout.Pointer();
 		he.m_AnimCnt=animcnt;
-		for(i=0;i<animcnt;i++) {
+		for(int i=0;i<animcnt;i++) {
 			bufout.BufAdd(&voanimh,sizeof(SVOAnimHeader));
 		}
-		for(i=0;i<animcnt;i++) {
+		for(int i=0;i<animcnt;i++) {
 			ZeroMemory(&voanimh,sizeof(SVOAnimHeader));
 
             tstr=m_Anim.ParGetName(i)+L","+m_Anim.ParGet(i);
@@ -3410,7 +3416,8 @@ void EGExp2::ExportSimple()
 				int cf=bframes.Int();
 				int ct=bframes.Int();
 
-				for(int t=0;t<framecnt;t++) if(framelist[t]==cf) { cf=t; break; }
+                int t;
+				for(t=0;t<framecnt;t++) if(framelist[t]==cf) { cf=t; break; }
 				if(t>=framecnt) throw L"Error in anim";
 
 				tstr+=L",";
@@ -3423,7 +3430,7 @@ void EGExp2::ExportSimple()
 
 			tstr=Base::CWStr().Format(L"Anim=<i>,<s>",voanimh.m_Id,voanimh.m_Name);
 			bframes.Pointer(0);
-			for(u=0;u<bframes.Len()/8;u++) {
+			for(int u=0;u<bframes.Len()/8;u++) {
 				bframes.Int();
 				tstr+=L",";
 				tstr+=Base::CWStr(bframes.Int());
@@ -3452,7 +3459,7 @@ void EGExp2::ExportSimple()
 			}
 			gr=gr->m_Next;
 		}
-		for(i=0;i<matrixcnt;i++) {
+		for(int i=0;i<matrixcnt;i++) {
 			for(int u=0;u<framecnt;u++) {
 				gr=GroupFind(Base::CPoint(gt_ExpMatrix,u),Base::CPoint(gt_ExpMatrix,matrixlist[i]));
 
@@ -3777,7 +3784,7 @@ void EGExp2::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					TSTR str;
 					node->EvalWorldState(timev).obj->GetClassName(str);
 
-					Log(Base::CWStr().Format(L"У грани не 2 триугольника. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
+					Log(Base::CWStr().Format(L"РЈ РіСЂР°РЅРё РЅРµ 2 С‚СЂРёСѓРіРѕР»СЊРЅРёРєР°. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
 						Base::CWStr(Base::CStr(node->NodeName())).Get(),

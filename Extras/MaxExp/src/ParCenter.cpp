@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
 #include "iparamm2.h"
@@ -19,7 +18,7 @@ class ParCenterMod : public Modifier {
         void DeleteThis()               { delete this; }
 		void GetClassName(TSTR& s)      { s = "EG.Exp.Center"; }
 		virtual Class_ID ClassID()      { return PARCENTER_CLASS_ID; }		
-		RefTargetHandle Clone(RemapDir& remap = NoRemap());
+		RefTargetHandle Clone(RemapDir& remap = DefaultRemapDir());
 		TCHAR * GetObjectName()         { return "EG.Exp.Center"; }
 		void BeginEditParams(IObjParam  *ip, ULONG flags,Animatable *prev);
 		void EndEditParams(IObjParam *ip,ULONG flags,Animatable *next);		
@@ -77,7 +76,7 @@ class ParCenterDlgProc : public ParamMap2UserDlgProc {
         ParCenterMod *ob;
 
         ParCenterDlgProc(ParCenterMod *o) { ob = o; }
-        BOOL DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+        INT_PTR DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             switch(msg) {
                 case WM_INITDIALOG: {
                     

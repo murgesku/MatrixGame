@@ -55,24 +55,24 @@ typedef void (*SKIN_PRELOAD)(const SSkin *vo);
 
 struct SVOHeader {
 	DWORD m_Id;				// 0x00006f76
-	DWORD m_Ver;			// Версия
-	DWORD m_Flags;			// 1-16 битный индекс иначе 32 битный, 2-откуда брать текстуры
+	DWORD m_Ver;			// Р’РµСЂСЃРёСЏ
+	DWORD m_Flags;			// 1-16 Р±РёС‚РЅС‹Р№ РёРЅРґРµРєСЃ РёРЅР°С‡Рµ 32 Р±РёС‚РЅС‹Р№, 2-РѕС‚РєСѓРґР° Р±СЂР°С‚СЊ С‚РµРєСЃС‚СѓСЂС‹
 	DWORD dummy;
-	int   m_MaterialCnt;	// Список материалов(текстур) SMaterial
-	DWORD m_MaterialSme;	// Положение от начала заголовка
-	int   m_GroupCnt;		// Инвормация по группам (Смещение верши и треугольников)
+	int   m_MaterialCnt;	// РЎРїРёСЃРѕРє РјР°С‚РµСЂРёР°Р»РѕРІ(С‚РµРєСЃС‚СѓСЂ) SMaterial
+	DWORD m_MaterialSme;	// РџРѕР»РѕР¶РµРЅРёРµ РѕС‚ РЅР°С‡Р°Р»Р° Р·Р°РіРѕР»РѕРІРєР°
+	int   m_GroupCnt;		// РРЅРІРѕСЂРјР°С†РёСЏ РїРѕ РіСЂСѓРїРїР°Рј (РЎРјРµС‰РµРЅРёРµ РІРµСЂС€Рё Рё С‚СЂРµСѓРіРѕР»СЊРЅРёРєРѕРІ)
 	DWORD m_GroupSme;
-	int   m_VerCnt;			// Список всех вершин SVertexNorTex
+	int   m_VerCnt;			// РЎРїРёСЃРѕРє РІСЃРµС… РІРµСЂС€РёРЅ SVertexNorTex
 	DWORD m_VerSme;
-	int   m_TriCnt;			// Список всех треугольников. Кол-во индексов (3 индкса для каждого трегольника по 2 или 4 байта взависимости от флага)
+	int   m_TriCnt;			// РЎРїРёСЃРѕРє РІСЃРµС… С‚СЂРµСѓРіРѕР»СЊРЅРёРєРѕРІ. РљРѕР»-РІРѕ РёРЅРґРµРєСЃРѕРІ (3 РёРЅРґРєСЃР° РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚СЂРµРіРѕР»СЊРЅРёРєР° РїРѕ 2 РёР»Рё 4 Р±Р°Р№С‚Р° РІР·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С„Р»Р°РіР°)
 	DWORD m_TriSme;
-	int   m_FrameCnt;		// Список кадров SVOFrame
+	int   m_FrameCnt;		// РЎРїРёСЃРѕРє РєР°РґСЂРѕРІ SVOFrame
 	DWORD m_FrameSme;
-	int   m_AnimCnt;		// Список анимаций SVOAnimHeader
+	int   m_AnimCnt;		// РЎРїРёСЃРѕРє Р°РЅРёРјР°С†РёР№ SVOAnimHeader
 	DWORD m_AnimSme;
-	int   m_MatrixCnt;		// Список матриц SVOExpMatrixHeader
+	int   m_MatrixCnt;		// РЎРїРёСЃРѕРє РјР°С‚СЂРёС† SVOExpMatrixHeader
 	DWORD m_MatrixSme;
-	DWORD m_EdgeCnt;		// Список всех граней
+	DWORD m_EdgeCnt;		// РЎРїРёСЃРѕРє РІСЃРµС… РіСЂР°РЅРµР№
 	DWORD m_EdgeSme;
 };
 struct SVOVertexNorTex {
@@ -97,14 +97,14 @@ struct SVOGroup
 	DWORD   m_Flags;			// 0-list
 	DWORD   m_VerCnt;
 	DWORD   m_VerStart;
-	DWORD   m_TriCnt;			// Кол-во индексов
+	DWORD   m_TriCnt;			// РљРѕР»-РІРѕ РёРЅРґРµРєСЃРѕРІ
 	DWORD   m_TriStart;
 	DWORD   dummy[2];
 };
 
 struct SVOFrame {
 	DWORD m_GroupIndexCnt;
-	DWORD m_GroupIndexSme;	// Каждый индекс 4-байтный указатель
+	DWORD m_GroupIndexSme;	// РљР°Р¶РґС‹Р№ РёРЅРґРµРєСЃ 4-Р±Р°Р№С‚РЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ
 	float m_CenterX,m_CenterY,m_CenterZ;
 	float m_RadiusCenter;
 	float m_MinX,m_MinY,m_MinZ;
@@ -126,7 +126,7 @@ struct SVOAnimHeader {
 struct SVOMatrixHeader {
 	DWORD m_Id;
 	wchar m_Name[32];
-	DWORD m_MatrixSme; // Спиок SVOMatrix   (кол-во по количеству m_FrameCnt)
+	DWORD m_MatrixSme; // РЎРїРёРѕРє SVOMatrix   (РєРѕР»-РІРѕ РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ m_FrameCnt)
 	DWORD r1;
 	DWORD r2;
 };
@@ -246,7 +246,7 @@ struct SVOMatrix
 {
 	DWORD m_Id;
 	wchar m_Name[32];
-	DWORD m_MatrixStart; // Спиок D3DXMATRIX  (кол-во по количеству кадров)
+	DWORD m_MatrixStart; // РЎРїРёРѕРє D3DXMATRIX  (РєРѕР»-РІРѕ РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ РєР°РґСЂРѕРІ)
 };
 
 struct SVOFrameIndex
@@ -569,7 +569,7 @@ class CVectorObjectGroup;
 class CVectorObjectGroupUnit : public CMain {
 	public:
 
-		DWORD m_Flags;					// Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
+		DWORD m_Flags;					// РљР°РєРѕР№ СЂРµСЃСѓСЂСЃ РѕР±СЉРµРєС‚Р° РёР·РјРµРЅРёР»СЃСЏ. РџСЂРё СЃРѕР·РґР°РЅРЅРёРё РєР»Р°СЃСЃР° СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ РІ 0xffffffff
 
 		CVectorObjectGroup * m_Parent;
 		CVectorObjectGroupUnit * m_Prev;
@@ -585,9 +585,9 @@ class CVectorObjectGroupUnit : public CMain {
 		int m_LinkMatrixId; // -1-center -2-by name >=0-by id
 		CWStr m_LinkMatrixName;
 
-		D3DXMATRIX m_Matrix;				// Дополнительная матрица позиционирования в локальных координатах.
+		D3DXMATRIX m_Matrix;				// Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РјР°С‚СЂРёС†Р° РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёСЏ РІ Р»РѕРєР°Р»СЊРЅС‹С… РєРѕРѕСЂРґРёРЅР°С‚Р°С….
 
-		D3DXMATRIX m_MatrixWorld;			// Конечная матрица трансформации объекта в мировые координаты.
+		D3DXMATRIX m_MatrixWorld;			// РљРѕРЅРµС‡РЅР°СЏ РјР°С‚СЂРёС†Р° С‚СЂР°РЅСЃС„РѕСЂРјР°С†РёРё РѕР±СЉРµРєС‚Р° РІ РјРёСЂРѕРІС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹.
         D3DXMATRIX m_IMatrixWorld;
 
 		CVOShadowStencil * m_ShadowStencil;
@@ -596,8 +596,8 @@ class CVectorObjectGroupUnit : public CMain {
 		CVectorObjectGroupUnit(void);
 		~CVectorObjectGroupUnit();
         
-		void RNeed(dword need);				// Запрашиваем нужные ресурсы объекта
-		void RChange(dword zn)				{ m_Flags|=VOUF_RES&zn; } // Указываем какие ресурсы изменились
+		void RNeed(dword need);				// Р—Р°РїСЂР°С€РёРІР°РµРј РЅСѓР¶РЅС‹Рµ СЂРµСЃСѓСЂСЃС‹ РѕР±СЉРµРєС‚Р°
+		void RChange(dword zn)				{ m_Flags|=VOUF_RES&zn; } // РЈРєР°Р·С‹РІР°РµРј РєР°РєРёРµ СЂРµСЃСѓСЂСЃС‹ РёР·РјРµРЅРёР»РёСЃСЊ
 
 		void ShadowStencilOn(bool zn=true);
 };
@@ -607,9 +607,9 @@ class CVectorObjectGroup : public CMain {
 		CVectorObjectGroupUnit * m_First;
 		CVectorObjectGroupUnit * m_Last;
 
-		D3DXMATRIX *m_GroupToWorldMatrix;				// Матрица позиционирования группы в мировом пространстве.
+		D3DXMATRIX *m_GroupToWorldMatrix;				// РњР°С‚СЂРёС†Р° РїРѕР·РёС†РёРѕРЅРёСЂРѕРІР°РЅРёСЏ РіСЂСѓРїРїС‹ РІ РјРёСЂРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ.
 
-		CWStr m_Name;						// Имя файла
+		CWStr m_Name;						// РРјСЏ С„Р°Р№Р»Р°
 
 		D3DXVECTOR3 m_ShadowStencilLight;
 		//D3DXPLANE m_ShadowStencilCutPlane;
@@ -630,8 +630,8 @@ class CVectorObjectGroup : public CMain {
         D3DXVECTOR3 GetPosByName(const wchar * name) const;
 
         //void ChangeSetupFunction(OBJECT_SETUP_TEX setup_tex, OBJECT_SETUP_STAGES setup_stages);
-		void RNeed(dword need);				// Запрашиваем нужные ресурсы объекта
-		void RChange(dword zn);				// Указываем какие ресурсы изменились
+		void RNeed(dword need);				// Р—Р°РїСЂР°С€РёРІР°РµРј РЅСѓР¶РЅС‹Рµ СЂРµСЃСѓСЂСЃС‹ РѕР±СЉРµРєС‚Р°
+		void RChange(dword zn);				// РЈРєР°Р·С‹РІР°РµРј РєР°РєРёРµ СЂРµСЃСѓСЂСЃС‹ РёР·РјРµРЅРёР»РёСЃСЊ
 		void RChangeByLink(CVectorObjectGroupUnit * link,dword zn);
 
         bool    IsAlreadyLoaded(void) {return m_First != NULL;}

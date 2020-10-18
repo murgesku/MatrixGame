@@ -135,7 +135,10 @@ void CMain::BaseInit(void)
 {
     CWStr::call_num = 0;
     CFile::StaticInit();
+
+#ifndef MAXEXP_EXPORTS
     SRemindCore::StaticInit();
+#endif
 
 #ifdef MEM_SPY_ENABLE
     CHeap::StaticInit();

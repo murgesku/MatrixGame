@@ -15,7 +15,7 @@ void writedump(const char *txt);
 #pragma warning (disable : 4508)
 __forceinline unsigned __int64 GetCPUTakt(void)
 {
-    __asm rdtsc // 0x0F, 0x31
+    return __rdtsc(); // 0x0F, 0x31
 //        _emit      0x0f
 //        _emit      0x31
 

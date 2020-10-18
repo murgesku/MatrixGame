@@ -19,5 +19,5 @@
 FILEPNG_API DWORD _cdecl FilePNG_ReadStart_Buf(void * soubuf,DWORD soubuflen,DWORD * lenx,DWORD * leny,DWORD * countcolor,DWORD * format);
 FILEPNG_API DWORD _cdecl FilePNG_Read(DWORD id,void * buf,DWORD lenline,DWORD * arraycolor);
 
-// Возвращает полный размер файла. Если больше bufoutlen то нужно вызвать повторно. При ошибке 0
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ СЂР°Р·РјРµСЂ С„Р°Р№Р»Р°. Р•СЃР»Рё Р±РѕР»СЊС€Рµ bufoutlen С‚Рѕ РЅСѓР¶РЅРѕ РІС‹Р·РІР°С‚СЊ РїРѕРІС‚РѕСЂРЅРѕ. РџСЂРё РѕС€РёР±РєРµ 0
 FILEPNG_API int _cdecl FilePNG_Write(void * bufout,int bufoutlen,void * buf,DWORD ll,DWORD lx,DWORD ly,DWORD bytepp,int rgb_to_bgr);

@@ -394,7 +394,7 @@ struct SPreRobot
     SSpecialBot sb;
     D3DXVECTOR3 pos;
     int         side;
-    int         group; // группа 0,1,2,3 (0-без группы)
+    int         group; // РіСЂСѓРїРїР° 0,1,2,3 (0-Р±РµР· РіСЂСѓРїРїС‹)
     float       angle;
 };
 
@@ -824,7 +824,7 @@ skip_this_cannon:
                 //if(prop==0) c->SetSide(0);
 
                 while(prop==1 || prop==2) {
-                    // Ищем ближайший завод или базу
+                    // РС‰РµРј Р±Р»РёР¶Р°Р№С€РёР№ Р·Р°РІРѕРґ РёР»Рё Р±Р°Р·Сѓ
                     CMatrixBuilding * building=NULL;
                     CMatrixMapStatic * ms=CMatrixMapStatic::GetFirstLogic();
                     float mindist=1e20f;

@@ -173,8 +173,8 @@ enum EMatrixLogicActionType
 struct SMatrixLogicAction {
     EMatrixLogicActionType m_Type;
     int m_Region;
-    int m_RegionPathCnt;                          // Êîë-âî ğåãèîíîâ â ïóòè
-    int m_RegionPath[REGION_PATH_MAX_CNT];        // Ïóòü ïî ğåãèîíàì
+    int m_RegionPathCnt;                          // ĞšĞ¾Ğ»-Ğ²Ğ¾ Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½Ğ¾Ğ² Ğ² Ğ¿ÑƒÑ‚Ğ¸
+    int m_RegionPath[REGION_PATH_MAX_CNT];        // ĞŸÑƒÑ‚ÑŒ Ğ¿Ğ¾ Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½Ğ°Ğ¼
 };
 
 struct SMatrixLogicGroup
@@ -182,7 +182,7 @@ struct SMatrixLogicGroup
 private:
     DWORD m_Bits;
     //int m_RobotCnt;
-    //bool m_War;                             // Ãğóïïà âñòóïèëà â áîé
+    //bool m_War;                             // Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ° Ğ²ÑÑ‚ÑƒĞ¿Ğ¸Ğ»Ğ° Ğ² Ğ±Ğ¾Ğ¹
 public:
     int RobotsCnt(void) const {return m_Bits & 0xFFFF;}
     void RobotsCnt(int a) { m_Bits = (m_Bits & 0xFFFF0000) | a;}
@@ -217,7 +217,7 @@ struct SMatrixPlayerGroup
 {
 private:
     DWORD m_Bits;
-    //bool m_War;                                     // Ãğóïïà âñòóïèëà â áîé
+    //bool m_War;                                     // Ğ“Ñ€ÑƒĞ¿Ğ¿Ğ° Ğ²ÑÑ‚ÑƒĞ¿Ğ¸Ğ»Ğ° Ğ² Ğ±Ğ¾Ğ¹
     //bool m_ShowPlace;
     //bool m_PatrolReturn;
     //EMatrixPlayerOrder m_Order;
@@ -239,8 +239,8 @@ public:
     CPoint m_To;
     CMatrixMapStatic * m_Obj;
     int m_Region;
-    int m_RegionPathCnt;                          // Êîë-âî ğåãèîíîâ â ïóòè
-    int m_RegionPath[REGION_PATH_MAX_CNT];        // Ïóòü ïî ğåãèîíàì
+    int m_RegionPathCnt;                          // ĞšĞ¾Ğ»-Ğ²Ğ¾ Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½Ğ¾Ğ² Ğ² Ğ¿ÑƒÑ‚Ğ¸
+    int m_RegionPath[REGION_PATH_MAX_CNT];        // ĞŸÑƒÑ‚ÑŒ Ğ¿Ğ¾ Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½Ğ°Ğ¼
     CMatrixRoadRoute * m_RoadPath;
 };
 
@@ -281,7 +281,7 @@ public:
     bool IslOk(void) const { return FLAG(m_Bits, SETBIT(26));}
     void SetlOk(bool w) { INITFLAG(m_Bits, SETBIT(26), w);}
 
-    int m_RobotCnt;                         // Êîë-âî ğîáîòîâ â êîìàíäå
+    int m_RobotCnt;                         // ĞšĞ¾Ğ»-Ğ²Ğ¾ Ñ€Ğ¾Ğ±Ğ¾Ñ‚Ğ¾Ğ² Ğ² ĞºĞ¾Ğ¼Ğ°Ğ½Ğ´Ğµ
     int m_GroupCnt;
 
     int m_WaitUnionLast;
@@ -298,7 +298,7 @@ public:
     int m_Radius;
     int m_RegionMassPrev;
     int m_RegionMass;
-    int m_RegionNearDanger;                 // Ñàìûé îïàñíûé ğåãèîí, âêëş÷àÿ òåêóùèé
+    int m_RegionNearDanger;                 // Ğ¡Ğ°Ğ¼Ñ‹Ğ¹ Ğ¾Ğ¿Ğ°ÑĞ½Ñ‹Ğ¹ Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½, Ğ²ĞºĞ»ÑÑ‡Ğ°Ñ Ñ‚ĞµĞºÑƒÑ‰Ğ¸Ğ¹
     int m_RegionFarDanger;
     int m_RegionNearEnemy;
     int m_RegionNearRetreat;
@@ -318,9 +318,9 @@ public:
     CMatrixRoadRoute * m_RoadPath;
 
 
-    int m_RegionListCnt;                    // Ñïèñîê ğåãèîíîâ, â êîòîğûõ íàõîäÿòñÿ ğîáîòû 
-    int m_RegionList[MAX_ROBOTS];           // Ğåãèîíû
-    int m_RegionListRobots[MAX_ROBOTS];     // Êîë-âî ğîáîòîâ
+    int m_RegionListCnt;                    // Ğ¡Ğ¿Ğ¸ÑĞ¾Ğº Ñ€ĞµĞ³Ğ¸Ğ¾Ğ½Ğ¾Ğ², Ğ² ĞºĞ¾Ñ‚Ğ¾Ñ€Ñ‹Ñ… Ğ½Ğ°Ñ…Ğ¾Ğ´ÑÑ‚ÑÑ Ñ€Ğ¾Ğ±Ğ¾Ñ‚Ñ‹ 
+    int m_RegionList[MAX_ROBOTS];           // Ğ ĞµĞ³Ğ¸Ğ¾Ğ½Ñ‹
+    int m_RegionListRobots[MAX_ROBOTS];     // ĞšĞ¾Ğ»-Ğ²Ğ¾ Ñ€Ğ¾Ğ±Ğ¾Ñ‚Ğ¾Ğ²
 
 };
 
@@ -335,8 +335,8 @@ struct SMatrixLogicRegion {
     int m_EnemyBuildingCnt;
     int m_EnemyBaseCnt;
 
-    float m_Danger;                         // Êîôèöèåíò îïàñíîñòè
-    float m_DangerAdd;                      // Âûğàùåííàÿ îïàñíîñòü
+    float m_Danger;                         // ĞšĞ¾Ñ„Ğ¸Ñ†Ğ¸ĞµĞ½Ñ‚ Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚Ğ¸
+    float m_DangerAdd;                      // Ğ’Ñ‹Ñ€Ğ°Ñ‰ĞµĞ½Ğ½Ğ°Ñ Ğ¾Ğ¿Ğ°ÑĞ½Ğ¾ÑÑ‚ÑŒ
 
     int m_NeutralCannonCnt;
     int m_NeutralBuildingCnt;
@@ -371,9 +371,9 @@ private:
     ESideStatus m_SideStatus;
 	int         m_RobotsCnt;
 
-    float m_Strength;                       // Ñèëà ñòîğîíû
-    int m_WarSide;                          // Íà êàêóş ñòîğîíó ñòàğàåìñÿ íàïàñòü
-    //float m_WarSideStrangeCancel;           // Ïåğåğàññ÷èòûâàåì ñòîğîíó ñ êîòîğîé âîşåì êîãäà ñèëà ñòîğîíû óïàäåò íèæå êğèòè÷åñêîé
+    float m_Strength;                       // Ğ¡Ğ¸Ğ»Ğ° ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹
+    int m_WarSide;                          // ĞĞ° ĞºĞ°ĞºÑƒÑ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñƒ ÑÑ‚Ğ°Ñ€Ğ°ĞµĞ¼ÑÑ Ğ½Ğ°Ğ¿Ğ°ÑÑ‚ÑŒ
+    //float m_WarSideStrangeCancel;           // ĞŸĞµÑ€ĞµÑ€Ğ°ÑÑÑ‡Ğ¸Ñ‚Ñ‹Ğ²Ğ°ĞµĞ¼ ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñƒ Ñ ĞºĞ¾Ñ‚Ğ¾Ñ€Ğ¾Ğ¹ Ğ²Ğ¾ÑĞµĞ¼ ĞºĞ¾Ğ³Ğ´Ğ° ÑĞ¸Ğ»Ğ° ÑÑ‚Ğ¾Ñ€Ğ¾Ğ½Ñ‹ ÑƒĞ¿Ğ°Ğ´ĞµÑ‚ Ğ½Ğ¸Ğ¶Ğµ ĞºÑ€Ğ¸Ñ‚Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ¹
 
     SMatrixLogicRegion * m_Region;
     int * m_RegionIndex;
@@ -584,7 +584,7 @@ public:
     void AssignPlace(CMatrixRobotAI * robot,int region);
     void AssignPlace(int group,int region);
     void SortRobotList(CMatrixRobotAI * * rl,int rlcnt);
-    bool CmpOrder(int team,int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // Ïóòü íå ñğàâíèâàåòñÿ
+    bool CmpOrder(int team,int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // ĞŸÑƒÑ‚ÑŒ Ğ½Ğµ ÑÑ€Ğ°Ğ²Ğ½Ğ¸Ğ²Ğ°ĞµÑ‚ÑÑ
     void CopyOrder(int team,int group)                  { ASSERT(team>=0 && team<m_TeamCnt); m_LogicGroup[group].m_Action=m_Team[team].m_Action; }
 
     bool PlaceInRegion(CMatrixRobotAI * robot, int place,int region);

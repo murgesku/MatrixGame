@@ -51,9 +51,9 @@ enum EWeapon
     WEAPON_CANNON2 = 97,
     WEAPON_CANNON3 = 1002,
 
-    WEAPON_ABLAZE   = 10000000,  // горим
-    WEAPON_SHORTED  = 10000001,  // замкнуло
-    WEAPON_DEBRIS   = 10000002,  // долбануло осколком
+    WEAPON_ABLAZE   = 10000000,  // РіРѕСЂРёРј
+    WEAPON_SHORTED  = 10000001,  // Р·Р°РјРєРЅСѓР»Рѕ
+    WEAPON_DEBRIS   = 10000002,  // РґРѕР»Р±Р°РЅСѓР»Рѕ РѕСЃРєРѕР»РєРѕРј
 
     WEAPON_COUNT = 17,
     WEAPON_INSTANT_DEATH = 0x7FFFFFFF -1,

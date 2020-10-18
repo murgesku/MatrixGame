@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "main.hpp"
 #include "resource.hpp"
 #include "iparamm2.h"
@@ -19,7 +18,7 @@ class ParMatrixMod : public Modifier {
         void DeleteThis()               { delete this; }
 		void GetClassName(TSTR& s)      { s = "EG.Exp.Matrix"; }
 		virtual Class_ID ClassID()      { return PARMATRIX_CLASS_ID; }		
-		RefTargetHandle Clone(RemapDir& remap = NoRemap());
+		RefTargetHandle Clone(RemapDir& remap = DefaultRemapDir());
 		TCHAR * GetObjectName()         { return "EG.Exp.Matrix"; }
 		void BeginEditParams(IObjParam  *ip, ULONG flags,Animatable *prev);
 		void EndEditParams(IObjParam *ip,ULONG flags,Animatable *next);		
@@ -77,7 +76,7 @@ class ParMatrixDlgProc : public ParamMap2UserDlgProc {
         ParMatrixMod *ob;
 
         ParMatrixDlgProc(ParMatrixMod *o) { ob = o; }
-        BOOL DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+        INT_PTR DlgProc(TimeValue t, IParamMap2 *map, HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             switch(msg) {
                 case WM_INITDIALOG: {
                     
@@ -241,7 +240,7 @@ extern bool ExportMatrixGetProp(INode *node, const Base::CWStr & group,
             if(!idok) continue;
 
             int iv;
-            TCHAR * ach;
+            const TCHAR * ach;
 
             if(!group.IsEmpty() && !((ParMatrixMod *)mod)->m_Group.IsEmpty() && (group!=((ParMatrixMod *)mod)->m_Group)) continue;
 
