@@ -286,6 +286,7 @@ public:
         void FirstLinkPneumatic(void);
 
         float GetChassisHeight(void) const;
+        float GetEyeLevel(void) const;
 
         float Z_From_Pos(void);
 

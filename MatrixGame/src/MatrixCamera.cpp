@@ -909,7 +909,8 @@ void CMatrixCamera::CalcLinkPoint(D3DXVECTOR3 &lp, float &angz)
 
             lp.x = bot->m_PosX;
             lp.y = bot->m_PosY;
-            lp.z = bot->Z_From_Pos() + g_Config.m_CamParams[CAMERA_INROBOT].m_CamHeight;
+            lp.z = bot->Z_From_Pos() + bot->GetEyeLevel();
+            lp.z += g_Config.m_CamParams[CAMERA_INROBOT].m_CamHeight;
 
             float bot_speed = (bot->m_Speed / bot->GetMaxSpeed());
             lp += bot->m_Forward * LERPFLOAT(bot_speed, g_Config.m_CamInRobotForward0, g_Config.m_CamInRobotForward1);
