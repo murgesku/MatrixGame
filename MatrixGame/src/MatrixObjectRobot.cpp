@@ -270,8 +270,32 @@ void CMatrixRobot::WeaponSelectMatrix(void)
 
 float CMatrixRobot::GetChassisHeight(void) const
 {
+    // 1st matrix, ConnectUp, chassis connector
     const D3DXMATRIX * tm = m_Unit[0].m_Graph->GetMatrixById(1);
+    // get z coord from matrix
     return tm->_43;
+}
+
+float CMatrixRobot::GetEyeLevel(void) const
+{
+    // initialize with chassis height, worst case :)
+    float eyelevel = GetChassisHeight();
+    
+    // try to get armor unit, starts from 1 because 0 is chassis
+    for (int i = 1; i < m_UnitCnt; ++i)
+    {
+        if (m_Unit[i].m_Type == MRT_ARMOR)
+        {
+            // 1st matrix, ConnectUp, head connector
+            const D3DXMATRIX * tm = m_Unit[i].m_Graph->GetMatrixById(1);
+            // get z coord from matrix, add to chassis height
+            eyelevel += tm->_43;
+
+            break;
+        }
+    }
+
+    return eyelevel;
 }
 
 float CMatrixRobot::Z_From_Pos(void)
