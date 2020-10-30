@@ -12,14 +12,29 @@ class CIFaceElement;
 
 struct SPrice
 {
-    int m_Resources[MAX_RESOURCES];                                     //titan, electronics, energy, plasma
+    int m_Resources[MAX_RESOURCES]; //titan, electronics, energy, plasma
 
-    void ResetPrice()                                                   { ZeroMemory(m_Resources, sizeof(m_Resources)); }
-    void GiveRndPrice()                                                 { for(int cnt = 0; cnt < MAX_RESOURCES;cnt++){ m_Resources[cnt] = g_MatrixMap->Rnd(0, 50); }}
+    void ResetPrice()
+    {
+        ZeroMemory(m_Resources, sizeof(m_Resources));
+    }
+    void GiveRndPrice()
+    {
+        for(int cnt = 0; cnt < MAX_RESOURCES; cnt++)
+        {
+            m_Resources[cnt] = g_MatrixMap->Rnd(0, 50);
+        }
+    }
     
-    void SetPrice(ERobotUnitType type, ERobotUnitKind kind);
+    void SetPrice(
+        ERobotUnitType type,
+        ERobotUnitKind kind
+    );
 
-    SPrice()                                                            { ResetPrice(); }
+    SPrice()
+    {
+        ResetPrice();
+    }
 };
 
 struct SUnit {
@@ -27,7 +42,7 @@ struct SUnit {
     ERobotUnitKind  m_nKind;
     SPrice m_Price;
     
-    SUnit():m_nType(MRT_EMPTY), m_nKind(RUK_UNKNOWN) {}
+    SUnit(): m_nType(MRT_EMPTY), m_nKind(RUK_UNKNOWN) {}
 };
 
 struct SArmorUnit {
@@ -43,7 +58,12 @@ struct SWeaponUnit {
     int m_Pos;
 
     SUnit m_Unit;
-    SWeaponUnit()                                                        { m_Pos = 0; m_Unit.m_nKind = RUK_UNKNOWN; m_Unit.m_nType = MRT_WEAPON;}
+    SWeaponUnit()
+    {
+        m_Pos = 0;
+        m_Unit.m_nKind = RUK_UNKNOWN;
+        m_Unit.m_nType = MRT_WEAPON;
+    }
 };
 
 struct SNewBorn {
@@ -64,7 +84,7 @@ struct SSpecialBot {
 	SUnit               m_Chassis;
     int                 m_Team;
 
-    int                 m_Resources[MAX_RESOURCES];                                     //titan, electronics, energy, plasma
+    int                 m_Resources[MAX_RESOURCES]; //titan, electronics, energy, plasma
 
     int                 m_Pripor;
     float               m_Hitpoints;
@@ -78,12 +98,19 @@ struct SSpecialBot {
     static void LoadAIRobotType(CBlockPar & bp);
     static void ClearAIRobotType(void);
 
-    void CalcStrength(void);                                 // Расчитываем силу робота
-    float DifWeapon(SSpecialBot & other);                    //  0..1 на сколько отличается оружие у роботов
+    void CalcStrength(void);              // Расчитываем силу робота
+    float DifWeapon(SSpecialBot & other); //  0..1 на сколько отличается оружие у роботов
 
-    bool BuildFromPar(const CWStr & parname, int parval, bool with_hp=false);
+    bool BuildFromPar(
+        const CWStr & parname,
+        int parval,
+        bool with_hp=false
+    );
 
-    CMatrixRobotAI*     GetRobot(const D3DXVECTOR3 &pos, int side);
+    CMatrixRobotAI* GetRobot(
+        const D3DXVECTOR3 &pos,
+        int side
+    );
 };
 void GetConstructionName(CMatrixRobotAI* robot);
 int GetConstructionDamage(CMatrixRobotAI* robot);
@@ -110,28 +137,70 @@ class CConstructor : public CMain
 	void ResetConstruction();
 
 public:
-    CMatrixRobotAI*     GetRenderBot()                                          { return m_Robot; }
-    int CheckWeaponLegality(SWeaponUnit* weapons, int weaponKind, int armorKind);
+    CMatrixRobotAI* GetRenderBot()
+    {
+        return m_Robot;
+    }
+    int CheckWeaponLegality(
+        SWeaponUnit* weapons,
+        int weaponKind,
+        int armorKind
+    );
     void GetConstructionPrice(int* res);
     int GetConstructionStructure();
 
-    void SetSide(int side)                                                      { m_Side = side; if(m_Robot) m_Robot->m_Side = side; }
-    int GetSide()                                                               { return m_Side; }
+    void SetSide(int side)
+    {
+        m_Side = side;
+        if(m_Robot) m_Robot->m_Side = side;
+    }
+    int GetSide()
+    {
+        return m_Side;
+    }
 
-    void SetBase(CMatrixBuilding *pBase)                                        { m_Base = pBase; /*m_Side = side; */}
+    void SetBase(CMatrixBuilding *pBase)
+    {
+        m_Base = pBase;
+        //m_Side = side;
+    }
 
-    bool CheckMaxUnits()                                                        { return (m_nUnitCnt <= MR_MAXUNIT); }
+    bool CheckMaxUnits()
+    {
+        return (m_nUnitCnt <= MR_MAXUNIT);
+    }
 
-    void SetRenderProps(float x, float y, int width, int height)                { m_ViewPosX = x; m_ViewPosY = y; m_ViewWidthX = width;	m_ViewHeightY = height; }
+    void SetRenderProps(float x, float y, int width, int height)
+    {
+        m_ViewPosX = x;
+        m_ViewPosY = y;
+        m_ViewWidthX = width;
+        m_ViewHeightY = height;
+    }
 
 	void __stdcall RemoteOperateUnit(void* pObj);
-	void OperateUnit(ERobotUnitType type, ERobotUnitKind kind);
-    void SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pilon, bool ld_from_history = false);
-    void Djeans007(ERobotUnitType type, ERobotUnitKind kind, int pilon);
+	void OperateUnit(
+        ERobotUnitType type,
+        ERobotUnitKind kind
+    );
+    void SuperDjeans(
+        ERobotUnitType type,
+        ERobotUnitKind kind,
+        int pilon,
+        bool ld_from_history = false
+    );
+    void Djeans007(
+        ERobotUnitType type,
+        ERobotUnitKind kind,
+        int pilon
+    );
 
 	void __stdcall RemoteBuild(void* pObj);
 	SNewBorn* ProduceRobot(void* pObject);
-    void StackRobot(void* pObject,int team=0);
+    void StackRobot(
+        void* pObject,
+        int team=0
+    );
     void BeforeRender(void);
 
 	void Render();
@@ -150,7 +219,8 @@ public:
         OperateUnit(MRT_ARMOR, (ERobotUnitKind)rnd);
 //WEAPON
 		rnd = (int)RND(1, 5);
-		for(int nC = 0; nC <= rnd; nC++){
+		for(int nC = 0; nC <= rnd; nC++)
+        {
 			OperateUnit(MRT_WEAPON, (ERobotUnitKind)/*6*/g_MatrixMap->Rnd(1,9));
 		}
 //HEAD
@@ -171,7 +241,8 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define PRESETS 1
 
-struct SRobotConfig{
+struct SRobotConfig
+{
     SUnit           m_Head;
     SUnit           m_Weapon[MAX_WEAPON_CNT];
     SUnit           m_Chassis;
@@ -188,7 +259,17 @@ struct SRobotConfig{
     SRobotConfig*   m_NextConfig;
     SRobotConfig*   m_PrevConfig;
 
-    SRobotConfig()                                                              { m_titX = 0; m_elecX = 0; m_enerX = 0; m_plasX = 0; m_Structure = 0; m_Damage = 0; m_NextConfig = NULL; m_PrevConfig = NULL;}
+    SRobotConfig()
+    {
+        m_titX = 0;
+        m_elecX = 0;
+        m_enerX = 0;
+        m_plasX = 0;
+        m_Structure = 0;
+        m_Damage = 0;
+        m_NextConfig = NULL;
+        m_PrevConfig = NULL;
+    }
 };
 
 
@@ -209,29 +290,50 @@ public:
     void ActivateAndSelect();
     void ResetGroupNClose();                                                     
 
-    void ResetConfig()                                                          { ZeroMemory(&m_Configs, sizeof(m_Configs)); }
-    bool IsActive()                                                             { return m_Active == 1; }
+    void ResetConfig()
+    {
+        ZeroMemory(&m_Configs, sizeof(m_Configs));
+    }
+    bool IsActive()
+    {
+        return m_Active == 1;
+    }
 
-    void ResetWeapon()                                                          { ZeroMemory(m_Configs[m_CurrentConfig].m_Weapon, sizeof(SUnit) * MAX_WEAPON_CNT); m_Configs[m_CurrentConfig].m_Damage = 0; }
+    void ResetWeapon()
+    {
+        ZeroMemory(m_Configs[m_CurrentConfig].m_Weapon, sizeof(SUnit) * MAX_WEAPON_CNT);
+        m_Configs[m_CurrentConfig].m_Damage = 0;
+    }
     void __stdcall RemoteFocusElement(void* object);
     void __stdcall RemoteUnFocusElement(void* object);
     void FocusElement(CIFaceElement* element);
     void UnFocusElement(CIFaceElement* element);
-    void SetLabelsAndPrice(ERobotUnitType type, ERobotUnitKind kind);
+    void SetLabelsAndPrice(
+        ERobotUnitType type,
+        ERobotUnitKind kind
+    );
 
-    bool IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUnitType type, ERobotUnitKind kind);
+    bool IsEnoughResourcesForThisPieceOfShit(
+        int pilon,
+        ERobotUnitType type,
+        ERobotUnitKind kind
+    );
 
-    void MakeItemReplacements(ERobotUnitType type, ERobotUnitKind kind);
+    void MakeItemReplacements(
+        ERobotUnitType type,
+        ERobotUnitKind kind
+    );
 
-    CConstructorPanel():m_FocusedLabel(g_MatrixHeap),m_FocusedDescription(g_MatrixHeap)                                                       
-    { 
+    CConstructorPanel(): m_FocusedLabel(g_MatrixHeap), m_FocusedDescription(g_MatrixHeap)                                                       
+    {
         m_CurrentConfig = 0;
         m_Active = 0; 
         ZeroMemory(&m_Configs, sizeof(m_Configs)); 
         m_Configs[m_CurrentConfig].m_Chassis.m_nType = MRT_CHASSIS; 
         m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nType = MRT_ARMOR; 
         m_Configs[m_CurrentConfig].m_Head.m_nType = MRT_HEAD; 
-        for(int cnt = 0; cnt < MAX_WEAPON_CNT;cnt++){ 
+        for(int cnt = 0; cnt < MAX_WEAPON_CNT; cnt++)
+        { 
             m_Configs[m_CurrentConfig].m_Weapon[cnt].m_nType = MRT_WEAPON;
         } 
         m_FocusedElement = NULL; 
@@ -240,7 +342,7 @@ public:
         m_fenerX = 0; 
         m_fplasX = 0;
     }
-    ~CConstructorPanel()                                                        {}
+    ~CConstructorPanel() {}
 };
 
 

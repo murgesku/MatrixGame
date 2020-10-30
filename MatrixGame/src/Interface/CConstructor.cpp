@@ -58,29 +58,36 @@ CConstructor::~CConstructor()
 		m_Robot = NULL;
 	}
 }
-SNewBorn* CConstructor::ProduceRobot(void* )
+SNewBorn* CConstructor::ProduceRobot(void*)
 {
     DTRACE();
 	if(!m_Base || m_Base->m_State != BASE_CLOSED)
 		return NULL;
 
-	if(m_nUnitCnt){
+	if(m_nUnitCnt)
+    {
         // m_Base->m_BusyFlag.SetBusy(m_Build); // !SETBUSY
         m_Build=g_MatrixMap->StaticAdd<CMatrixRobotAI>();
 		
-	    if(m_Head.m_nKind != 0){
+	    if(m_Head.m_nKind != 0)
+        {
 		    m_Build->UnitInsert(0, MRT_HEAD, m_Head.m_nKind);
 	    }
-        if(m_Armor.m_Unit.m_nKind != 0){
-            for(int nC = 0; nC < MAX_WEAPON_CNT; nC++){
-		        if(m_Weapon[nC].m_Unit.m_nKind != 0){
-                    m_Build->WeaponInsert(0, MRT_WEAPON, m_Weapon[nC].m_Unit.m_nKind, m_Armor.m_Unit.m_nKind, m_Weapon[nC].m_Pos);
+        auto botHull = m_Armor.m_Unit.m_nKind;
+        if(botHull != 0)
+        {
+            for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+            {
+                auto botGun = m_Weapon[nC].m_Unit.m_nKind;
+		        if(botGun != 0)
+                {
+                    m_Build->WeaponInsert(0, MRT_WEAPON, botGun, botHull, m_Weapon[nC].m_Pos);
 		        }
 	        }
-
-		    m_Build->UnitInsert(0, MRT_ARMOR, m_Armor.m_Unit.m_nKind);
+		    m_Build->UnitInsert(0, MRT_ARMOR, botHull);
 	    }
-	    if(m_Chassis.m_nKind != 0){
+	    if(m_Chassis.m_nKind != 0)
+        {
 		    m_Build->UnitInsert(0, MRT_CHASSIS, m_Chassis.m_nKind);
 	    }
 
@@ -119,7 +126,7 @@ SNewBorn* CConstructor::ProduceRobot(void* )
         else if(si->GetTeam(2)->m_RobotCnt<si->GetTeam(0)->m_RobotCnt && si->GetTeam(2)->m_RobotCnt<si->GetTeam(1)->m_RobotCnt) m_NewBorn->m_Team=2;
         else m_NewBorn->m_Team = g_MatrixMap->Rnd(0, 2);
 
-        m_NewBorn->m_Team =0;
+        m_NewBorn->m_Team = 0;
 //Team
         m_Build->SetTeam(m_NewBorn->m_Team);
         ResetConstruction();
@@ -130,7 +137,10 @@ SNewBorn* CConstructor::ProduceRobot(void* )
     return NULL;
 }
 
-void CConstructor::StackRobot(void *pObject,int team)
+void CConstructor::StackRobot(
+    void *pObject,
+    int team
+)
 {
     DTRACE();
 
@@ -146,7 +156,8 @@ void CConstructor::StackRobot(void *pObject,int team)
 //		return;
     if(!m_Base || m_Base->m_BS.GetItemsCnt() >= 6)
         return;
-	if(m_nUnitCnt){
+	if(m_nUnitCnt)
+    {
         //m_Base->m_BusyFlag.SetBusy(m_Build);
         m_Build = HNew(g_MatrixHeap) CMatrixRobotAI;
 
@@ -155,19 +166,25 @@ void CConstructor::StackRobot(void *pObject,int team)
             m_Build->MarkCrazy();
         }
 
-	    if(m_Head.m_nKind != 0){
+	    if(m_Head.m_nKind != 0)
+        {
 		    m_Build->UnitInsert(0, MRT_HEAD, m_Head.m_nKind);
 	    }
-        if(m_Armor.m_Unit.m_nKind != 0){
-            for(int nC = 0; nC < MAX_WEAPON_CNT; nC++){
-		        if(m_Weapon[nC].m_Unit.m_nKind != 0){
-                    m_Build->WeaponInsert(0, MRT_WEAPON, m_Weapon[nC].m_Unit.m_nKind, m_Armor.m_Unit.m_nKind, m_Weapon[nC].m_Pos);
+        auto botHull = m_Armor.m_Unit.m_nKind;
+        if(botHull != 0)
+        {
+            for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+            {
+                auto botGun = m_Weapon[nC].m_Unit.m_nKind;
+		        if(botGun != 0)
+                {
+                    m_Build->WeaponInsert(0, MRT_WEAPON, botGun, botHull, m_Weapon[nC].m_Pos);
 		        }
 	        }
-
-		    m_Build->UnitInsert(0, MRT_ARMOR, m_Armor.m_Unit.m_nKind);
+		    m_Build->UnitInsert(0, MRT_ARMOR, botHull);
 	    }
-	    if(m_Chassis.m_nKind != 0){
+	    if(m_Chassis.m_nKind != 0)
+        {
 		    m_Build->UnitInsert(0, MRT_CHASSIS, m_Chassis.m_nKind);
 	    }
 
@@ -191,7 +208,8 @@ void CConstructor::StackRobot(void *pObject,int team)
 
         m_Build->m_HullForward = m_Build->m_Forward;
         
-        if(m_Base->m_Side == PLAYER_SIDE){
+        if(m_Base->m_Side == PLAYER_SIDE)
+        {
             CMatrixSideUnit * si=g_MatrixMap->GetPlayerSide();
             int cfg_num = si->m_ConstructPanel->m_CurrentConfig;
         }
@@ -220,9 +238,11 @@ void CConstructor::StackRobot(void *pObject,int team)
 	}
 }
 
-void __stdcall CConstructor::RemoteBuild(void* pObj){
+void __stdcall CConstructor::RemoteBuild(void* pObj)
+{
 	DTRACE();
-    if(m_Base->m_Side != PLAYER_SIDE){
+    if(m_Base->m_Side != PLAYER_SIDE)
+    {
         return;
     }
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
@@ -230,7 +250,8 @@ void __stdcall CConstructor::RemoteBuild(void* pObj){
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     g_ConfigHistory->AddConfig(&player_side->m_ConstructPanel->m_Configs[cfg_num]);
     
-    for(int i = 0; i < g_IFaceList->m_RCountControl->GetCounter();i++){
+    for(int i = 0; i < g_IFaceList->m_RCountControl->GetCounter(); i++)
+    {
         StackRobot(pObj);
     }
 
@@ -241,7 +262,8 @@ void __stdcall CConstructor::RemoteBuild(void* pObj){
     player_side->AddResourceAmount(ENERGY,-res[ENERGY]*g_IFaceList->m_RCountControl->GetCounter());
     player_side->AddResourceAmount(PLASMA,-res[PLASMA]*g_IFaceList->m_RCountControl->GetCounter());
 
-    if(player_side && player_side->m_ConstructPanel){
+    if(player_side && player_side->m_ConstructPanel)
+    {
         player_side->m_ConstructPanel->ResetGroupNClose();
     }
     g_IFaceList->m_RCountControl->Reset();
@@ -376,69 +398,126 @@ void __stdcall CConstructor::RemoteOperateUnit(void* pObj)
 
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     
-    if(pButton->m_strName == IF_BASE_PILON1){
+    if(pButton->m_strName == IF_BASE_PILON1)
+    {
         pilon = 0;
-    }else if(pButton->m_strName == IF_BASE_PILON2){
+    }
+    else if(pButton->m_strName == IF_BASE_PILON2)
+    {
         pilon = 1;
-    }else if(pButton->m_strName == IF_BASE_PILON3){
+    }
+    else if(pButton->m_strName == IF_BASE_PILON3)
+    {
         pilon = 2;
-    }else if(pButton->m_strName == IF_BASE_PILON4){
+    }
+    else if(pButton->m_strName == IF_BASE_PILON4)
+    {
         pilon = 3;
-    }else if(pButton->m_strName == IF_BASE_PILON5){
+    }
+    else if(pButton->m_strName == IF_BASE_PILON5)
+    {
         pilon = 4;
     }
     
-    if(type == MRT_HEAD){
-        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Head.m_nKind == 4){
+    if(type == MRT_HEAD)
+    {
+        auto choosedHead = player_side->m_ConstructPanel->m_Configs[cfg_num].m_Head.m_nKind;
+
+        if(choosedHead == 4)
+        {
             kind = ERobotUnitKind(0);
-        }else{
-            int a = (int)player_side->m_ConstructPanel->m_Configs[cfg_num].m_Head.m_nKind;
+        }
+        else
+        {
+            int a = (int)choosedHead;
             a++;
             kind = ERobotUnitKind(a);
         }
-    }else if(type == MRT_ARMOR){
-        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind == 6){
+    }
+    else if(type == MRT_ARMOR)
+    {
+        auto choosedHull = player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind;
+
+        if(choosedHull == 6)
+        {
             kind = ERobotUnitKind(1);
-        }else{
-            int a = (int)player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind;
+        }
+        else
+        {
+            int a = (int)choosedHull;
             a++;
             kind = ERobotUnitKind(a);
         }
-    }else if(type == MRT_CHASSIS){
-        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind == 5){
+    }
+    else if(type == MRT_CHASSIS)
+    {
+        auto choosedChassi = player_side->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind;
+
+        if(choosedChassi == 5)
+        {
             kind = ERobotUnitKind(1);
-        }else{
-            int a = (int)player_side->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind;
+        }
+        else
+        {
+            int a = (int)choosedChassi;
             a++;
             kind = ERobotUnitKind(a);
         }
-    }else if(type == MRT_WEAPON && pilon != 4){
-        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind == 4 || player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind == 6){
-            int a = (int)player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind;
-            a += 2;
-            kind = ERobotUnitKind(a);
-            //kind = ERobotUnitKind(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind);
-        }else if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind == 10){
-            kind = ERobotUnitKind(0);
-        }else{
-            int a = (int)player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind;
-            a++;
-            kind = ERobotUnitKind(a);
+    }
+    else if(type == MRT_WEAPON)
+    {
+        //Если выбирается основное оружие (одно из 4-х)
+        if (pilon != 4)
+        {
+            auto choosedGun = player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind;
+
+            if (choosedGun == 4 || choosedGun == 6)
+            {
+                int a = (int)choosedGun;
+                a += 2;
+                kind = ERobotUnitKind(a);
+                //kind = ERobotUnitKind(choosedGun);
+            }
+            else if (choosedGun == 10)
+            {
+                kind = ERobotUnitKind(0);
+            }
+            else
+            {
+                int a = (int)choosedGun;
+                a++;
+                kind = ERobotUnitKind(a);
+            }
         }
-    }else if(type == MRT_WEAPON && pilon == 4){
-        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[4].m_nKind == 0){
-            kind = ERobotUnitKind(5);
-        }else if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[4].m_nKind == 5){
-            kind = ERobotUnitKind(7);
-        }else if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[4].m_nKind == 7){
-            kind = ERobotUnitKind(0);
+        //Если выбирается вспомогательное оружие (миномёт или бомба)
+        else
+        {
+            auto choosedGun = player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[4].m_nKind;
+
+            if (choosedGun == 0)
+            {
+                kind = ERobotUnitKind(5);
+            }
+            else if (choosedGun == 5)
+            {
+                kind = ERobotUnitKind(7);
+            }
+            else if (choosedGun == 7)
+            {
+                kind = ERobotUnitKind(0);
+            }
         }
     }
     
     SuperDjeans(type, kind, pilon);
 }
 
-void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pilon, bool ld_from_history)
+void CConstructor::SuperDjeans(
+    ERobotUnitType type,
+    ERobotUnitKind kind,
+    int pilon,
+    bool ld_from_history
+)
 {
     if(g_IFaceList && g_IFaceList->m_RCountControl)g_IFaceList->m_RCountControl->Reset();
 
@@ -446,36 +525,44 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     SRobotConfig* old_cfg = NULL;
 
-    if(type == MRT_HEAD){
+    if(type == MRT_HEAD)
+    {
         player_side->m_ConstructPanel->m_Configs[cfg_num].m_Head.m_nKind = kind;
         CInterface::CopyElements(g_IFaceList->m_Head[int(kind)], g_IFaceList->m_HeadPilon);
-    }else if(type == MRT_ARMOR){
-        if(!ld_from_history){
+    }
+    else if(type == MRT_ARMOR)
+    {
+        if(!ld_from_history)
+        {
             old_cfg = HNew(g_MatrixHeap) SRobotConfig;
             memcpy(old_cfg, &player_side->m_ConstructPanel->m_Configs[cfg_num], sizeof(SRobotConfig));
 
             CInterface::CopyElements(g_IFaceList->m_Head[0], g_IFaceList->m_HeadPilon);
             SuperDjeans(MRT_HEAD, ERobotUnitKind(0), 0);
         }
-
         player_side->m_ConstructPanel->ResetWeapon();
         g_IFaceList->WeaponPilonsInit();
 
         player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind = kind;
         CInterface::CopyElements(g_IFaceList->m_Armor[int(kind)- 1], g_IFaceList->m_ArmorPilon);
-    }else if(type == MRT_CHASSIS){
+    }
+    else if(type == MRT_CHASSIS)
+    {
         player_side->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind = kind;
         CInterface::CopyElements(g_IFaceList->m_Chassis[int(kind)- 1], g_IFaceList->m_ChassisPilon);
-    }else if(type == MRT_WEAPON && pilon != 4){
+    }
+    else if(type == MRT_WEAPON && pilon != 4)
+    {
         player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[pilon].m_nKind = kind;
 
         int fis_pilon = 0;
         int pilon_ost = pilon+1;
-        int weapon_num = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].cnt;
+        auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
+        int weapon_num = pilons_count.cnt;
         int t;
-        for(t=0;t < weapon_num && pilon_ost > 0;t++){
-            if( !(g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(6))) &&
-                !(g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(4))))
+        for(t=0;t < weapon_num && pilon_ost > 0; t++)
+        {
+            if( !(pilons_count.list[t].access_invert & (1<<(6))) && !(pilons_count.list[t].access_invert & (1<<(4))) )
             {
                 pilon_ost--;
             }
@@ -496,12 +583,15 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
         g_IFaceList->CreateSummPrice();
         g_IFaceList->m_RCountControl->CheckUp();
         return;
-    }else if(type == MRT_WEAPON && pilon == 4){
+    }
+    else if(type == MRT_WEAPON && pilon == 4)
+    {
         int pilon = 0;
-        int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].cnt;
-        for(int t=0;t < common_weapon;t++){
-            if( (g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(6))) ||
-                (g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(4))) )
+        auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
+        int common_weapon = pilons_count.cnt;
+        for(int t=0; t < common_weapon; t++)
+        {
+            if( (pilons_count.list[t].access_invert & (1<<(6))) || (pilons_count.list[t].access_invert & (1<<(4))) )
             {
                 pilon = t;
                 break;
@@ -529,28 +619,40 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
     OperateUnit(type, kind);
     GetConstructionName(g_MatrixMap->GetPlayerSide()->m_Constructor->GetRenderBot());
     
-    if(type == MRT_HEAD){
+    if(type == MRT_HEAD)
+    {
         player_side->m_ConstructPanel->UnFocusElement(g_IFaceList->m_HeadPilon);
         player_side->m_ConstructPanel->FocusElement(g_IFaceList->m_HeadPilon);
-    }else if(type == MRT_ARMOR){
-        //
-        if(old_cfg){
+    }
+    else if(type == MRT_ARMOR)
+    {
+        if(old_cfg)
+        {
             //восстанавливаем обычные ружбайки
             int pilon = 0;
-            for(int i=0;i < MAX_WEAPON_CNT && pilon < m_Armor.m_MaxCommonWeaponCnt;i++){
-                if(old_cfg->m_Weapon[i].m_nKind && !(old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)){
-                    SuperDjeans(MRT_WEAPON, old_cfg->m_Weapon[i].m_nKind, pilon);
+            for(int i=0; i < MAX_WEAPON_CNT && pilon < m_Armor.m_MaxCommonWeaponCnt; i++)
+            {
+                auto gun = old_cfg->m_Weapon[i].m_nKind;
+                if(gun && !(gun == RUK_WEAPON_BOMB || gun == RUK_WEAPON_MORTAR))
+                {
+                    SuperDjeans(MRT_WEAPON, gun, pilon);
                     pilon++;
-                }else{
+                }
+                else
+                {
                     if(i<m_Armor.m_MaxCommonWeaponCnt+m_Armor.m_MaxExtraWeaponCnt)
                         SuperDjeans(MRT_WEAPON, ERobotUnitKind(0), i);
                 }
             }
             //восстанавливаем супер оружие
-            if(m_Armor.m_MaxExtraWeaponCnt){
-                for(int i=0;i < MAX_WEAPON_CNT;i++){
-                    if((old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || old_cfg->m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)){
-                        SuperDjeans(MRT_WEAPON, old_cfg->m_Weapon[i].m_nKind, 4);
+            if(m_Armor.m_MaxExtraWeaponCnt)
+            {
+                for(int i=0; i < MAX_WEAPON_CNT; i++)
+                {
+                    auto gun = old_cfg->m_Weapon[i].m_nKind;
+                    if(gun == RUK_WEAPON_BOMB || gun == RUK_WEAPON_MORTAR)
+                    {
+                        SuperDjeans(MRT_WEAPON, gun, 4);
                         break;
                     }
                 }
@@ -561,32 +663,37 @@ void CConstructor::SuperDjeans(ERobotUnitType type, ERobotUnitKind kind, int pil
         }
         player_side->m_ConstructPanel->UnFocusElement(g_IFaceList->m_ArmorPilon);
         player_side->m_ConstructPanel->FocusElement(g_IFaceList->m_ArmorPilon);
-        
-
-    }else if(type == MRT_CHASSIS){
+    }
+    else if(type == MRT_CHASSIS)
+    {
         player_side->m_ConstructPanel->UnFocusElement(g_IFaceList->m_ChassisPilon);
         player_side->m_ConstructPanel->FocusElement(g_IFaceList->m_ChassisPilon);
     }
-
 
     g_IFaceList->CreateSummPrice();
     g_IFaceList->m_RCountControl->CheckUp();
 }
 
-void CConstructor::Djeans007(ERobotUnitType type, ERobotUnitKind kind, int pilon)
+void CConstructor::Djeans007(
+    ERobotUnitType type,
+    ERobotUnitKind kind,
+    int pilon
+)
 {
     g_IFaceList->m_RCountControl->Reset();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
 
-    if(type == MRT_WEAPON && pilon != 4){
+    if(type == MRT_WEAPON && pilon != 4)
+    {
         int fis_pilon = 0;
         int pilon_ost = pilon+1;
-        int weapon_num = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].cnt;
+        auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
+        int weapon_num = pilons_count.cnt;
         int t;
-        for(t=0;t < weapon_num && pilon_ost > 0;t++){
-            if( !(g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(6))) &&
-                !(g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(4))))
+        for(t=0; t < weapon_num && pilon_ost > 0; t++)
+        {
+            if( !(pilons_count.list[t].access_invert & (1<<(6))) && !(pilons_count.list[t].access_invert & (1<<(4))) )
             {
                 pilon_ost--;
             }
@@ -606,12 +713,15 @@ void CConstructor::Djeans007(ERobotUnitType type, ERobotUnitKind kind, int pilon
         g_IFaceList->CreateSummPrice();
         g_IFaceList->m_RCountControl->CheckUp();
         return;
-    }else if(type == MRT_WEAPON && pilon == 4){
+    }
+    else if(type == MRT_WEAPON && pilon == 4)
+    {
         int pilon = 0;
-        int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].cnt;
-        for(int t=0;t < common_weapon;t++){
-            if( (g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(6))) ||
-                (g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].list[t].access_invert & (1<<(4))) )
+        auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
+        int common_weapon = pilons_count.cnt;
+        for(int t=0; t < common_weapon; t++)
+        {
+            if( (pilons_count.list[t].access_invert & (1<<(6))) || (pilons_count.list[t].access_invert & (1<<(4))) )
             {
                 pilon = t;
                 break;
@@ -626,7 +736,7 @@ void CConstructor::Djeans007(ERobotUnitType type, ERobotUnitKind kind, int pilon
 
         InsertUnits();
         GetConstructionName(g_MatrixMap->GetPlayerSide()->m_Constructor->GetRenderBot());
-        player_side->m_ConstructPanel->m_FocusedElement =  g_IFaceList->m_Weapon[kind];
+        player_side->m_ConstructPanel->m_FocusedElement = g_IFaceList->m_Weapon[kind];
 
         g_IFaceList->CreateSummPrice();
 
@@ -639,31 +749,40 @@ void CConstructor::Djeans007(ERobotUnitType type, ERobotUnitKind kind, int pilon
     g_IFaceList->CreateSummPrice();
     GetConstructionName(g_MatrixMap->GetPlayerSide()->m_Constructor->GetRenderBot());
     
-    if(type == MRT_HEAD){
+    if(type == MRT_HEAD)
+    {
         player_side->m_ConstructPanel->m_FocusedElement =  g_IFaceList->m_Head[int(kind)];
         player_side->m_ConstructPanel->SetLabelsAndPrice(MRT_HEAD, kind);
-    }else if(type == MRT_ARMOR){
+    }
+    else if(type == MRT_ARMOR)
+    {
         //OperateUnit(MRT_HEAD, ERobotUnitKind(0));
         int try_common = g_MatrixMap->m_RobotWeaponMatrix[kind-1].common;
         int try_extra = g_MatrixMap->m_RobotWeaponMatrix[kind-1].extra;
         SUnit tmp_weapon[MAX_WEAPON_CNT];
         memcpy(tmp_weapon, player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon, sizeof(tmp_weapon));
 
-        for(int i = 0;i < MAX_WEAPON_CNT && try_common;i++){
-            if(tmp_weapon[i].m_nKind && tmp_weapon[i].m_nKind != RUK_WEAPON_BOMB && tmp_weapon[i].m_nKind != RUK_WEAPON_MORTAR){
+        for(int i = 0; i < MAX_WEAPON_CNT && try_common; i++)
+        {
+            if(tmp_weapon[i].m_nKind && tmp_weapon[i].m_nKind != RUK_WEAPON_BOMB && tmp_weapon[i].m_nKind != RUK_WEAPON_MORTAR)
+            {
                 Djeans007(MRT_WEAPON, tmp_weapon[i].m_nKind, i);
                 try_common--;
             }
         }
-        for(int i = 0;i < MAX_WEAPON_CNT && try_extra;i++){
-            if(tmp_weapon[i].m_nKind == RUK_WEAPON_BOMB || tmp_weapon[i].m_nKind == RUK_WEAPON_MORTAR){
+        for(int i = 0; i < MAX_WEAPON_CNT && try_extra; i++)
+        {
+            if(tmp_weapon[i].m_nKind == RUK_WEAPON_BOMB || tmp_weapon[i].m_nKind == RUK_WEAPON_MORTAR)
+            {
                 Djeans007(MRT_WEAPON, tmp_weapon[i].m_nKind, 4);
                 try_extra--;
             }
         }
         player_side->m_ConstructPanel->SetLabelsAndPrice(MRT_ARMOR, kind);
         player_side->m_ConstructPanel->m_FocusedElement =  g_IFaceList->m_Armor[int(kind)-1];
-    }else if(type == MRT_CHASSIS){
+    }
+    else if(type == MRT_CHASSIS)
+    {
         player_side->m_ConstructPanel->SetLabelsAndPrice(MRT_CHASSIS, kind);
         player_side->m_ConstructPanel->m_FocusedElement =  g_IFaceList->m_Chassis[int(kind)-1];
     }
@@ -675,22 +794,30 @@ void CConstructor::OperateUnit(ERobotUnitType type, ERobotUnitKind kind)
 {
 	DTRACE();
 
-	if(type == MRT_CHASSIS){
+	if(type == MRT_CHASSIS)
+    {
 		m_Chassis.m_nType = MRT_CHASSIS;
 		m_Chassis.m_nKind = kind;
-    }else if(type == MRT_ARMOR && m_Chassis.m_nKind != 0){
+    }
+    else if(type == MRT_ARMOR && m_Chassis.m_nKind != 0)
+    {
 		ZeroMemory(m_Weapon, MAX_WEAPON_CNT * sizeof(SWeaponUnit));
 		m_Armor.m_Unit.m_nType = MRT_ARMOR;
 		m_Armor.m_Unit.m_nKind = kind;
 		
         m_Armor.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[kind-1].common;
         m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[kind-1].extra;
-	}else if(type == MRT_HEAD && m_Armor.m_Unit.m_nKind > 0){
+	}
+    else if(type == MRT_HEAD && m_Armor.m_Unit.m_nKind > 0)
+    {
 		m_Head.m_nType = MRT_HEAD;
 		m_Head.m_nKind = kind;
-	}else if(type == MRT_WEAPON && m_Armor.m_Unit.m_nKind > 0){
+	}
+    else if(type == MRT_WEAPON && m_Armor.m_Unit.m_nKind > 0)
+    {
 		int pos = CheckWeaponLegality(m_Weapon, kind, m_Armor.m_Unit.m_nKind);
-		if(pos >= 0 ){
+		if(pos >= 0 )
+        {
 			m_Weapon[pos].m_Unit.m_nKind = kind;
 			m_Weapon[pos].m_Unit.m_nType = MRT_WEAPON;
             m_Weapon[pos].m_Pos = pos+1;
@@ -702,24 +829,30 @@ void CConstructor::OperateUnit(ERobotUnitType type, ERobotUnitKind kind)
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     
-    if(player_side && g_MatrixMap->GetPlayerSide()->m_Constructor == this){
+    if(player_side && g_MatrixMap->GetPlayerSide()->m_Constructor == this)
+    {
         we_are = 1;
     }
 
     m_nUnitCnt = 0;
-    if(m_Chassis.m_nKind != 0){
+    if(m_Chassis.m_nKind != 0)
+    {
 		m_nUnitCnt++;
     }
-    if(m_Armor.m_Unit.m_nKind != 0){
+    if(m_Armor.m_Unit.m_nKind != 0)
+    {
 		m_nUnitCnt++;
     }
 
-    if(m_Head.m_nKind != 0){
+    if(m_Head.m_nKind != 0)
+    {
 		m_nUnitCnt++;
     }
 
-    for(int nC = 0; nC < MAX_WEAPON_CNT;nC++){
-        if(m_Weapon[nC].m_Unit.m_nKind != 0){
+    for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+    {
+        if(m_Weapon[nC].m_Unit.m_nKind != 0)
+        {
 			m_nUnitCnt++;
         }
 	}
@@ -728,15 +861,21 @@ void CConstructor::OperateUnit(ERobotUnitType type, ERobotUnitKind kind)
 		InsertUnits();
 }
 
-int CConstructor::CheckWeaponLegality(SWeaponUnit* weapons, int weaponKind, int armorKind)
+int CConstructor::CheckWeaponLegality(
+    SWeaponUnit* weapons,
+    int weaponKind,
+    int armorKind
+)
 {
 	DTRACE();
 
-    if(weaponKind != 5 && weaponKind != 7){
+    if(weaponKind != 5 && weaponKind != 7)
+    {
         int fis_pilon = 0;
         int weapon_num = g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].cnt;
         int pilon_ost = weapon_num;
-        for(int t=0;t < weapon_num;t++){
+        for(int t=0; t < weapon_num; t++)
+        {
             if( !(g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(6))) &&
                 !(g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(4))) && weapons[t].m_Unit.m_nKind == 0)
             {
@@ -744,10 +883,13 @@ int CConstructor::CheckWeaponLegality(SWeaponUnit* weapons, int weaponKind, int 
             }
         }
         
-    }else{
+    }
+    else
+    {
         int pilon = 0;
         int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].cnt;
-        for(int t=0;t < common_weapon;t++){
+        for(int t=0; t < common_weapon; t++)
+        {
             if( (g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(6))) ||
                 (g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(4))) )
             {
@@ -764,19 +906,24 @@ void CConstructor::InsertUnits()
 {
 	DTRACE();
 	m_Robot->UnitClear();
-	if(m_Head.m_nKind != 0){
+	if(m_Head.m_nKind != 0)
+    {
 		m_Robot->UnitInsert(0, MRT_HEAD, m_Head.m_nKind);
 	}
-    if(m_Armor.m_Unit.m_nKind != 0){
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++){
-		    if(m_Weapon[nC].m_Unit.m_nKind != 0){
+    if(m_Armor.m_Unit.m_nKind != 0)
+    {
+        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        {
+		    if(m_Weapon[nC].m_Unit.m_nKind != 0)
+            {
                 m_Robot->WeaponInsert(0, MRT_WEAPON, m_Weapon[nC].m_Unit.m_nKind, m_Armor.m_Unit.m_nKind, m_Weapon[nC].m_Pos);
 		    }
 	    }
 
 		m_Robot->UnitInsert(0, MRT_ARMOR, m_Armor.m_Unit.m_nKind);
 	}
-	if(m_Chassis.m_nKind != 0){
+	if(m_Chassis.m_nKind != 0)
+    {
 		m_Robot->UnitInsert(0, MRT_CHASSIS, m_Chassis.m_nKind);
 		D3DXMatrixIdentity(&m_Robot->m_Unit[0].m_Matrix);
 	}
@@ -803,7 +950,8 @@ void CConstructor::BuildSpecialBot(const SSpecialBot &bot)
 //ARMOR
     OperateUnit(MRT_ARMOR, bot.m_Armor.m_Unit.m_nKind);
 //WEAPON
-	for(int i = 0; i <= MAX_WEAPON_CNT; i++){
+	for(int i = 0; i <= MAX_WEAPON_CNT; i++)
+    {
         OperateUnit(MRT_WEAPON, bot.m_Weapon[i].m_Unit.m_nKind);
 	}
 //HEAD
@@ -823,8 +971,10 @@ void CConstructor::OperateCurrentConstruction()
     OperateUnit(MRT_CHASSIS, ps->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind);
     OperateUnit(MRT_ARMOR, ps->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind);
 
-    for(int i = 0; i < MAX_WEAPON_CNT; i++){
-        if(ps->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[i].m_nKind){
+    for(int i = 0; i < MAX_WEAPON_CNT; i++)
+    {
+        if(ps->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[i].m_nKind)
+        {
             OperateUnit(MRT_WEAPON, ps->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[i].m_nKind);
         }
     }
@@ -837,21 +987,30 @@ void CConstructor::GetConstructionPrice(int* res)
     CMatrixRobotAI* robot = m_Robot;
     ZeroMemory(res, sizeof(int)*MAX_RESOURCES);
 
-    for(int i = 0; i < robot->m_UnitCnt; i++){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
         int price[MAX_RESOURCES];
         ZeroMemory(price, sizeof(price));
 
-        if(robot->m_Unit[i].m_Type == MRT_CHASSIS){
+        if(robot->m_Unit[i].m_Type == MRT_CHASSIS)
+        {
             memcpy(price, &g_Config.m_Price[CHASSIS1_TITAN + (robot->m_Unit[i].m_Kind-1)*4], sizeof(int)*4);
-        }else if(robot->m_Unit[i].m_Type == MRT_ARMOR){
+        }
+        else if(robot->m_Unit[i].m_Type == MRT_ARMOR)
+        {
             memcpy(price, &g_Config.m_Price[ARMOR1_TITAN + (robot->m_Unit[i].m_Kind-1)*4], sizeof(int)*4);
-        }else if(robot->m_Unit[i].m_Type == MRT_WEAPON){
+        }
+        else if(robot->m_Unit[i].m_Type == MRT_WEAPON)
+        {
             memcpy(price, &g_Config.m_Price[WEAPON1_TITAN + (robot->m_Unit[i].m_Kind-1)*4], sizeof(int)*4);
-        }else if(robot->m_Unit[i].m_Type == MRT_HEAD){
+        }
+        else if(robot->m_Unit[i].m_Type == MRT_HEAD)
+        {
             memcpy(price, &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].m_Kind-1)*4], sizeof(int)*4);
         }
 
-        for(int j = 0; j < MAX_RESOURCES; j++){
+        for(int j = 0; j < MAX_RESOURCES; j++)
+        {
             res[j] += price[j];
         }
     }
@@ -862,25 +1021,33 @@ int CConstructor::GetConstructionStructure()
     CMatrixRobotAI* robot = m_Robot;
     int structure = 0;
 
-    for(int i = 0; i < robot->m_UnitCnt; i++){
-        if(robot->m_Unit[i].m_Type == MRT_CHASSIS){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
+        if(robot->m_Unit[i].m_Type == MRT_CHASSIS)
+        {
             structure += Float2Int(g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (robot->m_Unit[i].m_Kind-1)*6]);
-        }else if(robot->m_Unit[i].m_Type == MRT_ARMOR){
+        }
+        else if(robot->m_Unit[i].m_Type == MRT_ARMOR)
+        {
             structure += Float2Int(g_Config.m_ItemChars[ARMOR1_STRUCTURE + (robot->m_Unit[i].m_Kind-1)*2]);
         }
     }
 
     float up = 0;
-    for(int i = 0; i < robot->m_UnitCnt; i++){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
         if(robot->m_Unit[i].m_Type == MRT_HEAD)
         {
             CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
             
             const wchar *hn = L"";
-            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER ) { hn = L"S";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) { hn = L"D";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) { hn = L"L";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) { hn = L"F";  }
+            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER ) hn = L"S";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
 
             bp = bp->BlockGetNE(hn);
             if (bp)
@@ -911,7 +1078,8 @@ void __stdcall CConstructorPanel::RemoteUnFocusElement(void* object)
 
 void CConstructorPanel::FocusElement(CIFaceElement* element)
 {
-    if(m_FocusedElement != element){
+    if(m_FocusedElement != element)
+    {
         m_FocusedElement = element;
 
         CIFaceElement* el = m_FocusedElement;
@@ -921,35 +1089,50 @@ void CConstructorPanel::FocusElement(CIFaceElement* element)
 
         int cfg_num = m_CurrentConfig;
 
-        if(el->m_strName == IF_BASE_PILON1){
+        if(el->m_strName == IF_BASE_PILON1)
+        {
             type = MRT_WEAPON;
             kind = m_Configs[cfg_num].m_Weapon[0].m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON2){
+        }
+        else if(el->m_strName == IF_BASE_PILON2)
+        {
             type = MRT_WEAPON;
             kind = m_Configs[cfg_num].m_Weapon[1].m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON3){
+        }
+        else if(el->m_strName == IF_BASE_PILON3)
+        {
             type = MRT_WEAPON;
             kind = m_Configs[cfg_num].m_Weapon[2].m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON4){
+        }
+        else if(el->m_strName == IF_BASE_PILON4)
+        {
             type = MRT_WEAPON;
             kind = m_Configs[cfg_num].m_Weapon[3].m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON5){
+        }
+        else if(el->m_strName == IF_BASE_PILON5)
+        {
             type = MRT_WEAPON;
             kind = m_Configs[cfg_num].m_Weapon[4].m_nKind;
             SetLabelsAndPrice(type, kind);        
-        }else if(el->m_strName == IF_BASE_PILON_HEAD){
+        }
+        else if(el->m_strName == IF_BASE_PILON_HEAD)
+        {
             type = MRT_HEAD;
             kind = m_Configs[cfg_num].m_Head.m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON_HULL){
+        }
+        else if(el->m_strName == IF_BASE_PILON_HULL)
+        {
             type = MRT_ARMOR;
             kind = m_Configs[cfg_num].m_Hull.m_Unit.m_nKind;
             SetLabelsAndPrice(type, kind);
-        }else if(el->m_strName == IF_BASE_PILON_CHASSIS){
+        }
+        else if(el->m_strName == IF_BASE_PILON_CHASSIS)
+        {
             type = MRT_CHASSIS;
             kind = m_Configs[cfg_num].m_Chassis.m_nKind;
             SetLabelsAndPrice(type, kind);
@@ -959,7 +1142,8 @@ void CConstructorPanel::FocusElement(CIFaceElement* element)
 
 void CConstructorPanel::UnFocusElement(CIFaceElement* element)
 {
-    if(m_FocusedElement == element){
+    if(m_FocusedElement == element)
+    {
         g_IFaceList->DeleteItemPrice();
         m_FocusedElement = NULL;
         m_FocusedLabel = CWStr(L"");
@@ -993,7 +1177,11 @@ void CConstructorPanel::ResetGroupNClose()
 
 }
 
-bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUnitType type, ERobotUnitKind kind)
+bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
+    int pilon,
+    ERobotUnitType type,
+    ERobotUnitKind kind
+)
 {
     //if(g_MatrixMap->Rnd(0, 1))
     //    return true;
@@ -1009,13 +1197,16 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
     ZeroMemory(plus_res, sizeof(int)*4);
     ZeroMemory(item_res, sizeof(int)*4);
     
-    if(type == MRT_HEAD){
-        if(m_Configs[m_CurrentConfig].m_Head.m_nKind){
+    if(type == MRT_HEAD)
+    {
+        if(m_Configs[m_CurrentConfig].m_Head.m_nKind)
+        {
             memcpy(minus_res, &g_Config.m_Price[HEAD1_TITAN + (int(m_Configs[m_CurrentConfig].m_Head.m_nKind)-1)*4], sizeof(int)*4);
         }
         memcpy(plus_res, &g_Config.m_Price[HEAD1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         memcpy(item_res, &g_Config.m_Price[HEAD1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
-    }else if(type == MRT_ARMOR){
+    }else if(type == MRT_ARMOR)
+    {
         int set_common = 0;
         int set_extra = 0;
         int try_common = g_MatrixMap->m_RobotWeaponMatrix[kind-1].common;
@@ -1024,14 +1215,18 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
 //        m_Armor.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[kind-1].common;
 //        m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[kind-1].extra;
 
-        if(m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind){
+        if(m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind)
+        {
             set_common = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind-1].common;
             set_extra = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind-1].extra;
             memcpy(minus_res, &g_Config.m_Price[ARMOR1_TITAN + (int(m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind)-1)*4], sizeof(int)*4);
 
-            for(int i=0; i < MAX_WEAPON_CNT;i++){
-                if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind){
-                    for(int j = 0;j < 4; j++){
+            for(int i=0; i < MAX_WEAPON_CNT;i++)
+            {
+                if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind)
+                {
+                    for(int j = 0;j < 4; j++)
+                    {
                         minus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                     }
                 }
@@ -1040,32 +1235,44 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
         memcpy(plus_res, &g_Config.m_Price[ARMOR1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         memcpy(item_res, &g_Config.m_Price[ARMOR1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         
-        for(int i = 0; i < MAX_WEAPON_CNT && try_common; i++){
-            if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_BOMB && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_MORTAR){
-                for(int j = 0;j < 4; j++){
+        for(int i = 0; i < MAX_WEAPON_CNT && try_common; i++)
+        {
+            if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_BOMB && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_MORTAR)
+            {
+                for(int j = 0;j < 4; j++)
+                {
                     plus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                 }
                 try_common--;
             }
         }
 
-        for(int i = 0; i < MAX_WEAPON_CNT && try_extra; i++){
-            if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR){
-                for(int j = 0;j < 4; j++){
+        for(int i = 0; i < MAX_WEAPON_CNT && try_extra; i++)
+        {
+            if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)
+            {
+                for(int j = 0;j < 4; j++)
+                {
                     plus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                 }
                 try_extra--;
             }
         }
 
-    }else if(type == MRT_CHASSIS){
-        if(m_Configs[m_CurrentConfig].m_Chassis.m_nKind){
+    }
+    else if(type == MRT_CHASSIS)
+    {
+        if(m_Configs[m_CurrentConfig].m_Chassis.m_nKind)
+        {
             memcpy(minus_res, &g_Config.m_Price[CHASSIS1_TITAN + (m_Configs[m_CurrentConfig].m_Chassis.m_nKind-1)*4], sizeof(int)*4);
         }
         memcpy(plus_res, &g_Config.m_Price[CHASSIS1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         memcpy(item_res, &g_Config.m_Price[CHASSIS1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
-    }else if(type == MRT_WEAPON){
-        if(m_Configs[m_CurrentConfig].m_Weapon[pilon].m_nKind){
+    }
+    else if(type == MRT_WEAPON)
+    {
+        if(m_Configs[m_CurrentConfig].m_Weapon[pilon].m_nKind)
+        {
             memcpy(minus_res, &g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[pilon].m_nKind-1)*4)], sizeof(int)*4);
         }
         memcpy(plus_res, &g_Config.m_Price[WEAPON1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
@@ -1080,7 +1287,8 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
     //for players only
 
    
-    //if(ps->IsEnoughResources(total_res)){
+    //if(ps->IsEnoughResources(total_res))
+    //{
     //    return true;
     //}
 
@@ -1091,36 +1299,46 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
     }
     return true;
 
-    //if(type == MRT_CHASSIS){
+    //if(type == MRT_CHASSIS)
+    //{
     //}
-
     //return false;
 }
 
-void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind kind)
+void CConstructorPanel::MakeItemReplacements(
+    ERobotUnitType type,
+    ERobotUnitKind kind
+)
 {
     if(type == MRT_EMPTY || kind == RUK_UNKNOWN) return;
     
     m_FocusedLabel.Replace(CWStr(L"<br>"), CWStr(L"\r\n"));
 
     CWStr color(L"<Color=247,195,0>",g_CacheHeap);
-    if(type == MRT_WEAPON){
+    if(type == MRT_WEAPON)
+    {
         int wspeed = g_Config.m_WeaponCooldown[WeapKind2Index(kind)];
         int damage = g_Config.m_RobotDamages[WeapKind2Index(kind)].damage;
         
         damage = Float2Int(float(damage) * 1000.0f / (float)wspeed);
     
         int adamage = 0;    
-        if(kind == RUK_WEAPON_FLAMETHROWER){
+        if(kind == RUK_WEAPON_FLAMETHROWER)
+        {
             adamage = g_Config.m_RobotDamages[Weap2Index(WEAPON_ABLAZE)].damage;
             adamage = Float2Int(float(adamage) * 1000.0f / ((float)OBJECT_ROBOT_ABLAZE_PERIOD));
-        }else if(kind == RUK_WEAPON_ELECTRIC){
+        }
+        else if(kind == RUK_WEAPON_ELECTRIC)
+        {
             adamage = g_Config.m_RobotDamages[Weap2Index(WEAPON_SHORTED)].damage;
             adamage = Float2Int(float(adamage) * 1000.0f / ((float)OBJECT_SHORTED_PERIOD));
-        }else if(kind == RUK_WEAPON_BOMB){
+        }
+        else if(kind == RUK_WEAPON_BOMB)
+        {
             damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BIGBOOM)].damage;
         }
-        //else if(kind == RUK_WEAPON_MORTAR){
+        //else if(kind == RUK_WEAPON_MORTAR)
+        //{
         //    damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BOMB)].damage / wspeed;
         //}
         
@@ -1132,35 +1350,39 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         
         m_FocusedLabel.Replace(CWStr(L"<Damage>"), colored_damage);
         m_FocusedLabel.Replace(CWStr(L"<AddDamage>"), colored_adamage);
-    }else if(type == MRT_HEAD)
+    }
+    else if(type == MRT_HEAD)
     {
 
         CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
         
         const wchar *hn = L"";
-        if (kind == RUK_HEAD_BLOCKER ) { hn = L"S";  }
-        else if(kind == RUK_HEAD_DYNAMO ) { hn = L"D";  }
-        else if(kind == RUK_HEAD_LOCKATOR ) { hn = L"L";  }
-        else if(kind == RUK_HEAD_FIREWALL ) { hn = L"F";  }
+        if (kind == RUK_HEAD_BLOCKER ) hn = L"S";
+        else if(kind == RUK_HEAD_DYNAMO ) hn = L"D";
+        else if(kind == RUK_HEAD_LOCKATOR ) hn = L"L";
+        else if(kind == RUK_HEAD_FIREWALL ) hn = L"F";
+        //else if (kind == RUK_HEAD_RAPID) hn = L"R";
+        //else if (kind == RUK_HEAD_DESIGN) hn = L"D";
+        //else if (kind == RUK_HEAD_SPEAKER) hn = L"P";
 
         bp = bp->BlockGetNE(hn);
         if (bp)
         {
             int ccc = bp->ParCount();
             CWStr repl(g_CacheHeap);
-            for (int i=0;i<ccc;++i)
+            for (int i=0; i<ccc; i++)
             {
                 double sign = 1;
 
                 if (bp->ParGetName(i) == L"HIT_POINT_ADD") { repl = L"<Size>"; sign = 0.1f;}
                 else if (bp->ParGetName(i) == L"COOL_DOWN") { repl = L"<WeaponSpeed>"; sign = -1; }
                 else if (bp->ParGetName(i) == L"OVERHEAT") { repl = L"<WeaponHeat>"; sign = -1; }
-                else if (bp->ParGetName(i) == L"CHASSIS_SPEED") { repl = L"<ChassisSpeed>"; }
-                else if (bp->ParGetName(i) == L"FIRE_DISTANCE") { repl = L"<WeaponRadius>"; }
-                else if (bp->ParGetName(i) == L"RADAR_DISTANCE") { repl = L"<RadarRadius>"; }
-                else if (bp->ParGetName(i) == L"LIGHT_PROTECT") { repl = L"<Max>"; }
-                else if (bp->ParGetName(i) == L"AIM_PROTECT") { repl = L"<LessHit>"; }
-                else if (bp->ParGetName(i) == L"BOMB_PROTECT") { repl = L"<BombProtect>"; }
+                else if (bp->ParGetName(i) == L"CHASSIS_SPEED") repl = L"<ChassisSpeed>";
+                else if (bp->ParGetName(i) == L"FIRE_DISTANCE") repl = L"<WeaponRadius>";
+                else if (bp->ParGetName(i) == L"RADAR_DISTANCE") repl = L"<RadarRadius>";
+                else if (bp->ParGetName(i) == L"LIGHT_PROTECT") repl = L"<Max>";
+                else if (bp->ParGetName(i) == L"AIM_PROTECT") repl = L"<LessHit>";
+                else if (bp->ParGetName(i) == L"BOMB_PROTECT") repl = L"<BombProtect>";
 
                 int val = Double2Int(sign * bp->ParGet(i).GetDouble());
 
@@ -1168,7 +1390,9 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
             }
         }
 
-    }else if(type == MRT_ARMOR){
+    }
+    else if(type == MRT_ARMOR)
+    {
         int structure = (int)g_Config.m_ItemChars[ARMOR1_STRUCTURE + (kind-1)*2];
         int pilons = g_MatrixMap->m_RobotWeaponMatrix[kind-1].common;
         int ext_pilons = g_MatrixMap->m_RobotWeaponMatrix[kind-1].extra;
@@ -1183,7 +1407,9 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
         m_FocusedLabel.Replace(CWStr(L"<Pilons>"), colored_pilons);
         m_FocusedLabel.Replace(CWStr(L"<AddPilons>"), colored_epilons);
-    }else if(type == MRT_CHASSIS){
+    }
+    else if(type == MRT_CHASSIS)
+    {
         int structure = (int)g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (kind-1)*6];
         CWStr colored_size = color.Add(CWStr(L"size</color>")).Replace(CWStr(L"size"), CWStr(structure/10));
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
@@ -1193,32 +1419,44 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 void CConstructorPanel::SetLabelsAndPrice(ERobotUnitType type, ERobotUnitKind kind)
 {
     g_IFaceList->DeleteItemPrice();
-    if(kind == RUK_UNKNOWN){
+    if(kind == RUK_UNKNOWN)
+    {
         m_FocusedLabel = CWStr(L"");
         m_FocusedDescription = CWStr(L"");
         return;
     }
 
-    if(type == MRT_WEAPON){
-        if(kind != RUK_UNKNOWN){
+    if(type == MRT_WEAPON)
+    {
+        if(kind != RUK_UNKNOWN)
+        {
             g_IFaceList->CreateItemPrice(&g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]);
             m_FocusedLabel = g_Config.m_Labels[W1_CHAR + (kind-1)];
             m_FocusedDescription = g_Config.m_Descriptions[W1_DESCR + (kind-1)];
         }
-    }else if(type == MRT_HEAD){
-        if(kind){
+    }
+    else if(type == MRT_HEAD)
+    {
+        if(kind)
+        {
             g_IFaceList->CreateItemPrice(&g_Config.m_Price[HEAD1_TITAN + (kind-1)*4]);
             m_FocusedLabel = g_Config.m_Labels[HE1_CHAR + (kind-1)];
             m_FocusedDescription = g_Config.m_Descriptions[HE1_DESCR + (kind-1)];
         }
-    }else if(type == MRT_ARMOR){
-        if(kind){
+    }
+    else if(type == MRT_ARMOR)
+    {
+        if(kind)
+        {
             g_IFaceList->CreateItemPrice(&g_Config.m_Price[ARMOR1_TITAN + (kind-1)*4]);
             m_FocusedLabel = g_Config.m_Labels[HU1_CHAR + (kind-1)];
             m_FocusedDescription = g_Config.m_Descriptions[HU1_DESCR + (kind-1)];
         }
-    }else if(type == MRT_CHASSIS){
-        if(kind){
+    }
+    else if(type == MRT_CHASSIS)
+    {
+        if(kind)
+        {
             g_IFaceList->CreateItemPrice(&g_Config.m_Price[CHASSIS1_TITAN + (kind-1)*4]);
             m_FocusedLabel = g_Config.m_Labels[CH1_CHAR + (kind-1)];
             m_FocusedDescription = g_Config.m_Descriptions[CH1_DESCR + (kind-1)];
@@ -1233,7 +1471,8 @@ void SPrice::SetPrice(ERobotUnitType type, ERobotUnitKind kind)
     ZeroMemory(m_Resources, sizeof(m_Resources));
     if(!kind)
         return;
-    switch(type){
+    switch(type)
+    {
         case MRT_HEAD:
             {
                 int i = int(kind) - 1;
@@ -1288,23 +1527,28 @@ CMatrixRobotAI* SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id)
     CMatrixRobotAI* robot = HNew(g_MatrixHeap) CMatrixRobotAI;
     CMatrixSideUnit* side = g_MatrixMap->GetSideById(side_id);
     
-    if(!side || !robot){
+    if(!side || !robot)
+    {
         return NULL;
     }
 
 
     robot->UnitClear();
-    if(m_Head.m_nKind != 0){
+    if(m_Head.m_nKind != 0)
+    {
 		robot->UnitInsert(0, MRT_HEAD, m_Head.m_nKind);
 	}
     SWeaponUnit weapons[MAX_WEAPON_CNT];
     ZeroMemory(weapons, sizeof(weapons));
     
     if(m_Armor.m_Unit.m_nKind != 0){
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++){
-		    if(m_Weapon[nC].m_Unit.m_nKind != 0){
+        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        {
+		    if(m_Weapon[nC].m_Unit.m_nKind != 0)
+            {
                 int pilon  = side->m_Constructor->CheckWeaponLegality(weapons, m_Weapon[nC].m_Unit.m_nKind, m_Armor.m_Unit.m_nKind);
-                if(pilon != -1){
+                if(pilon != -1)
+                {
                     weapons[pilon].m_Pos = pilon+1;
                     weapons[pilon].m_Unit.m_nType = MRT_WEAPON;
                     weapons[pilon].m_Unit.m_nKind = m_Weapon[nC].m_Unit.m_nKind;
@@ -1314,16 +1558,20 @@ CMatrixRobotAI* SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id)
 	    }
 	}
 
-    if(m_Armor.m_Unit.m_nKind != 0){
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++){
-		    if(weapons[nC].m_Unit.m_nKind != 0){
+    if(m_Armor.m_Unit.m_nKind != 0)
+    {
+        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        {
+		    if(weapons[nC].m_Unit.m_nKind != 0)
+            {
                 robot->WeaponInsert(0, MRT_WEAPON, weapons[nC].m_Unit.m_nKind, m_Armor.m_Unit.m_nKind, weapons[nC].m_Pos);
             }
 	    }
 
 	    robot->UnitInsert(0, MRT_ARMOR, m_Armor.m_Unit.m_nKind);
     }
-    if(m_Chassis.m_nKind != 0){
+    if(m_Chassis.m_nKind != 0)
+    {
 		robot->UnitInsert(0, MRT_CHASSIS, m_Chassis.m_nKind);
         D3DXMatrixIdentity(&robot->m_Unit[0].m_Matrix);
 	}
@@ -1369,7 +1617,8 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
     m_AIRobotTypeList=(SSpecialBot *)HAllocClear(cnt*sizeof(SSpecialBot),g_MatrixHeap);
 
     int i;
-    for(i=0;i<cnt;i++) {
+    for(i=0; i<cnt; i++) 
+    {
         if (!m_AIRobotTypeList[m_AIRobotTypeCnt].BuildFromPar(bp.ParGetName(i), bp.ParGet(i).GetInt()))
             ERROR_S2(L"LoadAIRobotType no=",CWStr(i).Get());
 
@@ -1381,9 +1630,12 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
     m_AIRobotTypeList=(SSpecialBot *)HAllocEx(m_AIRobotTypeList,m_AIRobotTypeCnt*sizeof(SSpecialBot),g_MatrixHeap);
 
     // Сортируем по силе
-    for(i=0;i<m_AIRobotTypeCnt-1;i++) {
-        for(u=i+1;u<m_AIRobotTypeCnt;u++) {
-            if(m_AIRobotTypeList[u].m_Strength>m_AIRobotTypeList[i].m_Strength) {
+    for(i=0; i<m_AIRobotTypeCnt-1; i++) 
+    {
+        for(u=i+1; u<m_AIRobotTypeCnt; u++) 
+        {
+            if(m_AIRobotTypeList[u].m_Strength>m_AIRobotTypeList[i].m_Strength) 
+            {
                 SSpecialBot temp=m_AIRobotTypeList[u];
                 m_AIRobotTypeList[u]=m_AIRobotTypeList[i];
                 m_AIRobotTypeList[i]=temp;
@@ -1394,17 +1646,22 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
 
 void SSpecialBot::ClearAIRobotType()
 {
-    if(m_AIRobotTypeList) { HFree(m_AIRobotTypeList,g_MatrixHeap); m_AIRobotTypeList=NULL; }
+    if(m_AIRobotTypeList)
+    {
+        HFree(m_AIRobotTypeList,g_MatrixHeap);
+        m_AIRobotTypeList=NULL;
+    }
     m_AIRobotTypeCnt=0;
 }
 
-void SSpecialBot::CalcStrength()                                 // Расчитываем силу робота
+//Рассчитываем силу робота
+void SSpecialBot::CalcStrength()
 {
     m_Strength=0.0f;
 
-    for(int i=0;i<MAX_WEAPON_CNT;i++) {
+    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
-
         m_Strength+=g_Config.m_WeaponStrengthAI[m_Weapon[i].m_Unit.m_nKind];
     }
 }
@@ -1412,11 +1669,13 @@ void SSpecialBot::CalcStrength()                                 // Расчит
 float SSpecialBot::DifWeapon(SSpecialBot & other)
 {
     int t1=0,t2=0;
-    for(int i=0;i<MAX_WEAPON_CNT;i++) {
+    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
         t1++;
     }
-    for(int i=0;i<MAX_WEAPON_CNT;i++) {
+    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    {
         if(other.m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
         t2++;
     }
@@ -1424,19 +1683,26 @@ float SSpecialBot::DifWeapon(SSpecialBot & other)
 
     float cnt=0;
     float cntr=0;
-    for(int i=0;i<MAX_WEAPON_CNT;i++) {
+    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
         cnt+=1.0f;
 
-        for(int u=0;u<MAX_WEAPON_CNT;u++) {
+        for(int u=0; u<MAX_WEAPON_CNT; u++) 
+        {
             if(other.m_Weapon[u].m_Unit.m_nType!=MRT_WEAPON) continue;
 
-            if(m_Weapon[i].m_Unit.m_nKind==other.m_Weapon[u].m_Unit.m_nKind) { cntr+=1.0f; break; }
+            if(m_Weapon[i].m_Unit.m_nKind==other.m_Weapon[u].m_Unit.m_nKind)
+            { 
+                cntr+=1.0f;
+                break; 
+            }
         }
     }
     return cntr/cnt;
 }
 
+//Вероятно, строительство робота компом с определением доступных ресурсов и подгрузкой схемы из конфига
 bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
 {
     int MIN_PAR_CNT;
@@ -1489,11 +1755,10 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     else if (str==L"Track" || str==L"T") m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
     else if (str==L"Hovercraft" || str==L"H") m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
     else if (str==L"Antigravity" || str==L"A") m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
-    else
-        return false;
+    else return false;
 
     m_Chassis.m_Price.SetPrice(m_Chassis.m_nType, m_Chassis.m_nKind);
-    for (int k=0; k<MAX_RESOURCES; ++k)
+    for (int k=0; k<MAX_RESOURCES; k++)
         m_Resources[k] += m_Chassis.m_Price.m_Resources[k];
     
     // Armor /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1507,13 +1772,12 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     else if (str==L"2S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
     else if (str==L"3") m_Armor.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
     else if (str==L"4S") m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
-    else
-        return false;
+    else return false;
 
     m_Armor.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].common;
     m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].extra;
     m_Armor.m_Unit.m_Price.SetPrice(m_Armor.m_Unit.m_nType, m_Armor.m_Unit.m_nKind);
-    for (int k=0; k<MAX_RESOURCES; ++k)
+    for (int k=0; k<MAX_RESOURCES; k++)
         m_Resources[k] += m_Armor.m_Unit.m_Price.m_Resources[k];
     
     // Hitpoints & Strength //////////////////////////////////////////////////////////////////////////////
@@ -1546,21 +1810,62 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
         int cntnormal=0;
         int cntextra=0;
 
-        for (int u=0; u<str.GetLen(); ++u)
+        for (int u=0; u<str.GetLen(); u++)
         {
             wchar ch = str.GetBuf()[u];
-            if (ch==L'G') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN; }
-            else if (ch==L'C') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_CANNON; }
-            else if (ch==L'M') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MISSILE; }
-            else if (ch==L'F') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_FLAMETHROWER; }
-            else if (ch==L'O') { cntextra++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MORTAR; }
-            else if (ch==L'L') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_LASER; }
-            else if (ch==L'B') { cntextra++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_BOMB; m_HaveBomb = true; }
-            else if (ch==L'P') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_PLASMA; }
-            else if (ch==L'E') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_ELECTRIC; }
-            else if (ch==L'R') { cntnormal++; m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_REPAIR; m_HaveRepair = true; }
-            else
-                return false;
+            if (ch==L'G') 
+            { 
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN; 
+            }
+            else if (ch==L'C')
+            {
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_CANNON; 
+            }
+            else if (ch==L'M')
+            { 
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
+            }
+            else if (ch==L'F')
+            { 
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_FLAMETHROWER; 
+            }
+            else if (ch==L'O')
+            { 
+                cntextra++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MORTAR; 
+            }
+            else if (ch==L'L')
+            { 
+                cntnormal++; 
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            }
+            else if (ch==L'B') 
+            { 
+                cntextra++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_BOMB;
+                m_HaveBomb = true;
+            }
+            else if (ch==L'P')
+            { 
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_PLASMA; 
+            }
+            else if (ch==L'E') 
+            { 
+                cntnormal++; 
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_ELECTRIC;
+            }
+            else if (ch==L'R')
+            {
+                cntnormal++;
+                m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_REPAIR;
+                m_HaveRepair = true;
+            }
+            else return false;
 
             m_Weapon[u].m_Unit.m_nType = MRT_WEAPON;
 
@@ -1611,20 +1916,26 @@ void GetConstructionName(CMatrixRobotAI* robot)
     CBlockPar* bp_tmp = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"RobotNames");
 
     robot->m_Name = L"";
-    for(int i = 0; i < robot->m_UnitCnt; i++){
-        if(robot->m_Unit[i].m_Type == MRT_ARMOR){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
+        if(robot->m_Unit[i].m_Type == MRT_ARMOR)
+        {
             robot->m_Name += bp_tmp->ParGet(L"Hull" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
             break;
         }
     }
-    for(int i = 0; i < robot->m_UnitCnt; i++){
-        if(robot->m_Unit[i].m_Type == MRT_CHASSIS){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
+        if(robot->m_Unit[i].m_Type == MRT_CHASSIS)
+        {
             robot->m_Name += bp_tmp->ParGet(L"Chas" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
             break;
         }
     }
-    for(int i = 0; i < robot->m_UnitCnt; i++){
-        if(robot->m_Unit[i].m_Type == MRT_HEAD){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
+        if(robot->m_Unit[i].m_Type == MRT_HEAD)
+        {
             robot->m_Name += bp_tmp->ParGet(L"Head" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
             break;
         }
@@ -1633,7 +1944,8 @@ void GetConstructionName(CMatrixRobotAI* robot)
 
 
     int dmg = GetConstructionDamage(robot);
-    if(dmg){
+    if(dmg)
+    {
         robot->m_Name += L"-" + CWStr(dmg, g_CacheHeap);
     }
 }
@@ -1643,29 +1955,33 @@ int GetConstructionDamage(CMatrixRobotAI* robot)
     int damage = 0;
 
     float cooldown = 0;
-    for(int i = 0; i < robot->m_UnitCnt; i++){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
         if(robot->m_Unit[i].m_Type == MRT_HEAD)
         {
             CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
             
             const wchar *hn = L"";
-            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER ) { hn = L"S";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) { hn = L"D";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) { hn = L"L";  }
-            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) { hn = L"F";  }
+            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER ) hn = L"S";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
+            else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
 
             bp = bp->BlockGetNE(hn);
             if (bp)
             {
                 cooldown = float(bp->ParGetNE(L"COOL_DOWN").GetDouble() / 100.0f);
                 if (cooldown < -1.0f) cooldown = -1.0f;
-
             }
             break;
         }
     }
 
-    for(int i = 0; i < robot->m_UnitCnt; i++){
+    for(int i = 0; i < robot->m_UnitCnt; i++)
+    {
         if(robot->m_Unit[i].m_Type == MRT_WEAPON && robot->m_Unit[i].m_Kind != RUK_WEAPON_BOMB)
         {
             //m_RobotDamages
