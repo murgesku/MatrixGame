@@ -73,6 +73,9 @@ enum ERobotUnitKind
     RUK_HEAD_DYNAMO     = 2,
     RUK_HEAD_LOCKATOR   = 3,
     RUK_HEAD_FIREWALL   = 4,
+    RUK_HEAD_RAPID      = 5,
+    RUK_HEAD_DESIGN     = 6,
+    RUK_HEAD_SPEAKER    = 7,
 
     ROBOT_HEAD_CNT      = 4,
 };
