@@ -239,7 +239,7 @@ void CMatrixMap::RobotPreload(void)
 
     CWStr tstr(g_MatrixHeap),tstr2(g_MatrixHeap);
 
-    for(int i=1;i<=ROBOT_HEAD_CNT;i++)
+    for(int i=1; i<=ROBOT_HEAD_CNT; i++)
     {
         CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_HEAD).Add(i).Add(L".vo").Get());
 
@@ -247,7 +247,7 @@ void CMatrixMap::RobotPreload(void)
 
         g_LoadProgress->SetCurLPPos(curlp++);
     }
-    for(int i=1;i<=ROBOT_CHASSIS_CNT;i++)
+    for(int i=1; i<=ROBOT_CHASSIS_CNT; i++)
     {
         CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(i).Add(L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
@@ -259,7 +259,7 @@ void CMatrixMap::RobotPreload(void)
 
         g_LoadProgress->SetCurLPPos(curlp++);
     }
-    for(int i=1;i<=ROBOT_WEAPON_CNT;i++)
+    for(int i=1; i<=ROBOT_WEAPON_CNT; i++)
     {
         CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(i).Add(L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
@@ -267,7 +267,7 @@ void CMatrixMap::RobotPreload(void)
         g_LoadProgress->SetCurLPPos(curlp++);
     }
 
-    for(int i=0;i<ROBOT_ARMOR_CNT;i++)
+    for(int i=0; i<ROBOT_ARMOR_CNT; i++)
     {
         CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(i+1).Add(L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
@@ -303,7 +303,8 @@ void CMatrixMap::RobotPreload(void)
                             m_RobotWeaponMatrix[i].common++;
                     }
                     m_RobotWeaponMatrix[i].list[m_RobotWeaponMatrix[i].cnt-1].access_invert |= (DWORD(1)<<(tstr2.GetInt()-1));
-                } else if(tstr2==L"I")
+                }
+                else if(tstr2==L"I")
                 {
                     m_RobotWeaponMatrix[i].list[m_RobotWeaponMatrix[i].cnt-1].access_invert |= SETBIT(31);
                 }
@@ -591,7 +592,8 @@ float CMatrixMap::GetZLand(double wx,double wy)
         float c1 = pl.d * cc;
     	        
         return float(a1 * wx + b1 * wy + c1);
-    } else
+    }
+    else
     {
         D3DXVECTOR3 p3;
         D3DXPLANE pl;
@@ -627,7 +629,8 @@ float CMatrixMap::GetZ(float wx,float wy)
 	if(wy<wx)
     {
         return un->a1 * wx + un->b1 * wy + un->c1;
-    } else
+    }
+    else
     {
 	    return un->a2 * wx + un->b2 * wy + un->c2;
     }
@@ -662,8 +665,8 @@ water:
         D3DXVec3Normalize(out, &norm);
         return;
 
-    } else 
-    if (un->IsWater())
+    } 
+    else if (un->IsWater())
     {
         goto water;
     }
@@ -698,8 +701,10 @@ bool CMatrixMap::UnitPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, con
 	float mt=1e30f;
 	bool rv=false;
 
-	for(y=max(0,ar.top);y<min(m_Size.y,ar.bottom);y++) {
-		for(x=max(0,ar.left);x<min(m_Size.x,ar.right);x++) {
+	for(y=max(0,ar.top); y<min(m_Size.y,ar.bottom); y++)
+    {
+		for(x=max(0,ar.left); x<min(m_Size.x,ar.right); x++) 
+        {
 			un=UnitGet(x,y);
 			if(!un->IsLand()) continue;
 
@@ -716,8 +721,10 @@ bool CMatrixMap::UnitPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, con
 			p3.y=GLOBAL_SCALE*(y+1);
 			p3.z=PointGet(x,y+1)->z;
 
-			if(IntersectTriangle(orig,dir,p0,p1,p2,t,m_Unit,v) || IntersectTriangle(orig,dir,p0,p2,p3,t,m_Unit,v))  {
-				if(t<mt) {
+			if(IntersectTriangle(orig,dir,p0,p1,p2,t,m_Unit,v) || IntersectTriangle(orig,dir,p0,p2,p3,t,m_Unit,v)) 
+            {
+				if(t<mt) 
+                {
 					mt=t;
 					if(ox!=NULL) *ox=x;
 					if(oy!=NULL) *oy=y;
@@ -760,8 +767,13 @@ bool CMatrixMap::PointPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, co
 	float d3=DistLinePoint(orig,orig+dir,p);
 
 	if(d1<=d0 && d1<=d2 && d1<=d3) x++;
-	else if(d2<=d0 && d2<=d1 && d2<=d3) { x++; y++; }
-	else if(d3<=d0 && d3<=d1 && d3<=d2) y++;
+	else if(d2<=d0 && d2<=d1 && d2<=d3) 
+    {
+        x++;
+        y++;
+    }
+	else if(d3<=d0 && d3<=d1 && d3<=d2)
+        y++;
 
 	if(ox!=NULL) *ox=x;
 	if(oy!=NULL) *oy=y;
@@ -848,7 +860,8 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic * ms)
                 *se = *ses;
             }
         }
-    } else
+    }
+    else
     {
         // remove this object from begin of array
         while (sb < se)
@@ -877,24 +890,24 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic * ms)
 	if(ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
     {
 		HDelete(CMatrixMapObject,(CMatrixMapObject *)ms,g_MatrixHeap);
-	} else
-    if(ms->IsRobot())
+	}
+    else if(ms->IsRobot())
     {
 		HDelete(CMatrixRobotAI,(CMatrixRobotAI *)ms,g_MatrixHeap);
-	} else
-    if(ms->IsCannon())
+	}
+    else if(ms->IsCannon())
     {
 		HDelete(CMatrixCannon,(CMatrixCannon *)ms,g_MatrixHeap);
-	} else
-    if(ms->IsFlyer())
+	}
+    else if(ms->IsFlyer())
     {
 		HDelete(CMatrixFlyer,(CMatrixFlyer *)ms,g_MatrixHeap);
-	} else
-    if(ms->IsBuilding())
+	}
+    else if(ms->IsBuilding())
     {
 		HDelete(CMatrixBuilding,(CMatrixBuilding *)ms,g_MatrixHeap);
-	} else ERROR_E;
-
+	}
+    else ERROR_E;
 
 }
 
@@ -941,9 +954,7 @@ void CMatrixMap::MacrotextureClear()
 {
     DTRACE();
 
-	if(m_Macrotexture) {
-		m_Macrotexture=NULL;
-	}
+	if(m_Macrotexture) m_Macrotexture=NULL;
 }
 
 void CMatrixMap::MacrotextureInit(const CWStr& path)
@@ -955,7 +966,8 @@ void CMatrixMap::MacrotextureInit(const CWStr& path)
 	m_Macrotexture=(CTextureManaged *)g_Cache->Get(cc_TextureManaged,path.Get());
 
 	int cnt=path.GetCountPar(L"?");
-	for(int i=1;i<cnt;i++) {
+	for (int i=1; i<cnt; i++)
+    {
 		CWStr op(path.GetStrPar(i,L"?").Trim(), g_CacheHeap);
 		if(op.CompareFirst(L"SIM")) m_MacrotextureSize=op.GetInt();
 	}
@@ -1008,7 +1020,8 @@ void CMatrixMap::LoadSide(CBlockPar & bp)
 	for(int i=0;i<m_SideCnt;i++) m_Side[i].CMatrixSideUnit::CMatrixSideUnit();
 
     int idx = 0;
-	for(int i=0;i<cnt;i++) {
+	for (int i=0; i<cnt; i++)
+    {
         int id = bp.ParGetName(i).GetInt();
         const CWStr * name = &bp.ParGet(i);
         DWORD color = (DWORD(name->GetIntPar(1,L",")&255)<<16) | (DWORD(name->GetIntPar(2,L",")&255)<<8) | DWORD(name->GetIntPar(3,L",")&255);
@@ -1061,20 +1074,12 @@ void CMatrixMap::WaterInit()
 {
     DTRACE();
 
-    if (!m_Water) 
-    {
-        m_Water = HNew(g_MatrixHeap) CMatrixWater;
-    } else
-    {
-        m_Water->Clear();
-    }
-    if (!m_VisWater) 
-    {
-        m_VisWater = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
-    } else
-    {
-        m_VisWater->Clear();
-    }
+    if (!m_Water) m_Water = HNew(g_MatrixHeap) CMatrixWater;
+    else m_Water->Clear();
+
+    if (!m_VisWater) m_VisWater = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
+    else m_VisWater->Clear();
+
     m_Water->Init();
 
 }
@@ -1152,12 +1157,12 @@ void CMatrixMap::BeforeDraw(void)
         if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING)
         {
             ((CMatrixBuilding *)m_TraceStopObj)->ShowHitpoint();
-        } else
-        if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        }
+        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
         {
             ((CMatrixRobotAI *)m_TraceStopObj)->ShowHitpoint();
-        } else
-        if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
+        }
+        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
         {
             ((CMatrixCannon *)m_TraceStopObj)->ShowHitpoint();
 
@@ -1169,9 +1174,8 @@ void CMatrixMap::BeforeDraw(void)
             //    m_DI.T(L"Group"+CWStr(i), CWStr(g->GetPos0().x) + L", " + CWStr(g->GetPos0().y));
             //}
 
-
-        } else
-        if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
+        }
+        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
         {
             ((CMatrixFlyer *)m_TraceStopObj)->ShowHitpoint();
         }
@@ -1372,7 +1376,7 @@ void CMatrixMap::BeforeDraw(void)
         ++md;
 	}
 
-    for (int od = 0; od<m_AD_Obj_cnt; ++od)
+    for (int od = 0; od<m_AD_Obj_cnt; od++)
     {
         m_AD_Obj[od]->Sort(m_Camera.GetViewMatrix());
         if(m_AD_Obj[od]->GetObjectType() == OBJECT_TYPE_FLYER)
