@@ -353,9 +353,8 @@ void CMatrixConfig::ReadParams(void)
 
     CBlockPar *cfg_par = g_MatrixData->BlockGet(L"Config");
 
-
     //loading config
-    CBlockPar * bp_tmp = g_MatrixData->BlockGet(PAR_SOURCE_CURSORS);
+    CBlockPar *bp_tmp = g_MatrixData->BlockGet(PAR_SOURCE_CURSORS);
 
     m_CursorsCnt = bp_tmp->ParCount();
 
@@ -478,7 +477,6 @@ void CMatrixConfig::ReadParams(void)
         if (sh == 0) m_RobotShadow = SHADOW_OFF;
         else if (sh == 1) m_RobotShadow = SHADOW_STENCIL;
     }
-    
 
     // load damages
 
@@ -611,7 +609,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_WeaponRadius, 0, sizeof(m_WeaponRadius));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i=0; i<n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);

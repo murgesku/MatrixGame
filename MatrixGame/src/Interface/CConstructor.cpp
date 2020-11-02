@@ -249,8 +249,8 @@ void __stdcall CConstructor::RemoteBuild(void* pObj)
     
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     g_ConfigHistory->AddConfig(&player_side->m_ConstructPanel->m_Configs[cfg_num]);
-    
-    for(int i = 0; i < g_IFaceList->m_RCountControl->GetCounter(); i++)
+
+    for(int i = 0; i < g_IFaceList->m_RCountControl->GetCounter(); ++i)
     {
         StackRobot(pObj);
     }
@@ -1034,7 +1034,7 @@ int CConstructor::GetConstructionStructure()
     }
 
     float up = 0;
-    for(int i = 0; i < robot->m_UnitCnt; i++)
+    for(int i = 0; i < robot->m_UnitCnt; ++i)
     {
         if(robot->m_Unit[i].m_Type == MRT_HEAD)
         {
@@ -1045,9 +1045,9 @@ int CConstructor::GetConstructionStructure()
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
 
             bp = bp->BlockGetNE(hn);
             if (bp)
@@ -1170,7 +1170,8 @@ void CConstructorPanel::ActivateAndSelect()
 void CConstructorPanel::ResetGroupNClose()
 {   
     m_Active = 0; 
-    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu){
+    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu)
+    {
         g_PopupMenu->ResetMenu(true);
     }
     g_MatrixMap->Pause(false);
@@ -1205,7 +1206,8 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
         }
         memcpy(plus_res, &g_Config.m_Price[HEAD1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         memcpy(item_res, &g_Config.m_Price[HEAD1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
-    }else if(type == MRT_ARMOR)
+    }
+    else if(type == MRT_ARMOR)
     {
         int set_common = 0;
         int set_extra = 0;
@@ -1279,7 +1281,8 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
         memcpy(item_res, &g_Config.m_Price[WEAPON1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
     }
     
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i < 4; i++)
+    {
         total_res[i] -= minus_res[i];
         total_res[i] += plus_res[i];
     }
@@ -1361,9 +1364,9 @@ void CConstructorPanel::MakeItemReplacements(
         else if(kind == RUK_HEAD_DYNAMO ) hn = L"D";
         else if(kind == RUK_HEAD_LOCKATOR ) hn = L"L";
         else if(kind == RUK_HEAD_FIREWALL ) hn = L"F";
-        //else if (kind == RUK_HEAD_RAPID) hn = L"R";
-        //else if (kind == RUK_HEAD_DESIGN) hn = L"D";
-        //else if (kind == RUK_HEAD_SPEAKER) hn = L"P";
+        else if (kind == RUK_HEAD_RAPID) hn = L"R";
+        else if (kind == RUK_HEAD_DESIGN) hn = L"D";
+        else if (kind == RUK_HEAD_SPEAKER) hn = L"P";
 
         bp = bp->BlockGetNE(hn);
         if (bp)
@@ -1541,7 +1544,8 @@ CMatrixRobotAI* SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id)
     SWeaponUnit weapons[MAX_WEAPON_CNT];
     ZeroMemory(weapons, sizeof(weapons));
     
-    if(m_Armor.m_Unit.m_nKind != 0){
+    if(m_Armor.m_Unit.m_nKind != 0)
+    {
         for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
         {
 		    if(m_Weapon[nC].m_Unit.m_nKind != 0)
@@ -1630,9 +1634,9 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
     m_AIRobotTypeList=(SSpecialBot *)HAllocEx(m_AIRobotTypeList,m_AIRobotTypeCnt*sizeof(SSpecialBot),g_MatrixHeap);
 
     // Сортируем по силе
-    for(i=0; i<m_AIRobotTypeCnt-1; i++) 
+    for(i=0; i<m_AIRobotTypeCnt-1; ++i) 
     {
-        for(u=i+1; u<m_AIRobotTypeCnt; u++) 
+        for(u=i+1; u<m_AIRobotTypeCnt; ++u) 
         {
             if(m_AIRobotTypeList[u].m_Strength>m_AIRobotTypeList[i].m_Strength) 
             {
@@ -1702,7 +1706,7 @@ float SSpecialBot::DifWeapon(SSpecialBot & other)
     return cntr/cnt;
 }
 
-//Вероятно, строительство робота компом с определением доступных ресурсов и подгрузкой схемы из конфига
+//Подгрузка схемы робота из txt-конфига в либу
 bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
 {
     int MIN_PAR_CNT;
@@ -1750,11 +1754,11 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     str = parname.GetStrPar(0,L",");
     str.Trim();
     
-    if (str==L"Pneumatic" || str==L"P") m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
-    else if (str==L"Whell" || str==L"W") m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
-    else if (str==L"Track" || str==L"T") m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
-    else if (str==L"Hovercraft" || str==L"H") m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
-    else if (str==L"Antigravity" || str==L"A") m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+    if (str==L"P" || str == L"Pneumatic") m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
+    else if (str==L"W" || str == L"Whell") m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
+    else if (str==L"T" || str == L"Track") m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
+    else if (str==L"H" || str == L"Hovercraft") m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
+    else if (str==L"A" || str == L"Antigravity") m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
     else return false;
 
     m_Chassis.m_Price.SetPrice(m_Chassis.m_nType, m_Chassis.m_nKind);
@@ -1874,10 +1878,8 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
                 m_Resources[k] += m_Weapon[u].m_Unit.m_Price.m_Resources[k];
         }
 
-        if (cntnormal > m_Armor.m_MaxCommonWeaponCnt)
-            return false;
-        if (cntextra > m_Armor.m_MaxExtraWeaponCnt)
-            return false;
+        if (cntnormal > m_Armor.m_MaxCommonWeaponCnt) return false;
+        if (cntextra > m_Armor.m_MaxExtraWeaponCnt) return false;
     }
 
     // Head //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1887,15 +1889,14 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
         str = parname.GetStrPar(MIN_PAR_CNT+1,L",");
         str.Trim();
 
-        if (str==L"Strength" || str==L"S") m_Head.m_nKind = RUK_HEAD_BLOCKER;
-        else if (str==L"Dynamo" || str==L"D") m_Head.m_nKind = RUK_HEAD_DYNAMO;
-        else if (str==L"Locator" || str==L"L") m_Head.m_nKind = RUK_HEAD_LOCKATOR;
-        else if (str==L"Firewall" || str==L"F") m_Head.m_nKind = RUK_HEAD_FIREWALL;
-        //else if(str==L"Rapid" || str==L"R") m_Head.m_nKind=RUK_HEAD_RAPID;
-        //else if(str==L"Design" || str==L"D") m_Head.m_nKind=RUK_HEAD_DESIGN;
-        //else if(str==L"Speaker" || str==L"P") m_Head.m_nKind=RUK_HEAD_SPEAKER;
-        else
-            return false;
+        if (str==L"S" || str == L"Strength") m_Head.m_nKind = RUK_HEAD_BLOCKER;
+        else if (str==L"D" || str == L"Dynamo") m_Head.m_nKind = RUK_HEAD_DYNAMO;
+        else if (str==L"L" || str == L"Locator") m_Head.m_nKind = RUK_HEAD_LOCKATOR;
+        else if (str==L"F" || str == L"Firewall") m_Head.m_nKind = RUK_HEAD_FIREWALL;
+        else if (str==L"R" || str == L"Rapid") m_Head.m_nKind=RUK_HEAD_RAPID;
+        else if (str==L"D" || str == L"Design") m_Head.m_nKind=RUK_HEAD_DESIGN;
+        else if (str==L"P" || str == L"Speaker") m_Head.m_nKind=RUK_HEAD_SPEAKER;
+        else return false;
 
         m_Head.m_Price.SetPrice(m_Head.m_nType, m_Head.m_nKind);
         for(int k=0; k<MAX_RESOURCES; ++k)
@@ -1966,9 +1967,9 @@ int GetConstructionDamage(CMatrixRobotAI* robot)
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
             else if(robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
-            //else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
 
             bp = bp->BlockGetNE(hn);
             if (bp)

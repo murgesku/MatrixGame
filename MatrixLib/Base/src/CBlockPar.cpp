@@ -103,7 +103,8 @@ void CBlockPar::Clear()
 {
     DTRACE();
     CBlockParUnit * tt,* t=m_First;
-	while(t!=NULL) {
+	while(t!=NULL)
+	{
         tt=t;
         t=t->m_Next;
 		HDelete(CBlockParUnit,tt,m_Heap);
@@ -115,7 +116,11 @@ void CBlockPar::Clear()
 	m_CntPar=0;
 	m_CntBlock=0;
 
-	if(m_Array!=NULL) { HFree(m_Array,m_Heap); m_Array=NULL; }
+	if(m_Array!=NULL)
+	{
+		HFree(m_Array,m_Heap);
+		m_Array=NULL;
+	}
     m_ArrayCnt=0;
 
     if (m_FromFile)
@@ -1167,22 +1172,31 @@ class BPCompiler {
 						m_WordBegin=m_WordEnd;
 					}
 
-					if(IsEmptyBlock()) {
-						if(m_ComSpace<m_LineEnd && (m_Block+1)>=m_ComSpace) {
+					if(IsEmptyBlock())
+					{
+						if(m_ComSpace<m_LineEnd && (m_Block+1)>=m_ComSpace)
+						{
 							unit->m_Com.Set(m_Text+m_ComSpace,m_LineEnd-m_ComSpace);
-						} else {
+						}
+						else
+						{
 							m_Line=m_Block+1;
 							CalcSkipSpace();
 							if(m_Line<m_LineEnd) continue;
 						}
-					} else {
-						if(m_ComSpace<m_LineEnd && (m_Block+1)>=m_ComSpace) {
+					}
+					else
+					{
+						if(m_ComSpace<m_LineEnd && (m_Block+1)>=m_ComSpace)
+						{
 							unit->m_Com.Set(m_Text+m_ComSpace,m_LineEnd-m_ComSpace);
 
 							if(!CalcNextLine()) break;
 
 							m_Line=unit->m_Block->LoadFromText(m_Text+m_Line,m_TextLen-m_Line)+m_Line;
-						} else {
+						}
+						else
+						{
 							m_Line=m_Block+1;
 							CalcSkipSpace();
 							if(m_Line<m_TextLen && (m_Text[m_Line]==0x0d)) m_Line++;
@@ -1201,7 +1215,9 @@ class BPCompiler {
                         unit->m_Block->m_FromFile = HNew(unit->m_Block->m_Heap) CWStr(m_Text+m_FileBegin, m_FileEnd-m_FileBegin, unit->m_Block->m_Heap);
 
                     }
-				} else if(FindPar()) {
+				}
+				else if(FindPar())
+				{
 					unit=m_BP->UnitAdd();
 					unit->ChangeType(1);
 					m_BP->m_CntPar++;
@@ -1213,7 +1229,9 @@ class BPCompiler {
 
 					if(m_BP->m_Sort) m_BP->ArrayAdd(unit);
 
-				} else {
+				}
+				else
+				{
 					unit=m_BP->UnitAdd();
 					unit->ChangeType(1);
 					m_BP->m_CntPar++;
@@ -1256,14 +1274,17 @@ void CBlockPar::LoadFromTextFile(const wchar * filename, int filenamelen)
 	word zn;
 	bool fansi=true;
 	int fs=fi.Size();
-	if((fs>=2) && !(fs & 1)) {
+	if((fs>=2) && !(fs & 1))
+	{
 		fi.Read(&zn,2);
 		fansi=zn!=0x0feff;
 		if(fansi) fi.Pointer(0);
 	}
 	fs-=fi.Pointer();
-	if(fs>0) {
-		if(fansi) {
+	if(fs>0)
+	{
+		if(fansi)
+		{
 			CStr  astr(m_Heap);
 			CWStr wstr(m_Heap);
 
@@ -1272,7 +1293,9 @@ void CBlockPar::LoadFromTextFile(const wchar * filename, int filenamelen)
 			wstr.Set(astr);
 
 			LoadFromText(wstr.Get(),wstr.GetLen());
-		} else {
+		}
+		else
+		{
 			CWStr wstr(m_Heap);
 
 			wstr.SetLen(fs>>1);
@@ -1281,7 +1304,6 @@ void CBlockPar::LoadFromTextFile(const wchar * filename, int filenamelen)
 			LoadFromText(wstr.Get(),wstr.GetLen());
 		}
 	}
-
 	fi.Close();
 }
 
@@ -1298,19 +1320,28 @@ void CBlockPar::SaveInText(CBuf & buf, bool ansi, int level)
 	bool addspace;
 
 	CBlockParUnit * unit=m_First;
-	while(unit!=0) {
+	while (unit != 0)
+	{
 		SaveLevel;
 
-		if(unit->m_Type==1) {
-			if(!unit->m_Name.IsEmpty()) {
+		if(unit->m_Type == 1)
+		{
+			if(!unit->m_Name.IsEmpty())
+			{
 				SaveStr(unit->m_Name);
 				SaveStrConst("=");
 			}
 			SaveStr(*unit->m_Par);
 			if(!unit->m_Com.IsEmpty()) SaveStr(unit->m_Com);
-		} else if(unit->m_Type==2) {
+		}
+		else if(unit->m_Type==2)
+		{
 			addspace=false;
-			if(!unit->m_Name.IsEmpty()) { SaveStr(unit->m_Name); addspace=true; }
+			if(!unit->m_Name.IsEmpty())
+			{
+				SaveStr(unit->m_Name);
+				addspace=true;
+			}
 
             if (unit->m_Block->m_FromFile)
             {
@@ -1319,17 +1350,26 @@ void CBlockPar::SaveInText(CBuf & buf, bool ansi, int level)
                 SaveStrConst(" {}");
 
                 unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile->Get(), ansi);
-            } else
+            }
+			else
             {
 
-			    if(!unit->m_Block->m_Sort) { if(addspace) SaveSpace; SaveStrConst("-sort"); addspace=true; }
+			    if(!unit->m_Block->m_Sort)
+				{
+					if(addspace) SaveSpace;
+					SaveStrConst("-sort");
+					addspace=true;
+				}
 
 			    if(addspace) SaveSpace; SaveStrConst("{");
 
-			    if(unit->m_Block->AllCount()==0) {
+			    if(unit->m_Block->AllCount() == 0)
+				{
 				    SaveStrConst("}");
 				    if(!unit->m_Com.IsEmpty()) SaveStr(unit->m_Com);
-			    } else {
+			    }
+				else
+				{
 				    if(!unit->m_Com.IsEmpty()) SaveStr(unit->m_Com);
 				    SaveNewLine;
 
@@ -1339,7 +1379,9 @@ void CBlockPar::SaveInText(CBuf & buf, bool ansi, int level)
 				    SaveStrConst("}");
 			    }
             }
-		} else {
+		}
+		else
+		{
 			if(!unit->m_Com.IsEmpty()) SaveStr(unit->m_Com);
 		}
 

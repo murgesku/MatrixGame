@@ -221,18 +221,18 @@ class BASE_API CBlockPar : public CMain {
 
 		//////////////////////////////////////////////////////////////
 		int LoadFromText(const wchar * text, int textlen);
-		int LoadFromText(const CWStr & text)													{ return LoadFromText(text.Get(),text.GetLen()); }
-		int LoadFromText(const wchar * text)													{ return LoadFromText(text,WStrLen(text)); }
+		int LoadFromText(const CWStr & text)													{ return LoadFromText(text.Get(), text.GetLen()); }
+		int LoadFromText(const wchar * text)													{ return LoadFromText(text, WStrLen(text)); }
 
 		void LoadFromTextFile(const wchar * filename, int filenamelen);
-		void LoadFromTextFile(const CWStr & filename)											{ LoadFromTextFile(filename.Get(),filename.GetLen()); }
-		void LoadFromTextFile(const wchar * filename)											{ LoadFromTextFile(filename,WStrLen(filename)); }
+		void LoadFromTextFile(const CWStr & filename)											{ LoadFromTextFile(filename.Get(), filename.GetLen()); }
+		void LoadFromTextFile(const wchar * filename)											{ LoadFromTextFile(filename, WStrLen(filename)); }
 
 		void SaveInText(CBuf & buf, bool ansi=false, int level=0);
 
 		void SaveInTextFile(const wchar * filename, int filenamelen, bool ansi=false);
-		void SaveInTextFile(const CWStr & filename, bool ansi=false)							{ SaveInTextFile(filename.Get(),filename.GetLen(),ansi); }
-		void SaveInTextFile(const wchar * filename, bool ansi=false)							{ SaveInTextFile(filename,WStrLen(filename),ansi); }
+		void SaveInTextFile(const CWStr & filename, bool ansi=false)							{ SaveInTextFile(filename.Get(), filename.GetLen(),ansi); }
+		void SaveInTextFile(const wchar * filename, bool ansi=false)							{ SaveInTextFile(filename, WStrLen(filename), ansi); }
 };
 
 }

@@ -628,8 +628,6 @@ public:
     byte  m_SkyBox;                  // 0 - none, 1 - dds (low quality), 2 - png (high quality)
     byte  m_DrawAllObjectsToMinimap; // 0 - none, 1 - force yes, 2 - auto
 
-
-
     int   m_CaptureTimeErase;
     int   m_CaptureTimePaint;
     int   m_CaptureTimeRolback;

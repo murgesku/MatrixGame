@@ -2492,13 +2492,13 @@ bool  CPackCollection::ClosePacketFilesEx(void)
 }
 
 
-//******** Процедуры для работы файлами ***********//
+//******** Процедуры для работы с файлами ***********//
 
 bool  CPackCollection::FileExists(const CStr &name)
 {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
+    for(; ff < fe; ++ff)
     {
         if ((*ff)->FileExists(name)) return true;
     }

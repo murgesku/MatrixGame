@@ -242,6 +242,7 @@
 #define CFG_MAXFPS                              L"MaxFps"
 
 #define PAR_TEMPLATES                           L"Templates"
+#define PAR_DESIGNSTOSAVE						L"MaxDesignsToSave"
 #define PAR_REPLACE                             L"Replaces"
 #define PAR_REPLACE_DIFFICULTY                  L"_difficulty"
 #define PAR_REPLACE_BEGIN_ICON_RACE             L"_race"
