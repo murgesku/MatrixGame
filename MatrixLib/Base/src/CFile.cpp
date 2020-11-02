@@ -487,30 +487,38 @@ static bool FileExistA(CWStr & outname,const wchar * mname,const wchar * exts,bo
 	return true;
 }
 
-static bool FileExistW(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+static bool FileExistW(CWStr & outname, const wchar * mname, const wchar * exts, bool withpar)
 {
 	DTRACE();
 
-	int len=WStrLen(mname);
+	int len = WStrLen(mname);
 	const wchar * str=mname;
 
-	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
+	int lenfile = 0; while (lenfile<len && str[lenfile]!='?') lenfile++;
 
-	CWStr filename(str,lenfile,outname.GetHeap());
+	CWStr filename (str, lenfile, outname.GetHeap());
 
 	WIN32_FIND_DATAW fd;
-	HANDLE fh=FindFirstFileW(filename,&fd);
-	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
-	
+	HANDLE fh = FindFirstFileW (filename, &fd);
+	if(fh != INVALID_HANDLE_VALUE)
+    {
+        FindClose(fh);
+        if(withpar) outname=mname;
+        else outname=filename;
+        return true;
+    }
 
-	fh=FindFirstFileW((CWStr(str,lenfile,outname.GetHeap())+L".*").Get(),&fd);
-	if(fh==INVALID_HANDLE_VALUE) return false;
-	if(exts!=NULL) {
+	fh = FindFirstFileW ((CWStr(str, lenfile, outname.GetHeap())+L".*").Get(), &fd);
+	if(fh == INVALID_HANDLE_VALUE) return false;
+	if(exts != NULL)
+    {
 		CWStr curname(outname.GetHeap());
-		while(true) {
+		while(true)
+        {
 			curname.Set(fd.cFileName);
 			int sme=curname.FindR(L'.')+1;
-			if(sme>0 && sme<curname.GetLen()) {
+			if(sme>0 && sme<curname.GetLen())
+            {
 				curname.LowerCase(sme);
 				const wchar * str=curname.Get()+sme;
 				int len=curname.GetLen()-sme;
@@ -531,34 +539,43 @@ static bool FileExistW(CWStr & outname,const wchar * mname,const wchar * exts,bo
 				if(cntok==len) break;
 			}
 
-			if(!FindNextFileW(fh,&fd)) { FindClose(fh); return false; }
+			if (!FindNextFileW(fh,&fd))
+            {
+                FindClose(fh);
+                return false;
+            }
 		}
 	}
 	FindClose(fh);
 
-	int lenpath=lenfile; while(lenpath>0 && str[lenpath-1]!='\\' && str[lenpath-1]!='/') lenpath--;
+	int lenpath = lenfile;
+    while (lenpath > 0 && str[lenpath-1] != '\\' && str[lenpath-1] != '/') lenpath--;
 
-	if(lenpath>0) { outname.Set(str,lenpath); outname.Add(fd.cFileName); }
+	if (lenpath > 0)
+    {
+        outname.Set(str,lenpath);
+        outname.Add(fd.cFileName);
+    }
 	else outname.Set(fd.cFileName);
 
-	if(withpar && lenfile<len) outname.Add(str+lenfile,len-lenfile);
+	if (withpar && lenfile < len) outname.Add(str+lenfile, len-lenfile);
 
 	return true;
 }
 
-bool CFile::FileExist(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+bool CFile::FileExist (CWStr & outname, const wchar * mname, const wchar * exts, bool withpar)
 {
 	DTRACE();
 
     if (mname[0] == '.' && (mname[1] == '\\' || mname[1] == '/')) mname += 2;
 
-	if(IS_UNICODE())
+	if (IS_UNICODE())
     {
-        if (FileExistW(outname,mname,exts,withpar)) return true;
+        if (FileExistW(outname, mname, exts, withpar)) return true;
     }
 	else
     {
-        if (FileExistA(outname,mname,exts,withpar)) return true;
+        if (FileExistA(outname, mname, exts, withpar)) return true;
     }
 
 #ifndef MAXEXP_EXPORTS
@@ -569,7 +586,8 @@ bool CFile::FileExist(CWStr & outname,const wchar * mname,const wchar * exts,boo
 	int len=WStrLen(mname);
 	const wchar * str=mname;
 
-	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
+	int lenfile=0;
+    while (lenfile < len && str[lenfile] != '?') lenfile++;
 
 	CWStr filename(str,lenfile,outname.GetHeap());
 

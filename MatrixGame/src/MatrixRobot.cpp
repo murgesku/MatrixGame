@@ -4390,9 +4390,9 @@ void CMatrixRobotAI::CalcRobotMass()
             else if(m_Unit[nC].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
             else if(m_Unit[nC].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
             else if(m_Unit[nC].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
-            //else if (m_Unit[nC].m_Kind == RUK_HEAD_RAPID) hn = L"R";
-            //else if (m_Unit[nC].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
-            //else if (m_Unit[nC].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
+            else if (m_Unit[nC].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            else if (m_Unit[nC].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            else if (m_Unit[nC].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
             break;
         }
     }

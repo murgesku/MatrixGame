@@ -40,7 +40,8 @@ CIFaceElement::CIFaceElement(void):m_Flags(0)
 
 CIFaceElement::~CIFaceElement()
 {
-    if(m_Animation){
+    if(m_Animation)
+    {
         HDelete(CAnimation, m_Animation, g_MatrixHeap);
     }
 }
@@ -49,7 +50,8 @@ void CIFaceElement::ElementGeomInit(void *pObj, bool full_size)
 { 
 	CIFaceElement* pElement = (CIFaceElement*)pObj;
 
-	for(int nC = 0; nC < MAX_STATES;nC++){
+	for(int nC = 0; nC < MAX_STATES; nC++)
+    {
 		if(pElement->m_StateImages[nC].Set)
         {
             SVert_V4_UV *v = pElement->m_StateImages[nC].m_Geom;
@@ -65,7 +67,8 @@ void CIFaceElement::ElementGeomInit(void *pObj, bool full_size)
 				u1 = (float)((pElement->m_StateImages[nC].xTexPos + pElement->m_xSize ) / pElement->m_StateImages[nC].TexWidth);
 				v1 = (float)((pElement->m_StateImages[nC].yTexPos + pElement->m_ySize ) / pElement->m_StateImages[nC].TexHeight);
 
-            } else
+            }
+            else
             {
 				u1 = (float)((pElement->m_StateImages[nC].xTexPos + pElement->m_StateImages[nC].TexWidth ) / pElement->m_StateImages[nC].TexWidth);
 				v1 = (float)((pElement->m_StateImages[nC].yTexPos + pElement->m_StateImages[nC].TexHeight) / pElement->m_StateImages[nC].TexHeight);
@@ -83,12 +86,15 @@ void CIFaceElement::ElementGeomInit(void *pObj, bool full_size)
 
 void CIFaceElement::CheckGroupReset(CIFaceElement *pFirstElement, CIFaceElement* pButton){
 	CIFaceButton *pObjectsList = (CIFaceButton*)pFirstElement; 
-	while(pObjectsList != NULL){
+	while(pObjectsList != NULL)
+    {
 		if(pObjectsList->m_nGroup == pButton->m_nGroup && pObjectsList != (CIFaceButton*)pButton &&
-			(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON)){
+			(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON))
+        {
 			pObjectsList->SetState(IFACE_NORMAL);
 			pObjectsList->m_DefState = IFACE_NORMAL;
-            if(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL){
+            if(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL)
+            {
                 pObjectsList->Action(ON_UN_PRESS);
             }
 		}
@@ -207,7 +213,8 @@ void CIFaceElement::Render(BYTE alpha)
         CInstDraw::AddVerts(geom + 4, 
                             m_StateImages[GetState()].pImage);
 
-    } else
+    }
+    else
     {
 
 #if defined _TRACE || defined _DEBUG
@@ -230,7 +237,8 @@ void CIFaceElement::Render(BYTE alpha)
         CInstDraw::AddVerts(m_StateImages[GetState()].m_Geom, 
                             m_StateImages[GetState()].pImage);
 
-        if(m_Animation){
+        if(m_Animation)
+        {
             m_Animation->GetCurrentFrame()->m_StateImages[IFACE_NORMAL].pImage->Prepare();
             CInstDraw::AddVerts(m_Animation->GetCurrentFrame()->m_StateImages[IFACE_NORMAL].m_Geom, 
                                 m_Animation->GetCurrentFrame()->m_StateImages[IFACE_NORMAL].pImage);
@@ -299,7 +307,8 @@ bool CIFaceElement::ElementCatch(CPoint mouse)
 
 void CIFaceElement::Reset()
 {
-    if(GetState() != IFACE_DISABLED){
+    if(GetState() != IFACE_DISABLED)
+    {
         SetState(m_DefState);
         //if(m_strName == IF_BASE_PILON_HULL || m_strName == IF_BASE_PILON_CHASSIS || m_strName == IF_BASE_PILON_HEAD || m_strName == IF_BASE_PILON1 || m_strName == IF_BASE_PILON2 || m_strName == IF_BASE_PILON3 || m_strName == IF_BASE_PILON4 || m_strName == IF_BASE_PILON5 || m_strName == IF_BASE_HEAD_EMPTY || m_strName == IF_BASE_WEAPON_EMPTY){
             Action(ON_UN_FOCUS);
@@ -319,35 +328,44 @@ bool CIFaceElement::ElementAlpha(CPoint mouse)
 
 void CIFaceElement::Action(EActions action)
 { 
-    if(m_Actions[action].m_function){
-        if(m_strName == IF_HINTS_OK || m_strName == IF_HINTS_CANCEL || m_strName == IF_HINTS_CANCEL_MENU || m_strName == IF_HINTS_CONTINUE || m_strName == IF_HINTS_EXIT || m_strName == IF_HINTS_RESET || m_strName == IF_HINTS_SURRENDER || m_strName == IF_HINTS_HELP){
+    if(m_Actions[action].m_function)
+    {
+        if(m_strName == IF_HINTS_OK || m_strName == IF_HINTS_CANCEL || m_strName == IF_HINTS_CANCEL_MENU || m_strName == IF_HINTS_CONTINUE || m_strName == IF_HINTS_EXIT || m_strName == IF_HINTS_RESET || m_strName == IF_HINTS_SURRENDER || m_strName == IF_HINTS_HELP)
+        {
             DialogButtonHandler(m_Actions[action].m_function)();
             //SetVisibility(false);
-        }else{
+        }
+        else
+        {
             void* a = (void*)(&m_Actions[action]);
             FCALLFROMCLASS2(a);
         }
     }
-     
 }
 
 void CIFaceElement::LogicTakt(int ms)
 {
     if(m_Animation) m_Animation->LogicTakt(ms);
 
-    if(m_nId == GROUP_SELECTOR_ID){
+    if(m_nId == GROUP_SELECTOR_ID)
+    {
         CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
         int i = player_side->GetCurSelNum();
         float pos = (i+1.0f) / 3.0f;
 
         float x,y;
-        if(pos <= 1){
+        if(pos <= 1)
+        {
             x = (float)(223 + 48*i);
             y = 45;
-        }else if(pos > 1 && pos <= 2){
+        }
+        else if(pos > 1 && pos <= 2)
+        {
             x = (float)((223 + 48*i)-48*3);
             y = 48*2;
-        }else if(pos > 2){
+        }
+        else if(pos > 2)
+        {
             x = (float)((223 + 48*i)-48*6);
             y = 48*3;
         }
@@ -355,27 +373,32 @@ void CIFaceElement::LogicTakt(int ms)
     }
 }
 
-void CIFaceElement::RecalcPos(const float &x, const float &y, bool ichanged)
+void CIFaceElement::RecalcPos(
+    const float &x,
+    const float &y,
+    bool ichanged
+)
 {
     
-    if(m_Animation && ichanged){
+    if(m_Animation && ichanged)
+    {
         m_Animation->RecalcPos(x, y);
     }
     
     float i_x = x;
     float i_y = y;
-    if(!ichanged){
+    if(!ichanged)
+    {
         i_x = m_StateImages[IFACE_NORMAL].m_Geom[1].p.x+0.5f - m_xPos;
         i_y = m_StateImages[IFACE_NORMAL].m_Geom[1].p.y+0.5f - m_yPos;
         m_xPos = x;
         m_yPos = y;
     }
     int nC;
-    for(nC = 0; nC < MAX_STATES;nC++)
+    for(nC = 0; nC < MAX_STATES; nC++)
     {
         if(m_StateImages[nC].Set)
         {
-
             m_StateImages[nC].m_Geom[0].p = D3DXVECTOR4(0-0.5f, m_ySize-0.5f, 0,1);
             m_StateImages[nC].m_Geom[1].p = D3DXVECTOR4(0-0.5f, 0-0.5f, 0, 1);
 		    m_StateImages[nC].m_Geom[2].p = D3DXVECTOR4(m_xSize-0.5f, m_ySize-0.5f, 0, 1);
@@ -384,11 +407,11 @@ void CIFaceElement::RecalcPos(const float &x, const float &y, bool ichanged)
 
     }
 
-
     D3DXVECTOR3 dp(m_xPos + i_x, m_yPos + i_y, m_zPos);
 
     nC = 0;
-	while(m_StateImages[nC].Set && nC < MAX_STATES) {
+	while(m_StateImages[nC].Set && nC < MAX_STATES)
+    {
 		for(int i = 0; i < 4; i++)
         {
 			m_StateImages[nC].m_Geom[i].p.x += dp.x;

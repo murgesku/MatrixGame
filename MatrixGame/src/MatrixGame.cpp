@@ -26,7 +26,6 @@
 #include "MatrixInstantDraw.hpp"
 #include "MatrixSampleStateManager.hpp"
 
-
 #include <stdio.h>
 #include <time.h>
 
@@ -38,6 +37,9 @@ CBlockPar *g_MatrixData;
 CMatrixMapLogic * g_MatrixMap;
 CRenderPipeline   *g_Render;
 CLoadProgress     *g_LoadProgress;
+
+//Переменная для хранения данных о числе сохраняемых шаблонов роботов игрока
+static unsigned char m_MaxDesignsToSave = 0;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE ,
@@ -279,11 +281,13 @@ DCP();
     bool        stor_cfg_present = false;
     CWStr       stor_cfg_name(g_MatrixHeap);
 	wchar conf_file[80];
-	wcscpy(conf_file,FILE_CONFIGURATION_LOCATION);
-	if (lang!=NULL){
-	wcscat(conf_file,lang);
-	wcscat(conf_file,L"\\");}
-	wcscat(conf_file,FILE_CONFIGURATION);
+	wcscpy(conf_file, FILE_CONFIGURATION_LOCATION);
+	if (lang!=NULL)
+    {
+	    wcscat(conf_file, lang);
+	    wcscat(conf_file, L"\\");
+    }
+	wcscat(conf_file, FILE_CONFIGURATION);
     if (CFile::FileExist(stor_cfg_name, conf_file))
     {
         stor_cfg.Load(conf_file);
@@ -305,15 +309,14 @@ DCP();
 
 
         }
-
-    } else
+    }
+    else
     {
         g_MatrixData->LoadFromTextFile(L"cfg\\robots\\data.txt");
     }
 
     // The code for loading data configs from mods
     LoadCfgFromMods(modlist, *g_MatrixData, lang, L"data.txt");
-
     {
         CBlockPar *repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
 
@@ -326,7 +329,6 @@ DCP();
             repl->ParAdd(rr->ParGetName(i), rr->ParGet(i));
         }
 
-
         if (txt_start)
         {
             if (txt_start[0] >= '1' && txt_start[0] <= '6')
@@ -335,14 +337,15 @@ DCP();
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start,1,g_MatrixHeap));
                 repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start+1,2,g_MatrixHeap));
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
-            } else
+            }
+            else
             {
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, L"1");
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start);
             }
-
             
-        } else
+        }
+        else
         {
             repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, L"1");
             repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, L"Go! Go! Go!");
@@ -352,21 +355,24 @@ DCP();
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, txt_win);
 
-        } else
+        }
+        else
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, L"Good job man :)");
         }
         if (txt_loss)
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, txt_loss);
-        } else
+        }
+        else
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, L"Sux :(");
         }
         if (planet)
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
-        } else
+        }
+        else
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
         }
@@ -429,7 +435,6 @@ DCP();
 	// load new map
 DCP();
     g_MatrixMap->RobotPreload();
-    
 
     CStorage stor(g_CacheHeap);
 DCP();
@@ -502,27 +507,32 @@ DCP();
     bool iface_save = false;
 
     g_PopupHead = (SMenuItemText*)HAlloc(sizeof(SMenuItemText)*MENU_HEAD_ITEMS, g_MatrixHeap);
-    for(int i = 0; i < MENU_HEAD_ITEMS; i++){
+    for(int i = 0; i < MENU_HEAD_ITEMS; ++i)
+    {
         g_PopupHead[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupHull = (SMenuItemText*)HAlloc(sizeof(SMenuItemText)*MENU_HULL_ITEMS, g_MatrixHeap);
-    for(int i = 0; i < MENU_HULL_ITEMS; i++){
+    for(int i = 0; i < MENU_HULL_ITEMS; ++i)
+    {
         g_PopupHull[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupWeaponNormal = (SMenuItemText*)HAlloc(sizeof(SMenuItemText)*MENU_WEAPONNORM_ITEMS, g_MatrixHeap);
-    for(int i = 0; i < MENU_WEAPONNORM_ITEMS; i++){
+    for(int i = 0; i < MENU_WEAPONNORM_ITEMS; ++i)
+    {
         g_PopupWeaponNormal[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupWeaponExtern = (SMenuItemText*)HAlloc(sizeof(SMenuItemText)*MENU_WEAPONEXTERN_ITEMS, g_MatrixHeap);
-    for(int i = 0; i < MENU_WEAPONEXTERN_ITEMS; i++){
+    for(int i = 0; i < MENU_WEAPONEXTERN_ITEMS; ++i)
+    {
         g_PopupWeaponExtern[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupChassis = (SMenuItemText*)HAlloc(sizeof(SMenuItemText)*MENU_CHASSIS_ITEMS, g_MatrixHeap);
-    for(int i = 0; i < MENU_CHASSIS_ITEMS; i++){
+    for(int i = 0; i < MENU_CHASSIS_ITEMS; ++i)
+    {
         g_PopupChassis[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
     }
     
@@ -607,6 +617,211 @@ DCP();
     g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
 
     if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
+
+    //Проверяем, включена ли настройка сохранения шаблонов в конфиге
+    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Interface");
+    if (iface_par->ParCount(PAR_DESIGNSTOSAVE) > 0)
+    {
+        m_MaxDesignsToSave = iface_par->Par(PAR_DESIGNSTOSAVE).GetInt();
+        //Загружаем сохранённые шаблоны роботов игрока из txt-конфига и заносим их в конструктор роботов
+        if (m_MaxDesignsToSave)
+        {
+            wchar system_folder[MAX_PATH];
+            SHGetSpecialFolderPathW(0, system_folder, CSIDL_PERSONAL, true);
+            CWStr path(system_folder);
+            path += L"\\SpaceRangersHD\\RobotsCFG.txt";
+
+            //Если обнаружили искомый конфиг
+            if (CFile::FileExist(path, path))
+            {
+                CBlockPar* load = HNew(g_MatrixHeap) CBlockPar(true, g_MatrixHeap);
+                load->LoadFromTextFile(path);
+                load = load->BlockGetNE(L"BotDesigns");
+                if(load != nullptr)
+                {
+                    unsigned char counter = 1;
+                    //Расшифровываем строку цифро-буквенного шаблона робота, полученную из txt-конфига
+                    CWStr confStr = load->ParNE(L"Bot" + CWStr(counter));
+                    SRobotConfig conf;
+                    while (confStr != L"" && counter <= m_MaxDesignsToSave)
+                    {
+                        counter++;
+
+                        //Исключаем заведомо невалидные по длине шаблоны
+                        if (confStr.GetCountPar(L",") < 2)
+                        {
+                            confStr = load->ParNE(L"Bot" + CWStr(counter));
+                            continue;
+                        }
+
+                        //Определяем шасси
+                        CWStr t_str = confStr.GetStrPar(0, L",");
+                        t_str.Trim();
+                        if (t_str == L"P") conf.m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
+                        else if (t_str == L"W") conf.m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
+                        else if (t_str == L"T") conf.m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
+                        else if (t_str == L"H") conf.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
+                        else if (t_str == L"A") conf.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+                        else
+                        {
+                            confStr = load->ParNE(L"Bot" + CWStr(counter));
+                            continue;
+                        }
+
+                        //Определяем корпус
+                        t_str = confStr.GetStrPar(1, L",");
+                        t_str.Trim();
+                        if (t_str == L"1") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_6;
+                        else if (t_str == L"1S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PASSIVE;
+                        else if (t_str == L"2") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
+                        else if (t_str == L"2S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
+                        else if (t_str == L"3") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
+                        else if (t_str == L"4S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+                        else
+                        {
+                            confStr = load->ParNE(L"Bot" + CWStr(counter));
+                            continue;
+                        }
+
+                        //Записываем в конфиг предельное число обычных и особых орудий для данного типа корпуса
+                        conf.m_Hull.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[conf.m_Hull.m_Unit.m_nKind - 1].common;
+                        conf.m_Hull.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[conf.m_Hull.m_Unit.m_nKind - 1].extra;
+
+                        //Определяем оружие
+                        if (confStr.GetCountPar(L",") >= 3)
+                        {
+                            t_str = confStr.GetStrPar(2, L",");
+                            t_str.Trim();
+
+                            if (t_str.GetLen() > (conf.m_Hull.m_MaxCommonWeaponCnt + conf.m_Hull.m_MaxExtraWeaponCnt))
+                            {
+                                confStr = load->ParNE(L"Bot" + CWStr(counter));
+                                continue;
+                            }
+
+                            int cnt_normal = 0;
+                            int cnt_extra = 0;
+
+                            for (int u = 0; u < t_str.GetLen(); ++u)
+                            {
+                                wchar ch = t_str.GetBuf()[u];
+                                if (ch == L'G')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_MACHINEGUN;
+                                }
+                                else if (ch == L'C')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_CANNON;
+                                }
+                                else if (ch == L'M')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_MISSILE;
+                                }
+                                else if (ch == L'F')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_FLAMETHROWER;
+                                }
+                                else if (ch == L'O')
+                                {
+                                    u = 4;//Фикс кривого восстановления роботов с корпусами 1S и 2S из шаблона
+                                    cnt_extra++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_MORTAR;
+                                }
+                                else if (ch == L'L')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_LASER;
+                                }
+                                else if (ch == L'B')
+                                {
+                                    u = 4;//Фикс кривого восстановления роботов с корпусами 1S и 2S из шаблона
+                                    cnt_extra++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_BOMB;
+                                }
+                                else if (ch == L'P')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_PLASMA;
+                                }
+                                else if (ch == L'E')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_ELECTRIC;
+                                }
+                                else if (ch == L'R')
+                                {
+                                    cnt_normal++;
+                                    conf.m_Weapon[u].m_nKind = RUK_WEAPON_REPAIR;
+                                }
+                                else
+                                {
+                                    confStr = load->ParNE(L"Bot" + CWStr(counter));
+                                    continue;
+                                }
+
+                                conf.m_Weapon[u].m_nType = MRT_WEAPON;
+                            }
+
+                            if (cnt_normal > conf.m_Hull.m_MaxCommonWeaponCnt)
+                            {
+                                confStr = load->ParNE(L"Bot" + CWStr(counter));
+                                continue;
+                            }
+                            if (cnt_extra > conf.m_Hull.m_MaxExtraWeaponCnt)
+                            {
+                                confStr = load->ParNE(L"Bot" + CWStr(counter));
+                                continue;
+                            }
+                        }
+
+                        //Определяем голову
+                        if (confStr.GetCountPar(L",") >= 4)
+                        {
+                            t_str = confStr.GetStrPar(3, L",");
+                            t_str.Trim();
+
+                            if (t_str == L"S") conf.m_Head.m_nKind = RUK_HEAD_BLOCKER;
+                            else if (t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DYNAMO;
+                            else if (t_str == L"L") conf.m_Head.m_nKind = RUK_HEAD_LOCKATOR;
+                            else if (t_str == L"F") conf.m_Head.m_nKind = RUK_HEAD_FIREWALL;
+                            else if (t_str == L"R") conf.m_Head.m_nKind = RUK_HEAD_RAPID;
+                            else if (t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DESIGN;
+                            else if (t_str == L"P") conf.m_Head.m_nKind = RUK_HEAD_SPEAKER;
+                            else
+                            {
+                                confStr = load->ParNE(L"Bot" + CWStr(counter));
+                                continue;
+                            }
+                        }
+
+                        //Заносим готовый конфиг в историю
+                        g_ConfigHistory->AddConfig(&conf);
+
+                        //Зачищаем оружие, оставшееся в конфиге от предыдущего шаблона
+                        //Необходимо, чтобы избежать неверной записи информации об орудиях 
+                        //роботов с корпусами 1S и 2S
+                        for (int j = 0; j < MAX_WEAPON_CNT; ++j)
+                        {
+                            conf.m_Weapon[j].m_nKind = RUK_UNKNOWN;
+                        }
+
+                        //Проверяем следующий шаблон
+                        confStr = load->ParNE(L"Bot" + CWStr(counter));
+                    }
+                    //Убираем начальный стоковый чертёж завода и заменяем его на первый из списка загруженных
+                    g_ConfigHistory->m_CurrentConfig = g_ConfigHistory->m_FirstConfig;
+                    g_ConfigHistory->LoadCurrentConfigToConstructor();
+                }
+        //Очищаем память
+                HDelete(CBlockPar, load, g_MatrixHeap);
+            }
+        }
+        HDelete(CBlockPar, iface_par, g_MatrixHeap);
+    }
 
     // this code can be safely removed from release : RELEASE_OFF
 
@@ -754,6 +969,103 @@ void MatrixGameDeinit(void)
 {
     DTRACE();
 
+    //Сохраняем указанное число шаблонов роботов игрока, если настройка MaxDesignsToSave не равна нулю
+    if (m_MaxDesignsToSave)
+    {
+        CBlockPar* save = HNew(g_MatrixHeap) CBlockPar(true, g_MatrixHeap);
+        save->BlockAdd(L"BotDesigns");
+        wchar system_folder[MAX_PATH];
+        SHGetSpecialFolderPathW(0, system_folder, CSIDL_PERSONAL, true);
+        CWStr path(system_folder);
+        path += L"\\SpaceRangersHD\\RobotsCFG.txt";
+        SRobotConfig* temp_config = g_ConfigHistory->m_LastConfig;
+        SRobotConfig* cur_config = g_ConfigHistory->m_LastConfig;
+        unsigned char counter = m_MaxDesignsToSave;
+        //Начинаем перебор с конца списка шаблонов
+        //И определяем, сколько шаблонов в данный момент в принципе загружено в завод
+        while (counter > 1)
+        {
+            temp_config = temp_config->m_PrevConfig;
+            if (temp_config == nullptr) break;
+            cur_config = cur_config->m_PrevConfig;
+            counter--;
+        }
+
+        CWStr to_config;
+        to_config = L"";
+        counter = 0;
+        while ((cur_config != nullptr) && (counter < m_MaxDesignsToSave))
+        {
+            counter++;
+            to_config = L"";
+
+            //Формируем строку цифро-буквенного шаблона робота для записи в txt-конфиг
+            //Определяем шасси
+            auto cur_gear = cur_config->m_Chassis.m_nKind;
+            if (cur_gear == RUK_CHASSIS_PNEUMATIC) to_config += L"P";
+            else if (cur_gear == RUK_CHASSIS_WHEEL) to_config += L"W";
+            else if (cur_gear == RUK_CHASSIS_TRACK) to_config += L"T";
+            else if (cur_gear == RUK_CHASSIS_HOVERCRAFT) to_config += L"H";
+            else if (cur_gear == RUK_CHASSIS_ANTIGRAVITY) to_config += L"A";
+
+            //Определяем туловище
+            cur_gear = cur_config->m_Hull.m_Unit.m_nKind;
+            to_config += L",";
+            if (cur_gear == RUK_ARMOR_6) to_config += L"1";
+            else if (cur_gear == RUK_ARMOR_PASSIVE) to_config += L"1S";
+            else if (cur_gear == RUK_ARMOR_ACTIVE) to_config += L"2";
+            else if (cur_gear == RUK_ARMOR_FIREPROOF) to_config += L"2S";
+            else if (cur_gear == RUK_ARMOR_PLASMIC) to_config += L"3";
+            else if (cur_gear == RUK_ARMOR_NUCLEAR) to_config += L"4S";
+
+            //Определяем оружие
+            bool t_mark = false;
+            for (int i = 0; i < MAX_WEAPON_CNT; ++i)
+            {
+                cur_gear = cur_config->m_Weapon[i].m_nKind;
+                if (cur_gear)
+                {
+                    if (!t_mark)
+                    {
+                        to_config += L",";
+                        t_mark = true;
+                    }
+                    if (cur_gear == RUK_WEAPON_MACHINEGUN) to_config += L"G";
+                    else if (cur_gear == RUK_WEAPON_CANNON) to_config += L"C";
+                    else if (cur_gear == RUK_WEAPON_MISSILE) to_config += L"M";
+                    else if (cur_gear == RUK_WEAPON_FLAMETHROWER) to_config += L"F";
+                    else if (cur_gear == RUK_WEAPON_MORTAR) to_config += L"O";
+                    else if (cur_gear == RUK_WEAPON_LASER) to_config += L"L";
+                    else if (cur_gear == RUK_WEAPON_BOMB) to_config += L"B";
+                    else if (cur_gear == RUK_WEAPON_PLASMA) to_config += L"P";
+                    else if (cur_gear == RUK_WEAPON_ELECTRIC) to_config += L"E";
+                    else if (cur_gear == RUK_WEAPON_REPAIR) to_config += L"R";
+                }
+            }
+
+            //Определяем голову
+            cur_gear = cur_config->m_Head.m_nKind;
+            if (cur_gear) to_config += L",";
+            if (cur_gear == RUK_HEAD_BLOCKER) to_config += L"S";
+            else if (cur_gear == RUK_HEAD_DYNAMO) to_config += L"D";
+            else if (cur_gear == RUK_HEAD_LOCKATOR) to_config += L"L";
+            else if (cur_gear == RUK_HEAD_FIREWALL) to_config += L"F";
+            else if (cur_gear == RUK_HEAD_RAPID) to_config += L"R";
+            else if (cur_gear == RUK_HEAD_DESIGN) to_config += L"D";
+            else if (cur_gear == RUK_HEAD_SPEAKER) to_config += L"P";
+
+            //Заносим готовый шаблон в список сохранения
+            save->ParPathAdd(L"BotDesigns.Bot" + CWStr(counter), to_config);
+
+            //Выбираем следующий конфиг
+            cur_config = cur_config->m_NextConfig;
+        }
+        //Записываем готовые шаблоны в txt-конфиг
+        save->SaveInTextFile(path);
+        //Очищаем память
+        HDelete(CBlockPar, save, g_MatrixHeap);
+    }
+
     SSpecialBot::ClearAIRobotType();
 
     g_Config.Clear();
@@ -766,44 +1078,52 @@ void MatrixGameDeinit(void)
 
     CMatrixHint::ClearAll();
 	
-	if(g_MatrixMap) {
+	if(g_MatrixMap)
+    {
 		ASSERT(g_MatrixHeap);
 
 		HDelete(CMatrixMapLogic,g_MatrixMap,g_MatrixHeap);
 		g_MatrixMap=NULL;
 	}
 
-    if(g_MatrixData){
+    if(g_MatrixData)
+    {
         HDelete(CBlockPar,g_MatrixData,NULL);
         g_MatrixData = NULL;
     }
 
     CMatrixRobot::DestroyPneumaticData();
 
-    if(g_IFaceList){
+    if(g_IFaceList)
+    {
 		ASSERT(g_MatrixHeap);
 		HDelete(CIFaceList, g_IFaceList, g_MatrixHeap);
         g_IFaceList = NULL;
     }
 
-    if(g_ConfigHistory){
+    if(g_ConfigHistory)
+    {
 		ASSERT(g_MatrixHeap);
 		HDelete(CHistory, g_ConfigHistory, g_MatrixHeap);
         g_ConfigHistory = NULL;
     }
 	
-    if(CIFaceMenu::m_MenuGraphics){
+    if(CIFaceMenu::m_MenuGraphics)
+    {
         HDelete(CInterface, CIFaceMenu::m_MenuGraphics, g_MatrixHeap);
         CIFaceMenu::m_MenuGraphics = NULL;
     }
 
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
         HDelete(CIFaceMenu, g_PopupMenu, g_MatrixHeap);
         g_PopupMenu = NULL;
     }
     
-    if(g_PopupHead){
-        for(int i = 0; i < MENU_HEAD_ITEMS; i++){
+    if(g_PopupHead)
+    {
+        for(int i = 0; i < MENU_HEAD_ITEMS; ++i)
+        {
             g_PopupHead[i].text.CWStr::~CWStr(); 
         }
         
@@ -811,8 +1131,10 @@ void MatrixGameDeinit(void)
         g_PopupHead = NULL;
     }
 
-    if(g_PopupHull){
-        for(int i = 0; i < MENU_HULL_ITEMS; i++){
+    if(g_PopupHull)
+    {
+        for(int i = 0; i < MENU_HULL_ITEMS; ++i)
+        {
             g_PopupHull[i].text.CWStr::~CWStr();
         }
         
@@ -820,8 +1142,10 @@ void MatrixGameDeinit(void)
         g_PopupHull = NULL;
     }
 
-    if(g_PopupWeaponNormal){
-        for(int i = 0; i < MENU_WEAPONNORM_ITEMS; i++){
+    if(g_PopupWeaponNormal)
+    {
+        for(int i = 0; i < MENU_WEAPONNORM_ITEMS; ++i)
+        {
             g_PopupWeaponNormal[i].text.CWStr::~CWStr();
         }
         
@@ -829,8 +1153,10 @@ void MatrixGameDeinit(void)
         g_PopupWeaponNormal = NULL;
     }
 
-    if(g_PopupWeaponExtern){
-        for(int i = 0; i < MENU_WEAPONEXTERN_ITEMS; i++){
+    if(g_PopupWeaponExtern)
+    {
+        for(int i = 0; i < MENU_WEAPONEXTERN_ITEMS; ++i)
+        {
             g_PopupWeaponExtern[i].text.CWStr::~CWStr();
         }
         
@@ -838,8 +1164,10 @@ void MatrixGameDeinit(void)
         g_PopupWeaponExtern = NULL;
     }
 
-    if(g_PopupChassis){
-        for(int i = 0; i < MENU_CHASSIS_ITEMS; i++){
+    if(g_PopupChassis)
+    {
+        for(int i = 0; i < MENU_CHASSIS_ITEMS; ++i)
+        {
             g_PopupChassis[i].text.CWStr::~CWStr();
         }
         
@@ -847,16 +1175,20 @@ void MatrixGameDeinit(void)
         g_PopupChassis = NULL;
     }
 
-    if(g_Config.m_Labels){
-        for(int i = 0;i < LABELS_LAST; i++){
+    if(g_Config.m_Labels)
+    {
+        for(int i = 0;i < LABELS_LAST; ++i)
+        {
             g_Config.m_Labels[i].CWStr::~CWStr();
         }
         HFree(g_Config.m_Labels, g_MatrixHeap);
         g_Config.m_Labels = NULL;
     }
 
-    if(g_Config.m_Descriptions){
-        for(int i = 0;i < DESCRIPTIONS_LAST; i++){
+    if(g_Config.m_Descriptions)
+    {
+        for(int i = 0;i < DESCRIPTIONS_LAST; ++i)
+        {
             g_Config.m_Descriptions[i].CWStr::~CWStr();
         }
         HFree(g_Config.m_Descriptions, g_MatrixHeap);
@@ -867,7 +1199,8 @@ void MatrixGameDeinit(void)
   
     CFile::ReleasePackFiles();
 
-    if(g_MatrixHeap) {
+    if(g_MatrixHeap) 
+    {
 		HDelete(CHeap,g_MatrixHeap,NULL);
 		g_MatrixHeap=NULL;
 	}

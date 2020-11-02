@@ -46,22 +46,28 @@ void CHistory::DelConfig(SRobotConfig *config)
 {
     DTRACE();
     SRobotConfig* confs  = m_FirstConfig;
-    while(confs){
+    while(confs)
+    {
         bool gotcha = false;
-        if(confs->m_Head.m_nKind == config->m_Head.m_nKind && confs->m_Chassis.m_nKind == config->m_Chassis.m_nKind && confs->m_Hull.m_Unit.m_nKind == config->m_Hull.m_Unit.m_nKind){
+        if(confs->m_Head.m_nKind == config->m_Head.m_nKind && confs->m_Chassis.m_nKind == config->m_Chassis.m_nKind && confs->m_Hull.m_Unit.m_nKind == config->m_Hull.m_Unit.m_nKind)
+        {
             gotcha = true;       
         }
 
-        if(gotcha){
-            for(int i = 0; i < MAX_WEAPON_CNT;i++){
-                if(confs->m_Weapon[i].m_nKind != config->m_Weapon[i].m_nKind){
+        if(gotcha)
+        {
+            for(int i = 0; i < MAX_WEAPON_CNT; i++)
+            {
+                if(confs->m_Weapon[i].m_nKind != config->m_Weapon[i].m_nKind)
+                {
                     gotcha = false;
                     break;
                 }
             }
         }
 
-        if(gotcha){
+        if(gotcha)
+        {
             SRobotConfig* next = confs->m_NextConfig;
             LIST_DEL(confs, m_FirstConfig, m_LastConfig, m_PrevConfig, m_NextConfig);
             HDelete(SRobotConfig, confs, g_MatrixHeap);
@@ -75,11 +81,13 @@ void CHistory::DelConfig(SRobotConfig *config)
 void CHistory::LoadCurrentConfigToConstructor()
 {
     DTRACE();
-    if(m_CurrentConfig){
+    if(m_CurrentConfig)
+    {
         CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
         ps->m_Constructor->SuperDjeans(MRT_HEAD, m_CurrentConfig->m_Head.m_nKind, 0, true);
         ps->m_Constructor->SuperDjeans(MRT_ARMOR, m_CurrentConfig->m_Hull.m_Unit.m_nKind, 0, true);
-        for(int i=0;i<MAX_WEAPON_CNT;i++){
+        for(int i=0; i<MAX_WEAPON_CNT; ++i)
+        {
             if(m_CurrentConfig->m_Weapon[i].m_nKind)
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_CurrentConfig->m_Weapon[i].m_nKind, i, true);
         }
@@ -90,7 +98,8 @@ void CHistory::LoadCurrentConfigToConstructor()
 void __stdcall CHistory::PrevConfig(void *object)
 {
     DTRACE();
-    if(m_CurrentConfig && m_CurrentConfig->m_PrevConfig){
+    if(m_CurrentConfig && m_CurrentConfig->m_PrevConfig)
+    {
         m_CurrentConfig = m_CurrentConfig->m_PrevConfig;
         LoadCurrentConfigToConstructor();
     }
@@ -99,7 +108,8 @@ void __stdcall CHistory::PrevConfig(void *object)
 void __stdcall CHistory::NextConfig(void *object)
 {
     DTRACE();
-    if(m_CurrentConfig && m_CurrentConfig->m_NextConfig){
+    if(m_CurrentConfig && m_CurrentConfig->m_NextConfig)
+    {
         m_CurrentConfig = m_CurrentConfig->m_NextConfig;
         LoadCurrentConfigToConstructor();
     }

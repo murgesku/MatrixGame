@@ -127,7 +127,7 @@ class BASE_API CWStr : public CMain
 		bool IsEmpty(void)	const				{ return GetLen() == 0; }
 
 		CWStr & Trim(void);						// Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-		CWStr & TrimFull(void);					// Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
+		CWStr & TrimFull(void);					// Trim() и в середине строки удаляет повторяющиеся 0x20,0x9
 		void TabToSpace(void);					// Конвертит 0x9 в 0x20
 
 		CWStr & Del(int sme,int len); // Удалить символы

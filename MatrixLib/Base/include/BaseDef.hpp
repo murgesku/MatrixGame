@@ -79,7 +79,7 @@ typedef unsigned long dword;
 typedef __int64 int64;
 typedef unsigned int  uint;
 
-#define LIST_ADD(el,first,last,prev,next)       {if(last!=NULL) {last->next=el;} el->prev=last; el->next=NULL;	last=el; if(first==NULL) {first=el;}}
+#define LIST_ADD(el,first,last,prev,next){if(last!=NULL) {last->next=el;} el->prev=last; el->next=NULL;	last=el; if(first==NULL) {first=el;}}
 #define LIST_ADD_FIRST(el,first,last,prev,next) {if(first!=NULL) {first->prev=el;} el->next=first; el->prev=NULL; first=el; if(last==NULL) {last=el;}}
 #define LIST_INSERT(perel,el,first,last,prev,next) {if(perel==NULL) { LIST_ADD(el,first,last,prev,next); }  else { el->prev=perel->prev;	el->next=perel;	if(perel->prev!=NULL) {perel->prev->next=el;} perel->prev=el; if(perel==first) { first=el; }}}
 

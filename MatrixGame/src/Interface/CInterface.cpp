@@ -270,7 +270,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                 }
 			}
 
-            if(pButton->m_strName == IF_MAP_ZOOM_IN){
+            if(pButton->m_strName == IF_MAP_ZOOM_IN)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
             }else if(pButton->m_strName == IF_MAP_ZOOM_OUT){
                 FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
@@ -345,91 +346,148 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                 g_IFaceList->m_Chassis[3] = pButton;
             }else if(pButton->m_strName == IF_BASE_CHASSIS5){
                 g_IFaceList->m_Chassis[4] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL1){
+            }else if(pButton->m_strName == IF_BASE_HULL1)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL2){
+            }
+            else if(pButton->m_strName == IF_BASE_HULL2)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL3){
+            }
+            else if(pButton->m_strName == IF_BASE_HULL3)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL4){
+            }
+            else if(pButton->m_strName == IF_BASE_HULL4)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL5){
+            }
+            else if(pButton->m_strName == IF_BASE_HULL5)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL6){
+            }
+            else if(pButton->m_strName == IF_BASE_HULL6)
+            {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HEAD1){
+            }
+            else if(pButton->m_strName == IF_BASE_HEAD1)
+            {
                 g_IFaceList->m_Head[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HEAD2){
+            }
+            else if(pButton->m_strName == IF_BASE_HEAD2)
+            {
                 g_IFaceList->m_Head[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HEAD3){
+            }
+            else if(pButton->m_strName == IF_BASE_HEAD3)
+            {
                 g_IFaceList->m_Head[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HEAD4){
+            }
+            else if(pButton->m_strName == IF_BASE_HEAD4)
+            {
                 g_IFaceList->m_Head[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON1){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON1)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON2){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON2)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON3){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON3)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON4){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON4)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON5){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON5)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON6){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON6)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON7){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON7)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON8){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON8)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON9){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON9)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_WEAPON10){
+            }
+            else if(pButton->m_strName == IF_BASE_WEAPON10)
+            {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
-            }else if(pButton->m_strName == IF_BASE_UP){
+            }
+            else if(pButton->m_strName == IF_BASE_UP)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Up);
                 g_IFaceList->m_RCountControl->SetButtonUp(pButton);
-            }else if(pButton->m_strName == IF_BASE_DOWN){
+            }
+            else if(pButton->m_strName == IF_BASE_DOWN)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Down);
                 g_IFaceList->m_RCountControl->SetButtonDown(pButton);
-            }else if(pButton->m_strName == IF_BASE_HISTORY_RIGHT){
+            }
+            else if(pButton->m_strName == IF_BASE_HISTORY_RIGHT)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_ConfigHistory, CHistory::NextConfig);
-            }else if(pButton->m_strName == IF_BASE_HISTORY_LEFT){
+            }
+            else if(pButton->m_strName == IF_BASE_HISTORY_LEFT)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_ConfigHistory, CHistory::PrevConfig);
             }
             
-            if(pButton->m_strName == IF_BASE_PILON_CHASSIS){
+            if(pButton->m_strName == IF_BASE_PILON_CHASSIS)
+            {
                 g_IFaceList->m_ChassisPilon = pButton;
             }
 
-            if(pButton->m_strName == IF_BASE_PILON_HULL){
+            if(pButton->m_strName == IF_BASE_PILON_HULL)
+            {
                 g_IFaceList->m_ArmorPilon = pButton;
             }
 
-            if(pButton->m_strName == IF_BASE_PILON_HEAD){
+            if(pButton->m_strName == IF_BASE_PILON_HEAD)
+            {
                 g_IFaceList->m_HeadPilon = pButton;
             }
             
-            if(pButton->m_strName == IF_BASE_HEAD_EMPTY){
+            if(pButton->m_strName == IF_BASE_HEAD_EMPTY)
+            {
                 g_IFaceList->m_Head[0] = pButton;
             }
             
-            if(pButton->m_strName == IF_BASE_WEAPON_EMPTY){
+            if(pButton->m_strName == IF_BASE_WEAPON_EMPTY)
+            {
                 g_IFaceList->m_Weapon[0] = pButton;
             }
 
-            if(pButton->m_strName == IF_BASE_PILON1){
+            if(pButton->m_strName == IF_BASE_PILON1)
+            {
                 g_IFaceList->m_WeaponPilon[0] = pButton;
             }
-            if(pButton->m_strName == IF_BASE_PILON2){
+            if(pButton->m_strName == IF_BASE_PILON2)
+            {
                 g_IFaceList->m_WeaponPilon[1] = pButton;
             }
-            if(pButton->m_strName == IF_BASE_PILON3){
+            if(pButton->m_strName == IF_BASE_PILON3)
+            {
                 g_IFaceList->m_WeaponPilon[2] = pButton;
             }
-            if(pButton->m_strName == IF_BASE_PILON4){
+            if(pButton->m_strName == IF_BASE_PILON4)
+            {
                 g_IFaceList->m_WeaponPilon[3] = pButton;
             }
-            if(pButton->m_strName == IF_BASE_PILON5){
+            if(pButton->m_strName == IF_BASE_PILON5)
+            {
                 g_IFaceList->m_WeaponPilon[4] = pButton;
             }
 
@@ -942,8 +1000,10 @@ bool CInterface::OnMouseMove(CPoint mouse)
 {
 	DTRACE();
 
-    if(g_MatrixMap->IsPaused()){
-        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU){
+    if(g_MatrixMap->IsPaused())
+    {
+        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
+        {
             return false;
         }
     }
@@ -954,36 +1014,50 @@ bool CInterface::OnMouseMove(CPoint mouse)
     g_IFaceList->m_FocusedElement = NULL;
     CWStr static_name(L"", g_CacheHeap);
 
-	if(m_VisibleAlpha){
+	if(m_VisibleAlpha)
+    {
 		CIFaceElement *pObjectsList = m_FirstElement;
-        while(pObjectsList != NULL){
-            if(pObjectsList->GetVisibility() || pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID){
-                if((pObjectsList->m_Type == IFACE_STATIC || pObjectsList->m_Type == IFACE_DYNAMIC_STATIC)){ 
-                    if((pObjectsList->m_strName != IF_POPUP_SELECTOR && pObjectsList->m_nId != POPUP_SELECTOR_CATCHERS_ID) && (pObjectsList->OnMouseMove(mouse)/* || (pObjectsList->m_strName == IF_POPUP_RAMKA && pObjectsList->ElementCatch(mouse))*/)){
+        while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility() || pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID)
+            {
+                if((pObjectsList->m_Type == IFACE_STATIC || pObjectsList->m_Type == IFACE_DYNAMIC_STATIC))
+                { 
+                    if((pObjectsList->m_strName != IF_POPUP_SELECTOR && pObjectsList->m_nId != POPUP_SELECTOR_CATCHERS_ID) && (pObjectsList->OnMouseMove(mouse)/* || (pObjectsList->m_strName == IF_POPUP_RAMKA && pObjectsList->ElementCatch(mouse))*/))
+                    {
                         g_IFaceList->m_FocusedElement = pObjectsList;
                         bCatchStatic = true;
                         static_name = pObjectsList->m_strName;
-                        if(pObjectsList->m_Hint.HintTemplate != L""){
+                        if(pObjectsList->m_Hint.HintTemplate != L"")
+                        {
                             static_have_hint = true;
                         }
-                    }else{
-                        if(pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID && pObjectsList->ElementCatch(mouse)){
-                            if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu && g_PopupMenu->Selector()){
+                    }
+                    else
+                    {
+                        if(pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID && pObjectsList->ElementCatch(mouse))
+                        {
+                            if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu && g_PopupMenu->Selector())
+                            {
                                 g_IFaceList->m_FocusedElement = pObjectsList;
                                 bCatchStatic = true;
                                 g_PopupMenu->SetSelectorPos(pObjectsList->m_xPos, pObjectsList->m_yPos, pObjectsList->m_iParam);
                             }
                         }
                     }
-                }else{
-                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && pObjectsList->OnMouseMove(mouse)){
+                }
+                else
+                {
+                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && pObjectsList->OnMouseMove(mouse))
+                    {
                         g_IFaceList->m_FocusedElement = pObjectsList;
                         bCatch = true;
-                    }else{
+                    }
+                    else
+                    {
                         pObjectsList->Reset();
                     }
                 }
-
             }
 			pObjectsList = pObjectsList->m_NextElement;
 		}
@@ -1810,29 +1884,40 @@ void CInterface::Init(void)
         m_VisibleAlpha = IS_VISIBLEA;
         int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
         
-        while(pElement){
+        while(pElement)
+        {
             pElement->SetVisibility(false);
-            if(building->IsBase()){
+            if(building->IsBase())
+            {
                 bool bld = building->m_BS.GetItemsCnt() < MAX_STACK_UNITS;
                 int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].common;
                 int extended = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].extra;
 
-                if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == L"counthz" || pElement->m_strName == IF_BASE_CONSTRUCTION_LEFT || pElement->m_strName == IF_BASE_CONSTRUCTION_RIGHT || pElement->m_strName == IF_BASE_CONSTRUCTION_FOOT)){
+                if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == L"counthz" || pElement->m_strName == IF_BASE_CONSTRUCTION_LEFT || pElement->m_strName == IF_BASE_CONSTRUCTION_RIGHT || pElement->m_strName == IF_BASE_CONSTRUCTION_FOOT))
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_RCNAME){
-                    if(rcname != player_side->m_Constructor->GetRenderBot()->m_Name){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_RCNAME)
+                {
+                    if(rcname != player_side->m_Constructor->GetRenderBot()->m_Name)
+                    {
                        rcname = player_side->m_Constructor->GetRenderBot()->m_Name;
                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = rcname;
                        pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WARNING1 || pElement->m_strName == IF_BASE_WARNING_LABEL)){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WARNING1 || pElement->m_strName == IF_BASE_WARNING_LABEL))
+                {
                     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
                     if(ps->GetRobotsCnt()+ps->GetRobotsInStack() >= ps->GetMaxSideRobots()) pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && IS_DYNAMIC_WARNING(pElement->m_nId)){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && IS_DYNAMIC_WARNING(pElement->m_nId))
+                {
                     int res[MAX_RESOURCES];
                     player_side->m_Constructor->GetConstructionPrice(res);
-                    for(int i = 0; i < MAX_RESOURCES;i++){
+                    for(int i = 0; i < MAX_RESOURCES; ++i)
+                    {
                         if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                     }
                     dword dw = pElement->m_nId - DYNAMIC_WARNING;
@@ -1843,257 +1928,350 @@ void CInterface::Init(void)
                             pElement->SetVisibility(true);
                         }
                     }
-
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_CONST_CANCEL){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_CONST_CANCEL)
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_CONST_BUILD){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_CONST_BUILD)
+                {
                     int res[4];
                     player_side->m_Constructor->GetConstructionPrice(res);
                     
                     bool men = false;
-                    for (int i = 0; !men && i<MAX_RESOURCES;++i)
+                    for (int i = 0; !men && i<MAX_RESOURCES; ++i)
                     {
                         men |= player_side->GetResourcesAmount(ERes(i)) < res[i];
                     }
 
-                    if(!bld || men || player_side->GetRobotsCnt()+player_side->GetRobotsInStack() >= player_side->GetMaxSideRobots()){
+                    if(!bld || men || player_side->GetRobotsCnt()+player_side->GetRobotsInStack() >= player_side->GetMaxSideRobots())
+                    {
                         pElement->m_DefState = IFACE_DISABLED;
                         pElement->m_CurState = IFACE_DISABLED;
                         g_IFaceList->m_RCountControl->Disable();
-                    }else if(pElement->m_CurState == IFACE_DISABLED){
+                    }
+                    else if(pElement->m_CurState == IFACE_DISABLED)
+                    {
                         pElement->m_DefState = IFACE_NORMAL;
                         pElement->m_CurState = IFACE_NORMAL;
                         g_IFaceList->m_RCountControl->Enable();
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_LABEL1){
-                    if(item_label1 != player_side->m_ConstructPanel->m_FocusedLabel){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_LABEL1)
+                {
+                    if(item_label1 != player_side->m_ConstructPanel->m_FocusedLabel)
+                    {
                         item_label1 = player_side->m_ConstructPanel->m_FocusedLabel;
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = item_label1;
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
 
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_LABEL2){
-                    if(item_label2 != player_side->m_ConstructPanel->m_FocusedDescription){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_LABEL2)
+                {
+                    if(item_label2 != player_side->m_ConstructPanel->m_FocusedDescription)
+                    {
                         item_label2 = player_side->m_ConstructPanel->m_FocusedDescription;
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = item_label2;
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
-
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_HEAD){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_HEAD)
+                {
                     pElement->SetVisibility(true);
-                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                    {
                         int res[MAX_RESOURCES];
                         player_side->m_Constructor->GetConstructionPrice(res);
-                        for(int i = 0; i < MAX_RESOURCES;i++){
+                        for(int i = 0; i < MAX_RESOURCES; ++i)
+                        {
                             if(g_IFaceList->m_RCountControl->GetCounter())
                                 res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
-                        if(pElement->m_Param2){
+                        if(pElement->m_Param2)
+                        {
                             int kind = Float2Int(pElement->m_Param2);
                             if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[HEAD1_TITAN + (kind-1)*4]) its_critical = true;
                             if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[HEAD1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                             if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[HEAD1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                             if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[HEAD1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                         }
-                        if(its_critical){
+                        if(its_critical)
+                        {
                             g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                        }else{
+                        }
+                        else
+                        {
                             g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_HULL){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_HULL)
+                {
                     pElement->SetVisibility(true);
-                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                    {
                         int res[MAX_RESOURCES];
                         player_side->m_Constructor->GetConstructionPrice(res);
-                        for(int i = 0; i < MAX_RESOURCES;i++){
+                        for(int i = 0; i < MAX_RESOURCES; ++i)
+                        {
                             if(g_IFaceList->m_RCountControl->GetCounter())
                                 res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
-                        if(pElement->m_Param2){
+                        if(pElement->m_Param2)
+                        {
                             int kind = Float2Int(pElement->m_Param2);
                             if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[ARMOR1_TITAN + (kind-1)*4]) its_critical = true;
                             if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[ARMOR1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                             if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[ARMOR1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                             if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[ARMOR1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                         }
-                        if(its_critical){
+                        if(its_critical)
+                        {
                             g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                        }else{
+                        }
+                        else
+                        {
                             g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_CHASSIS){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON_CHASSIS)
+                {
                     pElement->SetVisibility(true);
-                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                    if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                    {
                         int res[MAX_RESOURCES];
                         player_side->m_Constructor->GetConstructionPrice(res);
-                        for(int i = 0; i < MAX_RESOURCES;i++){
+                        for(int i = 0; i < MAX_RESOURCES; ++i)
+                        {
                             if(g_IFaceList->m_RCountControl->GetCounter())
                                 res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
-                        if(pElement->m_Param2){
+                        if(pElement->m_Param2)
+                        {
                             int kind = Float2Int(pElement->m_Param2);
                             if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[CHASSIS1_TITAN + (kind-1)*4]) its_critical = true;
                             if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[CHASSIS1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                             if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[CHASSIS1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                             if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[CHASSIS1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                         }
-                        if(its_critical){
+                        if(its_critical)
+                        {
                             g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                        }else{
+                        }
+                        else
+                        {
                             g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_RIGHT){
-                    if(!g_ConfigHistory->IsNext()){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_RIGHT)
+                {
+                    if(!g_ConfigHistory->IsNext())
+                    {
                         pElement->SetState(IFACE_DISABLED);
-                    }else if(g_ConfigHistory->IsNext() && pElement->GetState() == IFACE_DISABLED){
+                    }
+                    else if(g_ConfigHistory->IsNext() && pElement->GetState() == IFACE_DISABLED)
+                    {
                         pElement->SetState(IFACE_NORMAL);
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_LEFT){
-                    if(!g_ConfigHistory->IsPrev()){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_LEFT)
+                {
+                    if(!g_ConfigHistory->IsPrev())
+                    {
                         pElement->SetState(IFACE_DISABLED);
-                    }else if(g_ConfigHistory->IsPrev() && pElement->GetState() == IFACE_DISABLED){
+                    }
+                    else if(g_ConfigHistory->IsPrev() && pElement->GetState() == IFACE_DISABLED)
+                    {
                         pElement->SetState(IFACE_NORMAL);
                     }
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_UP){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_UP)
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_DOWN){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_DOWN)
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON1){
-                    if(common_weapon > 0){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON1)
+                {
+                    if(common_weapon > 0)
+                    {
                         pElement->SetVisibility(true);
-                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                        {
                             int res[MAX_RESOURCES];
                             player_side->m_Constructor->GetConstructionPrice(res);
-                            for(int i = 0; i < MAX_RESOURCES;i++){
+                            for(int i = 0; i < MAX_RESOURCES; ++i)
+                            {
                                 if(g_IFaceList->m_RCountControl->GetCounter())
                                     res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
-                            if(pElement->m_Param2){
+                            if(pElement->m_Param2)
+                            {
                                 int kind = Float2Int(pElement->m_Param2);
                                 if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                                 if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                             }
-                            if(its_critical){
+                            if(its_critical)
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                            }else{
+                            }
+                            else
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                             }
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON2){
-                    if(common_weapon > 1){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON2)
+                {
+                    if(common_weapon > 1)
+                    {
                         pElement->SetVisibility(true);
-                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                        {
                             int res[MAX_RESOURCES];
                             player_side->m_Constructor->GetConstructionPrice(res);
-                            for(int i = 0; i < MAX_RESOURCES;i++){
+                            for(int i = 0; i < MAX_RESOURCES; ++i)
+                            {
                                 if(g_IFaceList->m_RCountControl->GetCounter())
                                     res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
-                            if(pElement->m_Param2){
+                            if(pElement->m_Param2)
+                            {
                                 int kind = Float2Int(pElement->m_Param2);
                                 if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                                 if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                             }
-                            if(its_critical){
+                            if(its_critical)
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                            }else{
+                            }
+                            else
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                             }
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON3){
-                    if(common_weapon > 2){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON3)
+                {
+                    if(common_weapon > 2)
+                    {
                         pElement->SetVisibility(true);
-                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                        {
                             int res[MAX_RESOURCES];
                             player_side->m_Constructor->GetConstructionPrice(res);
-                            for(int i = 0; i < MAX_RESOURCES;i++){
+                            for(int i = 0; i < MAX_RESOURCES; ++i)
+                            {
                                 if(g_IFaceList->m_RCountControl->GetCounter())
                                     res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
-                            if(pElement->m_Param2){
+                            if(pElement->m_Param2)
+                            {
                                 int kind = Float2Int(pElement->m_Param2);
                                 if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                                 if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                             }
-                            if(its_critical){
+                            if(its_critical)
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                            }else{
+                            }
+                            else
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                             }
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON4){
-                    if(common_weapon > 3){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON4)
+                {
+                    if(common_weapon > 3)
+                    {
                         pElement->SetVisibility(true);
-                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                        {
                             int res[MAX_RESOURCES];
                             player_side->m_Constructor->GetConstructionPrice(res);
-                            for(int i = 0; i < MAX_RESOURCES;i++){
+                            for(int i = 0; i < MAX_RESOURCES; ++i)
+                            {
                                 if(g_IFaceList->m_RCountControl->GetCounter())
                                     res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
-                            if(pElement->m_Param2){
+                            if(pElement->m_Param2)
+                            {
                                 int kind = Float2Int(pElement->m_Param2);
                                 if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                                 if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                             }
-                            if(its_critical){
+                            if(its_critical)
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                            }else{
+                            }
+                            else
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                             }
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON5){
-                    if(extended){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON5)
+                {
+                    if(extended)
+                    {
                         pElement->SetVisibility(true);
-                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+                        if(!FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+                        {
                             int res[MAX_RESOURCES];
                             player_side->m_Constructor->GetConstructionPrice(res);
-                            for(int i = 0; i < MAX_RESOURCES;i++){
+                            for(int i = 0; i < MAX_RESOURCES; ++i)
+                            {
                                 if(g_IFaceList->m_RCountControl->GetCounter())
                                     res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
-                            if(pElement->m_Param2){
+                            if(pElement->m_Param2)
+                            {
                                 int kind = Float2Int(pElement->m_Param2);
                                 if(player_side->GetResourcesAmount(TITAN) < res[TITAN] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ELECTRONICS) < res[ELECTRONICS] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 1]) its_critical = true;
                                 if(player_side->GetResourcesAmount(ENERGY) < res[ENERGY] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 2]) its_critical = true;
                                 if(player_side->GetResourcesAmount(PLASMA) < res[PLASMA] && g_Config.m_Price[WEAPON1_TITAN + (kind-1)*4 + 3]) its_critical = true;
                             }
-                            if(its_critical){
+                            if(its_critical)
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, CRITICAL_RAMKA);
-                            }else{
+                            }
+                            else
+                            {
                                 g_IFaceList->CreateElementRamka(pElement, NORMAL_RAMKA);
                             }
                         }
-
                     }
                 }/*else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CONFIG1 || pElement->m_strName == IF_BASE_CONFIG2 || pElement->m_strName == IF_BASE_CONFIG3 || pElement->m_strName == IF_BASE_CONFIG4 || pElement->m_strName == IF_BASE_CONFIG5)){
                     pElement->SetVisibility(true);

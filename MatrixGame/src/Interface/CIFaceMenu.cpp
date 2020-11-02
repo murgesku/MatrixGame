@@ -59,7 +59,16 @@ bool CIFaceMenu::LoadMenuGraphics(CBlockPar &bp)
 }
 
 //width poshitan snaruzhi - max. dlina kakogo-to elementa
-void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, int y, CIFaceElement* caller, SMenuItemText *labels, DWORD color)
+void CIFaceMenu::CreateMenu(
+    EMenuParent parent,
+    int elements,
+    int width,
+    int x,
+    int y,
+    CIFaceElement* caller,
+    SMenuItemText *labels,
+    DWORD color
+)
 {
     DTRACE();
     
@@ -99,7 +108,8 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
 
     
 //Ramka preparation
-    if(m_RamTex){
+    if(m_RamTex)
+    {
         CCache::Destroy(m_RamTex);
         m_RamTex = NULL;
     }
@@ -120,101 +130,134 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
     bm_dest.CreateRGBA(tex_width, tex_height, lr_dest.Pitch,lr_dest.pBits);
     
     CIFaceImage* els = m_MenuGraphics->m_FirstImage;
-    while(els){
-        if(els->m_strName == IF_POPUP_TOPLEFT){
+    while(els)
+    {
+        if(els->m_strName == IF_POPUP_TOPLEFT)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"topleft.png");
             bm_dest.MergeWithAlpha(CPoint(1,0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_TOPRIGHT){
+        }
+        else if(els->m_strName == IF_POPUP_TOPRIGHT)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"topright.png");
             bm_dest.MergeWithAlpha(CPoint(w - TOPRIGHT_WIDTH+1,0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_BOTTOMLEFT){
+        }
+        else if(els->m_strName == IF_POPUP_BOTTOMLEFT)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"bottomleft.png");
             bm_dest.MergeWithAlpha(CPoint(0,h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_BOTTOMRIGHT){
+        }
+        else if(els->m_strName == IF_POPUP_BOTTOMRIGHT)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"bottomright.png");
             bm_dest.MergeWithAlpha(CPoint(w - BOTTOMRIGHT_WIDTH-4,h-BOTTOMRIGHT_HEIGHT-1-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_LEFTLINE){
+        }
+        else if(els->m_strName == IF_POPUP_LEFTLINE)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < h_clean-mod; i++){
+            for(int i = 0; i < h_clean-mod; i++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(1,TOPLEFT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_RIGHTLINE){
+        }
+        else if(els->m_strName == IF_POPUP_RIGHTLINE)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < h_clean-mod; i++){
+            for(int i = 0; i < h_clean-mod; i++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(w-RIGHTLINE_WIDTH+1,TOPRIGHT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_TOPLINE){
+        }
+        else if(els->m_strName == IF_POPUP_TOPLINE)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < width; i++){
+            for(int i = 0; i < width; i++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(TOPLEFT_WIDTH+i+1,0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_BOTTOMLINE){
+        }
+        else if(els->m_strName == IF_POPUP_BOTTOMLINE)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < width; i++){
+            for(int i = 0; i < width; i++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(BOTTOMLEFT_WIDTH+i,h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_SEL){
+        }
+        else if(els->m_strName == IF_POPUP_SEL)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < elements; i++){
-                for(int j = 5; j < w - 9; j++){
+            for(int i = 0; i < elements; i++)
+            {
+                for(int j = 5; j < w - 9; j++)
+                {
                     bm_dest.MergeWithAlpha(CPoint(j, 11+(UNIT_HEIGHT*i)), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
                 }
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_SELRIGHT){
+        }
+        else if(els->m_strName == IF_POPUP_SELRIGHT)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < elements; i++){
+            for(int i = 0; i < elements; i++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(w - 12, 11+(UNIT_HEIGHT*i)), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
-
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_SELMOUSE){
+        }
+        else if(els->m_strName == IF_POPUP_SELMOUSE)
+        {
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int j = 5; j < w - 9; j++){
+            for(int j = 5; j < w - 9; j++)
+            {
                 bm_dest.MergeWithAlpha(CPoint(w + j, 0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_SELRIGHTMOUSE){
+        }
+        else if(els->m_strName == IF_POPUP_SELRIGHTMOUSE)
+{
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             bm_dest.MergeWithAlpha(CPoint((w*2) - 12, 0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
-        }else if(els->m_strName == IF_POPUP_CURSIK){
+        }
+        else if(els->m_strName == IF_POPUP_CURSIK)
+{
             m_CursikImage = els;
             //els->m_Image->LockRect(lr_src, 0);
             //CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
@@ -230,8 +273,10 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
 
     m_RamTex->UnlockRect();
     
-    if(m_Ramka){
-        if(main && main->FindElementByName(m_Ramka->m_strName)){
+    if(m_Ramka)
+    {
+        if(main && main->FindElementByName(m_Ramka->m_strName))
+        {
             LIST_DEL(m_Ramka, main->m_FirstElement, main->m_LastElement, m_PrevElement, m_NextElement);
         }
         HDelete(CIFaceStatic, m_Ramka, g_MatrixHeap);
@@ -267,8 +312,10 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
 
 //Selector preparation
 
-    if(m_Selector){
-        if(main && main->FindElementByName(m_Selector->m_strName)){
+    if(m_Selector)
+    {
+        if(main && main->FindElementByName(m_Selector->m_strName))
+        {
             LIST_DEL(m_Selector, main->m_FirstElement, main->m_LastElement,m_PrevElement, m_NextElement);
         }
         HDelete(CIFaceStatic, m_Selector, g_MatrixHeap);
@@ -298,8 +345,10 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
 
 //Catchers
     CIFaceElement* e = main->m_FirstElement;
-    while(e){
-        if(e->m_nId == POPUP_SELECTOR_CATCHERS_ID){
+    while(e)
+    {
+        if(e->m_nId == POPUP_SELECTOR_CATCHERS_ID)
+        {
             CIFaceElement* tmp_e = e->m_NextElement;
             LIST_DEL(e, main->m_FirstElement, main->m_LastElement, m_PrevElement, m_NextElement);
             HDelete(CIFaceStatic, (CIFaceStatic*)e, g_MatrixHeap);
@@ -309,7 +358,8 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
         e = e->m_NextElement;
     }
 
-    for(int i = 0; i < elements; i++){
+    for(int i = 0; i < elements; i++)
+    {
         CIFaceStatic *catcher = HNew(g_MatrixHeap) CIFaceStatic;
         catcher->m_strName = L"";
         catcher->m_xPos	= (float)x;
@@ -334,7 +384,8 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
         catcher->m_nId = POPUP_SELECTOR_CATCHERS_ID;
         catcher->m_iParam = i;
 
-        if(labels){
+        if(labels)
+        {
             catcher->m_StateImages[IFACE_NORMAL].SetStateLabelParams(LEFT_SPACE+6,-3, text_zone_width, text_zone_height, 0, 1, 0, 0, 0, CRect(0, 0, text_zone_width, text_zone_height), labels->text, CWStr(L"Font.2Ranger"), labels->color);
             catcher->m_StateImages[IFACE_NORMAL].SetStateText(true);
             labels++;
@@ -342,14 +393,17 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
     }
     //Cursor preparation
 
-    if(m_Cursor){
-        if(main && main->FindElementByName(m_Cursor->m_strName)){
+    if(m_Cursor)
+    {
+        if(main && main->FindElementByName(m_Cursor->m_strName))
+        {
             LIST_DEL(m_Cursor, main->m_FirstElement, main->m_LastElement,m_PrevElement, m_NextElement);
         }
         HDelete(CIFaceStatic, m_Cursor, g_MatrixHeap);
     }
 
-    if(m_CursikImage){
+    if(m_CursikImage)
+    {
         m_Cursor = main->CreateStaticFromImage(float(x+LEFT_SPACE),float(y+cursik_hpos), 0, (*m_CursikImage));
         m_Cursor->SetVisibility(false);
         m_Cursor->m_strName = IF_POPUP_CURSOR;
@@ -361,14 +415,19 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
     m_CurMenuPos = -1;
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
     
-    if(m_RobotConfig){
+    if(m_RobotConfig)
+    {
         HDelete(SRobotConfig, m_RobotConfig, g_MatrixHeap);
     }
     m_RobotConfig = HNew(g_MatrixHeap) SRobotConfig;
     *m_RobotConfig = ps->m_ConstructPanel->m_Configs[ps->m_ConstructPanel->m_CurrentConfig];
 }
 
-void CIFaceMenu::SetSelectorPos(const float &x, const float &y, int pos)
+void CIFaceMenu::SetSelectorPos(
+    const float &x,
+    const float &y,
+    int pos
+)
 {
     if(!m_Selector || m_CurMenuPos == pos)
         return;
@@ -386,9 +445,12 @@ void CIFaceMenu::SetSelectorPos(const float &x, const float &y, int pos)
 void CIFaceMenu::OnMenuItemPress()
 {
     bool rmode = false;
-    if(m_Selector && m_Selector->ElementCatch(g_MatrixMap->m_Cursor.GetPos())){
+    if(m_Selector && m_Selector->ElementCatch(g_MatrixMap->m_Cursor.GetPos()))
+    {
         CalcSelectedItem(true);
-    }else{
+    }
+    else
+    {
         rmode = true;
     }
     ResetMenu(rmode);
@@ -399,27 +461,45 @@ void CIFaceMenu::ResetMenu(bool canceled)
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
     //restore saved robot configuration
-    if(m_RobotConfig){
-        if(canceled){
-            if(m_InterfaceParent == MENU_PARENT_PILON1){
+    if(m_RobotConfig)
+    {
+        if(canceled)
+        {
+            if(m_InterfaceParent == MENU_PARENT_PILON1)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[0].m_nKind, 0);
-            }else if(m_InterfaceParent == MENU_PARENT_PILON2){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_PILON2)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[1].m_nKind, 1);
-            }else if(m_InterfaceParent == MENU_PARENT_PILON3){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_PILON3)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[2].m_nKind, 2);
-            }else if(m_InterfaceParent == MENU_PARENT_PILON4){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_PILON4)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[3].m_nKind, 3);
-            }else if(m_InterfaceParent == MENU_PARENT_PILON5){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_PILON5)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[4].m_nKind, 4);
-            }else if(m_InterfaceParent == MENU_PARENT_HEAD){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_HEAD)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_HEAD, m_RobotConfig->m_Head.m_nKind, 0);
-            }else if(m_InterfaceParent == MENU_PARENT_HULL){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_HULL)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_ARMOR, m_RobotConfig->m_Hull.m_Unit.m_nKind, 0);
-                for(int i=0;i<5 && m_RobotConfig->m_Weapon[i].m_nKind;i++){
+                for(int i=0; i<5 && m_RobotConfig->m_Weapon[i].m_nKind; i++)
+                {
                     ps->m_Constructor->SuperDjeans(MRT_WEAPON, m_RobotConfig->m_Weapon[i].m_nKind, i);
                 }
                 ps->m_Constructor->SuperDjeans(MRT_HEAD, m_RobotConfig->m_Head.m_nKind, 0);
-            }else if(m_InterfaceParent == MENU_PARENT_CHASSIS){
+            }
+            else if(m_InterfaceParent == MENU_PARENT_CHASSIS)
+            {
                 ps->m_Constructor->SuperDjeans(MRT_CHASSIS, m_RobotConfig->m_Chassis.m_nKind, 0);
             }
             //ps->m_Constructor->SuperDjeans
@@ -457,90 +537,141 @@ void CIFaceMenu::CalcSelectedItem(bool set)
     //RUK_WEAPON_ELECTRIC        = 9,  7
     //RUK_WEAPON_REPAIR          = 10, 8
 
-    if(m_InterfaceParent == MENU_PARENT_PILON1){
+    if(m_InterfaceParent == MENU_PARENT_PILON1)
+    {
         pilon = 0;
         type = MRT_WEAPON;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else if(m_CurMenuPos == 5){
+        }
+        else if(m_CurMenuPos == 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+1);
-        }else if(m_CurMenuPos > 5){
+        }
+        else if(m_CurMenuPos > 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+2);
-        }else{
+        }
+        else
+        {
             kind = ERobotUnitKind(m_CurMenuPos);
         }
 
-    }else if(m_InterfaceParent == MENU_PARENT_PILON2){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_PILON2)
+    {
         pilon = 1;
         type = MRT_WEAPON;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else if(m_CurMenuPos == 5){
+        }
+        else if(m_CurMenuPos == 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+1);
-        }else if(m_CurMenuPos > 5){
+        }
+        else if(m_CurMenuPos > 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+2);
-        }else{
+        }
+        else
+        {
             kind = ERobotUnitKind(m_CurMenuPos);
         }
 
-    }else if(m_InterfaceParent == MENU_PARENT_PILON3){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_PILON3)
+    {
         pilon = 2;
         type = MRT_WEAPON;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else if(m_CurMenuPos == 5){
+        }
+        else if(m_CurMenuPos == 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+1);
-        }else if(m_CurMenuPos > 5){
+        }
+        else if(m_CurMenuPos > 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+2);
-        }else{
+        }
+        else
+        {
             kind = ERobotUnitKind(m_CurMenuPos);
         }
 
-    }else if(m_InterfaceParent == MENU_PARENT_PILON4){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_PILON4)
+    {
         pilon = 3;
         type = MRT_WEAPON;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else if(m_CurMenuPos == 5){
+        }
+        else if(m_CurMenuPos == 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+1);
-        }else if(m_CurMenuPos > 5){
+        }
+        else if(m_CurMenuPos > 5)
+        {
             kind = ERobotUnitKind(m_CurMenuPos+2);
-        }else{
+        }
+        else
+        {
             kind = ERobotUnitKind(m_CurMenuPos);
         }
 
-    }else if(m_InterfaceParent == MENU_PARENT_PILON5){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_PILON5)
+    {
         pilon = 4;
         type = MRT_WEAPON;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else if(m_CurMenuPos == 1){
+        }
+        else if(m_CurMenuPos == 1)
+        {
             kind = RUK_WEAPON_MORTAR;
-        }else if(m_CurMenuPos == 2){
+        }
+        else if(m_CurMenuPos == 2)
+        {
             kind = RUK_WEAPON_BOMB;
         }
-    }else if(m_InterfaceParent == MENU_PARENT_HEAD){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_HEAD)
+    {
         pilon = 0;
         type = MRT_HEAD;
 
-        if(m_CurMenuPos == 0){
+        if(m_CurMenuPos == 0)
+        {
             kind = ERobotUnitKind(0);
-        }else{
+        }
+        else
+        {
             kind = (ERobotUnitKind)m_CurMenuPos;
         }
-    }else if(m_InterfaceParent == MENU_PARENT_HULL){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_HULL)
+    {
         pilon = 0;
         type = MRT_ARMOR;
         int pos = m_CurMenuPos;
         if(pos == 0)
             pos = 6;
         kind = (ERobotUnitKind)pos;
-    }else if(m_InterfaceParent == MENU_PARENT_CHASSIS){
+    }
+    else if(m_InterfaceParent == MENU_PARENT_CHASSIS)
+    {
         pilon = 0;
         type = MRT_CHASSIS;
         kind = (ERobotUnitKind)(m_CurMenuPos+1);

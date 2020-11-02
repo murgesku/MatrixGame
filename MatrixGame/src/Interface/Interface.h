@@ -60,7 +60,7 @@ struct SAction {
 	void * m_class;
 	void * m_function;
 
-    SAction():m_class(NULL),m_function(NULL) {}
+    SAction(): m_class(NULL), m_function(NULL) {}
 };
 
 struct SStateImages {
