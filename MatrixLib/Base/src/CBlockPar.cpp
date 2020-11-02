@@ -533,16 +533,22 @@ CBlockPar * CBlockPar::BlockAdd(const wchar * name, int namelen)
 CBlockPar * CBlockPar::BlockGetNE(const wchar * name, int namelen)
 {
     DTRACE();
-	if(m_Sort) {
+	if(m_Sort)
+	{
 		int i=ArrayFind(name,namelen);
-		if(i>=0) {
-			for(int li=i+m_Array[i]->m_FastCnt;i<li;i++) {
-				if(m_Array[i]->m_Type==2) return m_Array[i]->m_Block;
+		if(i >= 0)
+		{
+			for(int li=i+m_Array[i]->m_FastCnt; i<li; ++i)
+			{
+				if(m_Array[i]->m_Type == 2) return m_Array[i]->m_Block;
 			}
 		}
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
+		while(el!=NULL)
+		{
 			if((el->m_Type==2) && (el->m_Name.Equal(name,namelen))) return el->m_Block;
 			el=el->m_Next;
 		}
