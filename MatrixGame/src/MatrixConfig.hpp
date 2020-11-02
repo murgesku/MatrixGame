@@ -526,7 +526,7 @@ struct SCamParam
     float m_CamRotAngleMax;
     float m_CamDistMin;
     float m_CamDistMax;
-    float m_CamDistDefault;
+    float m_CamDistParam;
     float m_CamAngleParam;
     float m_CamHeight;
 };
