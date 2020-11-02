@@ -972,98 +972,102 @@ void MatrixGameDeinit(void)
     //Сохраняем указанное число шаблонов роботов игрока, если настройка MaxDesignsToSave не равна нулю
     if (m_MaxDesignsToSave)
     {
-        CBlockPar* save = HNew(g_MatrixHeap) CBlockPar(true, g_MatrixHeap);
-        save->BlockAdd(L"BotDesigns");
-        wchar system_folder[MAX_PATH];
-        SHGetSpecialFolderPathW(0, system_folder, CSIDL_PERSONAL, true);
-        CWStr path(system_folder);
-        path += L"\\SpaceRangersHD\\RobotsCFG.txt";
-        SRobotConfig* temp_config = g_ConfigHistory->m_LastConfig;
-        SRobotConfig* cur_config = g_ConfigHistory->m_LastConfig;
-        unsigned char counter = m_MaxDesignsToSave;
-        //Начинаем перебор с конца списка шаблонов
-        //И определяем, сколько шаблонов в данный момент в принципе загружено в завод
-        while (counter > 1)
+        if (g_ConfigHistory->m_CurrentConfig != nullptr)
         {
-            temp_config = temp_config->m_PrevConfig;
-            if (temp_config == nullptr) break;
-            cur_config = cur_config->m_PrevConfig;
-            counter--;
-        }
-
-        CWStr to_config;
-        to_config = L"";
-        counter = 0;
-        while ((cur_config != nullptr) && (counter < m_MaxDesignsToSave))
-        {
-            counter++;
-            to_config = L"";
-
-            //Формируем строку цифро-буквенного шаблона робота для записи в txt-конфиг
-            //Определяем шасси
-            auto cur_gear = cur_config->m_Chassis.m_nKind;
-            if (cur_gear == RUK_CHASSIS_PNEUMATIC) to_config += L"P";
-            else if (cur_gear == RUK_CHASSIS_WHEEL) to_config += L"W";
-            else if (cur_gear == RUK_CHASSIS_TRACK) to_config += L"T";
-            else if (cur_gear == RUK_CHASSIS_HOVERCRAFT) to_config += L"H";
-            else if (cur_gear == RUK_CHASSIS_ANTIGRAVITY) to_config += L"A";
-
-            //Определяем туловище
-            cur_gear = cur_config->m_Hull.m_Unit.m_nKind;
-            to_config += L",";
-            if (cur_gear == RUK_ARMOR_6) to_config += L"1";
-            else if (cur_gear == RUK_ARMOR_PASSIVE) to_config += L"1S";
-            else if (cur_gear == RUK_ARMOR_ACTIVE) to_config += L"2";
-            else if (cur_gear == RUK_ARMOR_FIREPROOF) to_config += L"2S";
-            else if (cur_gear == RUK_ARMOR_PLASMIC) to_config += L"3";
-            else if (cur_gear == RUK_ARMOR_NUCLEAR) to_config += L"4S";
-
-            //Определяем оружие
-            bool t_mark = false;
-            for (int i = 0; i < MAX_WEAPON_CNT; ++i)
+            CBlockPar* save = HNew(g_MatrixHeap) CBlockPar(true, g_MatrixHeap);
+            save->BlockGetAdd(L"BotDesigns");
+            wchar system_folder[MAX_PATH];
+            SHGetSpecialFolderPathW(0, system_folder, CSIDL_PERSONAL, true);
+            CWStr path(system_folder);
+            path += L"\\SpaceRangersHD\\RobotsCFG.txt";
+            SRobotConfig* temp_config = g_ConfigHistory->m_LastConfig;
+            SRobotConfig* cur_config = g_ConfigHistory->m_LastConfig;
+            unsigned char counter = m_MaxDesignsToSave;
+            //Начинаем перебор с конца списка шаблонов
+            //И определяем, сколько шаблонов в данный момент в принципе загружено в завод
+            while (counter > 1)
             {
-                cur_gear = cur_config->m_Weapon[i].m_nKind;
-                if (cur_gear)
-                {
-                    if (!t_mark)
-                    {
-                        to_config += L",";
-                        t_mark = true;
-                    }
-                    if (cur_gear == RUK_WEAPON_MACHINEGUN) to_config += L"G";
-                    else if (cur_gear == RUK_WEAPON_CANNON) to_config += L"C";
-                    else if (cur_gear == RUK_WEAPON_MISSILE) to_config += L"M";
-                    else if (cur_gear == RUK_WEAPON_FLAMETHROWER) to_config += L"F";
-                    else if (cur_gear == RUK_WEAPON_MORTAR) to_config += L"O";
-                    else if (cur_gear == RUK_WEAPON_LASER) to_config += L"L";
-                    else if (cur_gear == RUK_WEAPON_BOMB) to_config += L"B";
-                    else if (cur_gear == RUK_WEAPON_PLASMA) to_config += L"P";
-                    else if (cur_gear == RUK_WEAPON_ELECTRIC) to_config += L"E";
-                    else if (cur_gear == RUK_WEAPON_REPAIR) to_config += L"R";
-                }
+                temp_config = temp_config->m_PrevConfig;
+                if (temp_config == nullptr) break;
+                cur_config = cur_config->m_PrevConfig;
+                counter--;
             }
 
-            //Определяем голову
-            cur_gear = cur_config->m_Head.m_nKind;
-            if (cur_gear) to_config += L",";
-            if (cur_gear == RUK_HEAD_BLOCKER) to_config += L"S";
-            else if (cur_gear == RUK_HEAD_DYNAMO) to_config += L"D";
-            else if (cur_gear == RUK_HEAD_LOCKATOR) to_config += L"L";
-            else if (cur_gear == RUK_HEAD_FIREWALL) to_config += L"F";
-            else if (cur_gear == RUK_HEAD_RAPID) to_config += L"R";
-            else if (cur_gear == RUK_HEAD_DESIGN) to_config += L"D";
-            else if (cur_gear == RUK_HEAD_SPEAKER) to_config += L"P";
+            CWStr to_config;
+            to_config = L"";
+            counter = 0;
+            while ((cur_config != nullptr) && (counter < m_MaxDesignsToSave))
+            {
+                counter++;
+                to_config = L"";
 
-            //Заносим готовый шаблон в список сохранения
-            save->ParPathAdd(L"BotDesigns.Bot" + CWStr(counter), to_config);
+                //Формируем строку цифро-буквенного шаблона робота для записи в txt-конфиг
+                //Определяем шасси
+                auto cur_gear = cur_config->m_Chassis.m_nKind;
+                if (cur_gear == RUK_CHASSIS_PNEUMATIC) to_config += L"P";
+                else if (cur_gear == RUK_CHASSIS_WHEEL) to_config += L"W";
+                else if (cur_gear == RUK_CHASSIS_TRACK) to_config += L"T";
+                else if (cur_gear == RUK_CHASSIS_HOVERCRAFT) to_config += L"H";
+                else if (cur_gear == RUK_CHASSIS_ANTIGRAVITY) to_config += L"A";
 
-            //Выбираем следующий конфиг
-            cur_config = cur_config->m_NextConfig;
+                //Определяем туловище
+                cur_gear = cur_config->m_Hull.m_Unit.m_nKind;
+                to_config += L",";
+                if (cur_gear == RUK_ARMOR_6) to_config += L"1";
+                else if (cur_gear == RUK_ARMOR_PASSIVE) to_config += L"1S";
+                else if (cur_gear == RUK_ARMOR_ACTIVE) to_config += L"2";
+                else if (cur_gear == RUK_ARMOR_FIREPROOF) to_config += L"2S";
+                else if (cur_gear == RUK_ARMOR_PLASMIC) to_config += L"3";
+                else if (cur_gear == RUK_ARMOR_NUCLEAR) to_config += L"4S";
+
+                //Определяем оружие
+                bool t_mark = false;
+                for (int i = 0; i < MAX_WEAPON_CNT; ++i)
+                {
+                    cur_gear = cur_config->m_Weapon[i].m_nKind;
+                    if (cur_gear)
+                    {
+                        if (!t_mark)
+                        {
+                            to_config += L",";
+                            t_mark = true;
+                        }
+                        if (cur_gear == RUK_WEAPON_MACHINEGUN) to_config += L"G";
+                        else if (cur_gear == RUK_WEAPON_CANNON) to_config += L"C";
+                        else if (cur_gear == RUK_WEAPON_MISSILE) to_config += L"M";
+                        else if (cur_gear == RUK_WEAPON_FLAMETHROWER) to_config += L"F";
+                        else if (cur_gear == RUK_WEAPON_MORTAR) to_config += L"O";
+                        else if (cur_gear == RUK_WEAPON_LASER) to_config += L"L";
+                        else if (cur_gear == RUK_WEAPON_BOMB) to_config += L"B";
+                        else if (cur_gear == RUK_WEAPON_PLASMA) to_config += L"P";
+                        else if (cur_gear == RUK_WEAPON_ELECTRIC) to_config += L"E";
+                        else if (cur_gear == RUK_WEAPON_REPAIR) to_config += L"R";
+                    }
+                }
+
+                //Определяем голову
+                cur_gear = cur_config->m_Head.m_nKind;
+                if (cur_gear) to_config += L",";
+                if (cur_gear == RUK_HEAD_BLOCKER) to_config += L"S";
+                else if (cur_gear == RUK_HEAD_DYNAMO) to_config += L"D";
+                else if (cur_gear == RUK_HEAD_LOCKATOR) to_config += L"L";
+                else if (cur_gear == RUK_HEAD_FIREWALL) to_config += L"F";
+                else if (cur_gear == RUK_HEAD_RAPID) to_config += L"R";
+                else if (cur_gear == RUK_HEAD_DESIGN) to_config += L"D";
+                else if (cur_gear == RUK_HEAD_SPEAKER) to_config += L"P";
+
+                //Заносим готовый шаблон в список сохранения
+                save->ParPathAdd(L"BotDesigns.Bot" + CWStr(counter), to_config);
+
+                //Выбираем следующий конфиг
+                cur_config = cur_config->m_NextConfig;
+            }
+            //Записываем готовые шаблоны в txt-конфиг
+            save->SaveInTextFile(path);
+
+            //Очищаем память
+            HDelete(CBlockPar, save, g_MatrixHeap);
         }
-        //Записываем готовые шаблоны в txt-конфиг
-        save->SaveInTextFile(path);
-        //Очищаем память
-        HDelete(CBlockPar, save, g_MatrixHeap);
     }
 
     SSpecialBot::ClearAIRobotType();
