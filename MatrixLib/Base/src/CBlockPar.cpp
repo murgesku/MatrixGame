@@ -136,7 +136,8 @@ void CBlockPar::CopyFrom(CBlockPar & bp)
 	Clear();
     m_Sort=bp.m_Sort;
     CBlockParUnit * el2,* el=bp.m_First;
-	while(el!=NULL) {
+	while(el!=NULL)
+	{
         el2=UnitAdd();
         el2->CopyFrom(*el);
         if(m_Sort) ArrayAdd(el2);
@@ -164,8 +165,8 @@ void CBlockPar::UnitDel(CBlockParUnit * el)
 	LIST_DEL(el,m_First,m_Last,m_Prev,m_Next);
 
     m_Cnt--;
-    if(el->m_Type==1) m_CntPar--;
-    else if(el->m_Type==2) m_CntBlock--;
+    if (el->m_Type==1) m_CntPar--;
+    else if (el->m_Type==2) m_CntBlock--;
 
 	HDelete(CBlockParUnit,el,m_Heap);
 }
@@ -183,15 +184,16 @@ CBlockParUnit * CBlockPar::UnitGet(const wchar * path, int path_len)
 	CBlockPar * us=this;
     CBlockParUnit * ne=NULL;
 
-	for(;;)
+	for (;;)
     {
 		// nameExtractNext
-    	if(name_next>=path_len) break;
+    	if (name_next>=path_len) break;
     	name_sme=name_next;
         sme=name_sme;
-		while(sme<path_len) {
+		while (sme<path_len)
+		{
         	ch=path[sme];
-            if((ch=='.') || (ch=='/') || (ch=='\\')) break;
+            if ( (ch=='.') || (ch=='/') || (ch=='\\') ) break;
         	sme++;
 		}
         name_len=sme-name_sme;
@@ -202,13 +204,16 @@ CBlockParUnit * CBlockPar::UnitGet(const wchar * path, int path_len)
     	no=0;
         sme=name_sme;
         smeend=name_sme+name_len;
-		while(sme<smeend) {
-			if(path[sme]==':') {
+		while (sme<smeend)
+		{
+			if (path[sme]==':')
+			{
             	name_len=sme-name_sme;
             	sme++;
-				while(sme<smeend) {
+				while (sme<smeend)
+				{
                 	ch=path[sme];
-                    if((ch>='0') && (ch<='9')) no=no*10+(int(ch)-int('0'));
+                    if ( (ch>='0') && (ch<='9') ) no=no*10+(int(ch)-int('0'));
                 	sme++;
 				}
             	break;
@@ -217,22 +222,28 @@ CBlockParUnit * CBlockPar::UnitGet(const wchar * path, int path_len)
 		}
 		// end
 
-		if(us->m_Sort) {
+		if (us->m_Sort)
+		{
         	ne=NULL;
 	        i=us->ArrayFind((wchar *)path+name_sme,name_len);
-			if(i>=0) {
+			if (i >= 0)
+			{
             	ne=us->m_Array[i];
-                if(no==0);
+                if (no == 0);
 				else if(no<ne->m_FastCnt) ne=us->m_Array[i+no];
                 else ne=NULL;
 			}
-		} else {
+		}
+		else
+		{
 	        ne=us->m_First;
     	    u=0;
-			while((u<=no) && (ne!=NULL)) {
-				while(ne!=NULL) {
-					if(ne->m_Name.Equal(path+name_sme,name_len)) {
-    	                if(u<no) ne=ne->m_Next;
+			while ( (u<=no) && (ne!=NULL) )
+			{
+				while (ne!=NULL)
+				{
+					if (ne->m_Name.Equal(path+name_sme,name_len)) {
+    	                if (u<no) ne=ne->m_Next;
         	            break;
 					}
 	                ne=ne->m_Next;
@@ -241,12 +252,12 @@ CBlockParUnit * CBlockPar::UnitGet(const wchar * path, int path_len)
 			}
 		}
 
-		if(ne==NULL) ERROR_S2(L"Path not found: ",path);
-		if(name_next>=path_len) break;
-		if(ne->m_Type!=2) ERROR_S2(L"Path not found: ",path);
+		if (ne == NULL) ERROR_S2(L"Path not found: ",path);
+		if (name_next>=path_len) break;
+		if (ne->m_Type!=2) ERROR_S2(L"Path not found: ",path);
 		us=ne->m_Block;
 	}
-    if(ne==NULL) ERROR_S2(L"Path not found: ",path);
+    if (ne == NULL) ERROR_S2(L"Path not found: ",path);
 	return ne;
 }
 
@@ -272,19 +283,23 @@ int CBlockPar::ArrayFindInsertIndex(CBlockParUnit * ael)
 {
     DTRACE();
 	int rv;
-	if(m_ArrayCnt<=0) {
+	if(m_ArrayCnt<=0)
+	{
 		ael->m_FastFirst=0;
         ael->m_FastCnt=1;
         return 0;
 	}
     int istart=0;
     int iend=m_ArrayCnt-1;
-	for(;;) {
+	for(;;)
+	{
         int icur=istart+((iend-istart) / 2);
         CBlockParUnit * el=*(m_Array+icur);
         int cz=CWStr::Compare(ael->m_Name,el->m_Name);
-		if(cz==0) {
-			if(el->m_FastFirst!=0) {
+		if(cz==0)
+		{
+			if(el->m_FastFirst!=0)
+			{
 	        	rv=icur-el->m_FastFirst;
             	el=*(m_Array+rv);
 			} else rv=icur;
@@ -292,9 +307,11 @@ int CBlockPar::ArrayFindInsertIndex(CBlockParUnit * ael)
             rv=rv+el->m_FastCnt;
             el->m_FastCnt++;
             return rv;
-		} else if(cz<0) iend=icur-1;
+		}
+		else if(cz<0) iend=icur-1;
 		else istart=icur+1;
-		if(iend<istart) {
+		if(iend<istart)
+		{
             ael->m_FastFirst=0;
             ael->m_FastCnt=1;
 
@@ -310,10 +327,13 @@ void CBlockPar::ArrayAdd(CBlockParUnit * el)
 	m_Array=(CBlockParUnit * *)HAllocClearEx(m_Array,(m_ArrayCnt+1)*sizeof(CBlockParUnit *),m_Heap);
 
 	int no=ArrayFindInsertIndex(el);
-	if(no>=m_ArrayCnt) {
+	if(no>=m_ArrayCnt)
+	{
     	m_Array[m_ArrayCnt]=el;
         m_ArrayCnt++;
-	} else {
+	}
+	else
+	{
         MoveMemory(m_Array+no+1,m_Array+no,(m_ArrayCnt-no)*sizeof(CBlockParUnit *));
     	m_Array[no]=el;
     	m_ArrayCnt++;
@@ -324,16 +344,19 @@ void CBlockPar::ArrayDel(CBlockParUnit * el)
 {
     DTRACE();
 	int no=0;
-	while(no<m_ArrayCnt) {
-		if(m_Array[no]==el) {
+	while(no<m_ArrayCnt)
+	{
+		if (m_Array[no]==el)
+		{
 			CBlockParUnit * el2=m_Array[no-el->m_FastFirst];
-            for(int i=no+1;i<no-el->m_FastFirst+el2->m_FastCnt;m_Array[i]->m_FastFirst--);
+            for (int i=no+1; i<no-el->m_FastFirst+el2->m_FastCnt;m_Array[i]->m_FastFirst--);
             el2->m_FastCnt--;
-			if((el->m_FastFirst==0) && (el2->m_FastCnt>0)) {
+			if ((el->m_FastFirst==0) && (el2->m_FastCnt>0))
+			{
             	m_Array[no+1]->m_FastCnt=el->m_FastCnt;
 			}
 
-        	if(no<(m_ArrayCnt-1)) MoveMemory(m_Array+no,m_Array+no+1,(m_ArrayCnt-no-1)*sizeof(CBlockParUnit *));
+        	if (no<(m_ArrayCnt-1)) MoveMemory(m_Array+no,m_Array+no+1,(m_ArrayCnt-no-1)*sizeof(CBlockParUnit *));
             m_ArrayCnt--;
 			m_Array=(CBlockParUnit * *)HAllocClearEx(m_Array,m_ArrayCnt*sizeof(CBlockParUnit *),m_Heap);
         	return;
@@ -361,17 +384,27 @@ CBlockParUnit * CBlockPar::ParAdd(const wchar * name, int namelen, const wchar *
 bool CBlockPar::ParSetNE(const wchar * name, int namelen, const wchar * zn, int znlen)
 {
     DTRACE();
-	if(m_Sort) {
+	if(m_Sort)
+	{
 		int i=ArrayFind(name,namelen);
-		if(i>=0) {
+		if(i>=0)
+		{
 			for(int li=i+m_Array[i]->m_FastCnt;i<li;i++) {
-				if(m_Array[i]->m_Type==1) { m_Array[i]->m_Par->Set(zn,znlen); return true; }
+				if(m_Array[i]->m_Type==1)
+				{
+					m_Array[i]->m_Par->Set(zn,znlen);
+					return true;
+				}
 			}
 		}
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
-			if((el->m_Type==1) && (el->m_Name.Equal(name,namelen))) {
+		while(el!=NULL)
+		{
+			if((el->m_Type==1) && (el->m_Name.Equal(name,namelen)))
+			{
 	            el->m_Par->Set(zn,znlen);
 		        return true;
 			}
@@ -385,8 +418,10 @@ bool CBlockPar::ParDeleteNE(const wchar * name, int namelen) // нужно оп�
 {
     DTRACE();
     CBlockParUnit * el=m_First;
-	while(el!=NULL) {
-		if((el->m_Type==1) && (el->m_Name.Equal(name,namelen))) {
+	while(el!=NULL)
+	{
+		if((el->m_Type==1) && (el->m_Name.Equal(name,namelen)))
+		{
 		    if(m_Sort) ArrayDel(el);
             UnitDel(el);
             return true;
@@ -400,9 +435,12 @@ void CBlockPar::ParDelete(int no) // нужно оптимизировать
 {
     DTRACE();
     CBlockParUnit * el=m_First;
-	while(el!=NULL) {
-		if(el->m_Type==1) {
-			if(no==0) {
+	while(el!=NULL)
+	{
+		if(el->m_Type==1)
+		{
+			if(no==0)
+			{
 				if(m_Sort) ArrayDel(el);
                 UnitDel(el);
                 return;
@@ -417,17 +455,23 @@ void CBlockPar::ParDelete(int no) // нужно оптимизировать
 const CWStr * CBlockPar::ParGetNE_(const wchar * name, int namelen, int index) const
 {
     DTRACE();
-	if(m_Sort) {
+	if(m_Sort)
+	{
 		int i=ArrayFind(name,namelen);
-		if(i>=0) {
-			for(int li=i+m_Array[i]->m_FastCnt;i<li;i++) {
+		if(i>=0)
+		{
+			for(int li=i+m_Array[i]->m_FastCnt; i<li; i++)
+			{
 				if(m_Array[i]->m_Type==1 && index <= 0) return m_Array[i]->m_Par;
                 --index;
 			}
 		}
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
+		while(el!=NULL)
+		{
 			if((el->m_Type==1) && (el->m_Name.Equal(name,namelen)) && index <=0) return el->m_Par;
             --index;
 			el=el->m_Next;
@@ -441,35 +485,45 @@ int CBlockPar::ParCount(const wchar * name,int namelen) const
     DTRACE();
 	int rv=0;
 
-	if(m_Sort) {
+	if(m_Sort)
+	{
 		int i=ArrayFind(name,namelen);
-		if(i>=0) {
+		if (i>=0)
+		{
         	int li=i+m_Array[i]->m_FastCnt;
-			while(i<li) {
+			while(i<li)
+			{
 	    	    if(m_Array[i]->m_Type==1) rv++;
             	i++;
 			}
 		}
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
+		while(el!=NULL)
+		{
 			if((el->m_Type==1) && (el->m_Name.Equal(name,namelen))) rv++;
         	el=el->m_Next;
 		}
 	}
-
 	return rv;
 }
 
 const CWStr & CBlockPar::ParGet(int no) const 
 {
     DTRACE();
-	if(m_Sort && (m_Cnt==m_CntPar)) {
+	if(m_Sort && (m_Cnt==m_CntPar))
+	{
 		return *m_Array[no]->m_Par;
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
-			if(el->m_Type==1) {
+		while(el!=NULL)
+		{
+			if(el->m_Type==1)
+			{
 				if(no==0) return *el->m_Par;
     	        no--;
 			}
@@ -482,12 +536,17 @@ const CWStr & CBlockPar::ParGet(int no) const
 void CBlockPar::ParSet(int no,const wchar * zn,int znlen)
 {
     DTRACE();
-	if(m_Sort && (m_Cnt==m_CntPar)) {
+	if(m_Sort && (m_Cnt==m_CntPar))
+	{
 		return m_Array[no]->m_Par->Set(zn,znlen);
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
-			if(el->m_Type==1) {
+		while(el!=NULL)
+		{
+			if(el->m_Type==1)
+			{
 				if(no==0) return el->m_Par->Set(zn,znlen);
     	        no--;
 			}
@@ -500,13 +559,18 @@ void CBlockPar::ParSet(int no,const wchar * zn,int znlen)
 const CWStr & CBlockPar::ParGetName(int no) const
 {
     DTRACE();
-	if(m_Sort && (m_Cnt==m_CntPar)) {
+	if (m_Sort && (m_Cnt==m_CntPar))
+	{
 		return m_Array[no]->m_Name;
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
-			if(el->m_Type==1) {
-				if(no==0) return el->m_Name;
+		while (el != NULL)
+		{
+			if (el->m_Type==1)
+			{
+				if (no == 0) return el->m_Name;
     	        no--;
 			}
 	        el=el->m_Next;
@@ -547,10 +611,10 @@ CBlockPar * CBlockPar::BlockGetNE(const wchar * name, int namelen)
 	else
 	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL)
+		while (el != NULL)
 		{
-			if((el->m_Type==2) && (el->m_Name.Equal(name,namelen))) return el->m_Block;
-			el=el->m_Next;
+			if((el->m_Type == 2) && (el->m_Name.Equal(name, namelen))) return el->m_Block;
+			el = el->m_Next;
 		}
 	}
     return NULL;
@@ -560,8 +624,10 @@ bool CBlockPar::BlockDeleteNE(const wchar * name, int namelen)
 {
     DTRACE();
     CBlockParUnit * el=m_First;
-	while(el!=NULL) {
-		if((el->m_Type==2) && (el->m_Name.Equal(name,namelen))) {
+	while(el!=NULL)
+	{
+		if((el->m_Type == 2) && (el->m_Name.Equal(name,namelen)))
+		{
 		    if(m_Sort) ArrayDel(el);
             UnitDel(el);
             return true;
@@ -575,9 +641,12 @@ void CBlockPar::BlockDelete(int no)
 {
     DTRACE();
     CBlockParUnit * el=m_First;
-	while(el!=NULL) {
-		if(el->m_Type==2) {
-			if(no==0) {
+	while(el!=NULL)
+	{
+		if(el->m_Type == 2)
+		{
+			if(no == 0)
+			{
 				if(m_Sort) ArrayDel(el);
                 UnitDel(el);
                 return;
@@ -594,23 +663,28 @@ int CBlockPar::BlockCount(const wchar * name,int namelen) const
     DTRACE();
 	int rv=0;
 
-	if(m_Sort) {
+	if(m_Sort)
+	{
 		int i=ArrayFind(name,namelen);
-		if(i>=0) {
+		if(i >= 0)
+		{
         	int li=i+m_Array[i]->m_FastCnt;
-			while(i<li) {
+			while(i<li)
+			{
 	    	    if(m_Array[i]->m_Type==2) rv++;
             	i++;
 			}
 		}
-	} else {
+	}
+	else
+	{
 	    CBlockParUnit * el=m_First;
-		while(el!=NULL) {
+		while(el != NULL)
+		{
 			if((el->m_Type==2) && (el->m_Name.Equal(name,namelen))) rv++;
         	el=el->m_Next;
 		}
 	}
-
 	return rv;
 }
 
@@ -1280,16 +1354,16 @@ void CBlockPar::LoadFromTextFile(const wchar * filename, int filenamelen)
 	word zn;
 	bool fansi=true;
 	int fs=fi.Size();
-	if((fs>=2) && !(fs & 1))
+	if ((fs>=2) && !(fs & 1))
 	{
 		fi.Read(&zn,2);
-		fansi=zn!=0x0feff;
-		if(fansi) fi.Pointer(0);
+		fansi=zn != 0x0feff;
+		if (fansi) fi.Pointer(0);
 	}
 	fs-=fi.Pointer();
-	if(fs>0)
+	if (fs>0)
 	{
-		if(fansi)
+		if (fansi)
 		{
 			CStr  astr(m_Heap);
 			CWStr wstr(m_Heap);
