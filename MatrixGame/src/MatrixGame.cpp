@@ -658,9 +658,9 @@ DCP();
                     conf.m_Hull.m_Unit.m_nType = MRT_ARMOR; 
                     conf.m_Head.m_nType = MRT_HEAD; 
                     for(int cnt = 0; cnt < MAX_WEAPON_CNT; cnt++)
-                    { 
+                    {
                         conf.m_Weapon[cnt].m_nType = MRT_WEAPON;
-                    } 
+                    }
 
                     //Определяем шасси
                     CWStr t_str = confStr.GetStrPar(0, L",");
@@ -964,10 +964,10 @@ void MatrixGameDeinit(void)
 
             int counter = maxDesignsToSave;
             //Начинаем перебор с конца списка шаблонов
-            //И определяем, сколько шаблонов в данный момент в принципе загружено в завод
+            //И определяем "точку" начала отсчёта в списке шаблонов для сохранения
             while (counter > 1)
             {
-                if (cur_config != nullptr)
+                if (cur_config != g_ConfigHistory->m_FirstConfig && cur_config != nullptr)
                 {
                     counter--;
                     cur_config = cur_config->m_PrevConfig;
@@ -978,7 +978,6 @@ void MatrixGameDeinit(void)
 
             CWStr to_config(g_MatrixHeap);
             counter = 0;
-            cur_config = g_ConfigHistory->m_FirstConfig;
             while ((cur_config != nullptr) && (counter < maxDesignsToSave))
             {
                 to_config.Clear();
