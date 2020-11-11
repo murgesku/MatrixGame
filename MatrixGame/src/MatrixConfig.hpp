@@ -546,16 +546,16 @@ enum
 
 __forceinline int WeapKind2Index(ERobotUnitKind w)
 {
-    if (w==RUK_WEAPON_PLASMA) return 0;
-    if (w==RUK_WEAPON_MACHINEGUN) return 1;
-    if (w==RUK_WEAPON_MISSILE) return 2;
-    if (w==RUK_WEAPON_MORTAR) return 3;
-    if (w==RUK_WEAPON_FLAMETHROWER) return 4;
-    if (w==RUK_WEAPON_BOMB) return 5;
-    if (w==RUK_WEAPON_ELECTRIC) return 6;
-    if (w==RUK_WEAPON_LASER) return 7;
-    if (w==RUK_WEAPON_CANNON) return 8;
-    if (w==RUK_WEAPON_REPAIR) return 12;
+    if (w == RUK_WEAPON_PLASMA) return 0;
+    if (w == RUK_WEAPON_MACHINEGUN) return 1;
+    if (w == RUK_WEAPON_MISSILE) return 2;
+    if (w == RUK_WEAPON_MORTAR) return 3;
+    if (w == RUK_WEAPON_FLAMETHROWER) return 4;
+    if (w == RUK_WEAPON_BOMB) return 5;
+    if (w == RUK_WEAPON_ELECTRIC) return 6;
+    if (w == RUK_WEAPON_LASER) return 7;
+    if (w == RUK_WEAPON_CANNON) return 8;
+    if (w == RUK_WEAPON_REPAIR) return 12;
     return -1;
 }
 

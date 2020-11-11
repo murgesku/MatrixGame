@@ -102,7 +102,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 //*(buf-1)=1;
 //HFree(buf,NULL);
 
-        if (map)
+        if(map)
         {
             FILE *file;
             file = fopen("calcvis.log","a");
@@ -116,11 +116,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             file = fopen("calcvis.log","a");
             fwrite("done\n", 5,1, file);
             fclose(file);
-
-            
-            
-
-        } else
+        }
+        else
         {
 		    L3GRun();
         }
@@ -139,7 +136,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
         CMain::BaseDeInit();
         
-    } catch(CException * ex)
+    }
+    catch(CException * ex)
     {
         ClipCursor(NULL);
 #ifdef ENABLE_HISTORY
@@ -158,7 +156,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         CDebugTracer::SaveHistory();
 #endif
         MessageBox(NULL,"Unknown bug :(","Exception:",MB_OK);
-
 
     }
     
@@ -953,13 +950,12 @@ void MatrixGameDeinit(void)
         if (g_ConfigHistory->m_CurrentConfig != nullptr)
         {
             CBlockPar save = CBlockPar(true, g_MatrixHeap);
-            CBlockPar *bot_designs = save.BlockGetAdd(L"BotDesigns");
+            CBlockPar* bot_designs = save.BlockGetAdd(L"BotDesigns");
 
             wchar robotscfg_path[MAX_PATH];
             SHGetSpecialFolderPathW(0, robotscfg_path, CSIDL_PERSONAL, true);
             wcscat(robotscfg_path, L"\\SpaceRangersHD\\RobotsCFG.txt");
 
-            //SRobotConfig* temp_config = g_ConfigHistory->m_LastConfig;
             SRobotConfig* cur_config = g_ConfigHistory->m_LastConfig;
 
             int counter = maxDesignsToSave;

@@ -21,6 +21,9 @@
 #include "MatrixHint.hpp"
 #include "../MatrixFormGame.hpp"
 
+//static int g_EnableFlyers = g_MatrixData->BlockGet(L"Interface")->ParGet(L"EnableFlyers").GetInt();
+bool g_EnableFlyers = false;
+
 CIFaceList *g_IFaceList = NULL;
 
 SMenuItemText *g_PopupHead;
@@ -93,7 +96,6 @@ CInterface::CInterface():name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label
     electronics_unit_color = 0xFFF6c000;
     energy_unit_color = 0xFFF6c000;
     plasm_unit_color = 0xFFF6c000;
-
 
 
 //////////////////
@@ -273,80 +275,168 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             if(pButton->m_strName == IF_MAP_ZOOM_IN)
             {
                 FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
-            }else if(pButton->m_strName == IF_MAP_ZOOM_OUT){
+            }
+            else if(pButton->m_strName == IF_MAP_ZOOM_OUT)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
-            }else if(pButton->m_strName == IF_BUILD_RO){
+            }
+            else if(pButton->m_strName == IF_BUILD_RO)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide(), CMatrixSideUnit::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_FROBOT_ON){
+            }
+            else if(pButton->m_strName == IF_AORDER_FROBOT_ON)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_FROBOT_OFF){
+            }
+            else if(pButton->m_strName == IF_AORDER_FROBOT_OFF)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_PROTECT_ON){
+            }
+            else if(pButton->m_strName == IF_AORDER_PROTECT_ON)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_PROTECT_OFF){
+            }
+            else if(pButton->m_strName == IF_AORDER_PROTECT_OFF)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_CAPTURE_ON){
+            }
+            else if(pButton->m_strName == IF_AORDER_CAPTURE_ON)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_AORDER_CAPTURE_OFF){
+            }
+            else if(pButton->m_strName == IF_AORDER_CAPTURE_OFF)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_FIRE){
+            }
+            else if(pButton->m_strName == IF_ORDER_FIRE)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_CAPTURE){
+            }
+            else if(pButton->m_strName == IF_ORDER_CAPTURE)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_PATROL){
+            }
+            else if(pButton->m_strName == IF_ORDER_PATROL)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_MOVE){
+            }
+            else if(pButton->m_strName == IF_ORDER_MOVE)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_REPAIR){
+            }
+            else if(pButton->m_strName == IF_ORDER_REPAIR)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_BOMB){
+            }
+            else if(pButton->m_strName == IF_ORDER_BOMB)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_CANCEL){
+            }
+            else if(pButton->m_strName == IF_ORDER_CANCEL)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ORDER_STOP){
+            }
+            else if(pButton->m_strName == IF_ORDER_STOP)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_ENTER_ROBOT){
+            }
+            else if(pButton->m_strName == IF_ENTER_ROBOT)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_LEAVE_ROBOT){
+            }
+            else if(pButton->m_strName == IF_LEAVE_ROBOT)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_MAIN_SELFBOMB){
+            }
+            else if(pButton->m_strName == IF_MAIN_SELFBOMB)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_CA){
+            }
+            else if(pButton->m_strName == IF_BUILD_CA)
+            {
                 g_IFaceList->m_BuildCa = pButton;
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_CALL_FROM_HELL){
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_HE){
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_REPAIR){
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_SHOWROBOTS_BUTT){
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CMinimap::ShowPlayerBots);
-            }else if(pButton->m_strName == IF_BUILD_TUR1){
+            }
+            else if (pButton->m_strName == IF_BUILD_HE)
+            {
+                //g_IFaceList->m_BuildHe = pButton;
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_CALL_FROM_HELL)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if (pButton->m_strName == IF_BUILD_REPAIR)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_SHOWROBOTS_BUTT)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CMinimap::ShowPlayerBots);
+            }
+            //Нажимаются кнопки постройки конкретных турелей
+            else if(pButton->m_strName == IF_BUILD_TUR1)
+            {
                 g_IFaceList->m_Turrets[0] = pButton;
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_TUR2){
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_BUILD_TUR2)
+            {
                 g_IFaceList->m_Turrets[1] = pButton;
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_TUR3){
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_BUILD_TUR3)
+            {
                 g_IFaceList->m_Turrets[2] = pButton;
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BUILD_TUR4){
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_BUILD_TUR4)
+            {
                 g_IFaceList->m_Turrets[3] = pButton;
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_MAIN_MENU_BUTTON){
+            }
+            //Нажимаются кнопки постройки конкретных вертолётов
+            else if (pButton->m_strName == IF_FLYER_BIG1)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if (pButton->m_strName == IF_FLYER_BIG2)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if (pButton->m_strName == IF_FLYER_BIG3)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if (pButton->m_strName == IF_FLYER_BIG4)
+            {
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_MAIN_MENU_BUTTON)
+            {
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
-            }else if(pButton->m_strName == IF_BASE_CHASSIS3){
+            }
+            else if(pButton->m_strName == IF_BASE_CHASSIS3)
+            {
                 g_IFaceList->m_Chassis[0] = pButton;
-            }else if(pButton->m_strName == IF_BASE_CHASSIS2){
+            }
+            else if(pButton->m_strName == IF_BASE_CHASSIS2)
+            {
                 g_IFaceList->m_Chassis[1] = pButton;
-            }else if(pButton->m_strName == IF_BASE_CHASSIS1){
+            }
+            else if(pButton->m_strName == IF_BASE_CHASSIS1)
+            {
                 g_IFaceList->m_Chassis[2] = pButton;
-            }else if(pButton->m_strName == IF_BASE_CHASSIS4){
+            }
+            else if(pButton->m_strName == IF_BASE_CHASSIS4)
+            {
                 g_IFaceList->m_Chassis[3] = pButton;
-            }else if(pButton->m_strName == IF_BASE_CHASSIS5){
+            }
+            else if(pButton->m_strName == IF_BASE_CHASSIS5)
+            {
                 g_IFaceList->m_Chassis[4] = pButton;
-            }else if(pButton->m_strName == IF_BASE_HULL1)
+            }
+            else if(pButton->m_strName == IF_BASE_HULL1)
             {
                 g_IFaceList->m_Armor[Float2Int(pButton->m_Param2-1)] = pButton;
             }
@@ -1247,45 +1337,65 @@ void CInterface::Init(void)
 {
     DTRACE();
 
-
     int nC = 0;
 	CIFaceElement *pElement = m_FirstElement;
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
-
-	if(m_AlwaysOnTop){
+	if(m_AlwaysOnTop)
+    {
         m_VisibleAlpha = IS_VISIBLEA;
         
-        if(m_strName == IF_MINI_MAP){
-            while(pElement){
-                if(player_side->IsArcadeMode()){
+        if(m_strName == IF_MINI_MAP)
+        {
+            while(pElement)
+            {
+                if(player_side->IsArcadeMode())
+                {
                     pElement->SetVisibility(false);
-                }else{
+                }
+                else
+                {
                     pElement->SetVisibility(true);
                 }
-                if(pElement->m_strName == IF_MAP_ZOOM_IN){
-                    if(g_MatrixMap->m_Minimap.GetCurrentScale() == MINIMAP_MAX_SCALE){
+                if(pElement->m_strName == IF_MAP_ZOOM_IN)
+                {
+                    if(g_MatrixMap->m_Minimap.GetCurrentScale() == MINIMAP_MAX_SCALE)
+                    {
                         pElement->SetState(IFACE_DISABLED);
-                    }else if(g_MatrixMap->m_Minimap.GetCurrentScale() < MINIMAP_MAX_SCALE && pElement->GetState() == IFACE_DISABLED){
+                    }
+                    else if(g_MatrixMap->m_Minimap.GetCurrentScale() < MINIMAP_MAX_SCALE && pElement->GetState() == IFACE_DISABLED)
+                    {
                         pElement->SetState(IFACE_NORMAL);
                     }
-                }else if(pElement->m_strName == IF_MAP_ZOOM_OUT){
-                    if(g_MatrixMap->m_Minimap.GetCurrentScale() == MINIMAP_MIN_SCALE){
+                }
+                else if(pElement->m_strName == IF_MAP_ZOOM_OUT)
+                {
+                    if(g_MatrixMap->m_Minimap.GetCurrentScale() == MINIMAP_MIN_SCALE)
+                    {
                         pElement->SetState(IFACE_DISABLED);
-                    }else if(g_MatrixMap->m_Minimap.GetCurrentScale() > MINIMAP_MIN_SCALE && pElement->GetState() == IFACE_DISABLED){
+                    }
+                    else if(g_MatrixMap->m_Minimap.GetCurrentScale() > MINIMAP_MIN_SCALE && pElement->GetState() == IFACE_DISABLED)
+                    {
                         pElement->SetState(IFACE_NORMAL);
                     }
-                }else if(pElement->m_strName == IF_SHOWROBOTS_BUTT){
-                    if((!player_side->GetSideRobots() || !player_side->GetMaxSideRobots())){
+                }
+                else if(pElement->m_strName == IF_SHOWROBOTS_BUTT)
+                {
+                    if((!player_side->GetSideRobots() || !player_side->GetMaxSideRobots()))
+                    {
                         pElement->SetState(IFACE_DISABLED);
-                    }else if(pElement->GetState() == IFACE_DISABLED && !(!player_side->GetSideRobots() || !player_side->GetMaxSideRobots())){
+                    }
+                    else if(pElement->GetState() == IFACE_DISABLED && !(!player_side->GetSideRobots() || !player_side->GetMaxSideRobots()))
+                    {
                         pElement->SetState(IFACE_NORMAL);
                     }
                 }
 
                 pElement = pElement->m_NextElement;   
             }
-        }else if(m_strName == IF_MAIN){
+        }
+        else if(m_strName == IF_MAIN)
+        {
             CPoint pl[MAX_PLACES];
 
             int objects_cnt = 0;
@@ -1296,12 +1406,14 @@ void CInterface::Init(void)
             bool ordering = FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
             bool singlem = FLAG(g_IFaceList->m_IfListFlags, SINGLE_MODE) || player_side->IsRobotMode();
             bool bld_tu = ordering && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET);
+            bool bld_he = ordering && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_FLYER);
             bool bld_re = ordering && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_REPAIR);
 
             CMatrixGroup* work_group = NULL;
             CMatrixRobotAI* sel_bot = NULL;
 
-            if(player_side->GetCurGroup() && player_side->GetCurGroup()->GetObjectsCnt()){
+            if(player_side->GetCurGroup() && player_side->GetCurGroup()->GetObjectsCnt())
+            {
                 objects_cnt = player_side->GetCurGroup()->GetObjectsCnt();
                 robots = player_side->GetCurGroup()->GetRobotsCnt();
                 gsel = true;
@@ -1347,30 +1459,38 @@ void CInterface::Init(void)
             CMatrixRobotAI* cur_r = NULL;
             CMatrixFlyer* cur_f = NULL;
 
-            if(player_side->IsRobotMode()){
+            if(player_side->IsRobotMode())
+            {
                 cur_r = (CMatrixRobotAI*)player_side->GetArcadedObject();
                 robot_sel = true;
-                if(!sel_bot){
+                if(!sel_bot)
+                {
                     sel_bot = player_side->GetArcadedObject()->AsRobot();
                 }
             }
 
-            if(!sel_bot && singlem){
+            if(!sel_bot && singlem)
+            {
                 singlem = false;
                 RESETFLAG(g_IFaceList->m_IfListFlags, SINGLE_MODE);
             }
 
 
-            if(work_group){
+            if(work_group)
+            {
                 CMatrixGroupObject* go = work_group->m_FirstObject;
 
-                if(gsel){
-                    for(int i = 0;i < player_side->GetCurSelNum() && go;i++){
+                if(gsel)
+                {
+                    for(int i = 0; i < player_side->GetCurSelNum() && go; ++i)
+                    {
                         go = go->m_NextObject;
                     }
-                    if(go){
+                    if(go)
+                    {
                         CMatrixRobotAI* r = (CMatrixRobotAI*)go->GetObject();
-                        if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+                        if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                        {
                             robot_sel = true;
                             cur_r = (CMatrixRobotAI*)go->GetObject();
                             if(r->FindWeapon(WEAPON_BIGBOOM))
@@ -1385,51 +1505,65 @@ void CInterface::Init(void)
 
 
 
-            if(work_group){
+            if(work_group)
+            {
                 g_MatrixMap->GetSideById(PLAYER_SIDE)->ShowOrderState();
-                if(gsel){
+                if(gsel)
+                {
                     int bombers_cnt = 0;
                     int repairers_cnt = 0;  
 
                     CMatrixGroupObject* objs = work_group->m_FirstObject;
-                    while(objs){
+                    while(objs)
+                    {
                         CMatrixRobotAI* robot = objs->GetObject()->AsRobot();
                         if(objs->GetObject()->IsRobot()){
-                            if(robot->FindWeapon(WEAPON_BIGBOOM)){
+                            if(robot->FindWeapon(WEAPON_BIGBOOM))
+                            {
                                 bombers_cnt++;
                             }
-                            if(robot->FindWeapon(WEAPON_REPAIR)){
+                            if(robot->FindWeapon(WEAPON_REPAIR))
+                            {
                                 repairers_cnt++;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_MoveTo) {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_MoveTo)
+                            {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 move = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Capture) {//if(robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Capture)
+                            {//if(robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
                                 capt = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Attack) {//if(robot->FindOrderLikeThat(ROBOT_FIRE)){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Attack)
+                            {//if(robot->FindOrderLikeThat(ROBOT_FIRE)){
                                 fire = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Stop) {//if(robot->GetOrdersInPool() == 0){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Stop)
+                            {//if(robot->GetOrdersInPool() == 0){
                                 stop = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Patrol) {//if(robot->GetOrdersInPool() == 0){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Patrol)
+                            {//if(robot->GetOrdersInPool() == 0){
                                 patrol = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Bomb) {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Bomb)
+                            {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 bomb = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Repair) {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
+                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Repair)
+                            {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 repair = true;
                             }
 
                         }
                         objs = objs->m_NextObject;
                     }
-                    if(bombers_cnt == objects_cnt){
+                    if(bombers_cnt == objects_cnt)
+                    {
                         bombers = true;
                     }
-                    if(repairers_cnt == objects_cnt){
+                    if(repairers_cnt == objects_cnt)
+                    {
                         repairers = true;
                     }
 
@@ -1438,60 +1572,91 @@ void CInterface::Init(void)
             }
 
 
-            while(pElement){
+            while(pElement)
+            {
 //Always visible elements////////////////////////////////////////////////////////////////////////////////////
-                if(pElement->m_strName == IF_NAME_LABEL){
-                    if(gsel || player_side->IsArcadeMode()){
-                        if((rsel || robot_sel) && cur_r){
-                            if(name != cur_r->m_Name){
+                if(pElement->m_strName == IF_NAME_LABEL)
+                {
+                    if(gsel || player_side->IsArcadeMode())
+                    {
+                        if((rsel || robot_sel) && cur_r)
+                        {
+                            if(name != cur_r->m_Name)
+                            {
                                 name = cur_r->m_Name;
                                 new_name = true;
                             }
                         }
-                    }else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
+                    }
+                    else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                    {
                         CBlockPar* bp_tmp = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Buildings");
-                        if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->IsBase() && name != bp_tmp->ParGet(L"Base_Name")){
+                        if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->IsBase() && name != bp_tmp->ParGet(L"Base_Name"))
+                        {
                             new_name = true;
                             name = bp_tmp->ParGet(L"Base_Name");
-                        }else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_TITAN && name != bp_tmp->ParGet(L"Titan_Name")){
+                        }
+                        else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_TITAN && name != bp_tmp->ParGet(L"Titan_Name"))
+                        {
                             new_name = true;
                             name = bp_tmp->ParGet(L"Titan_Name");
-                        }else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_ELECTRONIC && name != bp_tmp->ParGet(L"Electronics_Name")){
+                        }
+                        else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_ELECTRONIC && name != bp_tmp->ParGet(L"Electronics_Name"))
+                        {
                             new_name = true;
                             name = bp_tmp->ParGet(L"Electronics_Name");
-                        }else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_ENERGY && name != bp_tmp->ParGet(L"Energy_Name")){
+                        }
+                        else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_ENERGY && name != bp_tmp->ParGet(L"Energy_Name"))
+                        {
                             new_name = true;
                             name = bp_tmp->ParGet(L"Energy_Name");
-                        }else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_PLASMA && name != bp_tmp->ParGet(L"Plasma_Name")){
+                        }
+                        else if(player_side->m_ActiveObject && player_side->m_ActiveObject->AsBuilding()->m_Kind == BUILDING_PLASMA && name != bp_tmp->ParGet(L"Plasma_Name"))
+                        {
                             new_name = true;
                             name = bp_tmp->ParGet(L"Plasma_Name");
                         }
                     }
-                }else if(pElement->m_strName == IF_LIVES_LABEL){
-                    if(gsel || player_side->IsArcadeMode()){
-                        if((rsel || robot_sel) && cur_r){
-                            if(lives != cur_r->GetHitPoint()){
+                }
+                else if(pElement->m_strName == IF_LIVES_LABEL)
+                {
+                    if(gsel || player_side->IsArcadeMode())
+                    {
+                        if((rsel || robot_sel) && cur_r)
+                        {
+                            if(lives != cur_r->GetHitPoint())
+                            {
                                 lives = cur_r->GetHitPoint();
                                 max_lives = cur_r->GetMaxHitPoint();
                                 new_lives = true;
                             }
                         }
-                    }else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
-                        if(lives != player_side->m_ActiveObject->AsBuilding()->GetHitPoint()){
+                    }
+                    else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                    {
+                        if(lives != player_side->m_ActiveObject->AsBuilding()->GetHitPoint())
+                        {
                             lives = player_side->m_ActiveObject->AsBuilding()->GetHitPoint();
                             max_lives = player_side->m_ActiveObject->AsBuilding()->GetMaxHitPoint();
                             new_lives = true;
                         }
                     }
-                }else if(pElement->m_strName == IF_TURRETS_MAX){
-                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
-                        if(player_side->m_ActiveObject->AsBuilding()->m_TurretsMax != turmax){
+                }
+                else if(pElement->m_strName == IF_TURRETS_MAX)
+                {
+                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                    {
+                        if(player_side->m_ActiveObject->AsBuilding()->m_TurretsMax != turmax)
+                        {
                             turmax = player_side->m_ActiveObject->AsBuilding()->m_TurretsMax;
                             new_turmax = true;
                         }
                     }
-                }else if(pElement->m_strName == IF_TURRETS_HAVE){
-                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
+                }
+                else if(pElement->m_strName == IF_TURRETS_HAVE)
+                {
+                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                    {
                         CMatrixBuilding* bld = (CMatrixBuilding*)player_side->m_ActiveObject;
                         if(bld->GetPlacesForTurrets(pl) != turhave){
                             turhave = bld->GetPlacesForTurrets(pl);
@@ -1501,70 +1666,103 @@ void CInterface::Init(void)
                 }
 
 //Invisible by default elements///////////////////////////////////////////////////////////////////////////////
-                if(pElement->m_Type == IFACE_DYNAMIC_STATIC && IS_GROUP_ICON(pElement->m_nId)){
+                if(pElement->m_Type == IFACE_DYNAMIC_STATIC && IS_GROUP_ICON(pElement->m_nId))
+                {
                     pElement->SetVisibility(true);
-                }else if(pElement->m_nId == PERSONAL_ICON_ID){
+                }
+                else if(pElement->m_nId == PERSONAL_ICON_ID)
+                {
                     pElement->SetVisibility(true);
-                }else if(pElement->m_nId == DYNAMIC_TURRET){
+                }
+                else if(pElement->m_nId == DYNAMIC_TURRET)
+                {
                     pElement->SetVisibility(true);
-                }else{
+                }
+                else
+                {
                     pElement->SetVisibility(false);                
                 }
-                
-                
 
-                if(pElement->m_strName == IF_MAIN_PANEL1){
+
+                if(pElement->m_strName == IF_MAIN_PANEL1)
+                {
                     pElement->SetVisibility(true);
-                }else if(pElement->m_strName == IF_MAIN_PANEL2){
+                }
+                else if(pElement->m_strName == IF_MAIN_PANEL2)
+                {
                     pElement->SetVisibility(true);
                 }
 
-                if(pElement->m_strName == IF_NAME_LABEL && player_side->m_CurrSel != NOTHING_SELECTED){
-                    if(new_name){
+                if(pElement->m_strName == IF_NAME_LABEL && player_side->m_CurrSel != NOTHING_SELECTED)
+                {
+                    if(new_name)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = name;
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     pElement->SetVisibility(true);
-                }else if((player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) ){
+                }
+                else if((player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) )
+                {
                     CMatrixBuilding* bld = player_side->m_ActiveObject->AsBuilding();
                     CBlockPar* bp_tmp = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Buildings");
                     int income = player_side->GetIncomePerTime(int(bld->m_Kind), 60000);                    
-                    if(pElement->m_strName == IF_BUILDING_OPIS){
-                        if(!bld->m_BS.GetItemsCnt()){
+                    if(pElement->m_strName == IF_BUILDING_OPIS)
+                    {
+                        if(!bld->m_BS.GetItemsCnt())
+                        {
                             pElement->SetVisibility(true);
                         }
-                        if(btype != int(bld->m_Kind)){
+                        if(btype != int(bld->m_Kind))
+                        {
                             btype = int(bld->m_Kind);
-                            if(bld->m_Kind == BUILDING_BASE){
+                            if(bld->m_Kind == BUILDING_BASE)
+                            {
                                 pElement->m_StateImages[IFACE_NORMAL].m_Caption = bp_tmp->ParGet(L"Base_Descr");
-                            }else if(bld->m_Kind == BUILDING_TITAN){
+                            }
+                            else if(bld->m_Kind == BUILDING_TITAN)
+                            {
                                 pElement->m_StateImages[IFACE_NORMAL].m_Caption = bp_tmp->ParGet(L"Titan_Descr");
-                            }else if(bld->m_Kind == BUILDING_ELECTRONIC){
+                            }
+                            else if(bld->m_Kind == BUILDING_ELECTRONIC)
+                            {
                                 pElement->m_StateImages[IFACE_NORMAL].m_Caption = bp_tmp->ParGet(L"Electronics_Descr");
-                            }else if(bld->m_Kind == BUILDING_ENERGY){
+                            }
+                            else if(bld->m_Kind == BUILDING_ENERGY)
+                            {
                                 pElement->m_StateImages[IFACE_NORMAL].m_Caption = bp_tmp->ParGet(L"Energy_Descr");
-                            }else if(bld->m_Kind == BUILDING_PLASMA){
+                            }
+                            else if(bld->m_Kind == BUILDING_PLASMA)
+                            {
                                 pElement->m_StateImages[IFACE_NORMAL].m_Caption = bp_tmp->ParGet(L"Plasma_Descr");
                             }
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
 
-                    }else if(pElement->m_strName == IF_BASE_RES_INC && bld->m_Kind == BUILDING_BASE){
-                        if(!bld->m_BS.GetItemsCnt()){
+                    }
+                    else if(pElement->m_strName == IF_BASE_RES_INC && bld->m_Kind == BUILDING_BASE)
+                    {
+                        if(!bld->m_BS.GetItemsCnt())
+                        {
                             pElement->SetVisibility(true);
                         }
                         
-                        if(income != base_res_income){
+                        if(income != base_res_income)
+                        {
                             base_res_income = income;
                             CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(CWStr(L"<resources>", g_CacheHeap), L"<Color=247,195,0>" + CWStr(base_res_income, g_CacheHeap) + L"</Color>");
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
-                    }else if(pElement->m_strName == IF_FACTORY_RES_INC && bld->m_Kind != BUILDING_BASE){
-                        if(!bld->m_BS.GetItemsCnt()){
+                    }
+                    else if(pElement->m_strName == IF_FACTORY_RES_INC && bld->m_Kind != BUILDING_BASE)
+                    {
+                        if(!bld->m_BS.GetItemsCnt())
+                        {
                             pElement->SetVisibility(true);
                         }
-                        if(income != factory_res_income){
+                        if(income != factory_res_income)
+                        {
                             factory_res_income = income;
                             CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(CWStr(L"<resources>", g_CacheHeap), L"<Color=247,195,0>" + CWStr(factory_res_income, g_CacheHeap) + L"</Color>");
@@ -1572,8 +1770,10 @@ void CInterface::Init(void)
                         }
                     }
                 }
-                if(pElement->m_strName == IF_LIVES_LABEL && player_side->m_CurrSel != NOTHING_SELECTED){
-                    if(new_lives){
+                if(pElement->m_strName == IF_LIVES_LABEL && player_side->m_CurrSel != NOTHING_SELECTED)
+                {
+                    if(new_lives)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(Float2Int(lives)).Add(L"/").Add(CWStr(Float2Int(max_lives)));
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
@@ -1581,160 +1781,281 @@ void CInterface::Init(void)
                 }
 
 
-                if(singlem){
-                    if(pElement->m_strName == IF_MANUAL_BG){
-                        if(!sel_bot->IsDisableManual()){
+                if(singlem)
+                {
+                    if(pElement->m_strName == IF_MANUAL_BG)
+                    {
+                        if(!sel_bot->IsDisableManual())
+                        {
                             pElement->SetVisibility(true);
                         }
-                    }else if(pElement->m_strName == IF_ENTER_ROBOT){
-                        if(!player_side->IsArcadeMode() && !sel_bot->IsDisableManual()){
+                    }
+                    else if(pElement->m_strName == IF_ENTER_ROBOT)
+                    {
+                        if(!player_side->IsArcadeMode() && !sel_bot->IsDisableManual())
+                        {
                             pElement->SetVisibility(true);
                         }
-                    }else if(pElement->m_nId == DYNAMIC_WEAPON_ON_ID){
+                    }
+                    else if(pElement->m_nId == DYNAMIC_WEAPON_ON_ID)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(pElement->m_strName == IF_LEAVE_ROBOT){
-                        if(player_side->IsArcadeMode()){
+                    }
+                    else if(pElement->m_strName == IF_LEAVE_ROBOT)
+                    {
+                        if(player_side->IsArcadeMode())
+                        {
                             pElement->SetVisibility(true);
                         }
-                    }else if(pElement->m_strName == IF_OVER_HEAT && sel_bot){
+                    }
+                    else if(pElement->m_strName == IF_OVER_HEAT && sel_bot)
+                    {
                         pElement->SetVisibility(true);
                         SMatrixRobotUnit* unit = &sel_bot->m_Unit[Float2Int(pElement->m_Param1)];
                         
-                        for(int i=0; i < MAX_WEAPON_CNT;i++){
-                            if(sel_bot->GetWeapon(i).m_Unit == unit){
+                        for(int i=0; i < MAX_WEAPON_CNT; ++i)
+                        {
+                            if(sel_bot->GetWeapon(i).m_Unit == unit)
+                            {
                                 pElement->m_VisibleAlpha = byte(sel_bot->GetWeapon(i).m_Heat * 0.25f);                        
                             }
                         }
                         
-                    }else if(pElement->m_strName == IF_MAIN_WEAPONSLOTS){
+                    }
+                    else if(pElement->m_strName == IF_MAIN_WEAPONSLOTS)
+                    {
                         pElement->SetVisibility(true);
                     }
                 }
 
-                if(player_side->IsArcadeMode()){
-                    if(bombers && pElement->m_strName == IF_MAIN_SELFBOMB){
+                if(player_side->IsArcadeMode())
+                {
+                    if(bombers && pElement->m_strName == IF_MAIN_SELFBOMB)
+                    {
                         pElement->SetVisibility(true);
                     }
                 }
-                if(work_group){
-                    if(pElement->m_Type == IFACE_DYNAMIC_STATIC && IS_SELECTION(pElement->m_nId)){
+                if(work_group)
+                {
+                    if(pElement->m_Type == IFACE_DYNAMIC_STATIC && IS_SELECTION(pElement->m_nId))
+                    {
                         int n = pElement->m_nId - GROUP_SELECTION_ID;
-                        if(n < work_group->GetObjectsCnt()){
+                        if(n < work_group->GetObjectsCnt())
+                        {
                             CMatrixGroupObject* so = work_group->m_FirstObject;
                             int i;
-                            for(i = 0;i < n && so;i++){
+                            for(i = 0; i < n && so; ++i)
+                            {
                                 so=so->m_NextObject;
                             }
 
-                            if(so){
-                                if(so->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
-                                    if(i == player_side->GetCurSelNum()){
+                            if(so)
+                            {
+                                if(so->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                                {
+                                    if(i == player_side->GetCurSelNum())
+                                    {
                                         ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(m_xPos+68,m_yPos+179,68, PBC_CLONE2);
                                     }
-                                    if(!singlem){
+                                    if(!singlem)
+                                    {
                                         ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(pElement->m_xPos+m_xPos, pElement->m_yPos+m_yPos+36, 46, PBC_CLONE1);
-                                    }else{
+                                    }
+                                    else
+                                    {
                                         ((CMatrixRobotAI*)so->GetObject())->DeleteProgressBarClone(PBC_CLONE1);
                                     }
                                 }
                             }
 
-                            if(!singlem){
-                                pElement->SetVisibility(true);
-                            }
+                            if(!singlem) pElement->SetVisibility(true);
                         }
-                        if(singlem){
-                            pElement->SetVisibility(false);
-                        }
+                        if(singlem) pElement->SetVisibility(false);
                     }
-                }else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
+                }
+                else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                {
                     CMatrixBuilding* bld = (CMatrixBuilding*)player_side->m_ActiveObject;
                     bld->CreateProgressBarClone(m_xPos+68,m_yPos+179,68, PBC_CLONE2);
                     
-                    if(bld->m_Kind == BUILDING_TITAN && pElement->m_strName == IF_TITAN_PLANT){
+                    if(bld->m_Kind == BUILDING_TITAN && pElement->m_strName == IF_TITAN_PLANT)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_PLASMA && pElement->m_strName == IF_PLASMA_PLANT){
+                    }
+                    else if(bld->m_Kind == BUILDING_PLASMA && pElement->m_strName == IF_PLASMA_PLANT)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_ELECTRONIC && pElement->m_strName == IF_ELECTRO_PLANT){
+                    }
+                    else if(bld->m_Kind == BUILDING_ELECTRONIC && pElement->m_strName == IF_ELECTRO_PLANT)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_ENERGY && pElement->m_strName == IF_ENERGY_PLANT){
+                    }
+                    else if(bld->m_Kind == BUILDING_ENERGY && pElement->m_strName == IF_ENERGY_PLANT)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_REPAIR && (pElement->m_strName == IF_REPAIR_PLANT || (pElement->m_strName == IF_BUILD_REPAIR && !bld_tu && !bld_re))){
+                    }
+                    else if(bld->m_Kind == BUILDING_REPAIR && (pElement->m_strName == IF_REPAIR_PLANT || (pElement->m_strName == IF_BUILD_REPAIR && !bld_tu && !bld_re)))
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_BASE && pElement->m_strName == IF_BASE_PLANT){
+                    }
+                    else if(bld->m_Kind == BUILDING_BASE && pElement->m_strName == IF_BASE_PLANT)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_BS.GetItemsCnt() && (pElement->m_strName == IF_STACK_ICON || pElement->m_strName == IF_STACK_OTHER || (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == int(bld)))){
+                    }
+                    else if(bld->m_BS.GetItemsCnt() && (pElement->m_strName == IF_STACK_ICON || pElement->m_strName == IF_STACK_OTHER || (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == int(bld))))
+                    {
                         pElement->SetVisibility(true);
-                    }else  if(pElement->m_strName == IF_BASE_LINE){
+                    }
+                    else  if(pElement->m_strName == IF_BASE_LINE)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(pElement->m_strName == IF_BUILD_RO  && !bld_tu){
-                        if(bld->m_Kind == BUILDING_BASE){
+                    }
+                    //Кнопка открытия конструктора роботов
+                    else if(pElement->m_strName == IF_BUILD_RO && !bld_tu && !bld_he)
+                    {
+                        //Делаем видимой, если выбрана строительная база
+                        if(bld->m_Kind == BUILDING_BASE)
+                        {
                             pElement->SetVisibility(true);
                         }
-                    }else if(pElement->m_strName == IF_BUILD_CA  && !bld_tu){
+                    }
+                    //Кнопка выбора типа турели для постройки
+                    else if(pElement->m_strName == IF_BUILD_CA && !bld_tu && !bld_he)
+                    {
+                        //Делаем видимой, если выбрано любое здание
                         pElement->SetVisibility(true);
-                        if(!bld->GetPlacesForTurrets(pl) || cant_build_tu || bld->m_BS.IsMaxItems()){
+
+                        //Проверяем лимит пушек для данного здания и блокируем кнопку, если лимит превышен
+                        if(!bld->GetPlacesForTurrets(pl) || cant_build_tu || bld->m_BS.IsMaxItems())
+                        {
                             pElement->SetState(IFACE_DISABLED);
-                        }else if(bld->GetPlacesForTurrets(pl) && !cant_build_tu && !bld->m_BS.IsMaxItems() && pElement->GetState() == IFACE_DISABLED){
+                        }
+                        else if(bld->GetPlacesForTurrets(pl) && !cant_build_tu && !bld->m_BS.IsMaxItems() && pElement->GetState() == IFACE_DISABLED)
+                        {
                             pElement->SetState(IFACE_NORMAL);
                         }
-                    }else if(pElement->m_strName == IF_CALL_FROM_HELL && !bld_tu){
+                    }
+                    //Кнопка выбора типа вертолёта для постройки
+                    else if(g_EnableFlyers && pElement->m_strName == IF_BUILD_HE && !bld_tu && !bld_he)
+                    {
+                        //Делаем видимой, если выбрана база
+                        if(bld->m_Kind == BUILDING_BASE)
+                        {
+                            pElement->SetVisibility(true);
+                        }
+                    }
+                    //else if (pElement->m_strName == IF_BUILD_REPAIR && !bld_tu && !bld_he && !bld_re)
+                    //{
+                    //    if (bld->m_Kind == BUILDING_BASE)
+                    //    {
+                    //        pElement->SetVisibility(true);
+                    //    }
+                    //}
+                    else if(pElement->m_strName == IF_CALL_FROM_HELL && !bld_tu && !bld_he)
+                    {
                         pElement->SetVisibility(true);
-                        if(g_MatrixMap->MaintenanceDisabled() || g_MatrixMap->BeforeMaintenanceTime() > 0){
+                        if(g_MatrixMap->MaintenanceDisabled() || g_MatrixMap->BeforeMaintenanceTime() > 0)
+                        {
                             pElement->SetState(IFACE_DISABLED);
-                        }else if(pElement->GetState() == IFACE_DISABLED){
+                        }
+                        else if(pElement->GetState() == IFACE_DISABLED)
+                        {
                             pElement->SetState(IFACE_NORMAL);
                         }
-                    }else if(bld->m_TurretsMax == 1 && pElement->m_strName == IF_PODL1){
+                    }
+                    else if(bld->m_TurretsMax == 1 && pElement->m_strName == IF_PODL1)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_TurretsMax == 2 && pElement->m_strName == IF_PODL2){
+                    }
+                    else if(bld->m_TurretsMax == 2 && pElement->m_strName == IF_PODL2)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_TurretsMax == 3 && pElement->m_strName == IF_PODL3){
+                    }
+                    else if(bld->m_TurretsMax == 3 && pElement->m_strName == IF_PODL3)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_TurretsMax == 4 && pElement->m_strName == IF_PODL4){
+                    }
+                    else if(bld->m_TurretsMax == 4 && pElement->m_strName == IF_PODL4)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->IsBase() && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_MB_RES){
+                    }
+                    else if(bld->IsBase() && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_MB_RES)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_TITAN && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_TF_RES){
+                    }
+                    else if(bld->m_Kind == BUILDING_TITAN && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_TF_RES)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_ELECTRONIC && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ELF_RES){
+                    }
+                    else if(bld->m_Kind == BUILDING_ELECTRONIC && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ELF_RES)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_ENERGY && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ENF_RES){
+                    }
+                    else if(bld->m_Kind == BUILDING_ENERGY && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ENF_RES)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(bld->m_Kind == BUILDING_PLASMA && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_PF_RES){
+                    }
+                    else if(bld->m_Kind == BUILDING_PLASMA && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_PF_RES)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(pElement->m_strName == IF_ZAGLUSHKA1){
+                    }
+                    else if(pElement->m_strName == IF_ZAGLUSHKA1)
+                    {
                         pElement->SetVisibility(true);
                     }
                 }
 
-                if(!ordering && !bld_tu){
-                    if(gsel){
-                        if(pElement->m_strName == IF_ORDER_STOP){
+                if(!ordering && !bld_tu && !bld_he)
+                {
+                    if(gsel)
+                    {
+                        if(pElement->m_strName == IF_ORDER_STOP)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(pElement->m_strName == IF_ORDER_MOVE){
+                        }
+                        else if(pElement->m_strName == IF_ORDER_MOVE)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(pElement->m_strName == IF_ORDER_PATROL){
+                        }
+                        else if(pElement->m_strName == IF_ORDER_PATROL)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(pElement->m_strName == IF_ORDER_FIRE){
+                        }
+                        else if(pElement->m_strName == IF_ORDER_FIRE)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON) && pElement->m_strName == IF_AORDER_FROBOT_ON){
+                        }
+                        else if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON) && pElement->m_strName == IF_AORDER_FROBOT_ON)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(!FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON) && pElement->m_strName == IF_AORDER_FROBOT_OFF){
+                        }
+                        else if(!FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON) && pElement->m_strName == IF_AORDER_FROBOT_OFF)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON) && pElement->m_strName == IF_AORDER_PROTECT_ON){
+                        }
+                        else if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON) && pElement->m_strName == IF_AORDER_PROTECT_ON)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(!FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON) && pElement->m_strName == IF_AORDER_PROTECT_OFF){
+                        }
+                        else if(!FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON) && pElement->m_strName == IF_AORDER_PROTECT_OFF)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(player_side->GetCurGroup()->GetRobotsCnt() && FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON) && pElement->m_strName == IF_AORDER_CAPTURE_ON){
+                        }
+                        else if(player_side->GetCurGroup()->GetRobotsCnt() && FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON) && pElement->m_strName == IF_AORDER_CAPTURE_ON)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(player_side->GetCurGroup()->GetRobotsCnt() && !FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON) && pElement->m_strName == IF_AORDER_CAPTURE_OFF){
+                        }
+                        else if(player_side->GetCurGroup()->GetRobotsCnt() && !FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON) && pElement->m_strName == IF_AORDER_CAPTURE_OFF)
+                        {
                             pElement->SetVisibility(true);
-                        }else if(pElement->m_nId == GROUP_SELECTOR_ID && !singlem){
+                        }
+                        else if(pElement->m_nId == GROUP_SELECTOR_ID && !singlem)
+                        {
                             pElement->SetVisibility(true);
                         }
                         
-                        if(IS_ORDER_GLOW(pElement->m_nId)){
+                        if(IS_ORDER_GLOW(pElement->m_nId))
+                        {
                             if(pElement->m_nId - ORDERS_GLOW_ID == 0 && stop)
                                 pElement->SetVisibility(true);
                             if(pElement->m_nId - ORDERS_GLOW_ID == 1 && move && !capt && !getup && !drop && !bomb && !repair)
@@ -1747,69 +2068,122 @@ void CInterface::Init(void)
                                 pElement->SetVisibility(true);
                             if(pElement->m_nId - ORDERS_GLOW_ID == 5 && (bomber_sel || repairer_sel) && (bomb || repair))
                                 pElement->SetVisibility(true);
-
                         }
 
-                        if(pElement->m_strName == IF_MAIN_PROG){
+                        if(pElement->m_strName == IF_MAIN_PROG)
+                        {
                             pElement->SetVisibility(true);
                         }
                         
-                        if(pElement->m_strName == IF_ORDER_CAPTURE){
+                        if(pElement->m_strName == IF_ORDER_CAPTURE)
+                        {
                             pElement->SetVisibility(true);
                         }
                         
-                        if(/*bombers*/bomber_sel && pElement->m_strName == IF_ORDER_BOMB){
+                        if(/*bombers*/bomber_sel && pElement->m_strName == IF_ORDER_BOMB)
+                        {
                             pElement->SetVisibility(true);
                         }
-                        if(/*repairers*/repairer_sel && pElement->m_strName == IF_ORDER_REPAIR){
+                        if(/*repairers*/repairer_sel && pElement->m_strName == IF_ORDER_REPAIR)
+                        {
                             pElement->SetVisibility(true);
                         }
-                    }else{
                     }
-                }else{
-                    if(pElement->m_strName == IF_ORDER_CANCEL){
+                    else{}
+                }
+                else
+                {
+                    if(pElement->m_strName == IF_ORDER_CANCEL)
+                    {
                         pElement->SetVisibility(true);
-                    }else if(pElement->m_strName == IF_ZAGLUSHKA1){
+                    }
+                    else if(pElement->m_strName == IF_ZAGLUSHKA1)
+                    {
                         pElement->SetVisibility(true);
                     }
 
-                    if(gsel){
-                        if(pElement->m_nId == GROUP_SELECTOR_ID && !singlem){
+                    if(gsel)
+                    {
+                        if(pElement->m_nId == GROUP_SELECTOR_ID && !singlem)
+                        {
                            pElement->SetVisibility(true);
                         }
                     }
 
-                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED){
+                    if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
+                    {
                         CMatrixBuilding* bld = (CMatrixBuilding*)player_side->m_ActiveObject;
-                        if(bld_tu  && !(player_side->m_CurrentAction == BUILDING_TURRET)){
-                            if(pElement->m_strName == IF_BUILD_TUR1){
+                        
+                        //Нажали кнопку выбора типа турели для постройки
+                        if(bld_tu && !(player_side->m_CurrentAction == BUILDING_TURRET))
+                        {
+                            if(pElement->m_strName == IF_BUILD_TUR1)
+                            {
                                 pElement->SetVisibility(true);
-                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[0].m_Resources)){
+                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[0].m_Resources))
+                                {
                                     pElement->SetState(IFACE_DISABLED);
-                                }else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[0].m_Resources) && pElement->GetState() == IFACE_DISABLED){
+                                }
+                                else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[0].m_Resources) && pElement->GetState() == IFACE_DISABLED)
+                                {
                                     pElement->SetState(IFACE_NORMAL);
                                 }
-                            }else if(pElement->m_strName == IF_BUILD_TUR2){
+                            }
+                            else if(pElement->m_strName == IF_BUILD_TUR2)
+                            {
                                 pElement->SetVisibility(true);
-                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources)){
+                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources))
+                                {
                                     pElement->SetState(IFACE_DISABLED);
-                                }else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources) && pElement->GetState() == IFACE_DISABLED){
+                                }
+                                else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources) && pElement->GetState() == IFACE_DISABLED)
+                                {
                                     pElement->SetState(IFACE_NORMAL);
                                 }
-                            }else if(pElement->m_strName == IF_BUILD_TUR3){
+                            }
+                            else if(pElement->m_strName == IF_BUILD_TUR3)
+                            {
                                 pElement->SetVisibility(true);
-                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[2].m_Resources)){
+                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[2].m_Resources))
+                                {
                                     pElement->SetState(IFACE_DISABLED);
-                                }else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[2].m_Resources) && pElement->GetState() == IFACE_DISABLED){
+                                }
+                                else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[2].m_Resources) && pElement->GetState() == IFACE_DISABLED)
+                                {
                                     pElement->SetState(IFACE_NORMAL);
                                 }
-                            }else if(pElement->m_strName == IF_BUILD_TUR4){
+                            }
+                            else if(pElement->m_strName == IF_BUILD_TUR4)
+                            {
                                 pElement->SetVisibility(true);
-                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[3].m_Resources)){
+                                if(!bld->GetPlacesForTurrets(pl) || !player_side->IsEnoughResources(g_Config.m_CannonsProps[3].m_Resources))
+                                {
                                     pElement->SetState(IFACE_DISABLED);
-                                }else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[3].m_Resources) && pElement->GetState() == IFACE_DISABLED){
+                                }
+                                else if(bld->GetPlacesForTurrets(pl) && player_side->IsEnoughResources(g_Config.m_CannonsProps[3].m_Resources) && pElement->GetState() == IFACE_DISABLED)
+                                {
                                     pElement->SetState(IFACE_NORMAL);
                                 }
+                            }
+                        }
+                        //Нажали кнопку выбора типа вертолёта для постройки
+                        else if(g_EnableFlyers && bld_he && player_side->m_CurrSel == BASE_SELECTED)
+                        {
+                            if(pElement->m_strName == IF_FLYER_BIG1)
+                            {
+                                pElement->SetVisibility(true);
+                            }
+                            else if(pElement->m_strName == IF_FLYER_BIG2)
+                            {
+                                pElement->SetVisibility(true);
+                            }
+                            else if(pElement->m_strName == IF_FLYER_BIG3)
+                            {
+                                pElement->SetVisibility(true);
+                            }
+                            else if(pElement->m_strName == IF_FLYER_BIG4)
+                            {
+                                pElement->SetVisibility(true);
                             }
                         }
                     }
@@ -1817,44 +2191,67 @@ void CInterface::Init(void)
                 pElement = pElement->m_NextElement;
             }
 ///////////////////EOF MAIN////////////////////////////////////////////////////////////////////////////////////////////
-        }else if(m_strName == IF_RADAR){
-            while(pElement){
-                if(player_side->IsArcadeMode()){
+        }
+        else if(m_strName == IF_RADAR)
+        {
+            while(pElement)
+            {
+                if(player_side->IsArcadeMode())
+                {
                     pElement->SetVisibility(true);
-                }else{
+                }
+                else
+                {
                     pElement->SetVisibility(false);
                 }
                 pElement = pElement->m_NextElement;
             }
-        }else if(m_strName == IF_TOP){
-            while(pElement){
+        }
+        else if(m_strName == IF_TOP)
+        {
+            while(pElement)
+            {
                 pElement->SetVisibility(true);
-                if(pElement->m_strName == IF_TITAN_LABEL){
-                    if(prev_titan != player_side->GetResourcesAmount(TITAN)){
+                if(pElement->m_strName == IF_TITAN_LABEL)
+                {
+                    if(prev_titan != player_side->GetResourcesAmount(TITAN))
+                    {
                         prev_titan = player_side->GetResourcesAmount(TITAN);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_titan);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(pElement->m_strName == IF_ELECTRO_LABEL){
-                    if(prev_electro != player_side->GetResourcesAmount(ELECTRONICS)){
+                }
+                else if(pElement->m_strName == IF_ELECTRO_LABEL)
+                {
+                    if(prev_electro != player_side->GetResourcesAmount(ELECTRONICS))
+                    {
                         prev_electro = player_side->GetResourcesAmount(ELECTRONICS);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_electro);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(pElement->m_strName == IF_ENERGY_LABEL){
-                    if(prev_energy != player_side->GetResourcesAmount(ENERGY)){
+                }
+                else if(pElement->m_strName == IF_ENERGY_LABEL)
+                {
+                    if(prev_energy != player_side->GetResourcesAmount(ENERGY))
+                    {
                         prev_energy = player_side->GetResourcesAmount(ENERGY);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_energy);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(pElement->m_strName == IF_PLASMA_LABEL){
-                    if(prev_plasma != player_side->GetResourcesAmount(PLASMA)){
+                }
+                else if(pElement->m_strName == IF_PLASMA_LABEL)
+                {
+                    if(prev_plasma != player_side->GetResourcesAmount(PLASMA))
+                    {
                         prev_plasma = player_side->GetResourcesAmount(PLASMA);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_plasma);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(pElement->m_strName == IF_RVALUE_LABEL){
-                    if(/*количество роботов изменилось*/robots != player_side->GetSideRobots() || /*максимальное количество изменилось*/max_robots != player_side->GetMaxSideRobots()){
+                }
+                else if(pElement->m_strName == IF_RVALUE_LABEL)
+                {
+                    if(/*количество роботов изменилось*/robots != player_side->GetSideRobots() || /*максимальное количество изменилось*/max_robots != player_side->GetMaxSideRobots())
+                    {
                         robots = player_side->GetSideRobots();
                         max_robots = player_side->GetMaxSideRobots();
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(robots);
@@ -1870,12 +2267,15 @@ void CInterface::Init(void)
     
     m_VisibleAlpha = IS_NOT_VISIBLEA;
 
-    if((m_strName == IF_BASE) && (player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) && player_side->m_ActiveObject && player_side->m_ActiveObject->GetObjectType() == OBJECT_TYPE_BUILDING){
+    if((m_strName == IF_BASE) && (player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) && player_side->m_ActiveObject && player_side->m_ActiveObject->GetObjectType() == OBJECT_TYPE_BUILDING)
+    {
         CMatrixBuilding* building = (CMatrixBuilding*)player_side->m_ActiveObject;
         int total_res[MAX_RESOURCES];
         player_side->m_Constructor->GetConstructionPrice(total_res);
-        for(int i = 0; i < MAX_RESOURCES; i++){
-            if(g_IFaceList->m_RCountControl->GetCounter()){
+        for(int i = 0; i < MAX_RESOURCES; ++i)
+        {
+            if(g_IFaceList->m_RCountControl->GetCounter())
+            {
                 total_res[i] *= g_IFaceList->m_RCountControl->GetCounter();
             }
         }
@@ -2589,24 +2989,37 @@ void CInterface::Init(void)
             }
             pElement = pElement->m_NextElement;
         }
-    }else if(m_strName == IF_HINTS){
+    }
+    else if(m_strName == IF_HINTS)
+    {
         m_VisibleAlpha = IS_VISIBLEA;
         CIFaceElement* e = m_FirstElement;
-        while(e){
+        while(e)
+        {
             //e->SetVisibility(true);
             e = e->m_NextElement;
         }
-    }else if(m_strName == IF_POPUP_MENU && FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+    }
+    else if(m_strName == IF_POPUP_MENU && FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+    {
         m_VisibleAlpha = IS_VISIBLEA;
         CIFaceElement* pElement = m_FirstElement;
-        while(pElement){
-            if(pElement->m_strName == IF_POPUP_RAMKA){
+        while(pElement)
+        {
+            if(pElement->m_strName == IF_POPUP_RAMKA)
+            {
                 pElement->SetVisibility(true);
-            }else if((pElement->m_strName == IF_POPUP_SELECTOR/* && g_IFaceList->m_FocusedElement && g_IFaceList->m_FocusedElement->m_nId == POPUP_SELECTOR_CATCHERS_ID*/)){
+            }
+            else if((pElement->m_strName == IF_POPUP_SELECTOR/* && g_IFaceList->m_FocusedElement && g_IFaceList->m_FocusedElement->m_nId == POPUP_SELECTOR_CATCHERS_ID*/))
+            {
                 pElement->SetVisibility(true);
-            }else if(pElement->m_nId == POPUP_SELECTOR_CATCHERS_ID){
+            }
+            else if(pElement->m_nId == POPUP_SELECTOR_CATCHERS_ID)
+            {
                 pElement->SetVisibility(true);
-            }else if(pElement->m_strName == IF_POPUP_CURSOR){
+            }
+            else if(pElement->m_strName == IF_POPUP_CURSOR)
+            {
                 pElement->SetVisibility(true);
             }
             pElement = pElement->m_NextElement;
@@ -2619,29 +3032,38 @@ void CInterface::SortElementsByZ()
     CIFaceElement *elements = NULL, *el_cur = NULL, *el_plus_one = NULL, *el_prev = NULL, *el_next = NULL;
 
     int sorting;
-    do{
+    do
+    {
         elements = m_FirstElement;
         sorting = 0;
-        while(elements && elements->m_NextElement){
-            if(elements->m_zPos < elements->m_NextElement->m_zPos){
+        while(elements && elements->m_NextElement)
+        {
+            if(elements->m_zPos < elements->m_NextElement->m_zPos)
+            {
                 sorting = 1;
                 
                 el_cur = elements;
                 el_plus_one = elements->m_NextElement;
 
-                if(el_plus_one->m_NextElement == NULL){
+                if(el_plus_one->m_NextElement == NULL)
+                {
                     m_LastElement = el_cur;
                     el_cur->m_NextElement = NULL;
-                }else{
+                }
+                else
+                {
                     el_cur->m_NextElement = el_plus_one->m_NextElement;
                     el_plus_one->m_NextElement->m_PrevElement = el_cur;
                 }
 
                 
-                if(elements->m_PrevElement == NULL){
+                if(elements->m_PrevElement == NULL)
+                {
                     m_FirstElement = el_plus_one;
                     el_plus_one->m_PrevElement = NULL;
-                }else{
+                }
+                else
+                {
                     el_plus_one->m_PrevElement = elements->m_PrevElement;
                     elements->m_PrevElement->m_NextElement = el_plus_one;
                 }
@@ -2652,12 +3074,14 @@ void CInterface::SortElementsByZ()
             
             elements = elements->m_NextElement;
         }
-    }while(sorting);
+    }
+    while(sorting);
 }
 
 void CInterface::CopyElements(CIFaceElement *el_src, CIFaceElement *el_dest)
 {
-    for(int state = 0; state < MAX_STATES; state++){
+    for(int state = 0; state < MAX_STATES; ++state)
+    {
         el_dest->m_StateImages[state].pImage = el_src->m_StateImages[state].pImage;
         el_dest->m_StateImages[state].xTexPos = el_src->m_StateImages[state].xTexPos;
         el_dest->m_StateImages[state].yTexPos = el_src->m_StateImages[state].yTexPos;
@@ -2675,8 +3099,9 @@ void CInterface::CopyElements(CIFaceElement *el_src, CIFaceElement *el_dest)
 
 CIFaceImage* CInterface::FindImageByName(CWStr name)
 {
-    CIFaceImage *images = m_FirstImage;
-    while(images){
+    CIFaceImage* images = m_FirstImage;
+    while(images)
+    {
         if(images->m_strName == name)
             return images;
         images = images->m_NextImage;
@@ -2687,7 +3112,7 @@ CIFaceImage* CInterface::FindImageByName(CWStr name)
 CIFaceStatic* CInterface::CreateStaticFromImage(float x, float y, float z, const CIFaceImage &image, bool fullsize)
 {
 	DTRACE();
-    CIFaceStatic *stat = HNew(g_MatrixHeap) CIFaceStatic;
+    CIFaceStatic* stat = HNew(g_MatrixHeap) CIFaceStatic;
 
     stat->m_strName = image.m_strName;
 	stat->m_xPos = x;
@@ -2703,7 +3128,8 @@ CIFaceStatic* CInterface::CreateStaticFromImage(float x, float y, float z, const
         image.m_xTexPos,
 		image.m_yTexPos,
         image.m_TexWidth,
-		image.m_TexHeight);
+		image.m_TexHeight
+    );
 
     stat->ElementGeomInit((void*)stat, fullsize);
     stat->m_Type = IFACE_DYNAMIC_STATIC;
@@ -2715,8 +3141,10 @@ CIFaceStatic* CInterface::CreateStaticFromImage(float x, float y, float z, const
 void CInterface::LogicTakt(int ms)
 {
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-    if(g_IFaceList->m_FocusedInterface == this){
-        if(FLAG(m_InterfaceFlags,(INTERFACE_SLIDE_LEFT|INTERFACE_SLIDE_RIGHT))){
+    if(g_IFaceList->m_FocusedInterface == this)
+    {
+        if(FLAG(m_InterfaceFlags,(INTERFACE_SLIDE_LEFT|INTERFACE_SLIDE_RIGHT)))
+        {
             SlideStep();
         }
         //if(!ps->IsArcadeMode() && (GetAsyncKeyState(g_MatrixMap->m_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000)==0x8000){
@@ -2739,7 +3167,8 @@ void CInterface::LogicTakt(int ms)
 
     CIFaceElement* els = m_FirstElement;
 
-    while(els){
+    while(els)
+    {
         els->LogicTakt(ms);
         els = els->m_NextElement; 
     }
@@ -2772,10 +3201,12 @@ void CInterface::ReCalcElementsPos()
 
     CIFaceElement *pElement = m_FirstElement;
 
-    if(m_strName == IF_MAIN){
+    if(m_strName == IF_MAIN)
+    {
         g_IFaceList->SetMainPos(m_xPos, m_yPos);
     }
-    while(pElement){
+    while(pElement)
+    {
         pElement->RecalcPos(m_xPos, m_yPos);        
         pElement = pElement->m_NextElement;
     }
@@ -2784,16 +3215,20 @@ void CInterface::ReCalcElementsPos()
 void CInterface::BeginSlide(float to_x, float to_y)
 {
     ZeroMemory(&m_Slider, sizeof(SSlide));
-    if(to_x != m_xPos){
+    if(to_x != m_xPos)
+    {
         RESETFLAG(m_InterfaceFlags,(INTERFACE_SLIDE_LEFT|INTERFACE_SLIDE_RIGHT));
-        if(to_x < m_xPos){
+        if(to_x < m_xPos)
+        {
             SETFLAG(m_InterfaceFlags, INTERFACE_SLIDE_LEFT);
             m_Slider.startX = m_xPos;
             m_Slider.startY = m_yPos;
             m_Slider.stopX = to_x;
             m_Slider.stopY = to_y;
             m_Slider.startLength = m_xPos - to_x;
-        }else{
+        }
+        else
+        {
             SETFLAG(m_InterfaceFlags, INTERFACE_SLIDE_RIGHT);
             m_Slider.startX = m_xPos;
             m_Slider.startY = m_yPos;
@@ -2802,20 +3237,25 @@ void CInterface::BeginSlide(float to_x, float to_y)
             m_Slider.startLength = to_x - m_xPos;
 
         }
-    }else if(to_y != m_yPos){
     }
+    //else if(to_y != m_yPos){}
 }
 
 void CInterface::SlideStep()
 {
-    if(FLAG(m_InterfaceFlags, INTERFACE_SLIDE_LEFT)){
-        if(m_Slider.step > 1.0f){
+    if(FLAG(m_InterfaceFlags, INTERFACE_SLIDE_LEFT))
+    {
+        if(m_Slider.step > 1.0f)
+        {
             RESETFLAG(m_InterfaceFlags, INTERFACE_SLIDE_LEFT);
             ZeroMemory(&m_Slider, sizeof(SSlide));
             return;
         }
-    }else if(FLAG(m_InterfaceFlags, INTERFACE_SLIDE_RIGHT)){
-        if(m_Slider.step > SLIDE_FUNC_PARAM){
+    }
+    else if(FLAG(m_InterfaceFlags, INTERFACE_SLIDE_RIGHT))
+    {
+        if(m_Slider.step > SLIDE_FUNC_PARAM)
+        {
             RESETFLAG(m_InterfaceFlags, INTERFACE_SLIDE_RIGHT);
             ZeroMemory(&m_Slider, sizeof(SSlide));
             return;
@@ -2827,7 +3267,8 @@ void CInterface::SlideStep()
         float c = 0;
 
         speed = (-(x*x))+(b*x)+c;
-        if(speed < ((-(SLIDE_STEP_SIZE*SLIDE_STEP_SIZE))+(b*SLIDE_STEP_SIZE)+c)){
+        if(speed < ((-(SLIDE_STEP_SIZE*SLIDE_STEP_SIZE))+(b*SLIDE_STEP_SIZE)+c))
+        {
             speed = 0;
         }
 
@@ -2835,12 +3276,15 @@ void CInterface::SlideStep()
         m_Slider.step += SLIDE_STEP_SIZE;
         float half_way = (m_Slider.startX + (m_Slider.startLength*0.5f));
 
-        //if(m_xPos >= half_way){
+        //if(m_xPos >= half_way)
+        //{
         //    m_xPos = LERPFLOAT(speed, m_Slider.stopX, half_way);
-        //}else{
+        //}
+        //else
+        //{
         //    m_xPos = LERPFLOAT(speed, m_Slider.startX, half_way);
         //}
-                
+
         m_xPos += LERPFLOAT(speed, 0, SLIDE_MAX_SPEED);
         ReCalcElementsPos();
     }
@@ -2849,8 +3293,10 @@ void CInterface::SlideStep()
 bool CInterface::FindElementByName(const CWStr &name)
 {
     CIFaceElement *elements = m_FirstElement;
-    while(elements){
-        if(elements->m_strName == name){
+    while(elements)
+    {
+        if(elements->m_strName == name)
+        {
             return true;
         }
         elements = elements->m_NextElement;
@@ -3357,23 +3803,33 @@ void CIFaceList::CreateItemPrice(int *price)
             CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
             CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
 
-            for(int cnt = 0; cnt < MAX_RESOURCES; cnt++){
-                if(res[cnt] != 0){
+            for(int cnt = 0; cnt < MAX_RESOURCES; ++cnt)
+            {
+                if(res[cnt] != 0)
+                {
                     CIFaceStatic* s = NULL;
-                    if(cnt == TITAN){
+                    if(cnt == TITAN)
+                    {
                         s = interfaces->CreateStaticFromImage(x, y, z, titan_image);
                         player_side->m_ConstructPanel->m_ftitX = Float2Int(x);
-                    }else if(cnt == ELECTRONICS){
+                    }
+                    else if(cnt == ELECTRONICS)
+                    {
                         s = interfaces->CreateStaticFromImage(x, y, z, electronics_image);
                         player_side->m_ConstructPanel->m_felecX = Float2Int(x);
-                    }else if(cnt == ENERGY){
+                    }
+                    else if(cnt == ENERGY)
+                    {
                         s = interfaces->CreateStaticFromImage(x, y, z, energy_image);
                         player_side->m_ConstructPanel->m_fenerX = Float2Int(x);
-                    }else if(cnt == PLASMA){
+                    }
+                    else if(cnt == PLASMA)
+                    {
                         s = interfaces->CreateStaticFromImage(x, y, z, plasma_image);
                         player_side->m_ConstructPanel->m_fplasX = Float2Int(x);
                     }
-                    if(s){
+                    if(s)
+                    {
                         s->SetVisibility(false);
                         x = x+s->m_xSize + 25;
                         s->m_nId = ITEM_PRICE_ID;
@@ -3435,8 +3891,10 @@ void CIFaceList::CreateSummPrice(int multiplier)
         }
     }
 
-    while(interfaces){
-        if(interfaces->m_strName == IF_BASE){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_BASE)
+        {
             float x = 200, y = 352, z = 0.00001f;
 
             CIFaceElement* pElement = interfaces->m_FirstElement;
@@ -3454,42 +3912,50 @@ void CIFaceList::CreateSummPrice(int multiplier)
                 pElement = pElement->m_NextElement;
             }
 
-            if(fuck == 3){
-                x += 35;
-            }else if(fuck == 2){
-                x += 50;
-            }
+            if(fuck == 3) x += 35;
+            else if(fuck == 2) x += 50;
+
             CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
             CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
             CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
             CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
             CIFaceImage warning_image = *interfaces->FindImageByName(CWStr(IF_BASE_WARNING));
 
-            for(int cnt = 0; cnt < MAX_RESOURCES; cnt++){
-                if(res[cnt] != 0){
+            for(int cnt = 0; cnt < MAX_RESOURCES; ++cnt)
+            {
+                if(res[cnt] != 0)
+                {
                     CIFaceStatic* s = NULL;
                     int warning_id = DYNAMIC_WARNING;
-                    if(cnt == TITAN){
+                    if(cnt == TITAN)
+                    {
                         player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX = Float2Int(x)-2;
                         s = interfaces->CreateStaticFromImage(x, y, z, titan_image);
                         s->m_strName = IF_BASE_TITAN_SUMM;
-                    }else if(cnt == ELECTRONICS){
+                    }
+                    else if(cnt == ELECTRONICS)
+                    {
                         player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX = Float2Int(x)-2;
                         s = interfaces->CreateStaticFromImage(x, y, z, electronics_image);
                         s->m_strName = IF_BASE_ELECTRONICS_SUMM;
                         warning_id+=1;
-                    }else if(cnt == ENERGY){
+                    }
+                    else if(cnt == ENERGY)
+                    {
                         player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX = Float2Int(x)-2;
                         s = interfaces->CreateStaticFromImage(x, y, z, energy_image);
                         s->m_strName = IF_BASE_ENERGY_SUMM;
                         warning_id+=2;
-                    }else if(cnt == PLASMA){
+                    }
+                    else if(cnt == PLASMA)
+                    {
                         player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX = Float2Int(x)-2;
                         s = interfaces->CreateStaticFromImage(x, y, z, plasma_image);
                         s->m_strName = IF_BASE_PLASMA_SUMM;
                         warning_id+=3;
                     }
-                    if(s){
+                    if(s)
+                    {
                         s->SetVisibility(false);
                         CIFaceStatic* swarn = interfaces->CreateStaticFromImage(x+s->m_xSize, y+22, z, warning_image);
                         x = x+s->m_xSize + 31;
@@ -3512,14 +3978,19 @@ void CIFaceList::DeleteSummPrice()
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
     CInterface* interfaces = m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_BASE){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_BASE)
+        {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
+            while(elements)
+            {
 /*                if(elements->m_strName == IF_BASE_SUMM_PANEL){
                     elements->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
                     elements->m_StateImages[IFACE_NORMAL].SetStateText(true);
-                }else */if(elements->m_Type == IFACE_DYNAMIC_STATIC && (elements->m_nId == SUMM_PRICE_ID || IS_DYNAMIC_WARNING(elements->m_nId))){
+                }
+                else */if(elements->m_Type == IFACE_DYNAMIC_STATIC && (elements->m_nId == SUMM_PRICE_ID || IS_DYNAMIC_WARNING(elements->m_nId)))
+                {
 
                     elements = interfaces->DelElement(elements);
                     continue;
@@ -3535,14 +4006,16 @@ void CIFaceList::DeleteSummPrice()
 
 void CIFaceList::SlideFocusedInterfaceRight()
 {
-    if(m_FocusedInterface){
+    if(m_FocusedInterface)
+    {
         m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos+100, m_FocusedInterface->m_yPos);
     }
 }
 
 void CIFaceList::SlideFocusedInterfaceLeft()
 {
-    if(m_FocusedInterface){
+    if(m_FocusedInterface)
+    {
         m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos-100, m_FocusedInterface->m_yPos);
     }
 }
@@ -3555,9 +4028,12 @@ void CIFaceList::LiveRobot(void)
         CMatrixMapStatic* obj = ps->GetArcadedObject();
         ESelType type = NOTHING;
 
-        if(obj && obj->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+        if(obj && obj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
             type = ROBOT;
-        }else if(obj && obj->GetObjectType() == OBJECT_TYPE_FLYER){
+        }
+        else if(obj && obj->GetObjectType() == OBJECT_TYPE_FLYER)
+        {
             type = FLYER;
         }
         
@@ -3572,8 +4048,10 @@ void CIFaceList::LiveRobot(void)
         ps->Select(type, NULL);
         
         CInterface* ifs = g_IFaceList->m_First;
-        while(ifs){
-            if(ifs->m_strName == IF_MAIN){
+        while(ifs)
+        {
+            if(ifs->m_strName == IF_MAIN)
+            {
                 ifs->m_xPos = float(g_ScreenX-(1024-447));
                 ifs->ReCalcElementsPos();
                 break;
@@ -3581,23 +4059,26 @@ void CIFaceList::LiveRobot(void)
             ifs = ifs->m_NextInterface;
         }
     }
-
 }
 
 void CIFaceList::EnterRobot(bool pos)
 {
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-    if(ps->GetCurGroup() && ps->GetCurGroup()->m_FirstObject){
+    if(ps->GetCurGroup() && ps->GetCurGroup()->m_FirstObject)
+    {
         CMatrixMapStatic* o = ps->GetCurGroup()->m_FirstObject->GetObject(); 
-        if(pos){
+        if(pos)
+        {
             o = ps->GetCurGroup()->GetObjectByN(ps->GetCurSelNum());
         }
         
         ps->SetArcadedObject(o);
 
         CInterface* ifs = g_IFaceList->m_First;
-        while(ifs){
-            if(ifs->m_strName == IF_MAIN){
+        while(ifs)
+        {
+            if(ifs->m_strName == IF_MAIN)
+            {
                 ifs->m_xPos = float(g_ScreenX - (1024-(447+196)));
                 ifs->ReCalcElementsPos();
             }
@@ -3614,142 +4095,232 @@ void __stdcall CIFaceList::PlayerAction(void* object)
     CIFaceElement* element = (CIFaceElement*)object;
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
-    if(element->m_strName == IF_MAIN_MENU_BUTTON){
+    if(element->m_strName == IF_MAIN_MENU_BUTTON)
+    {
         g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_MENU);
-    }else if(element->m_strName == IF_AORDER_FROBOT_ON){
+    }
+    else if(element->m_strName == IF_AORDER_FROBOT_ON)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
 
         ps->PGOrderStop(ps->SelGroupToLogicGroup());
-    }else if(element->m_strName == IF_AORDER_FROBOT_OFF){
+    }
+    else if(element->m_strName == IF_AORDER_FROBOT_OFF)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
         SETFLAG(m_IfListFlags, AUTO_FROBOT_ON);
 
         ps->PGOrderAutoAttack(ps->SelGroupToLogicGroup());
-    }else if(element->m_strName == IF_MAIN_SELFBOMB){
-        if(ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot()){
+    }
+    else if(element->m_strName == IF_MAIN_SELFBOMB)
+    {
+        if(ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot())
+        {
             ps->GetArcadedObject()->AsRobot()->BigBoom();
         }
     }
     
-    if(element->m_strName == IF_AORDER_PROTECT_ON){
+    if(element->m_strName == IF_AORDER_PROTECT_ON)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
 
         ps->PGOrderStop(ps->SelGroupToLogicGroup());
-    }else if(element->m_strName == IF_AORDER_PROTECT_OFF){
+    }
+    else if(element->m_strName == IF_AORDER_PROTECT_OFF)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
         SETFLAG(m_IfListFlags, AUTO_PROTECT_ON);
 
         ps->PGOrderAutoDefence(ps->SelGroupToLogicGroup());
     }
     
-    if(element->m_strName == IF_AORDER_CAPTURE_ON){
+    if(element->m_strName == IF_AORDER_CAPTURE_ON)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
 
         ps->PGOrderStop(ps->SelGroupToLogicGroup());
-
-    }else if(element->m_strName == IF_AORDER_CAPTURE_OFF){
+    }
+    else if(element->m_strName == IF_AORDER_CAPTURE_OFF)
+    {
         RESETFLAG(m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
         SETFLAG(m_IfListFlags, AUTO_CAPTURE_ON);
 
         ps->PGOrderAutoCapture(ps->SelGroupToLogicGroup());
     }
 
-    if(element->m_strName == IF_ORDER_FIRE){
+    if(element->m_strName == IF_ORDER_FIRE)
+    {
         SETFLAG(m_IfListFlags, PREORDER_FIRE);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_CAPTURE){
+    }
+    else if(element->m_strName == IF_ORDER_CAPTURE)
+    {
         SETFLAG(m_IfListFlags, PREORDER_CAPTURE);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_PATROL){
+    }
+    else if(element->m_strName == IF_ORDER_PATROL)
+    {
         SETFLAG(m_IfListFlags, PREORDER_PATROL);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_MOVE){
+    }
+    else if(element->m_strName == IF_ORDER_MOVE)
+    {
         SETFLAG(m_IfListFlags, PREORDER_MOVE);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_REPAIR){
+    }
+    else if(element->m_strName == IF_ORDER_REPAIR)
+    {
         SETFLAG(m_IfListFlags, PREORDER_REPAIR);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_BOMB){
+    }
+    else if(element->m_strName == IF_ORDER_BOMB)
+    {
         SETFLAG(m_IfListFlags, PREORDER_BOMB);
         SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_ORDER_CANCEL){
-        if(ps->m_CurrentAction == BUILDING_TURRET){
+    }
+    else if(element->m_strName == IF_ORDER_CANCEL)
+    {
+        if(ps->m_CurrentAction == BUILDING_TURRET)
+        {
             ps->m_CannonForBuild.Delete();
             ps->m_CurrentAction = NOTHING_SPECIAL;
         }
         ResetOrderingMode();
-    }else if(element->m_strName == IF_ORDER_STOP){
+    }
+    else if(element->m_strName == IF_ORDER_STOP)
+    {
         ps->PGOrderStop(ps->SelGroupToLogicGroup());
-        //if(ps->m_CurGroup->m_Tactics){
+        //if(ps->m_CurGroup->m_Tactics)
+        //{
         //    ps->m_CurGroup->DeInstallTactics();
-        //}else{
+        //}
+        //else
+        //{
         //    ps->SelectedGroupBreakOrders();
         //}
     }
 
-    if(element->m_strName == IF_ENTER_ROBOT){
+    if(element->m_strName == IF_ENTER_ROBOT)
+    {
         EnterRobot();
-    }else if(element->m_strName == IF_LEAVE_ROBOT){
+    }
+    else if(element->m_strName == IF_LEAVE_ROBOT)
+    {
         LiveRobot();
     }
-    if(element->m_strName == IF_BASE_CONST_CANCEL){
+    if(element->m_strName == IF_BASE_CONST_CANCEL)
+    {
         ps->m_ConstructPanel->ResetGroupNClose();
     }
 
-    if(element->m_strName == IF_BUILD_HE){
-        ps->m_ConstructPanel->ResetGroupNClose();
-        SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
-        SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_FLYER);
-    }else if(element->m_strName == IF_BUILD_CA){
+    //Нажали кнопку выбора типа пушки для постройки
+    if(element->m_strName == IF_BUILD_CA)
+    {
         ps->m_ConstructPanel->ResetGroupNClose();
         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET);
-        if(ps->m_ActiveObject){
+        if(ps->m_ActiveObject)
+        {
             ((CMatrixBuilding*)ps->m_ActiveObject)->CreatePlacesShow();
         }
-
-    }else if(element->m_strName == IF_BUILD_REPAIR){
+    }
+    //Нажали кнопку выбора типа вертолёта для постройки
+    else if(element->m_strName == IF_BUILD_HE)
+    {
         ps->m_ConstructPanel->ResetGroupNClose();
-        SETFLAG(m_IfListFlags, PREORDER_BUILD_REPAIR);
-        SETFLAG(m_IfListFlags, ORDERING_MODE);        
-    }else if(element->m_strName == IF_CALL_FROM_HELL && (ps->m_CurrSel == BASE_SELECTED  || ps->m_CurrSel == BUILDING_SELECTED)){
+        SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
+        SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_FLYER);
+    }
+    //Нажали кнопку вызова подкрепления (вероятно)
+    else if(element->m_strName == IF_CALL_FROM_HELL && (ps->m_CurrSel == BASE_SELECTED || ps->m_CurrSel == BUILDING_SELECTED))
+    {
         CMatrixBuilding* bld = (CMatrixBuilding*)ps->m_ActiveObject;
         bld->Maintenance();
     }
+    //Нажали кнопку выбора типа ремонта для хз чего
+    else if(element->m_strName == IF_BUILD_REPAIR)
+    {
+        ps->m_ConstructPanel->ResetGroupNClose();
+        SETFLAG(m_IfListFlags, ORDERING_MODE);
+        SETFLAG(m_IfListFlags, PREORDER_BUILD_REPAIR);       
+    }
 
-    if(ps->m_CurrSel == BASE_SELECTED  || ps->m_CurrSel == BUILDING_SELECTED){
+    if(ps->m_CurrSel == BASE_SELECTED  || ps->m_CurrSel == BUILDING_SELECTED)
+    {
         CMatrixBuilding* base = (CMatrixBuilding*)ps->m_ActiveObject;
-        if(element->m_strName == IF_BUILD_TUR1){
-            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/){
+
+        //Нажали кнопку постройки конкретной турели
+        if(element->m_strName == IF_BUILD_TUR1)
+        {
+            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/)
+            {
                 //sound
                 CSound::Play(S_CANTBE, SL_INTERFACE);
                 //hint
-            }else{
+            }
+            else
+            {
                 BeginBuildTurret(1);
             }
-        }else if(element->m_strName == IF_BUILD_TUR2){
-            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/){
+        }
+        else if(element->m_strName == IF_BUILD_TUR2)
+        {
+            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/)
+            {
                 //sound
                 CSound::Play(S_CANTBE, SL_INTERFACE);
                 //hint
-            }else{
+            }
+            else
+            {
                 BeginBuildTurret(2);                
             }
-        }else if(element->m_strName == IF_BUILD_TUR3){
-            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/){
+        }
+        else if(element->m_strName == IF_BUILD_TUR3)
+        {
+            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/)
+            {
                 //sound
                 CSound::Play(S_CANTBE, SL_INTERFACE);
                 //hint
-            }else{
+            }
+            else
+            {
                 BeginBuildTurret(3);                
             }
-        }else if(element->m_strName == IF_BUILD_TUR4){
-            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/){
+        }
+        else if(element->m_strName == IF_BUILD_TUR4)
+        {
+            if(0/*((CMatrixBuilding*)ps->m_ActiveObject)->HaveMaxTurrets()*/)
+            {
                 //sound
                 CSound::Play(S_CANTBE, SL_INTERFACE);
                 //hint
-            }else{
+            }
+            else
+            {
                 BeginBuildTurret(4);
+            }
+        }
+
+        //Нажали кнопку постройки конкретного вертолёта
+        if(ps->m_CurrSel == BASE_SELECTED)
+        {
+            if(element->m_strName == IF_FLYER_BIG1)
+            {
+                base->BuildFlyer(FLYER_SPEED);
+            }
+            else if(element->m_strName == IF_FLYER_BIG2)
+            {
+                base->BuildFlyer(FLYER_TRANSPORT);
+            }
+            else if(element->m_strName == IF_FLYER_BIG3)
+            {
+                base->BuildFlyer(FLYER_BOMB);
+            }
+            else if(element->m_strName == IF_FLYER_BIG4)
+            {
+                base->BuildFlyer(FLYER_ATTACK);
             }
         }
     }
@@ -3765,23 +4336,30 @@ void CIFaceList::CreateGroupSelection(CInterface *iface)
 
     float x = 225, y = 49, z = 0.000001f;
     CIFaceImage ramka_image = *iface->FindImageByName(CWStr(IF_GROUP_RAMKA));
-    for(int i = 0; i < sel_objs; i++){
+    for(int i = 0; i < sel_objs; ++i)
+    {
         float pos = (i+1.0f) / 3.0f;
         
-        if(pos <= 1){
+        if(pos <= 1)
+        {
             x = (float)(225 + 48*i);
             y = 49;
-        }else if(pos > 1 && pos <= 2){
+        }
+        else if(pos > 1 && pos <= 2)
+        {
             x = (float)((225 + 48*i)-48*3);
             y = 49*2;
-        }else if(pos > 2){
+        }
+        else if(pos > 2)
+        {
             x = (float)((225 + 48*i)-48*6);
             y = 49*3;
         }
         
         
         CIFaceStatic* s = iface->CreateStaticFromImage(x, y, z, ramka_image);
-        if(s){
+        if(s)
+        {
             s->SetVisibility(false);
             s->m_nId = GROUP_SELECTION_ID+i;
         }
@@ -3795,22 +4373,29 @@ void CIFaceList::DeleteGroupSelection()
 
     CMatrixMapStatic* so = CMatrixMapStatic::GetFirstLogic();
 
-    while(so){
-        if(so->IsRobot()){
+    while(so)
+    {
+        if(so->IsRobot())
+        {
             so->AsRobot()->DeleteProgressBarClone(PBC_CLONE1);
-        }else if(so->IsFlyer()){
+        }
+        else if(so->IsFlyer())
+        {
             so->AsFlyer()->DeleteProgressBarClone(PBC_CLONE1);
         }
-        
         so = so->GetNextLogic();
     }
     
     CInterface* interfaces = m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
-                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == GROUP_SELECTION_ID){
+            while(elements)
+            {
+                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == GROUP_SELECTION_ID)
+                {
                     elements = interfaces->DelElement(elements);
                     continue;
                 }
@@ -3821,45 +4406,56 @@ void CIFaceList::DeleteGroupSelection()
         }
         interfaces = interfaces->m_NextInterface;
     }
-
 }
 void CIFaceList::DeleteProgressBars(CMatrixMapStatic* from)
 {
     DTRACE();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
-    if(!player_side->GetCurGroup()){
+    if(!player_side->GetCurGroup())
+    {
         return;
     }
 
     CMatrixGroupObject* gos = player_side->GetCurGroup()->m_FirstObject;
 
-    if(!from){
+    if(!from)
+    {
         CMatrixMapStatic* so = CMatrixMapStatic::GetFirstLogic();
 
-        while(so){
-            if(so->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+        while(so)
+        {
+            if(so->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+            {
                 ((CMatrixRobotAI*)so)->DeleteProgressBarClone(PBC_CLONE1);
-            }else if(so->GetObjectType() == OBJECT_TYPE_FLYER){
+            }
+            else if(so->GetObjectType() == OBJECT_TYPE_FLYER)
+            {
                 ((CMatrixFlyer*)so)->DeleteProgressBarClone(PBC_CLONE1);
             }
             
             so = so->GetNextLogic();
         }
 
-    }else{
-        while(gos){
+    }
+    else
+    {
+        while(gos)
+        {
             if(gos->GetObject() == from)
                 break;
             gos = gos->m_NextObject;
         }
 
-        while(gos){
-            if(gos->GetObject()->IsRobot()){
+        while(gos)
+        {
+            if(gos->GetObject()->IsRobot())
+            {
                 gos->GetObject()->AsRobot()->DeleteProgressBarClone(PBC_CLONE1);
-            }else if(gos->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+            }
+            else if(gos->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+            {
                 ((CMatrixFlyer*)gos->GetObject())->DeleteProgressBarClone(PBC_CLONE1);
             }
-            
             gos = gos->m_NextObject;
         }
     }
@@ -3870,7 +4466,8 @@ void CIFaceList::CreateGroupIcons()
     DTRACE();
     DeleteGroupIcons();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
-    if(!player_side->GetCurGroup()){
+    if(!player_side->GetCurGroup())
+    {
         return;
     }
 
@@ -3883,42 +4480,42 @@ void CIFaceList::CreateGroupIcons()
 
     CIFaceImage* image = HNew(g_MatrixHeap) CIFaceImage;
 
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             float x = 225, y = 49, z = 0;
             int pos = 0;
-            for(int i = 0; i < sel_objs; i++){
-
-                if(i < 3){
-                    y = 49;
-                }else if(i < 6){
-                    y = 49*2;
-                }else if(i < 9){
-                    y = 49*3;
-                }
+            for(int i = 0; i < sel_objs; ++i)
+            {
+                if(i < 3) y = 49;
+                else if(i < 6) y = 49*2;
+                else if(i < 9) y = 49*3;
 
                 x = (float)((225 + 48*pos));
                 pos++;
 
-                if(x > (225 + 48*2)){
+                if(x > (225 + 48*2))
+                {
                     pos = 1;
                     x = 225;
                 }
-               
-                
+
                 CTextureManaged* tex = NULL;
                 bool robot = false, flyer = false;
                 float xmed = 0, ymed = 0;
 
-
-                if(so){
-                    if(so->GetObject()->IsLiveRobot()){
+                if(so)
+                {
+                    if(so->GetObject()->IsLiveRobot())
+                    {
                         tex = so->GetObject()->AsRobot()->GetMedTexture();
                         robot = true;
                     }
                 }
                 
-                if(tex){
+                if(tex)
+                {
                     image->m_Image = tex;
                     image->m_Height = 36;
                     image->m_Width = 47;
@@ -3928,7 +4525,8 @@ void CIFaceList::CreateGroupIcons()
                     image->m_Type = IFACE_IMAGE;
 
                     CIFaceStatic* s =NULL;
-                    if(robot){
+                    if(robot)
+                    {
                         image->m_TexHeight = 64;
                         image->m_TexWidth = 64;
                         image->m_xTexPos = 0;
@@ -3936,21 +4534,21 @@ void CIFaceList::CreateGroupIcons()
                         s = interfaces->CreateStaticFromImage(x, y, z, *image, true);
                     }
 
-                    if(s){
+                    if(s)
+                    {
                         s->SetVisibility(true);
                         s->m_nId = GROUP_ICONS_ID+i;
                     }
                 }
-
                 so = so->m_NextObject;
             }
-
             interfaces->SortElementsByZ();
             break;
         }
         interfaces = interfaces->m_NextInterface;
     }
-    if(image){
+    if(image)
+    {
         HDelete(CIFaceImage, image, g_MatrixHeap);
     }
 }
@@ -3963,11 +4561,15 @@ void CIFaceList::DeleteGroupIcons()
     CMatrixMapStatic* so = CMatrixMapStatic::GetFirstLogic();
 
     CInterface* interfaces = m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
-                if(elements->m_Type == IFACE_DYNAMIC_STATIC && IS_GROUP_ICON(elements->m_nId)){
+            while(elements)
+            {
+                if(elements->m_Type == IFACE_DYNAMIC_STATIC && IS_GROUP_ICON(elements->m_nId))
+                {
                     elements = interfaces->DelElement(elements);
                     continue;
                 }
@@ -3982,28 +4584,27 @@ void CIFaceList::DeleteGroupIcons()
 
 void CIFaceList::CreatePersonal()
 {
-
     DTRACE();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
-    if(!player_side->GetCurGroup()){
-        return;
-    }
-    
+    if(!player_side->GetCurGroup()) return;
     
     int selected = player_side->GetCurSelNum();
 
     CMatrixGroup* group = player_side->GetCurGroup();
     
     CMatrixGroupObject* go = group->m_FirstObject;
-    for(int i = 0;i < selected && go;i++){
+    for(int i = 0; i < selected && go; ++i)
+    {
         go = go->m_NextObject;
     }
     
     if(!go)
         return;
     CInterface* interfaces = g_IFaceList->m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             CTextureManaged* tex = NULL;
             float xbig = 0, ybig = 0;
             bool flyer = false;
@@ -4011,35 +4612,46 @@ void CIFaceList::CreatePersonal()
 
             CIFaceImage* image = HNew(g_MatrixHeap) CIFaceImage;
             
-            if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+            if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+            {
                 tex = ((CMatrixRobotAI*)go->GetObject())->GetBigTexture();
                 robot = true;
-            }/*else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
-                if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_SPEED){
+            }
+            else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+            {
+                if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_SPEED)
+                {
                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_Image;
 
                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_xTexPos;
                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_yTexPos;
-                }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_TRANSPORT){
+                }
+                else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_TRANSPORT)
+                {
                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_Image;
 
                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_xTexPos;
                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_yTexPos;
-                }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_BOMB){
+                }
+                else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_BOMB)
+                {
                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_Image;
 
                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_xTexPos;
                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_yTexPos;
-                }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_ATTACK){
+                }
+                else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_ATTACK)
+                {
                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_Image;
 
                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_xTexPos;
                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_yTexPos;
                 }
                 flyer = true;
-            }*/
+            }
             
-            if(tex){
+            if(tex)
+            {
                 image->m_Image = tex;
                 image->m_Height = 114;
                 image->m_Width = 114;
@@ -4049,34 +4661,34 @@ void CIFaceList::CreatePersonal()
                 image->m_Type = IFACE_IMAGE;
                 
                 CIFaceStatic* s = NULL;
-                /*if(flyer){
-                    image->m_TexHeight = 512;
-                    image->m_TexWidth = 512;
-                    image->m_xTexPos = xbig;
-                    image->m_yTexPos = ybig;
-                    s = interfaces->CreateStaticFromImage(81, 61, 0.0000001f, *image, false);
-                }else */if(robot){
+                if(robot)
+                {
                     image->m_TexHeight = 256;
                     image->m_TexWidth = 256;
                     image->m_xTexPos = 0;
                     image->m_yTexPos = 0;
                     s = interfaces->CreateStaticFromImage(81, 61, 0.0000001f, *image, true);
                 }
+                else if(flyer)
+                {
+                    image->m_TexHeight = 512;
+                    image->m_TexWidth = 512;
+                    image->m_xTexPos = xbig;
+                    image->m_yTexPos = ybig;
+                    s = interfaces->CreateStaticFromImage(81, 61, 0.0000001f, *image, false);
+                }
                 
-                if(s){
+                if(s)
+                {
                     void *cl, *fn;
                     FSET(ON_PRESS, s, cl, fn, g_IFaceList, CIFaceList::JumpToRobot);
                     s->SetVisibility(true);
                     s->m_nId = PERSONAL_ICON_ID;
-
-
                 }
             }
 
             interfaces->SortElementsByZ();
-            if(image){
-                HDelete(CIFaceImage, image, g_MatrixHeap);
-            }
+            if(image) HDelete(CIFaceImage, image, g_MatrixHeap);
 
             break;
         }
@@ -4092,11 +4704,15 @@ void CIFaceList::DeletePersonal()
 //icon
 
     CInterface* interfaces = m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
-                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == PERSONAL_ICON_ID){
+            while(elements)
+            {
+                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == PERSONAL_ICON_ID)
+                {
                     elements = interfaces->DelElement(elements);
                     continue;
                 }
@@ -4111,12 +4727,18 @@ void CIFaceList::DeletePersonal()
 //progress bar
     CMatrixMapStatic* s = CMatrixMapStatic::GetFirstLogic();
 
-    while(s){
-        if(s->IsRobot()){
+    while(s)
+    {
+        if(s->IsRobot())
+        {
             s->AsRobot()->DeleteProgressBarClone(PBC_CLONE2);
-        }else if(s->GetObjectType() == OBJECT_TYPE_FLYER){
+        }
+        else if(s->GetObjectType() == OBJECT_TYPE_FLYER)
+        {
             ((CMatrixFlyer*)s)->DeleteProgressBarClone(PBC_CLONE2);
-        }else if(s->IsBuilding()){
+        }
+        else if(s->IsBuilding())
+        {
             s->AsBuilding()->DeleteProgressBarClone(PBC_CLONE2);
         }
         
@@ -4132,19 +4754,24 @@ void CIFaceList::CreateOrdersGlow(CInterface *iface)
     int orders = 6;
 
     float x = 419, y = 47, z = 0.0000001f;
-    for(int i = 0; i < orders; i++){
+    for(int i = 0; i < orders; ++i)
+    {
         float pos = (i+1.0f) / 3.0f;
         
-        if(pos <= 1){
+        if(pos <= 1)
+        {
             x = (float)(419 + 49*i);
             y = 47;
-        }else if(pos > 1 && pos <= 2){
+        }
+        else if(pos > 1 && pos <= 2)
+        {
             x = (float)((419 + 49*i)-49*3);
             y = 47+49;
         }
         
         CIFaceStatic* s = iface->CreateStaticFromImage(x, y, z, *iface->FindImageByName(CWStr(IF_ORDER_GLOW)));
-        if(s){
+        if(s)
+        {
             s->SetVisibility(false);
             s->m_nId = ORDERS_GLOW_ID+i;
         }
@@ -4155,7 +4782,8 @@ void CIFaceList::ResetOrderingMode()
 {
     DTRACE();
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-    if(ps->m_ActiveObject && ps->m_ActiveObject->IsBuilding()){
+    if(ps->m_ActiveObject && ps->m_ActiveObject->IsBuilding())
+    {
         ((CMatrixBuilding*)ps->m_ActiveObject)->DeletePlacesShow();
     }
 
@@ -4170,8 +4798,10 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
         return;
 
     CInterface* ifs = m_First;
-    while(ifs){
-        if(ifs->m_strName == IF_MAIN){
+    while(ifs)
+    {
+        if(ifs->m_strName == IF_MAIN)
+        {
             CIFaceStatic* s = NULL;
             CTextureManaged* tex_med = NULL, *tex_small = NULL;
             bool flyer = false;
@@ -4182,7 +4812,8 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
             float xsmall = 0;
             float ysmall = 0;
 
-            if(object->IsRobot()){
+            if(object->IsRobot())
+            {
                 tex_med = ((CMatrixRobotAI*)object)->GetMedTexture();
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
                 tex_small = ((CMatrixRobotAI*)object)->GetSmallTexture();
@@ -4225,8 +4856,10 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_yTexPos;
                 }
                 flyer = true;
-            }*/else if(object->IsCannon()){
-                if(((CMatrixCannon*)object)->m_Num == 1){
+            }*/else if(object->IsCannon())
+            {
+                if(((CMatrixCannon*)object)->m_Num == 1)
+                {
                     tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_Image;
                     tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_Image;
 
@@ -4234,7 +4867,9 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_yTexPos;
                     xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_xTexPos;
                     ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_yTexPos;
-                }else if(((CMatrixCannon*)object)->m_Num == 2){
+                }
+                else if(((CMatrixCannon*)object)->m_Num == 2)
+                {
                     tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_Image;
                     tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_Image;
 
@@ -4242,7 +4877,9 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_yTexPos;
                     xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_xTexPos;
                     ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_yTexPos;
-                }else if(((CMatrixCannon*)object)->m_Num == 3){
+                }
+                else if(((CMatrixCannon*)object)->m_Num == 3)
+                {
                     tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_Image;
                     tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_Image;
 
@@ -4250,7 +4887,9 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_yTexPos;
                     xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_xTexPos;
                     ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_yTexPos;
-                }else if(((CMatrixCannon*)object)->m_Num == 4){
+                }
+                else if(((CMatrixCannon*)object)->m_Num == 4)
+                {
                     tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_Image;
                     tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_Image;
 
@@ -4263,8 +4902,10 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
             }
     
             CIFaceImage* image = NULL;
-            if(num == 1){
-                if(tex_med){
+            if(num == 1)
+            {
+                if(tex_med)
+                {
                     image = HNew(g_MatrixHeap) CIFaceImage;
                     image->m_Image = tex_med;
                     image->m_Height = 42;
@@ -4274,13 +4915,16 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     image->m_strName = L"";
                     image->m_Type = IFACE_IMAGE;
 
-                    if(flyer || turret){
+                    if(flyer || turret)
+                    {
                         image->m_TexHeight = 512;
                         image->m_TexWidth = 512;
                         image->m_xTexPos = xmed;
                         image->m_yTexPos = ymed;
                         s = ifs->CreateStaticFromImage(232, 55, 0, *image, false);
-                    }else if(robot){
+                    }
+                    else if(robot)
+                    {
                         image->m_xTexPos = 0;
                         image->m_yTexPos = 0;
                         image->m_TexHeight = 64;
@@ -4289,13 +4933,17 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     }/*else if(turret){
                     }*/
 
-                    if(s){
+                    if(s)
+                    {
                         s->m_nId = STACK_ICON+(num-1);
                     }
 
                 }
-            }else{
-                if(tex_small){
+            }
+            else
+            {
+                if(tex_small)
+                {
                     image = HNew(g_MatrixHeap) CIFaceImage;
                     image->m_Image = tex_small;
                     image->m_Height = 25;
@@ -4305,13 +4953,16 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     image->m_strName = L"";
                     image->m_Type = IFACE_IMAGE;
 
-                    if(flyer || turret){
+                    if(flyer || turret)
+                    {
                         image->m_TexHeight = 512;
                         image->m_TexWidth = 512;
                         image->m_xTexPos = xsmall;
                         image->m_yTexPos = ysmall;
                         s = ifs->CreateStaticFromImage(225+(((float)num-2)*31), 105, 0, *image, false);
-                    }else if(robot){
+                    }
+                    else if(robot)
+                    {
                         image->m_TexHeight = 32;
                         image->m_TexWidth = 32;
                         image->m_xTexPos = 0;
@@ -4320,21 +4971,23 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStati
                     }/*else if(turret){
                     }*/
 
-                    if(s){
+                    if(s)
+                    {
                         s->m_nId = STACK_ICON+(num-1);
                     }
                 }
             }
-            if(s){
+            if(s)
+            {
                 s->m_iParam = int(base);
                 s->SetVisibility(false);
             }
             
-            if(image){
+            if(image)
+            {
                 HDelete(CIFaceImage, image, g_MatrixHeap);
             }
 
-            
             return;
         }
         ifs = ifs->m_NextInterface;
@@ -4346,41 +4999,52 @@ void CIFaceList::DeleteStackIcon(int num, CMatrixBuilding* base)
 {
     DTRACE();
     
-    if(!base){
+    if(!base)
+    {
         return;
     }
     CInterface* ifs = m_First;
-    while(ifs){
-        if(ifs->m_strName == IF_MAIN){
+    while(ifs)
+    {
+        if(ifs->m_strName == IF_MAIN)
+        {
 
             CIFaceElement* els = ifs->m_FirstElement;
-            while(els){
-                if(IS_STACK_ICON(els->m_nId) && els->m_iParam == (int)base){
+            while(els)
+            {
+                if(IS_STACK_ICON(els->m_nId) && els->m_iParam == (int)base)
+                {
                     if(num == 1 && els->m_nId == STACK_ICON+1)
                     {
                         els = ifs->DelElement(els);
                         continue;
-                    }else if(num == 1 && els->m_nId == STACK_ICON){
+                    }
+                    else if(num == 1 && els->m_nId == STACK_ICON)
+                    {
                         els = ifs->DelElement(els);
                         continue;
-                    }else if(els->m_nId-STACK_ICON > (num-1)){
+                    }
+                    else if(els->m_nId-STACK_ICON > (num-1))
+                    {
                         els->m_nId--;
                         els->RecalcPos(els->m_xPos - 31, els->m_yPos, false);
-                    }else if(els->m_nId-STACK_ICON == (num-1)){
+                    }
+                    else if(els->m_nId-STACK_ICON == (num-1))
+                    {
                         els = ifs->DelElement(els);
                         continue;
                     }
                 }
                 els = els->m_NextElement;
             }            
-            if(num == 1 && base->m_BS.GetItemsCnt() > 1 && base->m_BS.GetTopItem()->m_NextStackItem){
+            if(num == 1 && base->m_BS.GetItemsCnt() > 1 && base->m_BS.GetTopItem()->m_NextStackItem)
+            {
                 CreateStackIcon(1, base, base->m_BS.GetTopItem()->m_NextStackItem);
             }
             return;
         }
         ifs = ifs->m_NextInterface;
     }
-    
 }
 
 void CIFaceList::ConstructorButtonsInit()
@@ -4469,7 +5133,8 @@ void CIFaceList::CreateHintButton(int x, int y, EHintButton type, DialogButtonHa
 void CIFaceList::HideHintButtons()
 {
     CIFaceElement* els = m_Hints->m_FirstElement;
-    while(els){
+    while(els)
+    {
         els->SetVisibility(false);
         els = els->m_NextElement;
     }
@@ -4482,8 +5147,10 @@ void CIFaceList::HideHintButton(EHintButton butt)
     CWStr sname(g_CacheHeap);
     HintButtonId2Name(butt, sname);
 
-    while(els){
-        if(els->m_strName == sname){
+    while(els)
+    {
+        if(els->m_strName == sname)
+        {
             els->SetVisibility(false);
         }
         els = els->m_NextElement;
@@ -4496,8 +5163,10 @@ void CIFaceList::DisableMainMenuButton(EHintButton butt)
     HintButtonId2Name(butt, sname);
 
     CIFaceElement* els = m_Hints->m_FirstElement;
-    while(els){
-        if(els->m_strName == sname){
+    while(els)
+    {
+        if(els->m_strName == sname)
+        {
             els->SetState(IFACE_DISABLED);
         }
         els = els->m_NextElement;
@@ -4511,20 +5180,25 @@ void CIFaceList::EnableMainMenuButton(EHintButton butt)
     HintButtonId2Name(butt, sname);
 
     CIFaceElement* els = m_Hints->m_FirstElement;
-    while(els){
-        if(els->m_strName == sname){
+    while(els)
+    {
+        if(els->m_strName == sname)
+        {
             if(els->GetState() == IFACE_DISABLED) els->SetState(IFACE_NORMAL);
         }
         els = els->m_NextElement;
     }
 }
-void CIFaceList::PressHintButton(EHintButton butt){
+void CIFaceList::PressHintButton(EHintButton butt)
+{
     CWStr sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement* els = m_Hints->m_FirstElement;
-    while(els){
-        if(els->m_strName == sname){
+    while(els)
+    {
+        if(els->m_strName == sname)
+        {
             els->Action(ON_UN_PRESS);
             break;
         }
@@ -4534,7 +5208,8 @@ void CIFaceList::PressHintButton(EHintButton butt){
 
 void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname)
 {
-    switch(butt){
+    switch(butt)
+    {
         case HINT_OK:
             sname = IF_HINTS_OK;
             break;
@@ -4563,11 +5238,20 @@ void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname)
 }
 
 
-bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &posx, int &posy, int width, int height, const CWStr &element_name)
+bool CIFaceList::CorrectCoordinates(
+    int screen_width,
+    int screen_height,
+    int &posx,
+    int &posy,
+    int width,
+    int height,
+    const CWStr &element_name
+)
 {
     if(
-        element_name == L"buro" || 
-        element_name == L"buca" ||
+        element_name == IF_BUILD_RO ||
+        element_name == IF_BUILD_CA ||
+        element_name == IF_BUILD_HE ||
         element_name == IF_ORDER_STOP ||
         element_name == IF_ORDER_MOVE ||
         element_name == IF_ORDER_PATROL ||
@@ -4588,13 +5272,21 @@ bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &po
         element_name == IF_BUILD_TUR2 ||
         element_name == IF_BUILD_TUR3 ||
         element_name == IF_BUILD_TUR4 ||
+        element_name == IF_FLYER_BIG1 ||
+        element_name == IF_FLYER_BIG2 ||
+        element_name == IF_FLYER_BIG3 ||
+        element_name == IF_FLYER_BIG4 ||
         element_name == IF_MAIN_SELFBOMB ||
         element_name == IF_CALL_FROM_HELL
-    ){
+    )
+    {
         int needx = 0;
-        if(element_name == IF_LEAVE_ROBOT || element_name == IF_MAIN_SELFBOMB){
+        if(element_name == IF_LEAVE_ROBOT || element_name == IF_MAIN_SELFBOMB)
+        {
             needx = Float2Int(m_MainX)+354-width;
-        }else{
+        }
+        else
+        {
             needx = Float2Int(m_MainX)+554-width;
         }
         
@@ -4605,43 +5297,54 @@ bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &po
         if(posy > needy) posy -= (posy-needy);
         if(posy < needy) posy += (needy-posy);
         
-    }else if(element_name == IF_BASE_HISTORY_RIGHT || element_name == IF_BASE_HISTORY_LEFT || element_name == IF_BASE_COUNTHZ){
+    }
+    else if(element_name == IF_BASE_HISTORY_RIGHT || element_name == IF_BASE_HISTORY_LEFT || element_name == IF_BASE_COUNTHZ)
+    {
         posx -= Float2Int(width / 2.0f);
         posy -= height;
     }
 
     bool corx=false;
-    if(posx + width + HINT_OTSTUP > screen_width){
+    if(posx + width + HINT_OTSTUP > screen_width)
+    {
         corx=true;
         int val = posx+width+HINT_OTSTUP-screen_width;
         posx -= val;
     }
     
-    if(corx==false){
-        if(posx < 0){
+    if(corx==false)
+    {
+        if(posx < 0)
+        {
             posx = HINT_OTSTUP;
         }
-    }else{
+    }
+    else
+    {
         //eto znachit - chto hint nel'zya pokazyvat' - on vylazit so vseh shelei
         return false;
     }
 
     bool cory=false;
-    if(posy + height + HINT_OTSTUP > screen_height){
+    if(posy + height + HINT_OTSTUP > screen_height)
+    {
         cory=true;
         int val = posy+height+HINT_OTSTUP-screen_height;
         posy -= val;
     }
     
-    if(cory==false){
-        if(posy < 0){
+    if(cory == false)
+    {
+        if(posy < 0)
+        {
             posy = HINT_OTSTUP;
         }
-    }else{
+    }
+    else
+    {
         //eto znachit - chto hint nel'zya pokazyvat' - on vylazit so vseh shelei
         return false;
     }
-
 
     return true;
 }
@@ -4651,98 +5354,137 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name)
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
-    if(element_name == L"thz"){
+    if(element_name == L"thz")
+    {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, TITAN);
         repl->ParSetAdd(L"_titan_income", CWStr(base_i+fa_i, g_CacheHeap));
-    }else if(element_name == L"enhz1" || element_name == L"enhz2"){
+    }
+    else if(element_name == L"enhz1" || element_name == L"enhz2")
+    {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ENERGY);
         repl->ParSetAdd(L"_energy_income", CWStr(base_i+fa_i, g_CacheHeap));
-    }else if(element_name == L"elhz"){
+    }
+    else if(element_name == L"elhz")
+    {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ELECTRONICS);
         repl->ParSetAdd(L"_electronics_income", CWStr(base_i+fa_i, g_CacheHeap));
-    }else if(element_name == L"phz"){
+    }
+    else if(element_name == L"phz")
+    {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, PLASMA);
         repl->ParSetAdd(L"_plasma_income", CWStr(base_i+fa_i, g_CacheHeap));
-    }else if(element_name == L"rvhz"){
+    }
+    else if(element_name == L"rvhz")
+    {
         repl->ParSetAdd(L"_total_robots", CWStr(ps->GetRobotsCnt(), g_CacheHeap));
         repl->ParSetAdd(L"_max_robots", CWStr(ps->GetMaxSideRobots(), g_CacheHeap));
-    }else if(element_name == IF_BUILD_TUR1){
+    }
+    else if(element_name == IF_BUILD_TUR1)
+    {
         int damage = Float2Int(1.0f /  (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON0)] / 1000.0f)) * g_Config.m_RobotDamages[Weap2Index(WEAPON_CANNON0)].damage;
         repl->ParSetAdd(L"_turret_name", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Name"));
         repl->ParSetAdd(L"_turret_range", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Range"));
         repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[0].m_Hitpoint/10));
         repl->ParSetAdd(L"_turret_damage", CWStr(damage/10, g_CacheHeap)+L"+"+CWStr(damage/10, g_CacheHeap));        
 
-
-        for(int i = 0; i < MAX_RESOURCES; i++){
-            if(g_Config.m_CannonsProps[0].m_Resources[i]){
+        for(int i = 0; i < MAX_RESOURCES; ++i)
+        {
+            if(g_Config.m_CannonsProps[0].m_Resources[i])
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), CWStr(g_Config.m_CannonsProps[0].m_Resources[i],g_CacheHeap));
-            }else{
+            }
+            else
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), L"");
             }
         }
-    }else if(element_name == IF_BUILD_TUR2){
+    }
+    else if(element_name == IF_BUILD_TUR2)
+    {
         int damage = Float2Int(1.0f /  (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON1)] / 1000.0f)) * g_Config.m_RobotDamages[Weap2Index(WEAPON_CANNON1)].damage;
         repl->ParSetAdd(L"_turret_name", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Name"));
         repl->ParSetAdd(L"_turret_range", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Range"));
         repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[1].m_Hitpoint/10));
         repl->ParSetAdd(L"_turret_damage", CWStr(damage/10, g_CacheHeap));
-        for(int i = 0; i < MAX_RESOURCES; i++){
-            if(g_Config.m_CannonsProps[1].m_Resources[i]){
+        for(int i = 0; i < MAX_RESOURCES; ++i)
+        {
+            if(g_Config.m_CannonsProps[1].m_Resources[i])
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), CWStr(g_Config.m_CannonsProps[1].m_Resources[i],g_CacheHeap));
-            }else{
+            }
+            else
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), L"");
             }
         }
-    }else if(element_name == IF_BUILD_TUR3){
+    }
+    else if(element_name == IF_BUILD_TUR3)
+    {
         int damage = Float2Int(1.0f /  (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON2)] / 1000.0f)) * g_Config.m_RobotDamages[Weap2Index(WEAPON_CANNON2)].damage;
         repl->ParSetAdd(L"_turret_name", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Name"));
         repl->ParSetAdd(L"_turret_range", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Range"));
         repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[2].m_Hitpoint/10));
         repl->ParSetAdd(L"_turret_damage", CWStr(damage/10, g_CacheHeap));
 
-        for(int i = 0; i < MAX_RESOURCES; i++){
-            if(g_Config.m_CannonsProps[2].m_Resources[i]){
+        for(int i = 0; i < MAX_RESOURCES; ++i)
+        {
+            if(g_Config.m_CannonsProps[2].m_Resources[i])
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), CWStr(g_Config.m_CannonsProps[2].m_Resources[i],g_CacheHeap));
-            }else{
+            }
+            else
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), L"");
             }
         }
-    }else if(element_name == IF_BUILD_TUR4){
+    }
+    else if(element_name == IF_BUILD_TUR4)
+    {
         int damage = Float2Int(1.0f /  (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON3)] / 1000.0f)) * g_Config.m_RobotDamages[Weap2Index(WEAPON_CANNON3)].damage;
         repl->ParSetAdd(L"_turret_name", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Name"));
         repl->ParSetAdd(L"_turret_range", g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Range"));
         repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[3].m_Hitpoint/10));
         repl->ParSetAdd(L"_turret_damage", CWStr(damage/10, g_CacheHeap)+L"+"+CWStr(damage/10, g_CacheHeap));
 
-
-        for(int i = 0; i < MAX_RESOURCES; i++){
-            if(g_Config.m_CannonsProps[3].m_Resources[i]){
+        for(int i = 0; i < MAX_RESOURCES; ++i)
+        {
+            if(g_Config.m_CannonsProps[3].m_Resources[i])
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), CWStr(g_Config.m_CannonsProps[3].m_Resources[i],g_CacheHeap));
-            }else{
+            }
+            else
+            {
                 repl->ParSetAdd(L"_turret_res"+CWStr(i+1, g_CacheHeap), L"");
             }
         }
-    }else if(element_name == IF_CALL_FROM_HELL){
+    }
+    else if(element_name == IF_CALL_FROM_HELL)
+    {
         repl->ParSetAdd(L"_ch_cant", L"");
         repl->ParSetAdd(L"_ch_can", L"");
         repl->ParSetAdd(L"_ch_time_min", L"");
         repl->ParSetAdd(L"_ch_time_sec", L"");
 
-        if(g_MatrixMap->MaintenanceDisabled()){
+        if(g_MatrixMap->MaintenanceDisabled())
+        {
             repl->ParSetAdd(L"_ch_cant", L"1");
-        }else{
-            if(g_MatrixMap->BeforeMaintenanceTime()){
+        }
+        else
+        {
+            if(g_MatrixMap->BeforeMaintenanceTime())
+            {
                 int milliseconds = g_MatrixMap->BeforeMaintenanceTime();
                 int minutes = milliseconds / 60000;
                 int seconds = milliseconds / 1000 - minutes*60;
                 repl->ParSetAdd(L"_ch_time_min", CWStr((minutes > 0 ? minutes : 0), g_CacheHeap));
                 repl->ParSetAdd(L"_ch_time_sec", CWStr((seconds > 0 ? seconds : 0), g_CacheHeap));
-            }else{
+            }
+            else
+            {
                 repl->ParSetAdd(L"_ch_can", L"1");
             }
         }
@@ -4751,8 +5493,10 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name)
 
 bool CIFaceList::CheckShowHintLogic(const CWStr &element_name)
 {
-    if(element_name == IF_BASE_COUNTHZ){
-        if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)){
+    if(element_name == IF_BASE_COUNTHZ)
+    {
+        if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
+        {
             return false;
         }
     }
@@ -4763,7 +5507,8 @@ void __stdcall CIFaceList::JumpToBuilding(void *o)
 {
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
-    if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject && ps->m_ActiveObject->IsBuilding()){
+    if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject && ps->m_ActiveObject->IsBuilding())
+    {
         D3DXVECTOR2 tgt(ps->m_ActiveObject->GetGeoCenter().x, ps->m_ActiveObject->GetGeoCenter().y);
         g_MatrixMap->m_Camera.SetXYStrategy(tgt);
     }
@@ -4791,29 +5536,47 @@ void CIFaceList::CreateDynamicTurrets(CMatrixBuilding* building)
     CInterface* interfaces = m_First;
 
     CIFaceImage* image = NULL/*HNew(g_MatrixHeap) CIFaceImage*/;
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
-            for(int i = 0; i < tur_sheme; i++){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
+            for(int i = 0; i < tur_sheme; ++i)
+            {
                 image = NULL;
-                if(building->m_TurretsPlaces[i].m_CannonType == 1){
+                if(building->m_TurretsPlaces[i].m_CannonType == 1)
+                {
                     image = interfaces->FindImageByName(CWStr(IF_BT1_ICON, g_CacheHeap));
-                }else if(building->m_TurretsPlaces[i].m_CannonType == 2){
+                }
+                else if(building->m_TurretsPlaces[i].m_CannonType == 2)
+                {
                     image = interfaces->FindImageByName(CWStr(IF_BT2_ICON, g_CacheHeap));
-                }else if(building->m_TurretsPlaces[i].m_CannonType == 3){
+                }
+                else if(building->m_TurretsPlaces[i].m_CannonType == 3)
+                {
                     image = interfaces->FindImageByName(CWStr(IF_BT3_ICON, g_CacheHeap));
-                }else if(building->m_TurretsPlaces[i].m_CannonType == 4){
+                }
+                else if(building->m_TurretsPlaces[i].m_CannonType == 4)
+                {
                     image = interfaces->FindImageByName(CWStr(IF_BT4_ICON, g_CacheHeap));
                 }
-                if(image){
+                if(image)
+                {
                     
                     float x=0;
-                    if(tur_sheme == 1){
+                    if(tur_sheme == 1)
+                    {
                         x = (float)g_IFaceList->m_DynamicTX[i];
-                    }else if(tur_sheme == 2){
+                    }
+                    else if(tur_sheme == 2)
+                    {
                         x = (float)g_IFaceList->m_DynamicTX[1+i];
-                    }else if(tur_sheme == 3){
+                    }
+                    else if(tur_sheme == 3)
+                    {
                         x = (float)g_IFaceList->m_DynamicTX[3+i];
-                    }else if(tur_sheme == 4){
+                    }
+                    else if(tur_sheme == 4)
+                    {
                         x = (float)g_IFaceList->m_DynamicTX[6+i];
                     }
                     CIFaceStatic* s = interfaces->CreateStaticFromImage(x,(float)g_IFaceList->m_DynamicTY,0.000001f, *image);

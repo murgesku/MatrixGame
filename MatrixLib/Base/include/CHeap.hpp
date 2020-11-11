@@ -176,7 +176,8 @@ __inline int   CheckValidPtr(const void *ptr)
 }
 
 
-class BASE_API CHeap : public CMain {
+class BASE_API CHeap : public CMain
+{
 	private:
 		HANDLE m_Heap;
 		dword m_Flags;
@@ -188,12 +189,12 @@ class BASE_API CHeap : public CMain {
 #endif
 
 		CHeap(void);
-		explicit CHeap(int initsize,int maxsize=0,dword flags=0);
+		explicit CHeap(int initsize, int maxsize=0, dword flags=0);
 		~CHeap();
 
 		void Clear(void);
 
-		void Create(int initsize=65536,int maxsize=0,dword flags=0); // HEAP_NO_SERIALIZE
+		void Create(int initsize=65536, int maxsize=0, dword flags=0); // HEAP_NO_SERIALIZE
 
         void AllocationError(int zn);
 
@@ -268,7 +269,8 @@ inline void * CHeap::AllocEx(void * buf, uint size, const char * file, int line)
 
 
         h->Release();
-    } else
+    }
+    else
     {
         //strcat(bb, "Before NULL, ");
     }
@@ -284,7 +286,11 @@ inline void * CHeap::AllocClearEx(void * buf, uint size, const char * file, int 
 {
     DTRACE();
     SMemHeader *h = NULL;
-    if (buf != NULL) { h = SMemHeader::CalcBegin(buf); h->Release();  }
+    if (buf != NULL)
+    {
+        h = SMemHeader::CalcBegin(buf);
+        h->Release();
+    }
     uint sz = SMemHeader::CalcSize(size);
     h = (SMemHeader*)AllocClearEx(h, sz);
     return h->Init(sz, file,line);

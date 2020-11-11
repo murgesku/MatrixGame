@@ -87,7 +87,6 @@ enum ECaptureStatus
     CAPTURE_INPROGRESS, // в процессе
     CAPTURE_TOOFAR,     // робот далеко. подъедь ближе
     CAPTURE_BUSY,       // база занята делами. обратитесь позже
-
 };
 
 struct STrueColor
@@ -318,7 +317,6 @@ public:
     int GetPlacesForTurrets(CPoint * places);
     void CreatePlacesShow();
     void DeletePlacesShow();
-
 };
 
 __forceinline bool CMatrixMapStatic::IsBase(void) const

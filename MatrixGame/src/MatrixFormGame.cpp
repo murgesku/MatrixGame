@@ -1305,90 +1305,128 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 g_IFaceList->LiveRobot();
                 return;
             }
-        } else
+        }
+        else
         {
             CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-            if(!FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE)/*!IS_PREORDERING_NOSELECT*/){
+            if(!FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE)/*!IS_PREORDERING_NOSELECT*/)
+            {
                 //Если мы не в режиме приказа
 
-                if(ps->GetCurGroup() && (ps->m_CurrSel == ROBOT_SELECTED || ps->m_CurrSel == GROUP_SELECTED)){
+                if(ps->GetCurGroup() && (ps->m_CurrSel == ROBOT_SELECTED || ps->m_CurrSel == GROUP_SELECTED))
+                {
                     //Стратегический режим - выбрана группа
-                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000)==0x8000)){
+                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000)==0x8000))
+                    {
                         //"Esc", "Пробел","Enter" - Войти и выйти из робота.
                         CMatrixMapStatic* obj = ps->GetCurGroup()->GetObjectByN(ps->GetCurSelNum());
                         ps->GetCurSelGroup()->RemoveAll();
                         ps->CreateGroupFromCurrent(obj);
                         g_IFaceList->EnterRobot(false);
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_ATTACK]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_ATTACK]) & 0x8000)==0x8000))
+                    {
                         //a"U"to attack - Программа атаки.
-                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON)){
+                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON))
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
-                        }else{
+                        }
+                        else
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             SETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON);
                             ps->PGOrderAutoAttack(ps->SelGroupToLogicGroup());
                         }
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_CAPTURE]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_CAPTURE]) & 0x8000)==0x8000))
+                    {
                         //"C"apture - Программа захвата.
-                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON)){
+                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON))
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
-                        }else{
+                        }
+                        else
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             SETFLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON);
                             ps->PGOrderAutoCapture(ps->SelGroupToLogicGroup());
                         }
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_DEFEND]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_DEFEND]) & 0x8000)==0x8000))
+                    {
                         //"D"efender - Программа Охранять Protect
-                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON)){
+                        if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON))
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             ps->PGOrderStop(ps->SelGroupToLogicGroup());
-                        }else{
+                        }
+                        else
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
                             SETFLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON);
                             ps->PGOrderAutoDefence(ps->SelGroupToLogicGroup());
                         }
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_MOVE]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_MOVE]) & 0x8000)==0x8000))
+                    {
                         //"M"ove - Двигаться
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_STOP]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_STOP]) & 0x8000)==0x8000))
+                    {
                         //"S"top - Стоять
                         ps->PGOrderStop(ps->SelGroupToLogicGroup());
                         ps->SelectedGroupBreakOrders();
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CAPTURE]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CAPTURE]) & 0x8000)==0x8000))
+                    {
                         //Ta"K"e - Захватить
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_PATROL]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_PATROL]) & 0x8000)==0x8000))
+                    {
                         //"P"atrol - Патрулировать
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_PATROL);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
-                    }else if(ps->GetCurGroup()->GetBombersCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_EXPLODE]) & 0x8000)==0x8000)){
+                    }
+                    else if(ps->GetCurGroup()->GetBombersCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_EXPLODE]) & 0x8000)==0x8000))
+                    {
                         //"E"xplode - Взорвать
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
-                    }else if(ps->GetCurGroup()->GetRepairsCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_REPAIR]) & 0x8000)==0x8000)){
+                    }
+                    else if(ps->GetCurGroup()->GetRepairsCnt() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_REPAIR]) & 0x8000)==0x8000))
+                    {
                         //"R"epair - Чинить
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_REPAIR);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ATTACK]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ATTACK]) & 0x8000)==0x8000))
+                    {
                         //"A"ttack
                         SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE);
                         SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);        
                     }
-                }else if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED){
+                }
+                else if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED)
+                {
                     //Стратегический режим - выбрана База\Завод                    
                     CMatrixBuilding* bld = (CMatrixBuilding*)ps->m_ActiveObject;
                     
-                    if(bld->IsBase() &&  !ps->m_ConstructPanel->IsActive() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000)==0x8000)){
+                    if(bld->IsBase() &&  !ps->m_ConstructPanel->IsActive() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000)==0x8000))
+                    {
                         //"B"ase - Вход в постройку робота
                         g_IFaceList->m_RCountControl->Reset();
                         g_IFaceList->m_RCountControl->CheckUp();
                         ps->m_ConstructPanel->ActivateAndSelect();
 
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000)==0x8000))
+                    {
                         //"T"urrel - Переход в меню выбора турелей
                         CPoint pl[MAX_PLACES];
                         bool cant_build_tu = false;
@@ -1399,26 +1437,30 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                            ps->IsEnoughResources(g_Config.m_CannonsProps[3].m_Resources)) && 
                            (bld->GetPlacesForTurrets(pl) > 0) &&
                            (!bld->m_BS.IsMaxItems())
-                           ){
-                                ps->m_ConstructPanel->ResetGroupNClose();
-                                SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
-                                SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET);
+                           )
+                        {
+                            ps->m_ConstructPanel->ResetGroupNClose();
+                            SETFLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE);
+                            SETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET);
 
-                                CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-                                for (;ms;ms = ms->GetNextLogic())
+                            CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
+                            for (; ms; ms = ms->GetNextLogic())
+                            {
+                                if (ms == ps->m_ActiveObject && ms->IsLiveBuilding() && ms->AsBuilding()->m_Side == PLAYER_SIDE)
                                 {
-                                    if (ms == ps->m_ActiveObject && ms->IsLiveBuilding() && ms->AsBuilding()->m_Side == PLAYER_SIDE)
-                                    {
-                                        ms->AsBuilding()->CreatePlacesShow();
-                                        break;
-                                    }
+                                    ms->AsBuilding()->CreatePlacesShow();
+                                    break;
                                 }
-
                             }
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_HELP]) & 0x8000)==0x8000)){
+                        }
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_HELP]) & 0x8000)==0x8000))
+                    {
                         //"Н"elp - Вызов подкрепления
                         bld->Maintenance();
-                    }else if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->IsActive() && ps->m_ConstructPanel->m_FocusedElement){
+                    }
+                    else if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->IsActive() && ps->m_ConstructPanel->m_FocusedElement)
+                    {
                         int key = 0;
                         if(scan != 11) key = scan - 1;
                         
@@ -1437,85 +1479,104 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         //RUK_WEAPON_ELECTRIC        = 9,  7
                         //RUK_WEAPON_REPAIR          = 10, 8
 
-                        if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON1){
+                        if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON1)
+                        {
                             pilon = 0;
                             type = MRT_WEAPON;
-                        }else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON2){
+                        }
+                        else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON2)
+                        {
                             pilon = 1;
                             type = MRT_WEAPON;
-                        }else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON3){
+                        }
+                        else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON3)
+                        {
                             pilon = 2;
                             type = MRT_WEAPON;
-                        }else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON4){
+                        }
+                        else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON4)
+                        {
                             pilon = 3;
                             type = MRT_WEAPON;
-                        }else if(key <= 2 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON5){
+                        }
+                        else if(key <= 2 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON5)
+                        {
                             pilon = 4;
                             type = MRT_WEAPON;
 
                             kind = ERobotUnitKind(key);
                             
-                            if(key == 1){
-                                kind = RUK_WEAPON_MORTAR;
-                            }else if(key == 2){
-                                kind = RUK_WEAPON_BOMB;
-                            }
-                        }else if(key <= 4 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HEAD){
+                            if(key == 1) kind = RUK_WEAPON_MORTAR;
+                            else if(key == 2) kind = RUK_WEAPON_BOMB;
+                        }
+                        else if(key <= 4 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HEAD)
+                        {
                             pilon = 0;
                             type = MRT_HEAD;
 
                             kind = ERobotUnitKind(key);
-                        }else if(key && key <= 6 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HULL){
+                        }
+                        else if(key && key <= 6 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HULL)
+                        {
                             pilon = 0;
                             type = MRT_ARMOR;
 
                             if(key == 1) kind = ERobotUnitKind(6);
                             else kind = ERobotUnitKind(key-1);
-
-                        }else if(key && key <= 5 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_CHASSIS){
+                        }
+                        else if(key && key <= 5 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_CHASSIS)
+                        {
                             pilon = 0;
                             type = MRT_CHASSIS;
                             kind = ERobotUnitKind(key);
                         }
                         
-                        if(key <= 8 && type == MRT_WEAPON && pilon < 4){
-                            if(key == 0){
-                                kind = ERobotUnitKind(0);
-                            }else if(key == 5){
-                                kind = ERobotUnitKind(key+1);
-                            }else if(key > 5){
-                                kind = ERobotUnitKind(key+2);
-                            }else{
-                                kind = ERobotUnitKind(key);
-                            }
+                        if(key <= 8 && type == MRT_WEAPON && pilon < 4)
+                        {
+                            if(key == 0) kind = ERobotUnitKind(0);
+                            else if(key == 5) kind = ERobotUnitKind(key+1);
+                            else if(key > 5) kind = ERobotUnitKind(key+2);
+                            else kind = ERobotUnitKind(key);
                         }
+
                         if(int(type)) ps->m_Constructor->SuperDjeans(type, kind, pilon);
                     }
                 }
-            }else{
+            }
+            else
+            {
                 //Если мы в режиме приказа или постройки пушки
-
-                if(FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE) && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET) && ps->m_CurrentAction != BUILDING_TURRET){
+                if(FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE) && FLAG(g_IFaceList->m_IfListFlags, PREORDER_BUILD_TURRET) && ps->m_CurrentAction != BUILDING_TURRET)
+                {
                     //player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources)
                     //Меню выбора турелей:
-                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_CANNON]) & 0x8000)==0x8000)){
+                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_CANNON]) & 0x8000) == 0x8000))
+                    {
                         //"C"annon - Турель
                         g_IFaceList->BeginBuildTurret(1);
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_GUN]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_GUN]) & 0x8000) == 0x8000))
+                    {
                         //"G"un - Пушка
                         g_IFaceList->BeginBuildTurret(2);
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_LASER]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_LASER]) & 0x8000) == 0x8000))
+                    {
                         //"L"azer - Лазер
                         g_IFaceList->BeginBuildTurret(3);
-                    }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_ROCKET]) & 0x8000)==0x8000)){
+                    }
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_ROCKET]) & 0x8000) == 0x8000))
+                    {
                         //"R"ocket - Ракетница
                         g_IFaceList->BeginBuildTurret(4);
                     }
                 }
 
-                if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000)==0x8000)){
+                if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000) == 0x8000))
+                {
                     //Канцел
-                    if(ps->m_CurrentAction == BUILDING_TURRET){
+                    if(ps->m_CurrentAction == BUILDING_TURRET)
+                    {
                         ps->m_CannonForBuild.Delete();
                         ps->m_CurrentAction = NOTHING_SPECIAL;
                     }
@@ -1523,22 +1584,31 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 }
             }
             //Общее для стратегического режима
-            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMIN]) & 0x8000)==0x8000)){
+            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMIN]) & 0x8000) == 0x8000))
+            {
                 //приблизить карту
                 g_MatrixMap->m_Minimap.ButtonZoomIn(NULL);
-            }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMOUT]) & 0x8000)==0x8000)){
+            }
+            else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMOUT]) & 0x8000) == 0x8000))
+            {
                 //отдалить карту
                 g_MatrixMap->m_Minimap.ButtonZoomOut(NULL);
-            }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH1]) & 0x8000)==0x8000)){
+            }
+            else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH1]) & 0x8000) == 0x8000))
+            {
                 //","
                 CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
-                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot()){
+                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot())
+                {
                     obj = ps->GetCurGroup()->m_FirstObject->GetObject()->GetPrevLogic();
                 }
                 int cnt=0;
-                while(1){
-                    if(obj){
-                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE){
+                while(1)
+                {
+                    if(obj)
+                    {
+                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE)
+                        {
                             ps->GetCurSelGroup()->RemoveAll();
                             ps->CreateGroupFromCurrent(obj);
                             ps->Select(ROBOT, obj);
@@ -1546,24 +1616,33 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             return;
                         }
                         obj = obj->GetPrevLogic();
-                    }else{
-                        if(cnt > 0){
+                    }
+                    else
+                    {
+                        if(cnt > 0)
+                        {
                             return;
                         }
                         cnt++;
                         obj = CMatrixMapStatic::GetLastLogic();
                     }
                 }
-            }else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH2]) & 0x8000)==0x8000)){
+            }
+            else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH2]) & 0x8000)==0x8000))
+            {
                 //"." 
                 CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
-                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot()){
+                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot())
+                {
                     obj = ps->GetCurGroup()->m_FirstObject->GetObject()->GetNextLogic();
                 }
                 int cnt=0;
-                while(1){
-                    if(obj){
-                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE){
+                while(1)
+                {
+                    if(obj)
+                    {
+                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE)
+                        {
                             ps->GetCurSelGroup()->RemoveAll();
                             ps->CreateGroupFromCurrent(obj);
                             ps->Select(ROBOT, obj);
@@ -1571,8 +1650,11 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             return;
                         }
                         obj = obj->GetNextLogic();
-                    }else{
-                        if(cnt > 0){
+                    }
+                    else
+                    {
+                        if(cnt > 0)
+                        {
                             return;
                         }
                         cnt++;
@@ -1583,62 +1665,83 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         }
 
 
-
-        
-        if(scan > 1 && scan < 11 && !ps->IsArcadeMode() && !ps->m_ConstructPanel->IsActive()){
+        if(scan > 1 && scan < 11 && !ps->IsArcadeMode() && !ps->m_ConstructPanel->IsActive())
+        {
             
-            if(CMultiSelection::m_GameSelection){
+            if(CMultiSelection::m_GameSelection)
+            {
                 CMultiSelection::m_GameSelection->End(false);
             }
 
-            if(ps->m_CurrentAction == BUILDING_TURRET){
+            if(ps->m_CurrentAction == BUILDING_TURRET)
+            {
                 ps->m_CannonForBuild.Delete();
                 ps->m_CurrentAction = NOTHING_SPECIAL;
             }
             
             g_IFaceList->ResetOrderingMode();
 
-            if(fCtrl){
+            if(fCtrl)
+            {
                 CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
-                while(o){
-                    if(o->IsRobot() && ((CMatrixRobotAI*)o)->GetCtrlGroup() == scan){
+                while(o)
+                {
+                    if(o->IsRobot() && ((CMatrixRobotAI*)o)->GetCtrlGroup() == scan)
+                    {
                         ((CMatrixRobotAI*)o)->SetCtrlGroup(0);
-                    }else if(o->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)o)->GetCtrlGroup() == scan){
+                    }
+                    else if(o->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)o)->GetCtrlGroup() == scan)
+                    {
                         ((CMatrixFlyer*)o)->SetCtrlGroup(0);
                     }
                     o = o->GetNextLogic();
                 }
 
-                if(ps->GetCurGroup()){
+                if(ps->GetCurGroup())
+                {
                     CMatrixGroupObject* go = ps->GetCurGroup()->m_FirstObject;
-                    while(go){
-                        if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+                    while(go)
+                    {
+                        if(go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                        {
                             ((CMatrixRobotAI*)go->GetObject())->SetCtrlGroup(scan);
-                        }else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+                        }
+                        else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+                        {
                             ((CMatrixFlyer*)go->GetObject())->SetCtrlGroup(scan);
                         }
                         go = go->m_NextObject;
                     }
                 }
-            }else{
+            }
+            else
+            {
                 CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
                 
                 bool prev_unselected = false;
-                if(!ps->GetCurGroup()){
+                if(!ps->GetCurGroup())
+                {
                     prev_unselected = true;
-                }else if(ps->GetCurGroup() && m_LastScans[MAX_SCANS - 1].scan == scan && m_LastScans[MAX_SCANS - 2].scan == scan && (m_LastScans[MAX_SCANS - 1].time - m_LastScans[MAX_SCANS - 2].time) < DOUBLESCAN_TIME_DELTA){
+                }
+                else if(ps->GetCurGroup() && m_LastScans[MAX_SCANS - 1].scan == scan && m_LastScans[MAX_SCANS - 2].scan == scan && (m_LastScans[MAX_SCANS - 1].time - m_LastScans[MAX_SCANS - 2].time) < DOUBLESCAN_TIME_DELTA)
+                {
                     CMatrixMapStatic* object = NULL;
                     if(ps->GetCurGroup()->m_FirstObject)   object = ps->GetCurGroup()->m_FirstObject->GetObject();
                     
-                    if(object && object->GetObjectType() == OBJECT_TYPE_ROBOTAI){
-                        if(((CMatrixRobotAI*)object)->GetCtrlGroup() == scan){
+                    if(object && object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                    {
+                        if(((CMatrixRobotAI*)object)->GetCtrlGroup() == scan)
+                        {
                             //set camera to group position. out
                             
                             g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x, object->GetGeoCenter().y+100.0f));
                             return;
                         }
-                    }else if(object && object->GetObjectType() == OBJECT_TYPE_FLYER){
-                        if(((CMatrixFlyer*)object)->GetCtrlGroup() == scan){
+                    }
+                    else if(object && object->GetObjectType() == OBJECT_TYPE_FLYER)
+                    {
+                        if(((CMatrixFlyer*)object)->GetCtrlGroup() == scan)
+                        {
                             //set camera to group position. out
                             g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x, object->GetGeoCenter().y+100.0f));
                             return;
@@ -1646,10 +1749,14 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     }
                 }
 
-                while(o){
-                    if(o->GetSide() == PLAYER_SIDE){
-                        if(o->IsLiveRobot() && o->AsRobot()->GetCtrlGroup() == scan){
-                            if(!prev_unselected){
+                while(o)
+                {
+                    if(o->GetSide() == PLAYER_SIDE)
+                    {
+                        if(o->IsLiveRobot() && o->AsRobot()->GetCtrlGroup() == scan)
+                        {
+                            if(!prev_unselected)
+                            {
                                 prev_unselected = true;
                                 ps->SelectedGroupUnselect();
                                 ps->GetCurSelGroup()->RemoveAll();

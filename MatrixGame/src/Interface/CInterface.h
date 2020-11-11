@@ -43,6 +43,9 @@ class CMatrixHint;
 #define MINIMAP_BUTTON_DOWN         SETBIT(7)
 #define MINIMAP_ENABLE_DRAG         SETBIT(8)
 #define POPUP_MENU_ACTIVE           SETBIT(9)
+//#define TURRET_BUILD_MODE           SETBIT(10)
+//#define FLYER_BUILD_MODE            SETBIT(11)
+//Оригинальные номера пересекались с уже существующими
 //#define TURRET_BUILD_MODE           SETBIT(7)
 //#define FLYER_BUILD_MODE            SETBIT(8)
 //
