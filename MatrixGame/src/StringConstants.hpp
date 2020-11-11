@@ -711,7 +711,6 @@
 #define IF_RWGHT_LABEL                          L"rwght"
 #define IF_RSPEED_LABEL                         L"rspeed"
 
-
 #define IF_DOTLINE                              L"dotln"
 #define IF_OVER_HEAT                            L"ovhe"
 #define IF_WEAPON_ROCKET_ON                     L"wron"
@@ -797,6 +796,11 @@
 #define IF_BUILD_TUR2                           L"tur2"
 #define IF_BUILD_TUR3                           L"tur3"
 #define IF_BUILD_TUR4                           L"tur4"
+
+#define IF_FLYER_BIG1                           L"hel1"
+#define IF_FLYER_BIG2                           L"hel2"
+#define IF_FLYER_BIG3                           L"hel3"
+#define IF_FLYER_BIG4                           L"hel4"
 
 #define IF_TURRETS_MAX                          L"turmax"
 #define IF_TURRETS_HAVE                         L"turhav"

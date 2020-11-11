@@ -74,7 +74,6 @@ enum EFlyerKind
     FLYER_ATTACK = 1,
     FLYER_TRANSPORT = 2,
     FLYER_BOMB = 3,
-
 };
 
 class CMatrixFlyer;
@@ -165,8 +164,6 @@ enum EFlyerOrder
 {
     FO_GIVE_BOT,
     FO_FIRE,
-
-
 };
 
 
@@ -275,8 +272,8 @@ class CMatrixFlyer : public CMatrixMapStatic
 
     void    CalcMatrix(void);
     void    CalcBodyMatrix(void);
-    //void    LogicTaktArcade(SFlyerTaktData &td);
-    //void    LogicTaktStrategy(SFlyerTaktData &td);
+    void    LogicTaktArcade(SFlyerTaktData &td);
+    void    LogicTaktStrategy(SFlyerTaktData &td);
     bool    LogicTaktOrder(SFlyerTaktData &td);
 
 

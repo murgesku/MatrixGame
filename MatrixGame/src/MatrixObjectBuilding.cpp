@@ -1271,8 +1271,10 @@ void CMatrixBuilding::Maintenance(void)
     int cx=Float2Int(m_Pos.x*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
     int cy=Float2Int(m_Pos.y*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
 
-    if(m_Kind==0) {
-        switch(m_Angle) {
+    if(m_Kind == 0)
+    {
+        switch(m_Angle)
+        {
             case 0: cy+=5+1; break;
             case 1: cx-=6+1; break;
             case 2: cy-=6+1; break;
@@ -1286,7 +1288,6 @@ void CMatrixBuilding::Maintenance(void)
 
     CMatrixSideUnit *su = g_MatrixMap->GetSideById(m_Side);
 
-
     int listcnt;
     su->BufPrepare();
     int ret = g_MatrixMap->PlaceList(1+2+4+8+16, CPoint(cx,cy), CPoint(cx,cy), 100, false, su->m_PlaceList,&listcnt);
@@ -1295,14 +1296,19 @@ void CMatrixBuilding::Maintenance(void)
     CSound::Play(S_MAINTENANCE);
     //g_MatrixMap->PlaceListGrow(1+2+4+8+16, g_MatrixMap->GetPlayerSide()->m_PlaceList, &listcnt, 2);
 
-    for(int i=0;i<listcnt;i++) {
+    for(int i=0; i<listcnt; ++i)
+    {
         g_MatrixMap->m_RN.m_Place[su->m_PlaceList[i]].m_Data=0;
     }
     CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveCannon()) {
+    while(obj)
+    {
+        if(obj->IsLiveCannon())
+        {
             g_MatrixMap->m_RN.m_Place[obj->AsCannon()->m_Place].m_Data=1;
-        } else if(obj->IsLiveRobot() && obj->AsRobot()->GetEnv()->m_Place>=0) {
+        }
+        else if(obj->IsLiveRobot() && obj->AsRobot()->GetEnv()->m_Place>=0)
+        {
             g_MatrixMap->m_RN.m_Place[obj->AsRobot()->GetEnv()->m_Place].m_Data=1;
         }
         obj = obj->GetNextLogic();
@@ -1315,9 +1321,9 @@ void CMatrixBuilding::Maintenance(void)
     int score = 0;
 
     int pli = 0;
-    for (;score < 100;)
+    for(; score < 100 ;)
     {
-        if (pli >= listcnt) break;
+        if(pli >= listcnt) break;
 
         int place = su->m_PlaceList[pli++];
         if(g_MatrixMap->m_RN.m_Place[place].m_Data) continue;
@@ -1328,7 +1334,7 @@ void CMatrixBuilding::Maintenance(void)
 
         int cnt = 10;
         int sc = 0;
-        for (;cnt > 0; --cnt)
+        for(; cnt > 0; --cnt)
         {
             botpar_i = g_MatrixMap->Rnd(0,bp->ParCount()-1);
             sc = bp->ParGet(botpar_i).GetInt();
@@ -1336,14 +1342,13 @@ void CMatrixBuilding::Maintenance(void)
             break;
         }
         score += sc;
-        if (sc > 130) break;
+        if(sc > 130) break;
 
         CPoint bpos(Float2Int((m_Pos.x + m_Core->m_Matrix._21 * 50) * INVERT(GLOBAL_SCALE_MOVE)) - ROBOT_MOVECELLS_PER_SIZE/2,
             Float2Int((m_Pos.y + m_Core->m_Matrix._22 * 50) * INVERT(GLOBAL_SCALE_MOVE)) - ROBOT_MOVECELLS_PER_SIZE/2);
 
         su->OrderFlyer(D3DXVECTOR2(pos.x*GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE*GLOBAL_SCALE_MOVE/2,pos.y*GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE*GLOBAL_SCALE_MOVE/2),
             FO_GIVE_BOT, angle, place, bpos, botpar_i);
-
 
         //CHelper::Create(100,0)->Cone(D3DXVECTOR3(pos.x*GLOBAL_SCALE_MOVE,pos.y*GLOBAL_SCALE_MOVE,0),
         //    D3DXVECTOR3(pos.x*GLOBAL_SCALE_MOVE,pos.y*GLOBAL_SCALE_MOVE,100),10,10,0xFFFFFFFF,0,10);
@@ -1377,7 +1382,6 @@ void CMatrixBuilding::ReleaseMe(void)
         ps->RemoveFromSelection(this);
     }
 
-
     //for(int c = 1; c <= g_MatrixMap->m_SideCnt; c++){
     //    s = g_MatrixMap->GetSideById(c);
     //    if(s->m_Id == PLAYER_SIDE && s->m_ActiveObject == this){
@@ -1400,8 +1404,6 @@ void CMatrixBuilding::ReleaseMe(void)
         //    }
         //}
     //}
-
-
     
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
     

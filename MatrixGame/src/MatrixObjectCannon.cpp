@@ -1174,7 +1174,6 @@ no_target:
 	        else m_Unit[1].m_Angle+=props->max_da;
         }
 
-
         m_Unit[2].m_Angle = m_Unit[1].m_Angle;
 
         RChange(MR_Matrix);
@@ -1187,27 +1186,24 @@ no_target:
         else
             if (dang < props->max_bottom_angle) dang = props->max_bottom_angle;
 
-        
-
         da = float(AngleDist(m_AngleX, dang));
 
-
-        if (props->max_da == 0)
+        if(props->max_da == 0)
         {
-            if (fabs(da) < CANNNON_MIN_DANGLE)
+            if(fabs(da) < CANNNON_MIN_DANGLE)
             {
                 matchx = true;
                 da = 0;
 
                 m_AngleX = dang;
-            } else
+            }
+            else
             {
                 da *= mul;
                 m_AngleX+=da;
             }
-
-
-        } else
+        }
+        else
         {
             if(fabs(da)<(props->max_da+0.001))
             {
@@ -1223,7 +1219,7 @@ no_target:
 
         // доварачиваем оружие
 
-        for (int i=0; i<m_WeaponCnt; ++i) 
+        for(int i=0; i<m_WeaponCnt; ++i) 
         {
             if (m_Weapons[i])
             {
@@ -1233,7 +1229,7 @@ no_target:
 
         // а проверм-ка, надо ли стрелять....
 
-        if (!g_Config.m_CannonsLogic)
+        if(!g_Config.m_CannonsLogic)
         {
              // логику вообще отрубили :(
 
@@ -1243,9 +1239,9 @@ no_target:
             goto no_target;
         }
 
-        if (!itstime) goto no_target; // не время палить во все стороны :)
+        if(!itstime) goto no_target; // не время палить во все стороны :)
 
-        if (!matchx || !matchz)
+        if(!matchx || !matchz)
         {
             // еще не навелись...
             goto no_target; 
@@ -1255,7 +1251,7 @@ no_target:
 
         float dq = D3DXVec3LengthSq(&(m_TargetCore->m_GeoCenter - GetGeoCenter()));
         float ddq = m_Weapons[0]->GetWeaponDist();
-        if (dq > POW2(ddq))
+        if(dq > POW2(ddq))
         {
             // нет, не дострелим, ей богу не дострелим... 
             goto no_target;
@@ -1264,9 +1260,9 @@ no_target:
 
         // и все-таки еще разик проверим :)
 
-        for (int i=0; i<m_WeaponCnt; ++i) 
+        for(int i=0; i<m_WeaponCnt; ++i) 
         {
-            if (m_Weapons[i])
+            if(m_Weapons[i])
             {
                 D3DXVECTOR3 hp = m_FireFrom[i] + m_FireDir[i] * m_Weapons[i]->GetWeaponDist();
                 CMatrixMapStatic *s = g_MatrixMap->Trace(&hp, m_FireFrom[i], hp, TRACE_ALL, this);
@@ -1297,9 +1293,9 @@ no_target:
 
     m_NullTargetTime = CANNON_NULL_TARGET_TIME; // типа, чтобы стрелять еще после потери цели...
 
-    for (int i=0; i<m_WeaponCnt; ++i) 
+    for(int i=0; i<m_WeaponCnt; ++i) 
     {
-        if (m_Weapons[i])
+        if(m_Weapons[i])
         {
             m_Weapons[i]->FireBegin(D3DXVECTOR3(0,0,0), this);
         }
@@ -1307,9 +1303,9 @@ no_target:
 
     // и отрабатываем логику
     bool firewas = false;
-    for (int i=0; i<m_WeaponCnt; ++i) 
+    for(int i=0; i<m_WeaponCnt; ++i) 
     {
-        if (m_Weapons[i])
+        if(m_Weapons[i])
         {
             SETFLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION);
             RESETFLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION_HIT);
@@ -1318,23 +1314,23 @@ no_target:
             m_Weapons[i]->Takt(float(takt));
             firewas |= m_Weapons[i]->IsFireWas();
             bool hw = m_Weapons[i]->IsHitWas();
-            if (hw || FLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION_HIT))
+            if(hw || FLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION_HIT))
             {
                 m_TimeFromFire = CANNON_TIME_FROM_FIRE;
-            } else
+            }
+            else
             {
                 m_Core->m_Ref += m_Weapons[i]->GetFireCount();
             }
-
             RESETFLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION);
             RESETFLAG(m_ObjectState, OBJECT_CANNON_REF_PROTECTION_HIT);
         }
     }
 
-    if (firewas) BeginFireAnimation();
+    if(firewas)BeginFireAnimation();
 
     m_TimeFromFire -= takt;
-    if (m_TimeFromFire <= 0)
+    if(m_TimeFromFire <= 0)
     {
         // стреляем мимо!
         // корректируем дуло
@@ -1356,24 +1352,22 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
 
     bool friendly_fire = false;
 
-    if (weap == WEAPON_INSTANT_DEATH) goto inst_death;
+    if(weap == WEAPON_INSTANT_DEATH) goto inst_death;
     
     if(IsInvulnerable()) return false;
 
-    if (m_CurrState == CANNON_DIP) return true;
-
+    if(m_CurrState == CANNON_DIP) return true;
 
     friendly_fire = (attacker_side!=0) && (attacker_side==m_Side);
     float damagek = (friendly_fire||m_Side!=PLAYER_SIDE)?1.0f:g_MatrixMap->m_Difficulty.k_damage_enemy_to_player;
-	if (friendly_fire && m_Side==PLAYER_SIDE)damagek=damagek*g_MatrixMap->m_Difficulty.k_friendly_fire;
+	if(friendly_fire && m_Side==PLAYER_SIDE)damagek=damagek*g_MatrixMap->m_Difficulty.k_friendly_fire;
 
     int idx = Weap2Index(weap);
-    if (weap == WEAPON_REPAIR)
+    if(weap == WEAPON_REPAIR)
     {
-
         m_HitPoint += friendly_fire?g_Config.m_CannonDamages[idx].friend_damage:g_Config.m_CannonDamages[idx].damage;
 
-        if (m_HitPoint > m_HitPointMax)
+        if(m_HitPoint > m_HitPointMax)
         {
             m_HitPoint = m_HitPointMax;
         }
@@ -1384,19 +1378,20 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
     
     CMatrixEffectWeapon::SoundHit(weap, pos);
     
-    if (m_HitPoint > g_Config.m_CannonDamages[idx].mindamage)
+    if(m_HitPoint > g_Config.m_CannonDamages[idx].mindamage)
     {
         m_HitPoint -= damagek * (friendly_fire?g_Config.m_CannonDamages[idx].friend_damage:g_Config.m_CannonDamages[idx].damage);
-        if (m_HitPoint >= 0)
+        if(m_HitPoint >= 0)
         {
             m_PB.Modify( m_HitPoint * m_MaxHitPointInversed);
-        } else
+        }
+        else
         {
             m_PB.Modify( 0 );
         }
-        if (!friendly_fire)
+        if(!friendly_fire)
             m_MiniMapFlashTime = FLASH_PERIOD;
-        if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
+        if(FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
         {
             if (attaker)
                 g_MatrixMap->m_Camera.AddWarPair(this,attaker);
@@ -1404,9 +1399,9 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
 
     }
 
-    if (m_Side == PLAYER_SIDE && !friendly_fire)
+    if(m_Side == PLAYER_SIDE && !friendly_fire)
     {
-        if (m_UnderAttackTime == 0)
+        if(m_UnderAttackTime == 0)
         {
             int ss = IRND(3);
             if (ss == 0) CSound::Play(S_SIDE_UNDER_ATTACK_1);
@@ -1417,7 +1412,7 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
     }
 
 
-    if (weap == WEAPON_FLAMETHROWER)
+    if(weap == WEAPON_FLAMETHROWER)
     {
 
         MarkAblaze();
@@ -1430,7 +1425,8 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
 
         m_NextTimeAblaze = g_MatrixMap->GetTime();
 
-    } else if (weap == WEAPON_LIGHTENING)
+    }
+    else if(weap == WEAPON_LIGHTENING)
     {
         m_LastDelayDamageSide = attacker_side;
         MarkShorted();
@@ -1438,7 +1434,7 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
 
         m_NextTimeShorted = g_MatrixMap->GetTime();
 
-        for (int i=0; i<m_WeaponCnt; ++i) 
+        for(int i=0; i<m_WeaponCnt; ++i) 
         {
             if (m_Weapons[i])
             {
@@ -1455,7 +1451,8 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
         }
 
 
-    } else
+    }
+    else
     {
         m_LastDelayDamageSide = 0;
     }
@@ -1467,7 +1464,8 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
         {
             CMatrixEffect::CreateExplosion(pos, ExplosionRobotHit);
         }
-    } else
+    }
+    else
     {
         if (attacker_side != 0 && !friendly_fire)
         {
@@ -1522,7 +1520,6 @@ inst_death:;
 
         for (int i=1; i<m_UnitCnt; ++i)
         {
-
             m_Unit[i].m_dp = FSRND(0.005f);
             m_Unit[i].m_dy = FSRND(0.005f);
             m_Unit[i].m_dr = FSRND(0.005f);
@@ -1545,14 +1542,18 @@ void CMatrixCannon::ReleaseMe(void)
     DTRACE();
 
     CMatrixSideUnit* s = NULL;
-    if(m_ParentBuilding){
-        for(int i=0; i < MAX_PLACES;i++){
-            if(m_ParentBuilding->m_TurretsPlaces[i].m_Coord.x == Float2Int(m_Pos.x / GLOBAL_SCALE_MOVE) && m_ParentBuilding->m_TurretsPlaces[i].m_Coord.y == Float2Int(m_Pos.y / GLOBAL_SCALE_MOVE)){
+    if(m_ParentBuilding)
+    {
+        for(int i=0; i < MAX_PLACES; ++i)
+        {
+            if(m_ParentBuilding->m_TurretsPlaces[i].m_Coord.x == Float2Int(m_Pos.x / GLOBAL_SCALE_MOVE) && m_ParentBuilding->m_TurretsPlaces[i].m_Coord.y == Float2Int(m_Pos.y / GLOBAL_SCALE_MOVE))
+            {
                 m_ParentBuilding->m_TurretsPlaces[i].m_CannonType = -1;
             }
         }
         
-        if(g_MatrixMap->GetPlayerSide()->m_ActiveObject == m_ParentBuilding){
+        if(g_MatrixMap->GetPlayerSide()->m_ActiveObject == m_ParentBuilding)
+        {
             g_IFaceList->CreateDynamicTurrets(m_ParentBuilding);
         }
     }
@@ -1563,19 +1564,16 @@ void CMatrixCannon::ReleaseMe(void)
 
         int side = m_ParentBuilding->GetSide();
         
-
-        if (side != 0)
+        if(side != 0)
         {
-
             CMatrixSideUnit *su = g_MatrixMap->GetSideById(side);
-            if (su->m_CurrentAction == BUILDING_TURRET || FLAG(g_IFaceList->m_IfListFlags,PREORDER_BUILD_TURRET))
+            if(su->m_CurrentAction == BUILDING_TURRET || FLAG(g_IFaceList->m_IfListFlags,PREORDER_BUILD_TURRET))
             {
                 m_ParentBuilding->CreatePlacesShow();
                 m_ParentBuilding = NULL;
             }
         }
         CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
-
     }
 
 
@@ -1600,14 +1598,17 @@ void CMatrixCannon::ReleaseMe(void)
     //    }
     //}
 
-
     
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
     
-    while(objects){
-        if(objects->IsLiveRobot()){
+    while(objects)
+    {
+        if(objects->IsLiveRobot())
+        {
             objects->AsRobot()->GetEnv()->RemoveFromList(this);
-        }else if(objects->IsLiveBuilding()){
+        }
+        else if(objects->IsLiveBuilding())
+        {
             objects->AsBuilding()->m_BS.DeleteItem(this);
         }
         objects = objects->GetNextLogic();
@@ -1632,19 +1633,16 @@ bool CMatrixCannon::InRect(const CRect &rect) const
     t *= s;
     d.rect = &rect;
 
-    for (int i=0;i<m_UnitCnt;++i)
+    for(int i=0; i<m_UnitCnt; ++i)
     {
-        if (m_Unit[i].m_Graph)
+        if(m_Unit[i].m_Graph)
         {
-
             d.found = false;
             d.m = m_Unit[i].m_Matrix * t;
             m_Unit[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (DWORD)&d);
             if (d.found) return true;
         }
-
     }
-
     
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.left, rect.bottom), dir);
     if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;

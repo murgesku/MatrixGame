@@ -1020,8 +1020,6 @@ struct SFlyerTaktData
 //            if (m_MoveSpeed > FLYER_MAX_SPEED) m_MoveSpeed = FLYER_MAX_SPEED;
 //        }
 //
-//
-//        
 //    } else if (!FLAG(m_Flags, FLYER_ACTION_MOVE_FORWARD))
 //    {
 //
@@ -1035,7 +1033,6 @@ struct SFlyerTaktData
 //        m_TargetYawAngle = LERPFLOAT(td.speedn,YAW_ANGLE_STAY, YAW_ANGLE_BREAK);
 //        m_StreamLen = LERPFLOAT(td.speedn, 5, 15);
 //    }
-//
 //
 //    if (!FLAG(m_Flags, FLYER_MANUAL))
 //    {
@@ -1061,7 +1058,6 @@ struct SFlyerTaktData
 //    }
 //
 //    JoinToGroup();
-//
 //}
 
 static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user)
@@ -1081,7 +1077,7 @@ static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user)
     return true;
 }
 
-void    CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td)
+void CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td)
 {
     
     td.reaction = D3DXVECTOR3(0,0,0);
@@ -1095,7 +1091,7 @@ void    CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td)
 
 }
 
-//void    CMatrixFlyer::LogicTaktStrategy(SFlyerTaktData &td)
+//void CMatrixFlyer::LogicTaktStrategy(SFlyerTaktData &td)
 //{
 //    m_StrifeSpeed *= td.pow998;
 //    if (m_Trajectory == NULL)
@@ -1118,37 +1114,37 @@ void    CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td)
 //    }
 //
 //    
-//    CMatrixSideUnit* pls = g_MatrixMap->GetPlayerSide();
-//    if(pls->GetArcadedObject() != this){
-//        if(pls->m_CurGroup && pls->m_CurGroup->FindObject((CMatrixMapStatic*)this)){
-//            if(pls->m_CurGroup->m_Tactics && pls->m_CurGroup->m_Tactics->GetTarget()){
-//                CMatrixMapStatic* ms = pls->m_CurGroup->m_Tactics->GetTarget();
-//                D3DXVECTOR3 pos = GetPos() - ms->GetGeoCenter();
-//                float length = D3DXVec3Length(&pos);
-//                D3DXVec3Normalize(&pos, &pos);
+//    //CMatrixSideUnit* pls = g_MatrixMap->GetPlayerSide();
+//    //if(pls->GetArcadedObject() != this){
+//    //    if(pls->m_CurGroup && pls->m_CurGroup->FindObject((CMatrixMapStatic*)this)){
+//    //        if(pls->m_CurGroup->m_Tactics && pls->m_CurGroup->m_Tactics->GetTarget()){
+//    //            CMatrixMapStatic* ms = pls->m_CurGroup->m_Tactics->GetTarget();
+//    //            D3DXVECTOR3 pos = GetPos() - ms->GetGeoCenter();
+//    //            float length = D3DXVec3Length(&pos);
+//    //            D3DXVec3Normalize(&pos, &pos);
 //
-//                pos *= (30*GLOBAL_SCALE_MOVE);
+//    //            pos *= (30*GLOBAL_SCALE_MOVE);
 //
-//                pos += ms->GetGeoCenter();
-//                if((TruncFloat(pos.x) - TruncFloat(GetTarget().x) > 3) || (TruncFloat(pos.y) - TruncFloat(GetTarget().y) > 3)){
-//                    SetTarget(D3DXVECTOR2(pos.x, pos.y));
-//                }
+//    //            pos += ms->GetGeoCenter();
+//    //            if((TruncFloat(pos.x) - TruncFloat(GetTarget().x) > 3) || (TruncFloat(pos.y) - TruncFloat(GetTarget().y) > 3)){
+//    //                SetTarget(D3DXVECTOR2(pos.x, pos.y));
+//    //            }
 //
 //
-//                if(ms->IsBuilding()){
-//                }else if(ms->IsUnit()){
-//                    SetFireTarget(ms->GetGeoCenter());
-//                    if(length <= 50*GLOBAL_SCALE_MOVE)
-//                        FireBegin();
-//                    else
-//                        FireEnd();
-//                }
-//            }else{
-//                SetFireTarget(GetPos(100) - GetPos());
-//                FireEnd();
-//            }
-//        }
-//    }
+//    //            if(ms->IsBuilding()){
+//    //            }else if(ms->IsUnit()){
+//    //                SetFireTarget(ms->GetGeoCenter());
+//    //                if(length <= 50*GLOBAL_SCALE_MOVE)
+//    //                    FireBegin();
+//    //                else
+//    //                    FireEnd();
+//    //            }
+//    //        }else{
+//    //            SetFireTarget(GetPos(100) - GetPos());
+//    //            FireEnd();
+//    //        }
+//    //    }
+//    //}
 //}
 
 void    CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder order, float ang, int place, const CPoint &bpos, int botpar_i)
@@ -1275,7 +1271,8 @@ void CMatrixFlyer::LogicTakt(int takt)
 {
     DTRACE();
 
-    if(!g_MatrixMap->GetPlayerSide()->FindObjectInSelection(this)){
+    if(!g_MatrixMap->GetPlayerSide()->FindObjectInSelection(this))
+    {
         UnSelect();
     }
 
@@ -1303,7 +1300,8 @@ void CMatrixFlyer::LogicTakt(int takt)
 
         }
         RChange(MR_Matrix);
-    } else
+    }
+    else
     {
         m_Sound = CSound::Play(m_Sound, S_FLYER_VINT_CONTINUE, m_Pos);
     }
@@ -1336,12 +1334,12 @@ void CMatrixFlyer::LogicTakt(int takt)
     
 
 
-    if (m_EngineUnit >= 0)
+    if(m_EngineUnit >= 0)
     {
         float ea = m_Units[m_EngineUnit].m_Engine.m_Angle;
         float dang = (float)AngleDist(ea, m_TargetEngineAngle);
         ea += dang * td.mul;
-        for (int ii=m_EngineUnit; ii<m_UnitCnt;++ii)
+        for(int ii=m_EngineUnit; ii<m_UnitCnt; ++ii)
         {
             m_Units[ii].m_Engine.m_Angle = ea;
         }
@@ -1847,7 +1845,7 @@ void CMatrixFlyer::Draw(void)
     DTRACE();
     DWORD coltex = (DWORD)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
 
-	for(int i=0;i<m_UnitCnt;i++)
+	for(int i=0; i<m_UnitCnt; ++i)
     {
         if (m_Units[i].m_Type == FLYER_UNIT_WEAPON_HOLLOW) continue;
 		ASSERT(m_Units[i].m_Graph);
@@ -1863,7 +1861,8 @@ void CMatrixFlyer::Draw(void)
             g_D3DD->SetRenderState( D3DRS_CULLMODE,  D3DCULL_CW );
 		    m_Units[i].m_Graph->Draw(coltex);
 		    g_D3DD->SetRenderState( D3DRS_CULLMODE,  D3DCULL_CCW );
-        } else
+        }
+        else
         {
             m_Units[i].m_Graph->Draw(coltex);
         }
@@ -1874,9 +1873,9 @@ void CMatrixFlyer::Draw(void)
     //    GetCarryingRobot()->Draw();
     //}
 
-    if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_OBJECTS_DRAWN))
+    if(!FLAG(g_MatrixMap->m_Flags, MMFLAG_OBJECTS_DRAWN))
     {
-        for (int i=0; i<m_StreamsCount; ++i)
+        for(int i=0; i<m_StreamsCount; ++i)
         {
             m_Streams[i].effect->Draw();
         }
@@ -1903,12 +1902,12 @@ void CMatrixFlyer::DrawPropeller(void)
 
 	ASSERT_DX(g_D3DD->SetStreamSource(0,GET_VB(m_VB),0,sizeof(SVOVertex)));
 
-    for (int i=1; i<m_UnitCnt; ++i)
+    for(int i=1; i<m_UnitCnt; ++i)
     {
-        if (m_Units[i].m_Type != FLYER_UNIT_VINT) continue;
-        if (m_Units[i].m_Vint.m_Tex == NULL) continue;
+        if(m_Units[i].m_Type != FLYER_UNIT_VINT) continue;
+        if(m_Units[i].m_Vint.m_Tex == NULL) continue;
         //if (m_Units[i].m_Vint.m_Collapsed) continue;
-        if (FLAG(m_Flags, FLYER_IN_SPAWN))
+        if(FLAG(m_Flags, FLYER_IN_SPAWN))
         {
             float k = float(m_Units[i].m_Vint.m_CollapsedCountDown) / FLYER_SPINUP_TIME;
             DWORD c = LIC(0xFF000000,0x00000000,k);
@@ -1922,10 +1921,8 @@ void CMatrixFlyer::DrawPropeller(void)
         ASSERT_DX(g_D3DD->DrawPrimitive(D3DPT_TRIANGLEFAN,0,2));
     }
 
-
 	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,		TRUE));
 	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE,		FALSE));
-
 }
 
 
@@ -1933,26 +1930,26 @@ void CMatrixFlyer::DrawShadowStencil(void)
 {
     DTRACE();
     
-    if (!g_Config.m_ShowStencilShadows) return;
+    if(!g_Config.m_ShowStencilShadows) return;
 
-    if (m_Pos.x < 0 || m_Pos.y < 0 || m_Pos.x > (GLOBAL_SCALE * g_MatrixMap->m_Size.x) || m_Pos.y > (GLOBAL_SCALE * g_MatrixMap->m_Size.y)) return;
+    if(m_Pos.x < 0 || m_Pos.y < 0 || m_Pos.x > (GLOBAL_SCALE * g_MatrixMap->m_Size.x) || m_Pos.y > (GLOBAL_SCALE * g_MatrixMap->m_Size.y)) return;
 
 
-    for(int i=0;i<m_UnitCnt;i++)
+    for(int i=0; i<m_UnitCnt; ++i)
     {
 		if(m_Units[i].m_ShadowStencil)
         {
             m_Units[i].m_ShadowStencil->Render(m_Units[i].m_Matrix);
 		}
 	}
-    if (CarryingRobot()) GetCarryingRobot()->DrawShadowStencil();
+    if(CarryingRobot()) GetCarryingRobot()->DrawShadowStencil();
 }
 
 void CMatrixFlyer::FreeDynamicResources(void)
 {
-    for (int i = 0; i<m_UnitCnt; ++i)
+    for(int i = 0; i<m_UnitCnt; ++i)
     {
-        if (m_Units[i].m_ShadowStencil) m_Units[i].m_ShadowStencil->DX_Free();
+        if(m_Units[i].m_ShadowStencil) m_Units[i].m_ShadowStencil->DX_Free();
     }
 }
 
@@ -1969,10 +1966,10 @@ bool CMatrixFlyer::CalcBounds(D3DXVECTOR3 &minv, D3DXVECTOR3 &maxv)
 	minv.x=1e30f; minv.y=1e30f; minv.z=1e30f;
 	maxv.x=-1e30f; maxv.y=-1e30f; maxv.z=-1e30f;
 
-    for (int u = 0; u<m_UnitCnt; ++u) // skip basis
+    for(int u = 0; u<m_UnitCnt; ++u) // skip basis
     {
-        if (m_Units[u].m_Type == FLYER_UNIT_VINT) continue;
-        if (m_Units[u].m_Type == FLYER_UNIT_WEAPON_HOLLOW) continue;
+        if(m_Units[u].m_Type == FLYER_UNIT_VINT) continue;
+        if(m_Units[u].m_Type == FLYER_UNIT_WEAPON_HOLLOW) continue;
         int cnt=m_Units[u].m_Graph->VO()->GetFramesCnt();
 		for(int i=0;i<cnt;i++)
         {
@@ -1987,9 +1984,7 @@ bool CMatrixFlyer::CalcBounds(D3DXVECTOR3 &minv, D3DXVECTOR3 &maxv)
 		}
 	}
 
-
     return false;
-
 }
 
 void CMatrixFlyer::Begin(CMatrixBuilding *b)
@@ -2018,10 +2013,13 @@ void CMatrixFlyer::Begin(CMatrixBuilding *b)
 bool CMatrixFlyer::SelectByGroup()
 {
     UnSelect();
-    if(CreateSelection()){
+    if(CreateSelection())
+    {
         SETFLAG(m_Flags, FLYER_SGROUP);
         return true;
-    }else{
+    }
+    else
+    {
         RESETFLAG(m_Flags, FLYER_SGROUP);
         return false;
     }
@@ -2030,14 +2028,16 @@ bool CMatrixFlyer::SelectByGroup()
 bool CMatrixFlyer::SelectArcade()
 {
     UnSelect();
-    if(CreateSelection()){
+    if(CreateSelection())
+    {
         SETFLAG(m_Flags, FLYER_SARCADE);
         return true;
-    }else{
+    }
+    else
+    {
         RESETFLAG(m_Flags, FLYER_SARCADE);
         return false;
     }
-
 }
 
 void CMatrixFlyer::UnSelect()
@@ -2051,7 +2051,8 @@ void CMatrixFlyer::UnSelect()
 bool CMatrixFlyer::CreateSelection()
 {
 	m_Selection = (CMatrixEffectSelection*)CMatrixEffect::CreateSelection(D3DXVECTOR3(m_Pos.x, m_Pos.y, GetGeoCenter().z/*FLYER_SELECTION_HEIGHT*/), FLYER_SELECTION_SIZE);
-    if (!g_MatrixMap->AddEffect(m_Selection)){
+    if (!g_MatrixMap->AddEffect(m_Selection))
+    {
         m_Selection = NULL;
         return false;
     }
@@ -2060,7 +2061,8 @@ bool CMatrixFlyer::CreateSelection()
 
 void CMatrixFlyer::KillSelection()
 {
-    if(m_Selection){
+    if(m_Selection)
+    {
         m_Selection->Kill();
         m_Selection = NULL;
     }
@@ -2068,15 +2070,16 @@ void CMatrixFlyer::KillSelection()
 
 void CMatrixFlyer::MoveSelection()
 {
-    if(m_Selection){
+    if(m_Selection)
+    {
         m_Selection->SetPos(D3DXVECTOR3(m_Pos.x, m_Pos.y, GetGeoCenter().z/*FLYER_SELECTION_HEIGHT*/));
     }
-    
 }
 
 bool CMatrixFlyer::IsSelected()
 {
-    if(FLAG(m_Flags, FLYER_SGROUP) || FLAG(m_Flags, FLYER_SARCADE)){
+    if(FLAG(m_Flags, FLYER_SGROUP) || FLAG(m_Flags, FLYER_SARCADE))
+    {
         return true;
     }
     return false;
@@ -2084,14 +2087,18 @@ bool CMatrixFlyer::IsSelected()
 
 void CMatrixFlyer::ReleaseMe()
 {
-    if(GetSide() == PLAYER_SIDE){
+    if(GetSide() == PLAYER_SIDE)
+    {
         CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
         int pos = 0;
 
-        if(ps->IsArcadeMode() && this == ps->GetArcadedObject() && g_IFaceList){
+        if(ps->IsArcadeMode() && this == ps->GetArcadedObject() && g_IFaceList)
+        {
             CInterface* ifs = g_IFaceList->m_First;
-            while(ifs){
-                if(ifs->m_strName == IF_MAIN){
+            while(ifs)
+            {
+                if(ifs->m_strName == IF_MAIN)
+                {
                     ifs->m_xPos = 447;
                     ifs->ReCalcElementsPos();
                     break;
@@ -2100,27 +2107,27 @@ void CMatrixFlyer::ReleaseMe()
             }
         }
         
-        if(ps->GetCurGroup()){
+        if(ps->GetCurGroup())
+        {
             CMatrixGroupObject* go = ps->GetCurGroup()->m_FirstObject;
-            while(go){
+            while(go)
+            {
                 pos++;
-                if(go->GetObject() == this){
+                if(go->GetObject() == this)
+                {
                     break;
                 }
                 go = go->m_NextObject;
             }
 
-            if(ps->GetCurGroup()->FindObject(this)){
+            if(ps->GetCurGroup()->FindObject(this))
+            {
                 ps->GetCurGroup()->RemoveObject(this);
             }
-
         }
 
-        if(ps->GetCurSelNum() == pos){
-            pos = 0;
-        }else{
-            pos = -1;
-        }
+        if(ps->GetCurSelNum() == pos) pos = 0;
+        else pos = -1;
 
         DeleteProgressBarClone(PBC_CLONE1);
         DeleteProgressBarClone(PBC_CLONE2);
@@ -2128,8 +2135,10 @@ void CMatrixFlyer::ReleaseMe()
     
     
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
-    while(objects){
-        if(objects->IsRobot()){
+    while(objects)
+    {
+        if(objects->IsRobot())
+        {
             ((CMatrixRobotAI*)objects)->GetEnv()->RemoveFromList(this);
         }
         objects = objects->GetNextLogic();
@@ -2217,7 +2226,6 @@ bool CMatrixFlyer::InRect(const CRect &rect) const
 
     }
 
-    
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.left, rect.bottom), dir);
     if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
 

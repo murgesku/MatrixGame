@@ -487,7 +487,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_CannonDamages, 0, sizeof(m_CannonDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i=0; i<n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
@@ -507,7 +507,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_BuildingDamages, 0, sizeof(m_BuildingDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i=0; i<n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
@@ -518,7 +518,8 @@ void CMatrixConfig::ReadParams(void)
             {
                 m_BuildingHitPoints[j] = par.GetIntPar(j, L",");
             }
-        } else
+        }
+        else
         {
             int idx = WeapName2Index(name);
             if (idx >=0)
@@ -533,19 +534,20 @@ void CMatrixConfig::ReadParams(void)
     }
 
     // flyer
+
     bp_tmp = g_MatrixData->BlockGet(PAR_SOURCE_WEAPONS)->BlockGet(PAR_SOURCE_DAMAGES)->BlockGet(PAR_SOURCE_DAMAGES_FLYER);
 
     memset(&m_FlyerDamages, 0, sizeof(m_FlyerDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i=0; i<n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         //if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
         //{
         //    const CWStr &par = bp_tmp->ParGet(i);
         //    int nn = par.GetCountPar(L",");
-        //    for (int j=0;j<nn;++j)
+        //    for (int j=0; j<nn; ++j)
         //    {
         //        m_FlyerHitPoints[j] = par.GetIntPar(j, L",");
         //    }
@@ -1029,7 +1031,7 @@ void CMatrixConfig::ReadParams(void)
                 CBlockPar * bp_c = bp_tmp->BlockGet(i);
 
                 int cnt2 = bp_c->ParCount();
-                for (int j=0;j<cnt2;++j)
+                for (int j=0; j<cnt2; ++j)
                 {
                     if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTSPEEDX) m_CamParams[index].m_CamRotSpeedX = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTSPEEDZ) m_CamParams[index].m_CamRotSpeedZ = (float)bp_c->ParGet(j).GetDouble();
@@ -1052,7 +1054,7 @@ void CMatrixConfig::ReadParams(void)
     {
         int cnt = bp_tmp->BlockCount();
         ASSERT(cnt == CANNON_TYPE_CNT);
-        for (int i=0;i<cnt;++i)
+        for (int i=0; i<cnt; ++i)
         {
             CBlockPar *bp = bp_tmp->BlockGet(i);
 
@@ -1089,7 +1091,7 @@ static void GenRamp(WORD *out, SGammaVals & vals)
     y += mu * (0.5f - y);
     mu = (0.5f - y) / 128.0f;
 
-    for(int i=0; i<256; i++)
+    for(int i=0; i<256; ++i)
     {
         float f = (float)pow((float)y, 1.0f/vals.gamma) + brightness;
         y += mu;

@@ -476,7 +476,7 @@ public:
 	ESelection m_CurrSel;
 
 private:
-    CMatrixGroup* m_CurrentGroup;//CMatrixGroup* m_CurGroup;
+    CMatrixGroup* m_CurrentGroup; //CMatrixGroup* m_CurGroup;
 public:
     
     CMatrixGroup* GetCurGroup()                     { return m_CurrentGroup; }

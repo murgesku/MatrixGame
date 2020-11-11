@@ -38,12 +38,14 @@ CIFaceMenu::CIFaceMenu()
 
 CIFaceMenu::~CIFaceMenu()
 {
-    if(m_RamTex){
+    if(m_RamTex)
+    {
         CCache::Destroy(m_RamTex);
         m_RamTex = NULL;
     }
 
-    if(m_RobotConfig){
+    if(m_RobotConfig)
+    {
         HDelete(SRobotConfig, m_RobotConfig, g_MatrixHeap);
     }
 
@@ -77,16 +79,16 @@ void CIFaceMenu::CreateMenu(
 
     main = m_MenuGraphics;
 
-    //while(ifs){
-    //    if(ifs->m_strName == IF_BASE){
+    //while(ifs)
+    //{
+    //    if(ifs->m_strName == IF_BASE)
+    //    {
     //        main = ifs;
     //        break;
     //    }
     //    ifs = ifs->m_NextInterface;
     //}
-    //
-    //if(!main)
-    //    return;
+    //if(!main) return;
 
 
     m_InterfaceParent = parent;
@@ -147,7 +149,7 @@ void CIFaceMenu::CreateMenu(
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"topright.png");
-            bm_dest.MergeWithAlpha(CPoint(w - TOPRIGHT_WIDTH+1,0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+            bm_dest.MergeWithAlpha(CPoint(w - TOPRIGHT_WIDTH+1, 0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
         }
         else if(els->m_strName == IF_POPUP_BOTTOMLEFT)
@@ -156,7 +158,7 @@ void CIFaceMenu::CreateMenu(
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"bottomleft.png");
-            bm_dest.MergeWithAlpha(CPoint(0,h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+            bm_dest.MergeWithAlpha(CPoint(0, h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
         }
         else if(els->m_strName == IF_POPUP_BOTTOMRIGHT)
@@ -165,7 +167,7 @@ void CIFaceMenu::CreateMenu(
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
             //bm_src.SaveInPNG(L"bottomright.png");
-            bm_dest.MergeWithAlpha(CPoint(w - BOTTOMRIGHT_WIDTH-4,h-BOTTOMRIGHT_HEIGHT-1-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+            bm_dest.MergeWithAlpha(CPoint(w - BOTTOMRIGHT_WIDTH-4, h-BOTTOMRIGHT_HEIGHT-1-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             els->m_Image->UnlockRect();
         }
         else if(els->m_strName == IF_POPUP_LEFTLINE)
@@ -173,9 +175,9 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < h_clean-mod; i++)
+            for(int i = 0; i < h_clean-mod; ++i)
             {
-                bm_dest.MergeWithAlpha(CPoint(1,TOPLEFT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+                bm_dest.MergeWithAlpha(CPoint(1, TOPLEFT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
         }
@@ -184,9 +186,9 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < h_clean-mod; i++)
+            for(int i = 0; i < h_clean-mod; ++i)
             {
-                bm_dest.MergeWithAlpha(CPoint(w-RIGHTLINE_WIDTH+1,TOPRIGHT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+                bm_dest.MergeWithAlpha(CPoint(w-RIGHTLINE_WIDTH+1, TOPRIGHT_HEIGHT+i), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
         }
@@ -195,9 +197,9 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < width; i++)
+            for(int i = 0; i < width; ++i)
             {
-                bm_dest.MergeWithAlpha(CPoint(TOPLEFT_WIDTH+i+1,0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+                bm_dest.MergeWithAlpha(CPoint(TOPLEFT_WIDTH+i+1, 0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
         }
@@ -206,9 +208,9 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < width; i++)
+            for(int i = 0; i < width; ++i)
             {
-                bm_dest.MergeWithAlpha(CPoint(BOTTOMLEFT_WIDTH+i,h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
+                bm_dest.MergeWithAlpha(CPoint(BOTTOMLEFT_WIDTH+i, h-BOTTOMLEFT_HEIGHT-mod), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
             els->m_Image->UnlockRect();
         }
@@ -217,9 +219,9 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < elements; i++)
+            for(int i = 0; i < elements; ++i)
             {
-                for(int j = 5; j < w - 9; j++)
+                for(int j = 5; j < w - 9; ++j)
                 {
                     bm_dest.MergeWithAlpha(CPoint(j, 11+(UNIT_HEIGHT*i)), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
                 }
@@ -231,7 +233,7 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int i = 0; i < elements; i++)
+            for(int i = 0; i < elements; ++i)
             {
                 bm_dest.MergeWithAlpha(CPoint(w - 12, 11+(UNIT_HEIGHT*i)), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
@@ -242,7 +244,7 @@ void CIFaceMenu::CreateMenu(
             els->m_Image->LockRect(lr_src, 0);
             CPoint sou_tp(Float2Int(els->m_xTexPos), Float2Int(els->m_yTexPos));
             bm_src.CreateRGBA(Float2Int(els->m_TexWidth), Float2Int(els->m_TexHeight), lr_src.Pitch, lr_src.pBits);
-            for(int j = 5; j < w - 9; j++)
+            for(int j = 5; j < w - 9; ++j)
             {
                 bm_dest.MergeWithAlpha(CPoint(w + j, 0), CPoint(Float2Int(els->m_Width), Float2Int(els->m_Height)), bm_src, sou_tp);
             }
@@ -358,7 +360,7 @@ void CIFaceMenu::CreateMenu(
         e = e->m_NextElement;
     }
 
-    for(int i = 0; i < elements; i++)
+    for(int i = 0; i < elements; ++i)
     {
         CIFaceStatic *catcher = HNew(g_MatrixHeap) CIFaceStatic;
         catcher->m_strName = L"";
@@ -666,8 +668,7 @@ void CIFaceMenu::CalcSelectedItem(bool set)
         pilon = 0;
         type = MRT_ARMOR;
         int pos = m_CurMenuPos;
-        if(pos == 0)
-            pos = 6;
+        if(pos == 0) pos = 6;
         kind = (ERobotUnitKind)pos;
     }
     else if(m_InterfaceParent == MENU_PARENT_CHASSIS)
@@ -677,10 +678,8 @@ void CIFaceMenu::CalcSelectedItem(bool set)
         kind = (ERobotUnitKind)(m_CurMenuPos+1);
     }
     
-    if(set)
-        ps->m_Constructor->SuperDjeans(type, kind, pilon);
-    else
-        ps->m_Constructor->Djeans007(type, kind, pilon);
+    if(set) ps->m_Constructor->SuperDjeans(type, kind, pilon);
+    else ps->m_Constructor->Djeans007(type, kind, pilon);
 }
 
 __forceinline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind)
