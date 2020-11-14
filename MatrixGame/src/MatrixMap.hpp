@@ -522,17 +522,17 @@ protected:
 		
         //CMatrixMapStatic * StaticAdd(EObjectType type, bool add_to_logic = true);
         
-        __forceinline void AddObject(CMatrixMapStatic * ms,bool add_to_logic)
+        __forceinline void AddObject(CMatrixMapStatic * ms, bool add_to_logic)
         {
             m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
             CMatrixMapStatic ** e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
             *(e-1) = ms;
-            if (add_to_logic) ms->AddLT();
+            if(add_to_logic) ms->AddLT();
         }
         template <class O> __forceinline O* StaticAdd(bool add_to_logic = true)
         {
             O * o = HNew(g_MatrixHeap) O();
-            AddObject(o,add_to_logic && o->GetObjectType()!=OBJECT_TYPE_MAPOBJECT);
+            AddObject(o, add_to_logic && o->GetObjectType() != OBJECT_TYPE_MAPOBJECT);
             return o;
         }
 

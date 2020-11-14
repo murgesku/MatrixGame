@@ -377,7 +377,7 @@ public:
      bool CorrectCoordinates(int screen_width, int screen_height, int &posx, int &posy, int width, int height, const CWStr &name);
      void AddHintReplacements(const CWStr &element_name);
      bool CheckShowHintLogic(const CWStr &element_name);
-     void LiveRobot(void);
+     void LeaveRobot(void);
      void EnterRobot(bool pos=false);
      void BeginBuildTurret(int no);
 

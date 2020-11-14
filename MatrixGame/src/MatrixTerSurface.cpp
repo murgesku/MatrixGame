@@ -321,7 +321,7 @@ void CTerSurface::BeforeDraw(void)
     int idx;
     int idx0 = m_SurfaceLeft;
     int idx1 = m_SurfaceRite;
-    for(;;)
+    while (true)
     {
         idx = ((idx1-idx0) >> 1) + idx0;
         
@@ -330,7 +330,8 @@ void CTerSurface::BeforeDraw(void)
             //left
             if (idx == idx0) break;
             idx1 = idx;
-        } else
+        }
+        else
         {
             //rite
             ++idx;
@@ -351,23 +352,26 @@ void CTerSurface::BeforeDraw(void)
     {
         ++m_SurfaceRite;
         m_SurfacesDraw[idx] = this;
-    } else  if (!noleft && (idx == m_SurfaceLeft))
+    }
+    else  if (!noleft && (idx == m_SurfaceLeft))
     {
         --m_SurfaceLeft;
         m_SurfacesDraw[idx-1] = this;
-    } else
+    }
+    else
     {
 insert:
         int lc = (idx-m_SurfaceLeft);
         int rc = (m_SurfaceRite-idx);
         bool expand_left = norite || ((lc <= rc) && !noleft);
 
-        if (expand_left)
+        if(expand_left)
         {
             memcpy(&m_SurfacesDraw[m_SurfaceLeft-1], &m_SurfacesDraw[m_SurfaceLeft], sizeof(CTerSurface *) * lc);
             --m_SurfaceLeft;
             m_SurfacesDraw[idx-1] = this;
-        } else
+        }
+        else
         {
             memcopy_back_dword(&m_SurfacesDraw[idx+1], &m_SurfacesDraw[idx], rc);
             ++m_SurfaceRite;
@@ -388,7 +392,7 @@ void CTerSurface::DrawAll(void)
 
     
 
-    for (int i=m_SurfaceLeft; i<m_SurfaceRite; ++i)
+    for(int i=m_SurfaceLeft; i<m_SurfaceRite; ++i)
     {
 #ifdef _DEBUG
         if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_0) {} else
@@ -417,17 +421,18 @@ void CTerSurface::Draw(void)
 
     int vbase = -1;
     int vcnt;
-    if (FLAG(m_Flags, SURFF_MACRO))
+    if(FLAG(m_Flags, SURFF_MACRO))
     {
-        if (m_BigVBM)
+        if(m_BigVBM)
         {
             vbase = m_VertsSourceM.Select(m_BigVBM);
             vcnt = m_VertsSourceM.size / sizeof(STerSurfVertexM);
             SetFVFM();
         }
-    } else
+    }
+    else
     {
-        if (m_BigVB)
+        if(m_BigVB)
         {
             vbase = m_VertsSource.Select(m_BigVB);
             vcnt = m_VertsSource.size / sizeof(STerSurfVertex);
@@ -436,10 +441,10 @@ void CTerSurface::Draw(void)
 
     }
 
-    if (vbase < 0) return;
+    if(vbase < 0) return;
     
     int ibase = m_IdxsSource.Select(m_BigIB);
-    if (ibase < 0) return;
+    if(ibase < 0) return;
 
     D3DMATRIX m;
     m = g_MatrixMap->GetIdentityMatrix();
@@ -457,7 +462,7 @@ void CTerSurface::Draw(void)
     //if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_F8) {iii++;g_MatrixMap->m_KeyDown = false;}
 
 
-    for (int pass = 0; pass < g_Render->m_TerSurfPass[type];++pass)
+    for (int pass = 0; pass < g_Render->m_TerSurfPass[type]; ++pass)
     {
         g_Render->m_TerSurfTex[type](m_Tex,m_TexGloss, pass);
         g_Render->m_TerSurf[type](pass, FLAG(m_Flags, SURFF_WRAPY));

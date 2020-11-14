@@ -1108,7 +1108,7 @@ bool CMatrixMapLogic::PlaceIsEmpty(int nsh,int size,int mx,int my,CMatrixMapStat
 	int cnt=1;
 	int curzone=zstart;
 	int curwt=m_RN.m_Zone[curzone].m_FPWtp;
-	for(;;) {
+	while(true) {
 		int nz_=-1;
 		int wtp_=curwt;
 		for(int i=0;i<m_RN.m_Zone[curzone].m_NearZoneCnt;i++) {

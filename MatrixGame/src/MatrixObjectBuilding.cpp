@@ -1153,14 +1153,14 @@ void CMatrixBuilding::SetNeutral(void)
 
 ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
 {
-    if (m_InCaptureTime <=0)
+    if(m_InCaptureTime <=0)
     {
         m_InCaptureTime = g_Config.m_CaptureTimeErase + g_Config.m_CaptureTimePaint;
         m_InCaptureNextTimeErase = g_MatrixMap->GetTime();
         m_InCaptureNextTimePaint = g_MatrixMap->GetTime();
     }
 
-    if (m_InCaptureNextTimeErase >= g_MatrixMap->GetTime() || m_InCaptureNextTimePaint >= g_MatrixMap->GetTime()) return CAPTURE_BUSY;
+    if(m_InCaptureNextTimeErase >= g_MatrixMap->GetTime() || m_InCaptureNextTimePaint >= g_MatrixMap->GetTime()) return CAPTURE_BUSY;
 
     SFindRobotForCapture data;
     data.by = by;
@@ -1176,12 +1176,12 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
     m_InCaptureTime = g_Config.m_CaptureTimeErase + g_Config.m_CaptureTimePaint;
 
 
-    if (m_Side == 0)
+    if(m_Side == 0)
     {
-        if (m_TrueColor.m_Color == 0 || m_TrueColor.m_Color == captureer_color)
+        if(m_TrueColor.m_Color == 0 || m_TrueColor.m_Color == captureer_color)
         {
             m_TrueColor.m_Color = captureer_color;
-            while (m_InCaptureNextTimePaint < g_MatrixMap->GetTime())
+            while(m_InCaptureNextTimePaint < g_MatrixMap->GetTime())
             {
                 m_InCaptureNextTimePaint += g_Config.m_CaptureTimePaint;
                 m_InCaptureNextTimeErase = g_MatrixMap->GetTime();
@@ -1198,9 +1198,10 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                 }
                 ++m_TrueColor.m_ColoredCnt;
             }
-        } else
+        }
+        else
         {
-            while (m_InCaptureNextTimeErase < g_MatrixMap->GetTime())
+            while(m_InCaptureNextTimeErase < g_MatrixMap->GetTime())
             {
                 m_InCaptureNextTimeErase += g_Config.m_CaptureTimeErase;
                 m_InCaptureNextTimePaint = g_MatrixMap->GetTime();
@@ -1213,9 +1214,10 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                 --m_TrueColor.m_ColoredCnt;
             }
         }
-    } else
+    }
+    else
     {
-        if (m_TrueColor.m_Color == captureer_color)
+        if(m_TrueColor.m_Color == captureer_color)
         {
             while (m_InCaptureNextTimePaint < g_MatrixMap->GetTime())
             {
@@ -1236,9 +1238,10 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                 ++m_TrueColor.m_ColoredCnt;
             }
 
-        } else
+        }
+        else
         {
-            while (m_InCaptureNextTimeErase < g_MatrixMap->GetTime())
+            while(m_InCaptureNextTimeErase < g_MatrixMap->GetTime())
             {
                 m_InCaptureNextTimeErase += g_Config.m_CaptureTimeErase;
                 m_InCaptureNextTimePaint = g_MatrixMap->GetTime() + g_Config.m_CaptureTimePaint;
@@ -1262,11 +1265,14 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
     return CAPTURE_INPROGRESS;
 }
 
+//Функция вызова подкрепления к указанной базе
 void CMatrixBuilding::Maintenance(void)
 {
-    if (m_Side == 0) return;
-    if (g_MatrixMap->MaintenanceDisabled()) return;
-    if (g_MatrixMap->BeforeMaintenanceTime() > 0) return;
+    if(m_Side == 0) return;
+    //Вызов подкрепления заблокирован на данной карте
+    if(g_MatrixMap->MaintenanceDisabled()) return;
+    //КД для вызова подкрепления ещё не прошёл
+    if(g_MatrixMap->BeforeMaintenanceTime() > 0) return;
 
     int cx=Float2Int(m_Pos.x*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
     int cy=Float2Int(m_Pos.y*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
@@ -1284,6 +1290,7 @@ void CMatrixBuilding::Maintenance(void)
 
     //m_Pos.x*GLOBAL_SACLE_MOVE+ROBOT_MOVECELLS_PER_SIZE*GLOBAL_SCALE_MOVE/2
 
+    //Выбирается точка сброса подкрепления возле здания
     g_MatrixMap->PlaceFindNear(0,4,cx,cy,0,NULL,NULL);
 
     CMatrixSideUnit *su = g_MatrixMap->GetSideById(m_Side);
@@ -1358,11 +1365,10 @@ void CMatrixBuilding::Maintenance(void)
 
 bool CMatrixBuilding::BuildFlyer(EFlyerKind kind)
 {
-    CMatrixFlyer *fl = g_MatrixMap->StaticAdd<CMatrixFlyer>();
+    CMatrixFlyer* fl = g_MatrixMap->StaticAdd<CMatrixFlyer>();
     fl->m_FlyerKind = kind;
 
     fl->Begin(this);
-
     return true;
 }
 
@@ -1375,43 +1381,52 @@ void CMatrixBuilding::ReleaseMe(void)
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
     if(GetSide() == PLAYER_SIDE)
     {
-        if (ps->m_ActiveObject == this)
+        if(ps->m_ActiveObject == this)
         {
             ps->PLDropAllActions();
         }
         ps->RemoveFromSelection(this);
     }
 
-    //for(int c = 1; c <= g_MatrixMap->m_SideCnt; c++){
+    //for(int c = 1; c <= g_MatrixMap->m_SideCnt; ++c)
+    //{
     //    s = g_MatrixMap->GetSideById(c);
-    //    if(s->m_Id == PLAYER_SIDE && s->m_ActiveObject == this){
+    //    if(s->m_Id == PLAYER_SIDE && s->m_ActiveObject == this)
+    //    {
     //        s->Select(NOTHING, NULL);
     //    }
-        //if(s != g_MatrixMap->GetPlayerSide() && s->m_GroupsList){
-        //    CMatrixGroup* grps = s->m_GroupsList->m_FirstGroup;
-        //    while(grps){
-        //        if(grps->m_Tactics && grps->m_Tactics->GetTarget() == this){
-        //            grps->DeInstallTactics();
-        //        }
-        //        grps = grps->m_NextGroup;
-        //    }
-        //}else{
-        //    if(s->m_CurGroup){
-        //        CMatrixTactics* t = s->m_CurGroup->GetTactics();
-        //        if(t && t->GetTarget() == this){
-        //            s->m_CurGroup->DeInstallTactics();
-        //        }
-        //    }
-        //}
+    //    if(s != g_MatrixMap->GetPlayerSide() && s->m_GroupsList)
+    //    {
+    //        CMatrixGroup* grps = s->m_GroupsList->m_FirstGroup;
+    //        while(grps)
+    //        {
+    //            if(grps->m_Tactics && grps->m_Tactics->GetTarget() == this)
+    //            {
+    //                grps->DeInstallTactics();
+    //            }
+    //            grps = grps->m_NextGroup;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if(s->m_CurGroup)
+    //        {
+    //            CMatrixTactics* t = s->m_CurGroup->GetTactics();
+    //            if(t && t->GetTarget() == this)
+    //            {
+    //                s->m_CurGroup->DeInstallTactics();
+    //            }
+    //        }
+    //    }
     //}
     
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
     
     while(objects)
     {
-        if (objects->IsLiveRobot())
+        if(objects->IsLiveRobot())
         {
-            if (objects->AsRobot()->GetBase() == this)
+            if(objects->AsRobot()->GetBase() == this)
             {
                 objects->AsRobot()->SetBase(NULL);
                 objects->AsRobot()->MustDie();
@@ -1423,7 +1438,8 @@ void CMatrixBuilding::ReleaseMe(void)
             {
                 objects->AsRobot()->StopCapture();
             }
-        } else if(objects->IsCannon() && objects->AsCannon()->m_ParentBuilding == this)
+        }
+        else if(objects->IsCannon() && objects->AsCannon()->m_ParentBuilding == this)
         {
             objects->AsCannon()->m_ParentBuilding = NULL;
         }
@@ -1452,7 +1468,7 @@ bool CMatrixBuilding::InRect(const CRect &rect) const
     m_GGraph->EnumFrameVerts_transform_position(EnumVertsHandler, (DWORD)&d);
     if (d.found) return true;
 
-    
+
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.left, rect.bottom), dir);
     if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
 
@@ -1475,7 +1491,7 @@ bool CMatrixBuilding::Select(void)
 
     float r = BUILDING_SELECTION_SIZE;
 
-    if (m_Kind == BUILDING_BASE)
+    if(m_Kind == BUILDING_BASE)
     {
         r = BUILDING_SELECTION_SIZE + 24;
         pos.x -= m_Core->m_Matrix._11 * 7;
@@ -1484,25 +1500,25 @@ bool CMatrixBuilding::Select(void)
         pos.x += m_Core->m_Matrix._21 * 16;
         pos.y += m_Core->m_Matrix._22 * 16;
     }
-    if (m_Kind == BUILDING_ENERGY)
+    if(m_Kind == BUILDING_ENERGY)
     {
         r = BUILDING_SELECTION_SIZE + 10;
         pos.x -= m_Core->m_Matrix._21 * 13;
         pos.y -= m_Core->m_Matrix._22 * 13;
     }
-    if (m_Kind == BUILDING_PLASMA)
+    if(m_Kind == BUILDING_PLASMA)
     {
         r = BUILDING_SELECTION_SIZE + 15;
         pos.x -= m_Core->m_Matrix._21 * 17;
         pos.y -= m_Core->m_Matrix._22 * 17;
     }
-    if (m_Kind == BUILDING_TITAN)
+    if(m_Kind == BUILDING_TITAN)
     {
         r = BUILDING_SELECTION_SIZE + 15;
         pos.x -= m_Core->m_Matrix._21 * 17;
         pos.y -= m_Core->m_Matrix._22 * 17;
     }
-    if (m_Kind == BUILDING_ELECTRONIC)
+    if(m_Kind == BUILDING_ELECTRONIC)
     {
         r = BUILDING_SELECTION_SIZE + 17;
         pos.x -= m_Core->m_Matrix._21 * 17;
@@ -1510,7 +1526,9 @@ bool CMatrixBuilding::Select(void)
     }
 
 	m_Selection = (CMatrixEffectSelection*)CMatrixEffect::CreateSelection(pos, r);
-    if (!g_MatrixMap->AddEffect(m_Selection)){
+
+    if(!g_MatrixMap->AddEffect(m_Selection))
+    {
         m_Selection = NULL;
         return false;
     }
@@ -1519,7 +1537,8 @@ bool CMatrixBuilding::Select(void)
 
 void CMatrixBuilding::UnSelect(void)
 {
-    if(m_Selection){
+    if(m_Selection)
+    {
         m_Selection->Kill();
         m_Selection = NULL;
     }
@@ -1648,7 +1667,7 @@ void CMatrixBuilding::DeletePlacesShow()
     DTRACE();
     if(IsLiveBuilding() && m_PlacesShow)
     {
-        for(int i = 0;i<MAX_PLACES;i++)
+        for(int i = 0; i<MAX_PLACES; ++i)
         {
 #ifdef _DEBUG
             m_PlacesShow[i].Release(DEBUG_CALL_INFO);
@@ -1666,34 +1685,44 @@ void CMatrixBuilding::DeletePlacesShow()
 
 void CBuildStack::TickTimer(int ms)
 {
-    if(!m_Items /*|| (m_ParentBase->IsBase() && m_ParentBase->m_State != BASE_CLOSED)*/){
+    if(!m_Items /*|| (m_ParentBase->IsBase() && m_ParentBase->m_State != BASE_CLOSED)*/)
+    {
         m_Timer = 0;
         return;
     }
 
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
     m_Timer += ms;
-    
-    if(m_Items && m_Top->IsRobot()){
+
+    if(m_Items && m_Top->IsRobot())
+    {
         float x = g_IFaceList->GetMainX()+283;
         float y = g_IFaceList->GetMainY()+71;
 
         m_PB.Modify(100000.0f, 0);
-        if(m_Timer <= g_Config.m_Timings[UNIT_ROBOT]){
+        if(m_Timer <= g_Config.m_Timings[UNIT_ROBOT])
+        {
             m_PB.Modify(float(m_Timer) / float(g_Config.m_Timings[UNIT_ROBOT]));
         }
 
-        
-        if(ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject == m_ParentBase){
+        if(ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject == m_ParentBase)
+        {
             m_PB.CreateClone(PBC_CLONE1, x, y, 87);
-        }else{
+        }
+        else
+        {
             m_PB.KillClone(PBC_CLONE1);
         }
-        if(m_Timer >= g_Config.m_Timings[UNIT_ROBOT] && m_ParentBase->m_State == BASE_CLOSED){
-            if(m_Top->GetSide() == PLAYER_SIDE && !FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE)){
-                if(g_MatrixMap->Rnd(0,1)){
+        if(m_Timer >= g_Config.m_Timings[UNIT_ROBOT] && m_ParentBase->m_State == BASE_CLOSED)
+        {
+            if(m_Top->GetSide() == PLAYER_SIDE && !FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE))
+            {
+                if(g_MatrixMap->Rnd(0,1))
+                {
                     CSound::Play(S_ROBOT_BUILD_END, SL_ALL);
-                }else{
+                }
+                else
+                {
                     CSound::Play(S_ROBOT_BUILD_END_ALT, SL_ALL);
                 }
             }
@@ -1703,7 +1732,8 @@ void CBuildStack::TickTimer(int ms)
 
             //produce robot, del from stack
             //STUB:
-            if(m_ParentBase->GetSide() == PLAYER_SIDE){
+            if(m_ParentBase->GetSide() == PLAYER_SIDE)
+            {
                 g_IFaceList->DeleteStackIcon(1, m_ParentBase);
             }
             //m_ParentBase->m_BusyFlag.SetBusy((CMatrixRobotAI*)m_Top); // do not busy flag while building robot
@@ -1717,27 +1747,37 @@ void CBuildStack::TickTimer(int ms)
             m_Items--;
             
         }
-    }/*else if(m_Items && m_Top->GetObjectType() == OBJECT_TYPE_FLYER){
+    }
+    else if(m_Items && m_Top->GetObjectType() == OBJECT_TYPE_FLYER)
+    {
         float x = g_IFaceList->GetMainX()+283;
         float y = g_IFaceList->GetMainY()+71;
 
         m_PB.Modify(100000.0f, 0);
-        if(m_Timer <= g_Config.m_Timings[UNIT_FLYER]){
+        if(m_Timer <= g_Config.m_Timings[UNIT_FLYER])
+        {
             m_PB.Modify(m_Timer * 1.0f/g_Config.m_Timings[UNIT_FLYER]);    
         }
-        
-        
-        if(ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject == m_ParentBase){
+
+        if(ps->m_CurrSel == BASE_SELECTED && ps->m_ActiveObject == m_ParentBase)
+        {
             m_PB.CreateClone(PBC_CLONE1, x, y, 87);
-        }else{
+        }
+        else
+        {
             m_PB.KillClone(PBC_CLONE1);
         }
-        
-        if(m_Timer >= g_Config.m_Timings[UNIT_FLYER] && m_ParentBase->m_State == BASE_CLOSED){
-            if(m_Top->GetSide() == PLAYER_SIDE){
-                if(g_MatrixMap->Rnd(0,1)){                
+
+        if(m_Timer >= g_Config.m_Timings[UNIT_FLYER] && m_ParentBase->m_State == BASE_CLOSED)
+        {
+            if(m_Top->GetSide() == PLAYER_SIDE)
+            {
+                if(g_MatrixMap->Rnd(0,1))
+                {                
                     CSound::Play(S_FLYER_BUILD_END, SL_ALL);
-                }else{
+                }
+                else
+                {
                     CSound::Play(S_FLYER_BUILD_END_ALT, SL_ALL);
                 }
             }
@@ -1746,10 +1786,10 @@ void CBuildStack::TickTimer(int ms)
             m_PB.KillClone(PBC_CLONE1);
             //produce flyer, del from stack
             //STUB:
-            if(m_ParentBase->GetSide() == PLAYER_SIDE){
+            if(m_ParentBase->GetSide() == PLAYER_SIDE)
+            {
                 g_IFaceList->DeleteStackIcon(1, m_ParentBase);
             }
-
 
             g_MatrixMap->AddObject(m_Top, true);
 
@@ -1758,9 +1798,10 @@ void CBuildStack::TickTimer(int ms)
 
             LIST_DEL(m_Top, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem);
             m_Items--;
-
         }
-    }*/else if(m_Items && m_Top->IsCannon()){
+    }
+    else if(m_Items && m_Top->IsCannon())
+    {
         float x = g_IFaceList->GetMainX()+283;
         float y = g_IFaceList->GetMainY()+71;
         float percent_done = float(m_Timer) / float(g_Config.m_Timings[UNIT_TURRET]);
@@ -1770,21 +1811,32 @@ void CBuildStack::TickTimer(int ms)
         //((CMatrixCannon*)m_Top)->SetPBOutOfScreen();
         m_Top->AsCannon()->SetHitPoint(m_Top->AsCannon()->GetMaxHitPoint() * percent_done);
         
-        if((ps->m_CurrSel == BASE_SELECTED || ps->m_CurrSel == BUILDING_SELECTED) && ps->m_ActiveObject == m_ParentBase){
+        if((ps->m_CurrSel == BASE_SELECTED || ps->m_CurrSel == BUILDING_SELECTED) && ps->m_ActiveObject == m_ParentBase)
+        {
             m_PB.CreateClone(PBC_CLONE1, x, y, 87);
-        }else{
+        }
+        else
+        {
             m_PB.KillClone(PBC_CLONE1);
         }
-        if(m_Timer >= g_Config.m_Timings[UNIT_TURRET]){
+        if(m_Timer >= g_Config.m_Timings[UNIT_TURRET])
+        {
             if(m_Top->GetSide() == PLAYER_SIDE)
             {
-                if (m_Top->AsCannon()->m_Num == 1){
+                if (m_Top->AsCannon()->m_Num == 1)
+                {
                     CSound::Play(S_TURRET_BUILD_0, SL_ALL);
-                }else if (m_Top->AsCannon()->m_Num == 2){
+                }
+                else if (m_Top->AsCannon()->m_Num == 2)
+                {
                     CSound::Play(S_TURRET_BUILD_1, SL_ALL);
-                }else if (m_Top->AsCannon()->m_Num == 3){
+                }
+                else if (m_Top->AsCannon()->m_Num == 3)
+                {
                     CSound::Play(S_TURRET_BUILD_2, SL_ALL);
-                }else if (m_Top->AsCannon()->m_Num == 4){
+                }
+                else if (m_Top->AsCannon()->m_Num == 4)
+                {
                     CSound::Play(S_TURRET_BUILD_3, SL_ALL);
                 }
             }
@@ -1792,16 +1844,20 @@ void CBuildStack::TickTimer(int ms)
             m_Timer = 0;
             m_PB.KillClone(PBC_CLONE1);
 
-            for(int i=0; i < MAX_PLACES;i++){
-                if(m_ParentBase->m_TurretsPlaces[i].m_Coord.x == Float2Int(m_Top->AsCannon()->m_Pos.x / GLOBAL_SCALE_MOVE) && m_ParentBase->m_TurretsPlaces[i].m_Coord.y == Float2Int(m_Top->AsCannon()->m_Pos.y / GLOBAL_SCALE_MOVE)){
+            for(int i=0; i < MAX_PLACES; ++i)
+            {
+                if(m_ParentBase->m_TurretsPlaces[i].m_Coord.x == Float2Int(m_Top->AsCannon()->m_Pos.x / GLOBAL_SCALE_MOVE) && m_ParentBase->m_TurretsPlaces[i].m_Coord.y == Float2Int(m_Top->AsCannon()->m_Pos.y / GLOBAL_SCALE_MOVE))
+                {
                     m_ParentBase->m_TurretsPlaces[i].m_CannonType = m_Top->AsCannon()->m_Num;
                 }
             }
             
             //STUB:
-            if(m_ParentBase->GetSide() == PLAYER_SIDE){
+            if(m_ParentBase->GetSide() == PLAYER_SIDE)
+            {
                 g_IFaceList->DeleteStackIcon(1, m_ParentBase);
-                if(g_MatrixMap->GetPlayerSide()->m_ActiveObject == m_ParentBase){
+                if(g_MatrixMap->GetPlayerSide()->m_ActiveObject == m_ParentBase)
+                {
                     g_IFaceList->CreateDynamicTurrets(m_ParentBase);
                 }
             }
@@ -1811,19 +1867,20 @@ void CBuildStack::TickTimer(int ms)
             int ss = m_Top->GetSide();
             if (ss != 0) g_MatrixMap->GetSideById(ss)->IncStatValue(STAT_TURRET_BUILD);
 
-
             m_Top->ResetInvulnerability();
             LIST_DEL(m_Top, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem);
 
             m_Items--;
-
         }
     }
 
-    //if(m_Top){
+    //if(m_Top)
+    //{
     //    CMatrixMapStatic* o = m_Top->m_NextStackItem;
-    //    while(o){
-    //        if(o->GetObjectType() == OBJECT_TYPE_CANNON){
+    //    while(o)
+    //    {
+    //        if(o->GetObjectType() == OBJECT_TYPE_CANNON)
+    //        {
     //            ((CMatrixCannon*)o)->SetTerainColor(0xFF00FF00);
     //        }
     //        o = o->m_NextStackItem;
@@ -1833,11 +1890,13 @@ void CBuildStack::TickTimer(int ms)
 
 void CBuildStack::AddItem(CMatrixMapStatic* item)
 { 
-    if(item && m_Items < MAX_STACK_UNITS){ 
+    if(item && m_Items < MAX_STACK_UNITS)
+    {
         LIST_ADD(item, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem); 
         m_Items++;
         //STUB:
-        if(item->GetSide() == PLAYER_SIDE){
+        if(item->GetSide() == PLAYER_SIDE)
+        {
             g_IFaceList->CreateStackIcon(m_Items, m_ParentBase, item);
         }
     } 
@@ -1845,31 +1904,40 @@ void CBuildStack::AddItem(CMatrixMapStatic* item)
 
 int CBuildStack::DeleteItem(int no)
 {
-    if(m_Items){
-        if(no == 1){
+    if(m_Items)
+    {
+        if(no == 1)
+        {
             m_Timer = 0;
             m_PB.KillClone(PBC_CLONE1);
         }
         //STUB:
-        if(m_ParentBase->GetSide() == PLAYER_SIDE){
+        if(m_ParentBase->GetSide() == PLAYER_SIDE)
+        {
             g_IFaceList->DeleteStackIcon(no, m_ParentBase);
         }
         
         CMatrixMapStatic* items = m_Top;
         int i = 0;
-        while(items){
+        while(items)
+        {
             i++;
-            if(i == no){
+            if(i == no)
+            {
                 LIST_DEL(items, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem);
                 if(items->IsRobot())
                 {
                     ReturnRobotResources(items->AsRobot());
                     HDelete(CMatrixRobotAI, (CMatrixRobotAI*)items, g_MatrixHeap);
-                }else if(items->IsCannon()){
+                }
+                else if(items->IsCannon())
+                {
                     ReturnTurretResources(items->AsCannon());
                     items->UnjoinGroup();
                     g_MatrixMap->StaticDelete(items);
-                }else if(items->IsFlyer()){
+                }
+                else if(items->IsFlyer())
+                {
                     HDelete(CMatrixFlyer, (CMatrixFlyer*)items, g_MatrixHeap);
                 }
                 m_Items--;
@@ -1883,7 +1951,8 @@ int CBuildStack::DeleteItem(int no)
 
 CBuildStack::~CBuildStack()
 {
-    if(m_Items){
+    if(m_Items)
+    {
         CMatrixMapStatic* items = m_Top;
 
         while(items)
@@ -1891,12 +1960,18 @@ CBuildStack::~CBuildStack()
             if(items->m_NextStackItem)
             {
 			    items = items->m_NextStackItem;
-            } else {
-                if(items->IsRobot()){
+            }
+            else
+            {
+                if(items->IsRobot())
+                {
                     HDelete(CMatrixRobotAI, (CMatrixRobotAI*)items, g_MatrixHeap);
-                }else if(items->IsFlyer()){
+                }
+                else if(items->IsFlyer())
+                {
                     HDelete(CMatrixFlyer, (CMatrixFlyer*)items, g_MatrixHeap);
-                }else if(items->IsCannon())
+                }
+                else if(items->IsCannon())
                 {
                     items->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0,0,0), D3DXVECTOR3(0,0,0),0,NULL);
                 }
@@ -1908,11 +1983,15 @@ CBuildStack::~CBuildStack()
 
             if(items && items->m_PrevStackItem)
             {
-                if(items->m_PrevStackItem->IsRobot()){
+                if(items->m_PrevStackItem->IsRobot())
+                {
                     HDelete(CMatrixRobotAI, (CMatrixRobotAI*)items->m_PrevStackItem, g_MatrixHeap);
-                }else if(items->m_PrevStackItem->IsFlyer()){
+                }
+                else if(items->m_PrevStackItem->IsFlyer())
+                {
                     HDelete(CMatrixFlyer, (CMatrixFlyer*)items->m_PrevStackItem, g_MatrixHeap);
-                }else if(items->m_PrevStackItem->IsCannon())
+                }
+                else if(items->m_PrevStackItem->IsCannon())
                 {
                     items->m_PrevStackItem->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0,0,0), D3DXVECTOR3(0,0,0),0,NULL);
                 }
@@ -1941,8 +2020,10 @@ int CBuildStack::GetRobotsCnt(void) const
 {
     CMatrixMapStatic *objects = m_Top;
     int robots = 0;
-    while(objects){
-        if(objects->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+    while(objects)
+    {
+        if(objects->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
             robots++;
         }
         objects = objects->m_NextStackItem;

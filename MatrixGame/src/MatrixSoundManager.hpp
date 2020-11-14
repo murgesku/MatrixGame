@@ -143,8 +143,10 @@ enum ESound
     S_WEAPON_HIT_CANNON3,
 
     S_ROBOT_UPAL,
-    //
+
+    //Новый робот построен
     S_ROBOT_BUILD_END,
+    //Робот готов
     S_ROBOT_BUILD_END_ALT,
     
     S_TURRET_BUILD_START,

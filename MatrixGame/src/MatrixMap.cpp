@@ -2653,60 +2653,61 @@ bool    CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float osca
 
     ++m_IntersectFlagFindObjects;
 
-    if (minx1 < 0)
+    if(minx1 < 0)
     {
         minx1 = 0;
         if (0 > maxx1) goto skip;
     }
-    if (maxx1 >= m_GroupSize.x)
+    if(maxx1 >= m_GroupSize.x)
     {
         maxx1 = m_GroupSize.x - 1;
         if (maxx1 < minx1) goto skip;
     }
-    if (miny1 < 0)
+    if(miny1 < 0)
     {
         miny1 = 0;
-        if (0 > maxy1) goto skip;
+        if(0 > maxy1) goto skip;
     }
-    if (maxy1 >= m_GroupSize.y)
+    if(maxy1 >= m_GroupSize.y)
     {
         maxy1 = m_GroupSize.y - 1;
-        if (maxy1 < miny1) goto skip;
+        if(maxy1 < miny1) goto skip;
     }
 
-    for (int x = minx1; x<=maxx1; ++x)
+    for(int x = minx1; x<=maxx1; ++x)
     {
-        for (int y = miny1; y<=maxy1; ++y)
+        for(int y = miny1; y<=maxy1; ++y)
         {
             PCMatrixMapGroup g = GetGroupByIndex(x,y);
             if (g == NULL) continue;
             int i = 0;
             CMatrixMapStatic *ms;
             CMatrixMapStatic *ms2 = NULL;
-            for(;;)
+            while(true)
             {
-                if (ms2 == NULL)
+                if(ms2 == NULL)
                 {
                     ms = g->FindObjectAny(mask,pos,radius,oscale,i);
-                } else
+                }
+                else
                 {
                     ms = ms2;
                     ms2 = NULL;
                 }
-                if (ms == NULL) break;
+                if(ms == NULL) break;
 
 
-                if (ms->m_IntersectFlagFindObjects == m_IntersectFlagFindObjects) continue;
+                if(ms->m_IntersectFlagFindObjects == m_IntersectFlagFindObjects) continue;
                 ms->m_IntersectFlagFindObjects = m_IntersectFlagFindObjects;
 
-                if (ms == skip) continue;
-                if (ms->IsFlyer())
+                if(ms == skip) continue;
+                if(ms->IsFlyer())
                 {
                     ms2 = ((CMatrixFlyer *)ms)->GetCarryingRobot();
-                    if (ms2 != NULL)
+                    if(ms2 != NULL)
                     {
                         float dist = D3DXVec2Length(&(*(D3DXVECTOR2 *)&ms2->GetGeoCenter() - pos)) - ms2->GetRadius()*oscale;
-                        if (dist >= radius)
+                        if(dist >= radius)
                         {
                             ms2 = NULL;
                         }
@@ -2748,7 +2749,7 @@ skip:;
             int mscnt = 1;
             msa[0] = m_AD_Obj[od];
 
-            for(;;)
+            while (true)
             {
                 if (mscnt == 0) break;
                 CMatrixMapStatic *ms = msa[0];
@@ -2880,7 +2881,7 @@ bool    CMatrixMap::FindObjects(const D3DXVECTOR3 &pos, float radius, float osca
             int i = 0;
             CMatrixMapStatic *ms;
             CMatrixMapStatic *ms2 = NULL;
-            for(;;)
+            while (true)
             {
                 if (ms2 == NULL)
                 {
@@ -2945,7 +2946,7 @@ skip:;
             int mscnt = 1;
             msa[0] = m_AD_Obj[od];
 
-            for(;;)
+            while (true)
             {
                 if (mscnt == 0) break;
                 CMatrixMapStatic *ms = msa[0];

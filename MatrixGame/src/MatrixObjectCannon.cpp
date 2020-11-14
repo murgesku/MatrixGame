@@ -209,7 +209,7 @@ void CMatrixCannon::RNeed(DWORD need)
         m_Unit[0].m_Graph = LoadObject((CWStr(OBJECT_PATH_CANNONS, g_CacheHeap) + L"Basis.vo").Get(),g_MatrixHeap, true);
 
         m_UnitCnt = 0;
-        for(;;)
+        while (true)
         {
 
             const wchar *nam = m_Unit[m_UnitCnt].m_Graph->VO()->GetMatrixNameById(20); 

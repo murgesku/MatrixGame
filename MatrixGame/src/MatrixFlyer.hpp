@@ -99,6 +99,7 @@ struct SMatrixFlyerUnit
 
             int m_CollapsedCountDown;
         } m_Vint;
+
         struct
         {
             CMatrixEffectWeapon * m_Weapon;
@@ -122,6 +123,7 @@ struct SMatrixFlyerUnit
             };
 
         } m_Weapon;
+
         struct
         {
             int   m_MatrixID; // matrix id
@@ -130,7 +132,6 @@ struct SMatrixFlyerUnit
         } m_Engine;
 
     };
-
 
     void    Release(void);
     bool    Takt(CMatrixFlyer *owner, float ms);
@@ -231,7 +232,10 @@ class CMatrixFlyer : public CMatrixMapStatic
     CTrajectory *m_Trajectory;
     union
     {
-        struct {D3DXVECTOR3 m_StoreTarget;}; // in breaking mode
+        struct // in breaking mode
+        {
+            D3DXVECTOR3 m_StoreTarget;
+        };
         struct
         {
             float        m_TrajectoryPos; // [0..1]
@@ -285,7 +289,7 @@ class CMatrixFlyer : public CMatrixMapStatic
     void CancelTrajectory(void);
     bool IsTrajectoryEnd(void) const {return m_TrajectoryPos >= 0.99f;}
 
-    float   CalcFlyerZInPoint(float x, float y);
+    float CalcFlyerZInPoint(float x, float y);
     CMatrixEffectSelection *m_Selection;
     int m_CtrlGroup;
 public:
@@ -354,7 +358,7 @@ public:
     void                SetAngle(float a)
     {
         a = (float)AngleNorm(a);
-        if (a!=m_AngleZ)
+        if(a != m_AngleZ)
         {
             m_AngleZ = a; SinCos(a, &m_AngleZSin, &m_AngleZCos);
         }
@@ -363,7 +367,7 @@ public:
     void                SetTarget(const D3DXVECTOR2 &tgt);
     void                SetFireTarget(const D3DXVECTOR3 &tgt)
     {
-        //if (!FLAG(m_Flags, MF_SEEKBASE))
+        //if(!FLAG(m_Flags, MF_SEEKBASE))
         {
             m_FireTarget = tgt;
             RESETFLAG(m_Flags, MF_TARGETFIRE);
@@ -404,7 +408,7 @@ public:
 
 
     virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
-	virtual void RNeed(dword need);
+	virtual void RNeed(dword need); // Запрашиваем нужные ресурсы объекта
 
 	virtual void Takt(int cms);
     virtual void LogicTakt(int cms);
@@ -421,12 +425,12 @@ public:
     virtual void Load(CBuf & buf, CTemporaryLoadData *td) {};
 
     virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
-    virtual int  GetSide(void) const {return m_Side;};
-    virtual bool  NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
+    virtual int GetSide(void) const {return m_Side;};
+    virtual bool NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
 
     virtual bool InRect(const CRect &rect)const;
 
-    void    OnOutScreen(void) {};
+    void OnOutScreen(void) {};
 };
 
 

@@ -227,7 +227,7 @@ void CConstructor::StackRobot(
 
         //if (!FLAG(g_Flags, SETBIT(22)))
         //{
-        //    for(;;) ;
+        //    while(true) ;
 
         //}
 
@@ -560,7 +560,7 @@ void CConstructor::SuperDjeans(
         auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
         int weapon_num = pilons_count.cnt;
         int t;
-        for(t=0;t < weapon_num && pilon_ost > 0; t++)
+        for(t=0;t < weapon_num && pilon_ost > 0; ++t)
         {
             if( !(pilons_count.list[t].access_invert & (1<<(6))) && !(pilons_count.list[t].access_invert & (1<<(4))) )
             {
@@ -589,7 +589,7 @@ void CConstructor::SuperDjeans(
         int pilon = 0;
         auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
         int common_weapon = pilons_count.cnt;
-        for(int t=0; t < common_weapon; t++)
+        for(int t=0; t < common_weapon; ++t)
         {
             if( (pilons_count.list[t].access_invert & (1<<(6))) || (pilons_count.list[t].access_invert & (1<<(4))) )
             {
@@ -630,7 +630,7 @@ void CConstructor::SuperDjeans(
         {
             //восстанавливаем обычные ружбайки
             int pilon = 0;
-            for(int i=0; i < MAX_WEAPON_CNT && pilon < m_Armor.m_MaxCommonWeaponCnt; i++)
+            for(int i=0; i < MAX_WEAPON_CNT && pilon < m_Armor.m_MaxCommonWeaponCnt; ++i)
             {
                 auto gun = old_cfg->m_Weapon[i].m_nKind;
                 if(gun && !(gun == RUK_WEAPON_BOMB || gun == RUK_WEAPON_MORTAR))
@@ -647,7 +647,7 @@ void CConstructor::SuperDjeans(
             //восстанавливаем супер оружие
             if(m_Armor.m_MaxExtraWeaponCnt)
             {
-                for(int i=0; i < MAX_WEAPON_CNT; i++)
+                for(int i=0; i < MAX_WEAPON_CNT; ++i)
                 {
                     auto gun = old_cfg->m_Weapon[i].m_nKind;
                     if(gun == RUK_WEAPON_BOMB || gun == RUK_WEAPON_MORTAR)
@@ -691,7 +691,7 @@ void CConstructor::Djeans007(
         auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
         int weapon_num = pilons_count.cnt;
         int t;
-        for(t=0; t < weapon_num && pilon_ost > 0; t++)
+        for(t=0; t < weapon_num && pilon_ost > 0; ++t)
         {
             if( !(pilons_count.list[t].access_invert & (1<<(6))) && !(pilons_count.list[t].access_invert & (1<<(4))) )
             {
@@ -719,7 +719,7 @@ void CConstructor::Djeans007(
         int pilon = 0;
         auto pilons_count = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind - 1];
         int common_weapon = pilons_count.cnt;
-        for(int t=0; t < common_weapon; t++)
+        for(int t=0; t < common_weapon; ++t)
         {
             if( (pilons_count.list[t].access_invert & (1<<(6))) || (pilons_count.list[t].access_invert & (1<<(4))) )
             {
@@ -849,7 +849,7 @@ void CConstructor::OperateUnit(ERobotUnitType type, ERobotUnitKind kind)
 		m_nUnitCnt++;
     }
 
-    for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+    for(int nC = 0; nC < MAX_WEAPON_CNT; ++nC)
     {
         if(m_Weapon[nC].m_Unit.m_nKind != 0)
         {
@@ -874,7 +874,7 @@ int CConstructor::CheckWeaponLegality(
         int fis_pilon = 0;
         int weapon_num = g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].cnt;
         int pilon_ost = weapon_num;
-        for(int t=0; t < weapon_num; t++)
+        for(int t=0; t < weapon_num; ++t)
         {
             if( !(g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(6))) &&
                 !(g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(4))) && weapons[t].m_Unit.m_nKind == 0)
@@ -882,13 +882,12 @@ int CConstructor::CheckWeaponLegality(
                 return t;
             }
         }
-        
     }
     else
     {
         int pilon = 0;
         int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].cnt;
-        for(int t=0; t < common_weapon; t++)
+        for(int t=0; t < common_weapon; ++t)
         {
             if( (g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(6))) ||
                 (g_MatrixMap->m_RobotWeaponMatrix[armorKind-1].list[t].access_invert & (1<<(4))) )
@@ -896,7 +895,6 @@ int CConstructor::CheckWeaponLegality(
                 return t;
             }
         }
-
     }
 
 	return -1;
@@ -912,7 +910,7 @@ void CConstructor::InsertUnits()
 	}
     if(m_Armor.m_Unit.m_nKind != 0)
     {
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        for(int nC = 0; nC < MAX_WEAPON_CNT; ++nC)
         {
 		    if(m_Weapon[nC].m_Unit.m_nKind != 0)
             {
@@ -939,7 +937,6 @@ void CConstructor::ResetConstruction()
 	ZeroMemory(&m_Chassis, sizeof(SUnit));
 	
 	m_nUnitCnt = 0;
-
 }
 
 void CConstructor::BuildSpecialBot(const SSpecialBot &bot)
@@ -950,7 +947,7 @@ void CConstructor::BuildSpecialBot(const SSpecialBot &bot)
 //ARMOR
     OperateUnit(MRT_ARMOR, bot.m_Armor.m_Unit.m_nKind);
 //WEAPON
-	for(int i = 0; i <= MAX_WEAPON_CNT; i++)
+	for(int i = 0; i <= MAX_WEAPON_CNT; ++i)
     {
         OperateUnit(MRT_WEAPON, bot.m_Weapon[i].m_Unit.m_nKind);
 	}

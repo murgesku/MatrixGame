@@ -22,7 +22,7 @@ void SWeaponRepairData::Release(void)
 
 void SWeaponRepairData::Draw(bool now)
 {
-    if (!FLAG(m_Flags, CAN_BE_DRAWN)) return;
+    if(!FLAG(m_Flags, CAN_BE_DRAWN)) return;
 
     BYTE a = g_MatrixMap->IsPaused()?240:(BYTE(FRND(128) + 128));
 
@@ -44,7 +44,7 @@ void SWeaponRepairData::Draw(bool now)
     m_b0.SetPos(p0);
     m_b1.SetPos(p1);
 
-    if (now)
+    if(now)
     {
         CVectorObject::DrawEnd();
 
@@ -85,7 +85,7 @@ SWeaponRepairData *SWeaponRepairData::Allocate(void)
 
 void SBotWeapon::PrepareRepair(void)
 {
-    if (m_Unit)
+    if(m_Unit)
     {
         ASSERT(m_Unit->m_WeaponRepairData == NULL);
         m_Unit->m_WeaponRepairData = SWeaponRepairData::Allocate();
@@ -180,36 +180,34 @@ void CMatrixRobotAI::DIPTakt(float ms)
 	DTRACE();
 
 
-
     D3DXVECTOR3 *pos;
     D3DXMATRIX  *mat;
 
     bool del = true;
-    for (int i = 0; i<m_UnitCnt; i++)
+    for(int i = 0; i<m_UnitCnt; ++i)
     {
-        if (m_Unit[i].m_TTL <= 0) continue;
+        if(m_Unit[i].m_TTL <= 0) continue;
         m_Unit[i].m_TTL -= ms;
 
         pos = &m_Unit[i].m_Pos;
 
-        if (m_Unit[i].m_TTL <= 0)
+        if(m_Unit[i].m_TTL <= 0)
         {
             // create explosive
 
             pos->z += 10;
             CMatrixEffect::CreateExplosion(*pos, ExplosionRobotBoomSmall, true);
-            if (m_Unit[i].Smoke().effect)
+            if(m_Unit[i].Smoke().effect)
             {
                 ((CMatrixEffectSmoke *)m_Unit[i].Smoke().effect)->SetTTL(1000);
                 m_Unit[i].Smoke().Unconnect();
             }
-
             continue;
         }
 
         del = false;
 
-        if (IS_ZERO_VECTOR(m_Unit[i].m_Velocity))
+        if(IS_ZERO_VECTOR(m_Unit[i].m_Velocity))
         {
             continue;
         }
@@ -222,14 +220,14 @@ void CMatrixRobotAI::DIPTakt(float ms)
      
         D3DXVECTOR3 hitpos;
         CMatrixMapStatic * o = g_MatrixMap->Trace(&hitpos, oldpos, *pos, TRACE_ALL, this);
-        if (o == TRACE_STOP_WATER)
+        if(o == TRACE_STOP_WATER)
         {
             // in water
-            if (g_MatrixMap->GetZ(hitpos.x, hitpos.y) < WATER_LEVEL)
+            if(g_MatrixMap->GetZ(hitpos.x, hitpos.y) < WATER_LEVEL)
             {
                 m_Unit[i].m_TTL = 0;
                 CMatrixEffect::CreateKonusSplash(hitpos, D3DXVECTOR3(0,0,1), 10, 5, FSRND(M_PI), 1000, true, (CTextureManaged *)g_Cache->Get(cc_TextureManaged,TEXTURE_PATH_SPLASH));
-                if (m_Unit[i].Smoke().effect)
+                if(m_Unit[i].Smoke().effect)
                 {
                     ((CMatrixEffectSmoke *)m_Unit[i].Smoke().effect)->SetTTL(1000);
                     m_Unit[i].Smoke().Unconnect();
@@ -237,19 +235,19 @@ void CMatrixRobotAI::DIPTakt(float ms)
             }
         }
         else
-        if (o == TRACE_STOP_LANDSCAPE)
+        if(o == TRACE_STOP_LANDSCAPE)
         {
             m_Unit[i].m_Velocity = D3DXVECTOR3(0,0,0);
             m_Unit[i].m_Pos = hitpos;
 
             SMatrixMapUnit *mu = g_MatrixMap->UnitGetTest(Float2Int(hitpos.x * INVERT(GLOBAL_SCALE)), Float2Int(hitpos.y * INVERT(GLOBAL_SCALE)));
-            if (mu == NULL || mu->m_Base != NULL)
+            if(mu == NULL || mu->m_Base != NULL)
             {
                 m_Unit[i].m_TTL = 0;
             }
         }
         else
-        if (IS_TRACE_STOP_OBJECT(o))
+        if(IS_TRACE_STOP_OBJECT(o))
         {
             o->Damage(WEAPON_DEBRIS, hitpos, m_Unit[i].m_Velocity,0,NULL);
             m_Unit[i].m_TTL = 1;
@@ -270,14 +268,14 @@ void CMatrixRobotAI::DIPTakt(float ms)
         mat->_42 = pos->y;
         mat->_43 = pos->z;
 
-        if (m_Unit[i].Smoke().effect)
+        if(m_Unit[i].Smoke().effect)
         {
             ((CMatrixEffectSmoke *)m_Unit[i].Smoke().effect)->SetPos(*pos);
         }
 
     }
 
-    if (del)
+    if(del)
     {
         g_MatrixMap->StaticDelete(this);
     }
@@ -297,7 +295,7 @@ static bool CollisionRobots(const D3DXVECTOR3 & center, CMatrixMapStatic *ms, DW
 
     D3DXVECTOR3 v(center - ms->GetGeoCenter());
     float dist = D3DXVec3LengthSq(&v);
-    if (dist < d->neardist2)
+    if(dist < d->neardist2)
     {
         d->norm = v;
         d->neardist2 = dist;
@@ -310,11 +308,11 @@ void CMatrixRobotAI::PauseTakt(int cms)
 {
 	DTRACE();
     m_PB.Modify(100000.0f, 0);
-    if (m_CurrState == ROBOT_DIP) return;
-    if (m_ShowHitpointTime > 0)
+    if(m_CurrState == ROBOT_DIP) return;
+    if(m_ShowHitpointTime > 0)
     {
         m_ShowHitpointTime -= cms;
-        if (m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
+        if(m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
     }
 
 }
@@ -324,29 +322,31 @@ void CMatrixRobotAI::LogicTakt(int ms)
 {
 	DTRACE();
 
-    if (0)
+    if(0)
     {
         do_animation:;
         DCP();
 
-        if (fabs(m_Speed) <= 0.01f) 
+        if(fabs(m_Speed) <= 0.01f) 
         {
             SwitchAnimation(ANIMATION_STAY);
-        } else
+        }
+        else
         {
             bool mt = FindOrderLikeThat(ROT_MOVE_TO);
-            if (!mt) mt = FindOrderLikeThat(ROT_CAPTURE_FACTORY);
+            if(!mt) mt = FindOrderLikeThat(ROT_CAPTURE_FACTORY);
 
-            if (mt)
+            if(mt)
             {
                 SwitchAnimation(ANIMATION_MOVE);
-            } else if (FindOrderLikeThat(ROT_MOVE_TO_BACK))
+            }
+            else if(FindOrderLikeThat(ROT_MOVE_TO_BACK))
             {
                 SwitchAnimation(ANIMATION_MOVE_BACK);
             }
         }
 
-        if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+        if(m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
         {
             DoAnimation(ms);
             LinkPneumatic(); // corrects pneumatic
@@ -355,16 +355,16 @@ void CMatrixRobotAI::LogicTakt(int ms)
     }
 
 
-    if (IsMustDie() && m_CurrState != ROBOT_DIP)
+    if(IsMustDie() && m_CurrState != ROBOT_DIP)
     {
         Damage(WEAPON_INSTANT_DEATH, GetGeoCenter(), D3DXVECTOR3(0,0,0),0,NULL);
         return;
     }
 
-    if (GetBase())
+    if(GetBase())
     {
         m_TimeWithBase += ms;
-        if (m_TimeWithBase > 10000)
+        if(m_TimeWithBase > 10000)
         {
             GetBase()->Close();
             m_TimeWithBase = 0;
@@ -390,13 +390,14 @@ DCP();
 DCP();
 
 #ifdef _SUB_BUG
-    if(this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()){
+    if(this == g_MatrixMap->GetPlayerSide()->GetArcadedObject())
+    {
         g_MatrixMap->m_DI.T(L"ms", CWStr(ms));
     }
 #endif
 
     m_PB.Modify(100000.0f, 0);
-    if (m_CurrState == ROBOT_DIP)
+    if(m_CurrState == ROBOT_DIP)
     {
         DIPTakt(float(ms));
         return;
@@ -404,31 +405,31 @@ DCP();
 
 DCP();
 
-    if (m_MiniMapFlashTime > 0)
+    if(m_MiniMapFlashTime > 0)
     {
         m_MiniMapFlashTime -= ms;
     }
 
-    if (m_ShowHitpointTime > 0)
+    if(m_ShowHitpointTime > 0)
     {
         m_ShowHitpointTime -= ms;
-        if (m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
+        if(m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
     }
 
-	if (IsAblaze())
+	if(IsAblaze())
     {
 DCP();
 
-        if (m_Ablaze.effect == NULL)
+        if(m_Ablaze.effect == NULL)
         {
             CMatrixEffect::CreateShleif(&m_Ablaze);
         }
 
-        if (m_Ablaze.effect != NULL)
+        if(m_Ablaze.effect != NULL)
         {
             //((CMatrixEffectShleif *)m_Ablaze.effect)->SetTTL(1000);
 
-            while (g_MatrixMap->GetTime() > m_NextTimeAblaze)
+            while(g_MatrixMap->GetTime() > m_NextTimeAblaze)
             {
                 m_NextTimeAblaze += OBJECT_ROBOT_ABLAZE_PERIOD_EFFECT;
 
@@ -443,16 +444,17 @@ DCP();
                     pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
                     D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y, m_Core->m_Matrix._43 - pos.z));
                     
-                } while (!PickFull(pos, dir, &t) && (--cnt > 0));
+                }
+                while(!PickFull(pos, dir, &t) && (--cnt > 0));
 
-                if (cnt>0)
+                if(cnt>0)
                 {
                     ((CMatrixEffectShleif *)m_Ablaze.effect)->
                         AddFire(pos + dir * (t + 2), 100, 1500, 30, 2.5f, false, 1.0f/35.0f);
                 }
 
-                for (int i=0;i<OBJECT_ROBOT_ABLAZE_PERIOD_EFFECT;i+=OBJECT_ROBOT_ABLAZE_PERIOD)
-                    if (Damage(WEAPON_ABLAZE, pos, dir,m_LastDelayDamageSide,NULL)) return;
+                for(int i=0;i<OBJECT_ROBOT_ABLAZE_PERIOD_EFFECT;i+=OBJECT_ROBOT_ABLAZE_PERIOD)
+                    if(Damage(WEAPON_ABLAZE, pos, dir,m_LastDelayDamageSide,NULL)) return;
             }
         }
     }
@@ -466,11 +468,11 @@ DCP();
     //}
 
 DCP();
-    if (IsShorted())
+    if(IsShorted())
     {
 DCP();
 
-        while (g_MatrixMap->GetTime() > m_NextTimeShorted)
+        while(g_MatrixMap->GetTime() > m_NextTimeShorted)
         {
             m_NextTimeShorted += OBJECT_SHORTED_PERIOD;
 
@@ -485,8 +487,9 @@ DCP();
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
                 D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y, m_Core->m_Matrix._43 - pos.z));
                 
-            } while (!Pick(pos, dir, &t) && (--cnt > 0));
-            if (cnt>0)
+            }
+            while(!Pick(pos, dir, &t) && (--cnt > 0));
+            if(cnt>0)
             {
                 d1 = pos + dir * t;
             }
@@ -497,24 +500,25 @@ DCP();
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
                 D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y, m_Core->m_Matrix._43 - pos.z));
                 
-            } while (!Pick(pos, dir, &t) && (--cnt > 0));
-            if (cnt > 0)
+            }
+            while(!Pick(pos, dir, &t) && (--cnt > 0));
+            if(cnt > 0)
             {
                 d2 = pos + dir * t;
                 CMatrixEffect::CreateShorted(d1, d2, FRND(400) + 100);
             }
-            if (Damage(WEAPON_SHORTED, pos, dir,m_LastDelayDamageSide,NULL)) return;
+            if(Damage(WEAPON_SHORTED, pos, dir,m_LastDelayDamageSide,NULL)) return;
         }
     }
 
 DCP();
 
-    if (IsCrazy())
+    if(IsCrazy())
     {
         static int ppx = -1;
         static int ppy = -1;
         static int cnt = 0;
-        if (ppx == m_MapX && ppy == m_MapY)
+        if(ppx == m_MapX && ppy == m_MapY)
             cnt++;
         else
         {
@@ -522,7 +526,7 @@ DCP();
             ppy = m_MapY;
         }
 
-        if (cnt > 100 || (PLIsInPlace() && GetEnv()->GetEnemyCnt()<=0))
+        if(cnt > 100 || (PLIsInPlace() && GetEnv()->GetEnemyCnt()<=0))
         {
             cnt = 0;
             ppx = m_MapX;
@@ -531,21 +535,20 @@ DCP();
 
             CMatrixMapStatic * target = NULL;
             CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-            for (;ms;ms = ms->GetNextLogic())
+            for(; ms; ms = ms->GetNextLogic())
             {
-                //if (ms->IsLiveBuilding() && !ms->IsBase())
+                //if(ms->IsLiveBuilding() && !ms->IsBase())
                 //{
                 //    b = ms->AsBuilding();
                 //    if (FRND(1) < 0.1f) break;
                 //}
-                if (ms->IsLiveRobot() && ms != this)
+                if(ms->IsLiveRobot() && ms != this)
                 {
                     target = ms;
-                    if (ms->GetSide() == PLAYER_SIDE)
-                        break;
+                    if(ms->GetSide() == PLAYER_SIDE) break;
                 }
             }
-            if (target == NULL)
+            if(target == NULL)
             {
                 MustDie();
                 return;
@@ -568,7 +571,7 @@ DCP();
 DCP();
 
 
-    if (m_CurrState == ROBOT_FALLING)
+    if(m_CurrState == ROBOT_FALLING)
     {
 DCP();
 
@@ -578,7 +581,7 @@ DCP();
         RChange(MR_Matrix|MR_ShadowProjGeom|MR_ShadowProjTex|MR_ShadowStencil);
 
         float z = Z_From_Pos();
-        if (m_Core->m_Matrix._43 < z)
+        if(m_Core->m_Matrix._43 < z)
         {
             m_Core->m_Matrix._43 = z;
             m_CurrState = ROBOT_SUCCESSFULLY_BUILD;
@@ -592,7 +595,7 @@ DCP();
             CMatrixEffect::CreateDust(NULL, *(D3DXVECTOR2*)&GetGeoCenter(), D3DXVECTOR2(0,0), 3000);
             JoinToGroup();
 
-            if (m_Unit[0].m_Kind == RUK_CHASSIS_TRACK || m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL)
+            if(m_Unit[0].m_Kind == RUK_CHASSIS_TRACK || m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL)
                 m_ChassisData.m_LastSolePos = GetGeoCenter();
 
             //int x0 = TruncFloat(m_PosX * INVERT(GLOBAL_SCALE_MOVE));
@@ -604,20 +607,19 @@ DCP();
 
             CSound::AddSound(S_ROBOT_UPAL, GetGeoCenter());
         }
-
         return;
     }
 
 DCP();
 
-    if (m_CurrState == ROBOT_CARRYING)
+    if(m_CurrState == ROBOT_CARRYING)
     {
 DCP();
 
         RCData data;
 
         float mul = (float)(1.0 - pow(CARRYING_SPEED, double(ms)));
-        if (m_CargoFlyer->GetCarryData()->m_RobotElevatorField && m_CargoFlyer->GetCarryData()->m_RobotElevatorField->m_Activated)
+        if(m_CargoFlyer->GetCarryData()->m_RobotElevatorField && m_CargoFlyer->GetCarryData()->m_RobotElevatorField->m_Activated)
         {
             //m_Matrix._43 -= (0.01f * ms);
             m_CargoFlyer->GetCarryData()->m_RobotMassFactor += (0.0005f * ms);
@@ -629,9 +631,8 @@ DCP();
             //if (FRND(1) < mul * 0.5f)
             //    g_MatrixMap->AddEffect(CMatrixEffect::CreateShorted(g_MatrixHeap, m_CargoFlyer->GetPos(),
             //    *(D3DXVECTOR3 *)&m_Matrix._41, FRND(400) + 100));
-        } else
-        {
         }
+        else{}
 
         m_FallingSpeed -= float(ms) * 0.013f;
         if (m_FallingSpeed < 0) m_FallingSpeed = 0;
@@ -2318,7 +2319,7 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding *pBase)
     CMatrixSideUnit * side = g_MatrixMap->GetSideById(pBase->m_Side);
 
     SETFLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL);
-    if (IsCrazy())
+    if(IsCrazy())
     {
         InitMaxHitpoint(1000000.0f);
         m_Team=0;
@@ -2330,20 +2331,24 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding *pBase)
         else side->PGOrderAttack(side->RobotToLogicGroup(this),g_MatrixMap->m_RN.GetPlace(GetEnv()->m_Place)->m_Pos,NULL);
 
         RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
-
-    } else
+    }
+    else
     {
-
-        if(side->m_Id!=PLAYER_SIDE) {
+        if(side->m_Id!=PLAYER_SIDE)
+        {
             m_Team=side->ClacSpawnTeam(g_MatrixMap->GetRegion(CPoint(Float2Int(pBase->m_Pos.x/GLOBAL_SCALE_MOVE),Float2Int(pBase->m_Pos.x/GLOBAL_SCALE_MOVE))),m_Unit[0].m_Kind-1);
-    /*        int minr=side->m_Team[m_Team].m_RobotCnt;
-        for(int i=1;i<side->m_TeamCnt;i++) {
-            if(side->m_Team[i].m_RobotCnt<minr) {
-                minr=side->m_Team[i].m_RobotCnt;
-                m_Team=i;
-            }
-            }*/
-        } else {
+            //int minr = side->m_Team[m_Team].m_RobotCnt;
+            //for (int i = 1; i < side->m_TeamCnt; ++i)
+            //{
+            //    if (side->m_Team[i].m_RobotCnt < minr)
+            //    {
+            //        minr = side->m_Team[i].m_RobotCnt;
+            //        m_Team = i;
+            //    }
+            //}
+        }
+        else
+        {
             m_Team=0;
 
             SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
@@ -2354,13 +2359,11 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding *pBase)
 
             RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
         }
-        if (m_Side != 0) g_MatrixMap->GetSideById(m_Side)->IncStatValue(STAT_ROBOT_BUILD);
+        if(m_Side != 0) g_MatrixMap->GetSideById(m_Side)->IncStatValue(STAT_ROBOT_BUILD);
     }
 
 	m_CurrState = ROBOT_IN_SPAWN;
     pBase->Open();
-
-
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest)
@@ -2368,9 +2371,12 @@ void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest)
 	D3DXVECTOR3 destDirN(0,0,0), destDir(0,0,0);
 
     destDir = dest - D3DXVECTOR3(m_PosX, m_PosY, 0);
-    if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject() && D3DXVec3LengthSq(&destDir) < MIN_ROT_DIST*MIN_ROT_DIST){
+    if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject() && D3DXVec3LengthSq(&destDir) < MIN_ROT_DIST*MIN_ROT_DIST)
+    {
         destDirN = m_HullForward;
-    }else{   
+    }
+    else
+    {
         destDir.z = 0;
 	    D3DXVec3Normalize(&destDirN, &destDir);
     }
@@ -2386,15 +2392,19 @@ void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest)
     float cos2 = m_HullForward.x * vec.x + m_HullForward.y * vec.y;
 
 
-
-    if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject()){
+    if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject())
+    {
         bool dchanged = false;
-        if(fabs(angle3) >= GRAD2RAD(HULL_ROT_S_ANGL)){
+        if(fabs(angle3) >= GRAD2RAD(HULL_ROT_S_ANGL))
+        {
             float cosmos = destDirN.x * (-m_HullForward.y) + destDirN.y * (m_HullForward.x);
-            if(cosmos < 0 && m_PrevTurnSign == 1){
+            if(cosmos < 0 && m_PrevTurnSign == 1)
+            {
                m_PrevTurnSign = 0;
                dchanged = true;
-            }else if(cosmos > 0 && m_PrevTurnSign == 0){
+            }
+            else if(cosmos > 0 && m_PrevTurnSign == 0)
+            {
                m_PrevTurnSign = 1;
                dchanged = true;
             }
@@ -2403,26 +2413,32 @@ void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest)
         
         m_HullRotCnt++;
 
-        if(dchanged && m_HullRotCnt >= HULL_ROT_TAKTS){
+        if(dchanged && m_HullRotCnt >= HULL_ROT_TAKTS)
+        {
             PlayHullSound();
             m_HullRotCnt = 0;
         }
-
     }
-       
 
 
-    if(fabs(angle3) >= GRAD2RAD(160)){
+    if(fabs(angle3) >= GRAD2RAD(160))
+    {
         D3DXVec3Normalize(&m_HullForward, &(m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed*3)));
-    }else{
+    }
+    else
+    {
         D3DXVec3Normalize(&m_HullForward, &(m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed)));
     }
 
-	if(fabs(angle1) >= MAX_HULL_ANGLE){
+	if(fabs(angle1) >= MAX_HULL_ANGLE)
+    {
 		D3DXMATRIX rotMat;
-        if(cos2 > 0){ 
+        if(cos2 > 0)
+        {
             D3DXMatrixRotationZ(&rotMat, -(MAX_HULL_ANGLE)); 
-        }else { 
+        }
+        else
+        { 
             D3DXMatrixRotationZ(&rotMat, MAX_HULL_ANGLE); 
         }
     	D3DXVec3TransformCoord(&m_HullForward, &m_Forward, &rotMat);
@@ -2465,19 +2481,25 @@ bool CMatrixRobotAI::RotateRobot(const D3DXVECTOR3 &dest, float * rotateangle)
     float rotDir = destDirN.x * vec.x + destDirN.y * vec.y;
 
     //TruncFloat(
-    if(angle1/**ToGrad*/ <= rot_speed /*&& rotDir < 1*/){
+    if(angle1/**ToGrad*/ <= rot_speed /*&& rotDir < 1*/)
+    {
         m_Forward=destDirN;
         m_Velocity = m_Forward * D3DXVec3Length(&m_Velocity);
         return true;
     }
     
-    if(fabs(angle1-rot_speed)<0.001) {
+    if(fabs(angle1-rot_speed)<0.001)
+    {
         forward=destDirN;
-    } else if(rotDir > 0) {
+    }
+    else if(rotDir > 0)
+    {
         D3DXMATRIX rotMat;
         D3DXMatrixRotationZ(&rotMat, -rot_speed);
         D3DXVec3TransformCoord(&forward, &forward, &rotMat);
-    } else {
+    }
+    else
+    {
         D3DXMATRIX rotMat;
         D3DXMatrixRotationZ(&rotMat, rot_speed);
         D3DXVec3TransformCoord(&forward, &forward, &rotMat);
@@ -2528,23 +2550,26 @@ bool CMatrixRobotAI::Seek(const D3DXVECTOR3 &dest,bool & rotate,bool end_path, b
 {
     float rangle=0.0;
     rotate=true;
-    if(m_CurrState != ROBOT_BASE_MOVEOUT && !back){
+    if(m_CurrState != ROBOT_BASE_MOVEOUT && !back)
+    {
         if(RotateRobot(dest,&rangle))
         {
             rotate=false;
             rangle=0.0f;
         }
-    } else rotate=false;
+    }
+    else rotate=false;
 
     D3DXVECTOR3 forward=m_Forward; forward.z=0;
     D3DXVec3Normalize(&forward, &forward);
 
-    if (back) forward = -forward;
+    if(back) forward = -forward;
 
     D3DXVECTOR3 destDir = dest - D3DXVECTOR3(m_PosX, m_PosY, 0);
     float destLength=D3DXVec3Length(&destDir);
 
-    if(m_CollAvoid.x!=0.0f || m_CollAvoid.y!=0.0f) {
+    if(m_CollAvoid.x!=0.0f || m_CollAvoid.y!=0.0f)
+    {
         ASSERT(1);
     }
 	
@@ -2553,32 +2578,37 @@ bool CMatrixRobotAI::Seek(const D3DXVECTOR3 &dest,bool & rotate,bool end_path, b
     float k = FLAG(m_ObjectState, ROBOT_FLAG_ONWATER)?m_SpeedWaterCorr:1.0f;
 
     float slope;
-    if (back)
+    if(back)
     {
         D3DXVECTOR3 f(- (*(D3DXVECTOR3 *)&m_Core->m_Matrix._21));
         slope = D3DXVec3Dot(&D3DXVECTOR3(0,0,1), &f);
-    } else
+    }
+    else
     {
         slope = D3DXVec3Dot(&D3DXVECTOR3(0,0,1), (D3DXVECTOR3 *)&m_Core->m_Matrix._21);
     }
 
-    if (slope >= 0)
+    if(slope >= 0)
     {
-        if (slope >= m_SpeedSlopeCorrUp) k = 0;
+        if(slope >= m_SpeedSlopeCorrUp) k = 0;
         else
         {
             k *= LERPFLOAT(slope/m_SpeedSlopeCorrUp, 1.0, 0.0f);
         }
-    } else if (slope < 0)
+    }
+    else if(slope < 0)
     {
         k *= LERPFLOAT(-slope, 1.0f, m_SpeedSlopeCorrDown);
     }
 
 
-    if((destLength-min(m_GroupSpeed,m_ColSpeed))<0.001f) {
+    if((destLength-min(m_GroupSpeed,m_ColSpeed))<0.001f)
+    {
         m_Velocity = destDir * k;
         m_Speed = destLength * k;
-    }else{
+    }
+    else
+    {
         m_Speed = k * min(m_GroupSpeed,m_ColSpeed);
         if(end_path)
         {
@@ -2701,7 +2731,8 @@ void CMatrixRobotAI::LowLevelMove(int ms,const D3DXVECTOR3 &dest, bool robot_col
     m_Cols = 0;
     D3DXVECTOR3 r(0,0,0), o(0,0,0), result_coll(0,0,0), tmp_vel(0,0,0);
 
-    if(!vel){
+    if(!vel)
+    {
         tmp_vel = m_Velocity;
         m_Velocity = D3DXVECTOR3(0,0,0);
     }
@@ -2709,16 +2740,19 @@ void CMatrixRobotAI::LowLevelMove(int ms,const D3DXVECTOR3 &dest, bool robot_col
     D3DXVECTOR3 genetic_mutated_velocity = m_Velocity*m_SyncMul;
 
 
-    if(robot_coll){
+    if(robot_coll)
+    {
         r = RobotToObjectCollision(genetic_mutated_velocity,ms);
         #ifdef _SUB_BUG
         CHelper::Create(1,0)->Line(D3DXVECTOR3(m_PosX, m_PosY, 50), D3DXVECTOR3(m_PosX, m_PosY, 0) + D3DXVECTOR3(r.x*100, r.y*100,50),0xffffffff, 0xff00ff00);            
         #endif
         result_coll = r;
     }
-    if(obst_coll){
+    if(obst_coll)
+    {
         o = SphereRobotToAABBObstacleCollision(r,genetic_mutated_velocity);
-        if(!m_Cols){
+        if(!m_Cols)
+        {
             WallAvoid(o, dest);
         }
         #ifdef _SUB_BUG
@@ -2751,13 +2785,19 @@ void CMatrixRobotAI::LowLevelMove(int ms,const D3DXVECTOR3 &dest, bool robot_col
     m_PosX += genetic_mutated_velocity.x + result_coll.x;
     m_PosY += genetic_mutated_velocity.y + result_coll.y;
 
-    if(m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC) {
-        if(rotate || result_coll.x != 0 || result_coll.y != 0 || GetColsWeight2() || (end_path && (POW2(dest.x-m_PosX)+POW2(dest.y-m_PosY))<POW2(GLOBAL_SCALE_MOVE))){
-            if(!FLAG(m_ObjectState,ROBOT_FLAG_COLLISION)) {
+    if(m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+    {
+        if(rotate || result_coll.x != 0 || result_coll.y != 0 || GetColsWeight2() || (end_path && (POW2(dest.x-m_PosX)+POW2(dest.y-m_PosY))<POW2(GLOBAL_SCALE_MOVE)))
+        {
+            if(!FLAG(m_ObjectState,ROBOT_FLAG_COLLISION))
+            {
                 SETFLAG(m_ObjectState, ROBOT_FLAG_COLLISION);
             }
-        }else{
-            if(FLAG(m_ObjectState,ROBOT_FLAG_COLLISION)) {
+        }
+        else
+        {
+            if(FLAG(m_ObjectState,ROBOT_FLAG_COLLISION))
+            {
                 RESETFLAG(m_ObjectState, ROBOT_FLAG_COLLISION);
                 FirstLinkPneumatic();
             }
@@ -2777,7 +2817,8 @@ void CMatrixRobotAI::LowLevelMove(int ms,const D3DXVECTOR3 &dest, bool robot_col
 //    m_PosX += genetic_mutated_velocity.x + result_coll.x;
 //    m_PosY += genetic_mutated_velocity.y + result_coll.y;
 
-    if(!vel){
+    if(!vel)
+    {
         m_Velocity = tmp_vel;
     }
     JoinToGroup();
@@ -2795,20 +2836,26 @@ void CMatrixRobotAI::LowLevelDecelerate(int ms,bool robot_coll, bool obst_coll)
 
     D3DXVECTOR3 genetic_mutated_velocity = m_Velocity*m_SyncMul;
 
-    if(robot_coll){
+    if(robot_coll)
+    {
         r = RobotToObjectCollision(genetic_mutated_velocity,ms);
         result_coll = r;
     }
-    if(obst_coll){
+    if(obst_coll)
+    {
         o = SphereRobotToAABBObstacleCollision(r,genetic_mutated_velocity);
         result_coll = r + o;
     }
 
-    if(result_coll.x != 0 || result_coll.y != 0){
+    if(result_coll.x != 0 || result_coll.y != 0)
+    {
         SETFLAG(m_ObjectState, ROBOT_FLAG_COLLISION);
-    }else{
+    }
+    else
+    {
         RESETFLAG(m_ObjectState, ROBOT_FLAG_COLLISION);
-        if(m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC) {
+        if(m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+        {
             FirstLinkPneumatic();
         }
     }
@@ -2867,7 +2914,7 @@ D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr
     BYTE corners[COLLIDE_FIELD_R+COLLIDE_FIELD_R][COLLIDE_FIELD_R+COLLIDE_FIELD_R];
     memset(corners, -1, sizeof(corners));
 
-    for(int cnt = 0; cnt < 4; cnt++)
+    for(int cnt = 0; cnt < 4; ++cnt)
     {
         
 //        robot_pos.x += vCorrTotal.x;
@@ -2882,15 +2929,15 @@ D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr
         int x1 = x0 + (COLLIDE_FIELD_R*2);
         int y1 = y0 + (COLLIDE_FIELD_R*2);
 
-        if (x1 < 0) break;
-        if (y1 < 0) break;
-        if (x0 > g_MatrixMap->m_SizeMove.x) break;
-        if (y0 > g_MatrixMap->m_SizeMove.y) break;
+        if(x1 < 0) break;
+        if(y1 < 0) break;
+        if(x0 > g_MatrixMap->m_SizeMove.x) break;
+        if(y0 > g_MatrixMap->m_SizeMove.y) break;
 
-        if (x0 < 0) x0 = 0;
-        if (y0 < 0) y0 = 0;
-        if (x1 > g_MatrixMap->m_SizeMove.x) x1 = g_MatrixMap->m_SizeMove.x;
-        if (y1 > g_MatrixMap->m_SizeMove.y) y1 = g_MatrixMap->m_SizeMove.y;
+        if(x0 < 0) x0 = 0;
+        if(y0 < 0) y0 = 0;
+        if(x1 > g_MatrixMap->m_SizeMove.x) x1 = g_MatrixMap->m_SizeMove.x;
+        if(y1 > g_MatrixMap->m_SizeMove.y) y1 = g_MatrixMap->m_SizeMove.y;
 
         SMatrixMapMove *smm = g_MatrixMap->MoveGet(x0,y0);
 
@@ -2907,7 +2954,6 @@ D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr
                     corners[x - x0][y - y0] = smm0->GetType(m_Unit[0].m_Kind-1);
                 }
             }
-
 
             calc_for_x = x0;
             calc_for_y = y0;
@@ -3008,7 +3054,6 @@ D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr
     //}
 
 
-
     return D3DXVECTOR3(robot_pos.x, robot_pos.y, 0)  - oldpos;//vCorrTotal;
 }
 
@@ -3028,16 +3073,19 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
 
     const int tm=2;
 
-	if(pObject->IsRobot() && !pObject->AsRobot()->IsAutomaticMode()){
+	if(pObject->IsRobot() && !pObject->AsRobot()->IsAutomaticMode())
+    {
 		CMatrixRobotAI *pCurrBot = pObject->AsRobot();
 		D3DXVECTOR2 my_pos = D3DXVECTOR2(data->robot->m_PosX, data->robot->m_PosY) + D3DXVECTOR2(data->vel.x, data->vel.y);
 		D3DXVECTOR2 collide_pos  = D3DXVECTOR2(pCurrBot->m_PosX, pCurrBot->m_PosY) /*+ D3DXVECTOR2(pCurrBot->m_Velocity.x, pCurrBot->m_Velocity.y)*/;
 		D3DXVECTOR2 vDist =  my_pos - collide_pos;
 		float dist = D3DXVec2Length(&vDist)/*D3DXVec2LengthSq(&vDist)*/;
 
-		if(dist < (COLLIDE_BOT_R + COLLIDE_BOT_R)/**(COLLIDE_BOT_R + COLLIDE_BOT_R)*/){
+		if(dist < (COLLIDE_BOT_R + COLLIDE_BOT_R)/**(COLLIDE_BOT_R + COLLIDE_BOT_R)*/)
+        {
             
-            while(true) {
+            while(true)
+            {
                 float vd=POW2(data->vel.x)+POW2(data->vel.y);
                 if(fabs(vd)<POW2(0.0001f)) break;
 
@@ -3053,14 +3101,18 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
 
                 if(!pCurrBot->IsAutomaticMode()) 
                 {
-                    if(data->robot->GetColsWeight2()<200*tm) { // Если недавно столкнулись
+                    if(data->robot->GetColsWeight2()<200*tm) // Если недавно столкнулись
+                    {
                         float vd2=POW2(pCurrBot->m_Velocity.x)+POW2(pCurrBot->m_Velocity.y);
-                        if(vd2>POW2(0.0001f)) { // Если робот движется
-                            if((vx*-vDist.x+vy*-vDist.y)>0) { // И он находится впереди
-                                if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // И движется приблезительно в одну сторону
-
-                                    if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов моежт двигатся
-                                    else {
+                        if(vd2>POW2(0.0001f)) // Если робот движется
+                        {
+                            if((vx*-vDist.x+vy*-vDist.y)>0) // И он находится впереди
+                            {
+                                if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) // И движется приблизительно в одну сторону
+                                {
+                                    if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов может двигаться
+                                    else
+                                    {
                                         data->stop=true;
                                         data->far_col=true;
                                         data->robot->m_ColSpeed=min(data->robot->m_GroupSpeed,pCurrBot->m_GroupSpeed*0.5f);
@@ -3085,12 +3137,17 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
                 if(!((vx*dx+vy*dy)>cos(90*ToRad))) break;
 
                 d=POW2(pCurrBot->m_Velocity.x)+POW2(pCurrBot->m_Velocity.y);
-                if(d>0) {
+                if(d>0)
+                {
                     d=1.0f/(float)sqrt(d);
                     float dvx=pCurrBot->m_Velocity.x*d;
                     float dvy=pCurrBot->m_Velocity.y*d;
 
-                    if(!((vx*dvx+vy*dvy)<-cos(45*ToRad))) { data->robot->SetColsWeight(0); break; }
+                    if(!((vx*dvx+vy*dvy)<-cos(45*ToRad)))
+                    {
+                        data->robot->SetColsWeight(0);
+                        break;
+                    }
                 }
 
                 if(!data->robot->FindOrderLikeThat(ROT_MOVE_RETURN) && data->robot->m_Side == pCurrBot->m_Side)
@@ -3098,7 +3155,8 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
    
                     if(!pCurrBot->IsAutomaticMode())
                     {
-                        if(!pCurrBot->FindOrderLikeThat(ROT_MOVE_RETURN)) {
+                        if(!pCurrBot->FindOrderLikeThat(ROT_MOVE_RETURN))
+                        {
                             CPoint tp;
                             if(pCurrBot->GetMoveToCoords(tp)) pCurrBot->MoveReturn(tp.x,tp.y);
                             else pCurrBot->MoveReturn(pCurrBot->GetMapPosX(),pCurrBot->GetMapPosY());
@@ -3134,9 +3192,11 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
 			vDist *= correction;
             data->result += D3DXVECTOR3(vDist.x, vDist.y, 0);
             data->robot->IncCols();
-
-        } else if(dist < (COLLIDE_BOT_R*4.0f)/**(COLLIDE_BOT_R + COLLIDE_BOT_R)*/){
-            while(true) {
+        }
+        else if(dist < (COLLIDE_BOT_R*4.0f)/**(COLLIDE_BOT_R + COLLIDE_BOT_R)*/)
+        {
+            while(true)
+            {
                 float vd=POW2(data->vel.x)+POW2(data->vel.y);
                 if(fabs(vd)<POW2(0.0001f)) break;
 
@@ -3147,12 +3207,15 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
                 if(!pCurrBot->IsAutomaticMode()) 
                 {
                     float vd2=POW2(pCurrBot->m_Velocity.x)+POW2(pCurrBot->m_Velocity.y);
-                    if(vd2>POW2(0.0001f)) { // Если робот движется
-                        if((vx*-vDist.x+vy*-vDist.y)>0) { // И он находится впереди
-                            if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) { // И движется приблезительно в одну сторону
-
-                                if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов моежт двигатся
-                                else {
+                    if(vd2>POW2(0.0001f)) // Если робот движется
+                    {
+                        if((vx*-vDist.x+vy*-vDist.y)>0) // И он находится впереди
+                        {
+                            if(vx*pCurrBot->m_Velocity.x+vy*pCurrBot->m_Velocity.y>0) // И движется приблизительно в одну сторону
+                            {
+                                if((pCurrBot->m_Velocity.x*vDist.x+pCurrBot->m_Velocity.y*vDist.y)>0 && DWORD(pCurrBot)<DWORD(data->robot)); // Только один из двух роботов может двигаться
+                                else
+                                {
                                     data->far_col=true;
                                     data->robot->m_ColSpeed=min(data->robot->m_GroupSpeed,pCurrBot->m_GroupSpeed*0.5f);
                                 }
@@ -3164,7 +3227,9 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
                 break;
             }
 		}
-    }else if(pObject->GetObjectType() == OBJECT_TYPE_CANNON){
+    }
+    else if(pObject->GetObjectType() == OBJECT_TYPE_CANNON)
+    {
 		CMatrixCannon* cannon = ((CMatrixCannon*)pObject);
 		D3DXVECTOR2 my_pos = D3DXVECTOR2(data->robot->m_PosX, data->robot->m_PosY) + D3DXVECTOR2(data->vel.x, data->vel.y);
         D3DXVECTOR2 collide_pos  = cannon->m_Pos;
@@ -3175,7 +3240,8 @@ g_MatrixMap->m_DI.T(L"ColsWeight", CWStr().Format(L"<i>    <i>",data->robot->Get
         //                g_MatrixMap->m_DI.T(L"CAN_DIST", CWStr(dist));
         //#endif
 
-        if(dist < (COLLIDE_BOT_R + CANNON_COLLIDE_R)/**(COLLIDE_BOT_R + CANNON_COLLIDE_R)*/){
+        if(dist < (COLLIDE_BOT_R + CANNON_COLLIDE_R)/**(COLLIDE_BOT_R + CANNON_COLLIDE_R)*/)
+        {
 			float correction = float(COLLIDE_BOT_R+CANNON_COLLIDE_R - /*sqrt*/(dist));
             //#ifdef _SUB_BUG
             //                    g_MatrixMap->m_DI.T(L"correction", CWStr(correction));
@@ -3211,7 +3277,8 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
     D3DXVECTOR3 prev_coll = m_CollAvoid;
     m_CollAvoid = D3DXVECTOR3(0,0,0);
     return;
-    if(o.x != 0 || o.y != 0){
+    if(o.x != 0 || o.y != 0)
+    {
         D3DXVECTOR3 true_forward(1, 0, 0);
         float sign1 = m_Forward.x * true_forward.x + m_Forward.y * true_forward.y;
         true_forward = D3DXVECTOR3(0, 1, 0);
@@ -3223,7 +3290,8 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
         //else
         //    CDText::T("SIGN", ">>>>");
 
-        if(o.x != 0 && o.y != 0){
+        if(o.x != 0 && o.y != 0)
+        {
 
             D3DXVECTOR3 o_norm(0,0,0);
             D3DXVec3Normalize(&o_norm, &o);
@@ -3235,13 +3303,16 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
             float angle2 = (float)acos(cos2);
 
 
-            if(fabs(angle1) > GRAD2RAD(120)){
+            if(fabs(angle1) > GRAD2RAD(120))
+            {
                 //we are perp to Y
                 if(o.y < 0)
                     m_CollAvoid = D3DXVECTOR3(0, -1, 0);
                 else
                     m_CollAvoid = D3DXVECTOR3(0, 1, 0);
-            }else if(fabs(angle2) > GRAD2RAD(120)){
+            }
+            else if(fabs(angle2) > GRAD2RAD(120))
+            {
                 //we are perp to X
                 if(o.x < 0)
                     m_CollAvoid = D3DXVECTOR3(-1, 0, 0);
@@ -3254,54 +3325,80 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest)
             //    else
             //        m_CollAvoid = D3DXVECTOR3(1, 0, 0);
             //}
-        }else if(o.x != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.x) > fabs(o.y))*/){
+        }
+        else if(o.x != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.x) > fabs(o.y))*/)
+        {
             //это условие избыточно, оно зарезервировано для возможных изменений
 
-            if(o.x > 0){
-                if(sign2 < 0){
+            if(o.x > 0)
+            {
+                if(sign2 < 0)
+                {
                     m_CollAvoid += D3DXVECTOR3(0, -1, 0);
-                }else{
-                    m_CollAvoid += D3DXVECTOR3(0, 1, 0);
                 }
-            }else{
-                if(sign2 < 0){
-                    m_CollAvoid += D3DXVECTOR3(0, -1, 0);
-                }else{
+                else
+                {
                     m_CollAvoid += D3DXVECTOR3(0, 1, 0);
                 }
             }
-        }else if(o.y != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.y) > fabs(o.x))*/){
+            else
+            {
+                if(sign2 < 0)
+                {
+                    m_CollAvoid += D3DXVECTOR3(0, -1, 0);
+                }
+                else
+                {
+                    m_CollAvoid += D3DXVECTOR3(0, 1, 0);
+                }
+            }
+        }
+        else if(o.y != 0/* || ((o.x != 0 && o.y != 0) && fabs(o.y) > fabs(o.x))*/)
+        {
             //это условие избыточно, оно зарезервировано для возможных изменений
-            if(o.y > 0){
-                if(sign1 < 0){
+            if(o.y > 0)
+            {
+                if(sign1 < 0)
+                {
                     m_CollAvoid += D3DXVECTOR3(-1, 0, 0);
-                }else{
+                }
+                else
+                {
                     m_CollAvoid += D3DXVECTOR3(1, 0, 0);
                 }
-            }else{
-                if(sign1 < 0){
+            }
+            else
+            {
+                if(sign1 < 0)
+                {
                     m_CollAvoid += D3DXVECTOR3(-1, 0, 0);
-                }else{
+                }
+                else
+                {
                     m_CollAvoid += D3DXVECTOR3(1, 0, 0);
                 }
             }
         }
     }
 
-    if(m_CollAvoid.x || m_CollAvoid.y){
+    if(m_CollAvoid.x || m_CollAvoid.y)
+    {
         D3DXVECTOR3 dest_n = dest - D3DXVECTOR3(m_PosX, m_PosY, 0);
         D3DXVec3Normalize(&dest_n, &dest_n);
 
         float cos = dest_n.x*m_CollAvoid.x + dest_n.y*m_CollAvoid.y;
         float angle = (float)acos(cos);
 
-        if(this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()){
-            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT]) & 0x8000)==0x8000)){
+        if(this == g_MatrixMap->GetPlayerSide()->GetArcadedObject())
+        {
+            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT]) & 0x8000)==0x8000))
+            {
                 ZeroMemory(&m_CollAvoid, sizeof(D3DXVECTOR3));            
             }
         }
         
-        if(angle >= GRAD2RAD(90)){
+        if(angle >= GRAD2RAD(90))
+        {
             ZeroMemory(&m_CollAvoid, sizeof(D3DXVECTOR3));
         }
     }
@@ -3376,16 +3473,17 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                             zb = (corner & 16);
                         else
                             cr = (corner & 1);
-                    } else
+                    }
+                    else
                     {
                         //2
                         if (corner & 32)
                             zb = (corner & 32);
                         else
                             cr = (corner & 2);
-
                     }
-                } else
+                }
+                else
                 {
                     if(pos.y < lu.y + GLOBAL_SCALE_MOVE*0.5f)
                     {
@@ -3394,7 +3492,9 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                             zb = (corner & 128);
                         else
                             cr = (corner & 8);
-                    }else{
+                    }
+                    else
+                    {
                         //4
                         if (corner & 64)
                             zb = (corner & 64);
@@ -3405,7 +3505,7 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 
                 if(zb)
                 {
-                    if ((corner & 16) || (corner & 64))
+                    if((corner & 16) || (corner & 64))
                     {
                         D3DXVECTOR3 v = D3DXVECTOR3(pos.x, pos.y, 0) - D3DXVECTOR3(lu.x, lu.y, 0);
                         D3DXVECTOR3 v2 = D3DXVECTOR3(GLOBAL_SCALE_MOVE, GLOBAL_SCALE_MOVE, 0);
@@ -3429,7 +3529,8 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                             res *= cor;
                             return D3DXVECTOR3(res.x, res.y, -1);
                         }
-                    } else if( (corner & 32) || (corner & 128) )
+                    }
+                    else if( (corner & 32) || (corner & 128) )
                     {
                         D3DXVECTOR3 v = D3DXVECTOR3(pos.x, pos.y, 0) - D3DXVECTOR3(rd.x, lu.y, 0);
                         //D3DXVECTOR3 v2 = D3DXVECTOR3(vLd.x, vLd.y, 0) - D3DXVECTOR3(vRu.x, vRu.y, 0);
@@ -3458,7 +3559,8 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                         }
                     }
                     return D3DXVECTOR3(0,0,0);
-                } else if (cr)
+                }
+                else if (cr)
                 {
 
 		            D3DXVECTOR3 vDist = D3DXVECTOR3(pos.x, pos.y, 0) - D3DXVECTOR3(lu.x+ GLOBAL_SCALE_MOVE*0.5f, lu.y+ GLOBAL_SCALE_MOVE*0.5f, 0);
@@ -3521,13 +3623,18 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 //byte a1 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x+GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE), int(vLu.y) / int(GLOBAL_SCALE_MOVE));
                 //byte a2 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x) / int(GLOBAL_SCALE_MOVE), int(vLu.y-GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE));
 
-                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255)){
+                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255))
+                {
                     return D3DXVECTOR3(0,0,0);
-                }else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255)){
+                }
+                else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255))
+                {
                     _GOTCHA_ = true;
                 }
 
-            } else if(angle == 2) {
+            }
+            else if(angle == 2)
+            {
 
                 // r
                 // d
@@ -3539,12 +3646,17 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 //byte a1 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x+GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE), int(vLu.y) / int(GLOBAL_SCALE_MOVE));
                 //byte a2 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x) / int(GLOBAL_SCALE_MOVE), int(vLu.y+GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE));
 
-                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255)){
+                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255))
+                {
                     return D3DXVECTOR3(0,0,0);
-                }else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255)){
+                }
+                else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255))
+                {
                     _GOTCHA_ = true;
                 }
-            } else if(angle == 4) {
+            }
+            else if(angle == 4)
+            {
                 // l
                 // d
                 BYTE a1 = 255;
@@ -3555,12 +3667,16 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 //byte a1 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x-GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE), int(vLu.y) / int(GLOBAL_SCALE_MOVE));
                 //byte a2 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x) / int(GLOBAL_SCALE_MOVE), int(vLu.y+GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE));
 
-                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255)){
+                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255))
+                {
                     return D3DXVECTOR3(0,0,0);
-                }else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255)){
+                }
+                else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255))
+                {
                     _GOTCHA_ = true;
                 }
-            } else if(angle == 8)
+            }
+            else if(angle == 8)
             {
                 // l
                 // u
@@ -3572,9 +3688,12 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 //byte a1 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x-GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE), int(vLu.y) / int(GLOBAL_SCALE_MOVE));
                 //byte a2 = g_MatrixMap->GetCellMoveType(m_Unit[0].m_Kind-1, int(vLu.x) / int(GLOBAL_SCALE_MOVE), int(vLu.y-GLOBAL_SCALE_MOVE) / int(GLOBAL_SCALE_MOVE));
 
-                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255)){
+                if((a1 > 15 && a1 != 255) && (a2 > 15 && a2 != 255))
+                {
                     return D3DXVECTOR3(0,0,0);
-                }else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255)){
+                }
+                else if((a1 > 15 && a1 != 255) || (a2 > 15 && a2 != 255))
+                {
                     _GOTCHA_ = true;
                 }
 
@@ -3589,7 +3708,8 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
 
             D3DXVECTOR3 result(0,0,0), result2(0,0,0);
             
-            if(dx > dy){
+            if(dx > dy)
+            {
                 result = D3DXVECTOR3(pos.x, 0, 0) - D3DXVECTOR3(mind_corner.x, 0, 0);
                 result2 = D3DXVECTOR3(pos.x, pos.y, 0) - D3DXVECTOR3(mind_corner.x, mind_corner.y, 0);
                 D3DXVECTOR3 gotcha;
@@ -3597,21 +3717,31 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
 
                 float cos1 = gotcha.x*1 + gotcha.y*0;
                 float cos2 = gotcha.x*0 + gotcha.y*1;
-                if(_GOTCHA_){
-                    if(angle == 1 && (cos1 >0 && cos2 <0)){
+                if(_GOTCHA_)
+                {
+                    if(angle == 1 && (cos1 >0 && cos2 <0))
+                    {
                         result = result2;
-                    }else if(angle == 2 && (cos1 >0 && cos2 >0)){
+                    }
+                    else if(angle == 2 && (cos1 >0 && cos2 >0))
+                    {
                         result = result2;
-                    }else if(angle == 4 && (cos1 <0 && cos2 >0)){
+                    }
+                    else if(angle == 4 && (cos1 <0 && cos2 >0))
+                    {
                         result = result2;
-                    }else if(angle == 8 && (cos1 <0 && cos2 <0)){
+                    }
+                    else if(angle == 8 && (cos1 <0 && cos2 <0))
+                    {
                         result = result2;
                     }
                 }            
                 D3DXVec3Normalize(&result, &result);
                 result *= COLLIDE_BOT_R - (float)sqrt(dcol);
 
-            }else if(dx < dy){
+            }
+            else if(dx < dy)
+            {
                 result = D3DXVECTOR3(0, pos.y, 0) - D3DXVECTOR3(0, mind_corner.y, 0);
                 result2 = D3DXVECTOR3(pos.x, pos.y, 0) - D3DXVECTOR3(mind_corner.x, mind_corner.y, 0);
                 D3DXVECTOR3 gotcha;
@@ -3620,19 +3750,25 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
                 float cos2 = gotcha.x*0 + gotcha.y*1;
 
                 if(_GOTCHA_){
-                    if(angle == 1 && (cos1 >0 && cos2 <0)){
+                    if(angle == 1 && (cos1 >0 && cos2 <0))
+                    {
                         result = result2;
-                    }else if(angle == 2 && (cos1 >0 && cos2 >0)){
+                    }
+                    else if(angle == 2 && (cos1 >0 && cos2 >0))
+                    {
                         result = result2;
-                    }else if(angle == 4 && (cos1 <0 && cos2 >0)){
+                    }
+                    else if(angle == 4 && (cos1 <0 && cos2 >0))
+                    {
                         result = result2;
-                    }else if(angle == 8 && (cos1 <0 && cos2 <0)){
+                    }
+                    else if(angle == 8 && (cos1 <0 && cos2 <0))
+                    {
                         result = result2;
                     }
                 }
                 D3DXVec3Normalize(&result, &result);
                 result *= COLLIDE_BOT_R - (float)sqrt(dcol);
-
             }
 
             return result;
@@ -3645,21 +3781,27 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 {
     float distance = 0;
     
-    if(p.x < vMin.x){
+    if(p.x < vMin.x)
+    {
         float dx = p.x - vMin.x;
         distance += dx * dx;
         dsx += dx * dx;
-    }else if(p.x > vMax.x){
+    }
+    else if(p.x > vMax.x)
+    {
         float dx = p.x - vMax.x;
         distance += dx * dx;
         dsx += dx * dx;
     }
 
-    if(p.y < vMin.y){
+    if(p.y < vMin.y)
+    {
         float dy = p.y - vMin.y;
         distance += dy * dy;
         dsy += dy * dy;
-    }else if(p.y > vMax.y){
+    }
+    else if(p.y > vMax.y)
+    {
         float dy = p.y - vMax.y;
         distance += dy * dy;
         dsy += dy * dy;
@@ -4192,7 +4334,7 @@ void CMatrixRobotAI::HitTo(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos)
 void CMatrixRobotAI::RobotWeaponInit()
 {
 	int Weap = 0;
-	for(int C = 0;C < m_UnitCnt; C++)
+	for(int C = 0;C < m_UnitCnt; ++C)
     {
 		if(m_Unit[C].m_Type == MRT_WEAPON)
         {
@@ -4252,7 +4394,6 @@ void CMatrixRobotAI::RobotWeaponInit()
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_PLASMA_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_PLASMA_COOL];
 
-
                     break;
 				case RUK_WEAPON_ELECTRIC:
 					m_Weapons[Weap].CreateEffect( (DWORD)this, NULL, WEAPON_LIGHTENING);
@@ -4291,7 +4432,7 @@ void CMatrixRobotAI::CalcRobotMass()
     bool normalweapon=false;
 
 	float hp = 0;
-    for(int nC = 0; nC <= m_UnitCnt; nC++)
+    for(int nC = 0; nC <= m_UnitCnt; ++nC)
     {
         if(m_Unit[nC].m_Type == MRT_CHASSIS)
         {
@@ -4369,7 +4510,6 @@ void CMatrixRobotAI::CalcRobotMass()
                     hp += g_Config.m_ItemChars[ARMOR6_STRUCTURE];
                     break;
 		    }
-
         }
         if(m_Unit[nC].m_Type == MRT_WEAPON)
         {
@@ -4386,13 +4526,13 @@ void CMatrixRobotAI::CalcRobotMass()
     {
         if(m_Unit[nC].m_Type == MRT_HEAD)
         {
-            if (m_Unit[nC].m_Kind == RUK_HEAD_BLOCKER ) hn = L"S";
+            if(m_Unit[nC].m_Kind == RUK_HEAD_BLOCKER ) hn = L"S";
             else if(m_Unit[nC].m_Kind == RUK_HEAD_DYNAMO ) hn = L"D";
             else if(m_Unit[nC].m_Kind == RUK_HEAD_LOCKATOR ) hn = L"L";
             else if(m_Unit[nC].m_Kind == RUK_HEAD_FIREWALL ) hn = L"F";
-            else if (m_Unit[nC].m_Kind == RUK_HEAD_RAPID) hn = L"R";
-            else if (m_Unit[nC].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
-            else if (m_Unit[nC].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
+            else if(m_Unit[nC].m_Kind == RUK_HEAD_RAPID) hn = L"R";
+            else if(m_Unit[nC].m_Kind == RUK_HEAD_DESIGN) hn = L"D";
+            else if(m_Unit[nC].m_Kind == RUK_HEAD_SPEAKER) hn = L"P";
             break;
         }
     }
@@ -4406,44 +4546,41 @@ void CMatrixRobotAI::CalcRobotMass()
     m_AimProtect = 0;
     m_RadarRadius = g_Config.m_RobotRadarR;
 
-    //Здесь происходит подгрузка модификаторов модулей (голов) из конфигов
+    //Здесь происходит подгрузка модификаторов для модулей (голов) из конфигов
     bp = bp->BlockGetNE(hn);
-    if (bp)
+    if(bp)
     {
         hp += bp->ParGetNE(L"HIT_POINT_ADD").GetInt();
 
-
         cool_down = float(bp->ParGetNE(L"COOL_DOWN").GetDouble() / 100.0f);
-        if (cool_down < -1.0f) cool_down = -1.0f;
+        if(cool_down < -1.0f) cool_down = -1.0f;
         
         fire_dist = float(bp->ParGetNE(L"FIRE_DISTANCE").GetDouble() / 100.0f);
-        if (fire_dist < -1.0f) fire_dist = -1.0f;
+        if(fire_dist < -1.0f) fire_dist = -1.0f;
 
         overheat = float(bp->ParGetNE(L"OVERHEAT").GetDouble() / 100.0f);
-        if (overheat < -1.0f) overheat = -1.0f;
+        if(overheat < -1.0f) overheat = -1.0f;
 
         float up = float(bp->ParGetNE(L"CHASSIS_SPEED").GetDouble() / 100.0f);
-        if (up < -1.0f) up = -1.0f;
+        if(up < -1.0f) up = -1.0f;
         m_maxSpeed += m_maxSpeed * up;
         m_maxRotationSpeed += m_maxRotationSpeed * up;
 
         up = float(bp->ParGetNE(L"RADAR_DISTANCE").GetDouble() / 100.0f);
-        if (up < -1.0f) up = -1.0f;
+        if(up < -1.0f) up = -1.0f;
         m_RadarRadius += m_RadarRadius * up;
 
         m_LightProtect = float(bp->ParGetNE(L"LIGHT_PROTECT").GetDouble() / 100.0f);
-        if (m_LightProtect < 0) m_LightProtect = 0;
-        else if (m_LightProtect > 1) m_LightProtect = 1;
+        if(m_LightProtect < 0) m_LightProtect = 0;
+        else if(m_LightProtect > 1) m_LightProtect = 1;
 
         m_BombProtect = float(bp->ParGetNE(L"BOMB_PROTECT").GetDouble() / 100.0f);
-        if (m_BombProtect < 0) m_BombProtect = 0;
-        else if (m_BombProtect > 1) m_BombProtect = 1;
+        if(m_BombProtect < 0) m_BombProtect = 0;
+        else if(m_BombProtect > 1) m_BombProtect = 1;
 
         m_AimProtect = float(bp->ParGetNE(L"AIM_PROTECT").GetDouble() / 100.0f);
-        if (m_AimProtect < 0) m_AimProtect = 0;
-        else if (m_AimProtect > 1) m_AimProtect = 1;
-
-
+        if(m_AimProtect < 0) m_AimProtect = 0;
+        else if(m_AimProtect > 1) m_AimProtect = 1;
     }
 
     InitMaxHitpoint(hp);
@@ -4458,11 +4595,13 @@ void CMatrixRobotAI::CalcRobotMass()
         m_Weapons[cnt].m_HeatMod = Float2Int(float(m_Weapons[cnt].m_HeatMod) + float(m_Weapons[cnt].m_HeatMod) * overheat);
 
 
-        if(m_Weapons[cnt].GetWeaponType() == WEAPON_BIGBOOM){
+        if(m_Weapons[cnt].GetWeaponType() == WEAPON_BIGBOOM)
+        {
             cnt++;
             continue;
         }
-        if(m_Weapons[cnt].GetWeaponType() == WEAPON_REPAIR){
+        if(m_Weapons[cnt].GetWeaponType() == WEAPON_REPAIR)
+        {
             r_min=min(r_min,m_Weapons[cnt].GetWeaponDist());
             cnt++;
             continue;
@@ -4510,7 +4649,7 @@ void CMatrixRobotAI::GatherInfo(int type)
     CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
     DCP();
 
-    if(type==0)
+    if(type == 0)
     {
     //Look
     while(obj)
@@ -4580,7 +4719,9 @@ void CMatrixRobotAI::GatherInfo(int type)
                         m_Environment.AddToList(obj);
                     }
                 }*/
-            }else{
+            }
+            else
+            {
     DCP();
                 if(/*robot->m_FireTarget != this && */ dist_enemy > POW2(max(robot->m_MaxFireDist,m_MaxFireDist)*1.4))
                         m_Environment.RemoveFromListSlowly(obj);
@@ -4666,7 +4807,7 @@ void CMatrixRobotAI::GatherInfo(int type)
     }
 
     }
-    else if(type==1)
+    else if(type == 1)
     {
     DCP();
 

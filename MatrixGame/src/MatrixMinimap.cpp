@@ -296,7 +296,7 @@ void CMinimap::Clip(D3DXVECTOR2 &out, const D3DXVECTOR2& in)
         float szy = float(m_SizeX) * 0.5f;
         D3DXVECTOR2 dir(float(m_PosX) + szx - in.x, float(m_PosY) + szy - in.y);
         //D3DXVec2Normalize(&dir, &dir);
-        for(;;)
+        while (true)
         {
             if (dir.x > szx)
             {
@@ -1176,7 +1176,7 @@ render:
 
 
         HANDLE ff;
-        for(;;)
+        while (true)
         {   
             WIN32_FIND_DATA fd;
             ff = FindFirstFile(n.Get(), &fd);

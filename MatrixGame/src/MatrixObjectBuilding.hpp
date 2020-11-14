@@ -157,7 +157,6 @@ class CMatrixBuilding : public CMatrixMapStatic
         {
             int m_NextExplosionTime;
             int m_NextExplosionTimeSound;
-
         };
         struct 
         {
@@ -243,21 +242,25 @@ public:
 	CMatrixBuilding(void);
 	~CMatrixBuilding();
     
+    //Вызов подкрепления
     void Maintenance(void);
 
+    //Постройка вертолёта
     bool BuildFlyer(EFlyerKind kind);
     
+    //Открывается сборочная камера и поднимается подъёмник с готовым роботом/вертолётом
     void Open(void)
     {
-        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
+        if(m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
         m_State = BASE_OPENING;
         CSound::AddSound(S_DOORS_OPEN, GetGeoCenter());
         CSound::AddSound(S_PLATFORM_UP, GetGeoCenter());
     }
+    //Сборочная камера закрывается, подъёмник опускается
     void Close(void)
     {
-        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
-        if (FLAG(m_ObjectState, BUILDING_SPAWNBOT)) return; // cannot close while spawn
+        if(m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
+        if(FLAG(m_ObjectState, BUILDING_SPAWNBOT)) return; // cannot close while spawn
         m_State = BASE_CLOSING;
         CSound::AddSound(S_DOORS_CLOSE, GetGeoCenter());
         CSound::AddSound(S_PLATFORM_DOWN, GetGeoCenter());
@@ -278,7 +281,7 @@ public:
 
     D3DXVECTOR3 GetPlacePos(void) const { return m_GGraph->GetPosByName(MATRIX_BASE_PLACE);}
 
-	virtual void RNeed(dword need);
+	virtual void RNeed(dword need); // Запрашиваем нужные ресурсы объекта
 
 	virtual void Takt(int cms);
 
