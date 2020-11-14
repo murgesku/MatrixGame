@@ -162,15 +162,15 @@ void CMatrixMapStatic::JoinToGroup(void)
     DTRACE();
 
     D3DXVECTOR3 vmin, vmax;
-    if (this->CalcBounds(vmin,vmax)) return;
+    if(this->CalcBounds(vmin,vmax)) return;
 
-    if (this->IsBase())
+    if(this->IsBase())
     {
         D3DXVECTOR3 t(vmin.x, vmin.y, 0);
         m_Core->m_GeoCenter = (t + vmax) * 0.5f;
         (*(D3DXVECTOR2 *)&m_Core->m_GeoCenter) += ((*(D3DXVECTOR2 *)&m_Core->m_GeoCenter) - ((CMatrixBuilding *)this)->m_Pos);
-
-    } else
+    }
+    else
     {
         m_Core->m_GeoCenter = (vmin + vmax) * 0.5f;
     }
@@ -178,18 +178,18 @@ void CMatrixMapStatic::JoinToGroup(void)
     m_Core->m_Radius = D3DXVec3Length(&(vmax-vmin)) * 0.5f;
 
     DWORD tc = g_MatrixMap->GetColor(m_Core->m_GeoCenter.x, m_Core->m_GeoCenter.y);
-    if (!IsFlyer())
+    if(!IsFlyer())
     {
         m_Core->m_TerainColor = LIC(tc,g_MatrixMap->m_Terrain2ObjectTargetColor, g_MatrixMap->m_Terrain2ObjectInfluence);
-    } else
+    }
+    else
     {
         m_Core->m_TerainColor = 0xFFFFFFFF;
     }
 
-
     //calc shadow bounds
 
-    if (GetObjectType() == OBJECT_TYPE_MAPOBJECT)
+    if(GetObjectType() == OBJECT_TYPE_MAPOBJECT)
     {
         D3DXVECTOR3 startpos(m_Core->m_GeoCenter.x, m_Core->m_GeoCenter.y, vmax.z);
         m_AdditionalPoint = startpos + g_MatrixMap->m_LightMain * (vmax.z * 2);
@@ -220,14 +220,14 @@ void CMatrixMapStatic::JoinToGroup(void)
 //    maxx1 = int((max.x * m_Matrix._11 + max.y * m_Matrix._21 + m_Matrix._41) * _1groupsize);
 //    maxy1 = int((max.x * m_Matrix._12 + max.y * m_Matrix._22 + m_Matrix._42) * _1groupsize);
     
-    if (maxx1<minx1)
+    if(maxx1<minx1)
     {
         // swap
         maxx1 ^= minx1;
         minx1 ^= maxx1;
         maxx1 ^= minx1;
     }
-    if (maxy1<miny1)
+    if(maxy1<miny1)
     {
         // swap
         maxy1 ^= miny1;
@@ -238,41 +238,39 @@ void CMatrixMapStatic::JoinToGroup(void)
     PCMatrixMapGroup InGroups[MAX_GROUPS_PER_OBJECT];
     int newig = 0;
 
-        if (minx1 < 0)
+        if(minx1 < 0)
         {
             minx1 = 0;
-            if (0 >= maxx1) goto skip;
+            if(0 >= maxx1) goto skip;
         }
-        if (maxx1 >= g_MatrixMap->m_GroupSize.x)
+        if(maxx1 >= g_MatrixMap->m_GroupSize.x)
         {
             maxx1 = g_MatrixMap->m_GroupSize.x - 1;
-            if (maxx1 <= minx1) goto skip;
+            if(maxx1 <= minx1) goto skip;
         }
-        if (miny1 < 0)
+        if(miny1 < 0)
         {
             miny1 = 0;
-            if (0 >= maxy1) goto skip;
+            if(0 >= maxy1) goto skip;
         }
-        if (maxy1 >= g_MatrixMap->m_GroupSize.y)
+        if(maxy1 >= g_MatrixMap->m_GroupSize.y)
         {
             maxy1 = g_MatrixMap->m_GroupSize.y - 1;
-            if (maxy1 <= miny1) goto skip;
+            if(maxy1 <= miny1) goto skip;
         }
 
-
-
-    for (int x = minx1; x<=maxx1; ++x)
+    for(int x = minx1; x<=maxx1; ++x)
     {
-        for (int y = miny1; y<=maxy1; ++y)
+        for(int y = miny1; y<=maxy1; ++y)
         {
             PCMatrixMapGroup g = g_MatrixMap->GetGroupByIndex(x,y);
-            if (g == NULL) continue;
+            if(g == NULL) continue;
 
             bool already = false;
             int ii = 0;
-            while (ii<m_InCnt)
+            while(ii<m_InCnt)
             {
-                if (m_InGroups[ii] == g)
+                if(m_InGroups[ii] == g)
                 {
                     already = true;
                     m_InGroups[ii] = m_InGroups[--m_InCnt];
@@ -287,16 +285,17 @@ void CMatrixMapStatic::JoinToGroup(void)
                 _asm int 3
             }
 #endif
-            if (!already)
+            if(!already)
             {
-                if (g->IsBaseOn()) ++m_NearBaseCnt;
+                if(g->IsBaseOn()) ++m_NearBaseCnt;
                 g->AddObject(this);
-                if (!IsFlyer())
+                if(!IsFlyer())
                 {
-                    if (IsRobot())
+                    if(IsRobot())
                     {
                         g->AddNewZObjRobots(vmax.z);
-                    } else
+                    }
+                    else
                     {
                         g->AddNewZObj(vmax.z);
                     }
@@ -307,26 +306,23 @@ void CMatrixMapStatic::JoinToGroup(void)
 
     UnjoinGroup();
 
-    if (newig > 0)
+    if(newig > 0)
     {
-
         memcpy(m_InGroups, InGroups, sizeof(PCMatrixMapGroup) * newig);
         m_InCnt = newig;
-
-    } else
+    }
+    else
     {
 skip:;
         // flyer? above water? 
         // aaaa! Carrying robot :)
-        
     }
-
 }
 
 void CMatrixMapStatic::UnjoinGroup(void)
 {
     int ii = m_InCnt;
-    while (ii>0)
+    while(ii > 0)
     {
         m_InGroups[--ii]->SubObject(this);
         m_InGroups[ii]->RecalcMaxZ();
@@ -624,7 +620,7 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
         CBitmap *bm0 = &bm;
         CBitmap *bm1 = &bm_temp;
 
-        for(;;)
+        while (true)
         {
             if (rt[curt].ts >= tsz)
             {
@@ -850,7 +846,7 @@ void CMatrixMapStatic::Sort(const D3DXMATRIX &sort)
     int idx;
     int idx0 = objects_left;
     int idx1 = objects_rite;
-    for(;;)
+    while (true)
     {
         idx = ((idx1-idx0) >> 1) + idx0;
         

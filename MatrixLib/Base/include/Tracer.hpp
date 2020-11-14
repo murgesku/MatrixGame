@@ -177,7 +177,7 @@ class CDebugTracer
 
         static void StaticInit(void);
 
-        friend char * generate_trace_text(void);
+        friend char* generate_trace_text(void);
         
 #ifdef MSVC7
         CDebugTracer( const char*  src_file, int  src_line, const char*  src_func, bool cp)  throw();

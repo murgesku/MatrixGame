@@ -303,8 +303,6 @@ DCP();
         {
             CBlockPar *bpc = g_MatrixData->BlockGet(L"Config");
             bpc->LoadFromTextFile(L"cfg\\robots\\cfg.txt");
-
-
         }
     }
     else

@@ -300,11 +300,11 @@ void CFormMatrixGame::Takt(int step)
         n += "*.*";
 
         HANDLE ff = FindFirstFile(n.Get(), &fd);
-        if (ff != INVALID_HANDLE_VALUE)
+        if(ff != INVALID_HANDLE_VALUE)
         {
-            for(;;)
+            while(true)
             {
-                if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
+                if((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                 {
                     n = fd.cFileName;
                     int idx = n.FindR(FILE_NAME_SCREENSHOT,slen);
@@ -1240,7 +1240,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
 
         if (g_MatrixMap->GetPlayerSide()->GetArcadedObject())
         {
-            g_IFaceList->LiveRobot();
+            g_IFaceList->LeaveRobot();
             return;
         }
 
@@ -1302,7 +1302,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             }
             if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000)==0x8000)){
                 //"Esc", "Пробел","Enter" - Войти и выйти из робота.
-                g_IFaceList->LiveRobot();
+                g_IFaceList->LeaveRobot();
                 return;
             }
         }

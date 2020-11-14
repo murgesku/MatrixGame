@@ -226,9 +226,9 @@ static LONG WINAPI  sys_except_handler(
 
     //DM(L"EXEC HANDLER", L"OTHER");
 
-    for (i = 0; i < X_ELEM_COUNT(s_ecodes); ++i)
+    for(i = 0; i < X_ELEM_COUNT(s_ecodes); ++i)
     {
-        if (ecode == s_ecodes[i].ecode)
+        if(ecode == s_ecodes[i].ecode)
         {
             break;
         }
@@ -255,16 +255,16 @@ static LONG WINAPI  sys_except_handler(
 
     for (i = 0; i < k; ++i)
     {
-        sprintf( buff+ strlen(buff),
+        sprintf(buff + strlen(buff),
                  "exception parameter %u) 0x%x",
                  i, info->ExceptionRecord->ExceptionInformation[ i ] );
     }
 
-    sprintf( buff+ strlen(buff), "++FATAL ERROR++\n" );
+    sprintf(buff + strlen(buff), "++FATAL ERROR++\n" );
 
     strcpy(buff, generate_trace_text());
 
-    MessageBoxA(0,buff,"Unhandled Exception", MB_ICONEXCLAMATION);
+    MessageBoxA(0, buff, "Unhandled Exception", MB_ICONEXCLAMATION);
 
     return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -275,34 +275,32 @@ static LONG WINAPI  sys_except_handler(
 
 void CDebugTracer::SaveHistory(void) throw()
 {
-    FILE *file;
+    FILE* file;
 
     file = fopen("debug_history.txt","a");
-    const char *shapka = "begin history ===============================================\n";
-    fwrite(shapka, strlen(shapka),1, file);
+    const char* shapka = "begin history ===============================================\n";
+    fwrite(shapka, strlen(shapka), 1, file);
 
     int i = m_hist_start;
 
-    if (i == m_hist_end)
+    if(i == m_hist_end)
     {
-        const char *e = "empty\n";
-        fwrite(e, strlen(e),1, file);
-    } else
+        const char* e = "empty\n";
+        fwrite(e, strlen(e), 1, file);
+    }
+    else
     {
-        char    buf[1024];
+        char buf[1024];
         SDebugCallInfo *di = (SDebugCallInfo *)&m_history;
-        while (i != m_hist_end)
+        while(i != m_hist_end)
         {
             sprintf(buf, "%s:%i\n", di[i]._file, di[i]._line);
-            fwrite(buf, strlen(buf),1, file);
+            fwrite(buf, strlen(buf), 1, file);
             ++i;
-            if (i >= HISTORY_SIZE)
-            {
-                i = 0;
-            }
+            if(i >= HISTORY_SIZE) i = 0;
         }
-        const char *e = "end\n";
-        fwrite(e, strlen(e),1, file);
+        const char* e = "end\n";
+        fwrite(e, strlen(e), 1, file);
     }
 
     fclose(file);
@@ -320,15 +318,15 @@ void CDebugTracer::AddHistory() throw()
         di[m_hist_end]._line = m_src_line;
 
         ++m_hist_end;
-        if (m_hist_end >= HISTORY_SIZE)
+        if(m_hist_end >= HISTORY_SIZE)
         {
             m_hist_end = 0;
         }
 
-        if (m_hist_end == m_hist_start)
+        if(m_hist_end == m_hist_start)
         {
             ++m_hist_start;
-            if (m_hist_start >= HISTORY_SIZE)
+            if(m_hist_start >= HISTORY_SIZE)
             {
                 m_hist_start = 0;
             }
@@ -405,7 +403,7 @@ CDebugTracer::~CDebugTracer( )     throw()
         {
 
 #ifdef HISTORY_PATH_ONLY
-            if (!std::uncaught_exception())
+            if(!std::uncaught_exception())
             {
                 DelLastHistory();
             }
@@ -496,9 +494,9 @@ CDebugTracer*     CDebugTracer :: sub(
 
 const CDebugTracer*   CDebugTracer::get_call( const CDebugTracer*  item)  throw()
 {
-    if (item != 0)
+    if(item != 0)
     {
-        if (item != CDebugTracer::m_call_trace)
+        if(item != CDebugTracer::m_call_trace)
         {
             return item->m_prev;
         }
@@ -513,23 +511,24 @@ const CDebugTracer*   CDebugTracer::get_call( const CDebugTracer*  item)  throw(
 
 #endif  //  #ifdef _DEBUG  //
 
-char * generate_trace_text(void)
+char* generate_trace_text(void)
 {
     static char         call_trace[65536];
     strcpy(call_trace, "call stack:\n");
 #ifdef _DEBUG
-        for (const CDebugTracer*  item = 0;;)
+        for(const CDebugTracer*  item = 0;;)
         {
             item = CDebugTracer::get_call( item );
-            if (item == 0)
+            if(item == 0)
             {
                 break;
             }
 #ifdef MSVC7
-            if (item->m_checkpoint)
+            if(item->m_checkpoint)
             {
                 sprintf( call_trace + strlen(call_trace), "\tcheck point: %s - %i\n", item->m_src_file, item->m_src_line);
-            } else
+            }
+            else
             {
                 sprintf( call_trace + strlen(call_trace), "\t%s - %s\n", item->m_src_file, item->m_src_func);
             }

@@ -75,7 +75,7 @@ D3DXVECTOR3 CMatrixSideUnit::CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRo
 
     static D3DXVECTOR3 pf;
 
-    if (m_ArcadedP_available && speed > 0)
+    if(m_ArcadedP_available && speed > 0)
     {
         //D3DXVec3TransformNormal(&ppos, &m_ArcadedP_ppos0, &core->m_Matrix);
         ppos = m_ArcadedP_ppos0;
@@ -93,8 +93,7 @@ D3DXVECTOR3 CMatrixSideUnit::CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRo
         core->Release();
         D3DXVECTOR3 rp = LERPVECTOR(m_ArcadedP_k, p, pp);
 
-
-        if (pf.x != r->m_Forward.x)
+        if(pf.x != r->m_Forward.x)
         {
             m_ArcadedP_cur = m_ArcadedP_prevrp;
             m_ArcadedP_ppos0 = m_ArcadedP_ppos1;
@@ -107,8 +106,8 @@ D3DXVECTOR3 CMatrixSideUnit::CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRo
         pf = r->m_Forward;
 
         return rp;
-
-    } else
+    }
+    else
     {
         m_ArcadedP_available = 1;
 
@@ -125,7 +124,6 @@ D3DXVECTOR3 CMatrixSideUnit::CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRo
         core->Release();
         return p;
     }
-    
 }
 
 
@@ -191,7 +189,8 @@ CMatrixSideUnit::CMatrixSideUnit():CMain(),m_Name(g_MatrixHeap), m_PlayerName(L"
     
     m_TeamCnt=3;
     
-    for(int i=0;i<MAX_TEAM_CNT;i++) {
+    for(int i=0; i<MAX_TEAM_CNT; ++i)
+    {
         ZeroMemory(m_Team+i,sizeof(SMatrixTeam));
         m_Team[i].m_TargetRegion=-1;
         m_Team[i].m_RoadPath=HNew(g_MatrixHeap) CMatrixRoadRoute(&(g_MatrixMap->m_RN));
@@ -207,7 +206,8 @@ CMatrixSideUnit::CMatrixSideUnit():CMain(),m_Name(g_MatrixHeap), m_PlayerName(L"
     ZeroMemory(m_LogicGroup,sizeof(SMatrixLogicGroup)*MAX_LOGIC_GROUP);
     ZeroMemory(m_PlayerGroup,sizeof(SMatrixPlayerGroup)*MAX_LOGIC_GROUP);
 
-    for(int i=0;i<MAX_LOGIC_GROUP;i++) {
+    for(int i=0; i<MAX_LOGIC_GROUP; ++i)
+    {
         m_PlayerGroup[i].m_RoadPath=HNew(g_MatrixHeap) CMatrixRoadRoute(&(g_MatrixMap->m_RN));
     }
 
@@ -236,42 +236,59 @@ CMatrixSideUnit::~CMatrixSideUnit()
 {
     DTRACE();
 
-    if(m_Region!=NULL) { HFree(m_Region,g_MatrixHeap); m_Region=NULL; }
-    if(m_RegionIndex!=NULL) { HFree(m_RegionIndex,g_MatrixHeap); m_RegionIndex=NULL; }
-    if(m_PlaceList!=NULL) { HFree(m_PlaceList,g_MatrixHeap); m_PlaceList=NULL; }
+    if(m_Region!=NULL)
+    {
+        HFree(m_Region,g_MatrixHeap);
+        m_Region=NULL;
+    }
+    if(m_RegionIndex!=NULL)
+    {
+        HFree(m_RegionIndex,g_MatrixHeap);
+        m_RegionIndex=NULL;
+    }
+    if(m_PlaceList!=NULL)
+    {
+        HFree(m_PlaceList,g_MatrixHeap);
+        m_PlaceList=NULL;
+    }
 
-    if(m_Constructor != NULL)
-		HDelete(CConstructor, m_Constructor, g_MatrixHeap);
+    if(m_Constructor != NULL) HDelete(CConstructor, m_Constructor, g_MatrixHeap);
 
-    if (m_ColorTexture) CCache::Destroy(m_ColorTexture);
+    if(m_ColorTexture) CCache::Destroy(m_ColorTexture);
 
-    //if(m_GroupsList){
+    //if(m_GroupsList)
+    //{
     //    HDelete(CMatrixGroupList, m_GroupsList, g_MatrixHeap);
     //    m_GroupsList = NULL;
     //}
 
-    if(m_CurSelGroup){
+    if(m_CurSelGroup)
+    {
         HDelete(CMatrixGroup, m_CurSelGroup, g_MatrixHeap);
         m_CurSelGroup = NULL;
     }
 
     /*m_CannonForBuild.Delete();*/
-    if(m_CannonForBuild.m_Cannon){
+    if(m_CannonForBuild.m_Cannon)
+    {
         HDelete(CMatrixCannon, m_CannonForBuild.m_Cannon, g_MatrixHeap);
         m_CannonForBuild.m_Cannon = NULL;
     }
 
-    if(m_ConstructPanel)
-        HDelete(CConstructorPanel, m_ConstructPanel, g_MatrixHeap);
+    if(m_ConstructPanel) HDelete(CConstructorPanel, m_ConstructPanel, g_MatrixHeap);
 
-    for(int i=0;i<MAX_TEAM_CNT;i++) {
-        if(m_Team[i].m_RoadPath) {
+    for(int i=0; i<MAX_TEAM_CNT; ++i)
+    {
+        if(m_Team[i].m_RoadPath)
+        {
             HDelete(CMatrixRoadRoute,m_Team[i].m_RoadPath,g_MatrixHeap);
             m_Team[i].m_RoadPath=NULL;
         }
     }
-    for(int i=0;i<MAX_LOGIC_GROUP;i++) {
-        if(m_PlayerGroup[i].m_RoadPath) {
+    for(int i=0; i<MAX_LOGIC_GROUP; ++i)
+    {
+        if(m_PlayerGroup[i].m_RoadPath)
+        {
             HDelete(CMatrixRoadRoute,m_PlayerGroup[i].m_RoadPath,g_MatrixHeap);
             m_PlayerGroup[i].m_RoadPath=NULL;
         }
@@ -279,28 +296,29 @@ CMatrixSideUnit::~CMatrixSideUnit()
 
     CMatrixGroup* grps = m_FirstGroup;
 
-    while(grps){
-
-        if(grps->m_NextGroup){
+    while(grps)
+    {
+        if(grps->m_NextGroup)
+        {
 			grps = grps->m_NextGroup;
-        } else {
+        }
+        else
+        {
 			HDelete(CMatrixGroup, grps, g_MatrixHeap);
 			grps = NULL;
 			m_FirstGroup = NULL;
 			m_LastGroup = NULL;
-
 		}
 
-        if(grps)
-			HDelete(CMatrixGroup, grps->m_PrevGroup, g_MatrixHeap);
+        if(grps) HDelete(CMatrixGroup, grps->m_PrevGroup, g_MatrixHeap);
     }
     m_CurrentGroup = NULL; //SetCurGroup(NULL);
 
-//    if(m_CurGroup){
+//    if(m_CurGroup)
+//    {
 //        HDelete(CMatrixGroup, m_CurGroup, g_MatrixHeap);
 //        m_CurGroup = NULL;
 //    }
-
 }
 
 
@@ -312,32 +330,37 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
 
     EBuildingType type;
     ETimings      tim;
-    if (resource_type == TITAN)
+    if(resource_type == TITAN)
     {
         type = BUILDING_TITAN;
         tim = RESOURCE_TITAN;
-    } else if (resource_type == ELECTRONICS)
+    }
+    else if(resource_type == ELECTRONICS)
     {
         type = BUILDING_ELECTRONIC;
         tim = RESOURCE_ELECTRONICS;
-    } else if (resource_type == PLASMA)
+    }
+    else if(resource_type == PLASMA)
     {
         type = BUILDING_PLASMA;
         tim = RESOURCE_PLASMA;
-    } else if (resource_type == ENERGY)
+    }
+    else if(resource_type == ENERGY)
     {
         type = BUILDING_ENERGY;
         tim = RESOURCE_ENERGY;
     }
 
     CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-    for (;ms;ms=ms->GetNextLogic())
+    for(; ms; ms=ms->GetNextLogic())
     {
-        if (ms->IsLiveBuilding() && ms->GetSide() == m_Id)
+        if(ms->IsLiveBuilding() && ms->GetSide() == m_Id)
         {
-            if (ms->IsBase())
+            if(ms->IsBase())
+            {
                 ++base_cnt;
-            else if (ms->AsBuilding()->m_Kind == type)
+            }
+            else if(ms->AsBuilding()->m_Kind == type)
             {
                 ++fa_cnt;
             }
@@ -354,16 +377,19 @@ int CMatrixSideUnit::GetIncomePerTime(int building, int ms)
     DTRACE();
 
     ETimings      tim;
-    if (building == int(BUILDING_TITAN))
+    if(building == int(BUILDING_TITAN))
     {
         tim = RESOURCE_TITAN;
-    } else if (building == int(BUILDING_ELECTRONIC))
+    }
+    else if(building == int(BUILDING_ELECTRONIC))
     {
         tim = RESOURCE_ELECTRONICS;
-    } else if (building == int(BUILDING_PLASMA))
+    }
+    else if(building == int(BUILDING_PLASMA))
     {
         tim = RESOURCE_PLASMA;
-    } else if (building == int(BUILDING_ENERGY))
+    }
+    else if(building == int(BUILDING_ENERGY))
     {
         tim = RESOURCE_ENERGY;
     }
@@ -373,7 +399,6 @@ int CMatrixSideUnit::GetIncomePerTime(int building, int ms)
     if(building != int(BUILDING_BASE)) return (RESOURCES_INCOME)/* * ms / g_Config.m_Timings[tim]*/;
     
     return (RESOURCES_INCOME_BASE * fu / 100)/* * (ms/4) / g_Config.m_Timings[RESOURCE_BASE]*/;
-
 }
 
 void CMatrixSideUnit::BufPrepare()
@@ -382,10 +407,11 @@ void CMatrixSideUnit::BufPrepare()
     if(!m_PlaceList) m_PlaceList=(int *)HAllocClear(sizeof(int)*g_MatrixMap->m_RN.m_PlaceCnt,g_MatrixHeap);
 }
 
+//Здесь спавнятся и получают приказ вертолёты, занимающиеся доставкой подкреплений
 void CMatrixSideUnit::OrderFlyer(const D3DXVECTOR2 &to, EFlyerOrder order, float ang, int place, const CPoint &bpos, int botpar_i)
 {
     DTRACE();
-    if (g_MatrixMap->m_AD_Obj_cnt >= MAX_ALWAYS_DRAW_OBJ) return;
+    if(g_MatrixMap->m_AD_Obj_cnt >= MAX_ALWAYS_DRAW_OBJ) return;
 
     CMatrixFlyer *fl = g_MatrixMap->StaticAdd<CMatrixFlyer>(true);
 
@@ -393,7 +419,6 @@ void CMatrixSideUnit::OrderFlyer(const D3DXVECTOR2 &to, EFlyerOrder order, float
     ++g_MatrixMap->m_AD_Obj_cnt;
 
     fl->ApplyOrder(to, m_Id, order, ang, place, bpos, botpar_i);
-
 }
 
 void CMatrixSideUnit::BuildCrazyBot(void)
@@ -421,13 +446,12 @@ void CMatrixSideUnit::LogicTakt(int ms)
 {
     DTRACE();
 
-    if (GetStatus() != SS_NONE && FLAG(g_Config.m_DIFlags, DI_SIDEINFO))
+    if(GetStatus() != SS_NONE && FLAG(g_Config.m_DIFlags, DI_SIDEINFO))
     {
         g_MatrixMap->m_DI.T(CWStr(L"Side ") + m_Id, CWStr().Format(L"Titan <i>, Electronics <i>, Plasma <i>, Energy <i>", m_Resources[TITAN], m_Resources[ELECTRONICS], m_Resources[PLASMA],m_Resources[ENERGY]).Get());
-
     }
 
-    if (GetStatus() != SS_NONE)
+    if(GetStatus() != SS_NONE)
     {
         DWORD ctime = timeGetTime();
         DWORD v = (g_MatrixMap->GetStartTime()<=ctime)?(ctime - g_MatrixMap->GetStartTime()):(0xFFFFFFFF-g_MatrixMap->GetStartTime()+ctime);
@@ -437,32 +461,25 @@ void CMatrixSideUnit::LogicTakt(int ms)
 DCP();
     if(g_MatrixMap->GetPlayerSide() != this || FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE))
     {
-
-        if (m_Id == PLAYER_SIDE)
+        if(m_Id == PLAYER_SIDE)
         {
-
-            if (!g_MatrixMap->MaintenanceDisabled())
+            if(!g_MatrixMap->MaintenanceDisabled())
             {
-                if (g_MatrixMap->BeforeMaintenanceTime() == 0 && (FRND(1) < 0.05f))
+                if(g_MatrixMap->BeforeMaintenanceTime() == 0 && (FRND(1) < 0.05f))
                 {
                     CMatrixMapStatic *b = NULL;
                     CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-                    for (;ms;ms = ms->GetNextLogic())
+                    for(; ms; ms = ms->GetNextLogic())
                     {
-                        if (ms->IsLiveBuilding() && ms->GetSide() == m_Id)
+                        if(ms->IsLiveBuilding() && ms->GetSide() == m_Id)
                         {
                             b = ms;
-                            if (FRND(1) < 0.05f)
-                                break;
+                            if(FRND(1) < 0.05f) break;
                         }
-
                     }
-                    if (b)
-                        b->AsBuilding()->Maintenance();
+                    if(b) b->AsBuilding()->Maintenance();
                 }
-
             }
-
         }
 
 DCP();
@@ -473,7 +490,8 @@ DCP();
 DCP();
 //        dword t3=timeGetTime();
 //        DM(L"TaktTL",CWStr().Format(L"<i>",t3-t2).Get());
-    }else
+    }
+    else
     {
 DCP();
         if(CMultiSelection::m_GameSelection)
@@ -487,7 +505,8 @@ DCP();
 DCP();
         PumpGroups();
 DCP();
-        if((!GetCurGroup() || !GetCurGroup()->GetObjectsCnt()) && (m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED)){
+        if((!GetCurGroup() || !GetCurGroup()->GetObjectsCnt()) && (m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED))
+        {
             Select(NOTHING, NULL);
         }
 DCP();
@@ -502,7 +521,8 @@ DCP();
 
 	CMatrixMapStatic *object = CMatrixMapStatic::GetFirstLogic();
 	m_RobotsCnt = 0;
-    for(int i=0;i<m_TeamCnt;i++) {
+    for(int i=0; i<m_TeamCnt; ++i)
+    {
         m_Team[i].m_RobotCnt=0;
     }
     //m_EnergyCnt = 0;
@@ -511,9 +531,12 @@ DCP();
     //m_ElectronicCnt = 0;
 	
 DCP();
-    if(this == g_MatrixMap->GetPlayerSide()){
-        if(m_CurrSel == BUILDING_SELECTED && m_ActiveObject){
-            if(((CMatrixBuilding*)m_ActiveObject)->m_Side != m_Id){
+    if(this == g_MatrixMap->GetPlayerSide())
+    {
+        if(m_CurrSel == BUILDING_SELECTED && m_ActiveObject)
+        {
+            if(((CMatrixBuilding*)m_ActiveObject)->m_Side != m_Id)
+            {
                 //Select(FLYER, NULL);
                 m_CurrentAction = NOTHING_SPECIAL;
                 m_CannonForBuild.m_CanBuildFlag = 0;
@@ -521,7 +544,8 @@ DCP();
                 m_CannonForBuild.m_ParentBuilding = NULL;
             }
         }
-        switch(m_CurrentAction){
+        switch(m_CurrentAction)
+        {
             case NOTHING_SPECIAL:
                 g_MatrixMap->m_Cursor.SetVisible(true);
                 break;
@@ -530,10 +554,12 @@ DCP();
                 {
                     bool build_flag = (m_CannonForBuild.m_ParentBuilding->m_TurretsHave < m_CannonForBuild.m_ParentBuilding->m_TurretsMax);
 
-                    if(g_IFaceList->m_InFocus == UNKNOWN){
+                    if(g_IFaceList->m_InFocus == UNKNOWN)
+                    {
                         /*g_MatrixMap->m_Cursor.Select(CURSOR_EMPTY);*/
                         g_MatrixMap->m_Cursor.SetVisible(false);
-                    }else if(g_IFaceList->m_InFocus == INTERFACE)
+                    }
+                    else if(g_IFaceList->m_InFocus == INTERFACE)
                     {
                         g_MatrixMap->m_Cursor.SetVisible(true);
                         g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
@@ -550,26 +576,33 @@ DCP();
 
                     int can_bld_flg = IsInPlaces(places, places_cnt, Float2Int(pos.x * INVERT(GLOBAL_SCALE_MOVE)), Float2Int(pos.y * INVERT(GLOBAL_SCALE_MOVE)));
 
-                    if(build_flag && can_bld_flg>=0){
+                    if(build_flag && can_bld_flg>=0)
+                    {
                         m_CannonForBuild.m_Cannon->SetTerainColor(0xFF00FF00);
                         m_CannonForBuild.m_CanBuildFlag = 1;
-                    }else{
+                    }
+                    else
+                    {
                         m_CannonForBuild.m_Cannon->SetTerainColor(0xFFFF0000);
                         m_CannonForBuild.m_CanBuildFlag = 0;
                     }
-                    if(can_bld_flg>=0) {
+
+                    if(can_bld_flg>=0)
+                    {
                         m_CannonForBuild.m_Cannon->m_Pos.x = places[can_bld_flg].x*GLOBAL_SCALE_MOVE;
                         m_CannonForBuild.m_Cannon->m_Pos.y = places[can_bld_flg].y*GLOBAL_SCALE_MOVE;
                         m_CannonForBuild.m_Cannon->m_Place=g_MatrixMap->m_RN.FindInPL(places[can_bld_flg]);
-                    } else {
+                    }
+                    else
+                    {
                         m_CannonForBuild.m_Cannon->m_Pos.x = pos.x;
                         m_CannonForBuild.m_Cannon->m_Pos.y = pos.y;
                         m_CannonForBuild.m_Cannon->m_Place=-1;
                     }
 
-                    if (can_bld_flg>=0)
+                    if(can_bld_flg>=0)
                     {
-                        for(int i=0;i<m_CannonForBuild.m_ParentBuilding->m_TurretsMax;i++)
+                        for(int i=0; i<m_CannonForBuild.m_ParentBuilding->m_TurretsMax; ++i)
                         {
                             if(m_CannonForBuild.m_ParentBuilding->m_TurretsPlaces[i].m_Coord==places[can_bld_flg])
                             {
@@ -587,10 +620,13 @@ DCP();
         }
     }
 DCP();
-    while(object){
-        if(object->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)object)->m_Side == m_Id && ((CMatrixRobotAI*)object)->m_CurrState != ROBOT_DIP){
+    while(object)
+    {
+        if(object->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)object)->m_Side == m_Id && ((CMatrixRobotAI*)object)->m_CurrState != ROBOT_DIP)
+        {
 			m_RobotsCnt++;
-            if(((CMatrixRobotAI*)object)->GetTeam()>=0) {
+            if(((CMatrixRobotAI*)object)->GetTeam() >= 0)
+            {
                 ASSERT(((CMatrixRobotAI*)object)->GetTeam()>=0 && ((CMatrixRobotAI*)object)->GetTeam()<m_TeamCnt);
                 m_Team[((CMatrixRobotAI*)object)->GetTeam()].m_RobotCnt++;
             }
@@ -598,7 +634,8 @@ DCP();
 		object = object->GetNextLogic();
 	}
 
-    if(IsRobotMode()){
+    if(IsRobotMode())
+    {
         m_Arcaded->AsRobot()->ShowHitpoint();
     }
 DCP();
@@ -608,7 +645,8 @@ DCP();
 void CMatrixSideUnit::OnMouseMove()
 {
     DTRACE();
-    if(m_Id == PLAYER_SIDE && IsRobotMode() && g_IFaceList->m_InFocus != INTERFACE){
+    if(m_Id == PLAYER_SIDE && IsRobotMode() && g_IFaceList->m_InFocus != INTERFACE)
+    {
         CMatrixRobotAI* robot = ((CMatrixRobotAI*)GetArcadedObject());
     }
 }
@@ -621,10 +659,11 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &)
 
     CMatrixMapStatic* pObject = MouseToLand();
 
-    if (pObject == TRACE_STOP_NONE) return;
+    if(pObject == TRACE_STOP_NONE) return;
 
-    if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon && m_CannonForBuild.m_CanBuildFlag/* && (m_CannonForBuild.m_ParentBuilding->m_TurretsHave < m_CannonForBuild.m_ParentBuilding->m_TurretsMax)*/){
-        if (g_MatrixMap->IsPaused()) return;
+    if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon && m_CannonForBuild.m_CanBuildFlag/* && (m_CannonForBuild.m_ParentBuilding->m_TurretsHave < m_CannonForBuild.m_ParentBuilding->m_TurretsMax)*/)
+    {
+        if(g_MatrixMap->IsPaused()) return;
 		CMatrixCannon* ca = g_MatrixMap->StaticAdd<CMatrixCannon>(true);
         ca->m_CurrState = CANNON_UNDER_CONSTRUCTION;
 
@@ -662,16 +701,19 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &)
     }
     
     
-    if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon){
+    if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon)
+    {
         return;
     }
     int mx = Float2Int(g_MatrixMap->m_TraceStopPos.x / GLOBAL_SCALE_MOVE);
     int my = Float2Int(g_MatrixMap->m_TraceStopPos.y / GLOBAL_SCALE_MOVE);
     D3DXVECTOR3 tpos = g_MatrixMap->m_TraceStopPos;
 
-    if(g_IFaceList->m_InFocus == INTERFACE && g_IFaceList->m_FocusedInterface->m_strName == IF_MINI_MAP){
+    if(g_IFaceList->m_InFocus == INTERFACE && g_IFaceList->m_FocusedInterface->m_strName == IF_MINI_MAP)
+    {
         D3DXVECTOR2 tgt;
-        if(g_MatrixMap->m_Minimap.CalcMinimap2World(tgt)){
+        if(g_MatrixMap->m_Minimap.CalcMinimap2World(tgt))
+        {
             pObject = TRACE_STOP_LANDSCAPE;
             mx = Float2Int(tgt.x / GLOBAL_SCALE_MOVE);
             my = Float2Int(tgt.y / GLOBAL_SCALE_MOVE);
@@ -679,8 +721,10 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &)
         }
     }
 
-    if(IS_PREORDERING){
-        if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE)){
+    if(IS_PREORDERING)
+    {
+        if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE))
+        {
             // Move 
             RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE|ORDERING_MODE);
             
@@ -688,8 +732,10 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &)
 
             CMatrixGroup* group = GetCurGroup();
             CMatrixGroupObject* objs = group->m_FirstObject;
-            while(objs){
-                if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+            while(objs)
+            {
+                if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+                {
                     int param = (group->GetObjectsCnt() - group->GetRobotsCnt()) - 1;
                     if(param > 4) param = 4;
                     float x = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.x - param*GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.x + param*GLOBAL_SCALE_MOVE);
@@ -698,53 +744,67 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &)
                 }
                 objs = objs->m_NextObject;
             }
-
-        } else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE)) {
+        }
+        else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE))
+        {
             // Fire
-            if(IS_TRACE_STOP_OBJECT(pObject) && (pObject->IsLive() || pObject->IsSpecial())) {
+            if(IS_TRACE_STOP_OBJECT(pObject) && (pObject->IsLive() || pObject->IsSpecial()))
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|ORDERING_MODE);
             
                 PGOrderAttack(SelGroupToLogicGroup(),GetMapPos(pObject),pObject);
-
-            } else {
+            }
+            else
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|ORDERING_MODE);
             
                 PGOrderAttack(SelGroupToLogicGroup(),CPoint(mx-ROBOT_MOVECELLS_PER_SIZE/2,my-ROBOT_MOVECELLS_PER_SIZE/2),NULL);
             }
-
-        } else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE)){
+        }
+        else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE))
+        {
             // Capture
-            if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide() != PLAYER_SIDE){
+            if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide() != PLAYER_SIDE)
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE|ORDERING_MODE);
 
                 PGOrderCapture(SelGroupToLogicGroup(),(CMatrixBuilding *)pObject);
             }
 
-        } else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_PATROL)) {
+        }
+        else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_PATROL))
+        {
             // Patrol
             RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_PATROL|ORDERING_MODE);
             PGOrderPatrol(SelGroupToLogicGroup(),CPoint(mx-ROBOT_MOVECELLS_PER_SIZE/2,my-ROBOT_MOVECELLS_PER_SIZE/2));
-        } else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB)) {
+        }
+        else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB))
+        {
             // Nuclear BOMB!!! spasaisya kto mozhet!!! dab shas rvanet bombu!!!!
-            if(IS_TRACE_STOP_OBJECT(pObject) && (pObject->IsLive() || pObject->IsSpecial())) {
+            if(IS_TRACE_STOP_OBJECT(pObject) && (pObject->IsLive() || pObject->IsSpecial()))
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB|ORDERING_MODE);
 
                 PGOrderBomb(SelGroupToLogicGroup(),GetMapPos(pObject),pObject);
-            } else {
+            }
+            else
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_BOMB|ORDERING_MODE);
 
                 PGOrderBomb(SelGroupToLogicGroup(),CPoint(mx-ROBOT_MOVECELLS_PER_SIZE/2,my-ROBOT_MOVECELLS_PER_SIZE/2),NULL);
             }
-        } else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_REPAIR)) {
+        }
+        else if(FLAG(g_IFaceList->m_IfListFlags, PREORDER_REPAIR))
+        {
             // Repair our robots please
-            if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLive() && pObject->GetSide() == PLAYER_SIDE) {
+            if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLive() && pObject->GetSide() == PLAYER_SIDE)
+            {
                 RESETFLAG(g_IFaceList->m_IfListFlags, PREORDER_REPAIR|ORDERING_MODE);
 
                 PGOrderRepair(SelGroupToLogicGroup(),(CMatrixBuilding *)pObject);
             } 
         }
     }
-
 }
 
 void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
@@ -754,21 +814,26 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
 
     CMatrixMapStatic* pObject = MouseToLand();
 
-    if(pObject == TRACE_STOP_NONE || !(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE)) return;
+    if(pObject == TRACE_STOP_NONE || !(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE))
+        return;
 
-    if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE){
+    if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE)
+    {
         D3DXVECTOR3 o_pos = pObject->GetGeoCenter();
         CMatrixMapStatic* st = CMatrixMapStatic::GetFirstLogic();
 
-        if(GetCurGroup()){
+        if(GetCurGroup())
+        {
             SelectedGroupUnselect();
             GetCurSelGroup()->RemoveAll();
         }
 
-
-        while(st){
-            if(st->GetSide() == PLAYER_SIDE && st->IsLiveRobot()){
-                if(D3DXVec3LengthSq(&(o_pos-st->GetGeoCenter())) <= FRIENDLY_SEARCH_RADIUS*FRIENDLY_SEARCH_RADIUS){
+        while(st)
+        {
+            if(st->GetSide() == PLAYER_SIDE && st->IsLiveRobot())
+            {
+                if(D3DXVec3LengthSq(&(o_pos-st->GetGeoCenter())) <= FRIENDLY_SEARCH_RADIUS*FRIENDLY_SEARCH_RADIUS)
+                {
                     GetCurSelGroup()->AddObject(st, -4);
                 }
             }
@@ -776,9 +841,12 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
         }
     }
     CreateGroupFromCurrent();
-    if(GetCurGroup() && GetCurGroup()->GetObjectsCnt() == 1){
+    if(GetCurGroup() && GetCurGroup()->GetObjectsCnt() == 1)
+    {
         Select(ROBOT, NULL);
-    }else if(GetCurGroup() && GetCurGroup()->GetObjectsCnt() > 1){
+    }
+    else if(GetCurGroup() && GetCurGroup()->GetObjectsCnt() > 1)
+    {
         Select(GROUP, NULL);
     }
 }
@@ -790,10 +858,9 @@ void CMatrixSideUnit::OnLButtonUp(const CPoint &)
 
     CMatrixMapStatic* pObject = MouseToLand();
 
-    if (pObject == TRACE_STOP_NONE) return;
+    if(pObject == TRACE_STOP_NONE) return;
 
-    if(IS_TRACE_STOP_OBJECT(pObject)){
-    }
+    if(IS_TRACE_STOP_OBJECT(pObject)){}
 }
 
 void CMatrixSideUnit::OnRButtonDown(const CPoint &)
@@ -801,7 +868,8 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
     DTRACE();
     if(IsArcadeMode()) return;
     DCP();
-    if(IS_PREORDERING && m_CurrentAction == BUILDING_TURRET){
+    if(IS_PREORDERING && m_CurrentAction == BUILDING_TURRET)
+    {
     DCP();
         g_IFaceList->ResetOrderingMode();
         m_CannonForBuild.Delete();        
@@ -818,9 +886,11 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
     D3DXVECTOR3 tpos = g_MatrixMap->m_TraceStopPos;
 
     DCP();
-    if(!IS_PREORDERING && GetCurGroup() && g_IFaceList->m_InFocus == INTERFACE && g_IFaceList->m_FocusedInterface->m_strName == IF_MINI_MAP){
+    if(!IS_PREORDERING && GetCurGroup() && g_IFaceList->m_InFocus == INTERFACE && g_IFaceList->m_FocusedInterface->m_strName == IF_MINI_MAP)
+    {
         D3DXVECTOR2 tgt;
-        if(g_MatrixMap->m_Minimap.CalcMinimap2World(tgt)){
+        if(g_MatrixMap->m_Minimap.CalcMinimap2World(tgt))
+        {
             pObject = TRACE_STOP_LANDSCAPE;
             mx = Float2Int(tgt.x / GLOBAL_SCALE_MOVE);
             my = Float2Int(tgt.y / GLOBAL_SCALE_MOVE);
@@ -830,25 +900,30 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
     }
 
 
-    if (pObject == TRACE_STOP_NONE) return;
+    if(pObject == TRACE_STOP_NONE) return;
     
-    if(!IS_PREORDERING && (m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED)) {
-
-        if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide()!=m_Id) {
+    if(!IS_PREORDERING && (m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED))
+    {
+        if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide()!=m_Id)
+        {
             // Capture
             PGOrderCapture(SelGroupToLogicGroup(),(CMatrixBuilding *)pObject);
-
-        } else if(IS_TRACE_STOP_OBJECT(pObject) && ((IsLiveUnit(pObject) && pObject->GetSide()!=m_Id) || pObject->IsSpecial())) {
+        }
+        else if(IS_TRACE_STOP_OBJECT(pObject) && ((IsLiveUnit(pObject) && pObject->GetSide()!=m_Id) || pObject->IsSpecial()))
+        {
             // Attack
             PGOrderAttack(SelGroupToLogicGroup(),GetMapPos(pObject),pObject);
-                    
-        } else if(pObject == TRACE_STOP_LANDSCAPE || pObject == TRACE_STOP_WATER  || (IS_TRACE_STOP_OBJECT(pObject))) {
+        }
+        else if(pObject == TRACE_STOP_LANDSCAPE || pObject == TRACE_STOP_WATER  || (IS_TRACE_STOP_OBJECT(pObject)))
+        {
             // MoveTo
             PGOrderMoveTo(SelGroupToLogicGroup(),CPoint(mx-ROBOT_MOVECELLS_PER_SIZE/2,my-ROBOT_MOVECELLS_PER_SIZE/2));
                     
             CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-            while(objs){
-                if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+            while(objs)
+            {
+                if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+                {
                     int param = (GetCurGroup()->GetObjectsCnt() - GetCurGroup()->GetRobotsCnt()) - 1;
                     if(param > 4) param = 4;
                     float x = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.x - param*GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.x + param*GLOBAL_SCALE_MOVE);
@@ -859,7 +934,6 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
             }
         }
     }
-    
 }
 
 void CMatrixSideUnit::OnRButtonUp(const CPoint &)
@@ -907,7 +981,8 @@ void CMatrixSideUnit::OnForward(bool down)
         float x = m_Arcaded->AsRobot()->m_PosX + vel.x;
         float y = m_Arcaded->AsRobot()->m_PosY + vel.y;
         m_Arcaded->AsRobot()->MoveTo(Float2Int(x / GLOBAL_SCALE_MOVE), Float2Int(y / GLOBAL_SCALE_MOVE));
-    }else if(!down && m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO))
+    }
+    else if(!down && m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO))
     {
         m_Arcaded->AsRobot()->StopMoving();
     }
@@ -918,12 +993,15 @@ void CMatrixSideUnit::OnBackward(bool down)
     DTRACE();
     if(!IsRobotMode() || !m_Arcaded) return;
     
-    if(down && !m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO_BACK)){
+    if(down && !m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO_BACK))
+    {
         D3DXVECTOR3 vel = m_Arcaded->AsRobot()->m_Forward*m_Arcaded->AsRobot()->GetMaxSpeed();
         float x = m_Arcaded->AsRobot()->m_PosX - vel.x;
         float y = m_Arcaded->AsRobot()->m_PosY - vel.y;
         m_Arcaded->AsRobot()->MoveToBack(Float2Int(x / GLOBAL_SCALE_MOVE), Float2Int(y / GLOBAL_SCALE_MOVE));
-    }else if(!down && m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO_BACK)){
+    }
+    else if(!down && m_Arcaded->AsRobot()->FindOrderLikeThat(ROT_MOVE_TO_BACK))
+    {
         m_Arcaded->AsRobot()->StopMoving();
     }
 }
@@ -1022,7 +1100,6 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject)
         g_IFaceList->CreateGroupIcons();
 
         ShowOrderState();
-
     }
     else if((type == FLYER || type == ROBOT))
     {
@@ -1039,7 +1116,6 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject)
         g_IFaceList->CreateWeaponDynamicStatics();        
         
         ShowOrderState();
-        
     }
     else if(type == ARCADE){}
     else
@@ -1694,7 +1770,7 @@ int CMatrixSideUnit::GetRobotsInStack()
 void CMatrixSideUnit::PLDropAllActions()
 {
     DTRACE();
-    g_IFaceList->LiveRobot();
+    g_IFaceList->LeaveRobot();
     m_CurrentAction = NOTHING_SPECIAL;    
     m_CannonForBuild.Delete();        
     g_IFaceList->ResetOrderingMode();
@@ -5618,49 +5694,60 @@ float CMatrixSideUnit::BuildRobotMinStrange(CMatrixBuilding * base)
 
 void CMatrixSideUnit::BuildRobot(void)
 {
-    int i,k,r,u,cnt,lwcnt,ik,uk;
+    int i, k, r, u, cnt, lwcnt, ik, uk;
     CMatrixBuilding * base=NULL;
     float minstrange=0;
 
     int basecnt=0;
     int wr[MAX_RESOURCES];
-    for(r=0;r<MAX_RESOURCES;r++) wr[r]=0;
+    for(r=0; r<MAX_RESOURCES; ++r) wr[r]=0;
 
     // Собираем информацию
     // Выбираем базу для рождения
     cnt=0;
     CMatrixMapStatic* mps = CMatrixMapStatic::GetFirstLogic();
-    while(mps){
+    while(mps)
+    {
         if(mps->GetSide() == m_Id && mps->IsLiveBuilding() && mps->IsBase())
         {
             basecnt++;
-            cnt+=mps->AsBuilding()->m_BS.GetItemsCnt();
+            cnt += mps->AsBuilding()->m_BS.GetItemsCnt();
 
-            while(true) {
-                if(!base) {
+            while(true)
+            {
+                if(!base)
+                {
                     base=(CMatrixBuilding *)mps;
                     minstrange=BuildRobotMinStrange(mps->AsBuilding());
-                } else {
+                }
+                else
+                {
                     i=GetRegion(mps);
                     k=GetRegion(base);
 
                     float istr=BuildRobotMinStrange(mps->AsBuilding());
-                    if(istr!=minstrange) {
-                        if(istr<minstrange) {
+                    if(istr!=minstrange)
+                    {
+                        if(istr<minstrange)
+                        {
                             base=(CMatrixBuilding *)mps;
                             minstrange=istr;
                         }
                         break;
                     }
-                    if(m_Region[i].m_EnemyRobotDist!=m_Region[k].m_EnemyRobotDist) {
-                        if(m_Region[k].m_EnemyRobotDist<0 || (m_Region[i].m_EnemyRobotDist>=0 && m_Region[i].m_EnemyRobotDist<m_Region[k].m_EnemyRobotDist)) {
+                    if(m_Region[i].m_EnemyRobotDist!=m_Region[k].m_EnemyRobotDist)
+                    {
+                        if(m_Region[k].m_EnemyRobotDist<0 || (m_Region[i].m_EnemyRobotDist>=0 && m_Region[i].m_EnemyRobotDist<m_Region[k].m_EnemyRobotDist))
+                        {
                             base=mps->AsBuilding();
                             minstrange=istr;
                         }
                         break;
                     }
-                    if(m_Region[i].m_EnemyBuildingDist!=m_Region[k].m_EnemyBuildingDist) {
-                        if(m_Region[k].m_EnemyBuildingDist<0 || (m_Region[i].m_EnemyBuildingDist>=0 && m_Region[i].m_EnemyBuildingDist<m_Region[k].m_EnemyBuildingDist)) {
+                    if(m_Region[i].m_EnemyBuildingDist!=m_Region[k].m_EnemyBuildingDist)
+                    {
+                        if(m_Region[k].m_EnemyBuildingDist<0 || (m_Region[i].m_EnemyBuildingDist>=0 && m_Region[i].m_EnemyBuildingDist<m_Region[k].m_EnemyBuildingDist))
+                        {
                             base=mps->AsBuilding();
                             minstrange=istr;
                         }
@@ -5669,13 +5756,17 @@ void CMatrixSideUnit::BuildRobot(void)
                 }
                 break;
             }
-        } else if(mps->GetSide() == m_Id && mps->IsLiveBuilding() && !mps->IsBase()) {
+        }
+        else if(mps->GetSide() == m_Id && mps->IsLiveBuilding() && !mps->IsBase())
+        {
             if(mps->AsBuilding()->m_Kind==BUILDING_TITAN) wr[TITAN]++;
             else if(mps->AsBuilding()->m_Kind==BUILDING_PLASMA) wr[PLASMA]++;
             else if(mps->AsBuilding()->m_Kind==BUILDING_ELECTRONIC) wr[ELECTRONICS]++;
             else if(mps->AsBuilding()->m_Kind==BUILDING_ENERGY) wr[ENERGY]++;
 
-        } else if(mps->GetSide() == m_Id && mps->IsLiveRobot() && mps->AsRobot()->GetTeam()>=0) {
+        }
+        else if(mps->GetSide() == m_Id && mps->IsLiveRobot() && mps->AsRobot()->GetTeam()>=0)
+        {
             cnt++;
         }
         mps = mps->GetNextLogic();
@@ -5694,12 +5785,19 @@ void CMatrixSideUnit::BuildRobot(void)
 
     // Сколько нужно ждать до запланированного робота
     int waitend=-1;
-    if(m_WaitResForBuildRobot>=0) {
+    if(m_WaitResForBuildRobot>=0)
+    {
         waitend=0;
-        for(r=0;r<MAX_RESOURCES;r++)  {
+        for(r=0; r<MAX_RESOURCES; ++r) 
+        {
             k=(SSpecialBot::m_AIRobotTypeList[m_WaitResForBuildRobot].m_Resources[r]-m_Resources[r]);
-            if(k>0) {
-                if(wr[r]<=0 && basecnt<=0) { waitend=1000000000; break; }
+            if(k > 0)
+            {
+                if(wr[r]<=0 && basecnt<=0)
+                {
+                    waitend=1000000000;
+                    break;
+                }
                 waitend=max(waitend,Float2Int(float(k*g_Config.m_Timings[r])/float(wr[r]*RESOURCES_INCOME+(RESOURCES_INCOME_BASE*GetResourceForceUp()/100*basecnt))));
             }
         }
@@ -5707,14 +5805,18 @@ void CMatrixSideUnit::BuildRobot(void)
 
     // Сколько будет ресурсов, если немного подождать
     int mr=0;
-    for(r=0;r<MAX_RESOURCES;r++) mr+=min(2000,m_Resources[r]);
+    for(r=0; r<MAX_RESOURCES; ++r) mr+=min(2000,m_Resources[r]);
     mr=Float2Int(float(mr/MAX_RESOURCES)*0.6f);
 
-    for(r=0;r<MAX_RESOURCES;r++) {
-//        if(m_Resources[r]<mr) {  // Не ждем то чего слишком мало
+    for(r=0; r<MAX_RESOURCES; ++r)
+    {
+//        if(m_Resources[r]<mr) // Не ждем то, чего слишком мало
+//        {
 //            wr[r]=m_Resources[r];
-//        } else {
-            wr[r]=(RESOURCES_INCOME*wr[r]+(RESOURCES_INCOME_BASE*GetResourceForceUp()/100*basecnt))*(waittime/g_Config.m_Timings[r])+m_Resources[r];
+//        }
+//        else
+//        {
+              wr[r]=(RESOURCES_INCOME*wr[r]+(RESOURCES_INCOME_BASE*GetResourceForceUp()/100*basecnt))*(waittime/g_Config.m_Timings[r])+m_Resources[r];
 //        }
     }
 
@@ -5787,8 +5889,8 @@ void CMatrixSideUnit::BuildRobot(void)
     // Если дождались ожидаемого робота, то строим его
     if(m_WaitResForBuildRobot>=0)
     {
-        for(i=0; i<cnt; ++i) if(list[i]==m_WaitResForBuildRobot) break;
-        if(i<cnt)
+        for(i=0; i<cnt; ++i) if(list[i] == m_WaitResForBuildRobot) break;
+        if(i < cnt)
         {
             if(base->m_BS.GetItemsCnt()<6)
             {
@@ -5861,26 +5963,26 @@ void CMatrixSideUnit::BuildRobot(void)
             {
                 uk=0;
                 for(r=0; r<MAX_RESOURCES; ++r) if(m_Resources[r]<mr) uk+=SSpecialBot::m_AIRobotTypeList[lwait[i]].m_Resources[r];
-                if(uk>ik) break;
+                if(uk > ik) break;
             }
             lwcnt=i;
         }
 
         k=0;
-        for(i=0; i<lwcnt; ++i) k+=SSpecialBot::m_AIRobotTypeList[lwait[i]].m_Pripor;
+        for(i=0; i<lwcnt; ++i) k += SSpecialBot::m_AIRobotTypeList[lwait[i]].m_Pripor;
         k=g_MatrixMap->Rnd(0,k-1);
 
         for(i=0; i<lwcnt; ++i)
         {
             k-=SSpecialBot::m_AIRobotTypeList[lwait[i]].m_Pripor;
-            if(k<0) break;
+            if(k < 0) break;
         }
         if(i>=lwcnt) ERROR_E;
 
         m_WaitResForBuildRobot=lwait[i];
         DMSide(L"BuildRobot WaitRobotStrange=<f>",SSpecialBot::m_AIRobotTypeList[m_WaitResForBuildRobot].m_Strength);
     }
-    else if(cnt>0) // Строим сразу
+    else if(cnt > 0) // Строим сразу
     {
         // выбираем из лучших, случайно по приоритету
         for(i=1; i<cnt; ++i) if(SSpecialBot::m_AIRobotTypeList[list[i]].m_Strength<0.7*SSpecialBot::m_AIRobotTypeList[list[0]].m_Strength) break;
@@ -5908,9 +6010,9 @@ void CMatrixSideUnit::BuildRobot(void)
                 }
             }
 
-            ik=0;
+            ik = 0;
             for(r=0; r<MAX_RESOURCES; ++r) if(m_Resources[r]<mr) ik+=SSpecialBot::m_AIRobotTypeList[list[0]].m_Resources[r];
-            ik+=ik/10;
+            ik += ik/10;
             for(i=1; i<cnt; ++i)
             {
                 uk=0;
@@ -5922,14 +6024,14 @@ void CMatrixSideUnit::BuildRobot(void)
 
         k=0;
         for(i=0; i<cnt; ++i) k+=SSpecialBot::m_AIRobotTypeList[list[i]].m_Pripor;
-        k=g_MatrixMap->Rnd(0,k-1);
+        k=g_MatrixMap->Rnd(0, k-1);
 
         for(i=0; i<cnt; ++i)
         {
             k-=SSpecialBot::m_AIRobotTypeList[list[i]].m_Pripor;
-            if(k<0) break;
+            if(k < 0) break;
         }
-        if(i>=cnt) ERROR_E;
+        if(i >= cnt) ERROR_E;
 
         if(base->m_BS.GetItemsCnt()<6)
         {
@@ -6032,7 +6134,7 @@ void CMatrixSideUnit::BuildCannon(void)
 
     int r;
     for(r=0; r<MAX_RESOURCES; ++r) if(g_Config.m_CannonsProps[curtype].m_Resources[r]>m_Resources[r]) break;
-    if(r<MAX_RESOURCES) return; // Нехватает ресурсов
+    if(r < MAX_RESOURCES) return; // Не хватает ресурсов
 
     if(building->m_BS.GetItemsCnt()>0) return; // Если уже что-то строится, то не строим
 
@@ -6248,77 +6350,100 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
         bool prevwar=m_PlayerGroup[i].IsWar();
         m_PlayerGroup[i].SetWar(false);
 
-        if(m_PlayerGroup[i].Order()==mpo_Stop) {
+        if(m_PlayerGroup[i].Order()==mpo_Stop)
+        {
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(!PLIsToPlace(robot)) {
+                    if(!PLIsToPlace(robot))
+                    {
                         orderok[i]=false;
                         break;
                     }
                 }
                 obj = obj->GetNextLogic();
             }
-
-        } else if(m_PlayerGroup[i].Order()==mpo_MoveTo) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_MoveTo)
+        {
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(!PLIsToPlace(robot)) {
-                        if(CanChangePlace(robot)) {
-                        orderok[i]=false;
-                        break;
+                    if(!PLIsToPlace(robot))
+                    {
+                        if(CanChangePlace(robot))
+                        {
+                            orderok[i]=false;
+                            break;
+                        }
                     }
-                }
                 }
                 obj = obj->GetNextLogic();
             }
-
-        } else if(m_PlayerGroup[i].Order()==mpo_Patrol) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_Patrol)
+        {
             t=1;
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=obj->AsRobot();
-                    if(robot->GetEnv()->GetEnemyCnt()) {
+                    if(robot->GetEnv()->GetEnemyCnt())
+                    {
                         orderok[i]=true;
                         m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
                         t=0;
                         break;
                     }
-                    if(!PLIsToPlace(robot)) {
-                        if(CanChangePlace(robot)) {
-                        orderok[i]=false;
-                        break;
+                    if(!PLIsToPlace(robot))
+                    {
+                        if(CanChangePlace(robot))
+                        {
+                            orderok[i]=false;
+                            break;
+                        }
                     }
-                    }
-                    if(!robot->PLIsInPlace()) {
+                    if(!robot->PLIsInPlace())
+                    {
                         t=0;
                     }
                 }
                 obj = obj->GetNextLogic();
             }
-            if(t) {
+            if(t)
+            {
                 orderok[i]=false;
                 m_PlayerGroup[i].SetPatrolReturn(!m_PlayerGroup[i].IsPatrolReturn());
             }
-
-        } else if(m_PlayerGroup[i].Order()==mpo_Repair) {
-            if(m_PlayerGroup[i].m_Obj==NULL || !m_PlayerGroup[i].m_Obj->NeedRepair()) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_Repair)
+        {
+            if(m_PlayerGroup[i].m_Obj==NULL || !m_PlayerGroup[i].m_Obj->NeedRepair())
+            {
                 PGOrderStop(i);
             }
-
-        } else if(m_PlayerGroup[i].Order()==mpo_Capture) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_Capture)
+        {
             u=0;
             t=0;
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id)
+                {
                     building=obj->AsRobot()->GetCaptureFactory();
-                    if(building && building==m_PlayerGroup[i].m_Obj) {
+                    if(building && building==m_PlayerGroup[i].m_Obj)
+                    {
                         u++;
                         break;
                     }
@@ -6326,19 +6451,25 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 if(m_PlayerGroup[i].m_Obj==obj && obj->IsLiveBuilding() && obj->GetSide()!=m_Id) t=1;
                 obj = obj->GetNextLogic();
             }
-            if(!t) { // Нечего захватывать
+            if(!t) // Нечего захватывать
+            {
                 PGOrderStop(i);
                 continue;
             }
             orderok[i]=(u>0);
             // Если приказ захватить базу, но есть пушки, то атаковать пушки
-            if(m_PlayerGroup[i].m_Obj->IsBase() && m_PlayerGroup[i].m_Obj->AsBuilding()->m_TurretsHave) {
+            if(m_PlayerGroup[i].m_Obj->IsBase() && m_PlayerGroup[i].m_Obj->AsBuilding()->m_TurretsHave)
+            {
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveActiveCannon() && obj->AsCannon()->m_ParentBuilding==m_PlayerGroup[i].m_Obj) {
+                while(obj)
+                {
+                    if(obj->IsLiveActiveCannon() && obj->AsCannon()->m_ParentBuilding==m_PlayerGroup[i].m_Obj)
+                    {
                         CMatrixMapStatic * obj2 = CMatrixMapStatic::GetFirstLogic();
-                        while(obj2) {
-                            if(obj2->IsLiveRobot() && obj2->GetSide()==m_Id && obj2->AsRobot()->GetGroupLogic()==i) {
+                        while(obj2)
+                        {
+                            if(obj2->IsLiveRobot() && obj2->GetSide()==m_Id && obj2->AsRobot()->GetGroupLogic()==i)
+                            {
                                 robot=obj2->AsRobot();
                                 if(robot->GetEnv()->SearchEnemy(obj)) break;
                             }
@@ -6348,12 +6479,16 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(obj) {
+                if(obj)
+                {
                     CMatrixMapStatic * obj2 = CMatrixMapStatic::GetFirstLogic();
-                    while(obj2) {
-                        if(obj2->IsLiveRobot() && obj2->GetSide()==m_Id && ((CMatrixRobotAI *)obj2)->GetGroupLogic()==i) {
+                    while(obj2)
+                    {
+                        if(obj2->IsLiveRobot() && obj2->GetSide()==m_Id && ((CMatrixRobotAI *)obj2)->GetGroupLogic()==i)
+                        {
                             robot=(CMatrixRobotAI *)obj2;
-                            if(robot->GetCaptureFactory() && robot->CanBreakOrder()) {
+                            if(robot->GetCaptureFactory() && robot->CanBreakOrder())
+                            {
                                 robot->BreakAllOrders();
                             }
                         }
@@ -6361,143 +6496,191 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                     }
                     m_PlayerGroup[i].SetWar(true);
 
-                    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_ENABLE_CAPTURE_FUCKOFF_SOUND))
+                    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_ENABLE_CAPTURE_FUCKOFF_SOUND))
                     {
                         CSound::Play(S_ORDER_CAPTURE_FUCK_OFF);
                         RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_ENABLE_CAPTURE_FUCKOFF_SOUND);
                     }
-
 
                     if(!prevwar) PGPlaceClear(i);
                     orderok[i]=true;
                     continue;
                 }
             }
-            if(orderok[i]) { // Проверяем у всех ли правильно назначено место
+            if(orderok[i]) // Проверяем, у всех ли правильно назначено место
+            {
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+                while(obj)
+                {
+                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                    {
                         robot=(CMatrixRobotAI*)obj;
 
                         if(robot->GetEnv()->m_Place<0 && robot->GetEnv()->m_PlaceAdd.x<0) break;
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(obj) {
-                    if(CanChangePlace(robot)) {
-                    orderok[i]=false;
+                if(obj)
+                {
+                    if(CanChangePlace(robot))
+                    {
+                        orderok[i]=false;
+                    }
                 }
             }
-            }
 
-        } else if(m_PlayerGroup[i].Order()==mpo_Attack) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_Attack)
+        {
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(m_PlayerGroup[i].m_Obj && robot->GetEnv()->SearchEnemy(m_PlayerGroup[i].m_Obj)) {
+                    if(m_PlayerGroup[i].m_Obj && robot->GetEnv()->SearchEnemy(m_PlayerGroup[i].m_Obj))
+                    {
 //                        if(robot->GetEnv()->m_Target!=m_PlayerGroup[i].m_Obj) robot->GetEnv()->m_Target=m_PlayerGroup[i].m_Obj;
                         orderok[i]=true;
                         m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
                         break;
-
-                    } else if(!m_PlayerGroup[i].m_Obj && robot->GetEnv()->GetEnemyCnt()) {
+                    }
+                    else if(!m_PlayerGroup[i].m_Obj && robot->GetEnv()->GetEnemyCnt())
+                    {
                         orderok[i]=true;
                         m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
                         break;
                     }
-                    if(!PLIsToPlace(robot)) {
-                        if(CanChangePlace(robot)) {
-                        orderok[i]=false;
-                        break;
+                    if(!PLIsToPlace(robot))
+                    {
+                        if(CanChangePlace(robot))
+                        {
+                            orderok[i]=false;
+                            break;
+                        }
                     }
-                }
                 }
                 obj = obj->GetNextLogic();
             }
-            if(!m_PlayerGroup[i].IsWar() && prevwar) { // Если до этого находились в состоянии войны, то заново назначаем маршрут
+            if(!m_PlayerGroup[i].IsWar() && prevwar) // Если до этого находились в состоянии войны, то заново назначаем маршрут
+            {
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            {
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+                while(obj)
+                {
+                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                    {
                         robot=(CMatrixRobotAI*)obj;
 
                         if(tp.Dist2(PLPlacePos(robot))<POW2(15)) break;
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(!obj) {
+                if(!obj)
+                {
                     orderok[i]=false;
                     continue;
                 }
             }
 
-        } else if(m_PlayerGroup[i].Order()==mpo_Bomb) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_Bomb)
+        {
             t=0;
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(robot->HaveBomb()) {
+                    if(robot->HaveBomb())
+                    {
                         t++;
-                        if(robot->PLIsInPlace()) { robot->BigBoom(); t--; }
-                        else if(PLPlacePos(robot).Dist2(GetMapPos(robot))<POW2(2)) { robot->BigBoom(); t--; }
-                        else if(m_PlayerGroup[i].m_Obj && m_PlayerGroup[i].m_Obj->IsLive() && D3DXVec2LengthSq(&(GetWorldPos(robot)-GetWorldPos(m_PlayerGroup[i].m_Obj)))<POW2(150) ) { robot->BigBoom(); t--; }
+                        if(robot->PLIsInPlace())
+                        {
+                            robot->BigBoom();
+                            t--;
+                        }
+                        else if(PLPlacePos(robot).Dist2(GetMapPos(robot))<POW2(2))
+                        {
+                            robot->BigBoom();
+                            t--;
+                        }
+                        else if(m_PlayerGroup[i].m_Obj && m_PlayerGroup[i].m_Obj->IsLive() && D3DXVec2LengthSq(&(GetWorldPos(robot)-GetWorldPos(m_PlayerGroup[i].m_Obj)))<POW2(150) )
+                        {
+                            robot->BigBoom();
+                            t--;
+                        }
                     }
-                    if(!PLIsToPlace(robot)) {
-                        if(CanChangePlace(robot)) {
+                    if(!PLIsToPlace(robot))
+                    {
+                        if(CanChangePlace(robot))
+                        {
                             orderok[i]=false;
                         }
                     }
                 }
                 obj = obj->GetNextLogic();
             }
-            if(t<=0) {
+            if(t<=0)
+            {
                 PGOrderStop(i);
                 continue;
             }
-            if(orderok[i]) { // и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(orderok[i]) // И правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            {
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+                while(obj)
+                {
+                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                    {
                         robot=(CMatrixRobotAI*)obj;
 
                         if(tp.Dist2(PLPlacePos(robot))<POW2(10)) break;
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(!obj) {
+                if(!obj)
+                {
                     orderok[i]=false;
                     continue;
                 }
             }
 
-        } else if(m_PlayerGroup[i].Order()==mpo_AutoCapture) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_AutoCapture)
+        {
             float strange=0.0f;
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     strange+=obj->AsRobot()->GetStrength();
                 }
                 obj = obj->GetNextLogic();
             }
 
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(robot->GetEnv()->GetEnemyCnt()) {
+                    if(robot->GetEnv()->GetEnemyCnt())
+                    {
                         orderok[i]=true;
                         if(strange>=1.0f) m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
@@ -6508,7 +6691,8 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
             }
             if(m_PlayerGroup[i].IsWar()) continue;
 
-            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLiveBuilding() || m_PlayerGroup[i].m_Obj->GetSide()==m_Id) {
+            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLiveBuilding() || m_PlayerGroup[i].m_Obj->GetSide()==m_Id)
+            {
                 m_PlayerGroup[i].m_Obj=NULL;
                 orderok[i]=false;
                 continue;
@@ -6516,10 +6700,13 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
             u=0;
             t=0;
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id)
+                {
                     building=obj->AsRobot()->GetCaptureFactory();
-                    if(building && building==m_PlayerGroup[i].m_Obj) {
+                    if(building && building==m_PlayerGroup[i].m_Obj)
+                    {
                         u++;
                         break;
                     }
@@ -6527,86 +6714,109 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
                 if(m_PlayerGroup[i].m_Obj==obj && obj->IsLiveBuilding() && obj->GetSide()!=m_Id) t=1;
                 obj = obj->GetNextLogic();
             }
-            if(!t) { // Нечего захватывать
+            if(!t) // Нечего захватывать
+            {
                 orderok[i]=false;
                 continue;
             }
             orderok[i]=(u>0);
-            if(orderok[i]) { // Проверяем у всех ли правильно назначено место
+            if(orderok[i]) // Проверяем у всех ли правильно назначено место
+            {
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+                while(obj)
+                {
+                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                    {
                         robot=(CMatrixRobotAI*)obj;
 
                         if(robot->GetEnv()->m_Place<0 && robot->GetEnv()->m_PlaceAdd.x<0) break;
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(obj) {
-                    if(CanChangePlace(robot)) {
-                    orderok[i]=false;
+                if(obj)
+                {
+                    if(CanChangePlace(robot))
+                    {
+                        orderok[i]=false;
+                    }
                 }
             }
-            }
-
-        } else if(m_PlayerGroup[i].Order()==mpo_AutoAttack) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_AutoAttack)
+        {
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(robot->GetEnv()->GetEnemyCnt()) {
+                    if(robot->GetEnv()->GetEnemyCnt())
+                    {
                         orderok[i]=true;
                         m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
                         break;
                     }
-                    if(!PLIsToPlace(robot)) {
-                        if(CanChangePlace(robot)) {
-                        orderok[i]=false;
-                        break;
+                    if(!PLIsToPlace(robot))
+                    {
+                        if(CanChangePlace(robot))
+                        {
+                            orderok[i]=false;
+                            break;
+                        }
                     }
-                }
                 }
                 obj = obj->GetNextLogic();
             }
             if(m_PlayerGroup[i].IsWar()) continue;
 
-            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLive()) {
+            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLive())
+            {
                 m_PlayerGroup[i].m_Obj=NULL;
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) // Если нет войны, и правильно идем по места, проверяем, сильно ли изменила цель свою позицию
+            {
                 tp=m_PlayerGroup[i].m_To;
                 if(m_PlayerGroup[i].m_Obj) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
 
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
-                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+                while(obj)
+                {
+                    if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                    {
                         robot=(CMatrixRobotAI*)obj;
 
                         if(tp.Dist2(PLPlacePos(robot))<POW2(15)) break;
                     }
                     obj = obj->GetNextLogic();
                 }
-                if(!obj) {
+                if(!obj)
+                {
                     orderok[i]=false;
                     continue;
                 }
             }
 
-        } else if(m_PlayerGroup[i].Order()==mpo_AutoDefence) {
+        }
+        else if(m_PlayerGroup[i].Order()==mpo_AutoDefence)
+        {
             obj = CMatrixMapStatic::GetFirstLogic();
-            while(obj) {
-                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i) {
+            while(obj)
+            {
+                if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==i)
+                {
                     robot=(CMatrixRobotAI*)obj;
-                    if(robot->GetEnv()->GetEnemyCnt()) {
+                    if(robot->GetEnv()->GetEnemyCnt())
+                    {
                         orderok[i]=true;
                         m_PlayerGroup[i].SetWar(true);
                         if(!prevwar) PGPlaceClear(i);
                         break;
                     }
-                    if(!PLIsToPlace(robot)) {
+                    if(!PLIsToPlace(robot))
+                    {
                         orderok[i]=false;
                         break;
                     }
@@ -6615,28 +6825,33 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
             }
             if(m_PlayerGroup[i].IsWar()) continue;
 
-            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLiveRobot() || m_PlayerGroup[i].m_Region<0) {
+            if(!m_PlayerGroup[i].m_Obj || !m_PlayerGroup[i].m_Obj->IsLiveRobot() || m_PlayerGroup[i].m_Region<0)
+            {
                 m_PlayerGroup[i].m_Obj=NULL;
                 orderok[i]=false;
                 continue;
             }
-            if(!m_PlayerGroup[i].IsWar() && orderok[i]) { // Если нет войны, и правильно идем по места, проверяем, идет ли цель в регион назначения.
+            if(!m_PlayerGroup[i].IsWar() && orderok[i]) // Если нет войны, и правильно идем по места, проверяем, идет ли цель в регион назначения.
+            {
                 if(!m_PlayerGroup[i].m_Obj->AsRobot()->GetMoveToCoords(tp)) tp=GetMapPos(m_PlayerGroup[i].m_Obj);
                 int reg=g_MatrixMap->GetRegion(tp);
 
-                if(m_PlayerGroup[i].m_Region!=reg) {
-                    if(CanChangePlace(robot)) {
-                    m_PlayerGroup[i].m_Obj=NULL;
-                    orderok[i]=false;
-                    continue;
+                if(m_PlayerGroup[i].m_Region!=reg)
+                {
+                    if(CanChangePlace(robot))
+                    {
+                        m_PlayerGroup[i].m_Obj=NULL;
+                        orderok[i]=false;
+                        continue;
+                    }
                 }
             }
         }
     }
-    }
 
     // Применяем приказ
-    for(i=0;i<MAX_LOGIC_GROUP;i++) {
+    for(i=0; i<MAX_LOGIC_GROUP; ++i)
+    {
         if(onlygroup>=0 && i!=onlygroup) continue;
         if(m_PlayerGroup[i].m_RobotCnt<=0) continue;
         if(orderok[i]) continue;

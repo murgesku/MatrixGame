@@ -404,7 +404,7 @@ public:
 
         void Sort(const D3DXMATRIX &sort);
         static void SortBegin(void);
-        static  void        OnEndOfDraw(void); // this must be called before any sorting stuf
+        static  void OnEndOfDraw(void); // this must be called before any sorting stuf
 
         static void SortEndRecalcTerainColor(void);
         static void SortEndDraw(void);
@@ -437,9 +437,24 @@ public:
 #endif
 
         // logic temp: list of static objects, у которых временно вызывается логический такт
-        __forceinline bool    InLT(void) { return (m_PrevLogicTemp!=NULL) || (m_NextLogicTemp!=NULL) || (this==m_FirstLogicTemp); }
-        __forceinline void    AddLT(void) {if (!InLT()) {LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
-        __forceinline void    DelLT(void) {if (InLT()) {LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
+        __forceinline bool InLT(void)
+        {
+            return (m_PrevLogicTemp != NULL) || (m_NextLogicTemp != NULL) || (this == m_FirstLogicTemp);
+        }
+        __forceinline void AddLT(void)
+        {
+            if(!InLT())
+            {
+                LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
+            }
+        }
+        __forceinline void DelLT(void)
+        {
+            if(InLT())
+            {
+                LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
+            }
+        }
 
         static void ProceedLogic(int ms);
 
@@ -452,9 +467,9 @@ public:
             m_RChange &= (~zn);
         }
 
-        void    StaticTakt(int ms);
+        void StaticTakt(int ms);
 
-        virtual void RNeed(dword need)=0;                       // Запрашиваем нужные ресурсы объекта
+        virtual void RNeed(dword need)=0; // Запрашиваем нужные ресурсы объекта
 
         virtual void Takt(int cms) = 0;
         virtual void LogicTakt(int cms) = 0;

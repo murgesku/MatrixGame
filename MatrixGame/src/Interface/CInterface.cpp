@@ -137,19 +137,18 @@ CInterface::~CInterface()
 	CIFaceElement *ptmpElement = m_FirstElement;
     while (m_FirstElement) DelElement(m_FirstElement);
 
-    while(images != NULL){
-		if(images->m_NextImage)
-			images = images->m_NextImage;
-		else {
+    while(images != NULL)
+    {
+		if(images->m_NextImage) images = images->m_NextImage;
+		else
+        {
 			HDelete(CIFaceImage, images, g_MatrixHeap);
 			images = NULL;
 			m_FirstImage = NULL;
 			m_LastImage = NULL;
 
 		}
-
-		if(images)
-			HDelete(CIFaceImage, images->m_PrevImage, g_MatrixHeap);
+		if(images) HDelete(CIFaceImage, images->m_PrevImage, g_MatrixHeap);
 	}
 
 }
@@ -175,16 +174,19 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 	m_yPos = (float)pbp1->Par(L"yPos").GetDouble();
 	m_zPos = (float)pbp1->Par(L"zPos").GetDouble();
 
-    if(m_xPos != 0){
+    if(m_xPos != 0)
+    {
         int width = 1024 - Float2Int(m_xPos);
         m_xPos = float(g_ScreenX - width);
     }
-    if(m_yPos != 0){
+    if(m_yPos != 0)
+    {
         int height = 768 - Float2Int(m_yPos);
         m_yPos = float(g_ScreenY - height);
     }
 
-    if(m_strName == IF_RADAR){
+    if(m_strName == IF_RADAR)
+    {
         g_IFaceList->m_IFRadarPosX = Float2Int(m_xPos);
         g_IFaceList->m_IFRadarPosY = Float2Int(m_yPos);
     }
@@ -193,20 +195,23 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
     CBlockPar* labels_file = NULL;
    
     labels_file = pbp1->BlockGetNE(L"LabelsText");
-    if(labels_file){
+    if(labels_file)
+    {
         labels_file = labels_file->BlockGetNE(name);
     }
     
-    if(pbp1->Par(L"OnTop").GetInt()){
+    if(pbp1->Par(L"OnTop").GetInt())
+    {
 		m_AlwaysOnTop = TRUE;
 		m_VisibleAlpha = 255;
-	}else
-		m_AlwaysOnTop = FALSE;
+	}
+    else m_AlwaysOnTop = FALSE;
 	
 	int Const = 0;
 	Const = pbp1->Par(L"ConstPresent").GetInt();
 
-    if(Const){
+    if(Const)
+    {
 		g_MatrixMap->GetPlayerSide()->m_Constructor->SetRenderProps(
 	    			(float)pbp1->Par(L"ConstX").GetDouble() + m_xPos, 
 					(float)pbp1->Par(L"ConstY").GetDouble() + m_yPos, 
@@ -216,12 +221,14 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
     }
 
     CIFaceElement* if_elem = NULL;
-    for(int nC = 0; nC < m_nTotalElements; nC++){
+    for(int nC = 0; nC < m_nTotalElements; ++nC)
+    {
 		if_elem = NULL;
         pbp2 = pbp1->BlockGet(nC);
 		tmpStr = pbp1->BlockGetName(nC);
 
-		if(tmpStr == L"Button"){
+		if(tmpStr == L"Button")
+        {
             CIFaceButton *pButton = HNew(g_MatrixHeap) CIFaceButton;
             if_elem = (CIFaceElement*)pButton;
 			
@@ -230,7 +237,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             
             CWStr hint_par(L"", g_CacheHeap);
             hint_par = pbp2->ParNE(L"Hint");
-            if(hint_par != L""){
+            if(hint_par != L"")
+            {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0,L",");
                 pButton->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pButton->m_Hint.y = hint_par.GetIntPar(2, L",");
@@ -249,7 +257,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 
 			//FSET(pButton->m_Action, m_Constructor, CConstructor::OperateUnit);
 
-			if(Const){
+			if(Const)
+            {
                 if((pButton->m_Param1 !=0 && pButton->m_Param2 != 0)  || 
                     pButton->m_strName == IF_BASE_PILON_HULL || 
                     pButton->m_strName == IF_BASE_PILON_CHASSIS || 
@@ -265,9 +274,13 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                         FSET(ON_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteFocusElement);
                         FSET(ON_UN_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteUnFocusElement);
                         pButton->m_nId = POPUP_REACTION_ELEMENT_ID;
-				}else if(pButton->m_strName ==IF_BASE_CONST_BUILD){
+				}
+                else if(pButton->m_strName ==IF_BASE_CONST_BUILD)
+                {
 					FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteBuild);
-                }else if(pButton->m_strName == IF_BASE_CONST_CANCEL){
+                }
+                else if(pButton->m_strName == IF_BASE_CONST_CANCEL)
+                {
                     FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CIFaceList::PlayerAction);
                 }
 			}
@@ -2293,6 +2306,8 @@ void CInterface::Init(void)
                 int common_weapon = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].common;
                 int extended = g_MatrixMap->m_RobotWeaponMatrix[player_side->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind-1].extra;
 
+                CIFaceElement* foc_el = player_side->m_ConstructPanel->m_FocusedElement;
+
                 if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == L"counthz" || pElement->m_strName == IF_BASE_CONSTRUCTION_LEFT || pElement->m_strName == IF_BASE_CONSTRUCTION_RIGHT || pElement->m_strName == IF_BASE_CONSTRUCTION_FOOT))
                 {
                     pElement->SetVisibility(true);
@@ -2673,24 +2688,36 @@ void CInterface::Init(void)
                             }
                         }
                     }
-                }/*else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CONFIG1 || pElement->m_strName == IF_BASE_CONFIG2 || pElement->m_strName == IF_BASE_CONFIG3 || pElement->m_strName == IF_BASE_CONFIG4 || pElement->m_strName == IF_BASE_CONFIG5)){
+                }
+                /*else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CONFIG1 || pElement->m_strName == IF_BASE_CONFIG2 || pElement->m_strName == IF_BASE_CONFIG3 || pElement->m_strName == IF_BASE_CONFIG4 || pElement->m_strName == IF_BASE_CONFIG5))
+                {
                     pElement->SetVisibility(true);
-                }*/else if(player_side->m_ConstructPanel->IsActive() && pElement->m_Type == IFACE_DYNAMIC_STATIC && (pElement->m_strName == IF_BASE_TITAN_IMAGE || pElement->m_strName == IF_BASE_ELECTRONICS_IMAGE || pElement->m_strName == IF_BASE_ENERGY_IMAGE || pElement->m_strName == IF_BASE_PLASMA_IMAGE)){
+                }*/
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_Type == IFACE_DYNAMIC_STATIC && (pElement->m_strName == IF_BASE_TITAN_IMAGE || pElement->m_strName == IF_BASE_ELECTRONICS_IMAGE || pElement->m_strName == IF_BASE_ENERGY_IMAGE || pElement->m_strName == IF_BASE_PLASMA_IMAGE))
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_Type == IFACE_DYNAMIC_STATIC && (pElement->m_strName == IF_BASE_TITAN_SUMM || pElement->m_strName == IF_BASE_ELECTRONICS_SUMM || pElement->m_strName == IF_BASE_ENERGY_SUMM || pElement->m_strName == IF_BASE_PLASMA_SUMM)){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_Type == IFACE_DYNAMIC_STATIC && (pElement->m_strName == IF_BASE_TITAN_SUMM || pElement->m_strName == IF_BASE_ELECTRONICS_SUMM || pElement->m_strName == IF_BASE_ENERGY_SUMM || pElement->m_strName == IF_BASE_PLASMA_SUMM))
+                {
                     pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive()  && pElement->m_strName == IF_BASE_SUMM_PANEL ){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_SUMM_PANEL)
+                {
                     pElement->SetVisibility(true);
 
                     bool tit_color_upd = false;
-                    if((player_side->GetResourcesAmount(TITAN) < titan_summ) && titan_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(TITAN) < titan_summ) && titan_color != 0xFFFF0000)
+                    {
                         titan_color = 0xFFFF0000;
                         tit_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(TITAN) >= titan_summ) && titan_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(TITAN) >= titan_summ) && titan_color != 0xFFF6c000)
+                    {
                         titan_color = 0xFFF6c000;
                         tit_color_upd = true;
                     }
-                    if(tit_color_upd && titan_summ){
+                    if(tit_color_upd && titan_summ)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX+25) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
@@ -2698,14 +2725,18 @@ void CInterface::Init(void)
                     }
                     
                     bool elec_color_upd = false;
-                    if((player_side->GetResourcesAmount(ELECTRONICS) < electronics_summ) && electronics_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(ELECTRONICS) < electronics_summ) && electronics_color != 0xFFFF0000)
+                    {
                         electronics_color = 0xFFFF0000;
                         elec_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(ELECTRONICS) >= electronics_summ) && electronics_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(ELECTRONICS) >= electronics_summ) && electronics_color != 0xFFF6c000)
+                    {
                         electronics_color = 0xFFF6c000;
                         elec_color_upd = true;
                     }
-                    if(elec_color_upd && electronics_summ){
+                    if(elec_color_upd && electronics_summ)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX+25) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_summ);
@@ -2713,14 +2744,18 @@ void CInterface::Init(void)
                     }
 
                     bool ener_color_upd = false;
-                    if((player_side->GetResourcesAmount(ENERGY) < energy_summ) && energy_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(ENERGY) < energy_summ) && energy_color != 0xFFFF0000)
+                    {
                         energy_color = 0xFFFF0000;
                         ener_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(ENERGY) >= energy_summ) && energy_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(ENERGY) >= energy_summ) && energy_color != 0xFFF6c000)
+                    {
                         energy_color = 0xFFF6c000;
                         ener_color_upd = true;
                     }
-                    if(ener_color_upd && energy_summ){
+                    if(ener_color_upd && energy_summ)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX+19) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_summ);
@@ -2728,10 +2763,13 @@ void CInterface::Init(void)
                     }
 
                     bool plas_color_upd = false;
-                    if((player_side->GetResourcesAmount(PLASMA) < plasma_summ) && plasm_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(PLASMA) < plasma_summ) && plasm_color != 0xFFFF0000)
+                    {
                         plasm_color = 0xFFFF0000;
                         plas_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(PLASMA) > plasma_summ) && plasm_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(PLASMA) > plasma_summ) && plasm_color != 0xFFF6c000)
+                    {
                         plasm_color = 0xFFF6c000;
                         plas_color_upd = true;
                     }
@@ -2742,13 +2780,16 @@ void CInterface::Init(void)
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
-                    if(titan_summ != total_res[TITAN] || electronics_summ != total_res[ELECTRONICS] || energy_summ != total_res[ENERGY] || plasma_summ != total_res[PLASMA]){
+                    if(titan_summ != total_res[TITAN] || electronics_summ != total_res[ELECTRONICS] || energy_summ != total_res[ENERGY] || plasma_summ != total_res[PLASMA])
+                    {
                         titan_summ = total_res[TITAN];
                         electronics_summ = total_res[ELECTRONICS];
                         energy_summ = total_res[ENERGY];
                         plasma_summ = total_res[PLASMA];
-                        if(titan_summ != 0){
-                            if(player_side->GetResourcesAmount(TITAN) < titan_summ){
+                        if(titan_summ != 0)
+                        {
+                            if(player_side->GetResourcesAmount(TITAN) < titan_summ)
+                            {
                                 titan_color = 0xFFFF0000;
                             }
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_color;
@@ -2756,8 +2797,10 @@ void CInterface::Init(void)
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
-                        if(electronics_summ != 0){
-                            if(player_side->GetResourcesAmount(ELECTRONICS) < electronics_summ){
+                        if(electronics_summ != 0)
+                        {
+                            if(player_side->GetResourcesAmount(ELECTRONICS) < electronics_summ)
+                            {
                                 electronics_color = 0xFFFF0000;
                             }
 
@@ -2767,8 +2810,10 @@ void CInterface::Init(void)
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                             
                         }
-                        if(energy_summ != 0){
-                            if(player_side->GetResourcesAmount(ENERGY) < energy_summ){
+                        if(energy_summ != 0)
+                        {
+                            if(player_side->GetResourcesAmount(ENERGY) < energy_summ)
+                            {
                                 energy_color = 0xFFFF0000;
                             }
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_color;
@@ -2777,8 +2822,10 @@ void CInterface::Init(void)
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                             
                         }
-                        if(plasma_summ != 0){
-                            if(player_side->GetResourcesAmount(PLASMA) < plasma_summ){
+                        if(plasma_summ != 0)
+                        {
+                            if(player_side->GetResourcesAmount(PLASMA) < plasma_summ)
+                            {
                                 plasm_color = 0xFFFF0000;
                             }
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_color;
@@ -2787,33 +2834,46 @@ void CInterface::Init(void)
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && player_side->m_ConstructPanel->m_FocusedElement && pElement->m_strName == IF_BASE_UNIT_PANEL){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && foc_el && pElement->m_strName == IF_BASE_UNIT_PANEL)
+                {
                     int start = 0;
                     int *unit_res = NULL;
-                    int kind = Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param2);
+                    int kind = Float2Int(foc_el->m_Param2);
                     if(kind)pElement->SetVisibility(true);
 
-                    if(ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON){
+                    if(ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON)
+                    {
                         start = WEAPON1_TITAN;
-                    }else if(ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR){
+                    }
+                    else if(ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR)
+                    {
                         start = ARMOR1_TITAN;
-                    }else if(ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_HEAD){
+                    }
+                    else if(ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD)
+                    {
                         start = HEAD1_TITAN;
-                    }else if(ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS){
+                    }
+                    else if(ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS)
+                    {
                         start = CHASSIS1_TITAN;
                     }
                     
                     unit_res = &g_Config.m_Price[start + (kind-1)*4];
 
                     bool tit_color_upd = false;
-                    if((player_side->GetResourcesAmount(TITAN) < total_res[TITAN]) && titan_unit_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(TITAN) < total_res[TITAN]) && titan_unit_color != 0xFFFF0000)
+                    {
                         titan_unit_color = 0xFFFF0000;
                         tit_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(TITAN) >= total_res[TITAN]) && titan_unit_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(TITAN) >= total_res[TITAN]) && titan_unit_color != 0xFFF6c000)
+                    {
                         titan_unit_color = 0xFFF6c000;
                         tit_color_upd = true;
                     }
-                    if(tit_color_upd){
+                    if(tit_color_upd)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_ftitX+25) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
@@ -2821,14 +2881,18 @@ void CInterface::Init(void)
                     }
                     
                     bool elec_color_upd = false;
-                    if((player_side->GetResourcesAmount(ELECTRONICS) < total_res[ELECTRONICS]) && electronics_unit_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(ELECTRONICS) < total_res[ELECTRONICS]) && electronics_unit_color != 0xFFFF0000)
+                    {
                         electronics_unit_color = 0xFFFF0000;
                         elec_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(ELECTRONICS) >= total_res[ELECTRONICS]) && electronics_unit_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(ELECTRONICS) >= total_res[ELECTRONICS]) && electronics_unit_color != 0xFFF6c000)
+                    {
                         electronics_unit_color = 0xFFF6c000;
                         elec_color_upd = true;
                     }
-                    if(elec_color_upd){
+                    if(elec_color_upd)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_felecX+25) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
@@ -2836,14 +2900,18 @@ void CInterface::Init(void)
                     }
 
                     bool ener_color_upd = false;
-                    if((player_side->GetResourcesAmount(ENERGY) < total_res[ENERGY]) && energy_unit_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(ENERGY) < total_res[ENERGY]) && energy_unit_color != 0xFFFF0000)
+                    {
                         energy_unit_color = 0xFFFF0000;
                         ener_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(ENERGY) >= total_res[ENERGY]) && energy_unit_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(ENERGY) >= total_res[ENERGY]) && energy_unit_color != 0xFFF6c000)
+                    {
                         energy_unit_color = 0xFFF6c000;
                         ener_color_upd = true;
                     }
-                    if(ener_color_upd){
+                    if(ener_color_upd)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_fenerX+19) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
@@ -2851,53 +2919,64 @@ void CInterface::Init(void)
                     }
 
                     bool plas_color_upd = false;
-                    if((player_side->GetResourcesAmount(PLASMA) < total_res[PLASMA]) && plasm_unit_color != 0xFFFF0000){
+                    if((player_side->GetResourcesAmount(PLASMA) < total_res[PLASMA]) && plasm_unit_color != 0xFFFF0000)
+                    {
                         plasm_unit_color = 0xFFFF0000;
                         plas_color_upd = true;
-                    }else if((player_side->GetResourcesAmount(PLASMA) > total_res[PLASMA]) && plasm_unit_color != 0xFFF6c000){
+                    }
+                    else if((player_side->GetResourcesAmount(PLASMA) > total_res[PLASMA]) && plasm_unit_color != 0xFFF6c000)
+                    {
                         plasm_unit_color = 0xFFF6c000;
                         plas_color_upd = true;
                     }
-                    if(plas_color_upd){
+                    if(plas_color_upd)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_fplasX+24) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
-                    if(titan_unit != unit_res[TITAN] || electronics_unit != unit_res[ELECTRONICS] || energy_unit != unit_res[ENERGY] || plasma_unit != unit_res[PLASMA]){
+                    if(titan_unit != unit_res[TITAN] || electronics_unit != unit_res[ELECTRONICS] || energy_unit != unit_res[ENERGY] || plasma_unit != unit_res[PLASMA])
+                    {
                         titan_unit = unit_res[TITAN];
                         electronics_unit = unit_res[ELECTRONICS];
                         energy_unit = unit_res[ENERGY];
                         plasma_unit = unit_res[PLASMA];
 
-                        if(titan_unit != 0){
+                        if(titan_unit != 0)
+                        {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_ftitX+25) - Float2Int(pElement->m_xPos);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
-                        }else{
+                        }
+                        else
+                        {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = 0;
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                         
-                        if(electronics_unit != 0){
+                        if(electronics_unit != 0)
+                        {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_felecX+25) - Float2Int(pElement->m_xPos);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
-                        if(energy_unit != 0){
+                        if(energy_unit != 0)
+                        {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_fenerX+19) - Float2Int(pElement->m_xPos);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
-                        if(plasma_unit != 0){
+                        if(plasma_unit != 0)
+                        {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_fplasX+24) - Float2Int(pElement->m_xPos);
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
@@ -2905,87 +2984,97 @@ void CInterface::Init(void)
                         }
                     }
                
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_STRUCTURE){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_STRUCTURE)
+{
                     pElement->SetVisibility(true);
-                    if(structure != player_side->m_Constructor->GetConstructionStructure()){
+                    if(structure != player_side->m_Constructor->GetConstructionStructure())
+                    {
                         structure = player_side->m_Constructor->GetConstructionStructure();
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(structure);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_DAMAGE){
+                }
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_DAMAGE)
+                {
                     pElement->SetVisibility(true);
 
                     int wep = 0;
-                    for(int cnt = 0; cnt < MAX_WEAPON_CNT;cnt++){
-                        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[cnt].m_nKind != 0){
+                    for(int cnt = 0; cnt < MAX_WEAPON_CNT; ++cnt)
+                    {
+                        if(player_side->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[cnt].m_nKind != 0)
+                        {
                             wep++;
                             break;
                         }
                     }
-                    if(wep == 0){
+                    if(wep == 0)
+                    {
                         damage = 0;
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
-                    }else if(damage != GetConstructionDamage(player_side->m_Constructor->GetRenderBot())){
+                    }
+                    else if(damage != GetConstructionDamage(player_side->m_Constructor->GetRenderBot()))
+                    {
                         damage = GetConstructionDamage(player_side->m_Constructor->GetRenderBot());
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_PRICE && player_side->m_ConstructPanel->m_FocusedElement && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 != 0 ){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD1_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE1_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_HEAD && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 1){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD2_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE2_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_HEAD && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 2){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD3_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE3_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_HEAD && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 3){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD4_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE4_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_HEAD && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 4){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL1_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU1_TEXT)  && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 1){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL2_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU2_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 2){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL3_ST  || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU3_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 3){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL4_ST  || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU4_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 4){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL5_ST  || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU5_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 5){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL6_ST  || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU6_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_ARMOR && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 6){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS1_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH1_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 1){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS2_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH2_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 2){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS3_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH3_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 3){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS4_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH4_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 4){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS5_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH5_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_CHASSIS && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 5){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON1_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW1_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 1){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON2_ST  || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW2_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 2){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON3_ST  || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW3_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 3){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON4_ST  || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW4_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 4){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON5_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW5_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 5){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON6_ST   || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW6_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 6){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON7_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW7_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 7){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON8_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW8_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 8){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON9_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW9_TEXT) && player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 9){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON10_ST  || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW10_TEXT)&& player_side->m_ConstructPanel->m_FocusedElement && ERobotUnitType(Float2Int(player_side->m_ConstructPanel->m_FocusedElement->m_Param1)) == MRT_WEAPON && player_side->m_ConstructPanel->m_FocusedElement->m_Param2 == 10){
-                    pElement->SetVisibility(true);
-                }else if(player_side->m_ConstructPanel->IsActive() && pElement == g_IFaceList->m_RCountControl->GetImage()){
-                    pElement->SetVisibility(true);
                 }
+                else if (player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_PRICE && foc_el && foc_el->m_Param2 != 0)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD1_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 1)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD2_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 2)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD3_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 3)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD4_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 4)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL1_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 1)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL2_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 2)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL3_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 3)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL4_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 4)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL5_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 5)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL6_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 6)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS1_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 1)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS2_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 2)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS3_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 3)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS4_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 4)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS5_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 5)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON1_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 1)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON2_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 2)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON3_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 3)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON4_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 4)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON5_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 5)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON6_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 6)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON7_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW7_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 7)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON8_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW8_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 8)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON9_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW9_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 9)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON10_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW10_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 10)
+                pElement->SetVisibility(true);
+                else if (player_side->m_ConstructPanel->IsActive() && pElement == g_IFaceList->m_RCountControl->GetImage())
+                pElement->SetVisibility(true);
             }
             pElement = pElement->m_NextElement;
         }
@@ -3102,8 +3191,8 @@ CIFaceImage* CInterface::FindImageByName(CWStr name)
     CIFaceImage* images = m_FirstImage;
     while(images)
     {
-        if(images->m_strName == name)
-            return images;
+        if(images->m_strName == name) return images;
+
         images = images->m_NextImage;
     }
     return NULL;
@@ -3295,10 +3384,8 @@ bool CInterface::FindElementByName(const CWStr &name)
     CIFaceElement *elements = m_FirstElement;
     while(elements)
     {
-        if(elements->m_strName == name)
-        {
-            return true;
-        }
+        if(elements->m_strName == name) return true;
+
         elements = elements->m_NextElement;
     }
     return false;
@@ -3385,14 +3472,16 @@ CIFaceList::CIFaceList():m_CurrentHintControlName(g_MatrixHeap)
 CIFaceList::~CIFaceList()
 {
 
-    if(m_RCountControl){
+    if(m_RCountControl)
+    {
         HDelete(CIFaceCounter, m_RCountControl, g_MatrixHeap);
     }
 
-    while(m_First != NULL){
-		if(m_First->m_NextInterface)
-			m_First = m_First->m_NextInterface;
-		else {
+    while(m_First != NULL)
+    {
+		if(m_First->m_NextInterface) m_First = m_First->m_NextInterface;
+		else
+        {
 			HDelete(CInterface, m_First, g_MatrixHeap);
 			m_First = NULL;
 			m_Last = NULL;
@@ -3412,13 +3501,17 @@ void CIFaceList::ShowInterface()
 {
 	DTRACE();
 	CInterface *pIFace = m_First;
-	while(pIFace){
+	while(pIFace)
+    {
         pIFace->Init();
-        if(m_CurrentHint){
+        if(m_CurrentHint)
+        {
             CIFaceElement* els = pIFace->m_FirstElement;
             while(els){
-                if(els->m_strName == m_CurrentHintControlName){
-                    if(!els->GetVisibility()){
+                if(els->m_strName == m_CurrentHintControlName)
+                {
+                    if(!els->GetVisibility())
+                    {
                         m_CurrentHint->Release();
                         m_CurrentHint = NULL;
                         m_CurrentHintControlName = L"";
@@ -3430,7 +3523,8 @@ void CIFaceList::ShowInterface()
         }
 		pIFace = pIFace->m_NextInterface;
 	}
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
         g_PopupMenu->m_MenuGraphics->Init();
     }
 }
@@ -3444,9 +3538,11 @@ void CIFaceList::BeforeRender(void)
     DCP();
 
 	CInterface *pIFace = m_First;
-	while(pIFace){
+	while(pIFace)
+    {
     DCP();
-		if(pIFace->m_VisibleAlpha){
+		if(pIFace->m_VisibleAlpha)
+        {
     DCP();
 
 			pIFace->BeforeRender();
@@ -3455,7 +3551,8 @@ void CIFaceList::BeforeRender(void)
 		pIFace = pIFace->m_NextInterface;
 	}
     DCP();
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
     DCP();
         g_PopupMenu->m_MenuGraphics->BeforeRender();
     }
@@ -3467,13 +3564,16 @@ void CIFaceList::Render()
 {
 	DTRACE();
 	CInterface *pIFace = m_First;
-	while(pIFace){
-		if(pIFace->m_VisibleAlpha){
+	while(pIFace)
+    {
+		if(pIFace->m_VisibleAlpha)
+        {
 			pIFace->Render();
 		}
 		pIFace = pIFace->m_NextInterface;
 	}
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
         g_PopupMenu->m_MenuGraphics->Render();
     }
 }
@@ -3484,17 +3584,22 @@ bool CIFaceList::OnMouseLBDown()
 
 	bool bCatch = FALSE;
 	CInterface *pIFace = m_First;
-	while(pIFace){
-		if(pIFace->m_VisibleAlpha){
-            if(pIFace->OnMouseLBDown()){
+	while(pIFace)
+    {
+		if(pIFace->m_VisibleAlpha)
+        {
+            if(pIFace->OnMouseLBDown())
+            {
 				bCatch = TRUE;
             }
 		}
 		pIFace = pIFace->m_NextInterface;
 	}
 
-    if(g_PopupMenu){
-        if(g_PopupMenu->m_MenuGraphics->OnMouseLBDown()){
+    if(g_PopupMenu)
+    {
+        if(g_PopupMenu->m_MenuGraphics->OnMouseLBDown())
+        {
             bCatch = true;
         }
     }
@@ -3506,16 +3611,20 @@ bool CIFaceList::OnMouseRBDown()
 {
 	DTRACE();
 
-    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu){
+    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && g_PopupMenu)
+    {
         g_PopupMenu->ResetMenu(true);
         return false;
     }
 
 	bool bCatch = FALSE;
 	CInterface *pIFace = m_First;
-	while(pIFace){
-		if(pIFace->m_VisibleAlpha){
-            if(pIFace->OnMouseRBDown()){
+	while(pIFace)
+    {
+		if(pIFace->m_VisibleAlpha)
+        {
+            if(pIFace->OnMouseRBDown())
+            {
 				bCatch = TRUE;
             }
 		}
@@ -3524,20 +3633,25 @@ bool CIFaceList::OnMouseRBDown()
 	return bCatch;
 }
 
-bool CIFaceList::OnMouseMove(CPoint mouse){
+bool CIFaceList::OnMouseMove(CPoint mouse)
+{
 	DTRACE();
 
 	bool bCatch = FALSE;
  	CInterface *pIFace = m_First;
-	while(pIFace){
-		if(pIFace->m_VisibleAlpha && pIFace->OnMouseMove(mouse)){
+	while(pIFace)
+    {
+		if(pIFace->m_VisibleAlpha && pIFace->OnMouseMove(mouse))
+        {
 			bCatch = TRUE;
             m_FocusedInterface = pIFace;
 		}
 		pIFace = pIFace->m_NextInterface;
 	}
-    if(g_PopupMenu){
-        if(g_PopupMenu->m_MenuGraphics->m_VisibleAlpha && g_PopupMenu->m_MenuGraphics->OnMouseMove(mouse)){
+    if(g_PopupMenu)
+    {
+        if(g_PopupMenu->m_MenuGraphics->m_VisibleAlpha && g_PopupMenu->m_MenuGraphics->OnMouseMove(mouse))
+        {
             bCatch = true;
             m_FocusedInterface = g_PopupMenu->m_MenuGraphics;
         }
@@ -3550,13 +3664,16 @@ void CIFaceList::OnMouseLBUp()
 {
 	DTRACE();
 	CInterface *pIFace = m_First;
-	while(pIFace){
-		if(pIFace->m_VisibleAlpha){
+	while(pIFace)
+    {
+		if(pIFace->m_VisibleAlpha)
+        {
 			pIFace->OnMouseLBUp();
 		}
 		pIFace = pIFace->m_NextInterface;
 	}
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
         g_PopupMenu->m_MenuGraphics->OnMouseLBUp();
     }
 
@@ -3564,16 +3681,19 @@ void CIFaceList::OnMouseLBUp()
 void CIFaceList::LogicTakt(int ms)
 {
     g_IFaceList->m_InFocus = UNKNOWN;
-    if(g_IFaceList->OnMouseMove(g_MatrixMap->m_Cursor.GetPos())){
+    if(g_IFaceList->OnMouseMove(g_MatrixMap->m_Cursor.GetPos()))
+    {
 		g_IFaceList->m_InFocus = INTERFACE;
 	}
 
     CInterface* i = m_First;
-    while(i){
+    while(i)
+    {
         i->LogicTakt(ms);
         i = i->m_NextInterface;
     }
-    if(g_PopupMenu){
+    if(g_PopupMenu)
+    {
         g_PopupMenu->m_MenuGraphics->LogicTakt(ms);
     }
     ShowInterface();
@@ -3581,52 +3701,80 @@ void CIFaceList::LogicTakt(int ms)
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
     //Cursor logic
-    if(/*если мы в аркадном режиме*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot()){
-        if(/*если курсор на интерфейсе*/g_IFaceList->m_InFocus == INTERFACE){
+    if(/*если мы в аркадном режиме*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot())
+    {
+        if(/*если курсор на интерфейсе*/g_IFaceList->m_InFocus == INTERFACE)
+        {
             //устанавливаем курсор ARROW
             g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
-        }else{
-            if(/*если чтолибо вражеское под курсором*/g_MatrixMap->IsTraceNonPlayerObj()){
-                if(/*оружие достреливает*/((CMatrixRobotAI*)ps->GetArcadedObject())->CheckFireDist(g_MatrixMap->m_TraceStopPos)){
+        }
+        else
+        {
+            if(/*если чтолибо вражеское под курсором*/g_MatrixMap->IsTraceNonPlayerObj())
+            {
+                if(/*оружие достреливает*/((CMatrixRobotAI*)ps->GetArcadedObject())->CheckFireDist(g_MatrixMap->m_TraceStopPos))
+                {
                     //устанавливаем курсор CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
-                }else{
+                }
+                else
+                {
                     //устанавливаем курсор CROSS_YELLOW
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_YELLOW);
                 }
-            }else{
+            }
+            else
+            {
                 //устанавливаем курсор CROSS_BLUE
                 g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
             }
         }
-    }else{
+    }
+    else
+    {
         CPoint mp = g_MatrixMap->m_Cursor.GetPos();
 
-        if((mp.x >=0 && mp.x <g_ScreenX && mp.y >=0 && mp.y <g_ScreenY) && ((mp.x < MOUSE_BORDER) || (mp.x > (g_ScreenX - MOUSE_BORDER)) || (mp.y < MOUSE_BORDER) || (mp.y > (g_ScreenY - MOUSE_BORDER)) )){
+        if((mp.x >=0 && mp.x <g_ScreenX && mp.y >=0 && mp.y <g_ScreenY) && ((mp.x < MOUSE_BORDER) || (mp.x > (g_ScreenX - MOUSE_BORDER)) || (mp.y < MOUSE_BORDER) || (mp.y > (g_ScreenY - MOUSE_BORDER)) ))
+        {
             g_MatrixMap->m_Cursor.Select(CURSOR_STAR);
-        }else{
-            if(/*приказ АТАКОВАТЬ*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|PREORDER_BOMB)){
-                if(/*под прицелом находится вражеский объект*/g_MatrixMap->IsTraceNonPlayerObj()){
+        }
+        else
+        {
+            if(/*приказ АТАКОВАТЬ*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_FIRE|PREORDER_BOMB))
+            {
+                if(/*под прицелом находится вражеский объект*/g_MatrixMap->IsTraceNonPlayerObj())
+                {
                     //устанавливаем курсор CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
-                }else{
+                }
+                else
+                {
                     //устанавливаем курсор CROSS_BLUE
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
                 }
-            }else if(/*приказ захватывать*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE)){
+            }
+            else if(/*приказ захватывать*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_CAPTURE))
+            {
                 if(/*под прицелом находится не игроковское здание*/IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj) && 
                     g_MatrixMap->m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING && 
-                    g_MatrixMap->m_TraceStopObj->GetSide() != PLAYER_SIDE){
+                    g_MatrixMap->m_TraceStopObj->GetSide() != PLAYER_SIDE)
+                {
                     //устанавливаем курсор CROSS_RED
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_RED);
-                }else{
+                }
+                else
+                {
                     //устанавливаем курсор CROSS_BLUE
                     g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
                 }
-            }else if(/*приказ патруль или идти*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE|PREORDER_PATROL|PREORDER_REPAIR)){
+            }
+            else if(/*приказ патруль или идти*/FLAG(g_IFaceList->m_IfListFlags, PREORDER_MOVE|PREORDER_PATROL|PREORDER_REPAIR))
+            {
                 //устанавливаем курсор CROSS_BLUE
                 g_MatrixMap->m_Cursor.Select(CURSOR_CROSS_BLUE);
-            }else{
+            }
+            else
+            {
                 //устанавливаем курсор ARROW
                 g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
             }
@@ -3645,17 +3793,19 @@ void CIFaceList::CreateWeaponDynamicStatics()
     if((player_side->GetCurGroup()->m_FirstObject && player_side->GetCurGroup()->m_FirstObject->GetObject()->GetObjectType() != OBJECT_TYPE_ROBOTAI))
         return;
 
-    
     CMatrixRobotAI* bot = NULL;
     
-    if(player_side->IsArcadeMode()){
+    if(player_side->IsArcadeMode())
+    {
         CMatrixMapStatic* s = player_side->GetArcadedObject();
-        if(s && s->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+        if(s && s->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
             bot = (CMatrixRobotAI*)s;    
-        }else{
-            return;
         }
-    }else{
+        else return;
+    }
+    else
+    {
         bot = (CMatrixRobotAI*)player_side->GetCurGroup()->m_FirstObject->GetObject();
     }
     
@@ -3663,31 +3813,37 @@ void CIFaceList::CreateWeaponDynamicStatics()
     
     CInterface* interfaces = m_First;
 
-    while(interfaces){
-        if(interfaces->m_strName == IF_MAIN){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_MAIN)
+        {
             int hu = 0;
-            for(int i = 0; i < MR_MAXUNIT; i++){
-                if(bot->m_Unit[i].m_Type == MRT_ARMOR){
+            for(int i = 0; i < MR_MAXUNIT; ++i)
+            {
+                if(bot->m_Unit[i].m_Type == MRT_ARMOR)
+                {
                     hu = int(bot->m_Unit[i].m_Kind);
                 }
             }
             if(!hu) return;
             hu = hu - 1;
-            
 
             CIFaceImage overheat_image = *interfaces->FindImageByName(CWStr(IF_OVER_HEAT));
-            for(int i = 0; i < MR_MAXUNIT; i++){
+            for(int i = 0; i < MR_MAXUNIT; ++i)
+            {
                 if(bot->m_Unit[i].m_Type == MRT_WEAPON){
 
                     int pos;
-                    for(pos = 0; pos < 5; pos++){
+                    for(pos = 0; pos < 5; ++pos)
+                    {
                         if(g_IFaceList->m_Pilons[pos + hu*5] == bot->m_Unit[i].m_LinkMatrix){
                             break;
                         }
                     }
 
                     CWStr name(g_CacheHeap);
-                    switch(bot->m_Unit[i].m_Kind){
+                    switch(bot->m_Unit[i].m_Kind)
+                    {
                         case RUK_WEAPON_MACHINEGUN:
                             name = CWStr(IF_WEAPON_MACHINEGUN_ON);
                             break;
@@ -3729,7 +3885,6 @@ void CIFaceList::CreateWeaponDynamicStatics()
                 }
             }
 
-
             interfaces->SortElementsByZ();
             break;
         }
@@ -3742,17 +3897,18 @@ void CIFaceList::DeleteWeaponDynamicStatics()
     DTRACE();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
-    if(!(player_side))
-        return;
+    if(!(player_side)) return;
 
     CInterface* interfaces = m_First;
 
 
-    while(interfaces){
+    while(interfaces)
+    {
         if(interfaces->m_strName == IF_MAIN)
         {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
+            while(elements)
+            {
                 if(elements->m_nId == DYNAMIC_WEAPON_ON_ID || elements->m_strName == IF_OVER_HEAT)
                 {
                     elements = interfaces->DelElement(elements);
@@ -3779,8 +3935,10 @@ void CIFaceList::CreateItemPrice(int *price)
 
 //    memcpy(player_side->m_ConstructPanel->m_FocusedPrice.m_Resources, price.m_Resources, sizeof(player_side->m_ConstructPanel->m_FocusedPrice.m_Resources));
     
-    while(interfaces){
-        if(interfaces->m_strName == IF_BASE){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_BASE)
+        {
             float x = 22, y = 243, z = 0.00001f;
 
             CIFaceElement* pElement = interfaces->m_FirstElement;
@@ -3849,11 +4007,15 @@ void CIFaceList::DeleteItemPrice()
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
     CInterface* interfaces = m_First;
-    while(interfaces){
-        if(interfaces->m_strName == IF_BASE){
+    while(interfaces)
+    {
+        if(interfaces->m_strName == IF_BASE)
+        {
             CIFaceElement* elements = interfaces->m_FirstElement;
-            while(elements){
-                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == ITEM_PRICE_ID){
+            while(elements)
+            {
+                if(elements->m_Type == IFACE_DYNAMIC_STATIC && elements->m_nId == ITEM_PRICE_ID)
+                {
                     elements = interfaces->DelElement(elements);
                     continue;
                 }
@@ -3882,11 +4044,11 @@ void CIFaceList::CreateSummPrice(int multiplier)
     player_side->m_Constructor->GetConstructionPrice(res);
 
     int fuck = 0;
-    for(int i = 0; i < MAX_RESOURCES; i++){
-        if(res[i]){
-            if(multiplier){
-                res[i] *= multiplier;
-            }
+    for(int i = 0; i < MAX_RESOURCES; ++i)
+    {
+        if(res[i])
+        {
+            if(multiplier) res[i] *= multiplier;
             fuck++;
         }
     }
@@ -4020,7 +4182,16 @@ void CIFaceList::SlideFocusedInterfaceLeft()
     }
 }
 
-void CIFaceList::LiveRobot(void)
+//void SFT(const char* out)
+//{
+//    FILE* file;
+//
+//    file = fopen("MatrixSFT.txt", "a");
+//    fwrite(out, strlen(out), 1, file);
+//    fclose(file);
+//}
+
+void CIFaceList::LeaveRobot(void)
 {
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
     if(ps->IsArcadeMode())
@@ -4028,13 +4199,16 @@ void CIFaceList::LiveRobot(void)
         CMatrixMapStatic* obj = ps->GetArcadedObject();
         ESelType type = NOTHING;
 
-        if(obj && obj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        if(obj)
         {
-            type = ROBOT;
-        }
-        else if(obj && obj->GetObjectType() == OBJECT_TYPE_FLYER)
-        {
-            type = FLYER;
+            if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+            {
+                type = ROBOT;
+            }
+            else if(obj->GetObjectType() == OBJECT_TYPE_FLYER)
+            {
+                type = FLYER;
+            }
         }
         
         ps->SetArcadedObject(NULL);
@@ -4086,6 +4260,8 @@ void CIFaceList::EnterRobot(bool pos)
         }
     }
 }
+
+
 
 void __stdcall CIFaceList::PlayerAction(void* object)
 {
@@ -4206,7 +4382,7 @@ void __stdcall CIFaceList::PlayerAction(void* object)
     }
     else if(element->m_strName == IF_LEAVE_ROBOT)
     {
-        LiveRobot();
+        LeaveRobot();
     }
     if(element->m_strName == IF_BASE_CONST_CANCEL)
     {

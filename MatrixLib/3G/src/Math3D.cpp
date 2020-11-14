@@ -4,6 +4,8 @@
 // Refer to the LICENSE file included
 
 #include "stdafx.h"
+//Инклюдил это для ручного вывода логов
+//#include "stdio.h"
 
 float SinCosTable[SIN_TABLE_SIZE];
 
@@ -654,14 +656,13 @@ void CTrajectory::Continue2(const D3DXVECTOR3 *points, int pcnt)
     m_SegCnt = newsegcnt;
 }
 
-
 void CTrajectory::CalcPoint(D3DXVECTOR3 &out, float t)
 {
-    float tseg = t * float(m_SegCnt);
+    float tseg = t * float(m_SegCnt); //Далее спавн вертолётов ломается здесь
     int seg = TruncFloat(tseg);
 
-    if (seg < 0) CalcBSplinePoint(m_Segments[0].koefs, out, 0);
-    else if (seg >= m_SegCnt) CalcBSplinePoint(m_Segments[m_SegCnt-1].koefs, out, 1.0f);
+    if(seg < 0) CalcBSplinePoint(m_Segments[0].koefs, out, 0);
+    else if(seg >= m_SegCnt) CalcBSplinePoint(m_Segments[m_SegCnt-1].koefs, out, 1.0f);
     else CalcBSplinePoint(m_Segments[seg].koefs, out, tseg - float(seg));
 }
 

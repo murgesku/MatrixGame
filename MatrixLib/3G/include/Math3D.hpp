@@ -494,18 +494,16 @@ public:
         return m_CurSeg >= (m_SegCnt - 2);
     }
 
-    __forceinline void    GetCurPos(D3DXVECTOR3 &pos)
+    __forceinline void GetCurPos(D3DXVECTOR3 &pos)
     {
         CalcBSplinePoint(m_Segments[m_CurSeg].koefs, pos, m_CurSegT);
     }
 
-    void    Move(float dist);
+    void Move(float dist);
 
     float CalcLength(void);
 
     void CalcPoint(D3DXVECTOR3 &out, float t);
-
-
 };
 
 #define BASE_MATH_DEFINED
