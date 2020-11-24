@@ -237,11 +237,12 @@ void CMatrixMap::RobotPreload(void)
 
     ZeroMemory(m_RobotWeaponMatrix,sizeof(m_RobotWeaponMatrix));
 
-    CWStr tstr(g_MatrixHeap),tstr2(g_MatrixHeap);
+    CWStr tstr(g_MatrixHeap),tstr2(g_MatrixHeap),part(g_MatrixHeap);
 
     for(int i=1; i<=ROBOT_HEAD_CNT; i++)
     {
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_HEAD).Add(i).Add(L".vo").Get());
+        part.Set(CWStr(OBJECT_PATH_ROBOT_HEAD).Add(L".").Add(i));
+        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
 
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
@@ -249,7 +250,8 @@ void CMatrixMap::RobotPreload(void)
     }
     for(int i=1; i<=ROBOT_CHASSIS_CNT; i++)
     {
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(i).Add(L".vo").Get());
+        part.Set(CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(L".").Add(i));
+        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         if (i == RUK_CHASSIS_PNEUMATIC)
@@ -261,7 +263,8 @@ void CMatrixMap::RobotPreload(void)
     }
     for(int i=1; i<=ROBOT_WEAPON_CNT; i++)
     {
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(i).Add(L".vo").Get());
+        part.Set(CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(L".").Add(i));
+        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         g_LoadProgress->SetCurLPPos(curlp++);
@@ -269,7 +272,8 @@ void CMatrixMap::RobotPreload(void)
 
     for(int i=0; i<ROBOT_ARMOR_CNT; i++)
     {
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(i+1).Add(L".vo").Get());
+        part.Set(CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(L".").Add(i+1));
+        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
         g_LoadProgress->SetCurLPPos(curlp++);
 

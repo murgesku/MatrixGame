@@ -174,10 +174,10 @@
 #define OBJECT_PATH_MINA                        L"Matrix\\Bullets\\mina.VO"
 #define OBJECT_PATH_GUN                         L"Matrix\\Bullets\\bullet.VO"
 
-#define OBJECT_PATH_ROBOT_HEAD                  L"Matrix\\Robot\\Head"
-#define OBJECT_PATH_ROBOT_CHASSIS               L"Matrix\\Robot\\Chassis"
-#define OBJECT_PATH_ROBOT_WEAPON                L"Matrix\\Robot\\Weapon"
-#define OBJECT_PATH_ROBOT_ARMOR                 L"Matrix\\Robot\\Armor"
+#define OBJECT_PATH_ROBOT_HEAD                  L"Robot.Head"
+#define OBJECT_PATH_ROBOT_CHASSIS               L"Robot.Chassis"
+#define OBJECT_PATH_ROBOT_WEAPON                L"Robot.Weapon"
+#define OBJECT_PATH_ROBOT_ARMOR                 L"Robot.Armor"
 
 #define OBJECT_PATH_LOGO_RED                    L"Matrix\\Logos\\RobotLogosR.VO"
 #define OBJECT_PATH_LOGO_GREEN                  L"Matrix\\Logos\\RobotLogosG.VO"

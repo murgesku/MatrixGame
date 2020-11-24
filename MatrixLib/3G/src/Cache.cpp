@@ -486,6 +486,7 @@ void CCache::Clear(void)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 CCache * g_Cache;
+CBlockPar * g_CacheData; // confusing name, but best of possible, imo
 CHeap * g_CacheHeap;
 const wchar * CacheExtsTex=L"png~jpg~bmp~dds~strg";
 
@@ -493,8 +494,9 @@ void CacheInit(void)
 {
     DTRACE();
 
-	g_CacheHeap=HNew(NULL) CHeap();
-	g_Cache=HNew(g_CacheHeap) CCache;
+    g_CacheHeap = HNew(NULL) CHeap();
+    g_CacheData = HNew(g_CacheHeap) CBlockPar();
+    g_Cache = HNew(g_CacheHeap) CCache;
 }
 
 void CacheDeinit()
@@ -505,13 +507,21 @@ void CacheDeinit()
     {
 		ASSERT(g_CacheHeap);
         g_Cache->Clear();
-		HDelete(CCache,g_Cache,g_CacheHeap);
-		g_Cache=NULL;
+		HDelete(CCache, g_Cache, g_CacheHeap);
+		g_Cache = nullptr;
+	}
+
+	if(g_CacheData)
+	{
+		ASSERT(g_CacheHeap);
+		g_CacheData->Clear();
+		HDelete(CBlockPar, g_CacheData, g_CacheHeap);
+		g_CacheData = nullptr;
 	}
 
 	if(g_CacheHeap) {
-		HDelete(CHeap,g_CacheHeap,NULL);
-		g_CacheHeap=NULL;
+		HDelete(CHeap, g_CacheHeap, nullptr);
+		g_CacheHeap = nullptr;
 	}
 }
 

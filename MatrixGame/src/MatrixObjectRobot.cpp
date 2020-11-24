@@ -337,43 +337,53 @@ void CMatrixRobot::RNeed(dword need)
         //float hp = (float)g_Config.m_RobotHitPoint;
         //InitMaxHitpoint(hp);
 
-        CWStr name(g_CacheHeap), name_e(g_CacheHeap);
-        CWStr path(g_CacheHeap);
+        CWStr texture(g_CacheHeap), temp(g_CacheHeap);
+        CWStr path(g_CacheHeap), path_e(g_CacheHeap);
 
-		for(int i=0;i<m_UnitCnt;i++) {
-			if(!m_Unit[i].m_Graph)
+        for(int i=0;i<m_UnitCnt;i++)
+        {
+            if(!m_Unit[i].m_Graph)
             {
-				switch(m_Unit[i].m_Type) {
-					case MRT_CHASSIS:	path=OBJECT_PATH_ROBOT_CHASSIS; break;
-					case MRT_WEAPON:	path=OBJECT_PATH_ROBOT_WEAPON; break;
-					case MRT_ARMOR:		path=OBJECT_PATH_ROBOT_ARMOR; break;
-					case MRT_HEAD:		path=OBJECT_PATH_ROBOT_HEAD; break;
-					default: ERROR_S(L"Unknown robot unit type");
-				}
+                switch(m_Unit[i].m_Type)
+                {
+                    case MRT_CHASSIS:  path = OBJECT_PATH_ROBOT_CHASSIS; break;
+                    case MRT_WEAPON:  path = OBJECT_PATH_ROBOT_WEAPON; break;
+                    case MRT_ARMOR:  path = OBJECT_PATH_ROBOT_ARMOR; break;
+                    case MRT_HEAD:  path = OBJECT_PATH_ROBOT_HEAD; break;
+                    default:  ERROR_S(L"Unknown robot unit type");
+                }
+                path += L".";
                 path += m_Unit[i].m_Kind;
 
-                name = path.Get();
-
-
-                
-                if (m_Side!=PLAYER_SIDE)
+                // below we expect that proper cache.txt being used
+                if (m_Side != PLAYER_SIDE)
                 {
-                    name_e = path+L"_e";
-                    if (CFile::FileExist(name_e,name_e.Get(),L"dds~png"))
-                    {
-                        name = name_e;
+                    path_e = path + L".Enemy";
+
+                    texture = g_CacheData->ParPathGet(path_e + L".Texture");
+                    
+                    // if enemy's texture has own gloss map, use it
+                    if (CFile::FileExist(temp,
+                                         (g_CacheData->ParPathGet(path_e + L".Texture") + GLOSS_TEXTURE_SUFFIX).Get(),
+                                         L"dds~png")) {
+                        texture += L"*" + temp;
                     }
-                    if (CFile::FileExist(name_e,(name + GLOSS_TEXTURE_SUFFIX).Get(),L"dds~png"))
-                    {
-                        name += L"*" + name_e;
-                    } else if (CFile::FileExist(name_e,(path + GLOSS_TEXTURE_SUFFIX).Get(),L"dds~png"))
-                    {
-                        name += L"*" + name_e;
+                    // else fallback to gloss map of player's texture
+                    else if (CFile::FileExist(temp,
+                                              (g_CacheData->ParPathGet(path + L".Texture") + GLOSS_TEXTURE_SUFFIX).Get(),
+                                              L"dds~png")) {
+                        texture += L"*" + temp;
                     }
 
                 }
+                else
+                {
+                    texture = g_CacheData->ParPathGet(path + L".Texture");
+                }
+                
 
-                m_Unit[i].m_Graph=LoadObject((path+L".vo").Get(), g_MatrixHeap, true, name);
+                m_Unit[i].m_Graph=LoadObject((g_CacheData->ParPathGet(path + L".Model") + L".vo").Get(),
+                                             g_MatrixHeap, true, texture);
 
                 m_Unit[i].m_Graph->SetAnimByName(ANIMATION_NAME_IDLE);
 			}
