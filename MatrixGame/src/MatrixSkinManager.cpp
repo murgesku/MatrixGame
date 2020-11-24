@@ -59,6 +59,17 @@ static void SkinPreloadMaskBack(const SSkin *s)
 
 const SSkin * CSkinManager::GetSkin(const wchar *textures, DWORD gsp)
 {
+    /*
+        Формат строки с данными о текстурах:
+        "tex*tex_gloss*tex_back*tex_mask*dtu,dtv"
+
+        "tex" - базовая диффузная текстура
+        "tex_gloss" - бликовая карта, "." означает отсутствие
+        "tex_back" - движущийся фон для анимированной текстуры
+        "tex_mask" - маска, по которой проявляется анимированная текстура
+        "dtu,dtv" - параметры покадрового смещения для анимации
+    */
+
     CWStr t(textures, g_CacheHeap), temp(g_CacheHeap), temp_prev(g_CacheHeap);
 
     ASSERT (gsp < GSP_COUNT);

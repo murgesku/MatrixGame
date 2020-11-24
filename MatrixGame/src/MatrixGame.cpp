@@ -376,6 +376,7 @@ DCP();
 DCP();
 
 	CacheInit();
+    LoadCfgFromMods(modlist, *g_CacheData, lang, L"cache.txt");
 DCP();
 
 

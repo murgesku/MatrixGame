@@ -90,6 +90,7 @@ class CCache : public CMain {
 
 
 extern CCache * g_Cache;
+extern CBlockPar * g_CacheData; // confusing name, but best of possible, imo
 extern CHeap * g_CacheHeap;
 extern const wchar * CacheExtsTex;
 
