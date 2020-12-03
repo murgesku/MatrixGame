@@ -1274,17 +1274,17 @@ void CMatrixBuilding::Maintenance(void)
     //КД для вызова подкрепления ещё не прошёл
     if(g_MatrixMap->BeforeMaintenanceTime() > 0) return;
 
-    int cx=Float2Int(m_Pos.x*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
-    int cy=Float2Int(m_Pos.y*INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
+    int cx = Float2Int(m_Pos.x * INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
+    int cy = Float2Int(m_Pos.y * INVERT(GLOBAL_SCALE_MOVE));// - ROBOT_MOVECELLS_PER_SIZE/2;
 
     if(m_Kind == 0)
     {
         switch(m_Angle)
         {
-            case 0: cy+=5+1; break;
-            case 1: cx-=6+1; break;
-            case 2: cy-=6+1; break;
-            case 3: cx+=5+1; break;
+            case 0: cy += 5 + 1; break;
+            case 1: cx -= 6 + 1; break;
+            case 2: cy -= 6 + 1; break;
+            case 3: cx += 5 + 1; break;
         }
     }
 

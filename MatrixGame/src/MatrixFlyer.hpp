@@ -153,10 +153,11 @@ struct SMatrixFlyerUnit
 #define FLYER_MANUAL                SETBIT(11)
 #define FLYER_BODY_MATRIX_DONE      SETBIT(12)
 #define FLYER_IN_SPAWN              SETBIT(13)
-#define FLYER_BREAKING              SETBIT(14)  // тормозит (в стратегическом режиме сход с траектории)
+#define FLYER_BREAKING              SETBIT(14) // тормозит (в стратегическом режиме сход с траектории)
 #define FLYER_SGROUP                SETBIT(15)
 #define FLYER_SARCADE               SETBIT(16)
 #define FLYER_IN_SPAWN_SPINUP       SETBIT(17) // раскручивает лопасти
+#define FLYER_IN_SUPPORT            SETBIT(18) // Данный вертолёт занят доставкой подкрепления
 
 
 struct SFlyerTaktData;

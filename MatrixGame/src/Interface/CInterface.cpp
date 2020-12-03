@@ -269,7 +269,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                     pButton->m_strName == IF_BASE_PILON4 || 
                     pButton->m_strName == IF_BASE_PILON5 || 
                     pButton->m_strName == IF_BASE_HEAD_EMPTY || 
-                    pButton->m_strName == IF_BASE_WEAPON_EMPTY){
+                    pButton->m_strName == IF_BASE_WEAPON_EMPTY)
+                {
 					    FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteOperateUnit);
                         FSET(ON_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteFocusElement);
                         FSET(ON_UN_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteUnFocusElement);
@@ -597,7 +598,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             pButton->SetStateImage(
                 IFACE_NORMAL, 
                 (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                               g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
+                    g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
                 (float)pbp2->Par(L"sNormalX").GetDouble(),
                 (float)pbp2->Par(L"sNormalY").GetDouble(),
                 (float)pbp2->Par(L"sNormalWidth").GetDouble(),
@@ -607,7 +608,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             pButton->SetStateImage(
                 IFACE_FOCUSED,
                 (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                               g_CacheData->ParPathGet(pbp2->Par(L"sFocused")).Get()),
+                    g_CacheData->ParPathGet(pbp2->Par(L"sFocused")).Get()),
                 (float)pbp2->Par(L"sFocusedX").GetDouble(),
                 (float)pbp2->Par(L"sFocusedY").GetDouble(),
                 (float)pbp2->Par(L"sFocusedWidth").GetDouble(),
@@ -616,7 +617,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             pButton->SetStateImage(
                 IFACE_PRESSED, 
                 (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                               g_CacheData->ParPathGet(pbp2->Par(L"sPressed")).Get()),
+                    g_CacheData->ParPathGet(pbp2->Par(L"sPressed")).Get()),
                 (float)pbp2->Par(L"sPressedX").GetDouble(),
                 (float)pbp2->Par(L"sPressedY").GetDouble(),
                 (float)pbp2->Par(L"sPressedWidth").GetDouble(),
@@ -625,17 +626,18 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             pButton->SetStateImage(
                 IFACE_DISABLED, 
                 (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                               g_CacheData->ParPathGet(pbp2->Par(L"sDisabled")).Get()),
+                    g_CacheData->ParPathGet(pbp2->Par(L"sDisabled")).Get()),
                 (float)pbp2->Par(L"sDisabledX").GetDouble(),
                 (float)pbp2->Par(L"sDisabledY").GetDouble(),
                 (float)pbp2->Par(L"sDisabledWidth").GetDouble(),
                 (float)pbp2->Par(L"sDisabledHeight").GetDouble());
 
-            if(pButton->m_Type == IFACE_CHECK_BUTTON || pButton->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pButton->m_Type == IFACE_CHECK_PUSH_BUTTON){
+            if(pButton->m_Type == IFACE_CHECK_BUTTON || pButton->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pButton->m_Type == IFACE_CHECK_PUSH_BUTTON)
+            {
                 pButton->SetStateImage(
                     IFACE_PRESSED_UNFOCUSED, 
                     (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                                   g_CacheData->ParPathGet(pbp2->Par(L"sPressedUnFocused")).Get()),
+                        g_CacheData->ParPathGet(pbp2->Par(L"sPressedUnFocused")).Get()),
                     (float)pbp2->Par(L"sPressedUnFocusedX").GetDouble(),
                     (float)pbp2->Par(L"sPressedUnFocusedY").GetDouble(),
                     (float)pbp2->Par(L"sPressedUnFocusedWidth").GetDouble(),
@@ -645,11 +647,11 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             //Animation
             CBlockPar* animation = NULL;
             animation = pbp2->BlockGetNE(L"Animation");
-            if(animation){
+            if(animation)
+            {
                 CWStr par = animation->Par(L"Frames");
                 if(par.GetLen())
                 {
-                    
                     int frames_cnt = par.GetIntPar(0, L",");
                     int period = par.GetIntPar(1, L",");
                     int width = par.GetIntPar(2, L",");
@@ -665,13 +667,14 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                     frame.pos_y = pButton->m_yPos;
                     frame.pos_z = 0/*pButton->m_zPos*/;
                     frame.tex = (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                                               g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get());
+                        g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get());
                     frame.tex_width = (float)pbp2->Par(L"sNormalWidth").GetDouble();
                     frame.tex_height = (float)pbp2->Par(L"sNormalHeight").GetDouble();
                     frame.ipos_x = m_xPos;
                     frame.ipos_y = m_yPos;
                     
-                    for(int i = 0; i < frames_cnt*2;i+=2){
+                    for(int i = 0; i < frames_cnt*2; i+=2)
+                    {
                         int x = par.GetIntPar(3+1+i, L",");
                         int y = par.GetIntPar(3+1+i+1, L",");
                         frame.tex_pos_x = (float)x;
@@ -679,7 +682,6 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                         //Load Next Frame here
                         pButton->m_Animation->LoadNextFrame(&frame);
                     }
-                    
                 }
             }
 
@@ -694,7 +696,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 			AddElement(pButton);
 
 			nElementNum++;
-		} else if(tmpStr == L"Static") {
+		}
+        else if(tmpStr == L"Static")
+        {
 			CIFaceStatic *pStatic = HNew(g_MatrixHeap) CIFaceStatic;
             if_elem = (CIFaceElement*)pStatic;
 
@@ -702,7 +706,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             
             CWStr hint_par(L"", g_CacheHeap);
             hint_par = pbp2->ParNE(L"Hint");
-            if(hint_par != L""){
+            if(hint_par != L"")
+            {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0,L",");
                 pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pStatic->m_Hint.y = hint_par.GetIntPar(2, L",");
@@ -718,38 +723,67 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 
             //pStatic->m_Hint. = pbp2->ParNE(L"Hint");
 
-            if(m_strName == IF_TOP && pStatic->m_strName == IF_TOP_PANEL1){
+            if(m_strName == IF_TOP && pStatic->m_strName == IF_TOP_PANEL1)
+            {
                 g_MatrixMap->m_DI.SetStartPos(CPoint(10, Float2Int(m_yPos + pStatic->m_yPos + pStatic->m_ySize)));
-            }else if(pStatic->m_strName == IF_MAP_PANEL){
+            }
+            else if(pStatic->m_strName == IF_MAP_PANEL)
+            {
                 g_MatrixMap->m_Minimap.SetOutParams(Float2Int(m_xPos) + 13, Float2Int(m_yPos) + 51, 145, 145, D3DXVECTOR2(g_MatrixMap->m_Size.x * GLOBAL_SCALE * 0.5f, g_MatrixMap->m_Size.y * GLOBAL_SCALE * 0.5f) ,1.0f, 0xFFFFFFFF);
 
                 //FSET(ON_UN_PRESS,pStatic, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonClick);
                 pStatic->m_iParam = IF_MAP_PANELI;
-            }else if(pStatic->m_strName == IF_RADAR_PN){
+            }
+            else if(pStatic->m_strName == IF_RADAR_PN)
+            {
                 pStatic->m_iParam = IF_RADAR_PNI;
-            }else if(pStatic->m_strName == IF_BASE_ZERO){
+            }
+            else if(pStatic->m_strName == IF_BASE_ZERO)
+            {
                 g_IFaceList->m_RCountControl->SetImage(0, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_ONE){
+            }
+            else if(pStatic->m_strName == IF_BASE_ONE)
+            {
                 g_IFaceList->m_RCountControl->SetImage(1, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_TWO){
+            }
+            else if(pStatic->m_strName == IF_BASE_TWO)
+            {
                 g_IFaceList->m_RCountControl->SetImage(2, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_THREE){
+            }
+            else if(pStatic->m_strName == IF_BASE_THREE)
+            {
                 g_IFaceList->m_RCountControl->SetImage(3, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_FOUR){
+            }
+            else if(pStatic->m_strName == IF_BASE_FOUR)
+            {
                 g_IFaceList->m_RCountControl->SetImage(4, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_FIVE){
+            }
+            else if(pStatic->m_strName == IF_BASE_FIVE)
+            {
                 g_IFaceList->m_RCountControl->SetImage(5, pStatic);
-            }else if(pStatic->m_strName == IF_BASE_SIX){
+            }
+            else if(pStatic->m_strName == IF_BASE_SIX)
+            {
                 g_IFaceList->m_RCountControl->SetImage(6, pStatic);
-            }else if(pStatic->m_strName == IF_TITAN_PLANT){
+            }
+            else if(pStatic->m_strName == IF_TITAN_PLANT)
+            {
                 FSET(ON_PRESS,pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
-            }else if(pStatic->m_strName == IF_PLASMA_PLANT){
+            }
+            else if(pStatic->m_strName == IF_PLASMA_PLANT)
+            {
                 FSET(ON_PRESS,pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
-            }else if(pStatic->m_strName == IF_ELECTRO_PLANT){
+            }
+            else if(pStatic->m_strName == IF_ELECTRO_PLANT)
+            {
                 FSET(ON_PRESS,pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
-            }else if(pStatic->m_strName == IF_ENERGY_PLANT){
+            }
+            else if(pStatic->m_strName == IF_ENERGY_PLANT)
+            {
                 FSET(ON_PRESS,pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
-            }else if(pStatic->m_strName == IF_BASE_PLANT){
+            }
+            else if(pStatic->m_strName == IF_BASE_PLANT)
+            {
                 FSET(ON_PRESS,pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
             }
 
@@ -757,7 +791,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             pStatic->SetStateImage(
                 IFACE_NORMAL, 
                 (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                               g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
+                        g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
                 (float)pbp2->Par(L"sNormalX").GetDouble(),
                 (float)pbp2->Par(L"sNormalY").GetDouble(),
                 (float)pbp2->Par(L"sNormalWidth").GetDouble(),
