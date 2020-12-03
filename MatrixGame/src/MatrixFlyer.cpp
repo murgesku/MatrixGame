@@ -1133,6 +1133,7 @@ void CMatrixFlyer::LogicTaktStrategy(SFlyerTaktData &td)
 void CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder order, float ang, int place, const CPoint &bpos, int botpar_i)
 {
     RESETFLAG(m_Flags,FLYER_IN_SPAWN);
+    SETFLAG(m_Flags, FLYER_IN_SUPPORT);
 
     m_Side = side;
     m_TrajectoryTargetAngle = ang;
@@ -1297,15 +1298,20 @@ void CMatrixFlyer::LogicTakt(int takt)
 
     //Раскомментировал
     /////////////////////////
-    MoveSelection();
+    //Если данный вертолёт не является вертолётом, доставляющим подкрепление
+    //Вертолётам подкрепления лишняя логика ни к чему
+    if (!FLAG(m_Flags, FLYER_IN_SUPPORT))
+    {
+        MoveSelection();
 
-    if(g_MatrixMap->GetPlayerSide()->GetArcadedObject() == this)
-    {
-        LogicTaktArcade(td);
-    }
-    else
-    {
-        LogicTaktStrategy(td);
+        if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == this)
+        {
+            LogicTaktArcade(td);
+        }
+        else
+        {
+            LogicTaktStrategy(td);
+        }
     }
     ////////////////////////
 
