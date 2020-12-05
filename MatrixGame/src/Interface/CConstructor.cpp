@@ -1053,6 +1053,11 @@ int CConstructor::GetConstructionStructure()
                 //if (up < -1.0f) up = -1.0f;
                 structure += bp->ParGetNE(L"HIT_POINT_ADD").GetInt();
 
+                float hp_factor = 1.0f + float(bp->ParGetNE(L"HP_FACTOR").GetDouble() / 100.0f);
+                if (hp_factor < 0.00001f) hp_factor = 0.00001f;
+
+                structure *= hp_factor;
+                if (structure < 10.0f) structure = 10.0f;
             }
             break;
         }
@@ -1377,6 +1382,7 @@ void CConstructorPanel::MakeItemReplacements(
                 if (bp->ParGetName(i) == L"HIT_POINT_ADD") { repl = L"<Size>"; sign = 0.1f;}
                 else if (bp->ParGetName(i) == L"COOL_DOWN") { repl = L"<WeaponSpeed>"; sign = -1; }
                 else if (bp->ParGetName(i) == L"OVERHEAT") { repl = L"<WeaponHeat>"; sign = -1; }
+                else if (bp->ParGetName(i) == L"HP_FACTOR") repl = L"<SizeFactor>";
                 else if (bp->ParGetName(i) == L"CHASSIS_SPEED") repl = L"<ChassisSpeed>";
                 else if (bp->ParGetName(i) == L"FIRE_DISTANCE") repl = L"<WeaponRadius>";
                 else if (bp->ParGetName(i) == L"RADAR_DISTANCE") repl = L"<RadarRadius>";

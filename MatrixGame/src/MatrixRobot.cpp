@@ -4540,6 +4540,7 @@ void CMatrixRobotAI::CalcRobotMass()
     float cool_down = 0;
     float fire_dist = 0;
     float overheat = 0;
+    float hp_factor = 1.0f;
 
     m_LightProtect = 0;
     m_BombProtect = 0;
@@ -4560,6 +4561,9 @@ void CMatrixRobotAI::CalcRobotMass()
 
         overheat = float(bp->ParGetNE(L"OVERHEAT").GetDouble() / 100.0f);
         if(overheat < -1.0f) overheat = -1.0f;
+
+        hp_factor = 1.0f + float(bp->ParGetNE(L"HP_FACTOR").GetDouble() / 100.0f);
+        if (hp_factor < 0.00001f) hp_factor = 0.00001f;
 
         float up = float(bp->ParGetNE(L"CHASSIS_SPEED").GetDouble() / 100.0f);
         if(up < -1.0f) up = -1.0f;
@@ -4582,6 +4586,9 @@ void CMatrixRobotAI::CalcRobotMass()
         if(m_AimProtect < 0) m_AimProtect = 0;
         else if(m_AimProtect > 1) m_AimProtect = 1;
     }
+
+    hp *= hp_factor;
+    if (hp < 10.0f) hp = 10.0f;
 
     InitMaxHitpoint(hp);
     float tmp_min = 1E30f, tmp_max = -1E30f, r_min=1e30f;
