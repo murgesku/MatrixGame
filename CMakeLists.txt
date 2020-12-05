@@ -28,7 +28,7 @@ if(MSVC)
     target_link_libraries(MatrixGame ${DIRECTX9_LIBRARIES})
 
     set(COMPILE_OPTIONS
-        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /MT /Zp1 /GS- /Gy- /Gr>
+        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHa /MT /Zp1 /GS- /Gy- /Gr>
         $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /MTd /Zp1 /Gr>
     )
     set(COMPILE_DEFINITIONS
@@ -36,7 +36,7 @@ if(MSVC)
         $<$<CONFIG:Debug>:MATRIXGAME_EXPORTS USE_PNGLIB>
     )
     set(LINK_OPTIONS
-        $<$<CONFIG:Release>:/INCREMENTAL:NO /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /DYNAMICBASE:NO /MACHINE:X86>
+        $<$<CONFIG:Release>:/INCREMENTAL:NO /DEBUG /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /DYNAMICBASE:NO /MACHINE:X86>
         $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86>
     )
 
@@ -72,6 +72,11 @@ install(
     CONFIGURATIONS Release
     RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
+)
+install(
+    FILES $<TARGET_PDB_FILE:MatrixGame>
+    CONFIGURATIONS Release
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
 )
 install(
     TARGETS MatrixGame
