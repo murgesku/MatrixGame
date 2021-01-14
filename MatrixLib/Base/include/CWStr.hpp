@@ -53,11 +53,11 @@ class BASE_API CWStr : public CMain
         CWStrData * m_Data;
 
         void Tream(int len);
-        void ModifyLen(CHeap *heap,int len);
-        void ModifyLenNoCopy(CHeap *heap,int len);
+        void ModifyLen(CHeap *heap, int len);
+        void ModifyLenNoCopy(CHeap *heap, int len);
         void NewDataLen(CHeap *heap, int len);
 
-        CWStr(const wchar * s1,int len1,const wchar * s2,int len2, CHeap * heap) {NewDataLen(heap, len1+len2); memcpy(m_Data->Data(), s1, len1*sizeof(wchar)); memcpy(m_Data->Data()+len1, s2, len2*sizeof(wchar)); m_Data->Data()[m_Data->m_Len] = 0; }
+        CWStr(const wchar * s1, int len1, const wchar * s2, int len2, CHeap * heap) {NewDataLen(heap, len1+len2); memcpy(m_Data->Data(), s1, len1 * sizeof(wchar)); memcpy(m_Data->Data()+len1, s2, len2 * sizeof(wchar)); m_Data->Data()[m_Data->m_Len] = 0; }
     public:
 
         static int CWStr::call_num;
@@ -66,12 +66,12 @@ class BASE_API CWStr : public CMain
         explicit CWStr(const CStr & s);
         CWStr(const CWStr & s):CMain(), m_Data(s.m_Data)                    { ++s.m_Data->m_Refs; }
         explicit CWStr(const wchar * s, CHeap * heap=NULL):CMain()          { int len = WStrLen(s); NewDataLen(heap,len); memcpy(m_Data->Data(), s, (len+1) * sizeof(wchar)); }
-		CWStr(const wchar * s,int len, CHeap * heap=NULL):CMain()           { NewDataLen(heap,len); memcpy(m_Data->Data(), s, len * sizeof(wchar)); m_Data->Data()[len] = 0; }
+		CWStr(const wchar * s, int len, CHeap * heap=NULL):CMain()           { NewDataLen(heap,len); memcpy(m_Data->Data(), s, len * sizeof(wchar)); m_Data->Data()[len] = 0; }
 		explicit CWStr(wchar sim, CHeap * heap=NULL):CMain()                { NewDataLen(heap,1); *m_Data->Data() = sim, *(m_Data->Data()+1) = 0; }
-        CWStr(wchar sim,int count, CHeap * heap=NULL)                       { NewDataLen(heap,count);	for(int i=0;i<count;i++) {m_Data->Data()[i]=sim;}	m_Data->Data()[count]=0; }
-        explicit CWStr(int zn, CHeap * heap=NULL):CMain()                   { NewDataLen(heap,32);Set(zn); }
-        explicit CWStr(DWORD zn, CHeap * heap=NULL):CMain()                 { NewDataLen(heap,32);Set(zn); }
-		explicit CWStr(double zn,int zpz=8, CHeap * heap=NULL):CMain()      { NewDataLen(heap,32);Set(zn,zpz); }
+        CWStr(wchar sim, int count, CHeap * heap=NULL)                       { NewDataLen(heap,count);	for(int i = 0; i < count; ++i) {m_Data->Data()[i]=sim;}	m_Data->Data()[count]=0; }
+        explicit CWStr(int zn, CHeap * heap=NULL):CMain()                   { NewDataLen(heap,32); Set(zn); }
+        explicit CWStr(DWORD zn, CHeap * heap=NULL):CMain()                 { NewDataLen(heap,32); Set(zn); }
+		explicit CWStr(double zn, int zpz=8, CHeap * heap=NULL):CMain()      { NewDataLen(heap,32); Set(zn,zpz); }
 //		CWStr(void * zn, CHeap * heap=NULL);
 //		CWStr(BYTE zn, CHeap * heap=NULL);
 
@@ -130,25 +130,25 @@ class BASE_API CWStr : public CMain
 		CWStr & TrimFull(void);					// Trim() и в середине строки удаляет повторяющиеся 0x20,0x9
 		void TabToSpace(void);					// Конвертит 0x9 в 0x20
 
-		CWStr & Del(int sme,int len); // Удалить символы
-		CWStr & Insert(int sme,const CWStr & istr) // Вставить символы
+		CWStr & Del(int sme, int len); // Удалить символы
+		CWStr & Insert(int sme, const CWStr & istr) // Вставить символы
         {
-            return Insert(sme,istr.Get(), istr.GetLen());
+            return Insert(sme, istr.Get(), istr.GetLen());
         }
-        CWStr & Insert(int sme,const wchar *str, int len); // Вставить символы
-        CWStr & Insert(int sme,const wchar *str) // Вставить символы
+        CWStr & Insert(int sme, const wchar *str, int len); // Вставить символы
+        CWStr & Insert(int sme, const wchar *str) // Вставить символы
         {
             return Insert(sme,str, WStrLen(str));
         }
-		CWStr & Replace(CWStr & substr,const CWStr & strreplace); // Заменить часть строки ну другую
+		CWStr & Replace(CWStr & substr, const CWStr & strreplace); // Заменить часть строки ну другую
 
-        int Find(const wchar * substr, int slen,int sme=0) const;// Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
-        int Find(const CWStr & substr,int sme=0) const	{return Find(substr.Get(), substr.GetLen(), sme);}
-        int Find(const wchar * substr,int sme=0) const	{return Find(substr, WStrLen(substr), sme);}
-		int FindR(wchar ch,int sme=-1) const;		// Поиск символа в обратном порядке. return = смещение от начала  -1 = Подстрока не найдена
+        int Find(const wchar * substr, int slen, int sme = 0) const;// Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
+        int Find(const CWStr & substr, int sme = 0) const	{return Find(substr.Get(), substr.GetLen(), sme);}
+        int Find(const wchar * substr, int sme = 0) const	{return Find(substr, WStrLen(substr), sme);}
+		int FindR(wchar ch, int sme = -1) const;		// Поиск символа в обратном порядке. return = смещение от начала  -1 = Подстрока не найдена
 
-		void LowerCase(int sme=0,int len=-1);
-		void UpperCase(int sme=0,int len=-1);
+		void LowerCase(int sme = 0, int len = -1);
+		void UpperCase(int sme = 0, int len = -1);
 
 		CWStr & Format(const wchar * format,...);
 
@@ -158,21 +158,21 @@ class BASE_API CWStr : public CMain
 		//      Str="count=5,7"    GetStrPar(str,1,"=")   str="5,7"
 		//      Str="count=5,7"    GetIntPar(2,"=,")      return 7
 		int GetCountPar(const wchar * ogsim) const;
-		int GetSmePar(int np,const wchar * ogsim) const;
-		int GetLenPar(int smepar,const wchar * ogsim) const;
-		void GetStrPar(CWStr & str,int np,const wchar * ogsim) const;
-		CWStr GetStrPar(int np,const wchar * ogsim) const
+		int GetSmePar(int np, const wchar * ogsim) const;
+		int GetLenPar(int smepar, const wchar * ogsim) const;
+		void GetStrPar(CWStr & str, int np, const wchar * ogsim) const;
+		CWStr GetStrPar(int np, const wchar * ogsim) const
         {
-	        int sme=GetSmePar(np,ogsim);
-	        return CWStr(Get()+sme,GetLenPar(sme,ogsim), GetHeap());
+	        int sme = GetSmePar(np,ogsim);
+	        return CWStr(Get() + sme, GetLenPar(sme, ogsim), GetHeap());
         }
 
 
-		void GetStrPar(CWStr & str,int nps,int npe,const wchar * ogsim) const;
-		CWStr GetStrPar(int nps,int npe,const wchar * ogsim) const;
-		int GetIntPar(int np,const wchar * ogsim) const							{ return GetStrPar(np,ogsim).GetInt(); }
-		double GetDoublePar(int np,const wchar * ogsim) const					{ return GetStrPar(np,ogsim).GetDouble(); }
-		bool GetTrueFalsePar(int np,const wchar * ogsim) const;
+		void GetStrPar(CWStr & str, int nps, int npe, const wchar * ogsim) const;
+		CWStr GetStrPar(int nps, int npe,const wchar * ogsim) const;
+		int GetIntPar(int np, const wchar * ogsim) const							{ return GetStrPar(np,ogsim).GetInt(); }
+		double GetDoublePar(int np, const wchar * ogsim) const					{ return GetStrPar(np,ogsim).GetDouble(); }
+		bool GetTrueFalsePar(int np, const wchar * ogsim) const;
 
 		static int Compare(const wchar * zn1,int zn1len,const wchar * zn2,int zn2len); // "A","B"=-1  "A","A"=0  "B","A"=1
         static int Compare(const CWStr & zn1,const CWStr & zn2) { return Compare(zn1.Get(), zn1.GetLen(), zn2.Get(), zn2.GetLen());}

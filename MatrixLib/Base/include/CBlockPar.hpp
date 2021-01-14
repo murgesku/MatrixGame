@@ -15,6 +15,8 @@
 
 namespace Base {
 
+void SFT(const char* out);
+
 class CBlockPar;
 class BPCompiler;
 
@@ -68,6 +70,7 @@ class BASE_API CBlockPar : public CMain {
 
         DWORD m_Sort;   // bool
 	public:
+
 		CBlockPar(bool sort=true, CHeap * heap=NULL);
 		~CBlockPar();
 

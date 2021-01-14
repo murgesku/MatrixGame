@@ -7,8 +7,24 @@
 #include "CBlockPar.hpp"
 #include "CFile.hpp"
 #include "CException.hpp"
+//Используется для функции вывода логов SFT
+#include <stdio.h>
+#include "shlobj.h"
 
 namespace Base {
+
+//Функция для быстрого вывода отладочных строк в общий игровой лог ########.log
+void SFT(const char* out)
+{
+	CHAR system_folder[MAX_PATH];
+	SHGetSpecialFolderPath(0, system_folder, CSIDL_PERSONAL, true);
+
+	FILE* file;
+	errno_t err = fopen_s(&file, strcat(system_folder, "\\SpaceRangersHD\\########.log"), "a");
+	fwrite(out, strlen(out), 1, file);
+	fwrite("\r", 1, 1, file);
+	fclose(file);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

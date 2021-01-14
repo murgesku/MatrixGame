@@ -239,31 +239,35 @@ CWStr & CWStr::Add(wchar sim)
 
 CWStr & CWStr::Add(wchar sim,int count)
 {
-	if(count<1) return *this;
+	if (count < 1) return *this;
 
-	int oldlen=GetLen();
-	ModifyLen(GetHeap(),oldlen+count);
-	
-	for(int i=0;i<count;i++) m_Data->Data()[oldlen+i]=sim;
-	m_Data->Data()[m_Data->m_Len]=0;
+	int oldlen = GetLen();
+	ModifyLen(GetHeap(), oldlen + count);
+
+	for (int i = 0; i < count; ++i) m_Data->Data()[oldlen + i] = sim;
+	m_Data->Data()[m_Data->m_Len] = 0;
 
 	return *this;
 }
 
 int CWStr::GetInt() const
 {
-	int tlen=GetLen();
-	if(tlen<1) return 0;
-	const wchar * tstr=Get();
+	int tlen = GetLen();
+	if (tlen < 1) return 0;
+	const wchar* tstr = Get();
 
-	int zn=0;
+	int zn = 0;
 	wchar ch;
-	for(int i=0;i<tlen;i++) {
-		ch=tstr[i] - '0';
-		if(ch<10) zn=zn*10+ch;
+	for (int i = 0; i < tlen; ++i) {
+		ch = tstr[i] - '0';
+		if (ch < 10) zn = zn * 10 + ch;
 	}
-	for(int i=0;i<tlen;i++) if(tstr[i]=='-') { zn=-zn; break; }
-	
+	for (int i = 0; i < tlen; ++i) if (tstr[i] == '-')
+	{
+		zn = -zn;
+		break;
+	}
+
 	return zn;
 }
 
