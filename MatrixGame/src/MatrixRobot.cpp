@@ -2322,21 +2322,21 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding *pBase)
     if(IsCrazy())
     {
         InitMaxHitpoint(1000000.0f);
-        m_Team=0;
+        m_Team = 0;
 
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
 
-        side->AssignPlace(this,g_MatrixMap->GetRegion(CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE),int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE))));
-        if(GetEnv()->m_Place<0) side->PGOrderAttack(side->RobotToLogicGroup(this),CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE),int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE)),NULL);
-        else side->PGOrderAttack(side->RobotToLogicGroup(this),g_MatrixMap->m_RN.GetPlace(GetEnv()->m_Place)->m_Pos,NULL);
+        side->AssignPlace(this, g_MatrixMap->GetRegion(CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE))));
+        if (GetEnv()->m_Place < 0) side->PGOrderAttack(side->RobotToLogicGroup(this), CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE)), NULL);
+        else side->PGOrderAttack(side->RobotToLogicGroup(this), g_MatrixMap->m_RN.GetPlace(GetEnv()->m_Place)->m_Pos, NULL);
 
         RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
     }
     else
     {
-        if(side->m_Id!=PLAYER_SIDE)
+        if(side->m_Id != PLAYER_SIDE)
         {
-            m_Team=side->ClacSpawnTeam(g_MatrixMap->GetRegion(CPoint(Float2Int(pBase->m_Pos.x/GLOBAL_SCALE_MOVE),Float2Int(pBase->m_Pos.x/GLOBAL_SCALE_MOVE))),m_Unit[0].m_Kind-1);
+            m_Team = side->ClacSpawnTeam(g_MatrixMap->GetRegion(CPoint(Float2Int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), Float2Int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE))), m_Unit[0].m_Kind - 1);
             //int minr = side->m_Team[m_Team].m_RobotCnt;
             //for (int i = 1; i < side->m_TeamCnt; ++i)
             //{
@@ -2381,7 +2381,7 @@ void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest)
 	    D3DXVec3Normalize(&destDirN, &destDir);
     }
     float cos3 = m_HullForward.x * destDirN.x + m_HullForward.y * destDirN.y;
-    
+
     float angle3 = (float)acos(cos3);
 
     float cos1 = m_HullForward.x * m_Forward.x + m_HullForward.y * m_Forward.y;

@@ -217,8 +217,7 @@ void LoadModList(CWStr & modlist)
         modcfg.LoadFromTextFile(L"Mods\\ModCFG.txt");
         modlist.Set(modcfg.ParGet(L"CurrentMod"));
     }
-    else
-        modlist.Set(L"");
+    else modlist.Set(L"");
 }
 
 void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, const wchar * bp_name)
@@ -230,7 +229,7 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
 
     CBlockPar moddata(g_MatrixHeap);
 
-    for (int i=0; i<modlist.GetCountPar(L","); ++i)
+    for (int i = 0; i < modlist.GetCountPar(L","); ++i)
     {
         curmod = modlist.GetStrPar(i, L",");
         curmod.Trim();
@@ -240,7 +239,8 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
         moddata_name += curmod;
         moddata_name += L"\\";
         moddata_name += FILE_CONFIGURATION_LOCATION;
-        if (lang!=NULL)
+
+        if (lang != NULL)
         {
             moddata_name += lang;
             moddata_name += L"\\";
@@ -279,12 +279,15 @@ DCP();
     CWStr       stor_cfg_name(g_MatrixHeap);
 	wchar conf_file[80];
 	wcscpy(conf_file, FILE_CONFIGURATION_LOCATION);
+
 	if (lang!=NULL)
     {
 	    wcscat(conf_file, lang);
 	    wcscat(conf_file, L"\\");
     }
+
 	wcscat(conf_file, FILE_CONFIGURATION);
+
     if (CFile::FileExist(stor_cfg_name, conf_file))
     {
         stor_cfg.Load(conf_file);
@@ -475,7 +478,8 @@ DCP();
     if (stor_cfg_present)
     {
         stor_cfg.RestoreBlockPar(L"if", bpi);
-    } else
+    }
+    else
     {
         bpi.LoadFromTextFile(IF_PATH);
 
@@ -599,8 +603,8 @@ DCP();
 	else g_D3DD->Reset(&g_D3Dpp);
 
 	/*IDirect3DSurface9 * surf;
-	g_D3DD->GetRenderTarget(0,&surf);
-	if (!(surf==NULL)) g_D3DD->ColorFill(surf, NULL, 0);
+	g_D3DD->GetRenderTarget(0, &surf);
+	if (!(surf == NULL)) g_D3DD->ColorFill(surf, NULL, 0);
 	surf->Release();*/
 
     g_MatrixMap->m_Transition.RenderToPrimaryScreen();
@@ -653,7 +657,7 @@ DCP();
                     conf.m_Chassis.m_nType = MRT_CHASSIS; 
                     conf.m_Hull.m_Unit.m_nType = MRT_ARMOR; 
                     conf.m_Head.m_nType = MRT_HEAD; 
-                    for(int cnt = 0; cnt < MAX_WEAPON_CNT; cnt++)
+                    for(int cnt = 0; cnt < MAX_WEAPON_CNT; ++cnt)
                     {
                         conf.m_Weapon[cnt].m_nType = MRT_WEAPON;
                     }
@@ -666,8 +670,7 @@ DCP();
                     else if (t_str == L"T") conf.m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
                     else if (t_str == L"H") conf.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
                     else if (t_str == L"A") conf.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
-                    else
-                        continue;
+                    else continue;
 
                     //Определяем корпус
                     t_str = confStr.GetStrPar(1, L",");
@@ -678,8 +681,7 @@ DCP();
                     else if (t_str == L"2S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
                     else if (t_str == L"3") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
                     else if (t_str == L"4S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
-                    else
-                        continue;
+                    else continue;
 
                     //Записываем в конфиг предельное число обычных и особых орудий для данного типа корпуса
                     conf.m_Hull.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[conf.m_Hull.m_Unit.m_nKind - 1].common;
@@ -742,27 +744,24 @@ DCP();
                             }
                             else if (ch == L'O')
                             {
-                                u = 4; // установка орудия в слот для особого вооружения
+                                u = 4; // Установка оружия в слот для особого вооружения
                                 cnt_extra++;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MORTAR;
                             }
                             else if (ch == L'B')
                             {
-                                u = 4; // установка орудия в слот для особого вооружения
+                                u = 4; // Установка оружия в слот для особого вооружения
                                 cnt_extra++;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_BOMB;
                             }
-                            else
-                                continue;
+                            else continue;
 
                             conf.m_Weapon[u].m_nType = MRT_WEAPON;
                         }
 
-                        if (cnt_normal > conf.m_Hull.m_MaxCommonWeaponCnt)
-                            continue;
+                        if (cnt_normal > conf.m_Hull.m_MaxCommonWeaponCnt) continue;
 
-                        if (cnt_extra > conf.m_Hull.m_MaxExtraWeaponCnt)
-                            continue;
+                        if (cnt_extra > conf.m_Hull.m_MaxExtraWeaponCnt) continue;
                     }
 
                     //Определяем голову
@@ -967,8 +966,7 @@ void MatrixGameDeinit(void)
                     counter--;
                     cur_config = cur_config->m_PrevConfig;
                 }
-                else
-                    break;
+                else break;
             }
 
             CWStr to_config(g_MatrixHeap);

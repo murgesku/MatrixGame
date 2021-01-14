@@ -146,7 +146,6 @@ CInterface::~CInterface()
 			images = NULL;
 			m_FirstImage = NULL;
 			m_LastImage = NULL;
-
 		}
 		if(images) HDelete(CIFaceImage, images->m_PrevImage, g_MatrixHeap);
 	}
@@ -162,7 +161,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 	CWStr tmpStr;
 	CBlockPar *pbp1 = NULL, *pbp2 = NULL;
 	void* fn = NULL, *cl = NULL;
-	
+
 //Loading interface file
 	pbp1 = bp.BlockGet(name);
 
@@ -4223,15 +4222,6 @@ void CIFaceList::SlideFocusedInterfaceLeft()
         m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos-100, m_FocusedInterface->m_yPos);
     }
 }
-
-//void SFT(const char* out)
-//{
-//    FILE* file;
-//
-//    file = fopen("MatrixSFT.txt", "a");
-//    fwrite(out, strlen(out), 1, file);
-//    fclose(file);
-//}
 
 void CIFaceList::LeaveRobot(void)
 {

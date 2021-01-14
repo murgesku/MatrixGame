@@ -10,6 +10,7 @@
 #include "ShadowStencil.hpp"
 #include "MatrixSkinManager.hpp"
 #include "Interface/CConstructor.h"
+#include <stdio.h>
 
 // При перемещении объекта не нужно заного расчитывать проэкционную текстуру
 
@@ -1260,7 +1261,8 @@ void CMatrixMapObject::LogicTakt(int ms)
                 CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
                 Init(temp.GetIntPar(1,L","));
 
-            } else if (GetAblazeTTL() < 100 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2))
+            }
+            else if (GetAblazeTTL() < 100 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2))
             {
                 SETFLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2);
                 CSound::AddSound(S_EXPLOSION_BUILDING_BOOM4, GetGeoCenter());
@@ -1274,7 +1276,8 @@ void CMatrixMapObject::LogicTakt(int ms)
 
                 //g_MatrixMap->RestoreMusicVolume();
 
-            } else if (GetAblazeTTL() < 1000 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL1))
+            }
+            else if (GetAblazeTTL() < 1000 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL1))
             {
                 SETFLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL1);
                 CSound::AddSound(S_EXPLOSION_BUILDING_BOOM4, GetGeoCenter());
@@ -1286,7 +1289,8 @@ void CMatrixMapObject::LogicTakt(int ms)
                 e->FireEnd();
                 e->Release();
 
-            } else
+            }
+            else
             {
 
                 // explosions
@@ -1315,22 +1319,22 @@ void CMatrixMapObject::LogicTakt(int ms)
 
                         D3DXVec3Normalize(&dir, &(pos0-pos));
                         
-                    } while (!Pick(pos, dir, &t) && (--cnt > 0));
+                    }
+                    while (!Pick(pos, dir, &t) && (--cnt > 0));
                     if (cnt > 0)
                     {
                         //CHelper::Create(1,0)->Line(pos, pos+dir * 10);
 
-                        if (FRND(1) < 0.04f)
-                            CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom2);
-                        else
-                            CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom);
+                        if (FRND(1) < 0.04f) CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom2);
+                        else CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom);
                     }
 
                     //if (Damage(WEAPON_ABLAZE, pos, dir)) return;
                 }
             }
 
-        } else
+        }
+        else
         {
             if (m_Graph->IsAnimEnd())
             {
@@ -1339,18 +1343,24 @@ void CMatrixMapObject::LogicTakt(int ms)
         }
         return;
 
-    } else if (m_BehFlag == BEHF_BREAK) {
+    }
+    else if (m_BehFlag == BEHF_BREAK)
+    {
         if (m_PB) m_PB->Modify(100000.0f, 0);
-    } else if (m_BehFlag == BEHF_ANIM) {
+    }
+    else if (m_BehFlag == BEHF_ANIM)
+    {
         if (m_PB) m_PB->Modify(100000.0f, 0);
-    } else if (m_BehFlag == BEHF_SPAWNER)
+    }
+    else if (m_BehFlag == BEHF_SPAWNER)
     {
         if (m_PrevStateRobotsInRadius < 0)
         {
             m_PrevStateRobotsInRadius = 0;
             CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
             m_Graph->SetAnimById(temp.GetStrPar(1,L",").GetIntPar(4,L":"));
-        } else if (m_PrevStateRobotsInRadius == 0)
+        }
+        else if (m_PrevStateRobotsInRadius == 0)
         {
             if (g_MatrixMap->GetTime() > GetAblazeTTL())
             {
@@ -1371,7 +1381,9 @@ void CMatrixMapObject::LogicTakt(int ms)
                 }
                 SetAblazeTTL(g_MatrixMap->GetTime() + addt);
             }
-        } else if (m_PrevStateRobotsInRadius == 1)
+        }
+        //Происходит автоспавн роботов из "сортиров" Террона в случае, если рядом с "сортирами" обнаружены роботы игрока
+        else if (m_PrevStateRobotsInRadius == 1)
         {
             // waiting before spawn
             if (m_Graph->IsAnimEnd())
@@ -1382,42 +1394,44 @@ void CMatrixMapObject::LogicTakt(int ms)
                 CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
 
                 int robot;
-                if (!temp.GetStrPar(1,L",").TrimFull().IsEmpty())
-                    robot = g_MatrixMap->Rnd(temp.GetStrPar(1,L",").GetIntPar(2,L":"), temp.GetStrPar(1,L",").GetIntPar(3,L":"));
-                else
-                    robot = g_MatrixMap->Rnd(0,bpr->ParCount()-1);
+                if (!temp.GetStrPar(1, L",").TrimFull().IsEmpty()) robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetIntPar(2, L":"), temp.GetStrPar(1, L",").GetIntPar(3, L":"));
+                else robot = g_MatrixMap->Rnd(0, bpr->ParCount() - 1);
 
                 SSpecialBot bot;
                 ZeroMemory(&bot, sizeof(SSpecialBot));
 
                 if (!bot.BuildFromPar(bpr->ParGetName(robot), bpr->ParGet(robot).GetInt(), true))
+                {
+                    char out[256];
+                    sprintf(out, "Exception occurred! Error while spawning bot from Terron cabin #%d", robot);
+                    SFT(out);
                     ERROR_S2(L"Spawner bot_no=", CWStr(robot).Get());
+                }
 
-                CMatrixRobotAI *r = bot.GetRobot(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, 4 /* Terron? */);
-                g_MatrixMap->AddObject(r,true);
+                CMatrixRobotAI* r = bot.GetRobot(*(D3DXVECTOR3*)&m_Core->m_Matrix._41, 4 /* Terron? */);
+                g_MatrixMap->AddObject(r, true);
                 r->CreateTextures();
 
                 m_SpawnRobotCore = r->GetCore(DEBUG_CALL_INFO);
-                *(D3DXVECTOR3 *)&m_SpawnRobotCore->m_Matrix._41 = *(D3DXVECTOR3 *)&m_Core->m_Matrix._41;
+                *(D3DXVECTOR3*)&m_SpawnRobotCore->m_Matrix._41 = *(D3DXVECTOR3*)&m_Core->m_Matrix._41;
 
-                r->m_CalcBoundsLastTime = g_MatrixMap->GetTime()-10000;
+                r->m_CalcBoundsLastTime = g_MatrixMap->GetTime() - 10000;
                 D3DXVECTOR3 minv, maxv;
                 r->RChange(MR_Matrix);
-                r->CalcBounds(minv,maxv);
+                r->CalcBounds(minv, maxv);
                 m_SpawnRobotCore->m_GeoCenter = (minv + maxv) * 0.5f;
                 m_SpawnRobotCore->m_Radius = D3DXVec3Length(&(minv - maxv));
 
-
                 if (bot.m_Hitpoints != -1.0f) r->InitMaxHitpoint(bot.m_Hitpoints);
 
-                m_Graph->SetAnimById(temp.GetStrPar(1,L",").GetIntPar(6,L":"),0);
+                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(6, L":"), 0);
 
-                CWStr snd(temp.GetStrPar(1,L",").GetStrPar(9,L":"), g_CacheHeap);
-                if (!snd.IsEmpty()) CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                CWStr snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"), g_CacheHeap);
+                if (!snd.IsEmpty()) CSound::AddSound(snd.Get(), *(D3DXVECTOR3*)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 2;
-
             }
-        } else if (m_PrevStateRobotsInRadius == 2)
+        }
+        else if (m_PrevStateRobotsInRadius == 2)
         {
             if (m_Graph->IsAnimEnd() && m_SpawnRobotCore)
             {

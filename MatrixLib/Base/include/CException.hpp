@@ -11,11 +11,11 @@ namespace Base {
 
 class CWStr;
 
-#define ERROR_E throw new Base::CException(__FILE__,__LINE__)
-#define ERROR_S(s) throw new Base::CExceptionStr(__FILE__,__LINE__,s)
-#define ERROR_S2(s,s2) throw new Base::CExceptionStr(__FILE__,__LINE__,s,s2)
-#define ERROR_S3(s,s2,s3) throw new Base::CExceptionStr(__FILE__,__LINE__,s,s2,s3)
-#define ERROR_S4(s,s2,s3,s4) throw new Base::CExceptionStr(__FILE__,__LINE__,s,s2,s3,s4)
+#define ERROR_E throw new Base::CException(__FILE__, __LINE__)
+#define ERROR_S(s) throw new Base::CExceptionStr(__FILE__, __LINE__, s)
+#define ERROR_S2(s, s2) throw new Base::CExceptionStr(__FILE__, __LINE__, s, s2)
+#define ERROR_S3(s, s2, s3) throw new Base::CExceptionStr(__FILE__, __LINE__, s, s2, s3)
+#define ERROR_S4(s, s2, s3, s4) throw new Base::CExceptionStr(__FILE__, __LINE__,s, s2, s3, s4)
 
 #ifdef ASSERT_OFF
 	#define ASSERT(zn)

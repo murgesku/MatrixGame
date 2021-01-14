@@ -383,6 +383,7 @@ protected:
         if (m_EffectHandler) m_EffectHandler->effect = NULL;
     };
 public:
+
     static Base::CHeap  *m_Heap;
     CMatrixEffect   *m_Prev;
     CMatrixEffect   *m_Next;
