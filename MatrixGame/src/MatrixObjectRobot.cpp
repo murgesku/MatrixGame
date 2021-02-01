@@ -22,19 +22,19 @@ CMatrixRobot::CMatrixRobot():CMatrixMapStatic(),m_Animation(ANIMATION_OFF), m_Na
     DTRACE();
 	m_Core->m_Type = OBJECT_TYPE_ROBOTAI;
 
-    m_ShadowProj=NULL;
+    m_ShadowProj = NULL;
 
-	m_PosX=m_PosY=0.0f;
+	m_PosX = m_PosY = 0.0f;
 
-	m_Side=0;
+	m_Side = 0;
 
-	m_UnitCnt=0;
-	ZeroMemory(m_Unit,sizeof(m_Unit));
+	m_UnitCnt = 0;
+	ZeroMemory(m_Unit, sizeof(m_Unit));
 
     m_CurrState = ROBOT_IN_SPAWN;
 
-	m_ShadowType=SHADOW_STENCIL;
-	m_ShadowSize=128;
+	m_ShadowType = SHADOW_STENCIL;
+	m_ShadowSize = 128;
 
 	m_Velocity = D3DXVECTOR3(0,0,0);
 	m_Forward = D3DXVECTOR3(0,0,0);
@@ -49,7 +49,7 @@ CMatrixRobot::CMatrixRobot():CMatrixMapStatic(),m_Animation(ANIMATION_OFF), m_Na
 
     m_defHitPoint = 0;
 
-    m_PB.Modify(1000000,0,PB_ROBOT_WIDTH, 1);
+    m_PB.Modify(1000000, 0, PB_ROBOT_WIDTH, 1);
 
     memset(&m_ChassisData, 0, sizeof(m_ChassisData));
 
@@ -63,7 +63,7 @@ CMatrixRobot::~CMatrixRobot()
 {
     DTRACE();
 	UnitClear();
-	if(m_ShadowProj) { HDelete(CVOShadowProj,m_ShadowProj,g_MatrixHeap); m_ShadowProj=NULL; }
+	if(m_ShadowProj) { HDelete(CVOShadowProj, m_ShadowProj, g_MatrixHeap); m_ShadowProj=NULL; }
 }
 
 void CMatrixRobot::UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind)
@@ -93,7 +93,8 @@ void CMatrixRobot::UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKin
             m_ChassisData.m_LStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0,0,0), D3DXVECTOR3(10,0,0));
             m_ChassisData.m_RStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0,0,0), D3DXVECTOR3(10,0,0));
             m_ChassisData.m_StreamLen = 10;
-        } else
+        }
+        else
         if (kind == RUK_CHASSIS_TRACK || kind == RUK_CHASSIS_WHEEL)
         {
             m_ChassisData.m_LastSolePos = D3DXVECTOR3(0,0,0);

@@ -832,7 +832,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
         {
             if(st->GetSide() == PLAYER_SIDE && st->IsLiveRobot())
             {
-                if(D3DXVec3LengthSq(&(o_pos-st->GetGeoCenter())) <= FRIENDLY_SEARCH_RADIUS*FRIENDLY_SEARCH_RADIUS)
+                if(D3DXVec3LengthSq(&(o_pos-st->GetGeoCenter())) <= FRIENDLY_SEARCH_RADIUS * FRIENDLY_SEARCH_RADIUS)
                 {
                     GetCurSelGroup()->AddObject(st, -4);
                 }
@@ -1133,17 +1133,27 @@ void CMatrixSideUnit::Reselect()
         return;
 
     CMatrixMapStatic* objs = CMatrixMapStatic::GetFirstLogic();
-    while(objs){
-        if(objs->GetObjectType() == OBJECT_TYPE_ROBOTAI){
-            if(!GetCurGroup()->FindObject(objs)){
+    while(objs)
+    {
+        if(objs->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
+            if(!GetCurGroup()->FindObject(objs))
+            {
                 ((CMatrixRobotAI*)objs)->UnSelect();
-            }else{
+            }
+            else
+            {
                 ((CMatrixRobotAI*)objs)->SelectByGroup();
             }
-        }else if(objs->GetObjectType() == OBJECT_TYPE_FLYER){
-            if(!GetCurGroup()->FindObject(objs)){
+        }
+        else if(objs->GetObjectType() == OBJECT_TYPE_FLYER)
+        {
+            if(!GetCurGroup()->FindObject(objs))
+            {
                 ((CMatrixFlyer*)objs)->UnSelect();
-            }else {
+            }
+            else
+            {
                 ((CMatrixFlyer*)objs)->SelectByGroup();
             }
         }
@@ -1158,19 +1168,24 @@ void CMatrixSideUnit::ShowOrderState()
     bool auto_defence=false;
 
     CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-    while(objs){
-        if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
-
-            CMatrixRobotAI * robot =(CMatrixRobotAI *)(objs->GetObject());
-            if(robot->IsLiveRobot()) {
-                if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_AutoCapture) {
-                    auto_capture=true;
+    while(objs)
+    {
+        if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
+            CMatrixRobotAI* robot = (CMatrixRobotAI*)(objs->GetObject());
+            if(robot->IsLiveRobot())
+            {
+                if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_AutoCapture)
+                {
+                    auto_capture = true;
                 }
-                if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_AutoAttack) {
-                    auto_attack=true;
+                if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_AutoAttack)
+                {
+                    auto_attack = true;
                 }
-                if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_AutoDefence) {
-                    auto_defence=true;
+                if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_AutoDefence)
+                {
+                    auto_defence = true;
                 }
             }
         }
@@ -1443,7 +1458,8 @@ void CMatrixSideUnit::SetArcadedObject(CMatrixMapStatic *o)
 void CMatrixSideUnit::ResetSelection()
 {
     DTRACE();
-    if(GetCurGroup()){
+    if(GetCurGroup())
+    {
         GetCurGroup()->RemoveAll();
         SetCurGroup(NULL);
     }
@@ -1452,7 +1468,8 @@ void CMatrixSideUnit::ResetSelection()
 void CMatrixSideUnit::ResetSystemSelection()
 {
     DTRACE();
-    if(m_CurSelGroup){
+    if(m_CurSelGroup)
+    {
         m_CurSelGroup->RemoveAll();
     }
 }
@@ -1543,12 +1560,15 @@ CMatrixGroup* CMatrixSideUnit::CreateGroupFromCurrent()
     CMatrixGroup* ng = HNew(g_MatrixHeap) CMatrixGroup;
 
     CMatrixGroupObject* go = m_CurSelGroup->m_FirstObject;
-    while(go){
+    while(go)
+    {
         ng->AddObject(go->GetObject(), -4);
         CMatrixGroup* grps = m_FirstGroup;
-        while(grps){
+        while(grps)
+        {
             grps->RemoveObject(go->GetObject());
-            //if(grps->m_Tactics){
+            //if(grps->m_Tactics)
+            //{
             //    grps->m_Tactics->RemoveObjectFromT(go->GetObject());
             //}
             grps=grps->m_NextGroup;
@@ -1570,12 +1590,14 @@ void CMatrixSideUnit::CreateGroupFromCurrent(CMatrixMapStatic* obj)
 
     ng->AddObject(obj, -4);
     CMatrixGroup* grps = m_FirstGroup;
-    while(grps){
+    while(grps)
+    {
         grps->RemoveObject(obj);
-        //if(grps->m_Tactics){
+        //if(grps->m_Tactics)
+        //{
         //    grps->m_Tactics->RemoveObjectFromT(obj);
         //}
-        grps=grps->m_NextGroup;
+        grps = grps->m_NextGroup;
     }
 
     LIST_ADD(ng, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);

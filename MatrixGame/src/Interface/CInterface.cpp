@@ -21,7 +21,7 @@
 #include "MatrixHint.hpp"
 #include "../MatrixFormGame.hpp"
 
-//static int g_EnableFlyers = g_MatrixData->BlockGet(L"Interface")->ParGet(L"EnableFlyers").GetInt();
+//static int g_EnableFlyers = g_MatrixData->BlockGet(L"Config")->ParGet(L"EnableFlyers").GetInt();
 bool g_EnableFlyers = false;
 
 CIFaceList *g_IFaceList = NULL;

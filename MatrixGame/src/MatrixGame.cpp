@@ -619,8 +619,8 @@ DCP();
     if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
 
     //Проверяем, включена ли настройка сохранения шаблонов в конфиге
-    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Interface");
-    int maxDesignsToSave = iface_par->ParGet(PAR_DESIGNSTOSAVE).GetInt();
+    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Config");
+    int maxDesignsToSave = iface_par->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
 
     //Загружаем сохранённые шаблоны роботов игрока из txt-конфига и заносим их в конструктор роботов
     if (maxDesignsToSave > 0)
@@ -940,8 +940,8 @@ void MatrixGameDeinit(void)
     DTRACE();
 
     //Сохраняем указанное число шаблонов роботов игрока, если настройка MaxDesignsToSave не равна нулю
-    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Interface");
-    int maxDesignsToSave = iface_par->ParGet(PAR_DESIGNSTOSAVE).GetInt();
+    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Config");
+    int maxDesignsToSave = iface_par->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
 
     if (maxDesignsToSave > 0)
     {

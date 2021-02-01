@@ -29,15 +29,22 @@
 #endif
 
 extern HINSTANCE g_HInst;
-extern IDirect3D9 * g_D3D;
-extern IDirect3DDevice9 * g_D3DD;
+extern IDirect3D9* g_D3D;
+extern IDirect3DDevice9* g_D3DD;
 extern D3DCAPS9 g_D3DDCaps;
 extern HWND g_Wnd;
-extern int g_ScreenX,g_ScreenY;
+extern int g_ScreenX, g_ScreenY;
+extern float g_CamFieldOfView;
 extern int g_DrawFPS;
 extern int g_MaxFPS;
+extern float g_MaxViewDistance;
+extern int g_MaxObjectsPerScreen;
+extern int g_MaxEffectsCount;
+extern int g_ShadowsDrawDistance;
+extern float g_ThinFogDrawDistance;
+extern float g_DenseFogDrawDistance;
 extern int g_AvailableTexMem;
-//extern CReminder *g_Reminder;
+//extern CReminder* g_Reminder;
 extern D3DPRESENT_PARAMETERS g_D3Dpp; 
 
 

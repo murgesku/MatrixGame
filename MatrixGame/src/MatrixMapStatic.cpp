@@ -725,8 +725,8 @@ int                  CMatrixMapStatic::objects_rite;
 
 void CMatrixMapStatic::SortBegin(void)
 {
-    objects_left = MAX_OBJECTS_PER_SCREEN>>1;
-    objects_rite = MAX_OBJECTS_PER_SCREEN>>1;
+    objects_left = g_MaxObjectsPerScreen >> 1;
+    objects_rite = g_MaxObjectsPerScreen >> 1;
 }
 
 
@@ -734,14 +734,14 @@ void CMatrixMapStatic::SortEndRecalcTerainColor(void)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
         objects[i]->RecalcTerainColor();
     }
 }
 void CMatrixMapStatic::CalcDistances(void)
 {
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
         // calc m_CamDistSq
         objects[i]->m_CamDistSq = D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter));
@@ -752,7 +752,7 @@ void CMatrixMapStatic::SortEndGraphicTakt(int step)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
         // calc m_CamDistSq
         objects[i]->m_CamDistSq = D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter));
@@ -764,7 +764,7 @@ void CMatrixMapStatic::SortEndDraw(void)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
         objects[i]->Draw();
     }
@@ -774,7 +774,7 @@ void CMatrixMapStatic::SortEndBeforeDraw(void)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
         objects[i]->m_RemindCore.Use(FREE_TIME_PERIOD);
         objects[i]->BeforeDraw();
@@ -785,10 +785,9 @@ void CMatrixMapStatic::SortEndDrawShadowProj(void)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
-        if (objects[i]->m_CamDistSq < DRAW_SHADOWS_DISTANCE_SQ)
-            objects[i]->DrawShadowProj();
+        if(objects[i]->m_CamDistSq < DRAW_SHADOWS_DISTANCE_SQ) objects[i]->DrawShadowProj();
     }
 }
 
@@ -796,10 +795,9 @@ void CMatrixMapStatic::SortEndDrawShadowStencil(void)
 {
     DTRACE();
 
-    for (int i=objects_left; i<objects_rite; ++i)
+    for(int i = objects_left; i < objects_rite; ++i)
     {
-        if (objects[i]->m_CamDistSq < DRAW_SHADOWS_DISTANCE_SQ)
-            objects[i]->DrawShadowStencil();
+        if(objects[i]->m_CamDistSq < DRAW_SHADOWS_DISTANCE_SQ) objects[i]->DrawShadowStencil();
     }
 }
 
@@ -807,36 +805,36 @@ void CMatrixMapStatic::SortEndDrawShadowStencil(void)
 
 void CMatrixMapStatic::Sort(const D3DXMATRIX &sort)
 {
-    if (FLAG(m_ObjectState, OBJECT_STATE_INVISIBLE)) return;
+    if(FLAG(m_ObjectState, OBJECT_STATE_INVISIBLE)) return;
 
-    if (g_MatrixMap->GetCurrentFrame() == m_LastVisFrame) { return;  } // already sorted
+    if(g_MatrixMap->GetCurrentFrame() == m_LastVisFrame) return; // already sorted
     m_LastVisFrame = g_MatrixMap->GetCurrentFrame();
 
     // check visibility with frustum...
 
-    if (IsFlyer())
+    if(IsFlyer())
     {
-        if (!g_MatrixMap->m_Camera.IsInFrustum(GetGeoCenter(), GetRadius())) return;
-
-    } else
+        if(!g_MatrixMap->m_Camera.IsInFrustum(GetGeoCenter(), GetRadius())) return;
+    }
+    else
     {
-        if (!g_MatrixMap->m_Camera.IsInFrustum(m_AdditionalPoint))
+        if(!g_MatrixMap->m_Camera.IsInFrustum(m_AdditionalPoint))
         {
-            if (!g_MatrixMap->m_Camera.IsInFrustum(GetGeoCenter(), GetRadius())) return;
+            if(!g_MatrixMap->m_Camera.IsInFrustum(GetGeoCenter(), GetRadius())) return;
         }
     }
 
 #if SHOW_ASSIGNED_GROUPS
-    if (SHOW_ASSIGNED_GROUPS == GetObjectType()) ShowGroups();
+    if(SHOW_ASSIGNED_GROUPS == GetObjectType()) ShowGroups();
 #endif
 
 
     bool noleft = (objects_left <= 0);
-    bool norite = (objects_rite >= MAX_OBJECTS_PER_SCREEN);
+    bool norite = (objects_rite >= g_MaxObjectsPerScreen);
 
     m_Z = Double2Int((sort._13 * m_Core->m_GeoCenter.x + sort._23 * m_Core->m_GeoCenter.y + sort._33 * m_Core->m_GeoCenter.z + sort._43) * 256.0);
 
-    if (objects_left == objects_rite)
+    if(objects_left == objects_rite)
     {
         objects[objects_left] = this;
         ++objects_rite;

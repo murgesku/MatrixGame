@@ -97,35 +97,33 @@ void SInshorewave::DrawBegin(void)
 {
     DTRACE();
 
-    if (!IS_VB(m_VB)) return;
+    if(!IS_VB(m_VB)) return;
 
     ASSERT_DX(g_D3DD->SetFVF(INSHORE_FVF));
 
-    
     //if (m_Intense) g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_ONE  );
 
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE ));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
 
     SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
     SetAlphaOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
 
     SetColorOpDisable(1);
 
-    ASSERT_DX(g_D3DD->SetTexture(0,SInshorewave::m_Tex->Tex()));
-    g_D3DD->SetStreamSource(0,GET_VB(SInshorewave::m_VB),0,sizeof(SInshoreVertex));
+    ASSERT_DX(g_D3DD->SetTexture(0, SInshorewave::m_Tex->Tex()));
+    g_D3DD->SetStreamSource(0, GET_VB(SInshorewave::m_VB), 0, sizeof(SInshoreVertex));
 
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	FALSE));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, FALSE));
 
     //g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE );
-
 }
 
 void SInshorewave::DrawEnd(void)
 {
     DTRACE();
 
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHABLENDENABLE,   FALSE ));
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	TRUE));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE));
 
     //g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW );
 }
@@ -135,7 +133,7 @@ void SInshorewave::Draw(void)
 {
     DTRACE();
 
-    if (!IS_VB(m_VB)) return;
+    if(!IS_VB(m_VB)) return;
 
     ///////
     float xx = pos.x + (dir.x) * t * len;
@@ -147,19 +145,17 @@ void SInshorewave::Draw(void)
 
     D3DXMATRIX m;
 
-
     m._11 = dir.x * scale; m._12 = dir.y * scale; m._13 = 0;  m._14 = 0;
     m._21 = -dir.y * scale; m._22 = dir.x * scale; m._23 = 0;  m._24 = 0;
     m._31 = 0; m._32 = 0; m._33 = 1;  m._34 = 0;
     m._41 = xx; m._42 = yy; m._43 = WATER_LEVEL; m._44 = 1;
 
-    BYTE a = BYTE((KSCALE(t,0,0.6f) * 255) - (KSCALE(t,0.6f,1.0f) * 255));
+    BYTE a = BYTE((KSCALE(t, 0, 0.6f) * 255) - (KSCALE(t, 0.6f, 1.0f) * 255));
 
-    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m));
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &m));
 
-    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, (g_MatrixMap->m_InshorewaveColor & 0x00FFFFFF) | (a<<24));
-    g_D3DD->DrawPrimitive(D3DPT_TRIANGLESTRIP,0, 2);
-
+    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, (g_MatrixMap->m_InshorewaveColor & 0x00FFFFFF) | (a << 24));
+    g_D3DD->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,26 +165,24 @@ CMatrixWater::CMatrixWater() : CMain()
 {
     DTRACE();
 
-//	m_WaterVB=NULL;
-	m_WaterTex1=NULL;
-	m_WaterTex2=NULL;
+    //	m_WaterVB=NULL;
+    m_WaterTex1 = NULL;
+    m_WaterTex2 = NULL;
 
-	m_VB=NULL;
-	m_IB=NULL;
+    m_VB = NULL;
+    m_IB = NULL;
 
-
-    const int pole = (WATER_SIZE)*(WATER_SIZE);
-    for (int i = 0; i<pole; ++i)
+    const int pole = (WATER_SIZE) * (WATER_SIZE);
+    for(int i = 0; i < pole; ++i)
     {
         //h[i] = (float)(rand()%255)/255.0f;
         //r[i] = (float)(rand()%1024)/2500.0f;//3024.0f;
-        r[i] = (float)512/2500.0f;//3024.0f;
-        f[i] = rand()%(SIN_TABLE_SIZE-1);
+        r[i] = (float)512 / 2500.0f;//3024.0f;
+        f[i] = rand() % (SIN_TABLE_SIZE - 1);
     }
 
     m_angle = 0;
     m_next_time = WATER_TIME_PERIOD;
-
 }
 
 CMatrixWater::~CMatrixWater()
@@ -200,66 +194,66 @@ CMatrixWater::~CMatrixWater()
 void CMatrixWater::Clear()
 {
     DTRACE();
-	if(IS_VB(m_VB)) { DESTROY_VB(m_VB); }
-    if(IS_IB(m_IB)) { DESTROY_IB(m_IB); }
-	m_WaterTex1=NULL;
-	m_WaterTex2=NULL;
+    if(IS_VB(m_VB)) DESTROY_VB(m_VB);
+    if(IS_IB(m_IB)) DESTROY_IB(m_IB);
+    m_WaterTex1 = NULL;
+    m_WaterTex2 = NULL;
 }
 
 void CMatrixWater::Init()
 {
     DTRACE();
 
-    CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_WATER)->BlockGet(g_MatrixMap->m_WaterName);
+    CBlockPar* bp = g_MatrixData->BlockGet(PAR_SOURCE_WATER)->BlockGet(g_MatrixMap->m_WaterName);
 
-	m_WaterTex1=(CTextureManaged *)g_Cache->Get(cc_TextureManaged,bp->ParGet(PAR_SOURCE_WATER_WATER));
-    m_WaterTex2=(CTextureManaged *)g_Cache->Get(cc_TextureManaged,bp->ParGet(PAR_SOURCE_WATER_MIRROR));
+    m_WaterTex1 = (CTextureManaged*)g_Cache->Get(cc_TextureManaged, bp->ParGet(PAR_SOURCE_WATER_WATER));
+    m_WaterTex2 = (CTextureManaged*)g_Cache->Get(cc_TextureManaged, bp->ParGet(PAR_SOURCE_WATER_MIRROR));
 
     m_WaterTex1->Tex()->SetPriority(0xFFFFFFFF);
     m_WaterTex2->Tex()->SetPriority(0xFFFFFFFF);
 
-    const int pole = (WATER_SIZE+1)*(WATER_SIZE+1);
-    const int one_strip_idxs = (WATER_SIZE*2 + 2);
-    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE-1)*2;
-    const int pole_size = (WATER_SIZE)*(WATER_SIZE);
+    const int pole = (WATER_SIZE + 1) * (WATER_SIZE + 1);
+    const int one_strip_idxs = (WATER_SIZE * 2 + 2);
+    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE - 1) * 2;
+    const int pole_size = (WATER_SIZE) * (WATER_SIZE);
 
-    CREATE_VB_DYNAMIC(pole*sizeof(SMatrixMapWaterVertex), MATRIX_WATER_VERTEX_FORMAT, m_VB);
+    CREATE_VB_DYNAMIC(pole * sizeof(SMatrixMapWaterVertex), MATRIX_WATER_VERTEX_FORMAT, m_VB);
     CREATE_IB16(all_idxs, m_IB);
 
     // build indexes
 
-    WORD *ibuf;
-	LOCK_IB(m_IB,&ibuf);
+    WORD* ibuf;
+    LOCK_IB(m_IB, &ibuf);
     int k = 0;
 
-    for (int i=0; i<WATER_SIZE; ++i)
+    for(int i = 0; i < WATER_SIZE; ++i)
     {
 
-        if (k > 0)
+        if(k > 0)
         {
-            ibuf[k+0] = ibuf[k-1];
-            ibuf[k+1] = (i+1) * (WATER_SIZE+1);
+            ibuf[k + 0] = ibuf[k - 1];
+            ibuf[k + 1] = (i + 1) * (WATER_SIZE + 1);
 
             k += 2;
         }
 
-        ibuf[k++] = (i+1) * (WATER_SIZE+1);
-        ibuf[k++] = i*(WATER_SIZE+1);
-        for (int j = 0; j<WATER_SIZE; ++j)
+        ibuf[k++] = (i + 1) * (WATER_SIZE + 1);
+        ibuf[k++] = i * (WATER_SIZE + 1);
+        for(int j = 0; j < WATER_SIZE; ++j)
         {
-            ibuf[k++] = (WORD)(j + (WATER_SIZE+2)) + i*(WATER_SIZE+1);
-            ibuf[k++] = (WORD)(j + 1) + i*(WATER_SIZE+1);
+            ibuf[k++] = (WORD)(j + (WATER_SIZE + 2)) + i * (WATER_SIZE + 1);
+            ibuf[k++] = (WORD)(j + 1) + i * (WATER_SIZE + 1);
         }
 
     }
-	UNLOCK_IB(m_IB);
+    UNLOCK_IB(m_IB);
 
     FillVB(0);
 }
 
 void CMatrixWater::BeforeDraw(void)
 {
-    if (SInshorewave::m_Tex)  SInshorewave::m_Tex->Preload();
+    if(SInshorewave::m_Tex) SInshorewave::m_Tex->Preload();
     SInshorewave::PrepareVB();
     m_WaterTex1->Preload();
     m_WaterTex2->Preload();
@@ -269,41 +263,40 @@ void CMatrixWater::Draw(const D3DXMATRIX &m)
 {
     DTRACE();
 
-    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m));
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &m));
 
 
     //D3DXMATRIX tm;
     //D3DXMatrixTranspose(&tm, &m);
     //g_D3DD->SetVertexShaderConstantF(0, (float *)&tm, 4);
     
-    //for (int i = 0; i<WATER_SIZE; ++i)
+    //for(int i = 0; i < WATER_SIZE; ++i)
     //{
-    //    ASSERT_DX(g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,i*(WATER_SIZE+1),0,WATER_SIZE*2+2,0,WATER_SIZE*2));
+    //    ASSERT_DX(g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, i * (WATER_SIZE + 1), 0, WATER_SIZE * 2 + 2, 0, WATER_SIZE * 2));
     //}
 
 
+    const int pole = (WATER_SIZE + 1) * (WATER_SIZE + 1);
+    const int one_strip_idxs = (WATER_SIZE * 2 + 2);
+    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE - 1) * 2;
 
-    const int pole = (WATER_SIZE+1)*(WATER_SIZE+1);
-    const int one_strip_idxs = (WATER_SIZE*2 + 2);
-    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE-1)*2;
-
-    ASSERT_DX(g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,pole,0,all_idxs-2));
+    ASSERT_DX(g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, pole, 0, all_idxs - 2));
 }
 
 
 void CMatrixWater::Takt(int step)
 {
-    bool   skip = true;
+    bool skip = true;
 
-    int  k = 1;
+    int k = 1;
 
-    while (g_MatrixMap->GetTime() > m_next_time)
+    while(g_MatrixMap->GetTime() > m_next_time)
     {
         m_next_time += WATER_TIME_PERIOD;
         ++k;
         skip = false;
     }
-    if (skip) return;
+    if(skip) return;
 
     FillVB(k);
 }
@@ -312,27 +305,27 @@ void CMatrixWater::FillVB(int k)
 {
     DTRACE();
     // building vertexes
-    const int pole = (WATER_SIZE+1)*(WATER_SIZE+1);
-    const int one_strip_idxs = (WATER_SIZE*2 + 2);
-    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE-1)*2;
-    const int pole_size = (WATER_SIZE)*(WATER_SIZE);
+    const int pole = (WATER_SIZE + 1) * (WATER_SIZE + 1);
+    const int one_strip_idxs = (WATER_SIZE * 2 + 2);
+    const int all_idxs = one_strip_idxs * WATER_SIZE + (WATER_SIZE - 1) * 2;
+    const int pole_size = (WATER_SIZE) * (WATER_SIZE);
 
 
 
     m_angle += k;
-    for (int zzz = 0; zzz<pole_size; ++zzz)
+    for(int zzz = 0; zzz < pole_size; ++zzz)
     {
-        h[zzz] = r[zzz]*SinCosTable[(m_angle+f[zzz]) & (SIN_TABLE_SIZE-1)];
+        h[zzz] = r[zzz] * SinCosTable[(m_angle + f[zzz]) & (SIN_TABLE_SIZE - 1)];
     }
 
     int j;
 
     SMatrixMapWaterVertex *vbuf;
-	LOCK_VB_DYNAMIC(m_VB,&vbuf);
+	LOCK_VB_DYNAMIC(m_VB, &vbuf);
 	//memcpy(pbuf,vbuf,pole*sizeof(SMatrixMapWaterVertex));
 
     float _1watersize = 1.0f / (WATER_SIZE);
-    float u,v;
+    float u, v;
     float au, av;
     
     av = 0;
@@ -340,12 +333,12 @@ void CMatrixWater::FillVB(int k)
 
     k = 0;
     int k1 = 0;
-    for (j = 0; j<WATER_SIZE; ++j)
+    for(j = 0; j < WATER_SIZE; ++j)
     {
         u = 0;
         au = 0;
         float hh = h[k1];
-        for (int i = 0; i<WATER_SIZE; ++i, ++k)
+        for(int i = 0; i < WATER_SIZE; ++i, ++k)
         {
             vbuf[k].v.x = (float)i;
             vbuf[k].v.y = (float)j;

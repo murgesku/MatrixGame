@@ -15,16 +15,17 @@
 
 namespace Base {
 
-class BASE_API CBuf : public CMain {
+class BASE_API CBuf : public CMain
+{
 	public:
 		CHeap * m_Heap;
 		int m_Len;	// Кол-во данных
 		int m_Max;	// Размер буфера
 		int m_Add;  // На сколько увеличивается буфер
 		int m_Pointer; // Указатель
-		BYTE * m_Buf; // Буфер
+		BYTE* m_Buf; // Буфер
 	public:
-		CBuf(CHeap * heap=NULL, int add = 32);
+		CBuf(CHeap* heap = NULL, int add = 32);
 		~CBuf();
 
 		void Clear(void);
@@ -42,17 +43,17 @@ class BASE_API CBuf : public CMain {
 		inline void TestGet(int len)		{ if((m_Pointer+len)>m_Len) ERROR_E; }
 		void TestAdd(int len)
         {
-            if((m_Pointer+len)>m_Max) 
+            if((m_Pointer + len) > m_Max) 
             {
-                m_Max=m_Pointer+len+m_Add;
-                m_Buf=(BYTE *)HAllocEx(m_Buf,m_Max,m_Heap);
+				m_Max = m_Pointer + len + m_Add;
+				m_Buf = (BYTE*)HAllocEx(m_Buf, m_Max, m_Heap);
             }
-            m_Len+=len;
+			m_Len += len;
         } 		// Can change m_Len
-        void Expand(int sz)                 { m_Len += sz; if (m_Len > m_Max) {m_Max = m_Len + m_Add; m_Buf=(BYTE *)HAllocEx(m_Buf,m_Max,m_Heap);} }
+		void Expand(int sz) { m_Len += sz; if (m_Len > m_Max) { m_Max = m_Len + m_Add; m_Buf = (BYTE*)HAllocEx(m_Buf, m_Max, m_Heap); } }
 
-		int Pointer(void)	const			{ return m_Pointer; }
-		void Pointer(int zn)				{ if((zn<0) || (zn>m_Len)) ERROR_E; m_Pointer=zn; }
+		int Pointer(void)	const { return m_Pointer; }
+		void Pointer(int zn) { if ((zn < 0) || (zn > m_Len)) ERROR_E; m_Pointer = zn; }
 
 		bool Bool(void)						{ TestGet(sizeof(bool)); m_Pointer+=sizeof(bool); return *(bool *)(m_Buf+m_Pointer-sizeof(bool)); }
 		byte Byte(void)						{ TestGet(sizeof(byte)); m_Pointer+=sizeof(byte); return *(byte *)(m_Buf+m_Pointer-sizeof(byte)); }
@@ -81,23 +82,33 @@ class BASE_API CBuf : public CMain {
 		void Float(float zn)				{ TestAdd(sizeof(float)); *(float *)(m_Buf+m_Pointer)=zn; m_Pointer+=sizeof(float); }
 		void Double(double zn)				{ TestAdd(sizeof(double)); *(double *)(m_Buf+m_Pointer)=zn; m_Pointer+=sizeof(double); }
 
-        template <class D> void Any(D zn)    { TestAdd(sizeof(D)); *(D *)(m_Buf+m_Pointer)=zn; m_Pointer+=sizeof(D); }
-        template <class D> void AnyStruct(const D &zn)    { TestAdd(sizeof(D)); *(D *)(m_Buf+m_Pointer)=zn; m_Pointer+=sizeof(D); }
+		template <class D> void Any(D zn)
+		{
+			TestAdd(sizeof(D));
+			*(D*)(m_Buf + m_Pointer) = zn;
+			m_Pointer += sizeof(D);
+		}
+		template <class D> void AnyStruct(const D& zn)
+		{
+			TestAdd(sizeof(D));
+			*(D*)(m_Buf + m_Pointer) = zn;
+			m_Pointer += sizeof(D);
+		}
 
-		void BufAdd(const void * buf,int len)		{ if(len<=0) return; TestAdd(len); CopyMemory(m_Buf+m_Pointer,buf,len); m_Pointer+=len; }
-		void BufGet(void * buf,int len)		{ if(len<=0) return; TestGet(len); memcpy(buf,m_Buf+m_Pointer,len); m_Pointer+=len; }
+		void BufAdd(const void* buf, int len) { if (len <= 0) return; TestAdd(len); CopyMemory(m_Buf + m_Pointer, buf, len); m_Pointer += len; }
+		void BufGet(void* buf, int len) { if (len <= 0) return; TestGet(len); memcpy(buf, m_Buf + m_Pointer, len); m_Pointer += len; }
 
-		void ByteLoop(byte zn, int cnt)		{ if(cnt<=0) return; TestAdd(cnt); memset(m_Buf+m_Pointer,zn,cnt); m_Pointer+=cnt; }
-		void WordLoop(word zn, int cnt)     { if(cnt<=0) return; TestAdd(cnt*2); for(int i=0;i<cnt;i++,m_Pointer+=2) *(word *)(m_Buf+m_Pointer)=zn; }
+		void ByteLoop(byte zn, int cnt) { if (cnt <= 0) return; TestAdd(cnt); memset(m_Buf + m_Pointer, zn, cnt); m_Pointer += cnt; }
+		void WordLoop(word zn, int cnt) { if (cnt <= 0) return; TestAdd(cnt * 2); for (int i = 0; i < cnt; ++i, m_Pointer += 2) *(word*)(m_Buf + m_Pointer) = zn; }
 
 		int StrLen(void);
-		CStr Str(void)						{ int len=StrLen(); char * abuf=(char *)(m_Buf+m_Pointer); m_Pointer+=len+1; if(m_Pointer>m_Len) m_Pointer=m_Len; if(len>0) return CStr(abuf,len,m_Heap); else return CStr(m_Heap); }
-		void Str(const CStr & str)				{ int len=str.Len(); if(len>0) BufAdd(str.Get(),len+1); else Byte(0); }
-		void Str(const char * str, int strlen)	{ if(strlen>0) BufAdd(str,strlen); Byte(0); }
-		void Str(const char * str)				{ int len=(int)strlen(str); if(len>0) BufAdd(str,len+1); else Byte(0); }
-		void StrNZ(const CStr & str)			{ int len=str.Len(); if(len>0) BufAdd(str.Get(),len); }
-		void StrNZ(const char * str, int len)	{ if(strlen>0) BufAdd(str,len); }
-		void StrNZ(const char * str)			{ int len=(int)strlen(str); if(len>0) BufAdd(str,len); }
+		CStr Str(void) { int len = StrLen(); char* abuf = (char*)(m_Buf + m_Pointer); m_Pointer += len + 1; if (m_Pointer > m_Len) m_Pointer = m_Len; if (len > 0) return CStr(abuf, len, m_Heap); else return CStr(m_Heap); }
+		void Str(const CStr& str) { int len = str.Len(); if (len > 0) BufAdd(str.Get(), len + 1); else Byte(0); }
+		void Str(const char* str, int strlen) { if (strlen > 0) BufAdd(str, strlen); Byte(0); }
+		void Str(const char* str) { int len = (int)strlen(str); if (len > 0) BufAdd(str, len + 1); else Byte(0); }
+		void StrNZ(const CStr& str) { int len = str.Len(); if (len > 0) BufAdd(str.Get(), len); }
+		void StrNZ(const char* str, int len) { if (strlen > 0) BufAdd(str, len); }
+		void StrNZ(const char* str) { int len = (int)strlen(str); if (len > 0) BufAdd(str, len); }
 
 		int WStrLen(void);
 		CWStr WStr(void)					        { int len=WStrLen(); wchar * abuf=(wchar *)(m_Buf+m_Pointer); m_Pointer+=((len+1)<<1); if(m_Pointer>m_Len) m_Pointer=m_Len; if(len>0) return CWStr(abuf,len,m_Heap); else return CWStr(m_Heap); }

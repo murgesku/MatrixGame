@@ -38,7 +38,7 @@ typedef enum
     EObjectType_FORCE_DWORD = 0x7FFFFFFF 
 } EObjectType;
 
-#define MAX_OBJECTS_PER_SCREEN 2560
+#define MAX_OBJECTS_PER_SCREEN 5120
 
 #define UNDER_ATTACK_IDLE_TIME  120000
 
@@ -305,8 +305,8 @@ public:
         {
             m_FirstLogicTemp = NULL;
             m_LastLogicTemp = NULL;
-            objects_left = MAX_OBJECTS_PER_SCREEN>>1;
-            objects_rite = MAX_OBJECTS_PER_SCREEN>>1;
+            objects_left = g_MaxObjectsPerScreen >> 1;
+            objects_rite = g_MaxObjectsPerScreen >> 1;
 
             m_FirstVisNew = NULL;
             m_LastVisNew = NULL;

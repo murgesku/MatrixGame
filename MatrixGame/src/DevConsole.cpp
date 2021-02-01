@@ -161,18 +161,18 @@ static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params)
 
 SCmdItem   CDevConsole::m_Commands[] =
 {
-    {L"HELP",hHelp},
-    {L"SHADOWS",hShadows},
-    {L"CANNON",hCannon},
-    {L"LOG",hLog},
-    {L"TRACESPD",hTestSpdTrace},
-    {L"BUILDCFG",hBuildCFG},
-    {L"MUSIC",hMusic},
-    {L"COMPRESS",hCompress},
-    {L"CALCVIS",hCalcVis},
+    {L"HELP", hHelp},
+    {L"SHADOWS", hShadows},
+    {L"CANNON", hCannon},
+    {L"LOG", hLog},
+    {L"TRACESPD", hTestSpdTrace},
+    {L"BUILDCFG", hBuildCFG},
+    {L"MUSIC", hMusic},
+    {L"COMPRESS", hCompress},
+    {L"CALCVIS", hCalcVis},
 
 
-    {NULL,NULL} // last
+    {NULL, NULL} // last
 };
 
 
@@ -220,7 +220,7 @@ static wchar Scan2Char(int scan)
     return 0;
 }
 
-CDevConsole::CDevConsole(void):m_Flags(0),m_Text(g_MatrixHeap), m_CurPos(0)
+CDevConsole::CDevConsole(void):m_Flags(0), m_Text(g_MatrixHeap), m_CurPos(0)
 {
     m_Time = 0;
     m_NextTime = 0;
