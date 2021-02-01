@@ -290,7 +290,7 @@ public:
 
         float Z_From_Pos(void);
 
-        void    ApplyNaklon(const D3DXVECTOR3 &dir);
+        void  ApplyNaklon(const D3DXVECTOR3 &dir);
 
 		void UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind);
 		void WeaponInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind, int hullno, int pilon);
@@ -310,7 +310,7 @@ public:
         virtual void LogicTakt(int cms) = 0;
 
 		virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
-        bool PickFull(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
+        bool         PickFull(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
 
 		virtual void BeforeDraw(void);
 		virtual void Draw(void);
@@ -323,7 +323,7 @@ public:
 
         virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
         virtual int  GetSide(void) const {return m_Side;};
-        virtual bool  NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
+        virtual bool NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
         virtual bool InRect(const CRect &rect)const;
 
         void    OnOutScreen(void) {};
@@ -331,6 +331,5 @@ public:
 
 __forceinline bool CMatrixMapStatic::IsLiveRobot(void) const
 {
-    return IsRobot() && ((CMatrixRobot*)this)->m_CurrState!=ROBOT_DIP;
+    return IsRobot() && ((CMatrixRobot*)this)->m_CurrState != ROBOT_DIP;
 }
-

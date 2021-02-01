@@ -5,7 +5,7 @@
 
 #pragma once
 
-#define MAX_EFFECTS_COUNT   1280
+//#define MAX_EFFECTS_COUNT   1280
 #define MAX_EFFECT_PRIORITY 10000
 
 #include "../stdafx.h"

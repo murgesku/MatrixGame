@@ -186,9 +186,9 @@ png_do_swap(png_row_infop row_info, png_bytep row)
    {
       png_bytep rp = row;
       png_uint_32 i;
-      png_uint_32 istop= row_info->width * row_info->channels;
+      png_uint_32 istop = row_info->width * row_info->channels;
 
-      for (i = 0; i < istop; i++, rp += 2)
+      for (i = 0; i < istop; ++i, rp += 2)
       {
          png_byte t = *rp;
          *rp = *(rp + 1);

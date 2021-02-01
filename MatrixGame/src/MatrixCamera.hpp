@@ -48,15 +48,16 @@ enum EFrustumPlane
 //#define CAM_BOT_MAX_FORCE       8
 //#define CAM_BOT_HEIGHT          55
 
-#define CAM_HFOV                GRAD2RAD(60) //D3DX_PI/3/*6*/
+#define CAM_HFOV                GRAD2RAD(g_CamFieldOfView) //D3DX_PI/3/*6*/
 
 //#define MAX_VIEW_DISTANCE       4000
 //#define MAX_VIEW_DISTANCE_SQ    (MAX_VIEW_DISTANCE * MAX_VIEW_DISTANCE)
-extern float MAX_VIEW_DISTANCE;
+//extern float MAX_VIEW_DISTANCE;
+
 void SetMaxCameraDistance(float perc);
 
-#define FOG_NEAR_K              0.5
-#define FOG_FAR_K               0.7
+//#define FOG_NEAR_K              0.5 //Точка удаления от камеры, в которой начинается отрисовка разреженного тумана
+//#define FOG_FAR_K               0.7 //Точка удаления от камеры, в которой начинается отрисовка сплошного тумана
 
 
 //#define MAX_TIME_ON_TRAJ        8000
@@ -393,29 +394,29 @@ __forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 & p) const
     if ( (tp.x * GetFrustPlaneT().norm.x + tp.y * GetFrustPlaneT().norm.y + tp.z * GetFrustPlaneT().norm.z) < 0.0f) return false;
     if ( (tp.x * GetFrustPlaneB().norm.x + tp.y * GetFrustPlaneB().norm.y + tp.z * GetFrustPlaneB().norm.z) < 0.0f) return false;
     */
-    if (!GetFrustPlaneL().IsOnSide(p)) return false;
-    if (!GetFrustPlaneR().IsOnSide(p)) return false;
-    if (!GetFrustPlaneT().IsOnSide(p)) return false;
-    if (!GetFrustPlaneB().IsOnSide(p)) return false;
+    if(!GetFrustPlaneL().IsOnSide(p)) return false;
+    if(!GetFrustPlaneR().IsOnSide(p)) return false;
+    if(!GetFrustPlaneT().IsOnSide(p)) return false;
+    if(!GetFrustPlaneB().IsOnSide(p)) return false;
     return true;
 }
 
 __forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 & p, float r) const
 {
-    if (!GetFrustPlaneL().IsOnSide(p + GetFrustPlaneL().norm * r)) return false;
-    if (!GetFrustPlaneR().IsOnSide(p + GetFrustPlaneR().norm * r)) return false;
-    if (!GetFrustPlaneT().IsOnSide(p + GetFrustPlaneT().norm * r)) return false;
-    if (!GetFrustPlaneB().IsOnSide(p + GetFrustPlaneB().norm * r)) return false;
+    if(!GetFrustPlaneL().IsOnSide(p + GetFrustPlaneL().norm * r)) return false;
+    if(!GetFrustPlaneR().IsOnSide(p + GetFrustPlaneR().norm * r)) return false;
+    if(!GetFrustPlaneT().IsOnSide(p + GetFrustPlaneT().norm * r)) return false;
+    if(!GetFrustPlaneB().IsOnSide(p + GetFrustPlaneB().norm * r)) return false;
     return true;
 }
 
 
 __forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 & mins, const D3DXVECTOR3 & maxs) const
 {
-    if (GetFrustPlaneL().BoxSide(mins,maxs) == 2) return false;
-    if (GetFrustPlaneR().BoxSide(mins,maxs) == 2) return false;
-    if (GetFrustPlaneB().BoxSide(mins,maxs) == 2) return false;
-    if (GetFrustPlaneT().BoxSide(mins,maxs) == 2) return false;
+    if(GetFrustPlaneL().BoxSide(mins, maxs) == 2) return false;
+    if(GetFrustPlaneR().BoxSide(mins, maxs) == 2) return false;
+    if(GetFrustPlaneB().BoxSide(mins, maxs) == 2) return false;
+    if(GetFrustPlaneT().BoxSide(mins, maxs) == 2) return false;
     return true;
 }
 

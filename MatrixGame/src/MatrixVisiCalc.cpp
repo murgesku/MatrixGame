@@ -95,7 +95,8 @@ struct SVisGroup
             if (mapPoint)
             {
                 sourcePoints[sourcePointsCount].z = mapPoint->z >=0 ? mapPoint->z : 0;
-            } else sourcePoints[sourcePointsCount].z = 0; 
+            }
+            else sourcePoints[sourcePointsCount].z = 0; 
             ++sourcePointsCount;
 
             // right
@@ -106,7 +107,8 @@ struct SVisGroup
             if (mapPoint)
             {
                 sourcePoints[sourcePointsCount].z = mapPoint->z >= 0 ? mapPoint->z : 0;
-            } else sourcePoints[sourcePointsCount].z = 0;
+            }
+            else sourcePoints[sourcePointsCount].z = 0;
             ++sourcePointsCount;
 
         }
@@ -119,7 +121,8 @@ struct SVisGroup
             if (mapPoint)
             {
                 sourcePoints[sourcePointsCount].z = mapPoint-> z >= 0 ? mapPoint->z : 0;
-            } else sourcePoints[sourcePointsCount].z = 0;
+            }
+            else sourcePoints[sourcePointsCount].z = 0;
             ++sourcePointsCount;
 
             // down
@@ -129,7 +132,8 @@ struct SVisGroup
             if (mapPoint)
             {
                 sourcePoints[sourcePointsCount].z = mapPoint-> z >= 0 ? mapPoint->z : 0;
-            } else sourcePoints[sourcePointsCount].z = 0;
+            }
+            else sourcePoints[sourcePointsCount].z = 0;
             ++sourcePointsCount;
         }
     }
@@ -378,20 +382,20 @@ void CMatrixMap::CalcVis(void)
         }
     }
 
-    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE,		FALSE);
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHATESTENABLE,   FALSE ));
+    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE ));
 
-	g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,FALSE);
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZENABLE,				D3DZB_FALSE));
+	g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE));
 
-	g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSU,			D3DTADDRESS_CLAMP);
-	g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSV,			D3DTADDRESS_CLAMP);
+	g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+	g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
     SetColorOpSelect(0, D3DTA_TFACTOR);
     SetAlphaOpDisable(0);
     SetColorOpDisable(1);
 
-    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR,0xFF003000);
+    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFF003000);
 
     SVert_V4 v[4];
     v[0].p = D3DXVECTOR4(0, float(g_ScreenY), 0, 1);
@@ -451,11 +455,7 @@ void CMatrixMap::CalcVis(void)
 }
 
 
-
-
 // runtime
-
-
 
 #define NPOS    4
 
@@ -464,7 +464,6 @@ struct CMatrixMap::SCalcVisRuntime
     D3DXVECTOR2       pos[4];
     PCMatrixMapGroup *mapGroup;
     int i, j;
-
 };
 
 void CMatrixMap::CheckCandidate(SCalcVisRuntime &visRuntime, CMatrixMapGroup *mapGroup)
@@ -538,49 +537,49 @@ void CMatrixMap::CalcMapGroupVisibility(void)
     SCalcVisRuntime visRuntime;
 
     D3DXVECTOR3 topForward(m_Camera.GetFrustumLT() + m_Camera.GetFrustumRT());
-    float cameraDirection2d = D3DXVec2Length((D3DXVECTOR2 *)&topForward);
+    float cameraDirection2d = D3DXVec2Length((D3DXVECTOR2*)&topForward);
     float k_cam = (float)fabs(topForward.z) / cameraDirection2d;
-    float k_etalon = m_Camera.GetFrustumCenter().z * INVERT(MAX_VIEW_DISTANCE);
-    float k_etalon_fog = m_Camera.GetFrustumCenter().z * INVERT(MAX_VIEW_DISTANCE * FOG_NEAR_K);
+    float k_etalon = m_Camera.GetFrustumCenter().z * INVERT(g_MaxViewDistance);
+    float k_etalon_fog = m_Camera.GetFrustumCenter().z * INVERT(g_MaxViewDistance * g_ThinFogDrawDistance);
     //float dist_naklon = (float)sqrt(dist + m_Camera.GetFrustumCenter().z * m_Camera.GetFrustumCenter().z);
 
-    if (topForward.z > 0 || k_cam < k_etalon_fog)
+    if(topForward.z > 0 || k_cam < k_etalon_fog)
     {
-        SETFLAG(m_Flags,MMFLAG_FOG_ON);
-
-    } else
+        SETFLAG(m_Flags, MMFLAG_FOG_ON);
+    }
+    else
     {
-        RESETFLAG(m_Flags,MMFLAG_FOG_ON);
+        RESETFLAG(m_Flags, MMFLAG_FOG_ON);
     }
 
-    if (k_cam < k_etalon || topForward.z > 0)
+    if(k_cam < k_etalon || topForward.z > 0)
     {
-        //float d2 = dist * 2;
+        // float d2 = dist * 2;
         float k;
         // right top <- left top
-        if (m_Camera.GetFrustumLT().z >= (-0.001))
+        if(m_Camera.GetFrustumLT().z >= (-0.001))
 		{
-			k = MAX_VIEW_DISTANCE;
+			k = g_MaxViewDistance;
 		}
 		else
         {
             k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumLT().z;
-            if (k > MAX_VIEW_DISTANCE) k = MAX_VIEW_DISTANCE;
+            if (k > g_MaxViewDistance) k = g_MaxViewDistance;
         }
-        visRuntime.pos[0].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLT().x*k;
-        visRuntime.pos[0].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLT().y*k;
+        visRuntime.pos[0].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLT().x * k;
+        visRuntime.pos[0].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLT().y * k;
 
-        if (m_Camera.GetFrustumRT().z >= (-0.001))
+        if(m_Camera.GetFrustumRT().z >= (-0.001))
 		{
-			k = MAX_VIEW_DISTANCE;
+			k = g_MaxViewDistance;
 		}
 		else
         {
             k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumRT().z;
-            if (k > MAX_VIEW_DISTANCE) k = MAX_VIEW_DISTANCE;
+            if(k > g_MaxViewDistance) k = g_MaxViewDistance;
         }
-        visRuntime.pos[1].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRT().x*k;
-        visRuntime.pos[1].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRT().y*k;
+        visRuntime.pos[1].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRT().x * k;
+        visRuntime.pos[1].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRT().y * k;
 
         D3DXVECTOR2 ex;
         D3DXVec2Normalize(&ex, &(visRuntime.pos[1]-visRuntime.pos[0]));
@@ -589,35 +588,32 @@ void CMatrixMap::CalcMapGroupVisibility(void)
         visRuntime.pos[1] += ex;
 
 
-
-
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumRB().z;
-        visRuntime.pos[2].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRB().x*k;
-        visRuntime.pos[2].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRB().y*k;
+        visRuntime.pos[2].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRB().x * k;
+        visRuntime.pos[2].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRB().y * k;
 
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumLB().z;
-        visRuntime.pos[3].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLB().x*k;
-        visRuntime.pos[3].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLB().y*k;
+        visRuntime.pos[3].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLB().x * k;
+        visRuntime.pos[3].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLB().y * k;
 
-        D3DXVECTOR2 disp(*(D3DXVECTOR2 *)&m_Camera.GetFrustumCenter() - (visRuntime.pos[2] + visRuntime.pos[3])*0.5f);
+        D3DXVECTOR2 disp(*(D3DXVECTOR2 *)&m_Camera.GetFrustumCenter() - (visRuntime.pos[2] + visRuntime.pos[3]) * 0.5f);
         visRuntime.pos[2] += disp;
         visRuntime.pos[3] += disp;
 
         // enable fog
         SETFLAG(m_Flags, MMFLAG_SKY_ON);
-
         {
             D3DXVECTOR3 projection(m_Camera.GetDir());
             projection.z = 0;
             float len = D3DXVec3Length(&projection);
-            if (len < 0.0001)
+            if(len < 0.0001)
             {
                 m_SkyHeight = -100;
             }
 			else
             {
                 projection *= (1.0f / len);
-                projection = m_Camera.GetFrustumCenter() + projection * MAX_VIEW_DISTANCE;
+                projection = m_Camera.GetFrustumCenter() + projection * g_MaxViewDistance;
                 projection.z -= m_Camera.GetFrustumCenter().z * 1.5f;
 
                 D3DXVECTOR2 ptr = m_Camera.Project(projection, GetIdentityMatrix());
@@ -627,30 +623,30 @@ void CMatrixMap::CalcMapGroupVisibility(void)
     }
 	else
     {
-        RESETFLAG(m_Flags,MMFLAG_SKY_ON);
+        RESETFLAG(m_Flags, MMFLAG_SKY_ON);
 
         float k;
 
         // right top <- left top
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumLT().z;
-        visRuntime.pos[0].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLT().x*k;
-        visRuntime.pos[0].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLT().y*k;
+        visRuntime.pos[0].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLT().x * k;
+        visRuntime.pos[0].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLT().y * k;
 
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumRT().z;
-        visRuntime.pos[1].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRT().x*k;
-        visRuntime.pos[1].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRT().y*k;
+        visRuntime.pos[1].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRT().x * k;
+        visRuntime.pos[1].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRT().y * k;
 
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumRB().z;
-        visRuntime.pos[2].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRB().x*k;
-        visRuntime.pos[2].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRB().y*k;
+        visRuntime.pos[2].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumRB().x * k;
+        visRuntime.pos[2].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRB().y * k;
 
         k = (m_minz - m_Camera.GetFrustumCenter().z) / m_Camera.GetFrustumLB().z;
-        visRuntime.pos[3].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLB().x*k;
-        visRuntime.pos[3].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLB().y*k;
+        visRuntime.pos[3].x = m_Camera.GetFrustumCenter().x + m_Camera.GetFrustumLB().x * k;
+        visRuntime.pos[3].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumLB().y * k;
 
-        if (m_Camera.GetFrustPlaneB().norm.z > 0)
+        if(m_Camera.GetFrustPlaneB().norm.z > 0)
         {
-            D3DXVECTOR2 disp(*(D3DXVECTOR2 *)&m_Camera.GetFrustumCenter() - (visRuntime.pos[2]+visRuntime.pos[3])*0.5f);
+            D3DXVECTOR2 disp(*(D3DXVECTOR2 *)&m_Camera.GetFrustumCenter() - (visRuntime.pos[2] + visRuntime.pos[3]) * 0.5f);
             visRuntime.pos[2] += disp;
             visRuntime.pos[3] += disp;
         }
@@ -661,23 +657,23 @@ void CMatrixMap::CalcMapGroupVisibility(void)
     visRuntime.mapGroup=m_VisibleGroups;
     m_VisibleGroupsCount = 0;
 
-    if (m_GroupVis != NULL)
+    if(m_GroupVis != NULL)
     {
         const D3DXVECTOR3 &cameraPoint = m_Camera.GetFrustumCenter();
         int gx = TruncDouble(cameraPoint.x * (1.0 / (GLOBAL_SCALE * MAP_GROUP_SIZE)));
         int gy = TruncDouble(cameraPoint.y * (1.0 / (GLOBAL_SCALE * MAP_GROUP_SIZE)));
 
-        if (gx >= 0 && gx < m_GroupSize.x && gy >= 0 && gy < m_GroupSize.y)
+        if(gx >= 0 && gx < m_GroupSize.x && gy >= 0 && gy < m_GroupSize.y)
         {
-            SGroupVisibility *visibilityGroup = m_GroupVis + gx + gy * m_GroupSize.x;
+            SGroupVisibility* visibilityGroup = m_GroupVis + gx + gy * m_GroupSize.x;
 
             int level = TruncFloat((cameraPoint.z - visibilityGroup->z_from) / GLOBAL_SCALE);
 
-            if (level >=0 && level < visibilityGroup->levels_cnt)
+            if(level >= 0 && level < visibilityGroup->levels_cnt)
             {
                 int n = visibilityGroup->levels[level];
 
-                for (int i=0;i<n;++i)
+                for(int i = 0; i < n; ++i)
                 {
                     PCMatrixMapGroup g = visibilityGroup->vis[i];
 
@@ -696,12 +692,12 @@ void CMatrixMap::CalcMapGroupVisibility(void)
     float maxx = visRuntime.pos[0].x;
     float miny = visRuntime.pos[0].y;
     float maxy = visRuntime.pos[0].y;
-    for (int k = 1; k < NPOS; ++k)
+    for(int k = 1; k < NPOS; ++k)
     {
-        if (visRuntime.pos[k].x < minx) minx = visRuntime.pos[k].x;
-        if (visRuntime.pos[k].x > maxx) maxx = visRuntime.pos[k].x;
-        if (visRuntime.pos[k].y < miny) miny = visRuntime.pos[k].y;
-        if (visRuntime.pos[k].y > maxy) maxy = visRuntime.pos[k].y;
+        if(visRuntime.pos[k].x < minx) minx = visRuntime.pos[k].x;
+        if(visRuntime.pos[k].x > maxx) maxx = visRuntime.pos[k].x;
+        if(visRuntime.pos[k].y < miny) miny = visRuntime.pos[k].y;
+        if(visRuntime.pos[k].y > maxy) maxy = visRuntime.pos[k].y;
     }
 
     int iminx = (int)floor(minx * (1.0/(MAP_GROUP_SIZE * GLOBAL_SCALE))) - 1;
@@ -713,61 +709,61 @@ void CMatrixMap::CalcMapGroupVisibility(void)
 
     //DM("TIME", "TIME_STEP1 " + CStr(iminx) + " " + CStr(iminy)+ " " + CStr(imaxx)+ " " + CStr(imaxy));
 
-    for (visRuntime.j = iminy; visRuntime.j <= imaxy /*m_GroupSize.y*/; ++visRuntime.j)
+    for(visRuntime.j = iminy; visRuntime.j <= imaxy /*m_GroupSize.y*/; ++visRuntime.j)
     {
-        for (visRuntime.i = iminx; visRuntime.i <= imaxx /*m_GroupSize.x*/; ++visRuntime.i)
+        for(visRuntime.i = iminx; visRuntime.i <= imaxx /*m_GroupSize.x*/; ++visRuntime.i)
         {
             bool is_map = (visRuntime.i >= 0) && (visRuntime.i < m_GroupSize.x) && (visRuntime.j >= 0) && (visRuntime.j < m_GroupSize.y);
-            if (is_map)
+            if(is_map)
             {
                 // calculate visibility of map group
 	            CMatrixMapGroup * cmg = m_Group[visRuntime.j * m_GroupSize.x + visRuntime.i];
 
-                if (cmg == NULL)
+                if(cmg == NULL)
                 {
                     goto water_calc;
                 }
 				else
                 {
-                    if (no_info_about_visibility)
-                        CheckCandidate(visRuntime, cmg);
+                    if(no_info_about_visibility) CheckCandidate(visRuntime, cmg);
                 }
             }
 			else
             {
                 // calculate visibility of free water
 water_calc:
-                D3DXVECTOR3 p0(float(visRuntime.i * (MAP_GROUP_SIZE * GLOBAL_SCALE)), float(visRuntime.j * (MAP_GROUP_SIZE * GLOBAL_SCALE)), WATER_LEVEL);
+                D3DXVECTOR3 p0(float(visRuntime.i* (MAP_GROUP_SIZE * GLOBAL_SCALE)), float(visRuntime.j * (MAP_GROUP_SIZE * GLOBAL_SCALE)), WATER_LEVEL);
                 D3DXVECTOR3 p1(p0.x + float(MAP_GROUP_SIZE * GLOBAL_SCALE), p0.y + float(MAP_GROUP_SIZE * GLOBAL_SCALE), WATER_LEVEL);
 
-                int i0 = NPOS-1;
+                int i0 = NPOS - 1;
                 int i1 = 0;
-                while (i1 < NPOS)
+                while(i1 < NPOS)
                 {
-                    if (PointLineCatch(visRuntime.pos[i0],visRuntime.pos[i1],*(D3DXVECTOR2 *)&p0))
+                    if(PointLineCatch(visRuntime.pos[i0], visRuntime.pos[i1], *(D3DXVECTOR2*)&p0))
                     {
                         goto checknext_w;
                     }
-                    if (PointLineCatch(visRuntime.pos[i0],visRuntime.pos[i1],*(D3DXVECTOR2 *)&p1))
+                    if(PointLineCatch(visRuntime.pos[i0], visRuntime.pos[i1], *(D3DXVECTOR2*)&p1))
                     {
                         goto checknext_w;
                     }
-                    if (PointLineCatch(visRuntime.pos[i0],visRuntime.pos[i1],D3DXVECTOR2(p0.x, p1.y)))
+                    if(PointLineCatch(visRuntime.pos[i0], visRuntime.pos[i1], D3DXVECTOR2(p0.x, p1.y)))
                     {
                         goto checknext_w;
                     }
-                    if (PointLineCatch(visRuntime.pos[i0],visRuntime.pos[i1],D3DXVECTOR2(p1.x, p0.y)))
+                    if(PointLineCatch(visRuntime.pos[i0], visRuntime.pos[i1], D3DXVECTOR2(p1.x, p0.y)))
                     {
                         goto checknext_w;
                     }
                     goto invisible_w;
-checknext_w:
+                checknext_w:
                     i0 = i1++;
                 }
 
-                if (m_Camera.IsInFrustum(p0,p1))
+                //Непосредственно помечает на отрисовку элементы воды в случае, если камера находится в пределах... скайбокса(?)
+                if(m_Camera.IsInFrustum(p0, p1))
                 {
-                    m_VisWater->AnyStruct<D3DXVECTOR2>(*(D3DXVECTOR2 *)&p0);
+                    m_VisWater->AnyStruct<D3DXVECTOR2>(*(D3DXVECTOR2*)&p0);
                 }
 invisible_w:;
 

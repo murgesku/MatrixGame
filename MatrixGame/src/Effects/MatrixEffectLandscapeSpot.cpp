@@ -224,7 +224,7 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
     {
 
 
-        int x,y;
+        int x, y;
 
         float tsin;
         float tcos;
@@ -236,23 +236,24 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
         float ys = SPOT_SIZE * scaley * tsin;
 
 
-        if (scale_by_normal)
+        if(scale_by_normal)
         {
             D3DXVECTOR3 norm;
             g_MatrixMap->GetNormal(&norm, pos.x, pos.y);
-            float nscalex = float (acos(fabs(norm.x)) * (2.0/M_PI));
-            float nscaley = float (acos(fabs(norm.y)) * (2.0/M_PI));
-            p[0].x = pos.x + (-xc+ys) * nscalex; p[0].y = pos.y + (-xs-yc) * nscaley;
-            p[1].x = pos.x + (xc+ys) * nscalex; p[1].y = pos.y + (xs-yc) * nscaley;
-            p[2].x = pos.x + (xc-ys) * nscalex; p[2].y = pos.y + (xs+yc) * nscaley;
-            p[3].x = pos.x + (-xc-ys) * nscalex; p[3].y = pos.y + (-xs+yc) * nscaley;
-        } else
+            float nscalex = float(acos(fabs(norm.x)) * (2.0 / M_PI));
+            float nscaley = float(acos(fabs(norm.y)) * (2.0 / M_PI));
+            p[0].x = pos.x + (-xc + ys) * nscalex; p[0].y = pos.y + (-xs - yc) * nscaley;
+            p[1].x = pos.x + (xc + ys) * nscalex; p[1].y = pos.y + (xs - yc) * nscaley;
+            p[2].x = pos.x + (xc - ys) * nscalex; p[2].y = pos.y + (xs + yc) * nscaley;
+            p[3].x = pos.x + (-xc - ys) * nscalex; p[3].y = pos.y + (-xs + yc) * nscaley;
+        }
+        else
         {
 
-            p[0].x = pos.x + (-xc+ys); p[0].y = pos.y + (-xs-yc) ;
-            p[1].x = pos.x + (xc+ys) ; p[1].y = pos.y + (xs-yc) ;
-            p[2].x = pos.x + (xc-ys) ; p[2].y = pos.y + (xs+yc) ;
-            p[3].x = pos.x + (-xc-ys) ; p[3].y = pos.y + (-xs+yc) ;
+            p[0].x = pos.x + (-xc + ys); p[0].y = pos.y + (-xs - yc);
+            p[1].x = pos.x + (xc + ys); p[1].y = pos.y + (xs - yc);
+            p[2].x = pos.x + (xc - ys); p[2].y = pos.y + (xs + yc);
+            p[3].x = pos.x + (-xc - ys); p[3].y = pos.y + (-xs + yc);
         }
 
 
@@ -261,15 +262,15 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
         mr.top = Float2Int(p[0].y * INVERT(GLOBAL_SCALE)) - 1;
         mr.bottom = Float2Int(p[0].y * INVERT(GLOBAL_SCALE)) + 1;
 
-        for (int i = 1; i<4; ++i)
+        for(int i = 1; i < 4; ++i)
         {
             x = Float2Int(p[i].x * INVERT(GLOBAL_SCALE));
             y = Float2Int(p[i].y * INVERT(GLOBAL_SCALE));
 
-            if (x <= mr.left) mr.left = x-1;
-            if (x >= mr.right) mr.right = x+1;
-            if (y <= mr.top) mr.top = y-1;
-            if (y >= mr.bottom) mr.bottom = y+1;
+            if (x <= mr.left) mr.left = x - 1;
+            if (x >= mr.right) mr.right = x + 1;
+            if (y <= mr.top) mr.top = y - 1;
+            if (y >= mr.bottom) mr.bottom = y + 1;
         }
 
 
@@ -282,40 +283,40 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
     if (mr.bottom >= g_MatrixMap->m_Size.y) mr.bottom = g_MatrixMap->m_Size.y - 1;
     if (mr.IsEmpty()) return;
 
-        // calc koefs for U,V calculation
+    // calc koefs for U,V calculation
 
-        //double A1 = 2.0 * ((p[2].x - p[3].x - p[1].x + p[0].x) * (p[0].y - p[1].y) - (p[0].x - p[1].x) * (p[2].y - p[3].y - p[1].y + p[0].y));
-        
-        double B11 = (p[2].x - p[3].x - p[1].x + p[0].x) ; // * (oy - p[0].y)
-        double B12 = -(p[2].y - p[3].y - p[1].y + p[0].y) ; // * (ox - p[0].x)
-        double B13 = (p[3].x - p[0].x) * (p[0].y - p[1].y) - (p[0].x - p[1].x) * (p[3].y - p[0].y);
-        double C11 = (p[3].x - p[0].x); // * (oy - p[0].y) 
-        double C12 =  -(p[3].y - p[0].y) ; // *(ox - p[0].x);
+    //double A1 = 2.0 * ((p[2].x - p[3].x - p[1].x + p[0].x) * (p[0].y - p[1].y) - (p[0].x - p[1].x) * (p[2].y - p[3].y - p[1].y + p[0].y));
 
-        //double A2 = 2.0 * ((p[3].x - p[0].x - p[2].x + p[1].x) * (p[1].y - p[2].y) - (p[1].x - p[2].x) * (p[3].y - p[0].y - p[2].y + p[1].y));
-        double B21 = (p[3].x - p[0].x - p[2].x + p[1].x); // * (oy - p[1].y);
-        double B22 = - (p[3].y - p[0].y - p[2].y + p[1].y); // * (ox - p[1].x)
-        double B23 = (p[0].x - p[1].x) * (p[1].y - p[2].y) - (p[1].x - p[2].x) * (p[0].y - p[1].y);
-        double C21 = (p[0].x - p[1].x); // * (oy - p[1].y)
-        double C22 = - (p[0].y - p[1].y); // * (ox - p[1].x);
+    double B11 = (p[2].x - p[3].x - p[1].x + p[0].x); // * (oy - p[0].y)
+    double B12 = -(p[2].y - p[3].y - p[1].y + p[0].y); // * (ox - p[0].x)
+    double B13 = (p[3].x - p[0].x) * (p[0].y - p[1].y) - (p[0].x - p[1].x) * (p[3].y - p[0].y);
+    double C11 = (p[3].x - p[0].x); // * (oy - p[0].y) 
+    double C12 = -(p[3].y - p[0].y); // *(ox - p[0].x);
 
-        //double D1 = sqrt(B1*B1 - 4.0*A1*C1);
-        //double D2 = sqrt(B2*B2 - 4.0*A2*C2);
-        //double k = 1.0 / (2.0 * A1);
-        //double t = k * (-B1 + D1);
+    //double A2 = 2.0 * ((p[3].x - p[0].x - p[2].x + p[1].x) * (p[1].y - p[2].y) - (p[1].x - p[2].x) * (p[3].y - p[0].y - p[2].y + p[1].y));
+    double B21 = (p[3].x - p[0].x - p[2].x + p[1].x); // * (oy - p[1].y);
+    double B22 = -(p[3].y - p[0].y - p[2].y + p[1].y); // * (ox - p[1].x)
+    double B23 = (p[0].x - p[1].x) * (p[1].y - p[2].y) - (p[1].x - p[2].x) * (p[0].y - p[1].y);
+    double C21 = (p[0].x - p[1].x); // * (oy - p[1].y)
+    double C22 = -(p[0].y - p[1].y); // * (ox - p[1].x);
+
+    //double D1 = sqrt(B1*B1 - 4.0*A1*C1);
+    //double D2 = sqrt(B2*B2 - 4.0*A2*C2);
+    //double k = 1.0 / (2.0 * A1);
+    //double t = k * (-B1 + D1);
 
 
-	int x,y;
-    const int da_size_x = (mr.right-mr.left + 1);
-    const int da_size_y = (mr.bottom-mr.top + 1);
+    int x, y;
+    const int da_size_x = (mr.right - mr.left + 1);
+    const int da_size_y = (mr.bottom - mr.top + 1);
     const int da_size = da_size_y * da_size_x;
 
-    BYTE *buff = (BYTE *)_alloca((sizeof(STempVertex) + sizeof(SLandscapeSpotVertex) + sizeof(WORD)*3) * da_size);
+    BYTE* buff = (BYTE*)_alloca((sizeof(STempVertex) + sizeof(SLandscapeSpotVertex) + sizeof(WORD) * 3) * da_size);
 
 #define TEMP_VERTS() ((STempVertex*)buff)
-#define VERTS() ((SLandscapeSpotVertex*)(buff + (sizeof(STempVertex) ) * da_size))
+#define VERTS() ((SLandscapeSpotVertex*)(buff + (sizeof(STempVertex)) * da_size))
 #define IDXS() ((WORD*)(buff + (sizeof(STempVertex) + sizeof(SLandscapeSpotVertex)) * da_size))
-#define ADDVERT(v)  if (v->index < 0)                       \
+#define ADDVERT(v)  if(v->index < 0)                       \
                     {                                       \
                         v->index = cidx++;                  \
                         verts->p = v->p;                    \
@@ -325,20 +326,20 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
                         ++verts;                            \
                         ++m_CntVerts; }
 
-    STempVertex     *tv = TEMP_VERTS();
+    STempVertex* tv = TEMP_VERTS();
 
-    SMatrixMapPoint *mp = g_MatrixMap->PointGet(mr.left, mr.top);
-    int addmp = g_MatrixMap->m_Size.x - (mr.right-mr.left);
+    SMatrixMapPoint* mp = g_MatrixMap->PointGet(mr.left, mr.top);
+    int addmp = g_MatrixMap->m_Size.x - (mr.right - mr.left);
 
     m_DX = mr.left * GLOBAL_SCALE;
     m_DY = mr.top * GLOBAL_SCALE;
 
-	for(y=mr.top; y<=mr.bottom; ++y)
+    for (y = mr.top; y <= mr.bottom; ++y)
     {
-		for(x=mr.left; x<=mr.right; ++x, ++tv, ++mp)
+        for (x = mr.left; x <= mr.right; ++x, ++tv, ++mp)
         {
-            tv->p.x = GLOBAL_SCALE*(x-mr.left);
-            tv->p.y = GLOBAL_SCALE*(y-mr.top);
+            tv->p.x = GLOBAL_SCALE * (x - mr.left);
+            tv->p.y = GLOBAL_SCALE * (y - mr.top);
             tv->p.z = mp->z + POINTLIGHT_ALTITUDE;
 
 
@@ -377,35 +378,36 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
     WORD *idxs = IDXS();
 
     int cidx = 0;
-	for(y=0; y<(da_size_y-1); ++y)
+    for (y = 0; y < (da_size_y - 1); ++y)
     {
-		for(x=0; x<(da_size_x-1); ++x, ++tv)
+        for (x = 0; x < (da_size_x - 1); ++x, ++tv)
         {
-            if (tv->outside && (tv+1)->outside && (tv+da_size_x)->outside && (tv+da_size_x+1)->outside)
+            if (tv->outside && (tv + 1)->outside && (tv + da_size_x)->outside && (tv + da_size_x + 1)->outside)
             {
                 strip_in_progress = false;
                 continue;
             }
 
-            STempVertex     *tv0 = tv+da_size_x;
-            STempVertex     *tv1 = tv;
-            STempVertex     *tv2 = tv+da_size_x+1;
-            STempVertex     *tv3 = tv+1;
+            STempVertex* tv0 = tv + da_size_x;
+            STempVertex* tv1 = tv;
+            STempVertex* tv2 = tv + da_size_x + 1;
+            STempVertex* tv3 = tv + 1;
 
             ADDVERT(tv0);
             ADDVERT(tv1);
             ADDVERT(tv2);
             ADDVERT(tv3);
 
-            if (strip_in_progress)
+            if(strip_in_progress)
             {
                 *idxs++ = (WORD)tv2->index;
                 *idxs++ = (WORD)tv3->index;
                 idxscnt += 2;
 
-            } else
+            }
+            else
             {
-                if (idxscnt > 0)
+                if(idxscnt > 0)
                 {
                     *(DWORD *)idxs = *(idxs-1) |  (tv0->index << 16);
                     idxscnt += 2;
@@ -424,7 +426,7 @@ void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 & pos, float angle,
         ++tv;
     }
     
-    if (m_CntVerts == 0)
+    if(m_CntVerts == 0)
     {
         return;
     }
@@ -544,20 +546,20 @@ void CMatrixEffectLandscapeSpot::Takt(float step)
 void CMatrixEffectLandscapeSpot::DrawActual()
 {
     DTRACE();
-    if (!IS_VB(m_VB) || !IS_IB(m_IB)) return;
+    if(!IS_VB(m_VB) || !IS_IB(m_IB)) return;
 
 
     D3DXMATRIX m = g_MatrixMap->GetIdentityMatrix();
     m._41 = m_DX;
     m._42 = m_DY;
-    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m));
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &m));
 
-    g_D3DD->SetStreamSource(0,GET_VB(m_VB),0,sizeof(SLandscapeSpotVertex));
+    g_D3DD->SetStreamSource(0, GET_VB(m_VB), 0, sizeof(SLandscapeSpotVertex));
     g_D3DD->SetIndices(GET_IB(m_IB));
 
     g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, m_Color );
 
-    g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,0,0,m_CntVerts, 0, m_CntTris);
+    g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, m_CntVerts, 0, m_CntTris);
 }
 
 void CMatrixEffectLandscapeSpot::DrawAll(void)
@@ -580,18 +582,19 @@ void CMatrixEffectLandscapeSpot::DrawAll(void)
     SetColorOpDisable(1);
 
 
-    CTextureManaged      *  m_LastTexture = 0;
+    CTextureManaged* m_LastTexture = 0;
     CMatrixEffectLandscapeSpot * el = m_First;
-    while (el)
+    while(el)
     {
-        if (FLAG(el->m_Props->flags,LSFLAG_INTENSE))
+        if(FLAG(el->m_Props->flags,LSFLAG_INTENSE))
         {
             g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_ONE  );
-        } else
+        }
+        else
         {
             g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA  );
         }
-        if (m_LastTexture != el->m_Texture)
+        if(m_LastTexture != el->m_Texture)
         {
             ASSERT_DX(g_D3DD->SetTexture(0,el->m_Texture->Tex()));
             m_LastTexture = el->m_Texture;
@@ -599,21 +602,21 @@ void CMatrixEffectLandscapeSpot::DrawAll(void)
         el->DrawActual();
         el = el->m_Next;
     }
-    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU,  D3DTADDRESS_WRAP));
-    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV,  D3DTADDRESS_WRAP));
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHABLENDENABLE,   FALSE ));
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHATESTENABLE,   FALSE ));
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	TRUE));
+    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP));
+    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE ));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE ));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE));
     //g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW );
-    g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_INVSRCALPHA  );
+    g_D3DD->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA  );
 }
 
-int  CMatrixEffectLandscapeSpot::Priority(void)
+int CMatrixEffectLandscapeSpot::Priority(void)
 {
-    if (m_Props->func == SpotTaktAlways) return MAX_EFFECT_PRIORITY;
-    if (m_Props->func == SpotTaktConstant) return 100;
-    if (m_Props->func == SpotTaktPlasmaHit) return 0;
-    if (m_Props->func == SpotTaktVoronka) return 500;
+    if(m_Props->func == SpotTaktAlways) return MAX_EFFECT_PRIORITY;
+    if(m_Props->func == SpotTaktConstant) return 100;
+    if(m_Props->func == SpotTaktPlasmaHit) return 0;
+    if(m_Props->func == SpotTaktVoronka) return 500;
     
     return 0;
 };

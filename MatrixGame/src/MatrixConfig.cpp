@@ -142,13 +142,34 @@ static SKeyCodes    keycodes[] =
     {NULL,             -1}
 };
 
-static int KeyName2KeyCode(const CWStr &name)
+static SKeyCodes    keyactioncodes[] =
 {
+    {L"KeyMapScrollUp",     KA_SCROLL_UP_ALT},
+    {L"KeyMapScrollDown",   KA_SCROLL_DOWN_ALT},
+    {L"KeyMapScrollLeft",   KA_SCROLL_LEFT_ALT},
+    {L"KeyMapScrollRight",  KA_SCROLL_RIGHT_ALT},
 
+    {NULL,             -1}
+};
+
+static int KeyName2KeyCode(const CWStr& name)
+{
     int i = 0;
     while (keycodes[i].name != NULL)
     {
         if (keycodes[i].name == name) return keycodes[i].code;
+        ++i;
+    }
+
+    return -1;
+}
+
+static int KeyActionName2KeyActionCode(const CWStr& name)
+{
+    int i = 0;
+    while (keyactioncodes[i].name != NULL)
+    {
+        if (keyactioncodes[i].name == name) return keyactioncodes[i].code;
         ++i;
     }
 
@@ -161,8 +182,8 @@ void CMatrixConfig::ApplySettings(SRobotsSettings *set)
     m_LandTexturesGloss = set->m_LandTexturesGloss;
     m_ObjTexturesGloss = set->m_ObjTexturesGloss;
 
-    if (set->m_RobotShadow == 0) m_RobotShadow = SHADOW_OFF;
-    else if (set->m_RobotShadow == 1) m_RobotShadow = SHADOW_STENCIL;
+    if(set->m_RobotShadow == 0) m_RobotShadow = SHADOW_OFF;
+    else if(set->m_RobotShadow == 1) m_RobotShadow = SHADOW_STENCIL;
 
     m_ShowProjShadows = set->m_ShowProjShadows;
     m_ShowStencilShadows = set->m_ShowStencilShadows;
@@ -180,7 +201,14 @@ void CMatrixConfig::SetDefaults(void)
 {
     DTRACE();
 
+    g_CamFieldOfView = 60.0;
     g_MaxFPS = 1000;
+    g_MaxViewDistance = 4000.0f;
+    g_MaxObjectsPerScreen = 2560;
+    g_MaxEffectsCount = 1280;
+    g_ShadowsDrawDistance = 1024;
+    g_ThinFogDrawDistance = 0.5;
+    g_DenseFogDrawDistance = 0.7;
 
     //m_TexTopDownScalefactor = 0;
     //m_TexTopMinSize = 32;
@@ -331,9 +359,9 @@ void CMatrixConfig::SetDefaults(void)
 void CMatrixConfig::Clear(void)
 {
     DTRACE();
-    if (m_Cursors)
+    if(m_Cursors)
     {
-        for (int i=0; i<m_CursorsCnt; ++i)
+        for(int i = 0; i < m_CursorsCnt; ++i)
         {
             m_Cursors[i].key.~CWStr();
             m_Cursors[i].val.~CWStr();
@@ -341,7 +369,6 @@ void CMatrixConfig::Clear(void)
         
         HFree(m_Cursors, g_CacheHeap);
     }
-
 }
 
 
@@ -351,73 +378,110 @@ void CMatrixConfig::ReadParams(void)
 
     Clear();
 
-    CBlockPar *cfg_par = g_MatrixData->BlockGet(L"Config");
+    CBlockPar* cfg_par = g_MatrixData->BlockGet(L"Config");
 
     //loading config
-    CBlockPar *bp_tmp = g_MatrixData->BlockGet(PAR_SOURCE_CURSORS);
+    CBlockPar* bp_tmp = g_MatrixData->BlockGet(PAR_SOURCE_CURSORS);
 
     m_CursorsCnt = bp_tmp->ParCount();
 
-    m_Cursors = (SStringPair *)HAlloc(sizeof(SStringPair) * m_CursorsCnt, g_CacheHeap);
-    for (int i=0; i<m_CursorsCnt; ++i)
+    m_Cursors = (SStringPair*)HAlloc(sizeof(SStringPair) * m_CursorsCnt, g_CacheHeap);
+    for(int i = 0; i < m_CursorsCnt; ++i)
     {
-        
-        m_Cursors[i].key.CWStr::CWStr(bp_tmp->ParGetName(i),g_CacheHeap);
-        m_Cursors[i].val.CWStr::CWStr(bp_tmp->ParGet(i),g_CacheHeap);
-
+        m_Cursors[i].key.CWStr::CWStr(bp_tmp->ParGetName(i), g_CacheHeap);
+        m_Cursors[i].val.CWStr::CWStr(bp_tmp->ParGet(i), g_CacheHeap);
     }
 
     // top size
-    //if (g_MatrixCfg->ParCount(CFG_TOPSIZE) != 0)
-    //    m_TexTopMinSize = g_MatrixCfg->Par(CFG_TOPSIZE).GetInt();
+    //if (g_MatrixCfg->ParCount(CFG_TOP_SIZE) != 0)
+    //    m_TexTopMinSize = g_MatrixCfg->Par(CFG_TOP_SIZE).GetInt();
 
-    //if (g_MatrixCfg->ParCount(CFG_TOPSCALE) != 0)
-    //    m_TexTopDownScalefactor = g_MatrixCfg->Par(CFG_TOPSCALE).GetInt();
+    //if (g_MatrixCfg->ParCount(CFG_TOP_SCALE) != 0)
+    //    m_TexTopDownScalefactor = g_MatrixCfg->Par(CFG_TOP_SCALE).GetInt();
 
     //if (m_TexTopMinSize < 32) m_TexTopMinSize = 32;
 
     // bottom size
-    //if (g_MatrixCfg->ParCount(CFG_BOTSIZE) != 0)
-    //    m_TexBotMinSize = g_MatrixCfg->Par(CFG_BOTSIZE).GetInt();
+    //if (g_MatrixCfg->ParCount(CFG_BOT_SIZE) != 0)
+    //    m_TexBotMinSize = g_MatrixCfg->Par(CFG_BOT_SIZE).GetInt();
 
-    //if (g_MatrixCfg->ParCount(CFG_BOTSCALE) != 0)
-    //    m_TexBotDownScalefactor = g_MatrixCfg->Par(CFG_BOTSCALE).GetInt();
+    //if (g_MatrixCfg->ParCount(CFG_BOT_SCALE) != 0)
+    //    m_TexBotDownScalefactor = g_MatrixCfg->Par(CFG_BOT_SCALE).GetInt();
 
     //if (m_TexBotMinSize < 32) m_TexBotMinSize = 32;
     //if (m_TexBotMinSize < 16) m_TexBotMinSize = 16;
 
-    //if (g_MatrixCfg->ParCount(CFG_LANDTEXTURES16) != 0)
-    //    m_LandTextures16 = g_MatrixCfg->Par(CFG_LANDTEXTURES16).GetInt() == 1;
+    //if (g_MatrixCfg->ParCount(CFG_LAND_TEXTURES_16) != 0)
+    //    m_LandTextures16 = g_MatrixCfg->Par(CFG_LAND_TEXTURES_16).GetInt() == 1;
 
-    if (cfg_par->ParCount(CFG_SOFTWARECURSOR) != 0)
-        m_SoftwareCursor = cfg_par->Par(CFG_SOFTWARECURSOR).GetInt() == 1;
-
-    if (cfg_par->ParCount(CFG_GLOSSLAND) != 0)
-        m_LandTexturesGloss = cfg_par->Par(CFG_GLOSSLAND).GetInt() == 1;
-
-    if (cfg_par->ParCount(CFG_GLOSSOBJECT) != 0)
+    if (cfg_par->ParCount(CFG_SOFTWARE_CURSOR) != 0)
     {
-        m_ObjTexturesGloss = cfg_par->Par(CFG_GLOSSOBJECT).GetInt() == 1;
+        m_SoftwareCursor = cfg_par->Par(CFG_SOFTWARE_CURSOR).GetInt() == 1;
     }
-    //if (g_MatrixCfg->ParCount(CFG_OBJECTTEX16) != 0)
+
+    if (cfg_par->ParCount(CFG_GLOSS_LAND) != 0)
+    {
+        m_LandTexturesGloss = cfg_par->Par(CFG_GLOSS_LAND).GetInt() == 1;
+    }
+
+    if (cfg_par->ParCount(CFG_GLOSS_OBJECT) != 0)
+    {
+        m_ObjTexturesGloss = cfg_par->Par(CFG_GLOSS_OBJECT).GetInt() == 1;
+    }
+    //if (g_MatrixCfg->ParCount(CFG_OBJECT_TEX_16) != 0)
     //{
-    //    m_ObjTextures16 = g_MatrixCfg->Par(CFG_OBJECTTEX16).GetInt() == 1;
+    //    m_ObjTextures16 = g_MatrixCfg->Par(CFG_OBJECT_TEX_16).GetInt() == 1;
     //}
 
-    if (cfg_par->ParCount(CFG_IZVRATMS) != 0)
+    if (cfg_par->ParCount(CFG_IZVRAT_MS) != 0)
     {
-        m_IzvratMS = cfg_par->Par(CFG_IZVRATMS).GetInt() == 1;
+        m_IzvratMS = cfg_par->Par(CFG_IZVRAT_MS).GetInt() == 1;
     }
 
-    if (cfg_par->ParCount(CFG_SKYBOX) != 0)
+    if (cfg_par->ParCount(CFG_SKY_BOX) != 0)
     {
-        m_SkyBox = (byte)(cfg_par->Par(CFG_SKYBOX).GetInt() & 0xFF);
+        m_SkyBox = (byte)(cfg_par->Par(CFG_SKY_BOX).GetInt() & 0xFF);
     }
 
-    
-    if (cfg_par->ParCount(CFG_MAXFPS) != 0)
+    if (cfg_par->ParCount(CFG_MAX_FPS) != 0)
     {
-        g_MaxFPS = cfg_par->Par(CFG_MAXFPS).GetInt();
+        g_MaxFPS = cfg_par->Par(CFG_MAX_FPS).GetInt();
+    }
+
+    if (cfg_par->ParCount(CFG_MAX_VIEW_DISTANCE) != 0)
+    {
+        //ƒистанци€ дальности отрисовки мира вокруг камеры
+        g_MaxViewDistance = (float)cfg_par->Par(CFG_MAX_VIEW_DISTANCE).GetDouble();
+    }
+
+    if (cfg_par->ParCount(CFG_OBJECTS_PER_SCREEN) != 0)
+    {
+        //—амое максимальное значение 5120 (размер статического массива), устанавливаетс€ в константе MAX_OBJECTS_PER_SCREEN
+        g_MaxObjectsPerScreen = cfg_par->Par(CFG_OBJECTS_PER_SCREEN).GetInt();
+    }
+
+    if (cfg_par->ParCount(CFG_EFFECTS_COUNT) != 0)
+    {
+        //јльтернативно можно регулировать через определение MAX_EFFECTS_COUNT (закомментирована)
+        g_MaxEffectsCount = cfg_par->Par(CFG_EFFECTS_COUNT).GetInt();
+    }
+
+    if (cfg_par->ParCount(CFG_SHADOWS_DRAW_DISTANCE) != 0)
+    {
+        //»спользуетс€ в определении DRAW_SHADOWS_DISTANCE_SQ
+        g_ShadowsDrawDistance = cfg_par->Par(CFG_SHADOWS_DRAW_DISTANCE).GetInt();
+    }
+
+    if (cfg_par->ParCount(CFG_THIN_FOG_DRAW_DISTANCE) != 0)
+    {
+        //“очка удалени€ от камеры, в которой начинаетс€ отрисовка разреженного тумана
+        g_ThinFogDrawDistance = (float)cfg_par->Par(CFG_THIN_FOG_DRAW_DISTANCE).GetDouble();
+    }
+
+    if (cfg_par->ParCount(CFG_DENSE_FOG_DRAW_DISTANCE) != 0)
+    {
+        //“очка удалени€ от камеры, в которой начинаетс€ отрисовка сплошного тумана
+        g_DenseFogDrawDistance = (float)cfg_par->Par(CFG_DENSE_FOG_DRAW_DISTANCE).GetDouble();
     }
         
     if (cfg_par->ParCount(CFG_OBJECTTOMINIMAP) != 0)
@@ -425,19 +489,19 @@ void CMatrixConfig::ReadParams(void)
         m_DrawAllObjectsToMinimap = (byte)(cfg_par->Par(CFG_OBJECTTOMINIMAP).GetInt() & 0xFF);
     }
 
-    if (cfg_par->ParCount(CFG_DEBUGINFO) != 0)
+    if (cfg_par->ParCount(CFG_DEBUG_INFO) != 0)
     {
-        m_DIFlags = cfg_par->Par(CFG_DEBUGINFO).GetHexUnsigned();
+        m_DIFlags = cfg_par->Par(CFG_DEBUG_INFO).GetHexUnsigned();
     }
 
-    if (cfg_par->ParCount(CFG_VERTEXLIGHT) != 0)
+    if (cfg_par->ParCount(CFG_VERTEX_LIGHT) != 0)
     {
-        m_VertexLight = cfg_par->Par(CFG_VERTEXLIGHT).GetInt() == 1;
+        m_VertexLight = cfg_par->Par(CFG_VERTEX_LIGHT).GetInt() == 1;
     }
 
-    if (cfg_par->BlockCount(CFG_GAMMARAMP) != 0)
+    if (cfg_par->BlockCount(CFG_GAMMA_RAMP) != 0)
     {
-        CBlockPar *g = cfg_par->BlockGet(CFG_GAMMARAMP);
+        CBlockPar *g = cfg_par->BlockGet(CFG_GAMMA_RAMP);
         m_GammaR.brightness = (float)g->ParGet(L"R").GetDoublePar(0,L",");
         m_GammaR.contrast = (float)g->ParGet(L"R").GetDoublePar(1,L",");
         m_GammaR.gamma = (float)g->ParGet(L"R").GetDoublePar(2,L",");
@@ -453,13 +517,14 @@ void CMatrixConfig::ReadParams(void)
 
     ApplyGammaRamp();
 
-    if (cfg_par->BlockCount(CFG_ASSIGNKEY) != 0)
+    if (cfg_par->BlockCount(CFG_ASSIGN_KEY) != 0)
     {
-        CBlockPar *ak = cfg_par->BlockGet(CFG_ASSIGNKEY);
+        CBlockPar *ak = cfg_par->BlockGet(CFG_ASSIGN_KEY);
         int n = ak->ParCount();
-        for (int i=0; i<n; ++i)
+        for (int i = 0; i < n; ++i)
         {
-            int akn = ak->ParGetName(i).GetInt();
+            //int akn = ak->ParGetName(i).GetInt();
+            int akn = KeyActionName2KeyActionCode(ak->ParGetName(i));
             if (akn < 0  || akn >= KA_LAST)
             {
                 continue;
@@ -470,9 +535,9 @@ void CMatrixConfig::ReadParams(void)
         }
     }
     
-    if (cfg_par->ParCount(CFG_ROBOTSHADOW) != 0)
+    if (cfg_par->ParCount(CFG_ROBOT_SHADOW) != 0)
     {
-        int sh = cfg_par->Par(CFG_ROBOTSHADOW).GetInt();
+        int sh = cfg_par->Par(CFG_ROBOT_SHADOW).GetInt();
 
         if (sh == 0) m_RobotShadow = SHADOW_OFF;
         else if (sh == 1) m_RobotShadow = SHADOW_STENCIL;
@@ -487,7 +552,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_CannonDamages, 0, sizeof(m_CannonDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
@@ -507,14 +572,14 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_BuildingDamages, 0, sizeof(m_BuildingDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
-            for (int j=0;j<nn;++j)
+            for (int j = 0; j < nn; ++j)
             {
                 m_BuildingHitPoints[j] = par.GetIntPar(j, L",");
             }
@@ -540,7 +605,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_FlyerDamages, 0, sizeof(m_FlyerDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         //if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
@@ -554,7 +619,7 @@ void CMatrixConfig::ReadParams(void)
         //} else
         {
             int idx = WeapName2Index(name);
-            if (idx >=0)
+            if (idx >= 0)
             {
                 const CWStr &par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
@@ -571,11 +636,11 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_RobotDamages, 0, sizeof(m_RobotDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >=0)
+        if (idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
@@ -593,11 +658,11 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_ObjectDamages, 0, sizeof(m_ObjectDamages));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >=0)
+        if (idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
@@ -611,11 +676,11 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_WeaponRadius, 0, sizeof(m_WeaponRadius));
 
     n = bp_tmp->ParCount();
-    for (int i=0; i<n; ++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >=0)
+        if (idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             m_WeaponRadius[idx] = (float)par.GetDouble();
@@ -627,7 +692,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_WeaponCooldown, 0, sizeof(m_WeaponCooldown));
 
     n = bp_tmp->ParCount();
-    for (int i=0;i<n;++i)
+    for (int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
@@ -1012,16 +1077,17 @@ void CMatrixConfig::ReadParams(void)
     if (bp_tmp)
     {
         int cnt = bp_tmp->ParCount();
-        for (int i=0;i<cnt;++i)
+        for (int i = 0; i < cnt; ++i)
         {
             if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_BASEANGLEZ) m_CamBaseAngleZ = GRAD2RAD((float)bp_tmp->ParGet(i).GetDouble());
             else if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_INROBOTFWD0) m_CamInRobotForward0 = (float)bp_tmp->ParGet(i).GetDouble();
             else if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_INROBOTFWD1) m_CamInRobotForward1 = (float)bp_tmp->ParGet(i).GetDouble();
             else if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_MOVESPEED) m_CamMoveSpeed = (float)bp_tmp->ParGet(i).GetDouble();
+            else if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_FOV) g_CamFieldOfView = (float)bp_tmp->ParGet(i).GetDouble();
         }
 
         cnt = bp_tmp->BlockCount();
-        for (int i=0;i<cnt;++i)
+        for (int i = 0; i < cnt; ++i)
         {
             int index = -1;
             if (bp_tmp->BlockGetName(i) == PAR_SOURCE_CAMERA_STRATEGY) index = CAMERA_STRATEGY;
@@ -1031,7 +1097,7 @@ void CMatrixConfig::ReadParams(void)
                 CBlockPar * bp_c = bp_tmp->BlockGet(i);
 
                 int cnt2 = bp_c->ParCount();
-                for (int j=0; j<cnt2; ++j)
+                for (int j = 0; j < cnt2; ++j)
                 {
                     if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTSPEEDX) m_CamParams[index].m_CamRotSpeedX = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTSPEEDZ) m_CamParams[index].m_CamRotSpeedZ = (float)bp_c->ParGet(j).GetDouble();
@@ -1054,7 +1120,7 @@ void CMatrixConfig::ReadParams(void)
     {
         int cnt = bp_tmp->BlockCount();
         ASSERT(cnt == CANNON_TYPE_CNT);
-        for (int i=0; i<cnt; ++i)
+        for (int i = 0; i < cnt; ++i)
         {
             CBlockPar *bp = bp_tmp->BlockGet(i);
 

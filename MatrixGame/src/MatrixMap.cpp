@@ -1540,12 +1540,12 @@ void CMatrixMap::DrawLandscapeSurfaces(bool all)
 {
     DTRACE();
 
-    for(int i=0;i<8;i++)
+    for(int i = 0; i < 8; i++)
     {
-        ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&m_BiasTer))));
-	    ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MAGFILTER,		D3DTEXF_LINEAR));
-	    ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MINFILTER,		D3DTEXF_LINEAR));
-        ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MIPFILTER,		D3DTEXF_LINEAR));
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&m_BiasTer))));
+	    ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR));
+	    ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR));
+        ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR));
     }
 
 	//ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&GetIdentityMatrix()));
@@ -1570,7 +1570,6 @@ void CMatrixMap::DrawLandscapeSurfaces(bool all)
  //   }
 
     CTerSurface::DrawAll();
-
 }
 
 void CMatrixMap::DrawLandscape(bool all)
@@ -1600,18 +1599,19 @@ void CMatrixMap::DrawLandscape(bool all)
     {
 	    cnt = m_GroupSize.x*m_GroupSize.y;
 	    md = m_Group;
-	    while(cnt>0)
+	    while(cnt > 0)
         {
             if ((*md)) (*md)->Draw();
             md++;
 		    cnt--;
         }
 
-    } else
+    }
+    else
     {
 	    cnt = m_VisibleGroupsCount;
 	    md = m_VisibleGroups;
-	    while(cnt>0)
+	    while(cnt > 0)
         {
             (*md)->Draw();
 
@@ -1655,7 +1655,8 @@ void CMatrixMap::DrawLandscape(bool all)
             {   
                 CHelper::Create(1,0)->Triangle(p0,p1,p2,0xFFFF0000);
 
-            } else
+            }
+            else
             {
                 //CHelper::Create(1,0)->Triangle(p0,p1,p2,0xFF0000FF);
             }
@@ -1684,13 +1685,12 @@ void CMatrixMap::DrawObjects(void)
  //   ASSERT_DX(g_D3DD->SetRenderState( D3DRS_TEXTUREFACTOR, m_AmbientColorObj ));
 	//ASSERT_DX(g_D3DD->SetRenderState( D3DRS_AMBIENT, 0xFFFFFFFF));
 
-    for(int i=0;i<8;i++)
+    for(int i = 0; i < 8; ++i)
     {
-        ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&m_BiasRobots))));
-	    ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MAGFILTER,		D3DTEXF_LINEAR));
-	    ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MINFILTER,		D3DTEXF_LINEAR));
-        ASSERT_DX(g_Sampler.SetState(i,D3DSAMP_MIPFILTER,		D3DTEXF_LINEAR));
-
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&m_BiasRobots))));
+	    ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR));
+	    ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR));
+        ASSERT_DX(g_Sampler.SetState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR));
     }
 
     
@@ -1723,18 +1723,17 @@ void CMatrixMap::DrawWater(void)
 	//g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
     //g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_COLOR1);
     
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MAGFILTER,D3DTEXF_LINEAR));
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MINFILTER,D3DTEXF_LINEAR));
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MIPFILTER,D3DTEXF_LINEAR));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR));
 
 
-    for(int i=0;i<4;i++)
+    for(int i = 0; i < 4; i++)
     {
-        ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&m_BiasWater))));
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&m_BiasWater))));
 
-        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_ADDRESSU,  D3DTADDRESS_WRAP));
-        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_ADDRESSV,  D3DTADDRESS_WRAP));
-
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP));
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP));
     }
 
     D3DXMATRIX m = this->GetIdentityMatrix();
@@ -1748,22 +1747,22 @@ void CMatrixMap::DrawWater(void)
 
     int curpass;
 
-    for (curpass = 0; curpass<g_Render->m_WaterPassAlpha; ++curpass)
+    for (curpass = 0; curpass < g_Render->m_WaterPassAlpha; ++curpass)
     {
         g_Render->m_WaterAlpha(m_Water->m_WaterTex1, m_Water->m_WaterTex2, curpass);
 
 	    int cnt = m_VisibleGroupsCount;
-	    CMatrixMapGroup * * md=m_VisibleGroups;
+        CMatrixMapGroup** md = m_VisibleGroups;
 
-	    while((cnt--)>0)
+	    while((cnt--) > 0)
         {
-            if (!(*(md))->HasWater())
+            if(!(*(md))->HasWater())
             {
                 ++md;
                 continue;
             }
 
-            if (curpass == 0) ASSERT_DX(g_D3DD->SetTexture(0,(*md)->GetWaterAlpha()->Tex()));
+            if(curpass == 0) ASSERT_DX(g_D3DD->SetTexture(0,(*md)->GetWaterAlpha()->Tex()));
 
 
             const D3DXVECTOR2 &p = (*(md))->GetPos0();
@@ -1777,7 +1776,7 @@ void CMatrixMap::DrawWater(void)
     g_Render->m_WaterClearAlpha();
 
 
-    for (curpass = 0; curpass<g_Render->m_WaterPassSolid; ++curpass)
+    for (curpass = 0; curpass < g_Render->m_WaterPassSolid; ++curpass)
     {
         g_Render->m_WaterSolid(m_Water->m_WaterTex1, m_Water->m_WaterTex2, curpass);
 
@@ -1800,14 +1799,14 @@ void CMatrixMap::DrawWater(void)
     //g_D3DD->SetRenderState( D3DRS_NORMALIZENORMALS,  FALSE );
 
     int cnt;
-    CMatrixMapGroup * * md;
+    CMatrixMapGroup** md;
     if (SInshorewave::m_Tex)
     {
         SInshorewave::DrawBegin();
 
 	    cnt = m_VisibleGroupsCount;
-	    md=m_VisibleGroups;
-	    while((cnt--)>0)
+	    md = m_VisibleGroups;
+	    while((cnt--) > 0)
         {
             if (!(*(md))->HasWater())
             {
@@ -1820,7 +1819,6 @@ void CMatrixMap::DrawWater(void)
 	    }
         SInshorewave::DrawEnd();
     }
-
 }
 
 void CMatrixMap::DrawShadowsProjFast(void)
@@ -1842,14 +1840,14 @@ void CMatrixMap::DrawShadowsProjFast(void)
     SetColorOpDisable(1);
     
 
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MAGFILTER,		D3DTEXF_LINEAR));
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MINFILTER,		D3DTEXF_LINEAR));
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MIPFILTER,		D3DTEXF_NONE));
+	ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MAGFILTER,		D3DTEXF_LINEAR));
+	ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MINFILTER,		D3DTEXF_LINEAR));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MIPFILTER,		D3DTEXF_NONE));
 
 	g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,FALSE);
 
-	ASSERT_DX(g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSU,			D3DTADDRESS_CLAMP));
-	ASSERT_DX(g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSV,			D3DTADDRESS_CLAMP));
+	ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU,			D3DTADDRESS_CLAMP));
+	ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV,			D3DTADDRESS_CLAMP));
 
     CMatrixMapStatic::SortEndDrawShadowProj();
 	int cnt = m_VisibleGroupsCount;
@@ -2014,14 +2012,13 @@ void CMatrixMap::DrawEffects(void)
 
     //CSortable::SortBegin();
 
-    for (PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next)
+    for(PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next)
     {
         e->Draw();
-
     } 
 
-    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&GetIdentityMatrix()));
-    CBillboard::SortEndDraw(m_Camera.GetViewInversedMatrix(),m_Camera.GetFrustumCenter());
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &GetIdentityMatrix()));
+    CBillboard::SortEndDraw(m_Camera.GetViewInversedMatrix(), m_Camera.GetFrustumCenter());
     CMatrixEffect::DrawEnd();
 }
 
@@ -2029,9 +2026,9 @@ void CMatrixMap::DrawSky(void)
 {
     DTRACE();
 
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MAGFILTER,			D3DTEXF_LINEAR));
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MINFILTER,			D3DTEXF_LINEAR));
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MIPFILTER,			D3DTEXF_NONE));
+    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MAGFILTER, D3DTEXF_LINEAR));
+	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MINFILTER, D3DTEXF_LINEAR));
+	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MIPFILTER, D3DTEXF_NONE));
 
     g_D3DD->SetRenderState(D3DRS_FOGENABLE, FALSE);
     g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
@@ -2039,21 +2036,19 @@ void CMatrixMap::DrawSky(void)
 
     if (g_Config.m_SkyBox != 0 && m_SkyTex[0].tex)
     {
-
-        ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU,  D3DTADDRESS_CLAMP));
-        ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV,  D3DTADDRESS_CLAMP));
+        ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP));
+        ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP));
 
         SetColorOpSelect( 0, D3DTA_TEXTURE );
         SetColorOpDisable(1);
         SetAlphaOpDisable(0);
 
-
-        g_D3DD->SetRenderState( D3DRS_ZENABLE,     FALSE );
-        g_D3DD->SetRenderState( D3DRS_ZWRITEENABLE,     FALSE );
-        g_D3DD->SetRenderState( D3DRS_CULLMODE,   D3DCULL_CW );
+        g_D3DD->SetRenderState( D3DRS_ZENABLE, FALSE);
+        g_D3DD->SetRenderState( D3DRS_ZWRITEENABLE, FALSE);
+        g_D3DD->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW);
 
         D3DXMATRIX wo;
-        D3DXMatrixPerspectiveFovLH(&wo,CAM_HFOV,float(g_ScreenX)* m_Camera.GetResYInversed(), 0.01f, 3);
+        D3DXMatrixPerspectiveFovLH(&wo, CAM_HFOV, float(g_ScreenX)* m_Camera.GetResYInversed(), 0.01f, 3);
         ASSERT_DX(g_D3DD->SetTransform( D3DTS_PROJECTION, &wo ));
 
         ASSERT_DX(g_D3DD->SetTransform( D3DTS_WORLD, &GetIdentityMatrix() ));
@@ -2068,8 +2063,7 @@ void CMatrixMap::DrawSky(void)
         verts[2].color = 0xFFFFFFFF;
         verts[3].color = 0xFFFFFFFF;
 
-
-        float cut_dn = (200 + m_Camera.GetFrustumCenter().z) * 0.5f * INVERT(MAX_VIEW_DISTANCE) + 0.5f;
+        float cut_dn = (200 + m_Camera.GetFrustumCenter().z) * 0.5f * INVERT(g_MaxViewDistance) + 0.5f;
         float cut_up = 0.0f;
 
         float geo_dn = 2 * (1.0f - cut_dn) - 1;
@@ -2145,10 +2139,10 @@ void CMatrixMap::DrawSky(void)
         CInstDraw::ActualDraw();
 
 
-    } else
+    }
+    else
     {
         // do not draw skybox
-
         float SH1 = float(g_ScreenY * 0.270416666666667);
         float SH2 = float(g_ScreenY * 0.07);
 
@@ -2163,7 +2157,7 @@ void CMatrixMap::DrawSky(void)
         v[4].p = D3DXVECTOR4(0, m_SkyHeight, 0.0f, 1.0f); v[4].col = m_SkyColor;
         v[5].p = D3DXVECTOR4(float(g_ScreenX), m_SkyHeight, 0.0f, 1.0f); v[5].col = m_SkyColor;
 
-        if (v[0].p.y > 0)
+        if(v[0].p.y > 0)
         {
             v[0].p.y = 0;
             v[1].p.y = 0;
@@ -2176,7 +2170,7 @@ void CMatrixMap::DrawSky(void)
         SetColorOpDisable(1);
             
 
-        ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	FALSE));
+        ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, FALSE));
         ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZENABLE,	FALSE));
 
         CInstDraw::BeginDraw(IDFVF_V4_C);
@@ -2205,7 +2199,7 @@ void CMatrixMap::Draw(void)
 
     float fBias = -1.0f;
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_SKY_ON))
+    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_SKY_ON))
     {
         DrawSky();
     }
@@ -2215,17 +2209,17 @@ void CMatrixMap::Draw(void)
 
     // enable fogging
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FOG_ON))
+    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_FOG_ON))
     {
 
-        float Start   = float(MAX_VIEW_DISTANCE * FOG_NEAR_K);    // For linear mode
-        float End     = float(MAX_VIEW_DISTANCE * FOG_FAR_K);
-        if( g_D3DDCaps.RasterCaps & D3DPRASTERCAPS_WFOG )
+        float Start   = float(g_MaxViewDistance * g_ThinFogDrawDistance);    // For linear mode
+        float End     = float(g_MaxViewDistance * g_DenseFogDrawDistance);
+        if(g_D3DDCaps.RasterCaps & D3DPRASTERCAPS_WFOG)
+        {}
+        else
         {
-        } else
-        {
-            Start /= MAX_VIEW_DISTANCE;
-            End /= MAX_VIEW_DISTANCE;
+            Start /= g_MaxViewDistance;
+            End /= g_MaxViewDistance;
         }
         // Enable fog blending.
         g_D3DD->SetRenderState(D3DRS_FOGENABLE, TRUE);
@@ -2233,21 +2227,19 @@ void CMatrixMap::Draw(void)
         // Set the fog color.
         g_D3DD->SetRenderState(D3DRS_FOGCOLOR, m_SkyColor);
         
-        g_D3DD->SetRenderState(D3DRS_FOGVERTEXMODE,  D3DFOG_NONE );
+        g_D3DD->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_NONE );
         g_D3DD->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
         g_D3DD->SetRenderState(D3DRS_FOGSTART, *(DWORD *)(&Start));
-        g_D3DD->SetRenderState(D3DRS_FOGEND,   *(DWORD *)(&End));
-
-    } else
+        g_D3DD->SetRenderState(D3DRS_FOGEND, *(DWORD *)(&End));
+    }
+    else
     {
         g_D3DD->SetRenderState(D3DRS_FOGENABLE, FALSE);
-
     }
 
-
     // one per frame
-    ASSERT_DX(g_D3DD->SetTransform( D3DTS_VIEW, &m_Camera.GetViewMatrix()));
-    ASSERT_DX(g_D3DD->SetTransform( D3DTS_PROJECTION,&m_Camera.GetProjMatrix()));
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_VIEW, &m_Camera.GetViewMatrix()));
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_PROJECTION, &m_Camera.GetProjMatrix()));
 
     //DrawObjects();
     //DrawLandscape();
@@ -2255,13 +2247,13 @@ void CMatrixMap::Draw(void)
 
 
     RESETFLAG(m_Flags, MMFLAG_OBJECTS_DRAWN);
-    if (FLAG(g_Flags, GFLAG_STENCILAVAILABLE) && g_Config.m_IzvratMS)
+    if(FLAG(g_Flags, GFLAG_STENCILAVAILABLE) && g_Config.m_IzvratMS)
     {
         bool domask = CMultiSelection::DrawAllPass1Begin();
         DrawObjects();
         DrawLandscape();
-        if (CTerSurface::IsSurfacesPresent()) DrawLandscapeSurfaces();
-        if (domask)
+        if(CTerSurface::IsSurfacesPresent()) DrawLandscapeSurfaces();
+        if(domask)
         {
             CMultiSelection::DrawAllPass2Begin();
             SETFLAG(m_Flags, MMFLAG_OBJECTS_DRAWN);
@@ -2272,32 +2264,38 @@ void CMatrixMap::Draw(void)
             //DrawLandscape();
             CMultiSelection::DrawAllPassEnd();
         }
-    } else
+    }
+    else
     {
         DrawObjects();
         DrawLandscape();
         if (CTerSurface::IsSurfacesPresent()) DrawLandscapeSurfaces();
     }
 
-    for(int i=0;i<4;i++)  {  ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&(fBias)))));   }
+    for(int i = 0; i < 4; ++i)
+    {
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&(fBias)))));
+    }
 
     CMatrixEffectLandscapeSpot::DrawAll(); // we should draw landscape spots immediately after draw landscape
 
     DrawWater();
 
     fBias = 0.0f;
-    for(int i=0;i<4;i++)  {  ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&(fBias)))));   }
+    for(int i = 0; i < 4; ++i)
+    {
+        ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&(fBias)))));
+    }
 #ifndef RENDER_PROJ_SHADOWS_IN_STENCIL_PASS
-    if (g_Config.m_ShowProjShadows) { DrawShadowsProjFast(); }
+    if(g_Config.m_ShowProjShadows) DrawShadowsProjFast();
 #endif
-    if (g_Config.m_ShowStencilShadows) { DrawShadows(); }
+    if(g_Config.m_ShowStencilShadows) DrawShadows();
 
     DrawEffects();
 
-    for (int od = 0; od<m_AD_Obj_cnt; ++od)
+    for(int od = 0; od < m_AD_Obj_cnt; ++od)
     {
-
-        if (m_AD_Obj[od]->GetObjectType() == OBJECT_TYPE_FLYER)
+        if(m_AD_Obj[od]->GetObjectType() == OBJECT_TYPE_FLYER)
         {
             ((CMatrixFlyer *)m_AD_Obj[od])->DrawPropeller();
         }

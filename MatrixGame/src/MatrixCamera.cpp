@@ -10,25 +10,24 @@
 #include "MatrixRobot.hpp"
 #include "MatrixObjectCannon.hpp"
 
-float MAX_VIEW_DISTANCE = 4000.0f;
+//float MAX_VIEW_DISTANCE = 4000.0f;
 
 void SetMaxCameraDistance(float perc)
 {
-	MAX_VIEW_DISTANCE = 4000.0 * (1.0+0.01*perc);
+    g_MaxViewDistance = 4000.0 * (1.0 + 0.01 * perc);
 }
-
 
 void  SAutoFlyData::Release(void)
 {
     KillTrajectory();
-    for (int i=0;i<m_WarPairsCnt;++i)
+    for(int i = 0; i < m_WarPairsCnt; ++i)
     {
         m_WarPairs[i].target->Release();
         m_WarPairs[i].attacker->Release();
     }
     m_WarPairsCnt = 0;
 
-    if (m_WarPairCurrent.target)
+    if(m_WarPairCurrent.target)
     {
         m_WarPairCurrent.attacker->Release();
         m_WarPairCurrent.target->Release();
@@ -43,9 +42,9 @@ void SAutoFlyData::Stat(void)
 {
     DTRACE();
 
-    if ((g_MatrixMap->GetTime() - m_LastStatTime) < 60000) return;
+    if((g_MatrixMap->GetTime() - m_LastStatTime) < 60000) return;
 
-    if (!g_MatrixMap->IsPaused())
+    if(!g_MatrixMap->IsPaused())
     {
         m_LastStatTime = g_MatrixMap->GetTime();
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG_D);
@@ -63,23 +62,23 @@ void SAutoFlyData::KillTrajectory(void)
     //}
 }
 
-void    SAutoFlyData::AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attacker)
+void SAutoFlyData::AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attacker)
 {
     DTRACE();
 
     SObjectCore *core0 = tgt->GetCore(DEBUG_CALL_INFO);
     SObjectCore *core1 = attacker->GetCore(DEBUG_CALL_INFO);
 
-    for (int i=0;i<m_WarPairsCnt;)
+    for(int i = 0; i < m_WarPairsCnt;)
     {
-        if (m_WarPairs[i].target == core0 && m_WarPairs[i].attacker == core1)
+        if(m_WarPairs[i].target == core0 && m_WarPairs[i].attacker == core1)
         {
             core0->Release();
             core1->Release();
             m_WarPairs[i].ttl = WAR_PAIR_TTL;
             return;
         }
-        if (m_WarPairs[i].target->m_Object == NULL || m_WarPairs[i].attacker->m_Object == NULL)
+        if(m_WarPairs[i].target->m_Object == NULL || m_WarPairs[i].attacker->m_Object == NULL)
         {
             m_WarPairs[i].target->Release();
             m_WarPairs[i].attacker->Release();
@@ -87,10 +86,11 @@ void    SAutoFlyData::AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attack
             m_WarPairs[i] = m_WarPairs[--m_WarPairsCnt];
             continue;
         }
+
         ++i;
     }
 
-    if (m_WarPairsCnt < MAX_WAR_PAIRS)
+    if(m_WarPairsCnt < MAX_WAR_PAIRS)
     {
         m_WarPairs[m_WarPairsCnt].target = core0;
         m_WarPairs[m_WarPairsCnt].attacker = core1;
@@ -650,13 +650,13 @@ CMatrixCamera::CMatrixCamera(void)
 
     m_ModeIndex = CAMERA_STRATEGY;
 
-    m_XY_Strategy = D3DXVECTOR2(200,200);
+    m_XY_Strategy = D3DXVECTOR2(200, 200);
     m_Ang_Strategy = g_Config.m_CamBaseAngleZ;
 
-    m_LinkPoint = D3DXVECTOR3(200,200,140);
+    m_LinkPoint = D3DXVECTOR3(200, 200, 140);
     m_AngleZ = g_Config.m_CamBaseAngleZ;
 
-    for (int i=0; i<CAMERA_PARAM_CNT; ++i)
+    for(int i = 0; i < CAMERA_PARAM_CNT; ++i)
     {
         m_AngleParam[i] = g_Config.m_CamParams[i].m_CamAngleParam;
         m_DistParam[i] = g_Config.m_CamParams[i].m_CamDistParam;
@@ -669,7 +669,7 @@ CMatrixCamera::CMatrixCamera(void)
     _res_y_inversed = (float)(1.0 / (double)g_ScreenY);
 
     // recalculate projective matrix
-    D3DXMatrixPerspectiveFovLH(&m_MatProj,CAM_HFOV,float(g_ScreenX)* _res_y_inversed, 1.0f, MAX_VIEW_DISTANCE);
+    D3DXMatrixPerspectiveFovLH(&m_MatProj, CAM_HFOV, float(g_ScreenX)* _res_y_inversed, 1.0f, g_MaxViewDistance);
 
     _mp_11_inversed = (float)(1.0 / m_MatProj._11);
     _mp_22_inversed = (float)(1.0 / m_MatProj._22);
@@ -687,41 +687,37 @@ CMatrixCamera::CMatrixCamera(void)
 	m_ViewPort.MaxZ   = 1.0f;
 
     m_AFD = NULL;
-
 }
 
 
-void    CMatrixCamera::ResetAngles(void)
+void CMatrixCamera::ResetAngles(void)
 {
     m_Ang_Strategy = g_Config.m_CamBaseAngleZ + g_MatrixMap->m_CameraAngle;
-    for (int i=0; i<CAMERA_PARAM_CNT; ++i)
+    for(int i = 0; i < CAMERA_PARAM_CNT; ++i)
     {
         m_AngleParam[i] = g_Config.m_CamParams[i].m_CamAngleParam;
     }
     m_AngleX = LerpAng();
     m_Dist = LerpDist();
-    if (!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
-        m_AngleZ = g_Config.m_CamBaseAngleZ + g_MatrixMap->m_CameraAngle;
-
+    if(!g_MatrixMap->GetPlayerSide()->IsArcadeMode()) m_AngleZ = g_Config.m_CamBaseAngleZ + g_MatrixMap->m_CameraAngle;
 }
 
 CMatrixCamera::~CMatrixCamera(void)
 {
-    if (m_AFD)
+    if(m_AFD)
     {
         m_AFD->Release();
         HFree(m_AFD, g_MatrixHeap);
     }
 }
 
-void    CMatrixCamera::CalcSkyMatrix(D3DXMATRIX &m)
+void CMatrixCamera::CalcSkyMatrix(D3DXMATRIX &m)
 {
     D3DXMATRIX mz, mx;
-    D3DXMatrixRotationY(&mz,-m_AngleZ + g_MatrixMap->m_SkyAngle);
-    D3DXMatrixRotationX(&mx,m_AngleX-M_PI_MUL(0.5));
+    D3DXMatrixRotationY(&mz, -m_AngleZ + g_MatrixMap->m_SkyAngle);
+    D3DXMatrixRotationX(&mx, m_AngleX - M_PI_MUL(0.5));
     m = mz * mx;
     //m = mx;
-
 }
 
 void CMatrixCamera::BeforeDraw(void)
@@ -731,24 +727,22 @@ void CMatrixCamera::BeforeDraw(void)
     D3DXMATRIX mt, mz, mx;
 
     //D3DXMatrixTranslation(&mt,-(m_Target.x+m_TargetDisp.x),-(m_Target.y+m_TargetDisp.y),-(m_Target.z+m_TargetDisp.z));
-
     {
-
-        D3DXMatrixTranslation(&mt,-(m_LinkPoint.x),-(m_LinkPoint.y),-(m_LinkPoint.z));
-        D3DXMatrixRotationZ(&mz,-m_AngleZ);
-        D3DXMatrixRotationX(&mx,m_AngleX);
+        D3DXMatrixTranslation(&mt, -(m_LinkPoint.x), -(m_LinkPoint.y), -(m_LinkPoint.z));
+        D3DXMatrixRotationZ(&mz, -m_AngleZ);
+        D3DXMatrixRotationX(&mx, m_AngleX);
         mx._43 = -m_Dist;
-        m_MatView=mt*mz*mx;
+        m_MatView = mt * mz * mx;
         NEG_FLOAT(m_MatView._12); NEG_FLOAT(m_MatView._13);
         NEG_FLOAT(m_MatView._22); NEG_FLOAT(m_MatView._23);
         NEG_FLOAT(m_MatView._32); NEG_FLOAT(m_MatView._33);
         NEG_FLOAT(m_MatView._42); NEG_FLOAT(m_MatView._43);
     }
 
-    D3DXMatrixInverse(&m_MatViewInversed,NULL,&m_MatView);
+    D3DXMatrixInverse(&m_MatViewInversed, NULL, &m_MatView);
 
     float lz = g_MatrixMap->GetZ(m_MatViewInversed._41, m_MatViewInversed._42) + 10.0f;
-    if (m_MatViewInversed._43 < lz)
+    if(m_MatViewInversed._43 < lz)
     {
         m_MatViewInversed._43 = lz;
         D3DXMatrixInverse(&m_MatView,NULL,&m_MatViewInversed);
@@ -756,33 +750,33 @@ void CMatrixCamera::BeforeDraw(void)
 
     // frustum update
 
-    float x1 = _mp_11_inversed*m_MatViewInversed._11;
-    float x2 = _mp_11_inversed*m_MatViewInversed._12;
-    float x3 = _mp_11_inversed*m_MatViewInversed._13;
+    float x1 = _mp_11_inversed * m_MatViewInversed._11;
+    float x2 = _mp_11_inversed * m_MatViewInversed._12;
+    float x3 = _mp_11_inversed * m_MatViewInversed._13;
 
-    float y1 = _mp_22_inversed*m_MatViewInversed._21;
-    float y2 = _mp_22_inversed*m_MatViewInversed._22;
-    float y3 = _mp_22_inversed*m_MatViewInversed._23;
+    float y1 = _mp_22_inversed * m_MatViewInversed._21;
+    float y2 = _mp_22_inversed * m_MatViewInversed._22;
+    float y3 = _mp_22_inversed * m_MatViewInversed._23;
 
     m_FrustumDirLT.x = m_MatViewInversed._31 - x1 + y1;
     m_FrustumDirLT.y = m_MatViewInversed._32 - x2 + y2;
     m_FrustumDirLT.z = m_MatViewInversed._33 - x3 + y3;
-    D3DXVec3Normalize(&m_FrustumDirLT,&m_FrustumDirLT);
+    D3DXVec3Normalize(&m_FrustumDirLT, &m_FrustumDirLT);
 
     m_FrustumDirLB.x = m_MatViewInversed._31 - x1 - y1;
     m_FrustumDirLB.y = m_MatViewInversed._32 - x2 - y2;
     m_FrustumDirLB.z = m_MatViewInversed._33 - x3 - y3;
-    D3DXVec3Normalize(&m_FrustumDirLB,&m_FrustumDirLB);
+    D3DXVec3Normalize(&m_FrustumDirLB, &m_FrustumDirLB);
 
     m_FrustumDirRT.x = x1 + y1 + m_MatViewInversed._31;
     m_FrustumDirRT.y = x2 + y2 + m_MatViewInversed._32;
     m_FrustumDirRT.z = x3 + y3 + m_MatViewInversed._33;
-    D3DXVec3Normalize(&m_FrustumDirRT,&m_FrustumDirRT);
+    D3DXVec3Normalize(&m_FrustumDirRT, &m_FrustumDirRT);
 
     m_FrustumDirRB.x = x1 - y1 + m_MatViewInversed._31;
     m_FrustumDirRB.y = x2 - y2 + m_MatViewInversed._32;
     m_FrustumDirRB.z = x3 - y3 + m_MatViewInversed._33;
-    D3DXVec3Normalize(&m_FrustumDirRB,&m_FrustumDirRB);
+    D3DXVec3Normalize(&m_FrustumDirRB, &m_FrustumDirRB);
 
     m_FrustumCenter.x = m_MatViewInversed._41;
     m_FrustumCenter.y = m_MatViewInversed._42;

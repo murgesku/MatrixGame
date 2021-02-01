@@ -24,7 +24,7 @@
 #define ROBOT_WEAPONS_PER_ROBOT_CNT     10
 #define ROBOT_MOVECELLS_PER_SIZE    4   // размер стороны квадрата робота в ячейках сетки проходимости
 
-#define DRAW_SHADOWS_DISTANCE_SQ    ((1024)*(1024))
+#define DRAW_SHADOWS_DISTANCE_SQ    ((g_ShadowsDrawDistance) * (g_ShadowsDrawDistance))
 
 #define TRACE_LANDSCAPE SETBIT(0)
 #define TRACE_WATER     SETBIT(1)
@@ -686,7 +686,7 @@ __forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
     }
 #endif
 
-    if (m_EffectsCnt >= MAX_EFFECTS_COUNT)
+    if (m_EffectsCnt >= g_MaxEffectsCount)
     {
         PCMatrixEffect ef2del = NULL;
         int pri = ef->Priority();
@@ -725,9 +725,9 @@ __forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
 __forceinline  CMatrixSideUnit * CMatrixMap::GetSideById(int id)
 {
     DTRACE();
-	for(int i=0;i<m_SideCnt;i++)
+	for(int i = 0; i < m_SideCnt; i++)
     {
-		if(m_Side[i].m_Id==id) return &m_Side[i];
+		if(m_Side[i].m_Id == id) return &m_Side[i];
 	}
 #ifdef _DEBUG
     _asm int 3
@@ -759,18 +759,18 @@ __forceinline  CTexture * CMatrixMap::GetSideColorTexture(int id)
 __forceinline  float CMatrixMap::GetGroupMaxZLand(int x, int y)
 {
     if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
+    CMatrixMapGroup *g = GetGroupByIndex(x, y);
     if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZLand();
+    float z = GetGroupByIndex(x, y)->GetMaxZLand();
     if (z < 0) return 0;
     return z;
 }
 __forceinline  float CMatrixMap::GetGroupMaxZObj(int x, int y)
 {
     if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
+    CMatrixMapGroup *g = GetGroupByIndex(x, y);
     if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZObj();
+    float z = GetGroupByIndex(x, y)->GetMaxZObj();
     if (z < 0) return 0;
     return z;
 }
@@ -779,7 +779,7 @@ __forceinline float CMatrixMap::GetGroupMaxZObjRobots(int x, int y)
     if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
     CMatrixMapGroup *g = GetGroupByIndex(x,y);
     if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZObjRobots();
+    float z = GetGroupByIndex(x, y)->GetMaxZObjRobots();
     if (z < 0) return 0;
     return z;
 }

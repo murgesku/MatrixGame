@@ -168,6 +168,8 @@ class CMatrixBuilding : public CMatrixMapStatic
     CMatrixEffectSelection *m_Selection;
     int m_UnderAttackTime;
     int m_CaptureMeNextTime;
+    int m_CtrlGroup;
+
 public:
     D3DXVECTOR3     m_TopPoint;
     CWStr           m_Name;
@@ -198,6 +200,9 @@ public:
         RESETFLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);
         m_Capturer = NULL;
     }
+
+    int  GetCtrlGroup() { return m_CtrlGroup; }
+    void SetCtrlGroup(int group) { m_CtrlGroup = group; }
 
     float m_BaseFloor;
     float m_BuildZ;

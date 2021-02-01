@@ -106,7 +106,7 @@ struct SPlane
     __forceinline byte    BoxSide(const D3DXVECTOR3 & mins, const D3DXVECTOR3 & maxs) const
     {
         float   dist1, dist2;
-        switch (signbits)
+        switch(signbits)
         {
         case 0: dist1 = CalcPointDist(maxs); dist2 = CalcPointDist(mins); break;
         case 1: dist1 = CalcPointDist(D3DXVECTOR3(mins.x, maxs.y, maxs.z)); dist2 = CalcPointDist(D3DXVECTOR3(maxs.x, mins.y, mins.z)); break;
@@ -127,7 +127,7 @@ struct SPlane
     __forceinline bool FindIntersect(const D3DXVECTOR3 & pos, const D3DXVECTOR3 & dir, float &outt) const
     {
         float cs = D3DXVec3Dot(&dir, &norm);
-        if (fabs(cs) < 0.00001f) return false;
+        if(fabs(cs) < 0.00001f) return false;
         outt =  Distance(pos) / -cs;
         return true;
     }
@@ -161,52 +161,53 @@ D3DXVECTOR3 Vec3Projection(/*where*/const D3DXVECTOR3& a,  /*what*/const D3DXVEC
 
 __forceinline float DistOtrezokPoint(const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1, const D3DXVECTOR3 &p)
 {
-    D3DXVECTOR3 v(p1-p0);
-    D3DXVECTOR3 w(p-p0);
+    D3DXVECTOR3 v(p1 - p0);
+    D3DXVECTOR3 w(p - p0);
     float c1 = D3DXVec3Dot(&w, &v);
-    if (c1 <= 0) return D3DXVec3Length(&(p0-p));
+    if (c1 <= 0) return D3DXVec3Length(&(p0 - p));
     float c2 = D3DXVec3Dot(&v, &v);
-    if (c2 <= c1) return D3DXVec3Length(&(p1-p));
+    if (c2 <= c1) return D3DXVec3Length(&(p1 - p));
     float b = c1 / c2;
 
     return D3DXVec3Length(&(p - (p0 + b * v)));
 }
 
-bool IntersectTriangle(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, const D3DXVECTOR3 & v0, const D3DXVECTOR3 & v1, const D3DXVECTOR3 &v2, float & t, float & u, float & v);
-float DistLinePoint(const D3DXVECTOR3 & l1,const D3DXVECTOR3 & l2,const D3DXVECTOR3 & p);
-void CalcPick(CPoint mp, D3DXMATRIX & matProj, D3DXMATRIX & matView, D3DXVECTOR3 * vpos, D3DXVECTOR3 * vdir);
-bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, D3DXVECTOR2 & out); // точка пересечения=out
-bool IntersectLine(const D3DXVECTOR2 & s1,const D3DXVECTOR2 & e1,const D3DXVECTOR2 & s2,const D3DXVECTOR2 & e2, float * t, float * u); // точка пересечения=s1+(e1-s1)*t или s2+(e2-s2)*u.  Если t>=0 and t<=1.0 то точка пересечения между s1 и e1
+bool IntersectTriangle(const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, const D3DXVECTOR3& v0, const D3DXVECTOR3& v1, const D3DXVECTOR3& v2, float& t, float& u, float& v);
+float DistLinePoint(const D3DXVECTOR3& l1, const D3DXVECTOR3& l2, const D3DXVECTOR3& p);
+void CalcPick(CPoint mp, D3DXMATRIX& matProj, D3DXMATRIX& matView, D3DXVECTOR3* vpos, D3DXVECTOR3* vdir);
+bool IntersectLine(const D3DXVECTOR2& s1, const D3DXVECTOR2& e1, const D3DXVECTOR2& s2, const D3DXVECTOR2& e2, D3DXVECTOR2& out); // точка пересечения = out
+bool IntersectLine(const D3DXVECTOR2& s1, const D3DXVECTOR2& e1, const D3DXVECTOR2& s2, const D3DXVECTOR2& e2, float* t, float* u); // точка пересечения = s1 + (e1 - s1) * t или s2 + (e2 - s2) * u.  Если t >= 0 and t <= 1.0 то точка пересечения между s1 и e1
 
-bool IsIntersectRect(float sx1,float sy1,float ex1,float ey1,float sx2,float sy2,float ex2,float ey2,float * sx,float * sy); // True - если два прямоугольника пересекаются sx,sy - направление и величина заступа
+bool IsIntersectRect(float sx1, float sy1, float ex1, float ey1, float sx2, float sy2, float ex2, float ey2, float* sx, float* sy); // True - если два прямоугольника пересекаются sx, sy - направление и величина заступа
 
-bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, float &t);
-bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 & s, const D3DXVECTOR2 & e, float &t1);
+bool IsIntersectSphere(const D3DXVECTOR3& center, float r, const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, float& t);
+bool IsIntersectSphere(const D3DXVECTOR2& center, float r, const D3DXVECTOR2& s, const D3DXVECTOR2& e, float& t1);
 
 
 __forceinline double AngleNorm(double a) // Нормировать угол. Возращает от -pi до +pi
 {
-    while(a>pi_f) a -= 2.0*M_PI;
-    while(a<=-pi_f) a += 2.0*M_PI;
+    while(a > pi_f) a -= 2.0 * M_PI;
+    while(a <= -pi_f) a += 2.0 * M_PI;
     return a;
 }
 
-__forceinline double AngleDist(double from,double to) // Дистанция между углами. Возращает от -pi до +pi
+__forceinline double AngleDist(double from, double to) // Дистанция между углами. Возращает от -pi до +pi
 {
-	while (from < 0.0) from += 2.0*M_PI;
-	while (to < 0.0) to += 2.0*M_PI;
+    while(from < 0.0) from += 2.0 * M_PI;
+    while(to < 0.0) to += 2.0 * M_PI;
 
-    double r=to-from;
+    double r = to - from;
 
-	if(from < M_PI)
+    if(from < M_PI)
     {
-        if(r > M_PI) r -= 2.0*M_PI;
-	} else
+        if(r > M_PI) r -= 2.0 * M_PI;
+    }
+    else
     {
-        if(r < -M_PI) r += 2.0*M_PI;
-	}
+        if(r < -M_PI) r += 2.0 * M_PI;
+    }
 
-	return r;
+    return r;
 }
 
 // convert pos and direction to matrix
@@ -231,15 +232,15 @@ void BuildRotateMatrix( D3DXMATRIX &out, const D3DXVECTOR3& pos, const D3DXVECTO
 
 __forceinline bool IsVec3Equal(const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1, float dopusk = 0.0001f)
 {
-    if (fabs(v0.x-v1.x) > dopusk) return false;
-    if (fabs(v0.y-v1.y) > dopusk) return false;
-    if (fabs(v0.z-v1.z) > dopusk) return false;
+    if(fabs(v0.x - v1.x) > dopusk) return false;
+    if(fabs(v0.y - v1.y) > dopusk) return false;
+    if(fabs(v0.z - v1.z) > dopusk) return false;
     return true;
 }
 
 // ZakkeR: Честно стырил из сырьков HL2
 // Math routines done in optimized assembly math package routines
-void inline SinCos( float radians, float *sine, float *cosine )
+void inline SinCos(float radians, float* sine, float* cosine)
 {
 #ifdef _WIN32
         _asm
@@ -268,17 +269,17 @@ void inline SinCos( float radians, float *sine, float *cosine )
 #define FTOIBIAS        12582912.f
 extern float SinCosTable[SIN_TABLE_SIZE];
 
-__forceinline float TableCos( float theta )
+__forceinline float TableCos(float theta)
 {
-        union
-        {
-                int i;
-                float f;
-        } ftmp;
+    union
+    {
+        int i;
+        float f;
+    } ftmp;
 
-        // ideally, the following should compile down to: theta * constant + constant, changing any of these constants from defines sometimes fubars this.
-        ftmp.f = theta * ( float )( SIN_TABLE_SIZE / ( 2.0f * M_PI ) ) + ( FTOIBIAS + ( SIN_TABLE_SIZE / 4 ) );
-        return SinCosTable[ ftmp.i & ( SIN_TABLE_SIZE - 1 ) ];
+    // ideally, the following should compile down to: theta * constant + constant, changing any of these constants from defines sometimes fubars this.
+    ftmp.f = theta * (float)(SIN_TABLE_SIZE / (2.0f * M_PI)) + (FTOIBIAS + (SIN_TABLE_SIZE / 4));
+    return SinCosTable[ftmp.i & (SIN_TABLE_SIZE - 1)];
 }
 
 __forceinline float TableSin( float theta )

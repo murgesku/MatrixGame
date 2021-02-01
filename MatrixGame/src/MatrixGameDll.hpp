@@ -33,7 +33,7 @@ struct SRobotsSettings
     int     m_BPP;                     // 16, 32
     int     m_ResolutionX;
     int     m_ResolutionY;
-    int     m_RefreshRate;             // 0-default
+    int     m_RefreshRate;             // 0 - default
 
     float   m_Brightness;
     float   m_Contrast;
@@ -63,14 +63,16 @@ struct SMGDRobotInterface;
 struct SMGDRangersInterface;
 struct SMGDRangersInterfaceText;
 
-struct SMGDRobotInterface {
+struct SMGDRobotInterface
+{
     void (__stdcall * m_Init)(SMGDRangersInterface * ri);
     void (__stdcall * m_Deinit)();
     int (__stdcall * m_Support)();
-    int (__stdcall * m_Run)(HINSTANCE hinst,HWND hwnd,wchar * map,SRobotsSettings * set,wchar * lang,wchar * txt_start,wchar * txt_win,wchar * txt_loss,wchar * planet, SRobotGameState * rgs);
+    int (__stdcall * m_Run)(HINSTANCE hinst, HWND hwnd, wchar * map,SRobotsSettings * set, wchar * lang, wchar * txt_start, wchar * txt_win, wchar * txt_loss, wchar * planet, SRobotGameState * rgs);
 };
 
-struct SMGDRangersInterface {
+struct SMGDRangersInterface
+{
     void (__stdcall * m_Sound)(wchar * path);
 
     dword (__stdcall * m_SoundCreate)(wchar * path, int group, int loop);
@@ -95,7 +97,8 @@ struct SMGDRangersInterface {
     void (__stdcall * m_MusicVolumeSet)(float val);
 };
 
-struct SMGDRangersInterfaceText {
+struct SMGDRangersInterfaceText
+{
     DWORD m_Image;
     BYTE * m_Buf;
     DWORD m_Pitch;
@@ -103,8 +106,9 @@ struct SMGDRangersInterfaceText {
     int m_SizeY;
 };
 
-extern "C" {
-MATRIXGAMEDLL_API SMGDRobotInterface * __cdecl GetRobotInterface(void);
+extern "C"
+{
+    MATRIXGAMEDLL_API SMGDRobotInterface * __cdecl GetRobotInterface(void);
 }
 
 extern SMGDRobotInterface g_RobotInterface;

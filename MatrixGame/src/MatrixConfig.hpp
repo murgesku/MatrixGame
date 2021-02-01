@@ -565,7 +565,7 @@ class CMatrixConfig : public CMain
 
 public:
 
-    SStringPair *m_Cursors;
+    SStringPair* m_Cursors;
     int          m_CursorsCnt;
 
     SWeaponDamage   m_CannonDamages[WEAPON_COUNT];
@@ -602,7 +602,7 @@ public:
     //float m_CamRotAngleMinInFlyer;
     //float m_CamDistMinInFlyer;
 
-    SGammaVals  m_GammaR,m_GammaG,m_GammaB;
+    SGammaVals  m_GammaR, m_GammaG, m_GammaB;
 
 
     // params
@@ -651,7 +651,7 @@ public:
 
     void SetDefaults(void);
     void ReadParams(void);
-    void ApplySettings(SRobotsSettings *set);
+    void ApplySettings(SRobotsSettings* set);
 
     void ApplyGammaRamp(void);
 

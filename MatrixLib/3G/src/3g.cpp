@@ -11,16 +11,16 @@
 
 #include <stdio.h>
 
-HINSTANCE g_HInst=0;
-IDirect3D9 * g_D3D=NULL;
-IDirect3DDevice9 * g_D3DD=NULL;
+HINSTANCE g_HInst = 0;
+IDirect3D9 * g_D3D = NULL;
+IDirect3DDevice9 * g_D3DD = NULL;
 D3DCAPS9 g_D3DDCaps;
-ATOM g_WndA=0;
-HWND g_Wnd=0;
-bool g_WndExtern=false;
-DWORD g_WndOldProg=0;
+ATOM g_WndA = 0;
+HWND g_Wnd = 0;
+bool g_WndExtern = false;
+DWORD g_WndOldProg = 0;
 CWStr *g_WndClassName;
-int  g_ScreenX=0,g_ScreenY=0;
+int  g_ScreenX = 0, g_ScreenY = 0;
 D3DPRESENT_PARAMETERS g_D3Dpp; 
 //CReminder *g_Reminder;
 
@@ -28,13 +28,20 @@ D3DPRESENT_PARAMETERS g_D3Dpp;
 
 DWORD g_Flags = 0;
 
-int g_DrawFPS=0;
-double g_DrawFPSMax_Period=(1000.0/50000.0);
-int g_MaxFPS=1000;
-int g_DrawFPSCur=0;
-int g_DrawFPSTime=0;
+float g_CamFieldOfView = 60.0;
+int g_DrawFPS = 0;
+double g_DrawFPSMax_Period = (1000.0 / 50000.0);
+int g_MaxFPS = 1000;
+float g_MaxViewDistance = 4000.0f;
+int g_MaxObjectsPerScreen = 2560;
+int g_MaxEffectsCount = 1280;
+int g_ShadowsDrawDistance = 1024;
+float g_ThinFogDrawDistance = 0.5;
+float g_DenseFogDrawDistance = 0.7;
+int g_DrawFPSCur = 0;
+int g_DrawFPSTime = 0;
 
-int g_TaktTime=0;
+int g_TaktTime = 0;
 int g_AvailableTexMem;
 
 #ifdef DO_SMART_COLOROPS

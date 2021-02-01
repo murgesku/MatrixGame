@@ -171,21 +171,22 @@ void CMatrixMapGroup::AddShadow(CMatrixShadowProj *s)
 
 void CMatrixMapGroup::RemoveShadow(const CMatrixShadowProj *s)
 {
-    if (m_Shadows)
+    if(m_Shadows)
     {
         int i = 0;
-        while (i < m_ShadowsCnt)
+        while(i < m_ShadowsCnt)
         {
-            if ( m_Shadows[i] == s )
+            if(m_Shadows[i] == s )
             {
                 m_Shadows[i] = m_Shadows[--m_ShadowsCnt];
-                if (m_ShadowsCnt == 0)
+                if(m_ShadowsCnt == 0)
                 {
                     HFree(m_Shadows, g_MatrixHeap);
                     m_Shadows = NULL;
                 }
                 break;
             }
+
             ++i;
         }
     }
@@ -196,22 +197,23 @@ void CMatrixMapGroup::DrawShadowProj(void)
 {
     DTRACE();
 
-    if (m_CamDistSq > DRAW_SHADOWS_DISTANCE_SQ) return;
+    if(m_CamDistSq > DRAW_SHADOWS_DISTANCE_SQ) return;
     D3DXMATRIX m = g_MatrixMap->GetIdentityMatrix();
 
-    for (int i=0; i<m_ShadowsCnt; ++i)
+    for(int i = 0; i < m_ShadowsCnt; ++i)
     {
-        if (m_Shadows[i]->AlreadyDraw()) continue;
+        if(m_Shadows[i]->AlreadyDraw()) continue;
 
         m._41 = m_Shadows[i]->GetDX();
         m._42 = m_Shadows[i]->GetDY();
 	    ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m));
 
-        if (m_Shadows[i]->GetTexture() == NULL)
+        if(m_Shadows[i]->GetTexture() == NULL)
         {
-            if (m_RenderShadowObject == NULL)
+            if(m_RenderShadowObject == NULL)
                 m_RenderShadowObject = m_Shadows[i]->GetOwner()->GetCore(DEBUG_CALL_INFO);
-        } else
+        }
+        else
         {
             m_Shadows[i]->Render();
         }

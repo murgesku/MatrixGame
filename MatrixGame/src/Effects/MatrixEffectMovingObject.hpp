@@ -5,8 +5,6 @@
 
 #pragma once
 
-//#define MAX_EFFECTS_COUNT   512
-
 
 #define MISSILE_FIRE_PERIOD   20
 #define BOMB_FIRE_PERIOD   15
