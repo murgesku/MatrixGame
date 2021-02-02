@@ -1357,7 +1357,8 @@ void __stdcall CMinimap::ButtonClick(void *object)
 {
     CPoint mp = g_MatrixMap->m_Cursor.GetPos();
     D3DXVECTOR2 tgt;
-    if(CalcMinimap2World(tgt)){
+    if(CalcMinimap2World(tgt))
+    {
         g_MatrixMap->m_Camera.SetXYStrategy(tgt);
     }
 }
@@ -1365,7 +1366,8 @@ void __stdcall CMinimap::ButtonClick(void *object)
 bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt)
 {
     CPoint mp = g_MatrixMap->m_Cursor.GetPos();
-    if(mp.x >= m_PosX && mp.x <= m_PosX + m_SizeX && mp.y >= m_PosY && mp.y <= m_PosY + m_SizeY){
+    if(mp.x >= m_PosX && mp.x <= m_PosX + m_SizeX && mp.y >= m_PosY && mp.y <= m_PosY + m_SizeY)
+    {
         D3DXVECTOR2 t;
         Map2World(t, D3DXVECTOR2(float(mp.x), float(mp.y)));
 

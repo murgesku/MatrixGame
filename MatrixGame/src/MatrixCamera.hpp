@@ -6,6 +6,7 @@
 #ifndef MATRIX_CAMERA_INCLUDE
 #define MATRIX_CAMERA_INCLUDE
 
+#include <math.h>
 #include "math3d.hpp"
 #include "MatrixConfig.hpp"
 
@@ -65,6 +66,9 @@ void SetMaxCameraDistance(float perc);
 #define RECALC_DEST_ANGZ_PERIOD 150
 #define WAR_PAIR_TTL            1000
 #define OBZOR_TIME              12500
+#define PI                      3.141592653589793
+
+//const static double pi = 3.141592653589793;
 
 struct SObjectCore;
 
@@ -165,18 +169,21 @@ class CMatrixCamera : public CMain
 
     DWORD           m_Flags;
 
+    float           m_AngleX;
+    float           m_AngleZ;
     float           m_AngleParam[CAMERA_PARAM_CNT];
     int             m_ModeIndex;
     
     // current cam values
     D3DXVECTOR3     m_LinkPoint;   // real link point (do not modify, it is calculated automaticaly)
-    float           m_AngleZ;
-    float           m_AngleX;
+
     float           m_Dist;
 	float			m_DistParam[CAMERA_PARAM_CNT];
 
     D3DXVECTOR2     m_XY_Strategy;
-    float           m_Ang_Strategy;
+    //—одержит угол в радианах, запомина€ (суммиру€) каждый сделанный камерой по часовой (плюсует), либо против часовой (вычитает) стрелке оборот
+    //«апоминает горизонтальный угол поворота камеры в стратегическом режиме (стартовый угол 0 находитс€ на юге карты)
+    float m_Ang_Strategy;
 
 
     SAutoFlyData    *m_AFD;
@@ -197,9 +204,9 @@ class CMatrixCamera : public CMain
  //   float m_AngleArcadedStart;
 
 
-    __forceinline float       LerpDist(int index=-1)
+    __forceinline float LerpDist(int index = -1)
     {
-        if (index < 0)
+        if(index < 0)
         {
             index = m_ModeIndex;
         }
@@ -207,20 +214,52 @@ class CMatrixCamera : public CMain
         return LERPFLOAT(m_DistParam[m_ModeIndex], cp->m_CamDistMin, cp->m_CamDistMax);
     }
 
-    __forceinline float       LerpAng(int index=-1)
+    __forceinline float LerpAng(int index = -1)
     {
-        if (index < 0)
+        if(index < 0)
         {
             index = m_ModeIndex;
         }
-        SCamParam * cp = g_Config.m_CamParams+index;
+        SCamParam* cp = g_Config.m_CamParams + index;
         return LERPFLOAT(m_AngleParam[m_ModeIndex], cp->m_CamRotAngleMin, cp->m_CamRotAngleMax);
     }
 
     void CalcLinkPoint(D3DXVECTOR3 &lp, float &angz);
 
     friend struct SAutoFlyData;
+
 public:
+    //ƒл€ вычислени€ смещени€ камеры от центра точки центровки с учЄтом еЄ текущего горизонтального угла
+    //dist - дальность необходимого смещени€
+    //par_type - смещение по какой координате вернуть: 0 - X, !0 - Y
+    float CamAngleToCoordOffset(float dist, int par_type)
+    {
+        //ѕолучаем радианы с учЄтом только одного полного оборота камеры по часовой стрелке
+        //ƒолго отлаживал это говно, только чтобы убедитьс€, что вариант с переводом в градусы оптимальнее и удобнее (Klaxons)
+        /*
+        double ang = m_Ang_Strategy;
+        if(abs(ang) > 6.28319)
+        {
+            ang /= 6.28319;
+            ang = std::modf(ang, &ang);
+            ang *= 6.28319;
+        }
+        if(ang < 0) ang += 6.28319;
+        */
+
+        //ƒл€ перевода радиан в градусы
+        double ang = m_Ang_Strategy / 0.0174533;
+        ang = int(ang) % 360;
+        if(ang < 0) ang += 360.0;
+        //ќбратите внимание, переводим угол из дабологики (где начало окружности находитс€ на юге и продвигаетс€ по часовой стрелке) в нормальную систему
+        if(ang <= 270) ang -= abs(270);
+        else ang = 360 - ang + 270;
+
+        //¬ычисл€ем смещение по X (смещени€ вычисл€ем от нул€)
+        if(par_type) return sin(ang * PI / 180) * dist;
+        //¬ычисл€ем смещение по Y
+        else return cos(ang * PI / 180) * dist;
+    }
 
     CMatrixCamera(void);
     ~CMatrixCamera(void);
@@ -233,19 +272,19 @@ public:
     __forceinline float   GetAngleX(void) const       {return m_AngleX;}
     __forceinline float   GetAngleZ(void) const       {return m_AngleZ;}
     __forceinline void    SetAngleZ(float angle)      { m_AngleZ = angle; }
-    //__forceinline void    RotateZ( float da)          { m_AngleZ += da; }
+    //__forceinline void    RotateZ(float da)          { m_AngleZ += da; }
     //__forceinline void    RotateX(float angle)        { m_AngleX += angle; }
 
     void RotateByMouse(int dx, int dy)
     {
-        if (m_ModeIndex == CAMERA_STRATEGY)
+        if(m_ModeIndex == CAMERA_STRATEGY)
         {
             m_Ang_Strategy += g_Config.m_CamParams[m_ModeIndex].m_CamRotSpeedZ * dx * 10;
 
         }
         m_AngleParam[m_ModeIndex] -= g_Config.m_CamParams[m_ModeIndex].m_CamRotSpeedX * dy * 5;
-        if (m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
-        if (m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
+        if(m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
+        if(m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
     }
 
     void InitStrategyAngle(float ang)
@@ -254,9 +293,14 @@ public:
         m_AngleZ = m_Ang_Strategy;
     }
 
-    void    CalcSkyMatrix(D3DXMATRIX &m);
+    void CalcSkyMatrix(D3DXMATRIX &m);
 
-    __forceinline void    SetXYStrategy(const D3DXVECTOR2 &pos) {SETFLAG(m_Flags, CAM_XY_LERP_OFF); m_XY_Strategy = pos;}
+    __forceinline void SetXYStrategy(const D3DXVECTOR2 &pos)
+    {
+        SETFLAG(m_Flags, CAM_XY_LERP_OFF);
+        m_XY_Strategy = pos;
+    }
+
     __forceinline const D3DXVECTOR2 &    GetXYStrategy(void) const {return m_XY_Strategy;}
 	//void    SetTarget(const D3DXVECTOR3 & pos)         { RESETFLAG(m_Flags, CAM_RESTOREXY); m_Target = pos;}
 	const   D3DXVECTOR3 &GetLinkPoint(void) const                 { return m_LinkPoint; }
@@ -276,30 +320,30 @@ public:
 	void	ZoomOutStep(void)
 	{
 		m_DistParam[m_ModeIndex] += g_Config.m_CamParams[m_ModeIndex].m_CamMouseWheelStep * 4.5f;//1.5f;
-		if (m_DistParam[m_ModeIndex] > 4.0f)  m_DistParam[m_ModeIndex] = 4.0f;
-		if (m_DistParam[m_ModeIndex] < 0.25f)  m_DistParam[m_ModeIndex] = 0.25f;
+		if(m_DistParam[m_ModeIndex] > 4.0f)  m_DistParam[m_ModeIndex] = 4.0f;
+		if(m_DistParam[m_ModeIndex] < 0.25f)  m_DistParam[m_ModeIndex] = 0.25f;
 		//if (m_DistParam[m_ModeIndex] < 0.0f)  m_DistParam[m_ModeIndex] = 0.0f;
 	}
 
 	void	ZoomInStep(void)
 	{
 		m_DistParam[m_ModeIndex] -= g_Config.m_CamParams[m_ModeIndex].m_CamMouseWheelStep * 4.5f;//1.5f;
-		if (m_DistParam[m_ModeIndex] > 4.0f)  m_DistParam[m_ModeIndex] = 4.0f;
-		if (m_DistParam[m_ModeIndex] < 0.25f)  m_DistParam[m_ModeIndex] = 0.25f;
+		if(m_DistParam[m_ModeIndex] > 4.0f)  m_DistParam[m_ModeIndex] = 4.0f;
+		if(m_DistParam[m_ModeIndex] < 0.25f)  m_DistParam[m_ModeIndex] = 0.25f;
 		//if (m_DistParam[m_ModeIndex] < 0.0f)  m_DistParam[m_ModeIndex] = 0.0f;
 	}
 
     void    RotUpStep(void)
     {
         m_AngleParam[m_ModeIndex] += g_Config.m_CamParams[m_ModeIndex].m_CamMouseWheelStep;
-        if (m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
-        if (m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
+        if(m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
+        if(m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
     }
     void    RotDownStep(void)
     {
         m_AngleParam[m_ModeIndex] -= g_Config.m_CamParams[m_ModeIndex].m_CamMouseWheelStep;
-        if (m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
-        if (m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
+        if(m_AngleParam[m_ModeIndex] > 1.0f)  m_AngleParam[m_ModeIndex] = 1.0f;
+        if(m_AngleParam[m_ModeIndex] < 0.0f)  m_AngleParam[m_ModeIndex] = 0.0f;
     }
 
     void    MoveLeft(void) {SETFLAG(m_Flags, CAM_ACTION_MOVE_LEFT);}
@@ -314,7 +358,7 @@ public:
 
     void Stat(void)
     {
-        if (m_AFD) m_AFD->Stat();
+        if(m_AFD) m_AFD->Stat();
     }
 
     //bool IsLinked(void) const {return FLAG(m_Flags, CAM_LINKED);}
@@ -322,7 +366,7 @@ public:
     void    AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attacker)
     {
         DTRACE();
-        if (m_AFD) m_AFD->AddWarPair(tgt, attacker);
+        if(m_AFD) m_AFD->AddWarPair(tgt, attacker);
     }
 
     const D3DXMATRIX & GetViewMatrix(void) const                    { return m_MatView; }
@@ -364,8 +408,8 @@ public:
     bool IsInFrustum(const D3DXVECTOR3 & p) const;                  //point in frustum
     bool IsInFrustum(const D3DXVECTOR3 & p, float radius) const;    // sphere in frustum
     bool IsInFrustum(const D3DXVECTOR3 & mins, const D3DXVECTOR3 & maxs) const; // check that box is in frustum
-    float  GetFrustPlaneDist(EFrustumPlane plane, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir);
-    float  GetFrustPlaneMinDist(const D3DXVECTOR3 &pos);
+    float GetFrustPlaneDist(EFrustumPlane plane, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir);
+    float GetFrustPlaneMinDist(const D3DXVECTOR3 &pos);
 
     void BeforeDraw(void);
     void Takt(float ms);

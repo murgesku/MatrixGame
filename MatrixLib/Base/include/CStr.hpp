@@ -14,50 +14,51 @@ namespace Base {
 
 class BASE_API CStr : public CMain
 {
-	CHeap * m_Heap;
-    int    m_MaxLen;
-    int    m_Len;
-    char *  m_Str;
+	CHeap* m_Heap;
+	int    m_MaxLen;
+	int    m_Len;
+	char* m_Str;
 
     void Tream(int len)
     {
-        if((len==0) || (len>m_MaxLen))
+        if((len == 0) || (len > m_MaxLen))
         {
-	        m_MaxLen=len+16;
-	        m_Str=(char *)HAllocEx(m_Str,uint(m_MaxLen+1),m_Heap);
+	        m_MaxLen = len + 16;
+	        m_Str = (char*)HAllocEx(m_Str, uint(m_MaxLen + 1), m_Heap);
         }
     }
 
-    void Init(const char *src, int len, CHeap *heap)
-    {
-        m_Heap=heap;
-        m_Len=len;
-        m_MaxLen=len+16;
-        m_Str=(char *)HAlloc(uint(m_MaxLen+1),m_Heap);
-        if(len==0)
-        {
-            *m_Str=0;
-        } else
-        {
-            memcpy(m_Str,src,uint(len+1));
-        }
-    };
+	void Init(const char* src, int len, CHeap* heap)
+	{
+		m_Heap = heap;
+		m_Len = len;
+		m_MaxLen = len + 16;
+		m_Str = (char*)HAlloc(uint(m_MaxLen + 1), m_Heap);
+		if (len == 0)
+		{
+			*m_Str = 0;
+		}
+		else
+		{
+			memcpy(m_Str, src, uint(len + 1));
+		}
+	};
     void Init(const wchar *src, int len, CHeap *heap);
 
     public:
-		CStr(void):CMain(),m_Heap(NULL), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
-        explicit CStr(CHeap * heap): CMain(),m_Heap(heap), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
-        CStr(const CStr & s, CHeap * heap=NULL): CMain() {Init(s.m_Str, s.Len(), heap?heap:s.m_Heap);}
-		explicit CStr(const CWStr & s, CHeap * heap=NULL);
-		explicit CStr(const wchar * s, CHeap * heap=NULL);
-		explicit CStr(const char * s, CHeap * heap=NULL): CMain() {Init(s, int(strlen(s)), heap);}
-		CStr(const char * s,int len, CHeap * heap=NULL): CMain() {Init(s, len, heap);}
-        explicit CStr(char sim, CHeap * heap=NULL): CMain(),m_Heap(heap),m_MaxLen(16), m_Len(1) {m_Str = (char *)HAlloc(uint(m_MaxLen+1),m_Heap); m_Str[0] = sim; m_Str[1] = 0;};
-		CStr(char sim,int count, CHeap * heap=NULL):CMain(),m_Heap(heap),m_MaxLen(count+16), m_Len(count) {m_Str = (char *)HAlloc(uint(m_MaxLen+1),m_Heap); memset(m_Str,int(sim),uint(count)); m_Str[count] = 0;};
-		explicit CStr(int zn, CHeap * heap=NULL);
-		explicit CStr(double zn,int zpz=8, CHeap * heap=NULL);
-//		CStr(void * zn, CHeap * heap=NULL);
-//		CStr(BYTE zn, CHeap * heap=NULL);
+		CStr(void) :CMain(), m_Heap(NULL), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
+		explicit CStr(CHeap* heap) : CMain(), m_Heap(heap), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
+		CStr(const CStr& s, CHeap* heap = NULL) : CMain() { Init(s.m_Str, s.Len(), heap ? heap : s.m_Heap); }
+		explicit CStr(const CWStr& s, CHeap* heap = NULL);
+		explicit CStr(const wchar* s, CHeap* heap = NULL);
+		explicit CStr(const char* s, CHeap* heap = NULL) : CMain() { Init(s, int(strlen(s)), heap); }
+		CStr(const char* s, int len, CHeap* heap = NULL) : CMain() { Init(s, len, heap); }
+		explicit CStr(char sim, CHeap* heap = NULL) : CMain(), m_Heap(heap), m_MaxLen(16), m_Len(1) { m_Str = (char*)HAlloc(uint(m_MaxLen + 1), m_Heap); m_Str[0] = sim; m_Str[1] = 0; };
+		CStr(char sim, int count, CHeap* heap = NULL) :CMain(), m_Heap(heap), m_MaxLen(count + 16), m_Len(count) { m_Str = (char*)HAlloc(uint(m_MaxLen + 1), m_Heap); memset(m_Str, int(sim), uint(count)); m_Str[count] = 0; };
+		explicit CStr(int zn, CHeap* heap = NULL);
+		explicit CStr(double zn, int zpz = 8, CHeap* heap = NULL);
+		//		CStr(void* zn, CHeap* heap = NULL);
+		//		CStr(BYTE zn, CHeap* heap = NULL);
 		~CStr() { ClearFull(); }
 		
 		// Clear - Очищает строку

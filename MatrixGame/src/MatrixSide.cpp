@@ -1018,7 +1018,7 @@ void CMatrixSideUnit::OnRight(bool down)
     if(!IsRobotMode() || !m_Arcaded) return;
 }
 
-void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject)
+void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic* pObject)
 {
     DTRACE();
 
@@ -1032,7 +1032,6 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject)
 
         ((CMatrixBuilding *)m_ActiveObject)->UnSelect();
     }
-
 
     /*m_CurrentAction = NOTHING_SPECIAL;*/
     m_ActiveObject = pObject;
@@ -1074,16 +1073,15 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject)
 		m_nCurrRobotPos = -1;
 		m_CurrSel = BUILDING_SELECTED;
 
-        ((CMatrixBuilding *)pObject)->Select();
-        g_IFaceList->CreateDynamicTurrets((CMatrixBuilding *)pObject);
+        ((CMatrixBuilding*)pObject)->Select();
+        g_IFaceList->CreateDynamicTurrets((CMatrixBuilding*)pObject);
 
-        if (pObject->IsBase())
+        if(pObject->IsBase())
         {
             m_CurrSel = BASE_SELECTED;
             m_Constructor->SetBase((CMatrixBuilding*)pObject);
 
-            if (FLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_BASE_SEL_ENABLED))
-                CSound::Play(S_BASE_SEL, SL_SELECTION);
+            if(FLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_BASE_SEL_ENABLED)) CSound::Play(S_BASE_SEL, SL_SELECTION);
 
             SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_BASE_SEL_ENABLED);
         }
@@ -1477,17 +1475,21 @@ void CMatrixSideUnit::ResetSystemSelection()
 void CMatrixSideUnit::SelectedGroupUnselect()
 {
     DTRACE();
-    if(!GetCurGroup())
-        return;
+    if(!GetCurGroup()) return;
 
     CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-    while(objs){
-        if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+    while(objs)
+    {
+        if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
             ((CMatrixRobotAI*)objs->GetObject())->UnSelect();
-        }else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+        }
+        else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+        {
             ((CMatrixFlyer*)objs->GetObject())->UnSelect();
         }
-        objs =  objs->m_NextObject;
+
+        objs = objs->m_NextObject;
     }
     SetCurGroup(NULL);
 }
@@ -1497,12 +1499,17 @@ void CMatrixSideUnit::GroupsUnselectSoft()
     DTRACE();
     CMatrixGroup* grps = m_FirstGroup;
 
-    while(grps){
+    while(grps)
+    {
         CMatrixGroupObject* objs = grps->m_FirstObject;
-        while(objs){
-            if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+        while(objs)
+        {
+            if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+            {
                 ((CMatrixRobotAI*)objs->GetObject())->UnSelect();
-            }else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+            }
+            else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+            {
                 ((CMatrixFlyer*)objs->GetObject())->UnSelect();
             }
             objs =  objs->m_NextObject;
@@ -1515,11 +1522,15 @@ void CMatrixSideUnit::GroupsUnselectSoft()
 void CMatrixSideUnit::SelectedGroupBreakOrders()
 {
     CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-    while(objs){
-        if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+    while(objs)
+    {
+        if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        {
             ((CMatrixRobotAI*)objs->GetObject())->BreakAllOrders();
-        }else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
         }
+        else if(objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+        {}
+
         objs =  objs->m_NextObject;
     }
 }
@@ -1528,10 +1539,14 @@ void CMatrixSideUnit::SetCurSelNum(int i)
 {
     DTRACE();
     g_IFaceList->DeletePersonal();
-    if(i >= 0){
+    if(i >= 0)
+    {
         m_CurSelNum = i;
-    }else{
-        if(GetCurGroup() && m_CurSelNum >= GetCurGroup()->GetObjectsCnt()){
+    }
+    else
+    {
+        if(GetCurGroup() && m_CurSelNum >= GetCurGroup()->GetObjectsCnt())
+        {
             m_CurSelNum--;
         }
     }
@@ -1541,14 +1556,15 @@ void CMatrixSideUnit::SetCurSelNum(int i)
 CMatrixMapStatic* CMatrixSideUnit::GetCurSelObject()
 {
     DTRACE();
-    if(!GetCurGroup())
-        return NULL;
+    if(!GetCurGroup()) return NULL;
 
     CMatrixGroupObject* go = GetCurGroup()->m_FirstObject;
-    for(int i = 0;i < m_CurSelNum && go; i++){
+    for(int i = 0; i < m_CurSelNum && go; ++i)
+    {
         go = go->m_NextObject;
     }
-    if(go){
+    if(go)
+    {
         return go->GetObject();
     }
     return NULL;
@@ -1609,15 +1625,20 @@ void CMatrixSideUnit::CreateGroupFromCurrent(CMatrixMapStatic* obj)
 void CMatrixSideUnit::AddToCurrentGroup()
 {
     DTRACE();
-    if(GetCurGroup()){
+    if(GetCurGroup())
+    {
         CMatrixGroupObject* go = m_CurSelGroup->m_FirstObject;
-        while(go){
-            if(GetCurGroup()->FindObject(go->GetObject())){
+        while(go)
+        {
+            if(GetCurGroup()->FindObject(go->GetObject()))
+            {
                 
-            }else{
+            }
+            else
+            {
                 if(GetCurGroup()->GetObjectsCnt() < 9) GetCurGroup()->AddObject(go->GetObject(), -4);
             }
-            go=go->m_NextObject;
+            go = go->m_NextObject;
         }
         m_CurSelGroup->RemoveAll();
         Reselect();
@@ -1628,8 +1649,10 @@ void CMatrixSideUnit::PumpGroups()
     DTRACE();
     CMatrixGroup* grps = m_FirstGroup;
 
-    while(grps){
-        if(grps != GetCurGroup()){
+    while(grps)
+    {
+        if(grps != GetCurGroup())
+        {
             CMatrixGroup* nxtgrp = grps->m_NextGroup;
             LIST_DEL(grps, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
             HDelete(CMatrixGroup, grps, g_MatrixHeap);

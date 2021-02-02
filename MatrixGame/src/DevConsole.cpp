@@ -41,13 +41,13 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params)
     if (params == L"s")
     {
         CSound::SaveSoundLog();
-    } else
-    if (params == L"e")
+    }
+    else if (params == L"e")
     {
         CBuf    b(g_CacheHeap);
         b.StrNZ("Effects:\n");
 
-        for (int i=0;i<EFFECT_TYPE_COUNT;++i)
+        for (int i = 0; i < EFFECT_TYPE_COUNT; ++i)
         {
             int cnt = 0;
             for (PCMatrixEffect e = g_MatrixMap->m_EffectsFirst; e != NULL; e = e->m_Next)
@@ -101,7 +101,7 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params)
 
     DWORD time1 = timeGetTime();
 
-    for (int i=0;i<100000;++i)
+    for (int i = 0; i < 100000; ++i)
     {
 
         pos1.x = FRND(g_MatrixMap->m_Size.x * GLOBAL_SCALE);
@@ -239,9 +239,9 @@ void CDevConsole::ShowHelp(void)
     {
         CWStr   desc(g_MatrixHeap);
 
-        if (i == 0) desc = L"Shows help"; else
-        if (i == 1) desc = L"Switch shadows : [0|1][0|1]"; else
-        if (i == 2) desc = L"Switch cannons logic : [0|1]"; else
+        if(i == 0) desc = L"Shows help"; else
+        if(i == 1) desc = L"Switch shadows : [0|1][0|1]"; else
+        if(i == 2) desc = L"Switch cannons logic : [0|1]"; else
 
             ;
 
@@ -255,7 +255,7 @@ void CDevConsole::ShowHelp(void)
 void CDevConsole::SetActive(bool active)
 {
     INITFLAG(m_Flags, DCON_ACTIVE,active);
-    if (active)
+    if(active)
     {
         m_NextTime = g_MatrixMap->GetTime();
     }
@@ -264,7 +264,7 @@ void CDevConsole::SetActive(bool active)
 void CDevConsole::Takt(int ms)
 {
     m_Time += ms;
-    while (m_NextTime < m_Time)
+    while(m_NextTime < m_Time)
     {
         m_NextTime += DEV_CONSOLE_CURSOR_FLASH_PERIOD;
         INVERTFLAG(m_Flags, DCON_CURSOR);
@@ -274,18 +274,17 @@ void CDevConsole::Takt(int ms)
     CWStr out(g_MatrixHeap);
     out.Set(m_Text.Get(), m_CurPos);
     
-    if (FLAG(m_Flags, DCON_CURSOR))
+    if(FLAG(m_Flags, DCON_CURSOR))
     {
         //out.Add(L"&");
         out.Add(L"|");
-    } else
-    {
-        
     }
-    if (m_CurPos < m_Text.GetLen())
+
+    if(m_CurPos < m_Text.GetLen())
     {
         out.Add(m_Text.Get() + m_CurPos);
-    } else
+    }
+    else
     {
         out.Add(L" ");
     }
@@ -294,52 +293,58 @@ void CDevConsole::Takt(int ms)
 }
 void CDevConsole::Keyboard(int scan, bool down)
 {
-    if (down)
+    if(down)
     {
         SETFLAG(m_Flags, DCON_CURSOR);
-        if (scan == KEY_BACKSPACE)
+        if(scan == KEY_BACKSPACE)
         {
-            if (m_CurPos > 0)
+            if(m_CurPos > 0)
             {
                 --m_CurPos;
                 m_Text.Del(m_CurPos, 1);
             }
 
-        } else if (scan == KEY_DELETE)
+        }
+        else if(scan == KEY_DELETE)
         {
-            if (m_CurPos < m_Text.GetLen())
+            if(m_CurPos < m_Text.GetLen())
             {
                 m_Text.Del(m_CurPos, 1);
             }
 
-        } else if (scan == KEY_LEFT)
+        }
+        else if(scan == KEY_LEFT)
         {
-            if (m_CurPos > 0)
+            if(m_CurPos > 0)
             {
                 --m_CurPos;
             }
 
-        } else if (scan == KEY_RIGHT)
+        }
+        else if(scan == KEY_RIGHT)
         {
-            if (m_CurPos < m_Text.GetLen())
+            if(m_CurPos < m_Text.GetLen())
             {
                 ++m_CurPos;
             }
 
-        } else if (scan == KEY_HOME)
+        }
+        else if(scan == KEY_HOME)
         {
             m_CurPos = 0;
 
-        } else if (scan == KEY_END)
+        }
+        else if(scan == KEY_END)
         {
             m_CurPos = m_Text.GetLen();
 
-        } else if (scan == KEY_ENTER)
+        }
+        else if(scan == KEY_ENTER)
         {
             CWStr cmd(g_MatrixHeap);
             CWStr params(g_MatrixHeap);
             int i = 0;
-            while (i < m_Text.GetLen())
+            while(i < m_Text.GetLen())
             {
                 if (m_Text[i] == ' ') break;
                 ++i;
@@ -351,9 +356,9 @@ void CDevConsole::Keyboard(int scan, bool down)
             i = 0;
             while(m_Commands[i].cmd != NULL)
             {
-                if (m_Commands[i].cmd == cmd)
+                if(m_Commands[i].cmd == cmd)
                 {
-                    m_Commands[i].handler(cmd,params);
+                    m_Commands[i].handler(cmd, params);
                     m_Text.SetLen(0);
                     m_CurPos = 0;
                     break;
@@ -361,25 +366,27 @@ void CDevConsole::Keyboard(int scan, bool down)
                 ++i;
             }
 
-        } else if (scan == KEY_ESC)
+        }
+        else if(scan == KEY_ESC)
         {
-            if (m_Text.GetLen() == 0)
-                SetActive(false);
+            if(m_Text.GetLen() == 0) SetActive(false);
             else
             {
                 m_Text.SetLen(0);
                 m_CurPos = 0;
             }
 
-        } else if (scan == KEY_LSHIFT || scan == KEY_RSHIFT)
+        }
+        else if(scan == KEY_LSHIFT || scan == KEY_RSHIFT)
         {
             SETFLAG(m_Flags, DCON_SHIFT);
-        } else
+        }
+        else
         {
             wchar c = Scan2Char(scan);
-            if (c != 0)
+            if(c != 0)
             {
-                if (!FLAG(m_Flags, DCON_SHIFT))
+                if(!FLAG(m_Flags, DCON_SHIFT))
                 {
                     if (c >= 'A' && c <= 'Z') c |= 32;
                 }
@@ -388,12 +395,12 @@ void CDevConsole::Keyboard(int scan, bool down)
             }
         }
 
-    } else
+    }
+    else
     {
-        if (scan == KEY_LSHIFT || scan == KEY_RSHIFT)
+        if(scan == KEY_LSHIFT || scan == KEY_RSHIFT)
         {
             RESETFLAG(m_Flags, DCON_SHIFT);
         }
-
     }
 }

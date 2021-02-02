@@ -4623,17 +4623,17 @@ void CMatrixRobotAI::CalcRobotMass()
         }
         cnt++;
     }
-    if(tmp_max<0.0f)
+    if(tmp_max < 0.0f)
     {
-        m_MaxFireDist=m_MinFireDist=0.0f;
+        m_MaxFireDist = m_MinFireDist = 0.0f;
     }
     else
     {
         m_MaxFireDist = tmp_max;
         m_MinFireDist = tmp_min;
     }
-    if(r_min>1e20f) m_RepairDist=0;
-    else m_RepairDist=r_min;
+    if(r_min > 1e20f) m_RepairDist = 0;
+    else m_RepairDist = r_min;
 }
 
 void CMatrixRobotAI::GatherInfo(int type)
@@ -4667,39 +4667,38 @@ void CMatrixRobotAI::GatherInfo(int type)
             CMatrixRobotAI* robot = (CMatrixRobotAI*)obj;
             D3DXVECTOR3 enemy_napr = D3DXVECTOR3(robot->m_PosX, robot->m_PosY, 0) - D3DXVECTOR3(m_PosX, m_PosY, 0);
 
-            D3DXVECTOR3 en_norm(0,0,0);
+            D3DXVECTOR3 en_norm(0, 0, 0);
             D3DXVec3Normalize(&en_norm, &enemy_napr);
-            float cos = m_HullForward.x*en_norm.x + m_HullForward.y*en_norm.y;
+            float cos = m_HullForward.x * en_norm.x + m_HullForward.y * en_norm.y;
             float angle_rad = (float)acos(cos);
 
-            float dist_enemy=D3DXVec3LengthSq(&enemy_napr);
+            float dist_enemy = D3DXVec3LengthSq(&enemy_napr);
     DCP();
 
-            if(dist_enemy <= POW2(max(robot->m_MaxFireDist,m_MaxFireDist)*1.1)/*(D3DXVec3LengthSq(&enemy_napr) <= m_MinFireDist*m_MinFireDist) || (D3DXVec3LengthSq(&enemy_napr) <= m_MaxFireDist*m_MaxFireDist && angle_rad <= ROBOT_FOV)*/ && robot->m_CurrState != ROBOT_DIP)
+            if(dist_enemy <= POW2(max(robot->m_MaxFireDist, m_MaxFireDist) * 1.1)/*(D3DXVec3LengthSq(&enemy_napr) <= m_MinFireDist*m_MinFireDist) || (D3DXVec3LengthSq(&enemy_napr) <= m_MaxFireDist*m_MaxFireDist && angle_rad <= ROBOT_FOV)*/ && robot->m_CurrState != ROBOT_DIP)
             {
-                if(g_MatrixMap->IsLogicVisible(this,robot,0.0f))
+                if(g_MatrixMap->IsLogicVisible(this, robot, 0.0f))
                 {
     DCP();
                     if(!m_Environment.SearchEnemy(robot) && !m_Environment.IsIgnore(robot))
                     {
     DCP();
-
-                        CMatrixSideUnit * side=g_MatrixMap->GetSideById(GetSide());
-                        int listcnt=0;
-                        int dist=0;
-                        CPoint p_from(m_MapX,m_MapY);
-                        CPoint p_to(robot->m_MapX,robot->m_MapY);
+                        CMatrixSideUnit* side = g_MatrixMap->GetSideById(GetSide());
+                        int listcnt = 0;
+                        int dist = 0;
+                        CPoint p_from(m_MapX, m_MapY);
+                        CPoint p_to(robot->m_MapX, robot->m_MapY);
 
                         side->BufPrepare();
 
-                        float d=sqrt(float(p_from.Dist2(p_to)));
-                        float z=fabs(g_MatrixMap->GetZ(robot->m_PosX,robot->m_PosY)-g_MatrixMap->GetZ(m_PosX,m_PosY));
+                        float d = sqrt(float(p_from.Dist2(p_to)));
+                        float z = fabs(g_MatrixMap->GetZ(robot->m_PosX, robot->m_PosY) - g_MatrixMap->GetZ(m_PosX, m_PosY));
                        
                         /*if((z/(d*GLOBAL_SCALE_MOVE))>=tan(BARREL_TO_SHOT_ANGLE))
                         {
                             m_Environment.AddIgnore(robot);
                         } else*/
-                        if(g_MatrixMap->PlaceList(m_Unit[0].m_Kind-1,p_from,p_to,Float2Int(GetMaxFireDist()/GLOBAL_SCALE_MOVE/*+ROBOT_MOVECELLS_PER_SIZE*/),false,side->m_PlaceList,&listcnt,&dist))
+                        if(g_MatrixMap->PlaceList(m_Unit[0].m_Kind - 1, p_from, p_to, Float2Int(GetMaxFireDist()/GLOBAL_SCALE_MOVE/*+ROBOT_MOVECELLS_PER_SIZE*/), false, side->m_PlaceList, &listcnt, &dist))
                         {
 							if(POW2(dist/4)<p_from.Dist2(p_to))
                             {

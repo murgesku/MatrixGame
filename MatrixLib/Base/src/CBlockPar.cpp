@@ -13,8 +13,8 @@
 
 namespace Base {
 
-//Функция для быстрого вывода отладочных строк в общий игровой лог ########.log
-void SFT(const char* out)
+//Функция для быстрого вывода отладочных строк в общий игровой лог ########.log (пример: SFT(CStr("some string"));)
+void SFT(CStr out)
 {
 	CHAR system_folder[MAX_PATH];
 	SHGetSpecialFolderPath(0, system_folder, CSIDL_PERSONAL, true);
@@ -29,7 +29,7 @@ void SFT(const char* out)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CBlockParUnit::CBlockParUnit(CHeap * heap) : CMain(),m_Name(heap),m_Com(heap)
+CBlockParUnit::CBlockParUnit(CHeap* heap) : CMain(), m_Name(heap), m_Com(heap)
 {
     DTRACE();
 	m_Heap=heap;
@@ -53,27 +53,49 @@ CBlockParUnit::~CBlockParUnit()
 void CBlockParUnit::Clear()
 {
     DTRACE();
-	if(m_Type==1) {
-		if(m_Par!=NULL) { HDelete(CWStr,m_Par,m_Heap); m_Par=NULL; }
-	} else if(m_Type==2) {
-		if(m_Block!=NULL) { HDelete(CBlockPar,m_Block,m_Heap); m_Block=NULL; }
+	if(m_Type == 1)
+	{
+		if(m_Par != NULL)
+		{
+			HDelete(CWStr, m_Par, m_Heap);
+			m_Par=NULL;
+		}
 	}
-	m_Type=0;
+	else if(m_Type == 2)
+	{
+		if(m_Block != NULL)
+		{
+			HDelete(CBlockPar, m_Block, m_Heap);
+			m_Block=NULL;
+		}
+	}
+	m_Type = 0;
 	m_Name.Clear();
 	m_Com.Clear();
 }
 
 void CBlockParUnit::ChangeType(int nt)
 {
-    DTRACE();
-	if(m_Type==1) {
-		if(m_Par!=NULL) { HDelete(CWStr,m_Par,m_Heap); m_Par=NULL; }
-	} else if(m_Type==2) {
-		if(m_Block!=NULL) { HDelete(CBlockPar,m_Block,m_Heap); m_Block=NULL; }
+	DTRACE();
+	if(m_Type == 1)
+	{
+		if(m_Par != NULL)
+		{
+			HDelete(CWStr, m_Par, m_Heap);
+			m_Par = NULL;
+		}
 	}
-	m_Type=nt;
-	if(nt==1) m_Par=HNew(m_Heap) CWStr(m_Heap);
-	else if(nt==2) m_Block=HNew(m_Heap) CBlockPar(1,m_Heap);
+	else if(m_Type == 2)
+	{
+		if(m_Block != NULL)
+		{
+			HDelete(CBlockPar, m_Block, m_Heap);
+			m_Block = NULL;
+		}
+	}
+	m_Type = nt;
+	if(nt == 1) m_Par = HNew(m_Heap) CWStr(m_Heap);
+	else if(nt == 2) m_Block = HNew(m_Heap) CBlockPar(1, m_Heap);
 }
 
 void CBlockParUnit::CopyFrom(CBlockParUnit & bp)

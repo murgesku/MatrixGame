@@ -1234,7 +1234,8 @@ bool CInterface::OnMouseMove(CPoint mouse)
 void CInterface::Reset()
 {
     CIFaceElement *objects = m_FirstElement;
-    while(objects){
+    while(objects)
+    {
         objects->Reset();
         objects = objects->m_NextElement;
     }
@@ -1243,7 +1244,8 @@ void CInterface::Reset()
 void CInterface::SetAlpha(BYTE alpha)
 {
     CIFaceElement *objects = m_FirstElement;
-    while(objects){
+    while(objects)
+    {
         objects->m_VisibleAlpha = alpha;
         objects = objects->m_NextElement;
     }
@@ -1253,68 +1255,97 @@ bool CInterface::OnMouseLBDown()
 {
 	DTRACE();
 
-    if(g_MatrixMap->IsPaused()){
-        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU){
+    if(g_MatrixMap->IsPaused())
+    {
+        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
+        {
             return false;
         }
     }
 
-    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && !(g_PopupMenu && g_PopupMenu->GetRamka() && g_PopupMenu->GetRamka()->ElementCatch(g_MatrixMap->m_Cursor.GetPos()))){
+    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) && !(g_PopupMenu && g_PopupMenu->GetRamka() && g_PopupMenu->GetRamka()->ElementCatch(g_MatrixMap->m_Cursor.GetPos())))
+    {
         if(g_PopupMenu) g_PopupMenu->ResetMenu(true);
         return false;
     } 
 
-    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) &&/* (g_IFaceList->m_FocusedElement && g_IFaceList->m_FocusedElement->m_nId == POPUP_SELECTOR_CATCHERS_ID) && */g_PopupMenu){
+    if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) &&/* (g_IFaceList->m_FocusedElement && g_IFaceList->m_FocusedElement->m_nId == POPUP_SELECTOR_CATCHERS_ID) && */g_PopupMenu)
+    {
         g_PopupMenu->OnMenuItemPress();
         return true;
     }
 
-	if(m_VisibleAlpha){
-		CIFaceElement *pObjectsList = m_LastElement;
-		while(pObjectsList != NULL){
-            if(pObjectsList->GetVisibility()){
-                if(pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos())){
-                    if(pObjectsList->m_nId == PERSONAL_ICON_ID){
+	if(m_VisibleAlpha)
+    {
+        CIFaceElement* pObjectsList = m_LastElement;
+		while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility())
+            {
+                if(pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()))
+                {
+                    if(pObjectsList->m_nId == PERSONAL_ICON_ID)
+                    {
                         pObjectsList->OnMouseLBDown();
-                    }else if(IS_GROUP_ICON(pObjectsList->m_nId)){
+                    }
+                    else if(IS_GROUP_ICON(pObjectsList->m_nId))
+                    {
                         CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
-                        if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000)==0x8000){
-                            CMatrixMapStatic* o = ps->GetCurGroup()->GetObjectByN(pObjectsList->m_nId-GROUP_ICONS_ID);
+                        if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000)
+                        {
+                            CMatrixMapStatic* o = ps->GetCurGroup()->GetObjectByN(pObjectsList->m_nId - GROUP_ICONS_ID);
                             ps->RemoveObjectFromSelectedGroup(o);
-                        }else{
-                            if(g_MatrixMap->GetPlayerSide()->GetCurSelNum() == pObjectsList->m_nId-GROUP_ICONS_ID){
-                                if(ps->GetCurSelObject() && ps->GetCurSelObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+                        }
+                        else
+                        {
+                            if(g_MatrixMap->GetPlayerSide()->GetCurSelNum() == pObjectsList->m_nId - GROUP_ICONS_ID)
+                            {
+                                if(ps->GetCurSelObject() && ps->GetCurSelObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                                {
                                     ps->CreateGroupFromCurrent(ps->GetCurSelObject());
                                     ps->Select(ROBOT, NULL);
-                                }else if(ps->GetCurSelObject() && ps->GetCurSelObject()->GetObjectType() == OBJECT_TYPE_FLYER){
+                                }
+                                else if(ps->GetCurSelObject() && ps->GetCurSelObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+                                {
                                     ps->CreateGroupFromCurrent(ps->GetCurSelObject());
                                     ps->Select(FLYER, NULL);
                                 }
-                            }else{
-                                g_MatrixMap->GetPlayerSide()->SetCurSelNum(pObjectsList->m_nId-GROUP_ICONS_ID);
+                            }
+                            else
+                            {
+                                g_MatrixMap->GetPlayerSide()->SetCurSelNum(pObjectsList->m_nId - GROUP_ICONS_ID);
                             }
                         }
                         return TRUE;
-                    }else if(IS_STACK_ICON(pObjectsList->m_nId)){
+                    }
+                    else if(IS_STACK_ICON(pObjectsList->m_nId))
+                    {
                         CIFaceElement* ne = pObjectsList->m_NextElement;
                         CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-                        ((CMatrixBuilding*)ps->m_ActiveObject)->m_BS.DeleteItem((pObjectsList->m_nId-STACK_ICON)+1);
+                        ((CMatrixBuilding*)ps->m_ActiveObject)->m_BS.DeleteItem((pObjectsList->m_nId - STACK_ICON) + 1);
                         pObjectsList = ne;
                         return TRUE;
-                    }else if(pObjectsList->m_strName == IF_MAP_PANEL){
-                        if(IS_PREORDERING_NOSELECT){
+                    }
+                    else if(pObjectsList->m_strName == IF_MAP_PANEL)
+                    {
+                        if(IS_PREORDERING_NOSELECT)
+                        {
                             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN);
-                            g_MatrixMap->GetPlayerSide()->OnLButtonDown(CPoint(0,0));
-                        }else{                        
+                            g_MatrixMap->GetPlayerSide()->OnLButtonDown(CPoint(0, 0));
+                        }
+                        else
+                        {
                             SETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN);
                         }
-                    }else if(pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()) && pObjectsList->OnMouseLBDown()){
-				        if(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL){
+                    }
+                    else if(pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()) && pObjectsList->OnMouseLBDown())
+                    {
+				        if(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL)
+                        {
 					        pObjectsList->CheckGroupReset(m_FirstElement, pObjectsList);
 				        }
 				        return TRUE;
-
                     }
                 }
             }
@@ -1328,8 +1359,10 @@ bool CInterface::OnMouseRBDown()
 {
 	DTRACE();
 
-    if(g_MatrixMap->IsPaused()){
-        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU){
+    if(g_MatrixMap->IsPaused())
+    {
+        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
+        {
             return false;
         }
     }
@@ -1337,15 +1370,22 @@ bool CInterface::OnMouseRBDown()
     if(m_VisibleAlpha){
 
 		CIFaceElement *pObjectsList = m_LastElement;
-		while(pObjectsList != NULL){
-            if(pObjectsList->GetVisibility()){
-                if(pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos())){
-                    if(pObjectsList->m_strName == IF_MAP_PANEL){
-                        g_MatrixMap->GetPlayerSide()->OnRButtonDown(CPoint(0,0));
-                        if(IS_PREORDERING_NOSELECT){
+		while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility())
+            {
+                if(pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()))
+                {
+                    if(pObjectsList->m_strName == IF_MAP_PANEL)
+                    {
+                        g_MatrixMap->GetPlayerSide()->OnRButtonDown(CPoint(0, 0));
+                        if(IS_PREORDERING_NOSELECT)
+                        {
                             SETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN);
                         }
-                    }else{
+                    }
+                    else
+                    {
                         //other elements
                         pObjectsList->OnMouseRBDown();
                     }
@@ -3775,7 +3815,7 @@ void CIFaceList::LogicTakt(int ms)
     {
         CPoint mp = g_MatrixMap->m_Cursor.GetPos();
 
-        if((mp.x >=0 && mp.x <g_ScreenX && mp.y >=0 && mp.y <g_ScreenY) && ((mp.x < MOUSE_BORDER) || (mp.x > (g_ScreenX - MOUSE_BORDER)) || (mp.y < MOUSE_BORDER) || (mp.y > (g_ScreenY - MOUSE_BORDER)) ))
+        if((mp.x >= 0 && mp.x <g_ScreenX && mp.y >= 0 && mp.y <g_ScreenY) && ((mp.x < MOUSE_BORDER) || (mp.x > (g_ScreenX - MOUSE_BORDER)) || (mp.y < MOUSE_BORDER) || (mp.y > (g_ScreenY - MOUSE_BORDER)) ))
         {
             g_MatrixMap->m_Cursor.Select(CURSOR_STAR);
         }
@@ -3872,12 +3912,13 @@ void CIFaceList::CreateWeaponDynamicStatics()
             CIFaceImage overheat_image = *interfaces->FindImageByName(CWStr(IF_OVER_HEAT));
             for(int i = 0; i < MR_MAXUNIT; ++i)
             {
-                if(bot->m_Unit[i].m_Type == MRT_WEAPON){
-
+                if(bot->m_Unit[i].m_Type == MRT_WEAPON)
+                {
                     int pos;
                     for(pos = 0; pos < 5; ++pos)
                     {
-                        if(g_IFaceList->m_Pilons[pos + hu*5] == bot->m_Unit[i].m_LinkMatrix){
+                        if(g_IFaceList->m_Pilons[pos + hu*5] == bot->m_Unit[i].m_LinkMatrix)
+                        {
                             break;
                         }
                     }
@@ -4680,8 +4721,7 @@ void CIFaceList::CreateGroupIcons()
     }
 
     int sel_objs = player_side->GetCurGroup()->GetRobotsCnt() + player_side->GetCurGroup()->GetFlyersCnt();
-    if(!sel_objs)
-        return;
+    if(!sel_objs) return;
 
     CInterface* interfaces = m_First;
     CMatrixGroupObject* so = player_side->GetCurGroup()->m_FirstObject;
@@ -4697,13 +4737,13 @@ void CIFaceList::CreateGroupIcons()
             for(int i = 0; i < sel_objs; ++i)
             {
                 if(i < 3) y = 49;
-                else if(i < 6) y = 49*2;
-                else if(i < 9) y = 49*3;
+                else if(i < 6) y = 49 * 2;
+                else if(i < 9) y = 49 * 3;
 
-                x = (float)((225 + 48*pos));
+                x = (float)((225 + 48 * pos));
                 pos++;
 
-                if(x > (225 + 48*2))
+                if(x > (225 + 48 * 2))
                 {
                     pos = 1;
                     x = 225;
@@ -4732,7 +4772,7 @@ void CIFaceList::CreateGroupIcons()
                     image->m_strName = L"";
                     image->m_Type = IFACE_IMAGE;
 
-                    CIFaceStatic* s =NULL;
+                    CIFaceStatic* s = NULL;
                     if(robot)
                     {
                         image->m_TexHeight = 64;
@@ -4745,7 +4785,7 @@ void CIFaceList::CreateGroupIcons()
                     if(s)
                     {
                         s->SetVisibility(true);
-                        s->m_nId = GROUP_ICONS_ID+i;
+                        s->m_nId = GROUP_ICONS_ID + i;
                     }
                 }
                 so = so->m_NextObject;
@@ -4755,6 +4795,7 @@ void CIFaceList::CreateGroupIcons()
         }
         interfaces = interfaces->m_NextInterface;
     }
+
     if(image)
     {
         HDelete(CIFaceImage, image, g_MatrixHeap);
@@ -4806,8 +4847,8 @@ void CIFaceList::CreatePersonal()
         go = go->m_NextObject;
     }
     
-    if(!go)
-        return;
+    if(!go) return;
+
     CInterface* interfaces = g_IFaceList->m_First;
     while(interfaces)
     {
@@ -4855,6 +4896,7 @@ void CIFaceList::CreatePersonal()
                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_xTexPos;
                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_yTexPos;
                 }
+
                 flyer = true;
             }
             
@@ -4968,12 +5010,12 @@ void CIFaceList::CreateOrdersGlow(CInterface *iface)
         
         if(pos <= 1)
         {
-            x = (float)(419 + 49*i);
+            x = (float)(419 + 49 * i);
             y = 47;
         }
         else if(pos > 1 && pos <= 2)
         {
-            x = (float)((419 + 49*i)-49*3);
+            x = (float)((419 + 49 * i) - 49 * 3);
             y = 47+49;
         }
         
@@ -4981,7 +5023,7 @@ void CIFaceList::CreateOrdersGlow(CInterface *iface)
         if(s)
         {
             s->SetVisibility(false);
-            s->m_nId = ORDERS_GLOW_ID+i;
+            s->m_nId = ORDERS_GLOW_ID + i;
         }
     }
 }
@@ -5002,8 +5044,7 @@ void CIFaceList::ResetOrderingMode()
 void CIFaceList::CreateStackIcon(int num, CMatrixBuilding* base, CMatrixMapStatic *object)
 {
     DTRACE();
-    if(!object)
-        return;
+    if(!object) return;
 
     CInterface* ifs = m_First;
     while(ifs)

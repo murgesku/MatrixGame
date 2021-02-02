@@ -568,8 +568,8 @@ public:
     void GroupNoTeamRobot(void);
     void CalcMaxSpeed(void);
     void TaktHL(void);
-    int FindNearRegionWithUTR(int from,int * exclude_list,int exclude_cnt,DWORD flags); // 1-our 2-netral 4-enemy 8-base 16-building 32-robot 64-cannon
-    int CompareRegionForward(int team,int r1,int r2);
+    int FindNearRegionWithUTR(int from, int * exclude_list, int exclude_cnt, DWORD flags); // 1-our 2-netral 4-enemy 8-base 16-building 32-robot 64-cannon
+    int CompareRegionForward(int team, int r1, int r2);
     int CompareAction(int team,SMatrixLogicAction * a1,SMatrixLogicAction * a2);
     void BestAction(int team);
     void LiveAction(int team);
@@ -581,17 +581,17 @@ public:
     void TaktTL(void);
     void WarTL(int group);
     void RepairTL(int group);
-    void AssignPlace(CMatrixRobotAI * robot,int region);
-    void AssignPlace(int group,int region);
-    void SortRobotList(CMatrixRobotAI * * rl,int rlcnt);
-    bool CmpOrder(int team,int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // Путь не сравнивается
-    void CopyOrder(int team,int group)                  { ASSERT(team>=0 && team<m_TeamCnt); m_LogicGroup[group].m_Action=m_Team[team].m_Action; }
+    void AssignPlace(CMatrixRobotAI * robot, int region);
+    void AssignPlace(int group, int region);
+    void SortRobotList(CMatrixRobotAI * * rl, int rlcnt);
+    bool CmpOrder(int team, int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // Путь не сравнивается
+    void CopyOrder(int team, int group)                  { ASSERT(team>=0 && team<m_TeamCnt); m_LogicGroup[group].m_Action=m_Team[team].m_Action; }
 
-    bool PlaceInRegion(CMatrixRobotAI * robot, int place,int region);
+    bool PlaceInRegion(CMatrixRobotAI * robot, int place, int region);
 
-    void CalcRegionPath(SMatrixLogicAction * ac,int rend,byte mm);
+    void CalcRegionPath(SMatrixLogicAction * ac, int rend,byte mm);
 
-    bool CanMoveNoEnemy(byte mm,int r1,int r2);
+    bool CanMoveNoEnemy(byte mm, int r1, int r2);
 
     // Player logic
 

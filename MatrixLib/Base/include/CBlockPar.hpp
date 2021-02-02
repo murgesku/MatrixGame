@@ -15,7 +15,7 @@
 
 namespace Base {
 
-void SFT(const char* out);
+void SFT(CStr out);
 
 class CBlockPar;
 class BPCompiler;

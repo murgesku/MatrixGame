@@ -337,6 +337,7 @@ void CMatrixConfig::SetDefaults(void)
     m_KeyActions[KA_UNIT_ENTER] = VK_RETURN; //sub (! if not dialog mode)
     m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE; //sub (! if not dialog mode)
 
+    m_KeyActions[KA_GATHERING_POINT] = 0x47; //Установка точки сбора базы, клавиша G
     m_KeyActions[KA_BUILD_ROBOT] = 0x42;  //sub
     m_KeyActions[KA_BUILD_TURRET] = 0x54; //sub
     m_KeyActions[KA_BUILD_HELP] = 0x48; //sub
