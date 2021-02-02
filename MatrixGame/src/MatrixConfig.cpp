@@ -14,7 +14,7 @@ struct SKeyCodes
     int code;
 };
 
-static SKeyCodes    keycodes[] =
+static SKeyCodes    key_codes[] =
 {
     {L"KEY_LMB",        VK_LBUTTON},
     {L"KEY_RMB",        VK_RBUTTON},
@@ -139,15 +139,19 @@ static SKeyCodes    keycodes[] =
     {L"KEY_N",          0x4E},
     {L"KEY_M",          0x4D},
 
-    {NULL,             -1}
+    {NULL,              -1}
 };
 
-static SKeyCodes    keyactioncodes[] =
+static SKeyCodes    key_action_codes[] =
 {
-    {L"KeyMapScrollUp",     KA_SCROLL_UP_ALT},
-    {L"KeyMapScrollDown",   KA_SCROLL_DOWN_ALT},
-    {L"KeyMapScrollLeft",   KA_SCROLL_LEFT_ALT},
-    {L"KeyMapScrollRight",  KA_SCROLL_RIGHT_ALT},
+    {L"KeyMapScrollUp",        KA_SCROLL_UP},
+    {L"KeyMapScrollDown",      KA_SCROLL_DOWN},
+    {L"KeyMapScrollLeft",      KA_SCROLL_LEFT},
+    {L"KeyMapScrollRight",     KA_SCROLL_RIGHT},
+    {L"KeyMapScrollUpAlt",     KA_SCROLL_UP_ALT},
+    {L"KeyMapScrollDownAlt",   KA_SCROLL_DOWN_ALT},
+    {L"KeyMapScrollLeftAlt",   KA_SCROLL_LEFT_ALT},
+    {L"KeyMapScrollRightAlt",  KA_SCROLL_RIGHT_ALT},
 
     {NULL,             -1}
 };
@@ -155,9 +159,9 @@ static SKeyCodes    keyactioncodes[] =
 static int KeyName2KeyCode(const CWStr& name)
 {
     int i = 0;
-    while (keycodes[i].name != NULL)
+    while(key_codes[i].name != NULL)
     {
-        if (keycodes[i].name == name) return keycodes[i].code;
+        if(key_codes[i].name == name) return key_codes[i].code;
         ++i;
     }
 
@@ -167,9 +171,9 @@ static int KeyName2KeyCode(const CWStr& name)
 static int KeyActionName2KeyActionCode(const CWStr& name)
 {
     int i = 0;
-    while (keyactioncodes[i].name != NULL)
+    while(key_action_codes[i].name != NULL)
     {
-        if (keyactioncodes[i].name == name) return keyactioncodes[i].code;
+        if(key_action_codes[i].name == name) return key_action_codes[i].code;
         ++i;
     }
 
@@ -346,6 +350,7 @@ void CMatrixConfig::SetDefaults(void)
     m_KeyActions[KA_TURRET_GUN] = 0x47;
     m_KeyActions[KA_TURRET_LASER] = 0x4C;
     m_KeyActions[KA_TURRET_ROCKET] = 0x52;
+
 
     
     m_CaptureTimeErase = 750;

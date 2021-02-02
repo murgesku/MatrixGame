@@ -161,8 +161,6 @@ enum EKeyAction
     KA_TURRET_LASER,
     KA_TURRET_ROCKET,
 
-
-
     //..........................
     KA_LAST
 };
