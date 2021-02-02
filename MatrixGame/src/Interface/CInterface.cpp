@@ -1402,21 +1402,28 @@ void CInterface::OnMouseLBUp()
 {
 	DTRACE();
 
-    if(g_MatrixMap->IsPaused()){
-        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU){
+    if(g_MatrixMap->IsPaused())
+    {
+        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
+        {
             return;
         }
     }
 
-    if(FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN)){
+    if(FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN))
+    {
         RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN);
     }
-	if(m_VisibleAlpha){
+	if(m_VisibleAlpha)
+    {
 		CIFaceElement *pObjectsList = m_LastElement;
-		while(pObjectsList != NULL){
-            if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) &&  pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos())){
+		while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) &&  pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()))
+            {
                 pObjectsList->OnMouseLBUp();
-				if(pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON){
+				if(pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON)
+                {
 					pObjectsList->CheckGroupReset(m_FirstElement, pObjectsList);
 				}
 
@@ -1587,16 +1594,12 @@ void CInterface::Init(void)
                         {
                             robot_sel = true;
                             cur_r = (CMatrixRobotAI*)go->GetObject();
-                            if(r->FindWeapon(WEAPON_BIGBOOM))
-                                bomber_sel = true;
-                            if(r->FindWeapon(WEAPON_REPAIR))
-                                repairer_sel = true;
-
+                            if(r->FindWeapon(WEAPON_BIGBOOM)) bomber_sel = true;
+                            if(r->FindWeapon(WEAPON_REPAIR)) repairer_sel = true;
                         }
                     }
                 }
             }
-
 
 
             if(work_group)
@@ -1611,44 +1614,44 @@ void CInterface::Init(void)
                     while(objs)
                     {
                         CMatrixRobotAI* robot = objs->GetObject()->AsRobot();
-                        if(objs->GetObject()->IsRobot()){
+                        if(objs->GetObject()->IsRobot())
+                        {
                             if(robot->FindWeapon(WEAPON_BIGBOOM))
                             {
-                                bombers_cnt++;
+                                ++bombers_cnt;
                             }
                             if(robot->FindWeapon(WEAPON_REPAIR))
                             {
-                                repairers_cnt++;
+                                ++repairers_cnt;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_MoveTo)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_MoveTo)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 move = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Capture)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Capture)
                             {//if(robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
                                 capt = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Attack)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Attack)
                             {//if(robot->FindOrderLikeThat(ROBOT_FIRE)){
                                 fire = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Stop)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Stop)
                             {//if(robot->GetOrdersInPool() == 0){
                                 stop = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Patrol)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Patrol)
                             {//if(robot->GetOrdersInPool() == 0){
                                 patrol = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Bomb)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Bomb)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 bomb = true;
                             }
-                            if(robot->GetGroupLogic()>=0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order()==mpo_Repair)
+                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Repair)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 repair = true;
                             }
-
                         }
                         objs = objs->m_NextObject;
                     }
@@ -1752,7 +1755,8 @@ void CInterface::Init(void)
                     if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
                     {
                         CMatrixBuilding* bld = (CMatrixBuilding*)player_side->m_ActiveObject;
-                        if(bld->GetPlacesForTurrets(pl) != turhave){
+                        if(bld->GetPlacesForTurrets(pl) != turhave)
+                        {
                             turhave = bld->GetPlacesForTurrets(pl);
                             new_turhave = true;
                         }
@@ -1796,7 +1800,7 @@ void CInterface::Init(void)
                     }
                     pElement->SetVisibility(true);
                 }
-                else if((player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) )
+                else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
                 {
                     CMatrixBuilding* bld = player_side->m_ActiveObject->AsBuilding();
                     CBlockPar* bp_tmp = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Buildings");
@@ -1907,7 +1911,7 @@ void CInterface::Init(void)
                         pElement->SetVisibility(true);
                         SMatrixRobotUnit* unit = &sel_bot->m_Unit[Float2Int(pElement->m_Param1)];
                         
-                        for(int i=0; i < MAX_WEAPON_CNT; ++i)
+                        for(int i = 0; i < MAX_WEAPON_CNT; ++i)
                         {
                             if(sel_bot->GetWeapon(i).m_Unit == unit)
                             {
@@ -1970,7 +1974,7 @@ void CInterface::Init(void)
                 else if(player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED)
                 {
                     CMatrixBuilding* bld = (CMatrixBuilding*)player_side->m_ActiveObject;
-                    bld->CreateProgressBarClone(m_xPos+68,m_yPos+179,68, PBC_CLONE2);
+                    bld->CreateProgressBarClone(m_xPos + 68, m_yPos + 179, 68, PBC_CLONE2);
                     
                     if(bld->m_Kind == BUILDING_TITAN && pElement->m_strName == IF_TITAN_PLANT)
                     {
@@ -2150,18 +2154,12 @@ void CInterface::Init(void)
                         
                         if(IS_ORDER_GLOW(pElement->m_nId))
                         {
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 0 && stop)
-                                pElement->SetVisibility(true);
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 1 && move && !capt && !getup && !drop && !bomb && !repair)
-                                pElement->SetVisibility(true);
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 2 && patrol)
-                                pElement->SetVisibility(true);
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 3 && fire)
-                                pElement->SetVisibility(true);
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 4 && (capt || getup || drop))
-                                pElement->SetVisibility(true);
-                            if(pElement->m_nId - ORDERS_GLOW_ID == 5 && (bomber_sel || repairer_sel) && (bomb || repair))
-                                pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 0 && stop) pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 1 && move && !capt && !getup && !drop && !bomb && !repair) pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 2 && patrol) pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 3 && fire) pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 4 && (capt || getup || drop)) pElement->SetVisibility(true);
+                            if(pElement->m_nId - ORDERS_GLOW_ID == 5 && (bomber_sel || repairer_sel) && (bomb || repair)) pElement->SetVisibility(true);
                         }
 
                         if(pElement->m_strName == IF_MAIN_PROG)
@@ -2183,7 +2181,6 @@ void CInterface::Init(void)
                             pElement->SetVisibility(true);
                         }
                     }
-                    else{}
                 }
                 else
                 {
@@ -2440,7 +2437,7 @@ void CInterface::Init(void)
                         men |= player_side->GetResourcesAmount(ERes(i)) < res[i];
                     }
 
-                    if(!bld || men || player_side->GetRobotsCnt()+player_side->GetRobotsInStack() >= player_side->GetMaxSideRobots())
+                    if(!bld || men || player_side->GetRobotsCnt() + player_side->GetRobotsInStack() >= player_side->GetMaxSideRobots())
                     {
                         pElement->m_DefState = IFACE_DISABLED;
                         pElement->m_CurState = IFACE_DISABLED;
@@ -2484,8 +2481,7 @@ void CInterface::Init(void)
                         player_side->m_Constructor->GetConstructionPrice(res);
                         for(int i = 0; i < MAX_RESOURCES; ++i)
                         {
-                            if(g_IFaceList->m_RCountControl->GetCounter())
-                                res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                            if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
                         if(pElement->m_Param2)
@@ -2515,8 +2511,7 @@ void CInterface::Init(void)
                         player_side->m_Constructor->GetConstructionPrice(res);
                         for(int i = 0; i < MAX_RESOURCES; ++i)
                         {
-                            if(g_IFaceList->m_RCountControl->GetCounter())
-                                res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                            if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
                         if(pElement->m_Param2)
@@ -2546,8 +2541,7 @@ void CInterface::Init(void)
                         player_side->m_Constructor->GetConstructionPrice(res);
                         for(int i = 0; i < MAX_RESOURCES; ++i)
                         {
-                            if(g_IFaceList->m_RCountControl->GetCounter())
-                                res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                            if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                         }
                         bool its_critical = false;
                         if(pElement->m_Param2)
@@ -2611,8 +2605,7 @@ void CInterface::Init(void)
                             player_side->m_Constructor->GetConstructionPrice(res);
                             for(int i = 0; i < MAX_RESOURCES; ++i)
                             {
-                                if(g_IFaceList->m_RCountControl->GetCounter())
-                                    res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                                if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
                             if(pElement->m_Param2)
@@ -2645,8 +2638,7 @@ void CInterface::Init(void)
                             player_side->m_Constructor->GetConstructionPrice(res);
                             for(int i = 0; i < MAX_RESOURCES; ++i)
                             {
-                                if(g_IFaceList->m_RCountControl->GetCounter())
-                                    res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                                if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
                             if(pElement->m_Param2)
@@ -2679,8 +2671,7 @@ void CInterface::Init(void)
                             player_side->m_Constructor->GetConstructionPrice(res);
                             for(int i = 0; i < MAX_RESOURCES; ++i)
                             {
-                                if(g_IFaceList->m_RCountControl->GetCounter())
-                                    res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                                if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
                             if(pElement->m_Param2)
@@ -2713,8 +2704,7 @@ void CInterface::Init(void)
                             player_side->m_Constructor->GetConstructionPrice(res);
                             for(int i = 0; i < MAX_RESOURCES; ++i)
                             {
-                                if(g_IFaceList->m_RCountControl->GetCounter())
-                                    res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                                if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
                             if(pElement->m_Param2)
@@ -2747,8 +2737,7 @@ void CInterface::Init(void)
                             player_side->m_Constructor->GetConstructionPrice(res);
                             for(int i = 0; i < MAX_RESOURCES; ++i)
                             {
-                                if(g_IFaceList->m_RCountControl->GetCounter())
-                                    res[i] *= g_IFaceList->m_RCountControl->GetCounter();
+                                if(g_IFaceList->m_RCountControl->GetCounter()) res[i] *= g_IFaceList->m_RCountControl->GetCounter();
                             }
                             bool its_critical = false;
                             if(pElement->m_Param2)
@@ -2854,7 +2843,8 @@ void CInterface::Init(void)
                         plasm_color = 0xFFF6c000;
                         plas_color_upd = true;
                     }
-                    if(plas_color_upd && plasma_summ){
+                    if(plas_color_upd && plasma_summ)
+                    {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX = (player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX+24) - Float2Int(pElement->m_xPos);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_summ);
@@ -3067,7 +3057,7 @@ void CInterface::Init(void)
                
                 }
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_STRUCTURE)
-{
+                {
                     pElement->SetVisibility(true);
                     if(structure != player_side->m_Constructor->GetConstructionStructure())
                     {
@@ -3102,59 +3092,59 @@ void CInterface::Init(void)
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
-                else if (player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_PRICE && foc_el && foc_el->m_Param2 != 0)
+                else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_ITEM_PRICE && foc_el && foc_el->m_Param2 != 0)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD1_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 1)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD1_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 1)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD2_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 2)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD2_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 2)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD3_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 3)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD3_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 3)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD4_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 4)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HEAD4_ST || pElement->m_strName == IF_BASE_IHE_TEXT || pElement->m_strName == IF_BASE_IHE4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_HEAD && foc_el->m_Param2 == 4)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL1_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 1)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL1_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 1)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL2_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 2)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL2_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 2)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL3_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 3)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL3_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 3)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL4_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 4)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL4_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 4)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL5_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 5)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL5_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 5)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL6_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 6)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_HULL6_ST || pElement->m_strName == IF_BASE_IHU_TEXT || pElement->m_strName == IF_BASE_IHU6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_ARMOR && foc_el->m_Param2 == 6)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS1_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 1)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS1_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 1)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS2_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 2)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS2_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 2)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS3_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 3)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS3_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 3)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS4_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 4)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS4_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 4)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS5_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 5)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_CHAS5_ST || pElement->m_strName == IF_BASE_ICH_TEXT || pElement->m_strName == IF_BASE_ICH5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_CHASSIS && foc_el->m_Param2 == 5)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON1_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 1)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON1_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW1_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 1)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON2_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 2)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON2_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW2_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 2)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON3_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 3)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON3_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW3_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 3)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON4_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 4)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON4_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW4_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 4)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON5_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 5)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON5_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW5_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 5)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON6_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 6)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON6_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW6_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 6)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON7_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW7_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 7)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON7_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW7_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 7)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON8_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW8_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 8)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON8_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW8_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 8)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON9_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW9_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 9)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON9_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW9_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 9)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON10_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW10_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 10)
+                else if(player_side->m_ConstructPanel->IsActive() && (pElement->m_strName == IF_BASE_WEAPON10_ST || pElement->m_strName == IF_BASE_IW_TEXT || pElement->m_strName == IF_BASE_IW10_TEXT) && foc_el && ERobotUnitType(Float2Int(foc_el->m_Param1)) == MRT_WEAPON && foc_el->m_Param2 == 10)
                 pElement->SetVisibility(true);
-                else if (player_side->m_ConstructPanel->IsActive() && pElement == g_IFaceList->m_RCountControl->GetImage())
+                else if(player_side->m_ConstructPanel->IsActive() && pElement == g_IFaceList->m_RCountControl->GetImage())
                 pElement->SetVisibility(true);
             }
             pElement = pElement->m_NextElement;
@@ -3744,7 +3734,7 @@ bool CIFaceList::OnMouseMove(CPoint mouse)
 void CIFaceList::OnMouseLBUp()
 {
 	DTRACE();
-	CInterface *pIFace = m_First;
+    CInterface* pIFace = m_First;
 	while(pIFace)
     {
 		if(pIFace->m_VisibleAlpha)
@@ -3869,10 +3859,8 @@ void CIFaceList::CreateWeaponDynamicStatics()
     DeleteWeaponDynamicStatics();
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
-    if(!FLAG(m_IfListFlags, SINGLE_MODE) && !player_side->IsArcadeMode())
-        return;
-    if((player_side->GetCurGroup()->m_FirstObject && player_side->GetCurGroup()->m_FirstObject->GetObject()->GetObjectType() != OBJECT_TYPE_ROBOTAI))
-        return;
+    if(!FLAG(m_IfListFlags, SINGLE_MODE) && !player_side->IsArcadeMode()) return;
+    if((player_side->GetCurGroup()->m_FirstObject && player_side->GetCurGroup()->m_FirstObject->GetObject()->GetObjectType() != OBJECT_TYPE_ROBOTAI)) return;
 
     CMatrixRobotAI* bot = NULL;
     
@@ -3889,8 +3877,6 @@ void CIFaceList::CreateWeaponDynamicStatics()
     {
         bot = (CMatrixRobotAI*)player_side->GetCurGroup()->m_FirstObject->GetObject();
     }
-    
-    
     
     CInterface* interfaces = m_First;
 
@@ -3982,7 +3968,6 @@ void CIFaceList::DeleteWeaponDynamicStatics()
     if(!(player_side)) return;
 
     CInterface* interfaces = m_First;
-
 
     while(interfaces)
     {
@@ -4173,27 +4158,27 @@ void CIFaceList::CreateSummPrice(int multiplier)
                     int warning_id = DYNAMIC_WARNING;
                     if(cnt == TITAN)
                     {
-                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX = Float2Int(x)-2;
+                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX = Float2Int(x) - 2;
                         s = interfaces->CreateStaticFromImage(x, y, z, titan_image);
                         s->m_strName = IF_BASE_TITAN_SUMM;
                     }
                     else if(cnt == ELECTRONICS)
                     {
-                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX = Float2Int(x)-2;
+                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX = Float2Int(x) - 2;
                         s = interfaces->CreateStaticFromImage(x, y, z, electronics_image);
                         s->m_strName = IF_BASE_ELECTRONICS_SUMM;
                         warning_id+=1;
                     }
                     else if(cnt == ENERGY)
                     {
-                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX = Float2Int(x)-2;
+                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX = Float2Int(x) - 2;
                         s = interfaces->CreateStaticFromImage(x, y, z, energy_image);
                         s->m_strName = IF_BASE_ENERGY_SUMM;
                         warning_id+=2;
                     }
                     else if(cnt == PLASMA)
                     {
-                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX = Float2Int(x)-2;
+                        player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX = Float2Int(x) - 2;
                         s = interfaces->CreateStaticFromImage(x, y, z, plasma_image);
                         s->m_strName = IF_BASE_PLASMA_SUMM;
                         warning_id+=3;
@@ -4201,8 +4186,8 @@ void CIFaceList::CreateSummPrice(int multiplier)
                     if(s)
                     {
                         s->SetVisibility(false);
-                        CIFaceStatic* swarn = interfaces->CreateStaticFromImage(x+s->m_xSize, y+22, z, warning_image);
-                        x = x+s->m_xSize + 31;
+                        CIFaceStatic* swarn = interfaces->CreateStaticFromImage(x + s->m_xSize, y + 22, z, warning_image);
+                        x = x + s->m_xSize + 31;
                         s->m_nId = SUMM_PRICE_ID;
                         swarn->m_nId = warning_id;
                         swarn->SetVisibility(true);
@@ -4252,7 +4237,7 @@ void CIFaceList::SlideFocusedInterfaceRight()
 {
     if(m_FocusedInterface)
     {
-        m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos+100, m_FocusedInterface->m_yPos);
+        m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos + 100, m_FocusedInterface->m_yPos);
     }
 }
 
@@ -4260,7 +4245,7 @@ void CIFaceList::SlideFocusedInterfaceLeft()
 {
     if(m_FocusedInterface)
     {
-        m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos-100, m_FocusedInterface->m_yPos);
+        m_FocusedInterface->BeginSlide(m_FocusedInterface->m_xPos - 100, m_FocusedInterface->m_yPos);
     }
 }
 
@@ -4587,22 +4572,22 @@ void CIFaceList::CreateGroupSelection(CInterface *iface)
     CIFaceImage ramka_image = *iface->FindImageByName(CWStr(IF_GROUP_RAMKA));
     for(int i = 0; i < sel_objs; ++i)
     {
-        float pos = (i+1.0f) / 3.0f;
-        
+        float pos = (i + 1.0f) / 3.0f;
+
         if(pos <= 1)
         {
-            x = (float)(225 + 48*i);
+            x = (float)(225 + 48 * i);
             y = 49;
         }
         else if(pos > 1 && pos <= 2)
         {
-            x = (float)((225 + 48*i)-48*3);
-            y = 49*2;
+            x = (float)((225 + 48 * i) - 48 * 3);
+            y = 49 * 2;
         }
         else if(pos > 2)
         {
-            x = (float)((225 + 48*i)-48*6);
-            y = 49*3;
+            x = (float)((225 + 48 * i) - 48 * 6);
+            y = 49 * 3;
         }
         
         

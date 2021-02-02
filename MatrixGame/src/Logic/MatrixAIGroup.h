@@ -81,14 +81,14 @@ class CMatrixGroup : public CMain
 
         CMatrixMapStatic* GetObjectByN(int num);
 
-        int GetObjectsCnt()                                             { return m_ObjectsCnt; }
+        int GetObjectsCnt() { return m_ObjectsCnt; }
         
-        int GetRobotsCnt()                                              { return m_RobotsCnt; }
-        int GetFlyersCnt()                                              { return m_FlyersCnt; }
-        int GetBuildingsCnt()                                            { return m_BuildingsCnt;}
+        int GetRobotsCnt() { return m_RobotsCnt; }
+        int GetFlyersCnt() { return m_FlyersCnt; }
+        int GetBuildingsCnt() { return m_BuildingsCnt;}
 
-        void SetTeam(int team)                                          { m_Team = team; }
-        int GetTeam()                                                   { return m_Team; }
+        void SetTeam(int team) { m_Team = team; }
+        int GetTeam() { return m_Team; }
 
         void FindNearObjects(CMatrixGroupObject* object);
         bool FindObject(CMatrixMapStatic* object);
@@ -99,12 +99,12 @@ class CMatrixGroup : public CMain
         void LogicTakt(CMatrixSideUnit* side);
         void CalcGroupPosition();
         void CalcGroupSpeed();
-        void SetGroupId(int id)                                         { m_Id = id; }
-        int GetGroupId()                                                { return m_Id; }
-        //CMatrixTactics* GetTactics()                                    { return m_Tactics; }
-        D3DXVECTOR3 GetGroupPos()                                       { return m_GroupPosition; }
-        float GetGroupSpeed()                                           { return m_GroupSpeed; }
-        void SetGroupSpeed(float speed)                                 { m_GroupSpeed = speed; }
+        void SetGroupId(int id) { m_Id = id; }
+        int GetGroupId() { return m_Id; }
+        //CMatrixTactics* GetTactics() { return m_Tactics; }
+        D3DXVECTOR3 GetGroupPos() { return m_GroupPosition; }
+        float GetGroupSpeed() { return m_GroupSpeed; }
+        void SetGroupSpeed(float speed) { m_GroupSpeed = speed; }
 
 
         int GetBombersCnt();

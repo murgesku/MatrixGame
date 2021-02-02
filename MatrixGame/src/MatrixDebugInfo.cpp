@@ -24,7 +24,7 @@ CMatrixDebugInfo::CMatrixDebugInfo(void)
 
 void CMatrixDebugInfo::Clear(void)
 {
-    for (int i=0; i<m_ItemsCnt; ++i)
+    for(int i = 0; i < m_ItemsCnt; ++i)
     {
         HDelete(CWStr,m_Items[i].key,g_MatrixHeap);
         HDelete(CWStr,m_Items[i].val,g_MatrixHeap);
@@ -44,9 +44,9 @@ void CMatrixDebugInfo::Draw(void)
     try
     {
         int y = m_Pos.y;
-        for (int i=0; i<m_ItemsCnt; ++i)
+        for(int i = 0; i < m_ItemsCnt; ++i)
         {
-            if (m_Items[i].bttl > 0)
+            if(m_Items[i].bttl > 0)
             {
                 continue;
             }
@@ -57,9 +57,9 @@ void CMatrixDebugInfo::Draw(void)
             r.bottom = y + DI_KEY_H;
 
             BYTE a = 255;
-            if (m_Items[i].ttl < 1000) a = (BYTE)Float2Int(float(m_Items[i].ttl) * 0.255f);
+            if(m_Items[i].ttl < 1000) a = (BYTE)Float2Int(float(m_Items[i].ttl) * 0.255f);
 
-            DWORD color = (a<<24) | 0xFFFFFF;
+            DWORD color = (a << 24) | 0xFFFFFF;
 
             //DWORD noclip = DT_END_ELLIPSIS;
             //if (m_Items[i].val->GetLen() == 0) noclip = DT_NOCLIP;

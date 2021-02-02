@@ -81,7 +81,7 @@ void CMatrixEffectElevatorField::UpdateData(const D3DXVECTOR3 &pos0, const D3DXV
     */
 
 
-    for (int i=0; i<5;++i)
+    for (int i = 0; i < 5; ++i)
     {
         p[i] = pos1 + m_Dir * r * koefs[i][0] + perp * r * koefs[i][1];
     }

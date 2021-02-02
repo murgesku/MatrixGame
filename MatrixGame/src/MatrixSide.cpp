@@ -817,6 +817,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
     if(pObject == TRACE_STOP_NONE || !(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE))
         return;
 
+    //Выделение всех роботов на экране по двойному левому клику мыши на одном из них
     if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE)
     {
         D3DXVECTOR3 o_pos = pObject->GetGeoCenter();
@@ -841,6 +842,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse)
         }
     }
     CreateGroupFromCurrent();
+
     if(GetCurGroup() && GetCurGroup()->GetObjectsCnt() == 1)
     {
         Select(ROBOT, NULL);
@@ -1394,52 +1396,71 @@ void CMatrixSideUnit::SetArcadedObject(CMatrixMapStatic *o)
         m_ArcadedP_available = 0;
     }
 
-    if(o && o->GetSide() != PLAYER_SIDE){
+    if(o && o->GetSide() != PLAYER_SIDE)
+    {
         return;
     }
-    if(IsRobotMode()){
-        if(m_Arcaded->AsRobot()->m_SoundChassis){
+    if(IsRobotMode())
+    {
+        if(m_Arcaded->AsRobot()->m_SoundChassis)
+        {
             CSound::StopPlay(m_Arcaded->AsRobot()->m_SoundChassis);
             m_Arcaded->AsRobot()->m_SoundChassis = SOUND_ID_EMPTY;
         }
     }
 
-    if(IsRobotMode() && !m_Arcaded->IsDIP()){
+    if(IsRobotMode() && !m_Arcaded->IsDIP())
+    {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
         m_Arcaded->AsRobot()->MapPosCalc();
         g_MatrixMap->GetSideById(m_Arcaded->AsRobot()->GetSide())->PGOrderAttack(g_MatrixMap->GetSideById(m_Arcaded->AsRobot()->GetSide())->RobotToLogicGroup(m_Arcaded->AsRobot()),CPoint(m_Arcaded->AsRobot()->GetMapPosX(),m_Arcaded->AsRobot()->GetMapPosY()),NULL);
         RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
     }
 
-    if(IsRobotMode() && (o == NULL || o == m_Arcaded)){
+    if(IsRobotMode() && (o == NULL || o == m_Arcaded))
+    {
         m_Arcaded->AsRobot()->SetMaxSpeed(m_Arcaded->AsRobot()->GetMaxSpeed() / SPEED_BOOST);
         o = NULL;
         m_Arcaded->AsRobot()->UnSelect();
         if (g_IFaceList) g_IFaceList->DeleteWeaponDynamicStatics();
         Select(NOTHING, NULL);
-    }else if(IsRobotMode() && o->GetObjectType() == OBJECT_TYPE_ROBOTAI){
+    }
+    else if(IsRobotMode() && o->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+    {
         if(g_IFaceList) g_IFaceList->DeleteWeaponDynamicStatics();
         m_Arcaded->AsRobot()->UnSelect();
         m_Arcaded->AsRobot()->SetMaxSpeed(m_Arcaded->AsRobot()->GetMaxSpeed() / SPEED_BOOST);
         m_Arcaded->AsRobot()->SetWeaponToDefaultCoeff();
-    }else if(IsRobotMode() && o->GetObjectType() == OBJECT_TYPE_FLYER){
+    }
+    else if(IsRobotMode() && o->GetObjectType() == OBJECT_TYPE_FLYER)
+    {
         if(g_IFaceList) g_IFaceList->DeleteWeaponDynamicStatics();
         m_Arcaded->AsRobot()->UnSelect();
         m_Arcaded->AsRobot()->SetMaxSpeed(m_Arcaded->AsRobot()->GetMaxSpeed() / SPEED_BOOST);
     }
     
     m_Arcaded = o;
-    if(IsRobotMode()){
+    if(IsRobotMode())
+    {
         CMatrixRobotAI* robot = (CMatrixRobotAI*)o;
-        if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC){
-            robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_PNEUMATIC_LOOP,robot->GetGeoCenter(), SL_CHASSIS);            
-        }else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL){
+        if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+        {
+            robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_PNEUMATIC_LOOP, robot->GetGeoCenter(), SL_CHASSIS);            
+        }
+        else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL)
+        {
             robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_WHEEL_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
-        }else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_TRACK){
+        }
+        else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_TRACK)
+        {
             robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_TRACK_LOOP, robot->GetGeoCenter(),  SL_CHASSIS);
-        }else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT){
+        }
+        else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT)
+        {
             robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_HOVERCRAFT_LOOP, robot->GetGeoCenter(),  SL_CHASSIS);
-        }else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY){
+        }
+        else if(robot->m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY)
+        {
             robot->m_SoundChassis = CSound::Play(robot->m_SoundChassis, S_CHASSIS_ANTIGRAVITY_LOOP, robot->GetGeoCenter(),  SL_CHASSIS);
         }
 
@@ -4750,7 +4771,7 @@ void CMatrixSideUnit::TaktTL()
         obj = obj->GetNextLogic();
     }*/
 /*    CHelper::DestroyByGroup(5001);
-    for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;i++) {
+    for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;++i) {
         CPoint tp=g_MatrixMap->m_RN.m_Region[i].m_Center;
         CHelper::Create(10,5001)->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,0),D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,20),1.0f,1.0f,g_MatrixMap->m_RN.m_Region[i].m_Color,g_MatrixMap->m_RN.m_Region[i].m_Color,5);
         for(u=0;u<i;u++) {
@@ -4763,193 +4784,232 @@ void CMatrixSideUnit::TaktTL()
 
 void CMatrixSideUnit::WarTL(int group)
 {
-    int i,u;//,x,y;
-    byte mm=0;
-    CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    int rlcnt=0;                     // Кол-во роботов на карте
+    int i, u; //x, y;
+    byte mm = 0;
+    CMatrixMapStatic* obj;
+    CMatrixRobotAI* rl[MAX_ROBOTS]; //Список роботов на карте
+    int rlcnt = 0;                  //Кол-во роботов на карте
     bool rlokmove[MAX_ROBOTS];
 
     BufPrepare();
 
     obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveRobot() && obj->GetSide()==m_Id && GetGroupLogic(obj)==group) {
-            rl[rlcnt]=(CMatrixRobotAI*)obj;
-            mm|=1<<(obj->AsRobot()->m_Unit[0].m_Kind-1);
-            rlcnt++;
+    while(obj)
+    {
+        if(obj->IsLiveRobot() && obj->GetSide() == m_Id && GetGroupLogic(obj) == group)
+        {
+            rl[rlcnt] = (CMatrixRobotAI*)obj;
+            mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+            ++rlcnt;
         }
         obj = obj->GetNextLogic();
     }
-    if(rlcnt<0) return;
+    if(rlcnt < 0) return;
 
     // Находим врага для всей группы
-    for(i=0;i<rlcnt;i++) {
-        if(rl[i]->GetEnv()->m_TargetAttack==rl[i]) rl[i]->GetEnv()->m_TargetAttack=NULL;
+    for(i = 0; i < rlcnt; ++i)
+    {
+        if(rl[i]->GetEnv()->m_TargetAttack == rl[i]) rl[i]->GetEnv()->m_TargetAttack = NULL;
 
-        if(!rl[i]->GetEnv()->m_TargetAttack) {
-            // Находим ближайшего незакрытого врага
-            float mindist=1e10f;
-            CEnemy * enemyfind=NULL;
-            CEnemy * enemy=rl[i]->GetEnv()->m_FirstEnemy;
-            while(enemy) {
-                if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy!=rl[i]) {
-                    float cd=Dist2(GetWorldPos(enemy->m_Enemy),GetWorldPos(rl[i]));
-                    if(cd<mindist) {
-                        // Проверяем не закрыт ли он своими
-                        D3DXVECTOR3 des,from,dir,p;
-                        float t,dist;
+        if(!rl[i]->GetEnv()->m_TargetAttack)
+        {
+            //Находим ближайшего незакрытого врага
+            float mindist = 1e10f;
+            CEnemy* enemyfind = NULL;
+            CEnemy* enemy = rl[i]->GetEnv()->m_FirstEnemy;
+            while(enemy)
+            {
+                if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy != rl[i])
+                {
+                    float cd = Dist2(GetWorldPos(enemy->m_Enemy), GetWorldPos(rl[i]));
+                    if(cd < mindist)
+                    {
+                        //Проверяем не закрыт ли он своими
+                        D3DXVECTOR3 des, from, dir, p;
+                        float t, dist;
 
-                        from=rl[i]->GetGeoCenter();
-                        des=PointOfAim(enemy->m_Enemy);
-                        dist=sqrt(POW2(from.x-des.x)+POW2(from.y-des.y)+POW2(from.z-des.z));
-                        if(dist>0.0f) {
-                            t=1.0f/dist;
-                            dir.x=(des.x-from.x)*t;
-                            dir.y=(des.y-from.y)*t;
-                            dir.z=(des.z-from.z)*t;
+                        from = rl[i]->GetGeoCenter();
+                        des = PointOfAim(enemy->m_Enemy);
+                        dist = sqrt(POW2(from.x - des.x) + POW2(from.y - des.y) + POW2(from.z - des.z));
+                        if(dist > 0.0f)
+                        {
+                            t = 1.0f / dist;
+                            dir.x = (des.x - from.x) * t;
+                            dir.y = (des.y - from.y) * t;
+                            dir.z = (des.z - from.z) * t;
                             obj = CMatrixMapStatic::GetFirstLogic();
-                            while(obj) {
-                                if(IsLiveUnit(obj) && obj->GetSide()==m_Id && rl[i]!=obj) {
-                                    p=PointOfAim(obj);
 
-                                    if(IsIntersectSphere(p,25.0f,from,dir,t)) {
-                                        if(t>=0.0f && t<dist) break;
+                            while(obj)
+                            {
+                                if(IsLiveUnit(obj) && obj->GetSide() == m_Id && rl[i] != obj)
+                                {
+                                    p = PointOfAim(obj);
+
+                                    if(IsIntersectSphere(p, 25.0f, from, dir, t))
+                                    {
+                                        if(t >= 0.0f && t < dist) break;
                                     }
                                 }
                                 obj = obj->GetNextLogic();
                             }
-                            if(!obj) { 
-                                mindist=cd;
-                                enemyfind=enemy;
+                            if(!obj)
+                            {
+                                mindist = cd;
+                                enemyfind = enemy;
                             }
                         }
                     }
                 }
-                enemy=enemy->m_NextEnemy;
+                enemy = enemy->m_NextEnemy;
             }
-            // Если не нашли открытого ищем закрытого
-            if(!enemyfind) {
-                enemy=rl[i]->GetEnv()->m_FirstEnemy;
-                while(enemy) {
-                    if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy!=rl[i]) {
-                        float cd=Dist2(GetWorldPos(enemy->m_Enemy),GetWorldPos(rl[i]));
-                        if(cd<mindist) {
-                            mindist=cd;
-                            enemyfind=enemy;
+            //Если не нашли открытого ищем закрытого
+            if(!enemyfind)
+            {
+                enemy = rl[i]->GetEnv()->m_FirstEnemy;
+                while(enemy)
+                {
+                    if(IsLiveUnit(enemy->m_Enemy) && enemy->m_Enemy != rl[i])
+                    {
+                        float cd = Dist2(GetWorldPos(enemy->m_Enemy), GetWorldPos(rl[i]));
+                        if(cd < mindist)
+                        {
+                            mindist = cd;
+                            enemyfind = enemy;
                         }
                     }
-                    enemy=enemy->m_NextEnemy;
+                    enemy = enemy->m_NextEnemy;
                 }
             }
 
-            if(enemyfind) {
-                rl[i]->GetEnv()->m_TargetAttack=enemyfind->m_Enemy;
+            if(enemyfind)
+            {
+                rl[i]->GetEnv()->m_TargetAttack = enemyfind->m_Enemy;
                 // Если новая цель пушка то меняем позицию
-                if(rl[i]->GetEnv()->m_TargetAttack->IsLiveActiveCannon()) {
-                    rl[i]->GetEnv()->m_Place=-1; 
+                if(rl[i]->GetEnv()->m_TargetAttack->IsLiveActiveCannon())
+                {
+                    rl[i]->GetEnv()->m_Place = -1;
                 }
             }
         }
     }
 
-    // Проверяем правильно ли роботы идут
-    bool moveok=true;
-    for(i=0;i<rlcnt;i++) {
-        rlokmove[i]=true;
-        
-        if(!rl[i]->CanBreakOrder()) continue; // Пропускаем если робот не может прервать текущий приказ
-        if(!rl[i]->GetEnv()->m_TargetAttack) { // Если у робота нет цели то идем в регион назначения
-            if(GetDesRegion(rl[i])!=m_LogicGroup[group].m_Action.m_Region) {
-                if(!PlaceInRegion(rl[i],rl[i]->GetEnv()->m_Place,m_LogicGroup[group].m_Action.m_Region)) {
-                    if(CanChangePlace(rl[i])) {
-                    AssignPlace(rl[i],m_LogicGroup[group].m_Action.m_Region);
+    //Проверяем правильно ли роботы идут
+    bool moveok = true;
+    for(i = 0; i < rlcnt; ++i)
+    {
+        rlokmove[i] = true;
 
-                    SMatrixPlace * place=ObjPlacePtr(rl[i]);
-                    if(place && PrepareBreakOrder(rl[i])) {
-                        rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+        if(!rl[i]->CanBreakOrder()) continue; //Пропускаем если робот не может прервать текущий приказ
+        if(!rl[i]->GetEnv()->m_TargetAttack) //Если у робота нет цели то идем в регион назначения
+        {
+            if(GetDesRegion(rl[i]) != m_LogicGroup[group].m_Action.m_Region)
+            {
+                if(!PlaceInRegion(rl[i], rl[i]->GetEnv()->m_Place, m_LogicGroup[group].m_Action.m_Region))
+                {
+                    if(CanChangePlace(rl[i]))
+                    {
+                        AssignPlace(rl[i], m_LogicGroup[group].m_Action.m_Region);
+
+                        SMatrixPlace* place = ObjPlacePtr(rl[i]);
+                        if(place && PrepareBreakOrder(rl[i])) rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                     }
                 }
             }
-            }
             continue;
         }
-        if(rl[i]->GetEnv()->m_Place<0) {
-            if(CanChangePlace(rl[i])) {
-            rlokmove[i]=false;
-            moveok=false;
-            continue;
-        }
-        }
-        D3DXVECTOR2 tv=GetWorldPos(rl[i]->GetEnv()->m_TargetAttack);
-
-        SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
-        if(place==NULL) {
-            if(CanChangePlace(rl[i])) {
-                rl[i]->GetEnv()->m_Place=-1;
-                rlokmove[i]=false;
-                moveok=false;
+        if(rl[i]->GetEnv()->m_Place < 0)
+        {
+            if(CanChangePlace(rl[i]))
+            {
+                rlokmove[i] = false;
+                moveok = false;
                 continue;
             }
-        } else {
-        float dist2=POW2(GLOBAL_SCALE_MOVE*place->m_Pos.x+GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2-tv.x)+POW2(GLOBAL_SCALE_MOVE*place->m_Pos.y+GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2-tv.y);
-        if(dist2>POW2(rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) {
-                if(CanChangePlace(rl[i])) {
-            rl[i]->GetEnv()->m_Place=-1;
-            rlokmove[i]=false;
-            moveok=false;
-            continue;
         }
+        D3DXVECTOR2 tv = GetWorldPos(rl[i]->GetEnv()->m_TargetAttack);
+
+        SMatrixPlace* place = GetPlacePtr(rl[i]->GetEnv()->m_Place);
+        if(place == NULL)
+        {
+            if(CanChangePlace(rl[i]))
+            {
+                rl[i]->GetEnv()->m_Place = -1;
+                rlokmove[i] = false;
+                moveok = false;
+                continue;
             }
         }
-/*        if(!IsToPlace(rl[i],rl[i]->GetEnv()->m_Place)) {
-//            IsToPlace(rl[i],rl[i]->GetEnv()->m_Place);
+        else
+        {
+            float dist2 = POW2(GLOBAL_SCALE_MOVE * place->m_Pos.x + GLOBAL_SCALE_MOVE * ROBOT_MOVECELLS_PER_SIZE / 2 - tv.x) + POW2(GLOBAL_SCALE_MOVE * place->m_Pos.y + GLOBAL_SCALE_MOVE * ROBOT_MOVECELLS_PER_SIZE / 2 - tv.y);
+            if(dist2 > POW2(rl[i]->GetMaxFireDist() - GLOBAL_SCALE_MOVE * ROBOT_MOVECELLS_PER_SIZE / 2))
+            {
+                if(CanChangePlace(rl[i]))
+                {
+                    rl[i]->GetEnv()->m_Place = -1;
+                    rlokmove[i] = false;
+                    moveok = false;
+                    continue;
+                }
+            }
+        }
+        /*if(!IsToPlace(rl[i],rl[i]->GetEnv()->m_Place))
+        {
+            //IsToPlace(rl[i],rl[i]->GetEnv()->m_Place);
             rlokmove[i]=false;
             moveok=false;
             continue;
         }*/
     }
 
-    // Назначаем движение
-    if(!moveok) {
-        // Находим центр и радиус
-        CPoint center,tp2,tp=CPoint(0,0);
-        int f=0;
-        for(i=0;i<rlcnt;i++) {
+    //Назначаем движение
+    if(!moveok)
+    {
+        //Находим центр и радиус
+        CPoint center, tp2, tp = CPoint(0, 0);
+        int f = 0;
+        for(i = 0; i < rlcnt; ++i)
+        {
             if(!rl[i]->GetEnv()->m_TargetAttack) continue;
-            tp+=GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
-            f++;
-                }
-        if(f<=0) return;
-        tp.x=tp.x/f; tp.y=tp.y/f;
-        f=1000000000;
-        for(i=0;i<rlcnt;i++) {
+            tp += GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
+            ++f;
+        }
+        if(f <= 0) return;
+        tp.x = tp.x / f; tp.y = tp.y / f;
+        f = 1000000000;
+        for(i = 0; i < rlcnt; ++i)
+        {
             if(!rl[i]->GetEnv()->m_TargetAttack) continue;
-            tp2=GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
-            int f2=POW2(tp.x-tp2.x)+POW2(tp.y-tp2.y);
-            if(f2<f) {
-                f=f2;
-                center=tp2;
+            tp2 = GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
+            int f2 = POW2(tp.x - tp2.x) + POW2(tp.y - tp2.y);
+            if(f2 < f)
+            {
+                f = f2;
+                center = tp2;
             }
-            }
-        int radius=0;
-        int radiusrobot=0;
-        for(i=0;i<rlcnt;i++) {
+        }
+        int radius = 0;
+        int radiusrobot = 0;
+        for(i = 0; i < rlcnt; ++i)
+        {
             if(!rl[i]->GetEnv()->m_TargetAttack) continue;
-            tp2=GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
-            radiusrobot=max(radiusrobot,Float2Int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
-            radius=max(radius,Float2Int(sqrt(float(POW2(center.x-tp2.x)+POW2(center.y-tp2.y)))+rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE+ROBOT_MOVECELLS_PER_SIZE));
+            tp2 = GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
+            radiusrobot = max(radiusrobot, Float2Int(rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE));
+            radius = max(radius, Float2Int(sqrt(float(POW2(center.x - tp2.x) + POW2(center.y - tp2.y))) + rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE));
         }
 
 //DM(L"RadiusSeek",CWStr().Format(L"<i>   <i>",radius,radiusrobot).Get());
         
         bool cplr=true;
         
-        // Находим место
+        //Находим место
         int listcnt;
-        if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),center,radius,false,m_PlaceList,&listcnt)==0) {
-            for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
-        } else {
+        if(g_MatrixMap->PlaceList(mm, GetMapPos(rl[0]), center, radius, false, m_PlaceList, &listcnt) == 0)
+        {
+            for(i = 0; i < rlcnt; ++i) rl[i]->GetEnv()->m_PlaceNotFound = g_MatrixMap->GetTime();
+        }
+        else
+        {
 
 /*CHelper::DestroyByGroup(524234);
 D3DXVECTOR3 v1;
@@ -5022,11 +5082,13 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                     tvx=((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->m_PosX-rl[i]->m_PosX; 
                     tvy=((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->m_PosY-rl[i]->m_PosY;
                     enemy_fire_dist=Float2Int(((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->GetMaxFireDist());
-                } else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
+                }
+                else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
                     tvx=((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.x-rl[i]->m_PosX;
                     tvy=((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.y-rl[i]->m_PosY;
                     enemy_fire_dist=int(((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->GetFireRadius()+GLOBAL_SCALE_MOVE);
-                } else continue;
+                }
+                else continue;
                 float tsize2=tvx*tvx+tvy*tvy;
                 float tsize2o=1.0f/tsize2;
 
@@ -5035,7 +5097,8 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 //    for(x=plr.left;x<plr.right;x++,plist++) {
                 //        SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+plist->m_Sme;
                 //        for(u=0;u<plist->m_Cnt;u++,place++) {
-                        for(u=0;u<listcnt;u++) {
+                        for(u = 0; u < listcnt; ++u)
+                        {
                             int iplace=m_PlaceList[u];
                             SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+iplace;
 
@@ -5050,13 +5113,18 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             float pvy=pcy-rl[i]->m_PosY;
 
                             float k=(pvx*tvx+pvy*tvy)*tsize2o;
-                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
+                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON)
+                            {
 //                                if(k>1.5) continue; // Места за врагом не расматриваем
 
-                            } else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()!=OBJECT_TYPE_BUILDING) {
+                            }
+                            else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()!=OBJECT_TYPE_BUILDING)
+                            {
                             if(k>0.95) continue; // Места за врагом не расматриваем
 
-                            } else if(!havebomb) {
+                            }
+                            else if(!havebomb)
+                            {
                                 if(k>1.2) continue; // Места сильно за врагом не расматриваем
                             }
 //                            if(k>0.95) continue; // Места за врагом не расматриваем
@@ -5083,26 +5151,34 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                             CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, D3DXVECTOR3(pcx,pcy,g_MatrixMap->GetZ(pcx,pcy)+20.0f) /*rl[i]->GetGeoCenter()*/, PointOfAim(rl[i]->GetEnv()->m_TargetAttack), TRACE_OBJECT|TRACE_NONOBJECT|TRACE_OBJECTSPHERE|TRACE_SKIP_INVISIBLE, rl[i]);
                             bool close=(IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE);
 
-                            if(placebest>=0) { // Если уже найдено место то выбираем наилучшее
-                                if(havebomb) {
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
-                                } else if(close!=s_close) {
+                            if(placebest >= 0) //Если уже найдено место то выбираем наилучшее
+                            {
+                                if(havebomb)
+                                {
+                                    if(distplace2 > s_f1) continue; //Место дальше предыдущего пропускаем
+                                }
+                                else if(close != s_close)
+                                {
                                     if(close) continue;
-                                } else if(!underfire && s_underfire);
+                                }
+                                else if(!underfire && s_underfire);
                                 else if(underfire && !s_underfire) continue;
-                                else if(underfire) { // Если под обстрелом
-                                    if(underfire>s_underfire) continue; // Место более обстреливоемое пропускаем
-                                    if(distplace2<s_f1) continue; // Место ближе предыдущего пропускаем
-                                } else { // Если вне радиуса поражения противника
-                                    if(distplace2>s_f1) continue; // Место дальше предыдущего пропускаем
+                                else if(underfire) //Если под обстрелом
+                                {
+                                    if(underfire > s_underfire) continue; //Место более обстреливоемое пропускаем
+                                    if(distplace2 < s_f1) continue; //Место ближе предыдущего пропускаем
+                                }
+                                else //Если вне радиуса поражения противника
+                                {
+                                    if(distplace2 > s_f1) continue; //Место дальше предыдущего пропускаем
                                 }
                             }
 
-                            s_close=close;
-                            s_f1=distplace2;
-                            s_underfire=underfire;
-                            placebest=iplace;
-                }
+                            s_close = close;
+                            s_f1 = distplace2;
+                            s_underfire = underfire;
+                            placebest = iplace;
+                        }
 //                    }
 //                }
 
@@ -5118,10 +5194,10 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 } else if(cplr) {
                     cplr=false;
                     if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),center,radiusrobot,false,m_PlaceList,&listcnt)==0) {
-                        for(u=0;u<rlcnt;u++) rl[u]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
+                        for(u=0; u<rlcnt; ++u) rl[u]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
                         break;
                     } else {
-                        for(u=0;u<listcnt;u++) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
+                        for(u=0; u<listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
                         obj = CMatrixMapStatic::GetFirstLogic();
                         while(obj) {
                             if(IsLiveUnit(obj)) ObjPlaceData(obj,1);
@@ -5137,7 +5213,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                     int iplace;
                     SMatrixPlace * place;
 
-                    for(u=0;u<listcnt;u++) {
+                    for(u=0; u<listcnt; ++u) {
                         iplace=m_PlaceList[u];
                         place=g_MatrixMap->m_RN.m_Place+iplace;
 
@@ -5154,7 +5230,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                     } else { // Расширяем
                         if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
 
-                        for(u=0;u<listcnt;u++) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
+                        for(u=0; u<listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
                         obj = CMatrixMapStatic::GetFirstLogic();
                         while(obj) {
                             if(IsLiveUnit(obj)) ObjPlaceData(obj,1);
@@ -5172,9 +5248,12 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
     int curTime=g_MatrixMap->GetTime();
 
-    for(i=0;i<rlcnt;i++) {
-        if(rl[i]->GetEnv()->m_TargetAttack) {
-            if(!IsLiveUnit(rl[i]->GetEnv()->m_TargetAttack)) {
+    for(i=0; i<rlcnt; ++i)
+    {
+        if(rl[i]->GetEnv()->m_TargetAttack)
+        {
+            if(!IsLiveUnit(rl[i]->GetEnv()->m_TargetAttack))
+            {
                 rl[i]->StopFire();
                 continue;
             }
@@ -5194,12 +5273,15 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 dir.z=(des.z-from.z)*t;
 
                 obj = CMatrixMapStatic::GetFirstLogic();
-                while(obj) {
+                while(obj)
+                {
                     if(IsLiveUnit(obj) && obj->GetSide()==m_Id && rl[i]!=obj) {
                         p=PointOfAim(obj);
 
-                        if(IsIntersectSphere(p,25.0f,from,dir,t)) {
-                            if(t>=0.0f && t<dist) {
+                        if(IsIntersectSphere(p,25.0f,from,dir,t))
+                        {
+                            if(t>=0.0f && t<dist)
+                            {
 
 //CHelper::DestroyByGroup(DWORD(this)+4);
 //CHelper::Create(10,DWORD(this)+4)->Cone(from,des,1.0f,1.0f,0xffffffff,0xffffffff,3);
@@ -5219,7 +5301,8 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 //            des.z+=(float)g_MatrixMap->RndFloat(-5.0f,+5.0f);
 
             CInfo * env=GetEnv(rl[i]);
-            if(env->m_TargetAttack!=env->m_TargetLast) {
+            if(env->m_TargetAttack!=env->m_TargetLast)
+            {
                 env->m_TargetLast=env->m_TargetAttack;
                 env->m_TargetChange=curTime;
             }
@@ -5230,13 +5313,15 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
                 fireline=D3DXVec3LengthSq(&(v2-v1))<=POW2(rl[i]->GetMaxFireDist());
 
-                if(fireline) {
+                if(fireline)
+                {
                     CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, v1, v2, TRACE_OBJECT|TRACE_NONOBJECT, rl[i]);
                     fireline=!((IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE));
                 }
             }
 
-            if(fireline) { 
+            if(fireline)
+            {
                 // Если у цели голова Firewall то в нее сложнее попасть
                 /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
@@ -8019,7 +8104,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
     int curTime=g_MatrixMap->GetTime();
 
-    for(i=0;i<rlcnt;i++) {
+    for(i=0; i<rlcnt; ++i) {
         if(rl[i]->GetEnv()->m_TargetAttack) {
             if(!rl[i]->GetEnv()->m_TargetAttack->IsLive()) {
                 rl[i]->StopFire();
@@ -9893,7 +9978,7 @@ void CMatrixSideUnit::CalcRegionPath(SMatrixLogicAction * ac,int rend,byte mm)
 
     while(true) {
         i=-1;
-        for(t=0;t<g_MatrixMap->m_RN.m_Region[rend].m_NearCnt;t++) {
+        for(t=0; t<g_MatrixMap->m_RN.m_Region[rend].m_NearCnt; ++t) {
             u=g_MatrixMap->m_RN.m_Region[rend].m_Near[t];
             if(!m_Region[u].m_Data) continue;
             if(m_Region[u].m_Data>=level) continue;
