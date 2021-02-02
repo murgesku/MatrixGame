@@ -37,7 +37,7 @@ CStr::CStr(const wchar * s, CHeap * heap) : CMain()
 }
 
 
-CStr::CStr(int zn, CHeap * heap) : CMain()
+CStr::CStr(int zn, CHeap* heap) : CMain()
 {
 	m_Heap=heap;
 
@@ -46,7 +46,7 @@ CStr::CStr(int zn, CHeap * heap) : CMain()
 	Set(zn);
 }
 
-CStr::CStr(double zn,int zpz, CHeap * heap) : CMain()
+CStr::CStr(double zn, int zpz, CHeap * heap) : CMain()
 {
 	m_Heap=heap;
 

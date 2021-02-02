@@ -47,8 +47,7 @@ CMatrixGroup::~CMatrixGroup()
 {
 	DTRACE();
     RemoveAll();
-    //if(m_Tactics)
-    //    HDelete(CMatrixTactics, m_Tactics, g_MatrixHeap);
+    //if(m_Tactics) HDelete(CMatrixTactics, m_Tactics, g_MatrixHeap);
 }
 
 void CMatrixGroup::AddObject(CMatrixMapStatic* object, int team)
@@ -67,17 +66,17 @@ void CMatrixGroup::AddObject(CMatrixMapStatic* object, int team)
 
     if(object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
     {
-        m_RobotsCnt++;
+        ++m_RobotsCnt;
     }
     else if(object->GetObjectType() == OBJECT_TYPE_FLYER)
     {
-        m_FlyersCnt++;
+        ++m_FlyersCnt;
     }
     else if(object->GetObjectType() == OBJECT_TYPE_BUILDING)
     {
-        m_BuildingsCnt++;
+        ++m_BuildingsCnt;
     }
-    m_ObjectsCnt++;
+    ++m_ObjectsCnt;
 
     CalcGroupPosition();
     CalcGroupSpeed();
@@ -92,6 +91,7 @@ void CMatrixGroup::RemoveObject(CMatrixMapStatic* object)
         {
             LIST_DEL(g_object, m_FirstObject, m_LastObject, m_PrevObject, m_NextObject);
             HDelete(CMatrixGroupObject, g_object, g_MatrixHeap);
+
             if(object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
             {
                 m_RobotsCnt--;
@@ -105,6 +105,7 @@ void CMatrixGroup::RemoveObject(CMatrixMapStatic* object)
                 m_BuildingsCnt--;
             }
             m_ObjectsCnt--;
+
             CalcGroupPosition();
             CalcGroupSpeed();
             
@@ -206,74 +207,76 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject* fn_object)
         
 }
 
-//void CMatrixGroup::InstallTactics(TacticsType type, CBlockPar* par)
-//{
-//    if(par == NULL)
-//        return;
-//    if(m_Tactics != NULL)
-//        DeInstallTactics();
-//
-//    CWStr stype;
-//    switch(type){
-//        case ATTACK_TARGET_TACTICS:
-//            stype = L"AttackTarget";
-//            break;
-//        case ATTACK_TACTICS:
-//            stype = L"Attack";
-//            break;
-//        case CAPTURE_TACTICS:
-//            stype = L"Capture";
-//            break;
-//        case PROTECTION_TACTICS:
-//            stype = L"Protection";
-//            break;
-//        case JOIN_TACTICS:
-//            stype = L"Join";
-//            break;
-//        case MOVE_TACTICS:
-//            stype = L"Move";
-//            break;
-//        default:
-//            return;
-//
-//    }
-//    
-//    int tactics_cnt = par->BlockCount();
-//    if(tactics_cnt <= 0)
-//        return;
-//////Tactics loading
-//    for(int cnt = 0;cnt < tactics_cnt; cnt++){
-//        if(par->BlockGet(cnt)->ParGetNE(L"Type") == stype){
-//            m_Tactics = HNew(g_MatrixHeap) CMatrixTactics;
-//            m_Tactics->SetName(par->BlockGetName(cnt));
-//            m_Tactics->SetParent(NULL);
-//            m_Tactics->Load(*par->BlockGet(cnt));
-//            break;
-//        }
-//    }
-//}
-//
-//void CMatrixGroup::DeInstallTactics()
-//{
-//    if(m_Tactics == NULL)
-//        return;
-//
-//    CMatrixLogicSlot*   slots = m_Tactics->m_FirstSlot;
-//    
-//    while(slots){
-//        CLogicSlotRobot* robots = slots->m_FirstRobot;
-//        while(robots){
-//            robots->GetLogicRobot()->BreakAllOrders();
-//            robots = robots->m_NextRobot;
-//        }
-//        slots = slots->m_NextSlot;
-//    }
-//    
-//    m_Tactics->Reset();
-//    //ZeroMemory(m_Tactics, sizeof(CMatrixTactics));
-//    HDelete(CMatrixTactics, m_Tactics, g_MatrixHeap);
-//    m_Tactics = NULL;
-//}
+/*void CMatrixGroup::InstallTactics(TacticsType type, CBlockPar* par)
+{
+    if(par == NULL) return;
+    if(m_Tactics != NULL) DeInstallTactics();
+
+    CWStr stype;
+    switch (type)
+    {
+    case ATTACK_TARGET_TACTICS:
+        stype = L"AttackTarget";
+        break;
+    case ATTACK_TACTICS:
+        stype = L"Attack";
+        break;
+    case CAPTURE_TACTICS:
+        stype = L"Capture";
+        break;
+    case PROTECTION_TACTICS:
+        stype = L"Protection";
+        break;
+    case JOIN_TACTICS:
+        stype = L"Join";
+        break;
+    case MOVE_TACTICS:
+        stype = L"Move";
+        break;
+    default:
+        return;
+    }
+
+    int tactics_cnt = par->BlockCount();
+    if (tactics_cnt <= 0) return;
+
+    ////Tactics loading
+    for(int cnt = 0; cnt < tactics_cnt; ++cnt)
+    {
+        if(par->BlockGet(cnt)->ParGetNE(L"Type") == stype)
+        {
+            m_Tactics = HNew(g_MatrixHeap) CMatrixTactics;
+            m_Tactics->SetName(par->BlockGetName(cnt));
+            m_Tactics->SetParent(NULL);
+            m_Tactics->Load(*par->BlockGet(cnt));
+            break;
+        }
+    }
+}
+
+void CMatrixGroup::DeInstallTactics()
+{
+    if(m_Tactics == NULL) return;
+
+    CMatrixLogicSlot* slots = m_Tactics->m_FirstSlot;
+
+    while(slots)
+    {
+        CLogicSlotRobot* robots = slots->m_FirstRobot;
+        while(robots)
+        {
+            robots->GetLogicRobot()->BreakAllOrders();
+            robots = robots->m_NextRobot;
+        }
+        slots = slots->m_NextSlot;
+    }
+
+    m_Tactics->Reset();
+    //ZeroMemory(m_Tactics, sizeof(CMatrixTactics));
+    HDelete(CMatrixTactics, m_Tactics, g_MatrixHeap);
+    m_Tactics = NULL;
+}
+*/
 
 void CMatrixGroup::LogicTakt(CMatrixSideUnit* side)
 {
@@ -290,7 +293,6 @@ void CMatrixGroup::LogicTakt(CMatrixSideUnit* side)
     //{
     //    m_Tactics->LogicTakt(side, this);
     //}
-
 }
 
 void CMatrixGroup::CalcGroupPosition()

@@ -654,7 +654,7 @@ void CMatrixMap::CalcMapGroupVisibility(void)
 
     bool no_info_about_visibility = true;
 
-    visRuntime.mapGroup=m_VisibleGroups;
+    visRuntime.mapGroup = m_VisibleGroups;
     m_VisibleGroupsCount = 0;
 
     if(m_GroupVis != NULL)
@@ -735,6 +735,8 @@ water_calc:
                 D3DXVECTOR3 p0(float(visRuntime.i* (MAP_GROUP_SIZE * GLOBAL_SCALE)), float(visRuntime.j * (MAP_GROUP_SIZE * GLOBAL_SCALE)), WATER_LEVEL);
                 D3DXVECTOR3 p1(p0.x + float(MAP_GROUP_SIZE * GLOBAL_SCALE), p0.y + float(MAP_GROUP_SIZE * GLOBAL_SCALE), WATER_LEVEL);
 
+                //Вероятно, некая оптимизация, отключена для удаления эффекта "рваных краёв" водной глади по краям экрана
+                /*
                 int i0 = NPOS - 1;
                 int i1 = 0;
                 while(i1 < NPOS)
@@ -759,8 +761,9 @@ water_calc:
                 checknext_w:
                     i0 = i1++;
                 }
+                */
 
-                //Непосредственно помечает на отрисовку элементы воды в случае, если камера находится в пределах... скайбокса(?)
+                //Проверка на нахождение боксов воды в пределах обзора камеры, помечает попавшие в поле зрения боксы на отрисовку
                 if(m_Camera.IsInFrustum(p0, p1))
                 {
                     m_VisWater->AnyStruct<D3DXVECTOR2>(*(D3DXVECTOR2*)&p0);

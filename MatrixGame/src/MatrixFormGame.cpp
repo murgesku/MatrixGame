@@ -1482,16 +1482,23 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 }
                 else if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED)
                 {
-                    //Стратегический режим - выбрана База\Завод                    
+                    //Стратегический режим - выбрана база или завод
                     CMatrixBuilding* bld = (CMatrixBuilding*)ps->m_ActiveObject;
                     
-                    if(bld->IsBase() &&  !ps->m_ConstructPanel->IsActive() && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000))
+                    if(bld->IsBase() && !ps->m_ConstructPanel->IsActive())
                     {
-                        //"B"ase - Вход в постройку робота
-                        g_IFaceList->m_RCountControl->Reset();
-                        g_IFaceList->m_RCountControl->CheckUp();
-                        ps->m_ConstructPanel->ActivateAndSelect();
-
+                        //"B"ase - переход в режим конструктора роботов
+                        if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000)
+                        {
+                            g_IFaceList->m_RCountControl->Reset();
+                            g_IFaceList->m_RCountControl->CheckUp();
+                            ps->m_ConstructPanel->ActivateAndSelect();
+                        }
+                        //"G"athering point - установка точки сбора базы
+                        else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_GATHERING_POINT]) & 0x8000) == 0x8000)
+                        {
+                            SFT(CStr("Gathering point"));
+                        }
                     }
                     else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000) == 0x8000))
                     {
@@ -1527,6 +1534,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         //"Н"elp - Вызов подкрепления
                         bld->Maintenance();
                     }
+                    //Были нажаты цифровые клавиши 1-9 (по местной нумерации 2-10)
                     else if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->IsActive() && ps->m_ConstructPanel->m_FocusedElement)
                     {
                         int key = 0;
@@ -1771,7 +1779,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     o = o->GetNextLogic();
                 }
 
-                //Если была выбрана группа роботов (либо один), то здесь из них создаётся Ctrl-группа
+                //Если игроком была выделена группа юнитов (либо только один), то здесь из них создаётся Ctrl-группа
                 if(ps->GetCurGroup())
                 {
                     CMatrixGroupObject* go = ps->GetCurGroup()->m_FirstObject;
@@ -1790,7 +1798,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         go = go->m_NextObject;
                     }
                 }
-                //Записываем в Ctrl-группы также и выделенные здания (не турели)
+                //Записываем в Ctrl-группы также и выделенные строения (не турели)
                 else if(ps->m_CurrSel == BASE_SELECTED || ps->m_CurrSel == BUILDING_SELECTED)
                 {
                     CMatrixBuilding* go = (CMatrixBuilding*)ps->m_ActiveObject;
@@ -1800,40 +1808,61 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             //Если Ctrl игроком зажат не был
             else
             {
-                CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
-                
+                //Маркер о возможной выбранности группы юнитов
                 bool prev_unselected = false;
-                if(!ps->GetCurGroup())
+
+                //Если игрок повторно выбрал цифрой уже выделенную Ctrl-группу, то центрируем камеру на данную Ctrl-группу (на первого юнита в группе)
+                if(ps->GetCurGroup())
                 {
-                    prev_unselected = true;
-                }
-                else if(ps->GetCurGroup() && m_LastScans[MAX_SCANS - 1].scan == scan && m_LastScans[MAX_SCANS - 2].scan == scan && (m_LastScans[MAX_SCANS - 1].time - m_LastScans[MAX_SCANS - 2].time) < DOUBLESCAN_TIME_DELTA)
-                {
-                    CMatrixMapStatic* object = NULL;
-                    if(ps->GetCurGroup()->m_FirstObject)   object = ps->GetCurGroup()->m_FirstObject->GetObject();
-                    
-                    if(object && object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+                    if(m_LastScans[MAX_SCANS - 1].scan == scan && m_LastScans[MAX_SCANS - 2].scan == scan && (m_LastScans[MAX_SCANS - 1].time - m_LastScans[MAX_SCANS - 2].time) < DOUBLESCAN_TIME_DELTA)
                     {
-                        if(((CMatrixRobotAI*)object)->GetCtrlGroup() == scan)
+                        CMatrixMapStatic* object = NULL;
+                        if(ps->GetCurGroup()->m_FirstObject) object = ps->GetCurGroup()->m_FirstObject->GetObject();
+
+                        if(object && object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
                         {
-                            //set camera to group position. out
-                            
-                            g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x, object->GetGeoCenter().y+100.0f));
-                            return;
+                            if(((CMatrixRobotAI*)object)->GetCtrlGroup() == scan)
+                            {
+                                //set camera to group position. out
+                                g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 0), object->GetGeoCenter().y + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 1)));
+                                return;
+                            }
+                        }
+                        else if(object && object->GetObjectType() == OBJECT_TYPE_FLYER)
+                        {
+                            if(((CMatrixFlyer*)object)->GetCtrlGroup() == scan)
+                            {
+                                //set camera to group position. out
+                                g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 0), object->GetGeoCenter().y + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 1)));
+                                return;
+                            }
                         }
                     }
-                    else if(object && object->GetObjectType() == OBJECT_TYPE_FLYER)
+                }
+                //Аналогично центрируем камеру на строение из Ctrl-группы
+                else
+                {
+                    //Устанавливаем маркер о том, что в данный момент игроком не выбрана никакая группа юнитов
+                    prev_unselected = true;
+
+                    if(ps->m_CurrSel == BASE_SELECTED || ps->m_CurrSel == BUILDING_SELECTED)
                     {
-                        if(((CMatrixFlyer*)object)->GetCtrlGroup() == scan)
+                        if(m_LastScans[MAX_SCANS - 1].scan == scan && m_LastScans[MAX_SCANS - 2].scan == scan && (m_LastScans[MAX_SCANS - 1].time - m_LastScans[MAX_SCANS - 2].time) < DOUBLESCAN_TIME_DELTA)
                         {
-                            //set camera to group position. out
-                            g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x, object->GetGeoCenter().y+100.0f));
-                            return;
+                            CMatrixBuilding* object = (CMatrixBuilding*)ps->m_ActiveObject;
+
+                            if(((CMatrixBuilding*)object)->GetCtrlGroup() == scan)
+                            {
+                                //set camera to building position. out
+                                g_MatrixMap->m_Camera.SetXYStrategy(D3DXVECTOR2(object->GetGeoCenter().x + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 0), object->GetGeoCenter().y + g_MatrixMap->m_Camera.CamAngleToCoordOffset(100, 1)));
+                                return;
+                            }
                         }
                     }
                 }
 
-                //Здесь игроку возвращается любая заданная ранее Ctrl-группа
+                //Здесь происходит выделение любой заданной ранее (но в данный момент не выделенной) Ctrl-группы
+                CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
                 while(o)
                 {
                     if(o->GetSide() == PLAYER_SIDE)
@@ -1852,17 +1881,18 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         //Возвращаем (выбираем) группу со зданием
                         else if(o->GetObjectType() == OBJECT_TYPE_BUILDING && o->AsBuilding()->GetCtrlGroup() == scan)
                         {
-                            if(!prev_unselected)
-                            {
-                                prev_unselected = true;
-                                ps->GetCurGroup()->RemoveAll();
-                            }
+                            //С селектами и анселиктами тут беда, поэтому постоянно нужно "прожимать" миллион функций
+                            if(!prev_unselected) prev_unselected = true;
                             ps->Select(BUILDING, o);
+                            ps->GroupsUnselectSoft();
+                            ps->GetCurSelGroup()->RemoveAll();
+                            ps->SetCurGroup(NULL);
+                            ps->Reselect();
                         }
                     }
                     o = o->GetNextLogic();
                 }
-                ///
+
                 if(ps->GetCurSelGroup()->GetFlyersCnt() > 1 || ps->GetCurSelGroup()->GetRobotsCnt() > 1 || (ps->GetCurSelGroup()->GetFlyersCnt() + ps->GetCurSelGroup()->GetRobotsCnt()) > 1)
                 {
                     ps->CreateGroupFromCurrent();

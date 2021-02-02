@@ -151,6 +151,7 @@ enum EKeyAction
     KA_UNIT_ENTER, //sub (! if not dialog mode)
     KA_UNIT_ENTER_ALT, //sub (! if not dialog mode)
 
+    KA_GATHERING_POINT,
     KA_BUILD_ROBOT,  //sub
     KA_BUILD_TURRET, //sub
     KA_BUILD_HELP, //sub

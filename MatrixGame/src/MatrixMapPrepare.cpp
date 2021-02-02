@@ -589,7 +589,7 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
 
                     int sz = GINT();
 
-                    for (int g=0; g<sz; ++g)
+                    for(int g = 0; g < sz; ++g)
                     {
                         int idx = GINT();
                         CMatrixMapGroup *gg = g_MatrixMap->GetGroupByIndex(idx);
@@ -618,7 +618,7 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
 
     }
 
-    if (step == RS_BUILDINGS)
+    if(step == RS_BUILDINGS)
     {
         m_GroundZBaseMiddle = 0;
         m_GroundZBaseMax = 0;
@@ -642,10 +642,10 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
         BYTE *ang = c6->GetFirst<BYTE>(0);
 
         int n = c0->GetArrayLength(0);
-        for (int i=0;i<n; ++i)
+        for(int i = 0; i < n; ++i)
         {
 
-            if (side[i] == 255)
+            if(side[i] == 255)
             {
 
                 // replace geometry
@@ -666,7 +666,8 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
                     CMatrixMapObject *momo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
                     momo->InitAsBaseRuins(D3DXVECTOR2(xf[i],yf[i]),ang[i],namev, namet, false);
                 }
-            } else
+            }
+            else
             {
 
 
@@ -694,13 +695,13 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
     }
 
 
-    if (step == RS_ROBOTS)
+    if(step == RS_ROBOTS)
     {
         // loading robots
         int n = 0;
 
         CDataBuf *c0 = stor.GetBuf(DATA_ROBOTS, DATA_ROBOTS_X, ST_FLOAT);
-        if (c0)
+        if(c0)
         {
             CDataBuf *c1 = stor.GetBuf(DATA_ROBOTS, DATA_ROBOTS_Y, ST_FLOAT);
             CDataBuf *c2 = stor.GetBuf(DATA_ROBOTS, DATA_ROBOTS_SIDE, ST_BYTE);
@@ -719,7 +720,7 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
 
             n = c0->GetArrayLength(0);
 
-            for (int i=0;i<n; ++i)
+            for(int i = 0; i < n; ++i)
             {
                 SPreRobot sb;
                 memset(&sb, 0, sizeof(sb));
@@ -730,27 +731,30 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
                 int cc = units.GetCountPar(L"|");
 
                 int wi = 0;
-                for(int k=0;k<cc;k++)
+                for(int k = 0; k < cc; ++k)
                 {
                     CWStr unit(units.GetStrPar(k, L"|"), g_CacheHeap);
 
                     ERobotUnitType type=(ERobotUnitType)unit.GetIntPar(0,L",");
                     ERobotUnitKind kind=(ERobotUnitKind)unit.GetIntPar(1,L",");
-                    if (type == MRT_CHASSIS)
+                    if(type == MRT_CHASSIS)
                     {
                         sb.sb.m_Chassis.m_nKind = kind;
                         sb.sb.m_Chassis.m_nType = type;
 
                         sb.angle = (float)unit.GetDoublePar(2,L",");
-                    } else if (type == MRT_ARMOR)
+                    }
+                    else if(type == MRT_ARMOR)
                     {
                         sb.sb.m_Armor.m_Unit.m_nKind = kind;
                         sb.sb.m_Armor.m_Unit.m_nType = type;
-                    } else if (type == MRT_HEAD)
+                    }
+                    else if(type == MRT_HEAD)
                     {
                         sb.sb.m_Head.m_nKind = kind;
                         sb.sb.m_Head.m_nType = type;
-                    } else if (type == MRT_WEAPON)
+                    }
+                    else if(type == MRT_WEAPON)
                     {
                         sb.sb.m_Weapon[wi].m_Unit.m_nType = type;
                         sb.sb.m_Weapon[wi].m_Unit.m_nKind = kind;
@@ -795,7 +799,7 @@ int  CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CB
         float *addh = c8?c8->GetFirst<float>(0):NULL;
 
         int n = c0->GetArrayLength(0);
-        for (int i=0;i<n; ++i)
+        for (int i = 0; i < n; ++i)
         {
             CMatrixCannon *c;
             c = StaticAdd<CMatrixCannon>();
@@ -823,7 +827,8 @@ skip_this_cannon:
 
                 //if(prop==0) c->SetSide(0);
 
-                while(prop==1 || prop==2) {
+                while(prop==1 || prop==2)
+                {
                     // Ищем ближайший завод или базу
                     CMatrixBuilding * building=NULL;
                     CMatrixMapStatic * ms=CMatrixMapStatic::GetFirstLogic();
@@ -839,7 +844,8 @@ skip_this_cannon:
                         }
                         ms = ms->GetNextLogic();
                     }
-                    if(building==NULL) {
+                    if(building==NULL)
+                    {
                         if(prop==1) prop=2;
                         c->SetSide(0);
                         break;
@@ -885,11 +891,14 @@ skip_this_cannon:
         }
 
         CMatrixMapStatic * ms=CMatrixMapStatic::GetFirstLogic();
-        while(ms) {
-            if(ms->GetObjectType()==OBJECT_TYPE_BUILDING) {
+        while(ms)
+        {
+            if(ms->GetObjectType()==OBJECT_TYPE_BUILDING)
+            {
                 CMatrixBuilding * cb=(CMatrixBuilding *)ms;
                 cb->m_TurretsMax=EBuildingTurrets(min(cb->m_TurretsMax,cb->m_TurretsPlacesCnt));
-                //if(cb->GetSide() == PLAYER_SIDE && g_MatrixMap->GetPlayerSide()->m_ActiveObject == cb){
+                //if(cb->GetSide() == PLAYER_SIDE && g_MatrixMap->GetPlayerSide()->m_ActiveObject == cb)
+                //{
                 //    g_IFaceList->CreateDynamicTurrets(cb);
                 //}
             }
@@ -938,36 +947,34 @@ skip_this_cannon:
         D3DXVECTOR2 cpp;
 
         ic = propkey->FindAsWStr(DATA_CAMPOSX);
-        if (ic >= 0)
+        if(ic >= 0)
         {
             cpp.x = (float)propval->GetAsWStr(ic).GetDouble();
             ic = propkey->FindAsWStr(DATA_CAMPOSY);
             cpp.y = (float)propval->GetAsWStr(ic).GetDouble();
 
             g_MatrixMap->m_Camera.SetXYStrategy(cpp);
-
         } 
 
         {
             // Camera & Select
             ms = CMatrixMapStatic::GetFirstLogic();
-            for (;ms;ms = ms->GetNextLogic())
+            for(; ms; ms = ms->GetNextLogic())
             {
-                if (ms->GetObjectType() == OBJECT_TYPE_BUILDING)
+                if(ms->GetObjectType() == OBJECT_TYPE_BUILDING)
                 {
-                    CMatrixBuilding *bu = (CMatrixBuilding *)ms;
-                    if (bu->m_Kind == BUILDING_BASE && bu->GetSide() == PLAYER_SIDE)
+                    CMatrixBuilding* bu = (CMatrixBuilding*)ms;
+                    if(bu->m_Kind == BUILDING_BASE && bu->GetSide() == PLAYER_SIDE)
                     {
                         float si = TableSin(m_CameraAngle);
                         float co = TableCos(m_CameraAngle);
 
                         D3DXVECTOR2 bup(bu->m_Pos.x-100*si, bu->m_Pos.y+100*co);
 
-                        if (ic >= 0)
+                        if(ic >= 0)
                         {
-                            if (D3DXVec2LengthSq(&(bup-cpp)) < POW2(300))
+                            if(D3DXVec2LengthSq(&(bup-cpp)) < POW2(300))
                             {
-
                                 g_MatrixMap->GetPlayerSide()->Select(BUILDING, ms);
                                 break;
                             }

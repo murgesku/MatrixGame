@@ -322,10 +322,10 @@ public:
     int         GetCols()                                           { return m_Cols; }
     void        IncCols()                                           { m_Cols++; }
     int         GetColsWeight()                                     { return m_ColsWeight; }
-    void        IncColsWeight(int val=1)                            { m_ColsWeight+=val; }
+    void        IncColsWeight(int val=1)                            { m_ColsWeight += val; }
     void        SetColsWeight(int w)                                { m_ColsWeight = w; }
     int         GetColsWeight2()                                    { return m_ColsWeight2; }
-    void        IncColsWeight2(int val=1)                           { m_ColsWeight2+=val; }
+    void        IncColsWeight2(int val=1)                           { m_ColsWeight2 += val; }
     void        SetColsWeight2(int w)                               { m_ColsWeight2 = w; }
     int         GetMapPosX(void) const                              { return m_MapX; }
     int         GetMapPosY(void) const                              { return m_MapY; }
@@ -339,7 +339,7 @@ public:
     float       GetMaxSpeed()                                       { return m_maxSpeed; }
     void        SetMaxSpeed(float s)                                { m_maxSpeed = s; }
     int         GetOrdersInPool()                                   { return m_OrdersInPool; }
-    SOrder *    GetOrder(int no)                                    { return m_OrdersList+no; }
+    SOrder *    GetOrder(int no)                                    { return m_OrdersList + no; }
     CMatrixEffectSelection* GetSelection()                          { return m_Selection; }
     //CWStr      &GetName()                                           { return m_Name; }
     const SBotWeapon &GetWeapon(int i) const                        { return m_Weapons[i]; }
@@ -348,8 +348,8 @@ public:
     float       GetRepairDist()                                     { return m_RepairDist; }
     int         GetGroupLogic()                                     { return m_GroupLogic; }
     void        SetGroupLogic(int gl)                               { m_GroupLogic = gl; }
-    int         GetRegion(void)                                     { return g_MatrixMap->GetRegion(m_MapX,m_MapY); }
-    int         GetCtrlGroup()                                      { return m_CtrlGroup; } 
+    int         GetRegion(void)                                     { return g_MatrixMap->GetRegion(m_MapX, m_MapY); }
+    int         GetCtrlGroup()                                      { return m_CtrlGroup; }
     void        SetCtrlGroup(int group)                             { m_CtrlGroup = group; }
 
     void        MapPosCalc()                                        { g_MatrixMap->PlaceGet(m_Unit[0].m_Kind-1,m_PosX-20.0f,m_PosY-20.0f,&m_MapX,&m_MapY); }

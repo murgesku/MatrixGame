@@ -1400,10 +1400,11 @@ void CMatrixMapObject::LogicTakt(int ms)
                 SSpecialBot bot;
                 ZeroMemory(&bot, sizeof(SSpecialBot));
 
-                if (!bot.BuildFromPar(bpr->ParGetName(robot), bpr->ParGet(robot).GetInt(), true))
+                if(!bot.BuildFromPar(bpr->ParGetName(robot), bpr->ParGet(robot).GetInt(), true))
                 {
-                    char out[256];
-                    sprintf(out, "Exception occurred! Error while spawning bot from Terron cabin #%d", robot);
+                    //char out[256];
+                    //sprintf(out, "Exception occurred! Error while spawning bot from Terron cabin #%d", robot);
+                    CStr out = "Exception occurred! Error while spawning bot from Terron cabin #%d" + CStr(robot);
                     SFT(out);
                     ERROR_S2(L"Spawner bot_no=", CWStr(robot).Get());
                 }

@@ -12,7 +12,7 @@
 #define WATER_LEVEL (-2.0f)
 #define WATER_ALPHA_SIZE    64
 #define WATER_SIZE  16
-#define WATER_TEXTURE_SCALE (1.0/16.0)//(10.0/16.0)
+#define WATER_TEXTURE_SCALE (1.0/16.0) //(10.0/16.0)
 #define WATER_TIME_PERIOD   60
 
 #define INSHORE_PRE_COUNT   50
@@ -232,18 +232,18 @@ struct SCompileMoveCell
 
 struct SCompileBottomVert
 {
-    WORD x,y; // point. z and color in points list
-    WORD tx,ty; 
+    WORD x, y; // point. z and color in points list
+    WORD tx, ty;
     //float tu, tv;
     //float tum, tvm; // calc it from x and y
 
     bool operator == (const SCompileBottomVert &v)
     {
         //return x==v.x && y==v.y && tu == v.tu && tv == v.tv; // && tum == v.tum && tvm == v.tvm;
-        int dtx = abs(tx-v.tx);
-        int dty = abs(ty-v.ty);
-        return x==v.x && y==v.y && (dtx <= 2) && (dty <= 2);
-        //return x==v.x && y==v.y && tx == v.tx && ty == v.ty;
+        int dtx = abs(tx - v.tx);
+        int dty = abs(ty - v.ty);
+        return x == v.x && y == v.y && (dtx <= 2) && (dty <= 2);
+        //return x == v.x && y == v.y && tx == v.tx && ty == v.ty;
     }
 };
 

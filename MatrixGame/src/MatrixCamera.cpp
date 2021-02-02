@@ -892,11 +892,11 @@ void CMatrixCamera::CalcLinkPoint(D3DXVECTOR3 &lp, float &angz)
 
     //RESETFLAG(m_Flags,CAM_LAST_TGTFROM_PRESENT);
 
-    if (g_MatrixMap->GetPlayerSide()->IsArcadeMode())
+    if(g_MatrixMap->GetPlayerSide()->IsArcadeMode())
     {
     DCP();
         CMatrixMapStatic * arcade_object = g_MatrixMap->GetPlayerSide()->GetArcadedObject();
-        if (arcade_object->IsRobot())
+        if(arcade_object->IsRobot())
         {
     DCP();
             CMatrixRobotAI* bot = (CMatrixRobotAI*)arcade_object;
@@ -911,9 +911,9 @@ void CMatrixCamera::CalcLinkPoint(D3DXVECTOR3 &lp, float &angz)
 
 
             angz = (float)(atan2(-bot->m_Forward.x,bot->m_Forward.y) + M_PI_MUL(1));
-
         }
-    } else
+    }
+    else
     {
     DCP();
         lp.x = m_XY_Strategy.x;
@@ -929,12 +929,12 @@ void CMatrixCamera::Takt(float ms)
 {
     DTRACE();
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
+    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
     //if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_F2)
     {
         //g_MatrixMap->m_KeyDown = false;
 
-        if (m_AFD == NULL)
+        if(m_AFD == NULL)
         {
             m_AFD = (SAutoFlyData *)HAllocClear(sizeof(SAutoFlyData), g_MatrixHeap);
 
@@ -948,25 +948,26 @@ void CMatrixCamera::Takt(float ms)
         m_AFD->Takt(ms);
 
         return;
-    } else
+    }
+    else
     {
-        if (m_AFD)
+        if(m_AFD)
         {
             m_AFD->Release();
             HFree(m_AFD, g_MatrixHeap);
             m_AFD = NULL;
         }
-
     }
 
     
 
     int index;
-    if (g_MatrixMap->GetPlayerSide()->IsArcadeMode())
+    if(g_MatrixMap->GetPlayerSide()->IsArcadeMode())
     {
     DCP();
         index = CAMERA_INROBOT;
-    } else
+    }
+    else
     {
     DCP();
         index = CAMERA_STRATEGY;
@@ -1007,7 +1008,7 @@ void CMatrixCamera::Takt(float ms)
 //    g_MatrixMap->m_DI.T(L"dist", CWStr(D3DXVec3Length(&(newlp-m_LinkPoint))).Get());
 //#endif
 
-    if (FLAG(m_Flags, CAM_LINK_POINT_CHANGED))
+    if(FLAG(m_Flags, CAM_LINK_POINT_CHANGED))
     {
         // move camera from current pos to new lp
     DCP();
@@ -1025,7 +1026,7 @@ void CMatrixCamera::Takt(float ms)
         m_Dist += dd * mul;
         m_AngleX += dax * mul;
 
-        if (FLAG(m_Flags, CAM_XY_LERP_OFF))
+        if(FLAG(m_Flags, CAM_XY_LERP_OFF))
         {
             dlp.x = 0;
             dlp.y = 0;
@@ -1034,13 +1035,12 @@ void CMatrixCamera::Takt(float ms)
             m_LinkPoint.y = newlp.y;
         }
 
-        if (m_ModeIndex == CAMERA_STRATEGY && (D3DXVec3LengthSq(&dlp) < 0.25f) && (daz < GRAD2RAD(0.5f)) && (dax < GRAD2RAD(0.5f)) && (dd < 0.5f) )
+        if(m_ModeIndex == CAMERA_STRATEGY && (D3DXVec3LengthSq(&dlp) < 0.25f) && (daz < GRAD2RAD(0.5f)) && (dax < GRAD2RAD(0.5f)) && (dd < 0.5f) )
         {
             RESETFLAG(m_Flags, CAM_LINK_POINT_CHANGED);
         }
-
-
-    } else
+    }
+    else
     {
         // just copy values
     DCP();
