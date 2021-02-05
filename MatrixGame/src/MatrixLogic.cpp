@@ -15,40 +15,41 @@
 #include <stdio.h>
 #include "MatrixGameDll.hpp"
 
-//CPoint MatrixDir45[8]={	CPoint(-1,0),	CPoint(1,0),CPoint(0,-1),CPoint(0,1),
-//						CPoint(-1,-1),CPoint(1,1),CPoint(-1,1),CPoint(1,-1)};
+//CPoint MatrixDir45[8]={CPoint(-1, 0), CPoint(1, 0), CPoint(0,-1), CPoint(0, 1),
+//						CPoint(-1, -1), CPoint(1, 1), CPoint(-1, 1), CPoint(1, -1)};
 
-CMatrixRobotAI * g_TestRobot=NULL;
-bool g_TestLocal=false;
+CMatrixRobotAI* g_TestRobot = NULL;
+bool g_TestLocal = false;
 
 CMatrixMapLogic::CMatrixMapLogic():CMatrixMap()
 {
     DTRACE();
-//	for(int i=0;i<5;i++) {
+//	for(int i = 0; i < 5; ++i)
+//  {
 //		m_Zone[i]=NULL;
 //		m_ZoneCnt[i]=0;
 //	}
 
-    m_ObjFirst=NULL;
-    m_ObjLast=NULL;
+    m_ObjFirst = NULL;
+    m_ObjLast = NULL;
 
-    m_PathFirst=NULL;
-    m_PathLast=NULL;
+    m_PathFirst = NULL;
+    m_PathLast = NULL;
 
-	m_MPFCnt=m_MPF2Cnt=0;
-	m_MPF=m_MPF2=NULL;
+    m_MPFCnt = m_MPF2Cnt = 0;
+    m_MPF = m_MPF2 = NULL;
 
-    m_ZoneIndex=NULL;
-    m_ZoneIndexAccess=NULL;
-    m_ZoneDataZero=NULL;
+    m_ZoneIndex = NULL;
+    m_ZoneIndexAccess = NULL;
+    m_ZoneDataZero = NULL;
 
-    m_MapPoint=NULL;
+    m_MapPoint = NULL;
 
-	m_TaktNext=0;
+    m_TaktNext = 0;
 
-	m_Rnd=rand(); Rnd(0,1);
+    m_Rnd = rand(); Rnd(0, 1);
 
-    m_GatherInfoLast=0;
+    m_GatherInfoLast = 0;
     m_MaintenanceTime = 0;
     m_MaintenancePRC = 100;
 }
@@ -97,38 +98,38 @@ double CMatrixMapLogic::RndFloat(void)
 	return float(Rnd())/float(2147483647-2);
 }
 
-int CMatrixMapLogic::Rnd(int zmin,int zmax)
+int CMatrixMapLogic::Rnd(int zmin, int zmax)
 {
     DTRACE();
 
-	if(zmin<=zmax) return zmin+(Rnd() % (zmax-zmin+1));
-    else return zmax+(Rnd() % (zmin-zmax+1));
+    if (zmin <= zmax) return zmin + (Rnd() % (zmax - zmin + 1));
+    else return zmax + (Rnd() % (zmin - zmax + 1));
 }
 
-double CMatrixMapLogic::RndFloat(double zmin,double zmax)
+double CMatrixMapLogic::RndFloat(double zmin, double zmax)
 {
     DTRACE();
 
-	return zmin+RndFloat()*(zmax-zmin);
+    return zmin + RndFloat() * (zmax - zmin);
 }
 
 void CMatrixMapLogic::GatherInfo(int type)
 {
     DTRACE();
-    CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
+    CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
     DCP();
     while(obj)
     {
-    DCP();
+        DCP();
         if(obj->IsLiveRobot())
         {
-    DCP();
+            DCP();
             obj->AsRobot()->GatherInfo(type);
-    DCP();
+            DCP();
         }
-    DCP();
+        DCP();
         obj = obj->GetNextLogic();
-    DCP();
+        DCP();
     }
     DCP();
 }
@@ -136,21 +137,23 @@ void CMatrixMapLogic::GatherInfo(int type)
 void CMatrixMapLogic::PrepareBuf()
 {
 #if (defined _DEBUG) &&  !(defined _RELDEBUG)
-    if(m_ZoneDataZero) {
-        int cnt=max(m_RN.m_ZoneCnt,m_RN.m_PlaceCnt);
-        dword * buf=m_ZoneDataZero;
-        while(cnt) {
-            if(*buf!=0) ERROR_E;
-            buf++;
-            cnt--;
+    if(m_ZoneDataZero)
+    {
+        int cnt = max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt);
+        dword* buf = m_ZoneDataZero;
+        while(cnt)
+        {
+            if(*buf != 0) ERROR_E;
+            ++buf;
+            --cnt;
         }
     }
 #endif
 
 
-    if(!m_ZoneIndex) m_ZoneIndex=(int *)HAlloc(max(m_RN.m_ZoneCnt,m_RN.m_PlaceCnt)*sizeof(int),g_MatrixHeap);
-    if(!m_ZoneDataZero) m_ZoneDataZero=(dword *)HAllocClear(max(m_RN.m_ZoneCnt,m_RN.m_PlaceCnt)*sizeof(dword),g_MatrixHeap);
-    if(!m_ZoneIndexAccess) m_ZoneIndexAccess=(int *)HAlloc(max(m_RN.m_ZoneCnt,m_RN.m_PlaceCnt)*sizeof(int),g_MatrixHeap);
+    if(!m_ZoneIndex) m_ZoneIndex = (int*)HAlloc(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
+    if(!m_ZoneDataZero) m_ZoneDataZero = (dword*)HAllocClear(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(dword), g_MatrixHeap);
+    if(!m_ZoneIndexAccess) m_ZoneIndexAccess = (int*)HAlloc(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
 }
 
 //void CMatrixMapLogic::ZoneClear()
@@ -444,7 +447,8 @@ int CMatrixMapLogic::ZoneFindNear(int nsh,int mx,int my)
 	int i;
 
 	SMatrixMapMove * smm=MoveGetTest(mx,my);
-    if(!smm){
+    if(!smm)
+    {
         ERROR_E;
     }
 
@@ -452,7 +456,8 @@ int CMatrixMapLogic::ZoneFindNear(int nsh,int mx,int my)
 
 	int mind=1000000000;
 	int minz=-1;
-	for(i=0;i<m_RN.m_ZoneCnt;i++) {
+	for(i=0; i<m_RN.m_ZoneCnt; ++i)
+    {
 		int d=(mx-m_RN.m_Zone[i].m_Center.x)*(mx-m_RN.m_Zone[i].m_Center.x)+(my-m_RN.m_Zone[i].m_Center.y)*(my-m_RN.m_Zone[i].m_Center.y);
 		if(d<mind) { mind=d; minz=i; }
 	}
@@ -462,37 +467,48 @@ int CMatrixMapLogic::ZoneFindNear(int nsh,int mx,int my)
 	return minz;
 }
 
-void CMatrixMapLogic::PlaceGet(int nsh,float wx,float wy,int * mx,int * my)
+void CMatrixMapLogic::PlaceGet(int nsh, float wx, float wy, int* mx, int* my)
 {
     DTRACE();
 
-	int xx=Float2Int(wx*INVERT(GLOBAL_SCALE_MOVE));
-	int yy=Float2Int(wy*INVERT(GLOBAL_SCALE_MOVE));
+    int xx = Float2Int(wx * INVERT(GLOBAL_SCALE_MOVE));
+    int yy = Float2Int(wy * INVERT(GLOBAL_SCALE_MOVE));
 
-    if (xx < 0) xx = 0;
-    else if (xx >= m_SizeMove.x) xx = m_SizeMove.x - 1;
+    if(xx < 0) xx = 0;
+    else if(xx >= m_SizeMove.x) xx = m_SizeMove.x - 1;
 
-    if (yy < 0) yy = 0;
-    else if (yy >= m_SizeMove.y) yy = m_SizeMove.y - 1;
+    if(yy < 0) yy = 0;
+    else if(yy >= m_SizeMove.y) yy = m_SizeMove.y - 1;
 
-	*mx=xx;
-	*my=yy;
+    *mx = xx;
+    *my = yy;
 
-	SMatrixMapMove * smm=MoveGetTest(*mx,*my);
+    SMatrixMapMove* smm = MoveGetTest(*mx, *my);
     if(!smm) return;
 
-    if(!(smm->m_Stop & (1<<nsh))) return;
+    if(!(smm->m_Stop & (1 << nsh))) return;
 
-    smm=MoveGetTest(*mx+1,*my);
-    if(smm && !(smm->m_Stop & (1<<nsh))) { (*mx)++; return; }
+    smm = MoveGetTest(*mx + 1, *my);
+    if(smm && !(smm->m_Stop & (1 << nsh)))
+    {
+        ++(*mx);
+        return;
+    }
 
-    smm=MoveGetTest(*mx,*my+1);
-    if(smm && !(smm->m_Stop & (1<<nsh))) { (*my)++; return; }
+    smm = MoveGetTest(*mx, *my + 1);
+    if(smm && !(smm->m_Stop & (1 << nsh)))
+    {
+        ++(*my);
+        return;
+    }
 
-    smm=MoveGetTest(*mx+1,*my+1);
-    if(smm && !(smm->m_Stop & (1<<nsh))) { (*mx)++; (*my)++; return; }
-
-
+    smm = MoveGetTest(*mx + 1, *my + 1);
+    if(smm && !(smm->m_Stop & (1 << nsh)))
+    {
+        ++(*mx);
+        ++(*my);
+        return;
+    }
 
     //if(smm && smm->m_Zone>=0) return;
 
@@ -510,29 +526,35 @@ void CMatrixMapLogic::PlaceGet(int nsh,float wx,float wy,int * mx,int * my)
 	}*/
 }
 
-bool CMatrixMapLogic::IsAbsenceWall(int nsh,int size,int mx,int my)
+bool CMatrixMapLogic::IsAbsenceWall(int nsh, int size, int mx, int my)
 {
     DTRACE();
 
-	if(mx<0 || mx+size>m_SizeMove.x || my<0 || my+size>m_SizeMove.y) return false;
+    if(mx < 0 || mx + size > m_SizeMove.x || my < 0 || my + size > m_SizeMove.y) return false;
 
-    ASSERT(size>=1 && size<=5);
-    dword nsh_mask=(1<<nsh)<<(6*(size-1));
+    ASSERT(size >= 1 && size <= 5);
+    dword nsh_mask = (1 << nsh) << (6 * (size - 1));
 
-	SMatrixMapMove * smm=MoveGet(mx,my);
-    return (smm->m_Stop & nsh_mask)==0;
+    SMatrixMapMove* smm = MoveGet(mx, my);
+    return (smm->m_Stop & nsh_mask) == 0;
 
-/*	SMatrixMapMove * smm=MoveGet(mx,my);
-	for(int y=0;y<size;y++,smm+=m_SizeMove.x-size) {
-		for(int x=0;x<size;x++,smm++) {
-            if(nsh < 0){
+/*	SMatrixMapMove* smm = MoveGet(mx, my);
+	for(int y = 0; y < size; ++y, smm += m_SizeMove.x-size)
+    {
+		for(int x = 0; x < size; ++x, ++smm)
+        {
+            if(nsh < 0)
+            {
                 if(smm->m_Stop) return false;
-            }else{
-                if(smm->m_Stop & (1<<nsh)) return false;
+            }
+            else
+            {
+                if(smm->m_Stop & (1 << nsh)) return false;
             }
 		}
 	}
-	return true;*/
+	return true;
+*/
 }
 
 
@@ -577,8 +599,10 @@ bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,int other
     int * os;
     CPoint * od;
 
-    if(IsAbsenceWall(nsh,size,mx,my)) {
-        for(k=0,os=other_size,od=other_des;k<other_cnt;k++,od++,os++) {
+    if(IsAbsenceWall(nsh,size,mx,my))
+    {
+        for(k=0,os=other_size,od=other_des; k<other_cnt; ++k,++od,++os)
+        {
             if(!(od->x+*os<=mx || od->x>=mx+size) && !(od->y+*os<=my || od->y>=my+size)) break;
         }
         if(k>=other_cnt) return true;
@@ -587,41 +611,56 @@ bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,int other
 //	SMatrixMapMove * smm=MoveGetTest(mx,my);
 
 	int u,i=0;
-	while(i<m_SizeMove.x) {
-		for(u=0;u<((i+1)*2+1);u++) {
+	while(i<m_SizeMove.x)
+    {
+		for(u=0; u<((i+1)*2+1); ++u)
+        {
             tx=mx-(i+1)+u; ty=my-(i+1);
-			if(IsAbsenceWall(nsh,size,tx,ty)) { 
-                for(k=0,os=other_size,od=other_des;k<other_cnt;k++,od++,os++) {
+			if(IsAbsenceWall(nsh,size,tx,ty))
+            {
+                for(k=0,os=other_size,od=other_des; k<other_cnt; ++k, ++od, ++os)
+                {
                     if(!(od->x+*os<=tx || od->x>=tx+size) && !(od->y+*os<=ty || od->y>=ty+size)) break;
                 }
                 if(k>=other_cnt) { mx=tx; my=ty; return true; }
             }
-            tx=mx-(i+1)+u; ty=my+(i+1);
-			if(IsAbsenceWall(nsh,size,tx,ty)) { 
-                for(k=0,os=other_size,od=other_des;k<other_cnt;k++,od++,os++) {
+            tx=mx-(i+1)+u;
+            ty=my+(i+1);
+
+			if(IsAbsenceWall(nsh,size,tx,ty))
+            { 
+                for(k=0,os=other_size,od=other_des;k<other_cnt; ++k, ++od, ++os)
+                {
                     if(!(od->x+*os<=tx || od->x>=tx+size) && !(od->y+*os<=ty || od->y>=ty+size)) break;
                 }
                 if(k>=other_cnt) { mx=tx; my=ty; return true; }
             }
 		}
 
-		for(u=0;u<(i*2+1);u++) {
+		for(u=0; u<(i*2+1); ++u)
+        {
             tx=mx-(i+1); ty=my-i+u;
-			if(IsAbsenceWall(nsh,size,tx,ty)) { 
-                for(k=0,os=other_size,od=other_des;k<other_cnt;k++,od++,os++) {
+			if(IsAbsenceWall(nsh,size,tx,ty))
+            {
+                for(k=0,os=other_size,od=other_des; k<other_cnt; ++k, ++od, ++os)
+                {
                     if(!(od->x+*os<=tx || od->x>=tx+size) && !(od->y+*os<=ty || od->y>=ty+size)) break;
                 }
                 if(k>=other_cnt) { mx=tx; my=ty; return true; }
             }
-            tx=mx+(i+1); ty=my-i+u;
-			if(IsAbsenceWall(nsh,size,tx,ty)) { 
-                for(k=0,os=other_size,od=other_des;k<other_cnt;k++,od++,os++) {
+            tx=mx+(i+1);
+            ty=my-i+u;
+
+			if(IsAbsenceWall(nsh,size,tx,ty))
+            {
+                for(k=0,os=other_size,od=other_des; k<other_cnt; ++k, ++od, ++os)
+                {
                     if(!(od->x+*os<=tx || od->x>=tx+size) && !(od->y+*os<=ty || od->y>=ty+size)) break;
                 }
                 if(k>=other_cnt) { mx=tx; my=ty; return true; }
             }
 		}
-		i++;
+		++i;
 	}
 	return false;
 }
@@ -710,37 +749,42 @@ bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,int other
 //	return false;
 //}
 
-bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,CMatrixMapStatic * skip)
+bool CMatrixMapLogic::PlaceFindNear(int nsh, int size, int & mx, int & my, CMatrixMapStatic* skip)
 {
     int other_cnt=0;
     int other_size[200];
     CPoint other_des[200];
  
-    CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
+    CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
+    while(obj)
+    {
         if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->AsRobot()->m_CurrState != ROBOT_DIP && obj!=skip) {
             CMatrixRobotAI * r=( CMatrixRobotAI*)obj;
  
             CPoint tp;
-            if(r->GetReturnCoords(tp)) {
+            if(r->GetReturnCoords(tp))
+            {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
-                other_cnt++;
+                ++other_cnt;
             }
-            if(r->GetMoveToCoords(tp)) {
+            if(r->GetMoveToCoords(tp))
+            {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
-                other_cnt++;
-            } else {
+                ++other_cnt;
+            }
+            else
+            {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=CPoint(r->GetMapPosX(),r->GetMapPosY());
-                other_cnt++;
+                ++other_cnt;
             }
         } else if(obj->GetObjectType() == OBJECT_TYPE_CANNON && obj->AsCannon()->m_CurrState != CANNON_DIP && obj!=skip)
         {
@@ -749,7 +793,7 @@ bool CMatrixMapLogic::PlaceFindNear(int nsh,int size,int & mx,int & my,CMatrixMa
  
             other_size[other_cnt]=4;
             other_des[other_cnt]=m_RN.GetPlace(obj->AsCannon()->m_Place)->m_Pos;
-            other_cnt++;
+            ++other_cnt;
         }
         obj = obj->GetNextLogic();
     }
@@ -763,17 +807,20 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
     int other_size[200];
     CPoint other_des[200];
 
-    for(int i=0;i<robot->GetEnv()->m_BadCoordCnt;i++) {
+    for(int i=0; i<robot->GetEnv()->m_BadCoordCnt; ++i)
+    {
         // ASSERT(other_cnt<200);
         if (other_cnt >= 200) return false;
         other_size[other_cnt]=4;
         other_des[other_cnt]=robot->GetEnv()->m_BadCoord[i];
-        other_cnt++;
+        ++other_cnt;
     }
 
     CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->AsRobot()->m_CurrState != ROBOT_DIP) {
+    while(obj)
+    {
+        if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->AsRobot()->m_CurrState != ROBOT_DIP)
+        {
             CMatrixRobotAI * r=(CMatrixRobotAI*)obj;
 
             // ASSERT(other_cnt<200);
@@ -781,7 +828,7 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
             other_size[other_cnt]=4;
             other_des[other_cnt].x=r->GetMapPosX();
             other_des[other_cnt].y=r->GetMapPosY();
-            other_cnt++;
+            ++other_cnt;
 
             CPoint tp;
             if(r->GetReturnCoords(tp)) {
@@ -789,35 +836,38 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
-                other_cnt++;
+                ++other_cnt;
             }
             if(r->GetReturnCoords(tp)) {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
-                other_cnt++;
+                ++other_cnt;
             }
             if(r->GetMoveToCoords(tp)) {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=tp;
-                other_cnt++;
-            } else {
+                ++other_cnt;
+            }
+            else
+            {
                 // ASSERT(other_cnt<200);
                 if (other_cnt >= 200) return false;
                 other_size[other_cnt]=4;
                 other_des[other_cnt]=CPoint(r->GetMapPosX(),r->GetMapPosY());
-                other_cnt++;
+                ++other_cnt;
             }
-        } else if(obj->GetObjectType() == OBJECT_TYPE_CANNON && obj->AsCannon()->m_CurrState != CANNON_DIP) {
+        }
+        else if(obj->GetObjectType() == OBJECT_TYPE_CANNON && obj->AsCannon()->m_CurrState != CANNON_DIP) {
             // ASSERT(other_cnt<200);
             if (other_cnt >= 200) return false;
 
             other_size[other_cnt]=4;
             other_des[other_cnt]=m_RN.GetPlace(obj->AsCannon()->m_Place)->m_Pos;
-            other_cnt++;
+            ++other_cnt;
         }
         obj = obj->GetNextLogic();
     }
@@ -861,7 +911,7 @@ bool CMatrixMapLogic::PlaceFindNearReturn(int nsh,int size,int & mx,int & my,CMa
 //    return PlaceFindNear(nsh,size,mx,my,vdir,other_cnt,other_size,other_des);
 //}
 
-bool CMatrixMapLogic::PlaceIsEmpty(int nsh,int size,int mx,int my,CMatrixMapStatic * skip)
+bool CMatrixMapLogic::PlaceIsEmpty(int nsh,int size,int mx,int my,CMatrixMapStatic* skip)
 {
     DTRACE();
 
@@ -880,9 +930,11 @@ bool CMatrixMapLogic::PlaceIsEmpty(int nsh,int size,int mx,int my,CMatrixMapStat
     float cx=GLOBAL_SCALE_MOVE*mx+kof;
     float cy=GLOBAL_SCALE_MOVE*my+kof;
 
-    CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj!=skip) {
+    CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
+    while(obj)
+    {
+        if(obj!=skip)
+        {
             if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI && obj->AsRobot()->m_CurrState != ROBOT_DIP && obj!=skip) {
                 CMatrixRobotAI * r=(CMatrixRobotAI*)obj;
 
@@ -1688,7 +1740,7 @@ if(test && !g_TestLocal) CHelper::DestroyByGroup(100);
     }
 
     // Ищем путь от конца до начала
-    for(int i=0;i<cnt;i++) m_RN.m_Zone[m_ZoneIndex[i]].m_FPLevel=0;
+    for(int i = 0; i < cnt; ++i) m_RN.m_Zone[m_ZoneIndex[i]].m_FPLevel=0;
 
 #if (defined _DEBUG) &&  !(defined _RELDEBUG)
 if(test && !g_TestLocal) {
@@ -1819,7 +1871,7 @@ bool CMatrixMapLogic::CanMoveFromTo(int nsh,int size,int x1,int y1,int x2,int y2
 		int d2=(dy-dx)<<1;
 //		*(DWORD *)obuf=color;
 		smm+=sx;
-		for(int i=1;i<=dx; i++, smm+=sx) {
+		for(int i=1;i<=dx; ++i, smm+=sx) {
 			if(d>0) { d+=d2; smm+=sy; }
 			else d+=d1;
 
@@ -1937,25 +1989,27 @@ int CMatrixMapLogic::OptimizeMovePath(int nsh,int size,int cnt,CPoint * path)
 	os[oscnt].ibegin=0;
 	os[oscnt].iend=0;
 	os[oscnt].loopagain=true;
-	oscnt++;
+	++oscnt;
 
-	for(int i=2;i<cnt;i++) {
+	for(int i = 2; i < cnt; ++i)
+    {
 		curangle.x=path[i].x-path[i-1].x;
 		curangle.y=path[i].y-path[i-1].y;
 
-		if((curangle.x!=prevangle.x) || (curangle.y!=prevangle.y)) {
+		if((curangle.x!=prevangle.x) || (curangle.y!=prevangle.y))
+        {
 			prevangle=curangle;
 			os[oscnt].ibegin=i-1;
 			os[oscnt].iend=i-1;
 			os[oscnt].loopagain=true;
-			oscnt++;
+			++oscnt;
 		}
 	}
 
 	os[oscnt].ibegin=cnt-1;
 	os[oscnt].iend=cnt-1;
 	os[oscnt].loopagain=true;
-	oscnt++;
+	++oscnt;
 
 /*	if(oscnt<=0) {
 		path[1]=path[cnt-1];
@@ -1964,10 +2018,12 @@ int CMatrixMapLogic::OptimizeMovePath(int nsh,int size,int cnt,CPoint * path)
 
     // Выращиваем углы во все сторонный
 	bool loopagain=true;
-	while(loopagain) {
+	while(loopagain)
+    {
 		loopagain=false;
 
-		for(int i=0;i<oscnt;i++) {
+		for(int i = 0; i < oscnt; ++i)
+        {
 			if(!os[i].loopagain) continue;
 			os[i].loopagain=false;
 
@@ -2013,22 +2069,30 @@ int CMatrixMapLogic::OptimizeMovePathSimple(int nsh,int size,int cnt,CPoint * pa
 {
 	int to;
 	int from=0;
-	while(from<=(cnt-2)) {
-		for(to=from+2;to<cnt;to++) {
-            if(!CanOptimize(nsh,size,path[from].x,path[from].y,path[to].x,path[to].y)) {
-                if((POW2(path[to-1].x-path[to].x)+POW2(path[to-1].y-path[to].y))>=POW2(4)) {
+	while(from<=(cnt-2))
+    {
+		for(to = from + 2; to < cnt; ++to)
+        {
+            if(!CanOptimize(nsh,size,path[from].x,path[from].y,path[to].x,path[to].y))
+            {
+                if((POW2(path[to-1].x-path[to].x)+POW2(path[to-1].y-path[to].y))>=POW2(4))
+                {
                     break;
-                } else if((POW2(path[from].x-path[to].x)+POW2(path[from].y-path[to].y))>=POW2(8)) {
+                }
+                else if((POW2(path[from].x-path[to].x)+POW2(path[from].y-path[to].y))>=POW2(8))
+                {
                     break;
                 }
             }
 		}
 		to--;
-		if((to-from)>1) {
+		if((to-from)>1)
+        {
 			MoveMemory(path+from+1,path+to,(cnt-to)*sizeof(CPoint));
 			cnt-=(to-from)-1;
-			from++;
-		} else from=to;
+			++from;
+		}
+        else from=to;
 	}
 	return cnt;
 }
@@ -2037,7 +2101,8 @@ int CMatrixMapLogic::RandomizeMovePath(int nsh,int size,int cnt,CPoint * path)
 {
 	int zonelast=-1;
 
-	for(int i=1;i<(cnt-1);i++) {
+	for(int i = 1; i < (cnt - 1); ++i)
+    {
 		int zonecur=MoveGet(path[i].x,path[i].y)->m_Zone;
 		if(zonelast==zonecur) continue;
 		zonelast=zonecur;
@@ -2051,7 +2116,8 @@ int CMatrixMapLogic::RandomizeMovePath(int nsh,int size,int cnt,CPoint * path)
 		dist2=min(dist2,(path[i].x-path[i+1].x)*(path[i].x-path[i+1].x)+(path[i].y-path[i+1].y)*(path[i].y-path[i+1].y));
 		dist2=min(dist2,7*7);
 
-		for(int u=0;u<5;u++) {
+		for(int u = 0; u < 5; ++u)
+        {
 			int newpx=Rnd(re.left,re.right);
 			int newpy=Rnd(re.top,re.bottom);
 
@@ -2089,7 +2155,7 @@ int CMatrixMapLogic::FindNearPlace(byte mm,const CPoint & mappos)
 
     m_ZoneIndex[cnt]=zone;
     m_ZoneDataZero[zone]=1;
-    cnt++;
+    ++cnt;
 
     while(sme<cnt) {
         if(m_RN.m_Zone[m_ZoneIndex[sme]].m_PlaceCnt>0) {
@@ -2120,7 +2186,7 @@ int CMatrixMapLogic::FindNearPlace(byte mm,const CPoint & mappos)
         sme++;
     }
 
-    for(i=0;i<cnt;i++) m_ZoneDataZero[m_ZoneIndex[i]]=0;
+    for(i = 0; i < cnt; ++i) m_ZoneDataZero[m_ZoneIndex[i]]=0;
     return -1;
 }
 
@@ -2171,7 +2237,7 @@ int CMatrixMapLogic::PlaceList(byte mm,CPoint & from,CPoint & to,int radius,bool
         // ищем места в заданном радиусе
         while(sme<cnt) {
             place=m_RN.GetPlace(m_ZoneIndex[sme]);
-            for(i=0;i<place->m_NearCnt;i++) {
+            for(i=0;i<place->m_NearCnt;++i) {
                 np=place->m_Near[i];
                 if(m_ZoneDataZero[np]) continue;
                 if(place->m_NearMove[i] & mm) continue;
@@ -2434,7 +2500,7 @@ float NORM(D3DXVECTOR3 &vo, const D3DXVECTOR3 &v)
 //    return CWStr(L"---");
 //}
 
-static bool Egg1(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
+static bool Egg1(const D3DXVECTOR2& center, CMatrixMapStatic* ms, DWORD user)
 {
     int *egg = (int *)user;
     if (ms->IsLiveRobot())
@@ -2455,16 +2521,15 @@ static bool Egg1(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
     return true;
 }
 
-static bool Egg2(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
+static bool Egg2(const D3DXVECTOR2& center, CMatrixMapStatic* ms, DWORD user)
 {
-    int *egg = (int *)user;
+    int* egg = (int*)user;
     if (ms->IsLiveRobot())
     {
         ++(*egg);
     }
     return true;
 }
-
 
 void CMatrixMapLogic::Takt(int step)
 {
@@ -2474,14 +2539,15 @@ void CMatrixMapLogic::Takt(int step)
     {
         g_RangersInterface->m_Takt();
 
-        if (FLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING))
+        if(FLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING))
         {
             float cv = g_RangersInterface->m_MusicVolumeGet();
-            if (fabs(cv-m_TargetMusicVolume) < 0.001f)
+            if(fabs(cv-m_TargetMusicVolume) < 0.001f)
             {
                 RESETFLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING);
                 g_RangersInterface->m_MusicVolumeSet(m_TargetMusicVolume);
-            } else
+            }
+            else
             {
                 float delta = 0;
                 if (cv < m_TargetMusicVolume) delta = 1; else delta = -1;
@@ -2491,13 +2557,23 @@ void CMatrixMapLogic::Takt(int step)
         }
     }
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG|MMFLAG_STAT_DIALOG_D|MMFLAG_MUSIC_VOL_CHANGING|MMFLAG_TRANSITION))
+    //Передаём команду функции для отрисовки точки сборочного пункта здания
+    if (m_GatheringPointsList.Count)
+    {
+        for (int i = 0; i < m_GatheringPointsList.Count; ++i)
+        {
+            CMatrixBuilding* bld = m_GatheringPointsList.BuildingsList[i];
+            bld->ShowGatheringPointTakt(GetTime());
+        }
+    }
+
+    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG|MMFLAG_STAT_DIALOG_D|MMFLAG_MUSIC_VOL_CHANGING|MMFLAG_TRANSITION))
     {
         // some modes...
 
         //_________________________________________________________________________________________________
 
-        if (FLAG(m_Flags, MMFLAG_TRANSITION))
+        if(FLAG(m_Flags, MMFLAG_TRANSITION))
         {
             m_Transition.Takt(step);
         }
@@ -2505,17 +2581,19 @@ void CMatrixMapLogic::Takt(int step)
         //_________________________________________________________________________________________________
 
 
-        if (FLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING))
+        if(FLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING))
         {
             float cv = g_RangersInterface->m_MusicVolumeGet();
-            if (fabs(cv-m_TargetMusicVolume) < 0.001f)
+            if(fabs(cv-m_TargetMusicVolume) < 0.001f)
             {
                 RESETFLAG(m_Flags, MMFLAG_MUSIC_VOL_CHANGING);
                 g_RangersInterface->m_MusicVolumeSet(m_TargetMusicVolume);
-            } else
+            }
+            else
             {
                 float delta = 0;
-                if (cv < m_TargetMusicVolume) delta = 1; else delta = -1;
+                if(cv < m_TargetMusicVolume) delta = 1;
+                else delta = -1;
                 g_RangersInterface->m_MusicVolumeSet(cv + delta * float(step) * 0.001f);
             }
 
@@ -2524,17 +2602,17 @@ void CMatrixMapLogic::Takt(int step)
         //_________________________________________________________________________________________________
 
 
-        if (FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG|MMFLAG_STAT_DIALOG_D))
+        if(FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG|MMFLAG_STAT_DIALOG_D))
         {
 
             // stat
-            CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
+            CBlockPar* repl = g_MatrixData->BlockGet(PAR_REPLACE);
             CWStr temp(g_CacheHeap);
-            for (int i=0;i<m_SideCnt;++i)
+            for(int i = 0; i < m_SideCnt; ++i)
             {
-                CMatrixSideUnit *su = m_Side + i;
+                CMatrixSideUnit* su = m_Side + i;
 
-                if (su == GetPlayerSide()) temp = L"_p_";
+                if(su == GetPlayerSide()) temp = L"_p_";
                 else
                 {
                     temp.Set(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id, g_CacheHeap))[0]);
@@ -2543,10 +2621,11 @@ void CMatrixMapLogic::Takt(int step)
                     temp += L"_";
                 }
 
-                if (su->GetStatValue(STAT_TIME) == 0)
+                if(su->GetStatValue(STAT_TIME) == 0)
                 {
                     repl->ParSetAdd(temp + L"c6", L"");
-                } else
+                }
+                else
                 {
                     bool winer = false;
                     int time = su->GetStatValue(STAT_TIME) / 1000;
@@ -2566,14 +2645,14 @@ void CMatrixMapLogic::Takt(int step)
                     if (m.GetLen() < 2) m.Insert(0, L"0");
                     if (s.GetLen() < 2) s.Insert(0, L"0");
 
-                    if (winer)
+                    if(winer)
                     {
                         repl->ParSetAdd(temp + L"c6", L"<color=0,255,0>" + h+L":"+m+L":"+s+L"</color>");
-                    } else
+                    }
+                    else
                     {
                         repl->ParSetAdd(temp + L"c6", h+L":"+m+L":"+s);
                     }
-
                 
                     repl->ParSetAdd(temp + L"c1", CWStr(su->GetStatValue(STAT_ROBOT_BUILD), g_CacheHeap));
                     repl->ParSetAdd(temp + L"c2", CWStr(su->GetStatValue(STAT_ROBOT_KILL), g_CacheHeap));
@@ -2585,10 +2664,11 @@ void CMatrixMapLogic::Takt(int step)
 
             }
 
-            if (FLAG(m_Flags, MMFLAG_STAT_DIALOG))
+            if(FLAG(m_Flags, MMFLAG_STAT_DIALOG))
             {
                 EnterDialogMode(TEMPLATE_DIALOG_STATISTICS);
-            } else
+            }
+            else
             {
                 EnterDialogMode(TEMPLATE_DIALOG_STATISTICS_D);
             }
@@ -2599,18 +2679,17 @@ void CMatrixMapLogic::Takt(int step)
     CMultiSelection::AddTime(step);
 
 
-    if (m_Console.IsActive())
+    if(m_Console.IsActive())
     {
         m_Console.Takt(step);
     }
 
-    if (IsPaused()) 
+    if(IsPaused()) 
     {
-        if (m_PauseHint == NULL && g_RangersInterface && !FLAG(m_Flags, MMFLAG_DIALOG_MODE))
+        if(m_PauseHint == NULL && g_RangersInterface && !FLAG(m_Flags, MMFLAG_DIALOG_MODE))
         {
-            m_PauseHint = CMatrixHint::Build(CWStr(TEMPLATE_PAUSE,g_CacheHeap));
-            m_PauseHint->Show(14,62);
-
+            m_PauseHint = CMatrixHint::Build(CWStr(TEMPLATE_PAUSE, g_CacheHeap));
+            m_PauseHint->Show(14, 62);
         }
 
         g_IFaceList->LogicTakt(step);
@@ -2618,33 +2697,34 @@ void CMatrixMapLogic::Takt(int step)
         m_Cursor.Takt(step);
         m_DI.Takt(step);
 
-	    CMatrixMapStatic * ms;
+        CMatrixMapStatic* ms;
         ms = CMatrixMapStatic::GetFirstLogic();
 	    while(ms)
         {
-            if (ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT) ((CMatrixMapObject *)ms)->PauseTakt(step);
-            else if (ms->IsLiveBuilding()) ms->AsBuilding()->PauseTakt(step);
-            else if (ms->IsLiveCannon()) ms->AsCannon()->PauseTakt(step);
-            else if (ms->IsLiveRobot()) ms->AsRobot()->PauseTakt(step);
-		    ms=ms->GetNextLogic();
+            if(ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT) ((CMatrixMapObject*)ms)->PauseTakt(step);
+            else if(ms->IsLiveBuilding()) ms->AsBuilding()->PauseTakt(step);
+            else if(ms->IsLiveCannon()) ms->AsCannon()->PauseTakt(step);
+            else if(ms->IsLiveRobot()) ms->AsRobot()->PauseTakt(step);
+            ms = ms->GetNextLogic();
 	    }
 
 	    int cnt = m_VisibleGroupsCount;
-	    CMatrixMapGroup * * md=m_VisibleGroups;
-	    while((cnt--)>0)
+        CMatrixMapGroup** md = m_VisibleGroups;
+	    while((cnt--) > 0)
         {
             (*(md++))->PauseTakt(step);
 	    }
 
         CMatrixMapStatic::CalcDistances();
 
-        float   fstep = (float)step;
+        float fstep = (float)step;
         m_Minimap.PauseTakt(fstep);
         m_Camera.Takt(fstep);
         return;
-    } else
+    }
+    else
     {
-        if (m_PauseHint)
+        if(m_PauseHint)
         {
             m_PauseHint->Release();
             m_PauseHint = NULL;
@@ -2652,19 +2732,17 @@ void CMatrixMapLogic::Takt(int step)
     }
 
     m_Time += step;
-    if (m_MaintenanceTime > 0)
+    if(m_MaintenanceTime > 0)
     {
         m_MaintenanceTime -= step;
-        if (m_MaintenanceTime < 0)
+        if(m_MaintenanceTime < 0)
         {
             CSound::Play(S_MAINTENANCE_ON, SL_INTERFACE);
             m_MaintenanceTime = 0;
         }
     }
 
-
     DCP();
-
 
     //if (m_ShadeOn)
     //{
@@ -2702,7 +2780,6 @@ void CMatrixMapLogic::Takt(int step)
     //    return;
     //}
 
-
     DCP();
 
     // TODO : 10 time per second
@@ -2710,18 +2787,20 @@ void CMatrixMapLogic::Takt(int step)
 
     DCP();
 
-    if((GetTime()-m_GatherInfoLast)>100) {
-        m_GatherInfoLast=GetTime();
+    if((GetTime() - m_GatherInfoLast) > 100)
+    {
+        m_GatherInfoLast = GetTime();
 
         GatherInfo(0);
         GatherInfo(1);
-//        GatherInfo(2);
+//      GatherInfo(2);
     }
     DCP();
 
     int portions = step / LOGIC_TAKT_PERIOD;
     
-    for(int cnt = 0; cnt < portions;cnt++){
+    for(int cnt = 0; cnt < portions; ++cnt)
+    {
         CMatrixMapStatic::ProceedLogic(LOGIC_TAKT_PERIOD);
     }
 
@@ -2729,28 +2808,30 @@ void CMatrixMapLogic::Takt(int step)
 
 
     portions = step - portions*LOGIC_TAKT_PERIOD;
-    if(portions){
+    if(portions)
+    {
         CMatrixMapStatic::ProceedLogic(portions);
     }
     DCP();
 
-    while (GetTime() > m_TaktNext)
+    while(GetTime() > m_TaktNext)
     {
 		m_TaktNext += LOGIC_TAKT_PERIOD;
         //CMatrixMapStatic::ProceedLogic(LOGIC_TAKT_PERIOD);
 
-		for(int i=0;i<m_SideCnt;i++) {
+		for(int i = 0; i < m_SideCnt; ++i)
+        {
 			m_Side[i].LogicTakt(LOGIC_TAKT_PERIOD);
 		}
 	}
 
     DCP();
 
-    if (GetPlayerSide()->GetArcadedObject())
+    if(GetPlayerSide()->GetArcadedObject())
     {
     DCP();
         GetPlayerSide()->GetArcadedObject()->StaticTakt(step);
-        if (GetPlayerSide()->GetArcadedObject())
+        if(GetPlayerSide()->GetArcadedObject())
         {
             GetPlayerSide()->GetArcadedObject()->RNeed(MR_Matrix);
             GetPlayerSide()->InterpolateArcadedRobotArmorP(step);
@@ -2770,34 +2851,36 @@ void CMatrixMapLogic::Takt(int step)
 
     // check side status
 
-    if ((GetTime() - m_PrevTimeCheckStatus) > 1001)
+    if((GetTime() - m_PrevTimeCheckStatus) > 1001)
     {
         // check easter egg :)
         CWStr mn(MapName(), g_CacheHeap);
         mn.LowerCase();
-        if (mn.Find(L"terron") >= 0)
+        if(mn.Find(L"terron") >= 0)
         {
             int egg1 = 0, egg2 = 0;
             FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (DWORD)&egg1);
-            if (egg1 == 1)
+            if(egg1 == 1)
             {
 
                 FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 160, 1, TRACE_ROBOT, NULL, Egg2, (DWORD)&egg2);
-                if (egg2==1)
+                if(egg2 == 1)
                 {
                     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_ROBOT_IN_POSITION);
-                } else
+                }
+                else
                 {
                     goto oblom;
                 }
-            } else
+            }
+            else
             {
 oblom:
                 RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_ROBOT_IN_POSITION);
                 CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-                for(;ms;ms = ms->GetNextLogic())
+                for(; ms; ms = ms->GetNextLogic())
                 {
-                    if (ms->IsLiveRobot()) ms->AsRobot()->UnMarkInPosition();
+                    if(ms->IsLiveRobot()) ms->AsRobot()->UnMarkInPosition();
                 }
             }
         }
@@ -2820,7 +2903,7 @@ oblom:
         m_PrevTimeCheckStatus = GetTime() + 1001;
 
         int cnt = 0;
-        for (int i=0;i<m_SideCnt;++i)
+        for(int i = 0; i < m_SideCnt; ++i)
         {
             if (m_Side[i].m_Id >= cnt) cnt = m_Side[i].m_Id + 1;
         }
@@ -2834,9 +2917,9 @@ oblom:
         sides[0] = true;
 
         int scnt = 0;
-        for (int i=0;i<m_SideCnt;++i)
+        for(int i = 0; i < m_SideCnt; ++i)
         {
-            if (m_Side[i].GetStatus() == SS_NONE)
+            if(m_Side[i].GetStatus() == SS_NONE)
             {
                 sides2[m_Side[i].m_Id] = true;
                 sides[m_Side[i].m_Id] = true;
@@ -2844,38 +2927,37 @@ oblom:
             }
         }
 
-        CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-        for (;ms;ms = ms->GetNextLogic())
+        CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+        for(; ms; ms = ms->GetNextLogic())
         {
             int side = ms->GetSide();
-            if (sides[side]) continue;
-            if (ms->IsLiveRobot() || (ms->IsBase() && ms->IsLiveBuilding()))
+            if(sides[side]) continue;
+            if(ms->IsLiveRobot() || (ms->IsBase() && ms->IsLiveBuilding()))
             {
                 sides[side] = true;
                 ++scnt;
-                if (scnt == m_SideCnt) break;
+                if(scnt == m_SideCnt) break;
             }
         }
 
-        for (int i=0;i<m_SideCnt;++i)
+        for(int i = 0; i < m_SideCnt; ++i)
         {
-            if (!sides[m_Side[i].m_Id])
+            if(!sides[m_Side[i].m_Id])
             {
-                if (FLAG(g_MatrixMap->m_Flags, MMFLAG_TERRON_DEAD) && (m_Side+i) == g_MatrixMap->GetPlayerSide())
+                if(FLAG(g_MatrixMap->m_Flags, MMFLAG_TERRON_DEAD) && (m_Side+i) == g_MatrixMap->GetPlayerSide())
                     continue; // ignore player dead if terron dead
-                if (FLAG(g_MatrixMap->m_Flags, MMFLAG_SPECIAL_BROKEN) && (m_Side + i) == g_MatrixMap->GetPlayerSide())
+                if(FLAG(g_MatrixMap->m_Flags, MMFLAG_SPECIAL_BROKEN) && (m_Side + i) == g_MatrixMap->GetPlayerSide())
                     continue; // ignore player dead if all specials broken
                 {
-
                     m_Side[i].SetStatus(SS_JUST_DEAD);
-                
-                    CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-                    for (;ms;ms = ms->GetNextLogic())
+
+                    CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+                    for (; ms; ms = ms->GetNextLogic())
                     {
-                        if (ms->IsLiveBuilding())
+                        if(ms->IsLiveBuilding())
                         {
                             int side = ms->GetSide();
-                            if (side == m_Side[i].m_Id)
+                            if(side == m_Side[i].m_Id)
                             {
                                 ms->AsBuilding()->SetNeutral();
                             }
@@ -2885,41 +2967,42 @@ oblom:
             }
         }
 
+        // checking win/lose status
 
-        // checking win/loose status
-
-        if (m_BeforeWinLooseDialogCount > 1) --m_BeforeWinLooseDialogCount; 
-        else if (m_BeforeWinLooseDialogCount == 1)
+        if(m_BeforeWinLooseDialogCount > 1) --m_BeforeWinLooseDialogCount; 
+        else if(m_BeforeWinLooseDialogCount == 1)
         {
-            if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
+            if(FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
             {
                 g_ExitState = 1;
                 SETFLAG(g_Flags, GFLAG_EXITLOOP);
-            } else
+            }
+            else
             {
-                if (FLAG(m_Flags, MMFLAG_WIN))
+                if(FLAG(m_Flags, MMFLAG_WIN))
                 {
                     GetPlayerSide()->SetStatValue(STAT_TIME, -GetPlayerSide()->GetStatValue(STAT_TIME));
                     EnterDialogMode(TEMPLATE_DIALOG_WIN);
                 }
-                else
-                    EnterDialogMode(TEMPLATE_DIALOG_LOOSE);
+                else EnterDialogMode(TEMPLATE_DIALOG_LOOSE);
             }
 
-        } else
+        }
+        else
         {
 
-            if (GetPlayerSide()->GetStatus() == SS_JUST_WIN)
+            if(GetPlayerSide()->GetStatus() == SS_JUST_WIN)
             {
                 GetPlayerSide()->SetStatus(SS_ACTIVE);
 
                 m_BeforeWinLooseDialogCount = 1;
                 SETFLAG(m_Flags, MMFLAG_WIN);
-            } else if (GetPlayerSide()->GetStatus() == SS_JUST_DEAD)
+            }
+            else if(GetPlayerSide()->GetStatus() == SS_JUST_DEAD)
             {
-                for (int i=0;i<m_SideCnt;++i)
+                for(int i = 0; i < m_SideCnt; ++i)
                 {
-                    if (sides[m_Side[i].m_Id] && !sides2[m_Side[i].m_Id])
+                    if(sides[m_Side[i].m_Id] && !sides2[m_Side[i].m_Id])
                     {
                         m_Side[i].SetStatValue(STAT_TIME, -m_Side[i].GetStatValue(STAT_TIME));
                     }
@@ -2928,27 +3011,27 @@ oblom:
                 GetPlayerSide()->SetStatus(SS_NONE);
                 m_BeforeWinLooseDialogCount = 1;
                 RESETFLAG(m_Flags, MMFLAG_WIN);
-            } else
+            }
+            else
             {
                 int acnt = 0;
-                for (int i=0;i<m_SideCnt;++i)
+                for(int i = 0; i < m_SideCnt; ++i)
                 {
-                    if (m_Side[i].GetStatus() == SS_JUST_DEAD)
+                    if(m_Side[i].GetStatus() == SS_JUST_DEAD)
                     {
                         m_Side[i].SetStatus(SS_NONE);
                     }
-                    if (m_Side[i].GetStatus() == SS_ACTIVE)
+                    if(m_Side[i].GetStatus() == SS_ACTIVE)
                     {
                         ++acnt;
                     }
                 }
-                if (acnt == 1 && g_MatrixMap->m_BeforeWinCount <= 0)
+                if(acnt == 1 && g_MatrixMap->m_BeforeWinCount <= 0)
                 {
                     // only one side is active
                     // it is player side. win!
                     m_BeforeWinLooseDialogCount = 1;
                     SETFLAG(m_Flags, MMFLAG_WIN);
-
                 }
             }
         }
@@ -2956,17 +3039,17 @@ oblom:
 
 }
 
-SMatrixPathObj * CMatrixMapLogic::ObjAdd()
+SMatrixPathObj* CMatrixMapLogic::ObjAdd()
 {
-    SMatrixPathObj * obj=(SMatrixPathObj *)HAllocClear(sizeof(SMatrixPathObj),g_MatrixHeap);
-    LIST_ADD(obj,m_ObjFirst,m_ObjLast,m_Prev,m_Next);
+    SMatrixPathObj* obj = (SMatrixPathObj*)HAllocClear(sizeof(SMatrixPathObj), g_MatrixHeap);
+    LIST_ADD(obj, m_ObjFirst, m_ObjLast, m_Prev, m_Next);
     return obj;
 }
 
-void CMatrixMapLogic::ObjDelete(SMatrixPathObj * obj)
+void CMatrixMapLogic::ObjDelete(SMatrixPathObj* obj)
 {
-    LIST_DEL(obj,m_ObjFirst,m_ObjLast,m_Prev,m_Next);
-    HFree(obj,g_MatrixHeap);
+    LIST_DEL(obj, m_ObjFirst, m_ObjLast, m_Prev, m_Next);
+    HFree(obj, g_MatrixHeap);
 }
 
 void CMatrixMapLogic::ObjClear()
@@ -2974,14 +3057,14 @@ void CMatrixMapLogic::ObjClear()
     while(m_ObjFirst) ObjDelete(m_ObjLast);
 }
 
-SMatrixPath * CMatrixMapLogic::PathAlloc()
+SMatrixPath* CMatrixMapLogic::PathAlloc()
 {
-    return (SMatrixPath *)HAllocClear(sizeof(SMatrixPath),g_MatrixHeap);
+    return (SMatrixPath*)HAllocClear(sizeof(SMatrixPath), g_MatrixHeap);
 }
 
-void CMatrixMapLogic::PathFree(SMatrixPath * path)
+void CMatrixMapLogic::PathFree(SMatrixPath* path)
 {
-    HFree(path,g_MatrixHeap);
+    HFree(path, g_MatrixHeap);
 }
 
 void CMatrixMapLogic::PathClear()
@@ -2989,18 +3072,21 @@ void CMatrixMapLogic::PathClear()
     while(m_PathFirst) PathDelete(m_PathLast);
 }
 
-void CMatrixMapLogic::PathCalcPosAfter(SMatrixPath * path)
+void CMatrixMapLogic::PathCalcPosAfter(SMatrixPath* path)
 {
-    SMatrixPathObj * obj=m_ObjFirst;
-    while(obj) {
-        obj->tx=obj->cx;
-        obj->ty=obj->cy;
-        obj->calc_pos=false;
-        obj=obj->m_Next;
+    SMatrixPathObj* obj = m_ObjFirst;
+    while(obj)
+    {
+        obj->tx = obj->cx;
+        obj->ty = obj->cy;
+        obj->calc_pos = false;
+        obj = obj->m_Next;
     }
 
-    while(path) {
-        if(!path->m_Owner->calc_pos) {
+    while(path)
+    {
+        if(!path->m_Owner->calc_pos)
+        {
             path->m_Owner->tx=path->m_Unit[path->m_Cnt-1].ex;
             path->m_Owner->ty=path->m_Unit[path->m_Cnt-1].ey;
             path->m_Owner->calc_pos=true;
@@ -3009,16 +3095,18 @@ void CMatrixMapLogic::PathCalcPosAfter(SMatrixPath * path)
     }
 }
 
-bool CMatrixMapLogic::PathCheckInFindInsert(SMatrixPath * path)
+bool CMatrixMapLogic::PathCheckInFindInsert(SMatrixPath* path)
 {
-    SMatrixPath * afterpath=m_PathLast;
-    while(afterpath) {
+    SMatrixPath* afterpath=m_PathLast;
+    while(afterpath)
+    {
         if(afterpath->m_Owner->m_Path==afterpath) break;
         afterpath=afterpath->m_Prev;
     }
     PathCalcPosAfter(afterpath);
 
-    if(!PathIntersectAfter(path)) {
+    if(!PathIntersectAfter(path))
+    {
         if(path==NULL) PathInsert(m_PathFirst,path);
         else PathInsert(afterpath->m_Next,path);
         return true;
@@ -3026,11 +3114,13 @@ bool CMatrixMapLogic::PathCheckInFindInsert(SMatrixPath * path)
     if(afterpath==NULL) afterpath=m_PathFirst;
     else afterpath=afterpath->m_Next;
 
-    while(afterpath) {
+    while(afterpath)
+    {
         afterpath->m_Owner->tx=afterpath->m_Unit[afterpath->m_Cnt-1].ex;
         afterpath->m_Owner->ty=afterpath->m_Unit[afterpath->m_Cnt-1].ey;
 
-        if(!PathIntersectAfter(path)) {
+        if(!PathIntersectAfter(path))
+        {
             PathInsert(afterpath,path);
             return true;
         }
@@ -3039,7 +3129,7 @@ bool CMatrixMapLogic::PathCheckInFindInsert(SMatrixPath * path)
     return false;
 }
 
-void CMatrixMapLogic::PathCheckIn(SMatrixPath * path)
+void CMatrixMapLogic::PathCheckIn(SMatrixPath* path)
 {
     if(PathCheckInFindInsert(path)) return;
 
@@ -3058,12 +3148,15 @@ void CMatrixMapLogic::PathCheckIn(SMatrixPath * path)
 	}*/
 
     PathCalcPosAfter(m_PathLast);
-    SMatrixPathObj * obj=m_ObjFirst;
-    while(obj) {
-        if(obj!=path->m_Owner) {
-            if(PathIntersect(path,obj->tx,obj->ty,obj->radius)) {
-                if(PathCheckInFindPos(path,obj)) {
-                }
+    SMatrixPathObj* obj=m_ObjFirst;
+    while(obj)
+    {
+        if(obj!=path->m_Owner)
+        {
+            if(PathIntersect(path,obj->tx,obj->ty,obj->radius))
+            {
+                if(PathCheckInFindPos(path,obj))
+                {}
             }
         }
         obj=obj->m_Next;
@@ -3072,45 +3165,59 @@ void CMatrixMapLogic::PathCheckIn(SMatrixPath * path)
 
 bool CMatrixMapLogic::PathCheckInFindPos(SMatrixPath * path,SMatrixPathObj * obj)
 {
-    int mx=Float2Int(obj->tx/GLOBAL_SCALE_MOVE);
-    int my=Float2Int(obj->ty/GLOBAL_SCALE_MOVE);
+    int mx = Float2Int(obj->tx / GLOBAL_SCALE_MOVE);
+    int my = Float2Int(obj->ty / GLOBAL_SCALE_MOVE);
 
-	int tx,ty,u,i=0;
-	while(i<m_SizeMove.x) {
-		for(u=0;u<((i+1)*2+1);u++) {
-            tx=mx-(i+1)+u; ty=my-(i+1);
-            if(IsAbsenceWall(obj->nsh,obj->size,tx,ty)) { 
-                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius)) {
+	int tx, ty, u, i = 0;
+	while(i < m_SizeMove.x)
+    {
+		for(u=0; u<((i+1)*2+1); ++u)
+        {
+            tx=mx-(i+1)+u;
+            ty=my-(i+1);
+            if(IsAbsenceWall(obj->nsh,obj->size,tx,ty))
+            {
+                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius))
+                {
                     obj->tx=GLOBAL_SCALE_MOVE*tx; obj->ty=GLOBAL_SCALE_MOVE*ty;
                     return true;
                 }
             }
-            tx=mx-(i+1)+u; ty=my+(i+1);
-			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty)) { 
-                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius)) {
+            tx=mx-(i+1)+u;
+            ty=my+(i+1);
+			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty))
+            {
+                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius))
+                {
                     obj->tx=GLOBAL_SCALE_MOVE*tx; obj->ty=GLOBAL_SCALE_MOVE*ty;
                     return true;
                 }
             }
 		}
 
-		for(u=0;u<(i*2+1);u++) {
-            tx=mx-(i+1); ty=my-i+u;
-			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty)) { 
+		for(u=0; u<(i*2+1); ++u)
+        {
+            tx=mx-(i+1);
+            ty=my-i+u;
+			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty))
+            { 
                 if(!PathIntersect(path,obj->tx,obj->ty,obj->radius)) {
                     obj->tx=GLOBAL_SCALE_MOVE*tx; obj->ty=GLOBAL_SCALE_MOVE*ty;
                     return true;
                 }
             }
-            tx=mx+(i+1); ty=my-i+u;
-			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty)) { 
-                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius)) {
+            tx=mx+(i+1);
+            ty=my-i+u;
+			if(IsAbsenceWall(path->m_Owner->nsh,path->m_Owner->size,tx,ty))
+            {
+                if(!PathIntersect(path,obj->tx,obj->ty,obj->radius))
+                {
                     obj->tx=GLOBAL_SCALE_MOVE*tx; obj->ty=GLOBAL_SCALE_MOVE*ty;
                     return true;
                 }
             }
 		}
-		i++;
+		++i;
 	}
     return false;
 }
@@ -3149,7 +3256,7 @@ bool CMatrixMapLogic::PathIntersect(SMatrixPath * path,float cx,float cy,float r
     return false;
 }
 
-/*bool CMatrixMapLogic::PathIntersect(SMatrixPath * path1,SMatrixPath * path2)
+/*bool CMatrixMapLogic::PathIntersect(SMatrixPath* path1, SMatrixPath* path2)
 {
     int ox1=0; // Center
     if(path2->m_StartX<=path1->m_StartX-path1->m_Radius-path2->m_Radius) ox1=-1; // left

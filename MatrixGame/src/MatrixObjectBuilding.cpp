@@ -164,58 +164,81 @@ void CMatrixBuilding::RNeed(dword need)
         }
 
 	}
-	if ((need & m_RChange & MR_ShadowStencil) && m_GGraph)
+	if((need & m_RChange & MR_ShadowStencil) && m_GGraph)
     {
-		m_RChange&=~MR_ShadowStencil;
+        m_RChange &= ~MR_ShadowStencil;
 
-		if(m_ShadowType!=SHADOW_STENCIL) {
+		if(m_ShadowType!=SHADOW_STENCIL)
+        {
 			m_GGraph->ShadowStencilOn(false);
-		} else {
-			m_GGraph->m_ShadowStencilLight=g_MatrixMap->m_LightMain;
-            m_GGraph->m_GroundZ = (m_Kind==BUILDING_BASE)?g_MatrixMap->m_GroundZBase:g_MatrixMap->m_GroundZ;
-			m_GGraph->ShadowStencilOn(true);
-			//m_GGraph->RChange(VOUF_SHADOWSTENCIL); // Takt will modifies this flag
-			m_GGraph->RNeed(VOUF_MATRIX|VOUF_SHADOWSTENCIL);
+		}
+        else
+        {
+            m_GGraph->m_ShadowStencilLight = g_MatrixMap->m_LightMain;
+            m_GGraph->m_GroundZ = (m_Kind == BUILDING_BASE) ? g_MatrixMap->m_GroundZBase : g_MatrixMap->m_GroundZ;
+            m_GGraph->ShadowStencilOn(true);
+            //m_GGraph->RChange(VOUF_SHADOWSTENCIL); //Takt will modifies this flag
+            m_GGraph->RNeed(VOUF_MATRIX | VOUF_SHADOWSTENCIL);
 		}
 
-/*		if(m_ShadowType!=SHADOW_STENCIL) {
-			if(m_ShadowStencil) { HDelete(CVOShadowStencil,m_ShadowStencil,g_MatrixHeap); m_ShadowStencil=NULL; }
-		} else if(1) {
+/*		if(m_ShadowType!=SHADOW_STENCIL)
+        {
+			if(m_ShadowStencil)
+            {
+                HDelete(CVOShadowStencil, m_ShadowStencil, g_MatrixHeap);
+                m_ShadowStencil=NULL;
+            }
+		}
+        else if(1)
+        {
 			ASSERT(m_Graph);
 			ASSERT(m_Graph->VO());
 
-			if(!m_ShadowStencil) m_ShadowStencil=HNew(g_MatrixHeap) CVOShadowStencil;
+			if(!m_ShadowStencil) m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil;
 
 			if(!(m_Graph->VO()->EdgeExist())) m_Graph->VO()->EdgeBuild();
 
-			m_ShadowStencil->Build(*(m_Graph->VO()),m_Graph->FrameVO(),g_MatrixMap->m_LightMain,m_Matrix,g_MatrixMap->m_ShadowPlaneCut);
+			m_ShadowStencil->Build(*(m_Graph->VO()), m_Graph->FrameVO(), g_MatrixMap->m_LightMain, m_Matrix, g_MatrixMap->m_ShadowPlaneCut);
 		}*/
 	}
-	if(need & m_RChange & MR_ShadowProjGeom) {
-		m_RChange&=~MR_ShadowProjGeom;
+	if(need & m_RChange & MR_ShadowProjGeom)
+    {
+		m_RChange &= ~MR_ShadowProjGeom;
 
         // TO DO: see mapobject and robots
 
-/*		if(m_ShadowType!=SHADOW_PROJ_STATIC && m_ShadowType!=SHADOW_PROJ_DYNAMIC) {
-			if(m_ShadowProj) { HDelete(CVOShadowProj,m_ShadowProj,g_MatrixHeap); m_ShadowProj=NULL; }
-		} else if(1) {
+/*		if(m_ShadowType!=SHADOW_PROJ_STATIC && m_ShadowType!=SHADOW_PROJ_DYNAMIC)
+        {
+			if(m_ShadowProj)
+            {
+                HDelete(CVOShadowProj, m_ShadowProj, g_MatrixHeap);
+                m_ShadowProj = NULL;
+            }
+		}
+        else if(1)
+        {
 			ASSERT(m_Graph);
 			ASSERT(m_Graph->VO());
 
 			if(!m_ShadowProj) m_ShadowProj=HNew(g_MatrixHeap) CVOShadowProj(g_MatrixHeap);
 
-			if(m_ShadowType==SHADOW_PROJ_DYNAMIC) {
+			if(m_ShadowType==SHADOW_PROJ_DYNAMIC)
+            {
 				CTexture * tex=m_ShadowProj->GetTexture();
 				m_ShadowProj->SetTexture(NULL);
-				if(tex) {
+				if(tex)
+                {
 					tex->RefDec();
 					ASSERT(tex->Ref()==0);
 				}
 				ShadowProjBuild(*m_ShadowProj,*(m_Graph->VO()),tex,m_Graph->FrameVO(),m_Matrix,g_MatrixMap->m_LightMain,10,m_ShadowSize, true);
-			} else {
+			}
+            else
+            {
 				CTexture * tex=m_ShadowProj->GetTexture();
 				m_ShadowProj->SetTexture(NULL);
-				if(tex) {
+				if(tex)
+                {
 					tex->RefDec();
 					if(tex->Ref()<=0) CCache::Destroy(tex); 
 				}
@@ -233,12 +256,13 @@ void CMatrixBuilding::RNeed(dword need)
                         tex=((CMatrixBuilding *)so)->m_ShadowProj->GetTexture();
                         break;
                     }
-                    so=so->m_Next;
+                    so = so->m_Next;
 				}
 //				(CWStr(L"SB_")+CWStr(m_ShadowSize)+CWStr(L"_")+CWStr(m_Kind)).Get()
 				ShadowProjBuild(*m_ShadowProj,*(m_Graph->VO()),tex,0,m_Matrix,g_MatrixMap->m_LightMain,10,m_ShadowSize,false);
 			}
-			if(!(m_ShadowProj->IsProjected())) {
+			if(!(m_ShadowProj->IsProjected()))
+            {
 				HDelete(CVOShadowProj,m_ShadowProj,g_MatrixHeap);
 				m_ShadowProj=NULL;
 			}
@@ -246,7 +270,7 @@ void CMatrixBuilding::RNeed(dword need)
 	}
 	if(need & m_RChange & (MR_MiniMap))
     {
-		m_RChange&=~MR_MiniMap;
+		m_RChange &= ~MR_MiniMap;
         g_MatrixMap->m_Minimap.RenderObjectToBackground(this);
 	}
 }
@@ -255,18 +279,18 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
 {
     DTRACE();
 
-    if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return true;
+    if(m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return true;
 
-    bool friendly_fire = (attacker_side!=0) && (attacker_side==m_Side);
-    float damagek = (friendly_fire||m_Side!=PLAYER_SIDE)?1.0f:g_MatrixMap->m_Difficulty.k_damage_enemy_to_player;
-	if (friendly_fire && m_Side==PLAYER_SIDE)damagek=damagek*g_MatrixMap->m_Difficulty.k_friendly_fire;
+    bool friendly_fire = (attacker_side != 0) && (attacker_side == m_Side);
+    float damagek = (friendly_fire || m_Side != PLAYER_SIDE) ? 1.0f : g_MatrixMap->m_Difficulty.k_damage_enemy_to_player;
+    if(friendly_fire && m_Side == PLAYER_SIDE) damagek = damagek * g_MatrixMap->m_Difficulty.k_friendly_fire;
 
     int idx = Weap2Index(weap);
-    if (weap == WEAPON_REPAIR)
+    if(weap == WEAPON_REPAIR)
     {
 
         m_HitPoint += friendly_fire?g_Config.m_BuildingDamages[idx].friend_damage:g_Config.m_BuildingDamages[idx].damage;
-        if (m_HitPoint > m_HitPointMax)
+        if(m_HitPoint > m_HitPointMax)
         {
             m_HitPoint = m_HitPointMax;
         }
@@ -278,22 +302,23 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
     
     CMatrixEffectWeapon::SoundHit(weap, pos);
 
-    if (m_HitPoint > g_Config.m_BuildingDamages[idx].mindamage)
+    if(m_HitPoint > g_Config.m_BuildingDamages[idx].mindamage)
     {
         m_HitPoint -= damagek * (friendly_fire?g_Config.m_BuildingDamages[idx].friend_damage:g_Config.m_BuildingDamages[idx].damage);
         
-        if (m_HitPoint >= 0)
+        if(m_HitPoint >= 0)
         {
             m_PB.Modify( m_HitPoint * m_MaxHitPointInversed);
-        } else
+        }
+        else
         {
             m_PB.Modify( 0 );
         }
     }
 
-    if (m_Side == PLAYER_SIDE && !friendly_fire)
+    if(m_Side == PLAYER_SIDE && !friendly_fire)
     {
-        if (m_UnderAttackTime == 0)
+        if(m_UnderAttackTime == 0)
         {
             int ss = IRND(3);
             if (ss == 0) CSound::Play(S_SIDE_UNDER_ATTACK_1);
@@ -303,23 +328,24 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
         m_UnderAttackTime = UNDER_ATTACK_IDLE_TIME;
     }
 
-
-
-    if (m_HitPoint <= 0)
+    //Функция выставления маркера смерти здания "death in progress"
+    if(m_HitPoint <= 0)
     {
-        if (m_Side == PLAYER_SIDE)
+        if(m_Side == PLAYER_SIDE)
         {
             bool bu = FRND(1) < 0.7f;
-            if (bu)
+            if(bu)
             {
-                if (m_Kind == BUILDING_BASE)
+                if(m_Kind == BUILDING_BASE)
                 {
                     CSound::Play(S_BASE_KILLED);
-                } else
+                }
+                else
                 {
                     CSound::Play(S_FACTORY_KILLED);
                 }
-            } else
+            }
+            else
             {
                 CSound::Play(S_BUILDING_KILLED);
             }
@@ -329,7 +355,7 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
         m_HitPoint = -1;
         m_State = BUILDING_DIP;
 
-        if (attacker_side != 0 && !friendly_fire)
+        if(attacker_side != 0 && !friendly_fire)
         {
             g_MatrixMap->GetSideById(attacker_side)->IncStatValue(STAT_BUILDING_KILL);
         }
@@ -343,64 +369,98 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
     return false;
 }
 
-void CMatrixBuilding::OnOutScreen(void)
-{
+void CMatrixBuilding::OnOutScreen(void) {}
 
+//Отрисовываем точку сбора для выбранного игроком здания (если точка сбора для него вообще установлена)
+void CMatrixBuilding::ShowGatheringPointTakt(int time)
+{
+    if(m_Side == PLAYER_SIDE)
+    {
+        if(m_ShowGatheringPointTime - time <= 0)
+        {
+            //Обновляем время срабатывания таймера
+            m_ShowGatheringPointTime += GATHERING_POINT_SHOW_TIME;
+
+            if(g_MatrixMap->GetPlayerSide()->m_ActiveObject == this)
+            {
+                D3DXVECTOR3 v;
+                v.x = m_GatheringPoint.CoordX;
+                v.y = m_GatheringPoint.CoordY;
+                v.z = g_MatrixMap->GetZ(v.x, v.y);
+                CMatrixEffect::CreateMoveto(v, 2);
+            }
+        }
+    }
 }
 
 void CMatrixBuilding::Takt(int cms)
 {
     DTRACE();
 
-    if(m_Side == PLAYER_SIDE && FLAG(m_ObjectState, BUILDING_NEW_INCOME))
+    if(m_Side == PLAYER_SIDE)
     {
-        RESETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-        switch(m_Kind){
+        //Отрисовываем иконки поступающих ресурсов над зданием
+        if(FLAG(m_ObjectState, BUILDING_NEW_INCOME))
+        {
+            RESETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+            switch (m_Kind)
+            {
             case BUILDING_TITAN:
-                CMatrixEffect::CreateBillboardScore(L"t10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF); 
+                CMatrixEffect::CreateBillboardScore(L"t10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF);
                 break;
             case BUILDING_PLASMA:
-                CMatrixEffect::CreateBillboardScore(L"p10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF); 
+                CMatrixEffect::CreateBillboardScore(L"p10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF);
                 break;
             case BUILDING_ELECTRONIC:
-                CMatrixEffect::CreateBillboardScore(L"e10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF); 
+                CMatrixEffect::CreateBillboardScore(L"e10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF);
                 break;
             case BUILDING_ENERGY:
-                CMatrixEffect::CreateBillboardScore(L"b10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF); 
+                CMatrixEffect::CreateBillboardScore(L"b10", D3DXVECTOR3(GetGeoCenter().x, GetGeoCenter().y, GetGeoCenter().z + 40.0f), 0xFFFFFFFF);
                 break;
             case BUILDING_BASE:
                 {
                     int fu = g_MatrixMap->GetPlayerSide()->GetResourceForceUp();
                     int prihod = RESOURCES_INCOME_BASE * fu / 100;
-                    CMatrixEffect::CreateBillboardScore(L"a" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFFFF); 
-                    //if(m_BaseRCycle == 0){
-                    //    CMatrixEffect::CreateBillboardScore(L"t" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00); 
-                    //}else if(m_BaseRCycle == 1){
-                    //    CMatrixEffect::CreateBillboardScore(L"e" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00); 
-                    //}else if(m_BaseRCycle == 2){
-                    //    CMatrixEffect::CreateBillboardScore(L"b" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00); 
-                    //}else if(m_BaseRCycle == 3){
-                    //    CMatrixEffect::CreateBillboardScore(L"p" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00); 
-                    //}
-                    
+                    CMatrixEffect::CreateBillboardScore(L"a" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFFFF);
+
+                    /*
+                    if(m_BaseRCycle == 0)
+                    {
+                       CMatrixEffect::CreateBillboardScore(L"t" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                    }
+                    else if(m_BaseRCycle == 1)
+                    {
+                       CMatrixEffect::CreateBillboardScore(L"e" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                    }
+                    else if(m_BaseRCycle == 2)
+                    {
+                       CMatrixEffect::CreateBillboardScore(L"b" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                    }
+                    else if(m_BaseRCycle == 3)
+                    {
+                       CMatrixEffect::CreateBillboardScore(L"p" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                    }
+                    */
                 }
                 break;
+            }
         }
     }
     
-    if(m_capture){
+    if(m_capture)
+    {
         m_capture->UpdateData(m_TrueColor.m_Color, m_TrueColor.m_ColoredCnt);
     }
 	if(m_GGraph)
     {
-		if(m_GGraph->Takt(cms))
+		if(false)//(m_GGraph->Takt(cms))
         {
-			if(m_ShadowType==SHADOW_STENCIL)
+            if(m_ShadowType == SHADOW_STENCIL)
             {
                 RChange(MR_ShadowStencil);
                 //m_GGraph->RChange(MR_ShadowStencil);
             }
-            else if(m_ShadowType==SHADOW_PROJ_DYNAMIC)
+            else if(m_ShadowType == SHADOW_PROJ_DYNAMIC)
             {
                 RChange(MR_ShadowProjTex);
                 //m_GGraph->RChange(MR_ShadowProj);
@@ -409,33 +469,45 @@ void CMatrixBuilding::Takt(int cms)
 	}
     if(!m_capture && !IsBase())
     {
-        if(m_Core->m_Matrix._22 > 0){
-            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat( 
-                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21*2.7f, m_Pos.y + m_Core->m_Matrix._22*2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(102), MAX_ZAHVAT_POINTS);
-        }else if(m_Core->m_Matrix._21 > 0){
-            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat( 
-                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21*2.7f, m_Pos.y + m_Core->m_Matrix._22*2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(12), MAX_ZAHVAT_POINTS);
-        }else if(m_Core->m_Matrix._21 < 0){
-            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat( 
-                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21*2.7f, m_Pos.y + m_Core->m_Matrix._22*2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(192), MAX_ZAHVAT_POINTS);
-        }else if(m_Core->m_Matrix._22 < 0){
-            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat( 
-                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21*2.7f, m_Pos.y + m_Core->m_Matrix._22*2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(-79), MAX_ZAHVAT_POINTS);
+        if(m_Core->m_Matrix._22 > 0)
+        {
+            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat(
+                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21 * 2.7f, m_Pos.y + m_Core->m_Matrix._22 * 2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(102), MAX_ZAHVAT_POINTS);
+        }
+        else if(m_Core->m_Matrix._21 > 0)
+        {
+            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat(
+                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21 * 2.7f, m_Pos.y + m_Core->m_Matrix._22 * 2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(12), MAX_ZAHVAT_POINTS);
+        }
+        else if(m_Core->m_Matrix._21 < 0)
+        {
+            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat(
+                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21 * 2.7f, m_Pos.y + m_Core->m_Matrix._22 * 2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(192), MAX_ZAHVAT_POINTS);
+        }
+        else if(m_Core->m_Matrix._22 < 0)
+        {
+            m_capture = (CMatrixEffectZahvat*)CMatrixEffect::CreateZahvat(
+                D3DXVECTOR3(m_Pos.x + m_Core->m_Matrix._21 * 2.7f, m_Pos.y + m_Core->m_Matrix._22 * 2.7f, m_Core->m_Matrix._43 + 0.8f), 24, GRAD2RAD(-79), MAX_ZAHVAT_POINTS);
         }
 
-        if (!g_MatrixMap->AddEffect(m_capture)){ 
+        if(!g_MatrixMap->AddEffect(m_capture))
+        { 
             m_capture = NULL;
-        }else{
-            if(m_Side == 0){
+        }
+        else
+        {
+            if(m_Side == 0)
+            {
                 m_TrueColor.m_Color = 0;
                 m_TrueColor.m_ColoredCnt = 0;
-            }else{
-                m_TrueColor.m_Color = (0xFF000000)|g_MatrixMap->GetSideColor(m_Side);
+            }
+            else
+            {
+                m_TrueColor.m_Color = (0xFF000000) | g_MatrixMap->GetSideColor(m_Side);
                 m_TrueColor.m_ColoredCnt = MAX_ZAHVAT_POINTS;
             }
         }
     }
-
 }
 
 struct SFindRobotForCaptureAny
@@ -446,29 +518,27 @@ struct SFindRobotForCaptureAny
 };
 
 
-
-static bool FindCaptureMe(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
+static bool FindCaptureMe(const D3DXVECTOR2& center, CMatrixMapStatic* ms, DWORD user)
 {
     DTRACE();
 
-    CMatrixBuilding *b = (CMatrixBuilding *)user;
+    CMatrixBuilding* b = (CMatrixBuilding*)user;
 
-    if (ms->AsRobot()->m_Side != b->m_Side)
-        ms->AsRobot()->AddCaptureCandidate(b);
+    if(ms->AsRobot()->m_Side != b->m_Side) ms->AsRobot()->AddCaptureCandidate(b);
     return true;
 }
 
-static bool FindRobotForCaptureAny(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
+static bool FindRobotForCaptureAny(const D3DXVECTOR2& center, CMatrixMapStatic* ms, DWORD user)
 {
     DTRACE();
 
-    SFindRobotForCaptureAny *data = (SFindRobotForCaptureAny *)user;
+    SFindRobotForCaptureAny* data = (SFindRobotForCaptureAny*)user;
 
-    float dist2 = D3DXVec2LengthSq(&(center- *(D3DXVECTOR2 *)&ms->GetGeoCenter()));
-    if (dist2 < data->dist2)
+    float dist2 = D3DXVec2LengthSq(&(center - *(D3DXVECTOR2*)&ms->GetGeoCenter()));
+    if(dist2 < data->dist2)
     {
 
-        data->found = (CMatrixRobotAI *)ms;
+        data->found = (CMatrixRobotAI*)ms;
         data->dist2 = dist2;
     }
 
@@ -477,38 +547,34 @@ static bool FindRobotForCaptureAny(const D3DXVECTOR2 & center, CMatrixMapStatic 
 
 void CMatrixBuilding::PauseTakt(int cms)
 {
-	DTRACE();
+    DTRACE();
     m_PB.Modify(100000.0f, 0);
 
-    if (m_State != BUILDING_DIP && m_State != BUILDING_DIP_EXPLODED)
+    if(m_State != BUILDING_DIP && m_State != BUILDING_DIP_EXPLODED)
     {
-
         m_ShowHitpointTime -= cms;
-        if (m_ShowHitpointTime < 0)
+        if(m_ShowHitpointTime < 0)
         {
             m_ShowHitpointTime = 0;
         }
     }
 }
 
-
+//Если база не находится в состоянии смерти (death in progress) и не взрывается
 void CMatrixBuilding::LogicTakt(int cms)
 {
     DTRACE();
 
     m_PB.Modify(100000.0f, 0);
 
-
-    if (m_State != BUILDING_DIP && m_State != BUILDING_DIP_EXPLODED)
+    if(m_State != BUILDING_DIP && m_State != BUILDING_DIP_EXPLODED)
     {
-        
-        if (m_CaptureMeNextTime < g_MatrixMap->GetTime() && m_Capturer == NULL && !(IsBase() && m_TurretsHave > 0))
+        if(m_CaptureMeNextTime < g_MatrixMap->GetTime() && m_Capturer == NULL && !(IsBase() && m_TurretsHave > 0))
         {
             m_CaptureMeNextTime = g_MatrixMap->GetTime() + 1002;
-            
 
             CMatrixMapStatic* r = CMatrixMapStatic::GetFirstLogic();   
-            for (;r;r = r->GetNextLogic())
+            for(; r; r = r->GetNextLogic())
             {
                 if(r->IsRobot()) r->AsRobot()->UnMarkCaptureInformed();
             }
@@ -517,7 +583,7 @@ void CMatrixBuilding::LogicTakt(int cms)
 
             // should not be captured...
             r = CMatrixMapStatic::GetFirstLogic();   
-            for (;r;r = r->GetNextLogic())
+            for(; r; r = r->GetNextLogic())
             {
                 if(r->IsRobot() && !r->AsRobot()->IsCaptureInformed())
                 {
@@ -526,27 +592,28 @@ void CMatrixBuilding::LogicTakt(int cms)
             }
         }
 
-        m_UnderAttackTime -= cms; if (m_UnderAttackTime < 0) m_UnderAttackTime = 0;
+        m_UnderAttackTime -= cms;
+        if(m_UnderAttackTime < 0) m_UnderAttackTime = 0;
         
-        if (m_ShowHitpointTime > 0)
+        if(m_ShowHitpointTime > 0)
         {
             m_ShowHitpointTime -= cms;
-            if (m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
+            if(m_ShowHitpointTime < 0) m_ShowHitpointTime = 0;
         }
 
-        if (m_Kind != BUILDING_BASE)
+        if(m_Kind != BUILDING_BASE)
         {
-            if (m_CaptureSeekRobotNextTime < g_MatrixMap->GetTime())
+            if(m_CaptureSeekRobotNextTime < g_MatrixMap->GetTime())
             {
                 SFindRobotForCaptureAny data;
                 data.found = NULL;
                 data.dist2 = CAPTURE_RADIUS*CAPTURE_RADIUS;
 
-                //CHelper::Create(300,0)->Line(D3DXVECTOR3(m_Pos.x, m_Pos.y, 0), D3DXVECTOR3(m_Pos.x, m_Pos.y, 1000));
+                //CHelper::Create(300, 0)->Line(D3DXVECTOR3(m_Pos.x, m_Pos.y, 0), D3DXVECTOR3(m_Pos.x, m_Pos.y, 1000));
 
                 g_MatrixMap->FindObjects(m_Pos, CAPTURE_RADIUS, 1, TRACE_ROBOT, NULL, FindRobotForCaptureAny, (DWORD)&data);
 
-                if (data.found && m_Side != data.found->GetSide())
+                if(data.found && m_Side != data.found->GetSide())
                 {
 
                     Capture(data.found);
@@ -571,7 +638,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                     m_InCaptureTime = 0;
                     m_CaptureNextTimeRollback = g_MatrixMap->GetTime();
                 }
-            } else
+            }
+            else
             {
                 // rollback
                 if (m_Side == 0 && m_TrueColor.m_ColoredCnt > 0)
@@ -581,7 +649,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                         m_CaptureNextTimeRollback += g_Config.m_CaptureTimeRolback;
                         --m_TrueColor.m_ColoredCnt;
                     }
-                } else if (m_Side != 0 && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
+                }
+                else if (m_Side != 0 && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
                 {
                     while (m_CaptureNextTimeRollback < g_MatrixMap->GetTime() && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
                     {
@@ -597,17 +666,16 @@ void CMatrixBuilding::LogicTakt(int cms)
         CMatrixSideUnit* su = NULL;
         if(m_Side) su = g_MatrixMap->GetSideById(m_Side);
 
-
-        if (su)
+        if(su)
         {
-
-
             m_BS.TickTimer(cms);
             m_ResourcePeriod += cms;
 
-            switch(m_Kind){
+            switch(m_Kind)
+            {
                 case BUILDING_TITAN:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_TITAN]){
+                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_TITAN])
+                    {
                         //m_ResourceAmount += RESOURCES_INCOME;
                         SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
                         m_ResourcePeriod = 0;
@@ -615,7 +683,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                     }
                     break;
                 case BUILDING_PLASMA:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_PLASMA]){
+                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_PLASMA])
+                    {
                         //m_ResourceAmount += RESOURCES_INCOME;
                         SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
                         m_ResourcePeriod = 0;
@@ -623,7 +692,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                     }
                     break;
                 case BUILDING_ELECTRONIC:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ELECTRONICS]){
+                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ELECTRONICS])
+                    {
                         //m_ResourceAmount += RESOURCES_INCOME;
                         SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
                         m_ResourcePeriod = 0;
@@ -631,7 +701,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                     }
                     break;
                 case BUILDING_ENERGY:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ENERGY]){
+                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ENERGY])
+                    {
                         //m_ResourceAmount += RESOURCES_INCOME;
                         SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
                         m_ResourcePeriod = 0;
@@ -639,7 +710,8 @@ void CMatrixBuilding::LogicTakt(int cms)
                     }
                     break;
                 case BUILDING_BASE:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_BASE]){
+                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_BASE])
+                    {
                         //m_BaseRCycle++;
                         //if(m_BaseRCycle > 3) m_BaseRCycle = 0;
                         int fu = su->GetResourceForceUp();
@@ -670,17 +742,17 @@ void CMatrixBuilding::LogicTakt(int cms)
     //if (m_Kind==BUILDING_BASE) CDText::T("hp",CStr((float)m_HitPoint));
 
     int downtime = -BUILDING_EXPLOSION_TIME;
-    if (m_Kind==BUILDING_BASE)
+    if(m_Kind == BUILDING_BASE)
     {
         downtime -= BUILDING_BASE_EXPLOSION_TIME;
 
-        if ((m_State == BUILDING_DIP) && (m_HitPoint < downtime + 100))
+        if((m_State == BUILDING_DIP) && (m_HitPoint < downtime + 100))
         {
             CSound::AddSound(S_EXPLOSION_BUILDING_BOOM4, GetGeoCenter());
             //DCNT("boom");
-            CMatrixEffectWeapon *e = (CMatrixEffectWeapon *)CMatrixEffect::CreateWeapon(GetGeoCenter(), D3DXVECTOR3(0,0,1), 0, NULL, WEAPON_BIGBOOM);
+            CMatrixEffectWeapon* e = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(GetGeoCenter(), D3DXVECTOR3(0, 0, 1), 0, NULL, WEAPON_BIGBOOM);
             e->SetOwner(this);
-            e->FireBegin(D3DXVECTOR3(0,0,0),this);
+            e->FireBegin(D3DXVECTOR3(0, 0, 0), this);
             e->Takt(1);
             e->FireEnd();
             e->Release();
@@ -688,9 +760,9 @@ void CMatrixBuilding::LogicTakt(int cms)
         }
     }
 
-    if (m_HitPoint < downtime)
+    if(m_HitPoint < downtime)
     {
-        if (m_Kind!=BUILDING_BASE)
+        if(m_Kind != BUILDING_BASE)
         {
             CSound::AddSound(S_EXPLOSION_BUILDING_BOOM3, GetGeoCenter());
         }
@@ -701,21 +773,21 @@ void CMatrixBuilding::LogicTakt(int cms)
 	        RChange(MR_ShadowStencil|MR_ShadowProjGeom);
             RNeed(MR_ShadowStencil|MR_ShadowProjGeom);
 
-            HDelete(CVectorObjectGroup,m_GGraph,g_MatrixHeap);
-            m_GGraph=NULL;
+            HDelete(CVectorObjectGroup, m_GGraph, g_MatrixHeap);
+            m_GGraph = NULL;
 
             // replace geometry
             int n = (int)m_Kind;
 
             CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
             namet += L"b"; namet += n;
-            CWStr namev(namet,g_MatrixHeap);
+            CWStr namev(namet, g_MatrixHeap);
             namev += L".vo";
 
-            CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
+            CMatrixMapObject* mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
             mo->InitAsBaseRuins(m_Pos, m_Angle,namev, namet, true);
 
-            if (n != 0)
+            if(n != 0)
             {
                 namev = namet + L"p.vo";
                 namet += L"?Trans";
@@ -724,7 +796,7 @@ void CMatrixBuilding::LogicTakt(int cms)
             }
 
             n = IRND(30) + 20;
-            for (int i=0; i<n; ++i)
+            for(int i = 0; i < n; ++i)
             {
                 CWStr type(L"1,1000,5000,",g_CacheHeap);
                 type += (IRND(500) + 700);
@@ -740,17 +812,14 @@ void CMatrixBuilding::LogicTakt(int cms)
                     pos.y = mo->GetGeoCenter().y + FSRND(mo->GetRadius());
                     pos.z = mo->GetMatrix()._43 + FRND(mo->GetRadius() * 2);
                     D3DXVec3Normalize(&dir, &D3DXVECTOR3(mo->GetMatrix()._41 - pos.x, mo->GetMatrix()._42 - pos.y, mo->GetMatrix()._43 - pos.z));
-                    
-                } while (!mo->PickFull(pos, dir, &t) && (--cnt > 0));
+                }
+                while(!mo->PickFull(pos, dir, &t) && (--cnt > 0));
 
-
-                if (cnt > 0)
+                if(cnt > 0)
                 {
                     pos += dir * (t + 2);
 
-                    g_MatrixMap->AddEffectSpawner(pos.x, pos.y, pos.z,
-                                                Float2Int(FRND(15000) + 5000),
-                                                type);
+                    g_MatrixMap->AddEffectSpawner(pos.x, pos.y, pos.z, Float2Int(FRND(15000) + 5000), type);
                 }
             }
 
@@ -759,18 +828,18 @@ void CMatrixBuilding::LogicTakt(int cms)
         }
         m_HitPoint = -10000000;
     }
-    if (m_HitPoint < 0)
+    if(m_HitPoint < 0)
     {
-        if (m_GGraph)
+        if(m_GGraph)
         {
             m_HitPoint -= cms;
             // explosions
-            while (g_MatrixMap->GetTime() > m_NextExplosionTimeSound)
+            while(g_MatrixMap->GetTime() > m_NextExplosionTimeSound)
             {
                 m_NextExplosionTimeSound += IRND(BUILDING_EXPLOSION_PERIOD_SND_2-BUILDING_EXPLOSION_PERIOD_SND_1) + BUILDING_EXPLOSION_PERIOD_SND_1;
                 CSound::AddSound(S_EXPLOSION_BUILDING_BOOM, GetGeoCenter());
             }
-            while (g_MatrixMap->GetTime() > m_NextExplosionTime)
+            while(g_MatrixMap->GetTime() > m_NextExplosionTime)
             {
                 m_NextExplosionTime += BUILDING_EXPLOSION_PERIOD;
 
@@ -788,15 +857,14 @@ void CMatrixBuilding::LogicTakt(int cms)
 
                     D3DXVec3Normalize(&dir, &(pos0-pos));
                     
-                } while (!Pick(pos, dir, &t) && (--cnt > 0));
-                if (cnt > 0)
+                }
+                while(!Pick(pos, dir, &t) && (--cnt > 0));
+                if(cnt > 0)
                 {
                     //CHelper::Create(1,0)->Line(pos, pos+dir * 10);
 
-                    if (FRND(1) < 0.04f)
-                        CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom2);
-                    else
-                        CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom);
+                    if(FRND(1) < 0.04f) CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom2);
+                    else CMatrixEffect::CreateExplosion(pos + dir * (t + 2), ExplosionBuildingBoom);
                 }
 
                 //if (Damage(WEAPON_ABLAZE, pos, dir)) return;
@@ -807,13 +875,13 @@ void CMatrixBuilding::LogicTakt(int cms)
         return;
     }
 
-	if(m_Kind==BUILDING_BASE) {
-
+	if(m_Kind == BUILDING_BASE)
+    {
         float oldf = m_BaseFloor;
-        if (m_State == BASE_OPENING)
+        if(m_State == BASE_OPENING)
         {
             m_BaseFloor += BASE_FLOOR_SPEED * cms;
-            if (m_BaseFloor > 1.0f)
+            if(m_BaseFloor > 1.0f)
             {
                 m_BaseFloor = 1.0f;
                 m_State = BASE_OPENED;
@@ -821,10 +889,10 @@ void CMatrixBuilding::LogicTakt(int cms)
                 CSound::AddSound(S_PLATFORM_UP_STOP, GetGeoCenter());
             }
         }
-        if (m_State == BASE_CLOSING)
+        if(m_State == BASE_CLOSING)
         {
             m_BaseFloor -= BASE_FLOOR_SPEED * cms;
-            if (m_BaseFloor < 0.0f)
+            if(m_BaseFloor < 0.0f)
             {
                 m_BaseFloor = 0.0f;
                 m_State = BASE_CLOSED;
@@ -832,62 +900,64 @@ void CMatrixBuilding::LogicTakt(int cms)
             }
         }
 
-        if (m_BaseFloor != oldf)
+        if(m_BaseFloor != oldf)
         {
+		    CVectorObjectGroupUnit* gu;
 
-		    CVectorObjectGroupUnit * gu;
+            gu = m_GGraph->GetById(1);
+            SETFLAG(gu->m_Flags, VOUF_MATRIX_USE);
+            D3DXMatrixTranslation(&(gu->m_Matrix), 0, 0, -(1.0f - m_BaseFloor) * 63.0f - 3.0f);
 
-            gu=m_GGraph->GetById(1);
-            SETFLAG(gu->m_Flags,VOUF_MATRIX_USE);
-		    D3DXMatrixTranslation(&(gu->m_Matrix),0,0,-(1.0f-m_BaseFloor)*63.0f-3.0f);
+            gu = m_GGraph->GetById(2);
+            SETFLAG(gu->m_Flags, VOUF_MATRIX_USE);
+            D3DXMatrixTranslation(&(gu->m_Matrix), min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
 
-		    gu=m_GGraph->GetById(2);
-		    SETFLAG(gu->m_Flags,VOUF_MATRIX_USE);
-		    D3DXMatrixTranslation(&(gu->m_Matrix),min(m_BaseFloor*2,1.0f)*25.0f,0,0);
+            gu = m_GGraph->GetById(3);
+            SETFLAG(gu->m_Flags, VOUF_MATRIX_USE);
+            D3DXMatrixTranslation(&(gu->m_Matrix), -min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
 
-		    gu=m_GGraph->GetById(3);
-		    SETFLAG(gu->m_Flags,VOUF_MATRIX_USE);
-		    D3DXMatrixTranslation(&(gu->m_Matrix),-min(m_BaseFloor*2,1.0f)*25.0f,0,0);
-
-		    RChange(MR_Matrix);
+            RChange(MR_Matrix);
         }
 	}
 
+    /*
+    ESound snd = S_BASE_AMBIENT;
+    if(m_Kind == BUILDING_TITAN)
+    {
+        snd = S_TITAN_AMBIENT;
+    }
+    else
+    if(m_Kind == BUILDING_ELECTRONIC)
+    {
+       snd = S_ELECTRONIC_AMBIENT;
+    }
+    else
+    if(m_Kind == BUILDING_ENERGY)
+    {
+       snd = S_ENERGY_AMBIENT;
+    }
+    else
+    if(m_Kind == BUILDING_REPAIR)
+    {
+       snd = S_REPAIR_AMBIENT;
+    }
+    else
+    if(m_Kind == BUILDING_PLASMA)
+    {
+       snd = S_PLASMA_AMBIENT;
+    }
 
-    //ESound snd = S_BASE_AMBIENT;
-    //if (m_Kind == BUILDING_TITAN)
-    //{
-    //    snd = S_TITAN_AMBIENT;
-    //} else
-    //if (m_Kind == BUILDING_ELECTRONIC)
-    //{
-    //    snd = S_ELECTRONIC_AMBIENT;
-    //} else
-    //if (m_Kind == BUILDING_ENERGY)
-    //{
-    //    snd = S_ENERGY_AMBIENT;
-    //} else
-    //if (m_Kind == BUILDING_REPAIR)
-    //{
-    //    snd = S_REPAIR_AMBIENT;
-    //} else
-    //if (m_Kind == BUILDING_PLASMA)
-    //{
-    //    snd = S_PLASMA_AMBIENT;
-    //}
-
-    //float dist2 = D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
-    //if (dist2 > CSound::GetSoundMaxDistSQ(snd))
-    //{
-    //    CSound::StopPlay(m_AmbientSound);
-    //    m_AmbientSound = SOUND_ID_EMPTY;
-    //} else
-    //{
-    //    m_AmbientSound = CSound::Play(m_AmbientSound, snd, GetGeoCenter());
-    //}
-
-
-
+    float dist2 = D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
+    if(dist2 > CSound::GetSoundMaxDistSQ(snd))
+    {
+       CSound::StopPlay(m_AmbientSound);
+       m_AmbientSound = SOUND_ID_EMPTY;
+    }
+    else
+    {
+       m_AmbientSound = CSound::Play(m_AmbientSound, snd, GetGeoCenter());
+    }
+    */
 }
 
 bool CMatrixBuilding::Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt) const
@@ -958,7 +1028,7 @@ void CMatrixBuilding::Draw(void)
 
     if (!m_GGraph) return;
 
-    for(int i=0;i<4;i++)
+    for(int i = 0; i < 4; ++i)
     {
         ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&g_MatrixMap->m_BiasBuildings))));
     }
@@ -1067,13 +1137,14 @@ void CMatrixBuilding::OnLoad(void)
         int px = Float2Int((m_Pos.x-(GLOBAL_SCALE/2)) * INVERT(GLOBAL_SCALE)) - 1;
         int py = Float2Int((m_Pos.y-(GLOBAL_SCALE/2)) * INVERT(GLOBAL_SCALE)) - 1;
 
-        for (int x=0; x<3; ++x)
-            for (int y=0; y<3; ++y)
+        for (int x = 0; x < 3; ++x)
+        {
+            for (int y = 0; y < 3; ++y)
             {
-                SMatrixMapUnit *mu = g_MatrixMap->UnitGet(x+px,y+py);
+                SMatrixMapUnit* mu = g_MatrixMap->UnitGet(x + px, y + py);
                 mu->m_Base = this;
             }
-
+        }
     }
 
     m_ShowHitpointTime = 0;
@@ -1135,13 +1206,14 @@ static bool FindRobotForCapture(const D3DXVECTOR2 & center, CMatrixMapStatic *ms
             return false;
         }
 
-        data->found = (CMatrixRobotAI *)ms;
+        data->found = (CMatrixRobotAI*)ms;
         data->dist2 = dist2;
     }
 
     return true;
 }
 
+//Делает здание нейтральным
 void CMatrixBuilding::SetNeutral(void)
 {
     m_TrueColor.m_ColoredCnt = 0;
@@ -1149,6 +1221,8 @@ void CMatrixBuilding::SetNeutral(void)
     m_Side = 0;
     m_BS.ClearStack();
     RChange(MR_MiniMap);
+
+    if(GatheringPointIsSet()) ClearGatheringPoint();
 }
 
 ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
@@ -1248,8 +1322,10 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
 
                 if(m_TrueColor.m_ColoredCnt == 0)
                 {
-                    if (m_Side == PLAYER_SIDE)
-                        CSound::Play(S_PLAYER_FACTORY_CAPTURED);
+                    if(m_Side == PLAYER_SIDE) CSound::Play(S_PLAYER_FACTORY_CAPTURED);
+
+                    //Да, я в курсе, что это завод и точки сбора там быть вообще никак не должно, но мало ли
+                    if(GatheringPointIsSet()) ClearGatheringPoint();
 
                     m_TrueColor.m_Color = 0;
                     m_Side = 0;
@@ -1303,7 +1379,7 @@ void CMatrixBuilding::Maintenance(void)
     CSound::Play(S_MAINTENANCE);
     //g_MatrixMap->PlaceListGrow(1+2+4+8+16, g_MatrixMap->GetPlayerSide()->m_PlaceList, &listcnt, 2);
 
-    for(int i=0; i<listcnt; ++i)
+    for(int i = 0; i < listcnt; ++i)
     {
         g_MatrixMap->m_RN.m_Place[su->m_PlaceList[i]].m_Data=0;
     }
@@ -1372,11 +1448,14 @@ bool CMatrixBuilding::BuildFlyer(EFlyerKind kind)
     return true;
 }
 
+//Здание было уничтожено, удаляем его из игровой логики и очищаем все маркеры
 void CMatrixBuilding::ReleaseMe(void)
 {
     DTRACE();
 
     DeletePlacesShow();
+
+    if(GatheringPointIsSet()) ClearGatheringPoint();
 
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
     if(GetSide() == PLAYER_SIDE)
@@ -1420,8 +1499,8 @@ void CMatrixBuilding::ReleaseMe(void)
     //    }
     //}
     
+    //Уничтожаем всех ещё не покинувших базу роботов, а все связанные турели переводим на нейтральную сторону
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
-    
     while(objects)
     {
         if(objects->IsLiveRobot())

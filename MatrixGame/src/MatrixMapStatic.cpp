@@ -88,11 +88,11 @@ CMatrixMapStatic::~CMatrixMapStatic()
 {
     UnjoinGroup();
     DelLT();
-    if (g_MatrixMap->m_TraceStopObj == this)
+    if(g_MatrixMap->m_TraceStopObj == this)
     {
         g_MatrixMap->m_TraceStopObj = NULL;
     }
-    if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == this)
+    if(g_MatrixMap->GetPlayerSide()->GetArcadedObject() == this)
     {
         g_MatrixMap->GetPlayerSide()->SetArcadedObject(NULL);
     }
@@ -108,12 +108,12 @@ void    CMatrixMapStatic::StaticTakt(int ms)
 {
     DTRACE();
 
-    if (IsAblaze())
+    if(IsAblaze())
     {
     DCP();
         int ttl = GetAblazeTTL();
         ttl -= ms;
-        if (ttl <= 0)
+        if(ttl <= 0)
         {
             ttl = 0;
             UnmarkAblaze();
@@ -121,16 +121,16 @@ void    CMatrixMapStatic::StaticTakt(int ms)
         SetAblazeTTL(ttl);
     }
     DCP();
-    if (IsShorted())
+    if(IsShorted())
     {
     DCP();
         int ttl = GetShortedTTL();
         ttl -= ms;
-        if (ttl <= 0)
+        if(ttl <= 0)
         {
             ttl = 0;
             UnmarkShorted();
-            if (IsRobot()) AsRobot()->SwitchAnimation(ANIMATION_STAY);
+            if(IsRobot()) AsRobot()->SwitchAnimation(ANIMATION_STAY);
         }
         SetShortedTTL(ttl);
     }

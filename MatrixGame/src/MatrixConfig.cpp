@@ -68,6 +68,7 @@ static SKeyCodes    key_codes[] =
     {L"KEY_PAD8",       VK_NUMPAD8},
     {L"KEY_PAD9",       VK_NUMPAD9},
 
+    {L"KEY_0",          0x30},
     {L"KEY_1",          0x31},
     {L"KEY_2",          0x32},
     {L"KEY_3",          0x33},
@@ -77,7 +78,6 @@ static SKeyCodes    key_codes[] =
     {L"KEY_7",          0x37},
     {L"KEY_8",          0x38},
     {L"KEY_9",          0x39},
-    {L"KEY_0",          0x30},
     
     {L"KEY_LEFT",       VK_LEFT},
     {L"KEY_RIGHT",      VK_RIGHT},
@@ -341,9 +341,15 @@ void CMatrixConfig::SetDefaults(void)
     m_KeyActions[KA_UNIT_ENTER] = VK_RETURN; //sub (! if not dialog mode)
     m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE; //sub (! if not dialog mode)
 
-    m_KeyActions[KA_GATHERING_POINT] = 0x47; //Установка точки сбора базы, клавиша G
-    m_KeyActions[KA_BUILD_ROBOT] = 0x42;  //sub
-    m_KeyActions[KA_BUILD_TURRET] = 0x54; //sub
+    m_KeyActions[KA_GATHERING_POINT] = 0x47; //Установка точки сбора базы, клавиша G, sub
+    m_KeyActions[KA_BUILD_ROBOT] = 0x42;  //Открывает и закрывает меню строительства робота, sub
+       //Только из меню строительства
+       m_KeyActions[KA_BUILD_ROBOT_START] = VK_RETURN;
+       m_KeyActions[KA_BUILD_ROBOT_QUANTITY_UP] = VK_UP;
+       m_KeyActions[KA_BUILD_ROBOT_QUANTITY_DOWN] = VK_DOWN;
+       m_KeyActions[KA_BUILD_ROBOT_CHOOSE_LEFT] = VK_LEFT;
+       m_KeyActions[KA_BUILD_ROBOT_CHOOSE_RIGHT] = VK_RIGHT;
+    m_KeyActions[KA_BUILD_TURRET] = 0x54; //Открывает и закрывает меню выбора турели, sub
     m_KeyActions[KA_BUILD_HELP] = 0x48; //sub
 
     m_KeyActions[KA_TURRET_CANNON] = 0x43;

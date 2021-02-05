@@ -10,7 +10,7 @@
 
 class CMatrixMapStatic;
 
-typedef void (*SELECT_ENUM)(CMatrixMapStatic *ms, DWORD param);
+typedef void (*SELECT_ENUM)(CMatrixMapStatic* ms, DWORD param);
 
 #define MS_DIP_TIME 50
 
@@ -28,11 +28,10 @@ struct SMultiSelVertex
 
 class CMultiSelection : public CMain
 {
-
-    static CMultiSelection * m_First;
-    static CMultiSelection * m_Last;
-    CMultiSelection * m_Next;
-    CMultiSelection * m_Prev;
+    static CMultiSelection* m_First;
+    static CMultiSelection* m_Last;
+    CMultiSelection* m_Next;
+    CMultiSelection* m_Prev;
 
     Base::CPoint m_LT;
     Base::CPoint m_RB;
@@ -45,15 +44,15 @@ class CMultiSelection : public CMain
 
     static int   m_Time;
 
-    //CTextureManaged *m_Tex;
+    //CTextureManaged* m_Tex;
 
     CMultiSelection(const Base::CPoint &pos);
     ~CMultiSelection()
     {
-        if (CMultiSelection::m_GameSelection == this)
+        if(CMultiSelection::m_GameSelection == this)
             CMultiSelection::m_GameSelection = NULL;
 
-        LIST_DEL(this,m_First, m_Last, m_Prev, m_Next);
+        LIST_DEL(this, m_First, m_Last, m_Prev, m_Next);
     };
 
     void Draw(void);
@@ -80,14 +79,14 @@ public:
         m_Last = NULL;
         m_Time = 0;
         m_GameSelection = NULL;
-//        m_FirstItem = NULL;
-//        m_LastItem = NULL;
+        //m_FirstItem = NULL;
+        //m_LastItem = NULL;
     }
 
     static bool DrawAllPass1Begin(void)
     {
         bool ret = false;
-        CMultiSelection * f = m_First;
+        CMultiSelection* f = m_First;
         while(f)
         {
             ret |= f->DrawPass1();
@@ -97,7 +96,7 @@ public:
     }
     static void DrawAllPass2Begin(void)
     {
-        CMultiSelection * f = m_First;
+        CMultiSelection* f = m_First;
         while(f)
         {
             f->DrawPass2();
@@ -122,10 +121,11 @@ public:
         g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE );
 
 
-        CMultiSelection * f = m_First;
+        CMultiSelection* f = m_First;
         while(f)
         {
             // this izvrat required because Draw method can delete object itself
+            // lol xdd, chetka zakodili, chtob videlenie videliyemie objecti udalialo (Klaxons)
             CMultiSelection *next = f->m_Next;
             f->Draw();
             f = next;
@@ -137,7 +137,7 @@ public:
 
     }
     
-    static CMultiSelection * Begin(const Base::CPoint &pos);
+    static CMultiSelection* Begin(const Base::CPoint& pos);
 
     void Update(const Base::CPoint &pos) {m_RB = pos;}
     void Update(const Base::CPoint &pos, DWORD mask, SELECT_ENUM callback, DWORD param);
@@ -148,8 +148,6 @@ public:
 
     bool FindItem(const CMatrixMapStatic* o);
     void Remove(const CMatrixMapStatic* o);
-
 };
-
 
 #endif

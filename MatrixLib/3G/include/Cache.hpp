@@ -35,17 +35,17 @@ class CCacheData : public CMain {
         virtual ~CCacheData() {};
 
 		void RefInc(void)				{ m_Ref++; }
-		void RefDec(void)				{ m_Ref--; ASSERT(m_Ref>=0); }
+		void RefDec(void)				{ m_Ref--; ASSERT(m_Ref >= 0); }
 		int  Ref(void)					{ return m_Ref; }
-        bool RefDecUnload(void)	    	{ m_Ref--; if (m_Ref <= 0) {Unload();return true;} return false; }
+        bool RefDecUnload(void)	    	{ m_Ref--; if(m_Ref <= 0) {Unload(); return true;} return false; }
 
 		void Prepare(void);
 
-		void LoadFromFile(CBuf & buf,const wchar * exts=NULL);
+		void LoadFromFile(CBuf& buf, const wchar* exts = NULL);
 
-		virtual bool IsLoaded(void)=0;
-		virtual void Unload(void)=0;
-		virtual void Load(void)=0;
+		virtual bool IsLoaded(void) = 0;
+		virtual void Unload(void) = 0;
+		virtual void Load(void) = 0;
 };
 
 class CCache : public CMain {

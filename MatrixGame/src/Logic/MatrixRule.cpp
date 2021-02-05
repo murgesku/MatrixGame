@@ -355,7 +355,7 @@
 //        }else if((m_Action.m_MoveTo & MOVETO_REGION) == MOVETO_REGION){
 //
 //            CPoint tp;
-//            if(!robot->GetMoveToCoords(tp) || g_MatrixMap->m_RN.FindNerestRegion(tp)!=parent_tactics->GetRegion()) {
+//            if(!robot->GetMoveToCoords(tp) || g_MatrixMap->m_RN.FindNearestRegion(tp)!=parent_tactics->GetRegion()) {
 //                tp=g_MatrixMap->m_RN.m_Region[parent_tactics->GetRegion()].m_Center;
 //                robot->MoveTo(tp.x,tp.y);
 //            }

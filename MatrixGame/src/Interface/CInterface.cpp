@@ -270,18 +270,19 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                     pButton->m_strName == IF_BASE_HEAD_EMPTY || 
                     pButton->m_strName == IF_BASE_WEAPON_EMPTY)
                 {
-					    FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteOperateUnit);
-                        FSET(ON_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteFocusElement);
-                        FSET(ON_UN_FOCUS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteUnFocusElement);
+					    FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteOperateUnit);
+                        FSET(ON_FOCUS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteFocusElement);
+                        FSET(ON_UN_FOCUS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel, CConstructorPanel::RemoteUnFocusElement);
                         pButton->m_nId = POPUP_REACTION_ELEMENT_ID;
 				}
-                else if(pButton->m_strName ==IF_BASE_CONST_BUILD)
+                else if(pButton->m_strName == IF_BASE_CONST_BUILD)
                 {
-					FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteBuild);
+					FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CConstructor::RemoteBuild);
+                    g_MatrixMap->GetPlayerSide()->m_Constructor->m_BaseConstBuildBut = pButton;
                 }
                 else if(pButton->m_strName == IF_BASE_CONST_CANCEL)
                 {
-                    FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CIFaceList::PlayerAction);
+                    FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor, CIFaceList::PlayerAction);
                 }
 			}
 
@@ -387,7 +388,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             {
                 FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CMinimap::ShowPlayerBots);
             }
-            //Нажимаются кнопки постройки конкретных турелей
+            //Создаются кнопки постройки конкретных турелей
             else if(pButton->m_strName == IF_BUILD_TUR1)
             {
                 g_IFaceList->m_Turrets[0] = pButton;
@@ -408,7 +409,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                 g_IFaceList->m_Turrets[3] = pButton;
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
-            //Нажимаются кнопки постройки конкретных вертолётов
+            //Создаются кнопки постройки конкретных вертолётов
             else if (pButton->m_strName == IF_FLYER_BIG1)
             {
                 FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
@@ -531,21 +532,21 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             }
             else if(pButton->m_strName == IF_BASE_UP)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Up);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Up);
                 g_IFaceList->m_RCountControl->SetButtonUp(pButton);
             }
             else if(pButton->m_strName == IF_BASE_DOWN)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Down);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Down);
                 g_IFaceList->m_RCountControl->SetButtonDown(pButton);
             }
             else if(pButton->m_strName == IF_BASE_HISTORY_RIGHT)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_ConfigHistory, CHistory::NextConfig);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_ConfigHistory, CHistory::NextConfig);
             }
             else if(pButton->m_strName == IF_BASE_HISTORY_LEFT)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_ConfigHistory, CHistory::PrevConfig);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_ConfigHistory, CHistory::PrevConfig);
             }
             
             if(pButton->m_strName == IF_BASE_PILON_CHASSIS)
@@ -672,10 +673,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                     frame.ipos_x = m_xPos;
                     frame.ipos_y = m_yPos;
                     
-                    for(int i = 0; i < frames_cnt*2; i+=2)
+                    for(int i = 0; i < frames_cnt * 2; i += 2)
                     {
-                        int x = par.GetIntPar(3+1+i, L",");
-                        int y = par.GetIntPar(3+1+i+1, L",");
+                        int x = par.GetIntPar(3 + 1 + i, L",");
+                        int y = par.GetIntPar(3 + 1 + i + 1, L",");
                         frame.tex_pos_x = (float)x;
                         frame.tex_pos_y = (float)y;
                         //Load Next Frame here
@@ -684,7 +685,6 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                 }
             }
 
-            
             //
             
             //Initialising button geometry
@@ -694,11 +694,11 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             //Add Element(Button) to the list, Generate polygons and add them to pVertices
 			AddElement(pButton);
 
-			nElementNum++;
+			++nElementNum;
 		}
         else if(tmpStr == L"Static")
         {
-			CIFaceStatic *pStatic = HNew(g_MatrixHeap) CIFaceStatic;
+            CIFaceStatic* pStatic = HNew(g_MatrixHeap) CIFaceStatic;
             if_elem = (CIFaceElement*)pStatic;
 
 			pStatic->m_strName = pbp2->Par(L"Name");
@@ -711,7 +711,6 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                 pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pStatic->m_Hint.y = hint_par.GetIntPar(2, L",");
             }
-            
             
             pStatic->m_xPos = (float)pbp2->Par(L"xPos").GetDouble();
 			pStatic->m_yPos = (float)pbp2->Par(L"yPos").GetDouble();
@@ -789,8 +788,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 
             pStatic->SetStateImage(
                 IFACE_NORMAL, 
-                (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                        g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
+                (CTextureManaged*)g_Cache->Get(cc_TextureManaged, g_CacheData->ParPathGet(pbp2->Par(L"sNormal")).Get()),
                 (float)pbp2->Par(L"sNormalX").GetDouble(),
                 (float)pbp2->Par(L"sNormalY").GetDouble(),
                 (float)pbp2->Par(L"sNormalWidth").GetDouble(),
@@ -800,9 +798,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 			pStatic->ElementGeomInit((void*)pStatic);
 
             // only Labels free statics have ClearRect
-            if (pbp2->BlockGetNE(IF_LABELS) == NULL)
+            if(pbp2->BlockGetNE(IF_LABELS) == NULL)
             {
-                if (pbp2->ParCount(L"ClearRect") == 0)
+                if(pbp2->ParCount(L"ClearRect") == 0)
                 {
                     //pStatic->GenerateClearRect();
 
@@ -816,7 +814,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 
 
                     //need2save = true;
-                } else
+                }
+                else
                 {
                     pStatic->SetClearRect();
                     
@@ -832,13 +831,14 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             }
 
 			AddElement(pStatic);
-			nElementNum++;
-		}else if(tmpStr == L"Image"){
+			++nElementNum;
+		}
+        else if(tmpStr == L"Image")
+        {
 			CIFaceImage *image = HNew(g_MatrixHeap) CIFaceImage;
 			image->m_strName = pbp2->Par(L"Name");
 
-            image->m_Image = (CTextureManaged*)g_Cache->Get(cc_TextureManaged,
-                                                            g_CacheData->ParPathGet(pbp2->Par(L"TextureFile")).Get());
+            image->m_Image = (CTextureManaged*)g_Cache->Get(cc_TextureManaged, g_CacheData->ParPathGet(pbp2->Par(L"TextureFile")).Get());
 
             image->m_xTexPos        = (float)pbp2->Par(L"TexPosX").GetDouble();
             image->m_yTexPos        = (float)pbp2->Par(L"TexPosY").GetDouble();
@@ -849,26 +849,29 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
 
 
             LIST_ADD(image, m_FirstImage, m_LastImage, m_PrevImage, m_NextImage);
-            nElementNum++;
+            ++nElementNum;
 
-            if(image->m_strName == IF_GROUP_GLOW){
-                CIFaceStatic* st = CreateStaticFromImage(0,0,0, *image);
+            if(image->m_strName == IF_GROUP_GLOW)
+            {
+                CIFaceStatic* st = CreateStaticFromImage(0, 0, 0, *image);
                 st->m_nId = GROUP_SELECTOR_ID;
             }
 		}
-        if(labels_file && if_elem){
+        if(labels_file && if_elem)
+        {
             CBlockPar* labels = NULL;
             labels = pbp2->BlockGetNE(IF_LABELS);
-            if(labels){
-
+            if(labels)
+            {
                 int labels_cnt = labels->BlockCount();
-                for(int bl_cnt = 0; bl_cnt < labels_cnt; bl_cnt++){
-                    if(labels->BlockGetName(bl_cnt).GetLen()){
+                for(int bl_cnt = 0; bl_cnt < labels_cnt; ++bl_cnt)
+                {
+                    if(labels->BlockGetName(bl_cnt).GetLen())
+                    {
                         CBlockPar* label_block = labels->BlockGet(bl_cnt);
                         CWStr par = label_block->Par(IF_LABEL_PARAMS);
                         if(par.GetLen())
                         {
-                            
                             int x = par.GetIntPar(0, L",");
                             int y = par.GetIntPar(1, L",");
 
@@ -898,103 +901,169 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
                             color |= color_par.GetIntPar(3, L",");
                                 
                             IFaceElementState st;
-                            if(state == IF_STATE_NORMAL){
+                            if(state == IF_STATE_NORMAL)
+                            {
                                 st = IFACE_NORMAL;
-                            }else if(state == IF_STATE_FOCUSED){
+                            }
+                            else if(state == IF_STATE_FOCUSED)
+                            {
                                 st = IFACE_FOCUSED;
-                            }else if(state == IF_STATE_PRESSED){
+                            }
+                            else if(state == IF_STATE_PRESSED)
+                            {
                                 st = IFACE_PRESSED;
-                            }else if(state == IF_STATE_DISABLED){
+                            }
+                            else if(state == IF_STATE_DISABLED)
+                            {
                                 st = IFACE_DISABLED;
-                            }else if(state == IF_STATE_PRESSED_UNFOCUSED){
+                            }
+                            else if(state == IF_STATE_PRESSED_UNFOCUSED)
+                            {
                                 st = IFACE_PRESSED_UNFOCUSED;
                             }
-                            if(labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL){
+                            if(labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL)
+                            {
                                 CWStr t_code;
                                 t_code.Add(if_elem->m_strName).Add(L"_").Add(state);
                                 CWStr text = labels_file->Par(t_code);
 
-                                if(t_code == L"iw1text_sNormal"){
+                                if(t_code == L"iw1text_sNormal")
+                                {
                                     g_PopupWeaponNormal[1].text = text;
-                                }else if(t_code == L"iw2text_sNormal"){
+                                }
+                                else if(t_code == L"iw2text_sNormal")
+                                {
                                     g_PopupWeaponNormal[2].text = text;
-                                }else if(t_code == L"iw3text_sNormal"){
+                                }
+                                else if(t_code == L"iw3text_sNormal")
+                                {
                                     g_PopupWeaponNormal[3].text = text;
-                                }else if(t_code == L"iw4text_sNormal"){
+                                }
+                                else if(t_code == L"iw4text_sNormal")
+                                {
                                     g_PopupWeaponNormal[4].text = text;
-                                }else if(t_code == L"iw5text_sNormal"){
-	                                //iw5text_sNormal=мортира
+                                }
+                                else if(t_code == L"iw5text_sNormal")
+                                {
+	                                //iw5text_sNormal = мортира
                                     g_PopupWeaponExtern[1].text = text;
-                                }else if(t_code == L"iw6text_sNormal"){
+                                }
+                                else if(t_code == L"iw6text_sNormal")
+                                {
                                     g_PopupWeaponNormal[5].text = text;
-                                }else if(t_code == L"iw7text_sNormal"){
-	                                //iw7text_sNormal=бомба
+                                }
+                                else if(t_code == L"iw7text_sNormal")
+                                {
+	                                //iw7text_sNormal = бомба
                                     g_PopupWeaponExtern[2].text = text;
-                                }else if(t_code == L"iw8text_sNormal"){
+                                }
+                                else if(t_code == L"iw8text_sNormal")
+                                {
                                     g_PopupWeaponNormal[6].text = text;
-                                }else if(t_code == L"iw9text_sNormal"){
+                                }
+                                else if(t_code == L"iw9text_sNormal")
+                                {
                                     g_PopupWeaponNormal[7].text = text;
-                                }else if(t_code == L"iw10text_sNormal"){
+                                }
+                                else if(t_code == L"iw10text_sNormal")
+                                {
                                     g_PopupWeaponNormal[8].text = text;
-                                }else if(t_code == L"ihu6text_sNormal"){
+                                }
+                                else if(t_code == L"ihu6text_sNormal")
+                                {
                                     g_PopupHull[0].text = text;
-                                }else if(t_code == L"ihu1text_sNormal"){
+                                }
+                                else if(t_code == L"ihu1text_sNormal")
+                                {
                                     g_PopupHull[1].text = text;
-                                }else if(t_code == L"ihu2text_sNormal"){
+                                }
+                                else if(t_code == L"ihu2text_sNormal")
+                                {
                                     g_PopupHull[2].text = text;
-                                }else if(t_code == L"ihu3text_sNormal"){
+                                }
+                                else if(t_code == L"ihu3text_sNormal")
+                                {
                                     g_PopupHull[3].text = text;
-                                }else if(t_code == L"ihu4text_sNormal"){
+                                }
+                                else if(t_code == L"ihu4text_sNormal")
+                                {
                                     g_PopupHull[4].text = text;
-                                }else if(t_code == L"ihu5text_sNormal"){
+                                }
+                                else if(t_code == L"ihu5text_sNormal")
+                                {
                                     g_PopupHull[5].text = text;
-                                }else if(t_code == L"ihe1text_sNormal"){
+                                }
+                                else if(t_code == L"ihe1text_sNormal")
+                                {
                                     g_PopupHead[1].text = text;
-                                }else if(t_code == L"ihe2text_sNormal"){
+                                }
+                                else if(t_code == L"ihe2text_sNormal")
+                                {
                                     g_PopupHead[2].text = text;
-                                }else if(t_code == L"ihe3text_sNormal"){
+                                }
+                                else if(t_code == L"ihe3text_sNormal")
+                                {
                                     g_PopupHead[3].text = text;
-                                }else if(t_code == L"ihe4text_sNormal"){
+                                }
+                                else if(t_code == L"ihe4text_sNormal")
+                                {
                                     g_PopupHead[4].text = text;
-                                }else if(t_code == L"ihe5text_sNormal"){
+                                }
+                                else if(t_code == L"ihe5text_sNormal")
+                                {
                                     g_PopupHead[5].text = text;
-                                }else if(t_code == L"ihe6text_sNormal"){
+                                }
+                                else if(t_code == L"ihe6text_sNormal")
+                                {
                                     g_PopupHead[6].text = text;
-                                }else if(t_code == L"ihe7text_sNormal"){
+                                }
+                                else if(t_code == L"ihe7text_sNormal")
+                                {
                                     g_PopupHead[7].text = text;
-                                }else if(t_code == L"ich1text_sNormal"){
+                                }
+                                else if(t_code == L"ich1text_sNormal")
+                                {
                                     g_PopupChassis[0].text = text;
-                                }else if(t_code == L"ich2text_sNormal"){
+                                }
+                                else if(t_code == L"ich2text_sNormal")
+                                {
                                     g_PopupChassis[1].text = text;
-                                }else if(t_code == L"ich3text_sNormal"){
+                                }
+                                else if(t_code == L"ich3text_sNormal")
+                                {
                                     g_PopupChassis[2].text = text;
-                                }else if(t_code == L"ich4text_sNormal"){
+                                }
+                                else if(t_code == L"ich4text_sNormal")
+                                {
                                     g_PopupChassis[3].text = text;
-                                }else if(t_code == L"ich5text_sNormal"){
+                                }
+                                else if(t_code == L"ich5text_sNormal")
+                                {
                                     g_PopupChassis[4].text = text;
                                 }
-                                if(if_elem->m_strName == IF_MAIN_MENU_BUTTON  || if_elem->m_strName == IF_BASE_CONST_BUILD || if_elem->m_strName == IF_BASE_CONST_CANCEL || if_elem->m_strName == IF_ENTER_ROBOT || if_elem->m_strName == IF_LEAVE_ROBOT){
+                                if(if_elem->m_strName == IF_MAIN_MENU_BUTTON  || if_elem->m_strName == IF_BASE_CONST_BUILD || if_elem->m_strName == IF_BASE_CONST_CANCEL || if_elem->m_strName == IF_ENTER_ROBOT || if_elem->m_strName == IF_LEAVE_ROBOT)
+                                {
                                     if_elem->m_StateImages[st].SetStateLabelParams(x - 1,y - 1, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), text,font, 0xFF000000);
                                     if_elem->m_StateImages[st].SetStateText(false);
-
                                 }
 
                                 if_elem->m_StateImages[st].SetStateLabelParams(x,y, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), text,font, color);
                                 if_elem->m_StateImages[st].SetStateText(false);
 
                                 
-                                if(if_elem->m_strName == IF_ENTER_ROBOT){
+                                if(if_elem->m_strName == IF_ENTER_ROBOT)
+                                {
                                     text = labels_file->Par(L"inro_part2");
 
-                                    if_elem->m_StateImages[st].SetStateLabelParams(x - 1,y + 8, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), text,font, 0xFF000000);
+                                    if_elem->m_StateImages[st].SetStateLabelParams(x - 1, y + 8, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), text,font, 0xFF000000);
                                     if_elem->m_StateImages[st].SetStateText(false);
 
                                     if_elem->m_StateImages[st].SetStateLabelParams(x, y + 9, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), text,font, color);
                                     if_elem->m_StateImages[st].SetStateText(false);
-
                                 }
-
-                            }else if(labels->BlockGetName(bl_cnt) == IF_STATE_DYNAMIC_LABEL){
+                            }
+                            else if(labels->BlockGetName(bl_cnt) == IF_STATE_DYNAMIC_LABEL)
+                            {
                                 if_elem->m_StateImages[st].SetStateLabelParams(x,y, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x, align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey), CWStr(L""),font, color);
                             }
                         }
@@ -1003,7 +1072,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name)
             }
         }
 	}	
-    if(m_strName == IF_MAIN){
+    if(m_strName == IF_MAIN)
+    {
         g_IFaceList->CreateGroupSelection(this);
         g_IFaceList->CreateOrdersGlow(this);
     }
@@ -1021,11 +1091,11 @@ CIFaceElement* CInterface::DelElement(CIFaceElement* pElement)
 #if defined _TRACE || defined _DEBUG
 
     CIFaceElement *first = m_FirstElement;
-    for (;first;first = first->m_NextElement)
+    for(; first; first = first->m_NextElement)
     {
         if (first == pElement) break;
     }
-    if (first == NULL)
+    if(first == NULL)
     {
         _asm int 3
     }
@@ -1035,7 +1105,7 @@ CIFaceElement* CInterface::DelElement(CIFaceElement* pElement)
 
     DCP();
 
-    CIFaceElement *next = pElement->m_NextElement;
+    CIFaceElement* next = pElement->m_NextElement;
     DCP();
 
 
@@ -1058,7 +1128,7 @@ bool CInterface::AddElement(CIFaceElement* pElement)
     int nC = 0;
 	while(pElement->m_StateImages[nC].Set && nC < MAX_STATES)
     {
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 4; ++i)
         {
 			pElement->m_StateImages[nC].m_Geom[i].p.x += dp.x;
             pElement->m_StateImages[nC].m_Geom[i].p.y += dp.y;
@@ -1067,7 +1137,7 @@ bool CInterface::AddElement(CIFaceElement* pElement)
             pElement->m_PosElInX = dp.x;
             pElement->m_PosElInY = dp.y;
 		}
-    	nC++;
+    	++nC;
 	}
 
 	LIST_ADD(pElement, m_FirstElement, m_LastElement, m_PrevElement, m_NextElement);
@@ -1112,7 +1182,8 @@ void CInterface::BeforeRender(void)
     DCP();
 	    }
 #ifdef _DEBUG
-    } catch (...)
+    }
+    catch (...)
     {
         _asm int 3
 
@@ -1123,13 +1194,17 @@ void CInterface::BeforeRender(void)
 void CInterface::Render()
 {
 	DTRACE();
-	if(m_VisibleAlpha == IS_VISIBLEA || m_AlwaysOnTop){
-		CIFaceElement *pObjectsList = m_FirstElement;
+	if(m_VisibleAlpha == IS_VISIBLEA || m_AlwaysOnTop)
+    {
+        CIFaceElement* pObjectsList = m_FirstElement;
 
-		while(pObjectsList != NULL){
-            if(pObjectsList->GetVisibility()){
+		while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility())
+            {
 				pObjectsList->Render(pObjectsList->m_VisibleAlpha);
-                if(pObjectsList->m_strName == IF_BASE_CONSTRUCTION_RIGHT){
+                if(pObjectsList->m_strName == IF_BASE_CONSTRUCTION_RIGHT)
+                {
                     if(g_MatrixMap->GetPlayerSide()->m_CurrSel == BASE_SELECTED && g_MatrixMap->GetPlayerSide()->m_ConstructPanel->IsActive()){
                         g_MatrixMap->GetPlayerSide()->m_Constructor->Render();
                     }
@@ -1160,7 +1235,7 @@ bool CInterface::OnMouseMove(CPoint mouse)
 
 	if(m_VisibleAlpha)
     {
-		CIFaceElement *pObjectsList = m_FirstElement;
+        CIFaceElement* pObjectsList = m_FirstElement;
         while(pObjectsList != NULL)
         {
             if(pObjectsList->GetVisibility() || pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID)
@@ -1210,19 +1285,23 @@ bool CInterface::OnMouseMove(CPoint mouse)
     if(!bCatch && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN) && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG))
     {
        
-        if(!IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000)==0x8000))
+        if(!IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000) == 0x8000))
         {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
 
-        }else if(IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000)==0x8000)){
+        }
+        else if(IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000) == 0x8000))
+        {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
         }
         
     }
-    //if(!bCatch && bCatchStatic){
-    //    if(g_IFaceList->m_CurrentHint && g_IFaceList->m_CurrentHintControlName != static_name){
+    //if(!bCatch && bCatchStatic)
+    //{
+    //    if(g_IFaceList->m_CurrentHint && g_IFaceList->m_CurrentHintControlName != static_name)
+    //    {
     //        g_IFaceList->m_CurrentHint->Release(); 
     //        g_IFaceList->m_CurrentHint = NULL; 
     //        g_IFaceList->m_CurrentHintControlName = L"";
@@ -1233,7 +1312,7 @@ bool CInterface::OnMouseMove(CPoint mouse)
 
 void CInterface::Reset()
 {
-    CIFaceElement *objects = m_FirstElement;
+    CIFaceElement* objects = m_FirstElement;
     while(objects)
     {
         objects->Reset();
@@ -1243,7 +1322,7 @@ void CInterface::Reset()
 
 void CInterface::SetAlpha(BYTE alpha)
 {
-    CIFaceElement *objects = m_FirstElement;
+    CIFaceElement* objects = m_FirstElement;
     while(objects)
     {
         objects->m_VisibleAlpha = alpha;
@@ -1267,7 +1346,7 @@ bool CInterface::OnMouseLBDown()
     {
         if(g_PopupMenu) g_PopupMenu->ResetMenu(true);
         return false;
-    } 
+    }
 
     if(FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE) &&/* (g_IFaceList->m_FocusedElement && g_IFaceList->m_FocusedElement->m_nId == POPUP_SELECTOR_CATCHERS_ID) && */g_PopupMenu)
     {
@@ -1367,9 +1446,9 @@ bool CInterface::OnMouseRBDown()
         }
     }
 
-    if(m_VisibleAlpha){
-
-		CIFaceElement *pObjectsList = m_LastElement;
+    if(m_VisibleAlpha)
+    {
+        CIFaceElement* pObjectsList = m_LastElement;
 		while(pObjectsList != NULL)
         {
             if(pObjectsList->GetVisibility())
@@ -1416,7 +1495,7 @@ void CInterface::OnMouseLBUp()
     }
 	if(m_VisibleAlpha)
     {
-		CIFaceElement *pObjectsList = m_LastElement;
+        CIFaceElement* pObjectsList = m_LastElement;
 		while(pObjectsList != NULL)
         {
             if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) &&  pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()))
@@ -1836,7 +1915,6 @@ void CInterface::Init(void)
                             }
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
-
                     }
                     else if(pElement->m_strName == IF_BASE_RES_INC && bld->m_Kind == BUILDING_BASE)
                     {
@@ -1944,7 +2022,7 @@ void CInterface::Init(void)
                             int i;
                             for(i = 0; i < n && so; ++i)
                             {
-                                so=so->m_NextObject;
+                                so = so->m_NextObject;
                             }
 
                             if(so)
@@ -1953,11 +2031,11 @@ void CInterface::Init(void)
                                 {
                                     if(i == player_side->GetCurSelNum())
                                     {
-                                        ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(m_xPos+68,m_yPos+179,68, PBC_CLONE2);
+                                        ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(m_xPos + 68, m_yPos + 179, 68, PBC_CLONE2);
                                     }
                                     if(!singlem)
                                     {
-                                        ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(pElement->m_xPos+m_xPos, pElement->m_yPos+m_yPos+36, 46, PBC_CLONE1);
+                                        ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(pElement->m_xPos + m_xPos, pElement->m_yPos + m_yPos + 36, 46, PBC_CLONE1);
                                     }
                                     else
                                     {
@@ -2077,23 +2155,23 @@ void CInterface::Init(void)
                     {
                         pElement->SetVisibility(true);
                     }
-                    else if(bld->IsBase() && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_MB_RES)
+                    else if(bld->IsBase() && !bld->m_BS.GetItemsCnt() && pElement->m_strName == IF_MB_RES)
                     {
                         pElement->SetVisibility(true);
                     }
-                    else if(bld->m_Kind == BUILDING_TITAN && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_TF_RES)
+                    else if(bld->m_Kind == BUILDING_TITAN && !bld->m_BS.GetItemsCnt() && pElement->m_strName == IF_TF_RES)
                     {
                         pElement->SetVisibility(true);
                     }
-                    else if(bld->m_Kind == BUILDING_ELECTRONIC && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ELF_RES)
+                    else if(bld->m_Kind == BUILDING_ELECTRONIC && !bld->m_BS.GetItemsCnt() && pElement->m_strName == IF_ELF_RES)
                     {
                         pElement->SetVisibility(true);
                     }
-                    else if(bld->m_Kind == BUILDING_ENERGY && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_ENF_RES)
+                    else if(bld->m_Kind == BUILDING_ENERGY && !bld->m_BS.GetItemsCnt() && pElement->m_strName == IF_ENF_RES)
                     {
                         pElement->SetVisibility(true);
                     }
-                    else if(bld->m_Kind == BUILDING_PLASMA && bld->m_BS.GetItemsCnt() == 0 && pElement->m_strName == IF_PF_RES)
+                    else if(bld->m_Kind == BUILDING_PLASMA && !bld->m_BS.GetItemsCnt() && pElement->m_strName == IF_PF_RES)
                     {
                         pElement->SetVisibility(true);
                     }
@@ -2417,7 +2495,8 @@ void CInterface::Init(void)
                     if (dw < 4)
                     {
                         ERes r = ERes(dw);
-                        if(player_side->GetResourcesAmount(r) < res[r]){
+                        if(player_side->GetResourcesAmount(r) < res[r])
+                        {
                             pElement->SetVisibility(true);
                         }
                     }
@@ -2562,6 +2641,7 @@ void CInterface::Init(void)
                         }
                     }
                 }
+                //Создание кнопки переключения шаблона робота в меню конструктора вправо
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_RIGHT)
                 {
                     if(!g_ConfigHistory->IsNext())
@@ -2574,6 +2654,7 @@ void CInterface::Init(void)
                     }
                     pElement->SetVisibility(true);
                 }
+                //Создание кнопки переключения шаблона робота в меню конструктора влево
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_HISTORY_LEFT)
                 {
                     if(!g_ConfigHistory->IsPrev())
@@ -2586,14 +2667,17 @@ void CInterface::Init(void)
                     }
                     pElement->SetVisibility(true);
                 }
+                //Создание кнопки увеличение числа роботов для постройки
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_UP)
                 {
                     pElement->SetVisibility(true);
                 }
+                //Создание кнопки уменьшение числа роботов для постройки
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_DOWN)
                 {
                     pElement->SetVisibility(true);
                 }
+                //Создание кнопок выбора деталей робота
                 else if(player_side->m_ConstructPanel->IsActive() && pElement->m_strName == IF_BASE_PILON1)
                 {
                     if(common_weapon > 0)
@@ -3654,7 +3738,7 @@ bool CIFaceList::OnMouseLBDown()
 	DTRACE();
 
 	bool bCatch = FALSE;
-	CInterface *pIFace = m_First;
+    CInterface* pIFace = m_First;
 	while(pIFace)
     {
 		if(pIFace->m_VisibleAlpha)
@@ -5283,8 +5367,8 @@ void CIFaceList::DeleteStackIcon(int num, CMatrixBuilding* base)
 
 void CIFaceList::ConstructorButtonsInit()
 {
-    CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
-    if(!ps) return;
+    CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+    if (!ps) return;
 
     ps->m_Constructor->SuperDjeans(MRT_CHASSIS, RUK_CHASSIS_PNEUMATIC, 0);
     ps->m_Constructor->SuperDjeans(MRT_ARMOR, RUK_ARMOR_6, 0);
@@ -5297,17 +5381,20 @@ void CIFaceList::ConstructorButtonsInit()
 
 void CIFaceList::WeaponPilonsInit()
 {
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 5; ++i)
+    {
         CInterface::CopyElements(m_Weapon[0], m_WeaponPilon[i]);
     }
-
 }
 
-void CIFaceList::CreateElementRamka(CIFaceElement *element, DWORD color){
-    if(!element)
-        return;
-    for(int i = 0; i < MAX_STATES; i++){
-        if(element->m_StateImages[i].pImage){
+void CIFaceList::CreateElementRamka(CIFaceElement *element, DWORD color)
+{
+    if(!element) return;
+
+    for(int i = 0; i < MAX_STATES; ++i)
+    {
+        if(element->m_StateImages[i].pImage)
+        {
             element->m_StateImages[i].pImage->Ramka(Float2Int(element->m_StateImages[i].xTexPos), Float2Int(element->m_StateImages[i].yTexPos), Float2Int(element->m_xSize), Float2Int(element->m_ySize), color);
         }
     }
@@ -5318,43 +5405,59 @@ void CIFaceList::CreateHintButton(int x, int y, EHintButton type, DialogButtonHa
     EnableMainMenuButton(type);
     void* fn = NULL, *cl = NULL;
     CIFaceElement* els = m_Hints->m_FirstElement;
-    while(els){
-        if(type == HINT_OK && els->m_strName == IF_HINTS_OK){
+    while(els)
+    {
+        if(type == HINT_OK && els->m_strName == IF_HINTS_OK)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_CANCEL && els->m_strName == IF_HINTS_CANCEL){
+        }
+        else if(type == HINT_CANCEL && els->m_strName == IF_HINTS_CANCEL)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_CANCEL_MENU && els->m_strName == IF_HINTS_CANCEL_MENU){
+        }
+        else if(type == HINT_CANCEL_MENU && els->m_strName == IF_HINTS_CANCEL_MENU)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_CONTINUE && els->m_strName == IF_HINTS_CONTINUE){
+        }
+        else if(type == HINT_CONTINUE && els->m_strName == IF_HINTS_CONTINUE)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_SURRENDER && els->m_strName == IF_HINTS_SURRENDER){
+        }
+        else if(type == HINT_SURRENDER && els->m_strName == IF_HINTS_SURRENDER)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_EXIT && els->m_strName == IF_HINTS_EXIT){
+        }
+        else if(type == HINT_EXIT && els->m_strName == IF_HINTS_EXIT)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_RESET && els->m_strName == IF_HINTS_RESET){
+        }
+        else if(type == HINT_RESET && els->m_strName == IF_HINTS_RESET)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);
             return;
-        }else if(type == HINT_HELP && els->m_strName == IF_HINTS_HELP){
+        }
+        else if(type == HINT_HELP && els->m_strName == IF_HINTS_HELP)
+        {
             els->m_Actions[ON_UN_PRESS].m_function = handler;
             els->RecalcPos((float)x, (float)y, false);
             els->SetVisibility(true);

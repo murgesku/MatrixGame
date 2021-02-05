@@ -32,11 +32,11 @@
 #include <ddraw.h>
 
 ////////////////////////////////////////////////////////////////////////////////
-CHeap * g_MatrixHeap;
-CBlockPar *g_MatrixData;
-CMatrixMapLogic * g_MatrixMap;
-CRenderPipeline   *g_Render;
-CLoadProgress     *g_LoadProgress;
+CHeap* g_MatrixHeap;
+CBlockPar* g_MatrixData;
+CMatrixMapLogic* g_MatrixMap;
+CRenderPipeline* g_Render;
+CLoadProgress* g_LoadProgress;
 
 //Переменная для хранения данных о числе сохраняемых шаблонов роботов игрока
 // static unsigned char m_MaxDesignsToSave = 0;
@@ -78,17 +78,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     const wchar *cmd = GetCommandLineW();
 
     int numarg;
-    wchar **args = CommandLineToArgvW(cmd,&numarg);
-    wchar *map = NULL;
+    wchar** args = CommandLineToArgvW(cmd, &numarg);
+    wchar* map = NULL;
 
-    if (numarg > 1)
+    if(numarg > 1)
     {
         map = args[1];
 
     }
 
-	try {
-
+	try
+    {
 		srand((unsigned)time( NULL ));
 
 		MatrixGameInit(hInstance, NULL, map);
@@ -304,7 +304,7 @@ DCP();
 
         if (CFile::FileExist(stor_cfg_name, L"cfg\\robots\\cfg.txt"))
         {
-            CBlockPar *bpc = g_MatrixData->BlockGet(L"Config");
+            CBlockPar* bpc = g_MatrixData->BlockGet(L"Config");
             bpc->LoadFromTextFile(L"cfg\\robots\\cfg.txt");
         }
     }
@@ -322,7 +322,7 @@ DCP();
 
         CBlockPar *rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
         int cnt = rr->ParCount();
-        for (int i=0;i<cnt;++i)
+        for (int i = 0; i < cnt; ++i)
         {
             repl->ParAdd(rr->ParGetName(i), rr->ParGet(i));
         }
@@ -331,7 +331,6 @@ DCP();
         {
             if (txt_start[0] >= '1' && txt_start[0] <= '6')
             {
-
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start,1,g_MatrixHeap));
                 repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start+1,2,g_MatrixHeap));
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
@@ -440,14 +439,20 @@ DCP();
 
     CWStr mapname(g_CacheHeap);
 
-    if(map) {
-		if (wcschr(map,'\\')==NULL) {
+    if(map)
+    {
+		if(wcschr(map,'\\')==NULL)
+        {
 			mapname.Set(L"Matrix\\Map\\");
 			mapname.Add(map);
-		} else {
+		}
+        else
+        {
 			mapname.Set(map);
 		}
-    } else {
+    }
+    else
+    {
         mapname = g_MatrixData->BlockGet(L"Config")->Par(L"Map");
     }
 
@@ -704,54 +709,54 @@ DCP();
                             wchar ch = t_str.GetBuf()[u];
                             if (ch == L'G')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MACHINEGUN;
                             }
                             else if (ch == L'C')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_CANNON;
                             }
                             else if (ch == L'M')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MISSILE;
                             }
                             else if (ch == L'F')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_FLAMETHROWER;
                             }
                             else if (ch == L'L')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_LASER;
                             }
                             else if (ch == L'P')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_PLASMA;
                             }
                             else if (ch == L'E')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_ELECTRIC;
                             }
                             else if (ch == L'R')
                             {
-                                cnt_normal++;
+                                ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_REPAIR;
                             }
                             else if (ch == L'O')
                             {
                                 u = 4; // Установка оружия в слот для особого вооружения
-                                cnt_extra++;
+                                ++cnt_extra;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MORTAR;
                             }
                             else if (ch == L'B')
                             {
                                 u = 4; // Установка оружия в слот для особого вооружения
-                                cnt_extra++;
+                                ++cnt_extra;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_BOMB;
                             }
                             else continue;
@@ -777,8 +782,7 @@ DCP();
                         else if (t_str == L"R") conf.m_Head.m_nKind = RUK_HEAD_RAPID;
                         else if (t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DESIGN;
                         else if (t_str == L"P") conf.m_Head.m_nKind = RUK_HEAD_SPEAKER;
-                        else
-                            continue;
+                        else continue;
                     }
 
                     //Заносим готовый конфиг в историю
@@ -810,11 +814,12 @@ void SRobotsSettings::ApplyVideoParams(void)
 	//ASSERT_DX(g_D3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT,&d3ddm));
 	ASSERT_DX(g_D3D->GetAdapterDisplayMode(params.AdapterOrdinal,&d3ddm));
 
-    if (d3ddm.Format == D3DFMT_X8R8G8B8 || d3ddm.Format == D3DFMT_A8R8G8B8)
+    if(d3ddm.Format == D3DFMT_X8R8G8B8 || d3ddm.Format == D3DFMT_A8R8G8B8)
     {
         d3ddm.Format=D3DFMT_A8R8G8B8;
         bpp = 32;
-    } else
+    }
+    else
     {
         bpp = 16;
     }
@@ -832,7 +837,8 @@ void SRobotsSettings::ApplyVideoParams(void)
 	
 	ZeroMemory( &g_D3Dpp, sizeof(g_D3Dpp) );
 
-	if (now_in_window_mode){
+	if(now_in_window_mode)
+    {
 		RESETFLAG(g_Flags, GFLAG_FULLSCREEN);
         g_D3Dpp.Windowed = TRUE;
 
@@ -840,11 +846,14 @@ void SRobotsSettings::ApplyVideoParams(void)
         GetWindowRect(g_Wnd, &r1);
         GetClientRect(g_Wnd, &r2);
         SetWindowPos(g_Wnd, NULL, 0,0, m_ResolutionX + (r1.right-r1.left-r2.right), m_ResolutionY+(r1.bottom-r1.top-r2.bottom), SWP_NOZORDER|SWP_NOOWNERZORDER|SWP_NOMOVE|SWP_NOACTIVATE);
-	} else {
+	}
+    else
+    {
 		SETFLAG(g_Flags, GFLAG_FULLSCREEN);
         g_D3Dpp.Windowed = FALSE;
 
-        if (was_in_window_mode) {
+        if(was_in_window_mode)
+        {
             SetWindowLong(g_Wnd, GWL_STYLE, WS_POPUP|WS_VISIBLE);
             MoveWindow(g_Wnd, 0, 0, m_ResolutionX, m_ResolutionY, false);
         }

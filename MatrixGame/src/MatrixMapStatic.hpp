@@ -40,19 +40,19 @@ typedef enum
 
 #define MAX_OBJECTS_PER_SCREEN 5120
 
-#define UNDER_ATTACK_IDLE_TIME  120000
+#define UNDER_ATTACK_IDLE_TIME 120000
 
 #define OBJECT_STATE_ABLAZE    SETBIT(0)   // горит
-#define OBJECT_STATE_SHORTED   SETBIT(1)   // закорочен
+#define OBJECT_STATE_SHORTED   SETBIT(1)   //Робота вырубило разрядником
 #define OBJECT_STATE_INVISIBLE SETBIT(2)   // невидимый
 #define OBJECT_STATE_INTERFACE SETBIT(3)   // рисуется в интерфейсе
 
 #define OBJECT_STATE_INVULNERABLE       SETBIT(3)
-#define OBJECT_STATE_SHADOW_SPECIAL     SETBIT(4)   // параметры для русчета тени загружаются
+#define OBJECT_STATE_SHADOW_SPECIAL     SETBIT(4)   // параметры для расчета тени загружаются
 #define OBJECT_STATE_TRACE_INVISIBLE    SETBIT(5)   // объект невидим для TRACE_SKIP_INVISIBLE объектов
-#define OBJECT_STATE_DIP                SETBIT(6)  // используется в StaticDelete
+#define OBJECT_STATE_DIP                SETBIT(6)   // используется в StaticDelete
 
-// comon flags
+// common flags
 
 // only mesh flags
 #define OBJECT_STATE_BURNED             SETBIT(10)   // сгоревший (для мешей)
@@ -255,12 +255,12 @@ protected:
         void            SetAblazeTTL(int ttl) {m_ObjectStateTTLAblaze=ttl;};
         int             GetShortedTTL(void) {return m_ObjectStateTTLShorted;}
         int             GetAblazeTTL(void) {return m_ObjectStateTTLAblaze;}
-        bool            IsAblaze(void) const {return FLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        bool            IsShorted(void) const {return FLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
-        void            MarkAblaze(void) {SETFLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        void            MarkShorted(void) {SETFLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
-        void            UnmarkAblaze(void) {RESETFLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        void            UnmarkShorted(void) {RESETFLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
+        bool            IsAblaze(void) const { return FLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+        bool            IsShorted(void) const { return FLAG(m_ObjectState, OBJECT_STATE_SHORTED); } //Проверка, не был ли робот вырублен разрядником
+        void            MarkAblaze(void) { SETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+        void            MarkShorted(void) { SETFLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
+        void            UnmarkAblaze(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+        void            UnmarkShorted(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
 
         static CMatrixMapStatic * m_FirstLogicTemp;
         static CMatrixMapStatic * m_LastLogicTemp;

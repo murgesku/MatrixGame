@@ -175,7 +175,7 @@ void CMatrixEffectPath::Draw(void)
     //int cnt = 0;
 
     SPathDot *temp = m_First;
-    while (temp)
+    while(temp)
     {
         //++cnt;
         temp->dot.Sort(g_MatrixMap->m_Camera.GetViewMatrix());
@@ -200,14 +200,15 @@ void CMatrixEffectPath::Takt(float step)
     {
         m_NextTakt += PATH_DOT_RATE;
 
-        while (m_DotsCnt < m_DotsMax)
+        while(m_DotsCnt < m_DotsMax)
         {
             LIST_INSERT(m_First, (m_Dots + m_DotsCnt), m_First, m_Last, prev, next);
             m_Dots[m_DotsCnt].pos = 0;
-            if (m_BBTextures[BBT_PATHDOT].IsIntense())
+            if(m_BBTextures[BBT_PATHDOT].IsIntense())
             {
                 m_Dots[m_DotsCnt].dot.CBillboard::CBillboard(TRACE_PARAM_CALL *(D3DXVECTOR3 *)m_Points.Get(), PATH_SIZE, 0, PATH_COLOR, m_BBTextures[BBT_PATHDOT].tex);
-            } else
+            }
+            else
             {
                 m_Dots[m_DotsCnt].dot.CBillboard::CBillboard(TRACE_PARAM_CALL *(D3DXVECTOR3 *)m_Points.Get(), PATH_SIZE, 0, PATH_COLOR, &m_BBTextures[BBT_PATHDOT].bbt);
             }
@@ -215,7 +216,7 @@ void CMatrixEffectPath::Takt(float step)
         }
     }
 
-    if (m_Kill)
+    if(m_Kill)
     {
         m_Barier += step * 0.002f * m_Len;
         if (m_Barier > (2*m_Len))

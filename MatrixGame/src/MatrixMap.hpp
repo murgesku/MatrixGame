@@ -8,6 +8,7 @@
 
 #include "common.hpp"
 #include "MatrixConfig.hpp"
+#include <vector>
 
 //#define DRAW_LANDSCAPE_SETKA 1
 
@@ -234,8 +235,17 @@ struct SGroupVisibility
 
 struct SSkyTex
 {
-    CTextureManaged *tex;
-    float u0,v0, u1,v1;
+    CTextureManaged* tex;
+    float u0, v0, u1, v1;
+};
+
+//Хранит в себе перечень баз с установленными пунктами сбора
+//Необходимо для непрерывного вызова эффекта отрисовки точки сбора при выделении здания
+struct SGatheringPointsList {
+    std::vector <CMatrixBuilding*> BuildingsList;
+    int Count;
+
+    SGatheringPointsList() : Count(0) {}
 };
 
 enum
@@ -294,6 +304,31 @@ class CMatrixMap : public CMain
 		SMatrixMapUnit * m_Unit;
 		SMatrixMapPoint * m_Point;
 		SMatrixMapMove * m_Move;
+
+        SGatheringPointsList m_GatheringPointsList;
+
+        void AddGPoint(CMatrixBuilding* bld)
+        {
+            m_GatheringPointsList.BuildingsList.push_back(bld);
+            ++m_GatheringPointsList.Count;
+        }
+        bool RemoveGPoint(CMatrixBuilding* bld)
+        {
+            if(m_GatheringPointsList.Count > 0)
+            {
+                for(int i = 0; i < m_GatheringPointsList.Count; ++i)
+                {
+                    if(m_GatheringPointsList.BuildingsList[i] == bld)
+                    {
+                        m_GatheringPointsList.BuildingsList.erase(m_GatheringPointsList.BuildingsList.begin() + i);
+                        --m_GatheringPointsList.Count;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         CMatrixRoadNetwork m_RN;
 
@@ -357,12 +392,12 @@ class CMatrixMap : public CMain
 		DWORD m_LightMainColor;
 		DWORD m_LightMainColorObj;
 		DWORD m_ShadowColor;
-		float m_LightMainAngleZ,m_LightMainAngleX;
+		float m_LightMainAngleZ, m_LightMainAngleX;
 
 		int         m_MacrotextureSize;
-		CTextureManaged *  m_Macrotexture;
+		CTextureManaged*   m_Macrotexture;
 
-        CTextureManaged *  m_Reflection;
+        CTextureManaged*   m_Reflection;
 
         SSkyTex            m_SkyTex[4];
         float              m_SkyAngle;
@@ -383,7 +418,7 @@ class CMatrixMap : public CMain
         D3DXVECTOR3         m_MouseDir; // world direction to mouse cursor
         // trace stop!
         D3DXVECTOR3         m_TraceStopPos;
-        CMatrixMapStatic   *m_TraceStopObj;
+        CMatrixMapStatic*   m_TraceStopObj;
 
         bool IsTraceNonPlayerObj();
         PCMatrixMapStatic   m_AD_Obj[MAX_ALWAYS_DRAW_OBJ];  // out of land object // flyer
@@ -391,9 +426,9 @@ class CMatrixMap : public CMain
         
         CMatrixCamera       m_Camera;
 
-        CDeviceState       *m_DeviceState;
+        CDeviceState*       m_DeviceState;
 
-        SDifficulty m_Difficulty;
+        SDifficulty         m_Difficulty;
 
 protected:
 
@@ -401,7 +436,7 @@ protected:
 
         DWORD     m_NeutralSideColor;
         DWORD     m_NeutralSideColorMM;
-        CTexture *m_NeutralSideColorTexture;
+        CTexture* m_NeutralSideColorTexture;
 
         D3DXMATRIX  m_Identity;
 
@@ -443,26 +478,32 @@ protected:
 		void Clear(void);
 
 		void IdsClear(void);
-        __forceinline const CWStr & MapName(void) {return m_Ids[m_IdsCnt-1];}
-        __forceinline const CWStr & IdsGet(int no) {return m_Ids[no];}
-        __forceinline int IdsGetCount(void) const {return m_IdsCnt;}
+        __forceinline const CWStr& MapName(void) { return m_Ids[m_IdsCnt - 1]; }
+        __forceinline const CWStr& IdsGet(int no) { return m_Ids[no]; }
+        __forceinline int IdsGetCount(void) const { return m_IdsCnt; }
 
-		void UnitClear(void);
-		
-        void UnitInit(int sx,int sy);
-        void PointCalcNormals(int x,int y);
+        void UnitClear(void);
+
+        void UnitInit(int sx, int sy);
+        void PointCalcNormals(int x, int y);
 
         void CalcVis(void); // non realtime function! its updates map data
         //void CalcVisTemp(int from, int to, const D3DXVECTOR3 &ptfrom); // non realtime function! its updates map data
 
-		__forceinline SMatrixMapUnit * UnitGet(int x,int y) { return m_Unit+y*m_Size.x+x; }
-		__forceinline SMatrixMapUnit * UnitGetTest(int x,int y) { return (x>=0 && x<m_Size.x && y>=0 && y<m_Size.y)?(m_Unit+y*m_Size.x+x):NULL; }
+        __forceinline SMatrixMapUnit* UnitGet(int x, int y) { return m_Unit + y * m_Size.x + x; }
+        __forceinline SMatrixMapUnit* UnitGetTest(int x, int y) { return (x >= 0 && x < m_Size.x && y >= 0 && y < m_Size.y) ? (m_Unit + y * m_Size.x + x) : NULL; }
 
-        __forceinline SMatrixMapMove * MoveGet(int x,int y) { return m_Move+y*m_SizeMove.x+x; }
-		__forceinline SMatrixMapMove * MoveGetTest(int x,int y) { return (x>=0 && x<m_SizeMove.x && y>=0 && y<m_SizeMove.y)?(m_Move+y*m_SizeMove.x+x):NULL; }
+        __forceinline SMatrixMapMove* MoveGet(int x, int y)
+        {
+            return m_Move + y * m_SizeMove.x + x;
+        }
+        __forceinline SMatrixMapMove* MoveGetTest(int x, int y)
+        {
+            return(x >= 0 && x < m_SizeMove.x && y >= 0 && y < m_SizeMove.y) ? (m_Move + y * m_SizeMove.x + x) : NULL;
+        }
 
-		__forceinline SMatrixMapPoint * PointGet(int x,int y) { return m_Point+x+y*(m_Size.x+1); }
-		__forceinline SMatrixMapPoint * PointGetTest(int x,int y) { return (x>=0 && x<=m_Size.x && y>=0 && y<=m_Size.y)?(m_Point+x+y*(m_Size.x+1)):NULL; }
+        __forceinline SMatrixMapPoint* PointGet(int x, int y) { return m_Point + x + y * (m_Size.x + 1); }
+        __forceinline SMatrixMapPoint* PointGetTest(int x, int y) { return (x >= 0 && x <= m_Size.x && y >= 0 && y <= m_Size.y) ? (m_Point + x + y * (m_Size.x + 1)) : NULL; }
 
 #if defined _TRACE || defined _DEBUG
         void ResetMaintenanceTime(void) {m_MaintenanceTime = 0;};
@@ -601,21 +642,21 @@ protected:
         bool    DieSequenceInProgress(void) {return m_ShadeOn;}
 
 
-        CTextureManaged *GetReflectionTexture(void) { return m_Reflection; };
+        CTextureManaged* GetReflectionTexture(void) { return m_Reflection; };
         int GetTime(void) const {return m_Time;}
         DWORD GetStartTime(void) const {return m_StartTime;}
 
 
         bool    CatchPoint(const D3DXVECTOR3 &from, const D3DXVECTOR3 &to);
-        bool    TraceLand(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir);
-        CMatrixMapStatic * Trace(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, DWORD mask, CMatrixMapStatic *skip = NULL);
+        bool    TraceLand(D3DXVECTOR3* out, const D3DXVECTOR3& start, const D3DXVECTOR3& dir);
+        CMatrixMapStatic* Trace(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, DWORD mask, CMatrixMapStatic *skip = NULL);
         bool    FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip, ENUM_OBJECTS callback, DWORD user);
         bool    FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip, ENUM_OBJECTS2D callback, DWORD user);
 
         //CMatrixMapGroup * GetGroupByCell(int x, int y) { return m_Group[(x/MATRIX_MAP_GROUP_SIZE) + (y/MATRIX_MAP_GROUP_SIZE) * m_GroupSize.x ];  }
-        __forceinline CMatrixMapGroup * GetGroupByIndex(int x, int y) { return m_Group[x + y * m_GroupSize.x ]; }
-        __forceinline CMatrixMapGroup * GetGroupByIndex(int i) { return m_Group[i]; }
-        __forceinline CMatrixMapGroup * GetGroupByIndexTest(int x, int y) { return (x<0||y<0||x>=m_GroupSize.x||y>=m_GroupSize.x)?NULL:m_Group[x + y * m_GroupSize.x ]; }
+        __forceinline CMatrixMapGroup* GetGroupByIndex(int x, int y) { return m_Group[x + y * m_GroupSize.x]; }
+        __forceinline CMatrixMapGroup* GetGroupByIndex(int i) { return m_Group[i]; }
+        __forceinline CMatrixMapGroup* GetGroupByIndexTest(int x, int y) { return (x < 0 || y < 0 || x >= m_GroupSize.x || y >= m_GroupSize.x) ? NULL : m_Group[x + y * m_GroupSize.x]; }
 
         float GetGroupMaxZLand(int x, int y);
         float GetGroupMaxZObj(int x, int y);
@@ -633,14 +674,14 @@ protected:
         
         __forceinline void  Pause(bool p)
         {
-            if (FLAG(m_Flags,MMFLAG_DIALOG_MODE)) return; // disable pasue/unpause in dialog mode
-            INITFLAG(m_Flags,MMFLAG_PAUSE,p);
-            if (p) CSound::StopPlayAllSounds();
+            if(FLAG(m_Flags,MMFLAG_DIALOG_MODE)) return; // disable pasue/unpause in dialog mode
+            INITFLAG(m_Flags,MMFLAG_PAUSE, p);
+            if(p) CSound::StopPlayAllSounds();
         }
-        __forceinline bool  IsPaused(void) {return FLAG(m_Flags,MMFLAG_PAUSE);}
+        __forceinline bool  IsPaused(void) {return FLAG(m_Flags, MMFLAG_PAUSE);}
 
-        __forceinline void  MouseCam(bool p) {INITFLAG(m_Flags,MMFLAG_MOUSECAM,p);}
-        __forceinline bool  IsMouseCam(void) {return FLAG(m_Flags,MMFLAG_MOUSECAM);}
+        __forceinline void  MouseCam(bool p) {INITFLAG(m_Flags, MMFLAG_MOUSECAM, p);}
+        __forceinline bool  IsMouseCam(void) {return FLAG(m_Flags, MMFLAG_MOUSECAM);}
 
         // draw functions
 
@@ -679,35 +720,35 @@ __forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
 {
     DTRACE();
 #ifdef _DEBUG
-    if (ef->GetType() == EFFECT_UNDEFINED)
+    if(ef->GetType() == EFFECT_UNDEFINED)
     {
         //int a = 1;
         ERROR_S(L"Undefined effect!");
     }
 #endif
 
-    if (m_EffectsCnt >= g_MaxEffectsCount)
+    if(m_EffectsCnt >= g_MaxEffectsCount)
     {
         PCMatrixEffect ef2del = NULL;
         int pri = ef->Priority();
-        for (PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next)
+        for(PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next)
         {
-            if (e->IsDIP()) continue;
+            if(e->IsDIP()) continue;
             int p = e->Priority();
-            if (p < MAX_EFFECT_PRIORITY)
+            if(p < MAX_EFFECT_PRIORITY)
             {
                 ef2del = e;
                 pri = p;
             }
         }
-        if (ef2del == NULL)
+        if(ef2del == NULL)
         {
             ef->Release();
             return false;
-        } else
+        }
+        else
         {
-            if (m_EffectsNextTakt == ef2del)
-                m_EffectsNextTakt = ef2del->m_Next;
+            if(m_EffectsNextTakt == ef2del) m_EffectsNextTakt = ef2del->m_Next;
             LIST_DEL(ef2del, m_EffectsFirst, m_EffectsLast, m_Prev, m_Next);
             ef2del->Release();
             --m_EffectsCnt;
@@ -725,7 +766,7 @@ __forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
 __forceinline  CMatrixSideUnit * CMatrixMap::GetSideById(int id)
 {
     DTRACE();
-	for(int i = 0; i < m_SideCnt; i++)
+	for(int i = 0; i < m_SideCnt; ++i)
     {
 		if(m_Side[i].m_Id == id) return &m_Side[i];
 	}
@@ -738,51 +779,50 @@ __forceinline  CMatrixSideUnit * CMatrixMap::GetSideById(int id)
 __forceinline  DWORD CMatrixMap::GetSideColor(int id)
 {
     DTRACE();
-    if (id == 0) return m_NeutralSideColor;
+    if(id == 0) return m_NeutralSideColor;
     return GetSideById(id)->m_Color;
 }
 
 __forceinline  DWORD CMatrixMap::GetSideColorMM(int id)
 {
     DTRACE();
-    if (id == 0) return m_NeutralSideColorMM;
+    if(id == 0) return m_NeutralSideColorMM;
     return GetSideById(id)->m_ColorMM;
 }
 
 __forceinline  CTexture * CMatrixMap::GetSideColorTexture(int id)
 {
     DTRACE();
-    if (id == 0) return m_NeutralSideColorTexture;
+    if(id == 0) return m_NeutralSideColorTexture;
     return GetSideById(id)->m_ColorTexture;
 }
 
 __forceinline  float CMatrixMap::GetGroupMaxZLand(int x, int y)
 {
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x, y);
-    if (g == NULL) return 0;
+    if(x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
+    CMatrixMapGroup* g = GetGroupByIndex(x, y);
+    if(g == NULL) return 0;
     float z = GetGroupByIndex(x, y)->GetMaxZLand();
-    if (z < 0) return 0;
+    if(z < 0) return 0;
     return z;
 }
 __forceinline  float CMatrixMap::GetGroupMaxZObj(int x, int y)
 {
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x, y);
-    if (g == NULL) return 0;
+    if(x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
+    CMatrixMapGroup* g = GetGroupByIndex(x, y);
+    if(g == NULL) return 0;
     float z = GetGroupByIndex(x, y)->GetMaxZObj();
-    if (z < 0) return 0;
+    if(z < 0) return 0;
     return z;
 }
 __forceinline float CMatrixMap::GetGroupMaxZObjRobots(int x, int y)
 {
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
-    if (g == NULL) return 0;
+    if(x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
+    CMatrixMapGroup* g = GetGroupByIndex(x, y);
+    if(g == NULL) return 0;
     float z = GetGroupByIndex(x, y)->GetMaxZObjRobots();
-    if (z < 0) return 0;
+    if(z < 0) return 0;
     return z;
 }
-
 
 #endif

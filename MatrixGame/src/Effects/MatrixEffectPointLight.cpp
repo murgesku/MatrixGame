@@ -705,7 +705,6 @@ void CMatrixEffectPointLight::Draw(void)
 {
     DTRACE();
 
-
     if (m_Bill) m_Bill->Sort(g_MatrixMap->m_Camera.GetViewMatrix());
     if (!m_DX) return;
     if (m_NumVerts == 0 || !m_DX->DX_Ready()) return;

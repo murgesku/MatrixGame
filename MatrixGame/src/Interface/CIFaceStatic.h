@@ -9,7 +9,8 @@
 ////////////////////////////////////////////////////////
 //Static Image Class
 
-class CIFaceStatic : public CIFaceElement {
+class CIFaceStatic : public CIFaceElement
+{
 public:
 
 	bool OnMouseLBDown();

@@ -72,7 +72,7 @@ public:
     float                   GetWeaponDist(void) const {return m_Weapon->GetWeaponDist();}
     void                    Modify(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, const D3DXVECTOR3 &speed)
     {
-        m_Weapon->Modify(pos,dir,speed);
+        m_Weapon->Modify(pos, dir, speed);
     }
     void                    UpdateRepair(void)
     {
@@ -90,8 +90,8 @@ public:
 
     void                    CreateEffect(DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0)
     {
-        m_Weapon = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(D3DXVECTOR3(0,0,0), D3DXVECTOR3(0,0,1), user, handler, type, cooldown);
-        if (type == WEAPON_REPAIR)
+        m_Weapon = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), user, handler, type, cooldown);
+        if(type == WEAPON_REPAIR)
         {
             PrepareRepair();
         }
@@ -112,7 +112,7 @@ public:
     void Release(void)
     {
         m_Weapon->Release();
-        if (m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Release();
+        if(m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Release();
         m_Unit->m_WeaponRepairData = NULL;
     }
 
@@ -231,7 +231,8 @@ public:
 };
 
 
-class CMatrixRobotAI : public CMatrixRobot {
+class CMatrixRobotAI : public CMatrixRobot
+{
     CTextureManaged*    m_BigTexture;
     CTextureManaged*    m_MedTexture;
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
@@ -244,7 +245,7 @@ class CMatrixRobotAI : public CMatrixRobot {
     int                 m_ColsWeight2;
     int                 m_Cols;
     int                 m_Team;
-    int                 m_GroupLogic;                       // dab. В какой лагической группе находится робот
+    int                 m_GroupLogic; // dab. В какой логической группе находится робот
     int                 m_Group;
     int                 m_OrdersInPool;
     SOrder              m_OrdersList[MAX_ORDERS];
@@ -252,15 +253,15 @@ class CMatrixRobotAI : public CMatrixRobot {
     SCaptureCandidate   m_CaptureCandidates[MAX_CAPTURE_CANDIDATES];
     int                 m_CaptureCandidatesCnt;
 
-	int                 m_MapX,m_MapY;                      //
-	int                 m_ZoneCur;				            // Зона в которой находится робот
-	int                 m_DesX,m_DesY;		                // Точка в которую хочет встать робот
-	int                 m_ZoneDes;				            // Зона в которую стремится робот
-	int                 m_ZonePathNext;			            // Следующая зона в пути 
-	int                 m_ZonePathCnt;			            // Количество зон (включительно начальную и конечную) до m_ZoneDes
-	int                 m_ZoneNear;				            // Ближайшая зона от той в которой находится робот по напровлению к m_ZoneDes
-	int                 m_MovePathCnt;			            // Количество точек в пути движения
-	int                 m_MovePathCur;			            // Текущая точка в пути движения
+    int                 m_MapX, m_MapY;                     //
+    int                 m_ZoneCur;				            // Зона в которой находится робот
+    int                 m_DesX, m_DesY;		                // Точка в которую хочет встать робот
+    int                 m_ZoneDes;				            // Зона в которую стремится робот
+    int                 m_ZonePathNext;			            // Следующая зона в пути 
+    int                 m_ZonePathCnt;			            // Количество зон (включительно начальную и конечную) до m_ZoneDes
+    int                 m_ZoneNear;				            // Ближайшая зона от той в которой находится робот по направлению к m_ZoneDes
+    int                 m_MovePathCnt;			            // Количество точек в пути движения
+    int                 m_MovePathCur;			            // Текущая точка в пути движения
     int*                m_ZonePath;			                // Список зон до m_ZoneDes
     CPoint              m_MovePath[MatrixPathMoveMax];      // Путь движения
     float               m_MovePathDist;                     // Длина расчитанного пути
@@ -279,7 +280,7 @@ class CMatrixRobotAI : public CMatrixRobot {
     float               m_SpeedSlopeCorrUp;                 // коррекция скорости при движении в гору
 
 	float               m_maxSpeed;		                    // максимально развиваемая скорость
-    float               m_maxHullSpeed;                     // скорость поворота HULL'a
+    float               m_maxHullSpeed;                     // скорость поворота корпуса
     float               m_maxRotationSpeed;                 // скорость вращения робота на месте
     float               m_MaxFireDist;
     float               m_MinFireDist;
@@ -320,12 +321,12 @@ public:
 #endif
     
     int         GetCols()                                           { return m_Cols; }
-    void        IncCols()                                           { m_Cols++; }
+    void        IncCols()                                           { ++m_Cols; }
     int         GetColsWeight()                                     { return m_ColsWeight; }
-    void        IncColsWeight(int val=1)                            { m_ColsWeight += val; }
+    void        IncColsWeight(int val = 1)                          { m_ColsWeight += val; }
     void        SetColsWeight(int w)                                { m_ColsWeight = w; }
     int         GetColsWeight2()                                    { return m_ColsWeight2; }
-    void        IncColsWeight2(int val=1)                           { m_ColsWeight2 += val; }
+    void        IncColsWeight2(int val = 1)                         { m_ColsWeight2 += val; }
     void        SetColsWeight2(int w)                               { m_ColsWeight2 = w; }
     int         GetMapPosX(void) const                              { return m_MapX; }
     int         GetMapPosY(void) const                              { return m_MapY; }
@@ -339,7 +340,7 @@ public:
     float       GetMaxSpeed()                                       { return m_maxSpeed; }
     void        SetMaxSpeed(float s)                                { m_maxSpeed = s; }
     int         GetOrdersInPool()                                   { return m_OrdersInPool; }
-    SOrder *    GetOrder(int no)                                    { return m_OrdersList + no; }
+    SOrder*     GetOrder(int no)                                    { return m_OrdersList + no; }
     CMatrixEffectSelection* GetSelection()                          { return m_Selection; }
     //CWStr      &GetName()                                           { return m_Name; }
     const SBotWeapon &GetWeapon(int i) const                        { return m_Weapons[i]; }
@@ -352,7 +353,7 @@ public:
     int         GetCtrlGroup()                                      { return m_CtrlGroup; }
     void        SetCtrlGroup(int group)                             { m_CtrlGroup = group; }
 
-    void        MapPosCalc()                                        { g_MatrixMap->PlaceGet(m_Unit[0].m_Kind-1,m_PosX-20.0f,m_PosY-20.0f,&m_MapX,&m_MapY); }
+    void        MapPosCalc() { g_MatrixMap->PlaceGet(m_Unit[0].m_Kind - 1, m_PosX - 20.0f, m_PosY - 20.0f, &m_MapX, &m_MapY); }
 
     bool        IsDisableManual()                                   { return FLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL); }
     void        SetWeaponToArcadedCoeff();
@@ -362,7 +363,6 @@ public:
     void        CalcStrength(void);                                 // Расчитываем силу робота
 
     bool        PLIsInPlace(void) const;
-
 
     void        CreateProgressBarClone(float x, float y, float width, EPBCoord clone_type);
     void        DeleteProgressBarClone(EPBCoord clone_type);
@@ -380,29 +380,25 @@ public:
 
     bool        IsAutomaticMode(void) const
     {
-        return m_CurrState==ROBOT_IN_SPAWN || m_CurrState==ROBOT_BASE_MOVEOUT || m_CurrState==ROBOT_BASE_CAPTURE;
+        return m_CurrState == ROBOT_IN_SPAWN || m_CurrState == ROBOT_BASE_MOVEOUT || m_CurrState == ROBOT_BASE_CAPTURE;
     }
     bool CanBreakOrder(void)
     {
         if(m_Side != PLAYER_SIDE || FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
         {
-            CMatrixBuilding * cf=GetCaptureFactory();
+            CMatrixBuilding* cf = GetCaptureFactory();
             if(cf) 
             {
-                return false; // DO NOT BREAK CAPTURING!!!!!!!!!!!!!!!!!!!!!!!! NEVER!!!!!!!!!!
-                //if (cf->IsBase()) return false;
-                //if (cf->GetSide()!=robot->GetSide())
+                return false; //DO NOT BREAK CAPTURING!!!!!!!!!!!!!!!!!!!!!!!! NEVER!!!!!!!!!!
+                //if(cf->IsBase()) return false;
+                //if(cf->GetSide() != robot->GetSide())
                 //{
-                //    if(
-                //        (float(cf->m_TrueColor.m_ColoredCnt)/MAX_ZAHVAT_POINTS)
-                //        >
-                //        (1.0-(robot->AsRobot()->GetHitPoint()*1.1f)/robot->AsRobot()->GetMaxHitPoint())
-                //    ) return false;
+                //    if((float(cf->m_TrueColor.m_ColoredCnt)/MAX_ZAHVAT_POINTS) > (1.0-(robot->AsRobot()->GetHitPoint()*1.1f)/robot->AsRobot()->GetMaxHitPoint())) return false;
                 //}
             }
         }
 
-        return !IsAutomaticMode() && ((m_Side!=PLAYER_SIDE) || (g_MatrixMap->GetPlayerSide()->GetArcadedObject() != this));
+        return !IsAutomaticMode() && ((m_Side != PLAYER_SIDE) || (g_MatrixMap->GetPlayerSide()->GetArcadedObject() != this));
     }
 
     void        OBBToAABBCollision(int nHeight, int nWidth);
@@ -425,7 +421,7 @@ public:
 
 
     void CalcRobotMass();                           // вычисляет массу, скорость, силу робота
-    bool Seek(const D3DXVECTOR3 &dest,bool & rotate,bool end_path, bool back=false);// поиск вектора смещения робота
+    bool Seek(const D3DXVECTOR3 &dest, bool & rotate, bool end_path, bool back = false); // поиск вектора смещения робота
 	void RotateHull(const D3DXVECTOR3 &direction);  // поворот башни
     bool RotateRobot(const D3DXVECTOR3 &dest, float * rotateangle=NULL);      // поворот робота
 	void Decelerate();                              // замедление
@@ -437,7 +433,7 @@ public:
 
 
 //Orders stack processing
-    SOrder * AllocPlaceForOrderOnTop(void);  // make sure that order will bi initialized after this call
+    SOrder* AllocPlaceForOrderOnTop(void);  // make sure that order will bi initialized after this call
     //void AddOrderToEnd(const SOrder &order);
 
     void RemoveOrderFromTop(void)
@@ -462,17 +458,17 @@ public:
     void MoveReturn(int mx, int my);
     void StopMoving();
 
-    void Fire(const D3DXVECTOR3 &fire_pos,int type=0); // type 0-fire 2-repair
+    void Fire(const D3DXVECTOR3 &fire_pos, int type = 0); // type 0-fire 2-repair
     void StopFire(void);
     void BigBoom(int nc = -1);
 
-    void CaptureFactory(CMatrixBuilding *factory);
-    CMatrixBuilding * GetCaptureFactory(void);
+    void CaptureFactory(CMatrixBuilding* factory);
+    CMatrixBuilding* GetCaptureFactory(void);
     void StopCapture();
 
     void TaktCaptureCandidate(int ms);
-    void AddCaptureCandidate(CMatrixBuilding *b);
-    void RemoveCaptureCandidate(CMatrixBuilding *b);
+    void AddCaptureCandidate(CMatrixBuilding* b);
+    void RemoveCaptureCandidate(CMatrixBuilding* b);
     void ClearCaptureCandidates(void);
 
     bool FindOrder(OrderType findOrder, CMatrixMapStatic* obj);
@@ -488,8 +484,8 @@ public:
     void LowLevelStop();
     bool FindWeapon(EWeapon type);
 
-    void LowLevelMove(int ms,const D3DXVECTOR3 &dest, bool robot_coll, bool obst_coll,bool end_path=true, bool back=false);
-    void LowLevelDecelerate(int ms,bool robot_coll, bool obst_coll);
+    void LowLevelMove(int ms, const D3DXVECTOR3& dest, bool robot_coll, bool obst_coll, bool end_path = true, bool back = false);
+    void LowLevelDecelerate(int ms, bool robot_coll, bool obst_coll);
 
     void ReleaseMe();
     void GatherInfo(int ms);
@@ -497,7 +493,7 @@ public:
     void GetLost(const D3DXVECTOR3 &v);
 //
 
-    void RobotSpawn(CMatrixBuilding *pBase);    // spawn робота		
+    void RobotSpawn(CMatrixBuilding* pBase);    // spawn робота		
     void DIPTakt(float ms);                     // death in progress takt
 
 	virtual void LogicTakt(int cms);
@@ -514,30 +510,34 @@ public:
 	~CMatrixRobotAI();
 };
 
-__forceinline void SBotWeapon::Draw(CMatrixRobotAI *robot)
+__forceinline void SBotWeapon::Draw(CMatrixRobotAI* robot)
 {
     if (m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
 }
 
-inline SMatrixPlace * GetPlacePtr(int no)
+inline SMatrixPlace* GetPlacePtr(int no)
 {
-    if(no<0) return NULL;
+    if(no < 0) return NULL;
     return g_MatrixMap->m_RN.GetPlace(no);
 }
 
 __forceinline bool CMatrixRobotAI::PLIsInPlace(void) const
 {
     CPoint ptp;
-    
+
     if(FindOrderLikeThat(ROT_MOVE_TO)) return false;
     if(FindOrderLikeThat(ROT_MOVE_RETURN)) return false;
 
-    if(m_Environment.m_Place>=0) {
-        ptp=GetPlacePtr(m_Environment.m_Place)->m_Pos;
-    } else if(m_Environment.m_PlaceAdd.x>=0) {
-        ptp=m_Environment.m_PlaceAdd;
-    } else return false;
+    if(m_Environment.m_Place >= 0)
+    {
+        ptp = GetPlacePtr(m_Environment.m_Place)->m_Pos;
+    }
+    else if(m_Environment.m_PlaceAdd.x >= 0)
+    {
+        ptp = m_Environment.m_PlaceAdd;
+    }
+    else return false;
 
-    return (GetMapPosX()==ptp.x) && (GetMapPosY()==ptp.y);
+    return (GetMapPosX() == ptp.x) && (GetMapPosY() == ptp.y);
 }
 

@@ -88,18 +88,18 @@ class CMatrixHint;
 #define IS_PREORDERING_NOSELECT (FLAG(g_IFaceList->m_IfListFlags,PREORDER_FIRE|PREORDER_MOVE|PREORDER_PATROL|PREORDER_CAPTURE|PREORDER_TRACKUP|PREORDER_TRACKDOWN|PREORDER_BOMB|PREORDER_REPAIR))
 
 
-#define IF_MAP_PANELI                           65000
-#define IF_RADAR_PNI                            65001
-#define IF_CALLHELL_ID                          65535
+#define IF_MAP_PANELI            65000
+#define IF_RADAR_PNI             65001
+#define IF_CALLHELL_ID           65535
 
-#define MENU_HEAD_ITEMS 5
-#define MENU_WEAPONNORM_ITEMS 9
-#define MENU_WEAPONEXTERN_ITEMS 3
-#define MENU_HULL_ITEMS 6
-#define MENU_CHASSIS_ITEMS 5
+#define MENU_HEAD_ITEMS          5
+#define MENU_WEAPONNORM_ITEMS    9
+#define MENU_WEAPONEXTERN_ITEMS  3
+#define MENU_HULL_ITEMS          6
+#define MENU_CHASSIS_ITEMS       5
 
-#define NEW_LINE 0x0d
-#define CARRET 0x0a
+#define NEW_LINE                 0x0d
+#define CARRET                   0x0a
 
 typedef void(*DialogButtonHandler)(void);
 struct SSlide
@@ -112,7 +112,8 @@ struct SSlide
     float step;
 };
 
-enum EHintButton {
+enum EHintButton
+{
     HINT_OK,
     HINT_CANCEL,
     HINT_EXIT,
@@ -196,18 +197,18 @@ class CInterface : public CMain
 
 
 public:
-	SSlide          m_Slider;
+    SSlide          m_Slider;
     DWORD           m_InterfaceFlags;
     int             m_nTotalElements;
     BYTE            m_VisibleAlpha;
-	DWORD           m_AlwaysOnTop;  // it is boolean var. used DWORD only align reasons
+    DWORD           m_AlwaysOnTop;  // it is boolean var. used DWORD only align reasons
 
-	int             m_nId;
-	CWStr           m_strName;
-	float           m_xPos, m_yPos, m_zPos;
-	CIFaceElement*  m_FirstElement, *m_LastElement;
-    CIFaceImage*    m_FirstImage, *m_LastImage;
-	CInterface*     m_PrevInterface, *m_NextInterface;
+    int             m_nId;
+    CWStr           m_strName;
+    float           m_xPos, m_yPos, m_zPos;
+    CIFaceElement* m_FirstElement, * m_LastElement;
+    CIFaceImage* m_FirstImage, * m_LastImage;
+    CInterface* m_PrevInterface, * m_NextInterface;
 
 	void Init();
     bool Load(CBlockPar &bp, const wchar *name);
@@ -219,7 +220,7 @@ public:
     void Reset();
 
     CIFaceImage* FindImageByName(CWStr name);
-    CIFaceStatic* CreateStaticFromImage(float x, float y, float z, const CIFaceImage &image,bool fullsize=false);
+    CIFaceStatic* CreateStaticFromImage(float x, float y, float z, const CIFaceImage &image, bool fullsize = false);
     
     BYTE GetAlpha()                                                 { return m_VisibleAlpha;}
     void SetAlpha(BYTE alpha);
@@ -228,7 +229,7 @@ public:
 
     bool FindElementByName(const CWStr &name);
 
-    static void CopyElements(CIFaceElement *el1, CIFaceElement *el2);
+    static void CopyElements(CIFaceElement* el1, CIFaceElement* el2);
 
     void BeginSlide(float to_x, float to_y);
     void SlideStep();
@@ -255,14 +256,15 @@ public:
         m_ClearRects = NULL;
     }
 
-    static CBuf *m_ClearRects;
-    static void ClearRects_Clear(void) {m_ClearRects->Clear();};
-    static void ClearRects_Add(const D3DRECT &rect) {m_ClearRects->AnyStruct<D3DRECT>(rect);}
-    static D3DRECT * ClearRects_Get(void) {return (D3DRECT *)m_ClearRects->Get();}
-    static int  ClearRects_GetCount(void) {return m_ClearRects->Len() / sizeof(D3DRECT);}
+    static CBuf* m_ClearRects;
+    static void ClearRects_Clear(void) { m_ClearRects->Clear(); };
+    static void ClearRects_Add(const D3DRECT& rect) { m_ClearRects->AnyStruct<D3DRECT>(rect); }
+    static D3DRECT* ClearRects_Get(void) { return (D3DRECT*)m_ClearRects->Get(); }
+    static int  ClearRects_GetCount(void) { return m_ClearRects->Len() / sizeof(D3DRECT); }
 };
 ////////////////////////////////////////////////////
-enum Focus {
+enum Focus
+{
 	UNKNOWN = 0,
 	INTERFACE = 1,
 

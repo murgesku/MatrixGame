@@ -92,7 +92,7 @@ struct SSpecialBot {
     bool                m_HaveBomb;
     bool                m_HaveRepair;
 
-    static SSpecialBot * m_AIRobotTypeList;
+    static SSpecialBot* m_AIRobotTypeList;
     static int m_AIRobotTypeCnt;
 
     static void LoadAIRobotType(CBlockPar & bp);
@@ -128,7 +128,6 @@ class CConstructor : public CMain
 	SWeaponUnit         m_Weapon[MAX_WEAPON_CNT];
     SArmorUnit          m_Armor;
 	SUnit               m_Chassis;
-	
 
 	CMatrixBuilding*    m_Base;
     SNewBorn*           m_NewBorn;
@@ -137,6 +136,9 @@ class CConstructor : public CMain
 	void ResetConstruction();
 
 public:
+
+    class CIFaceButton* m_BaseConstBuildBut; //Сюда заносится указатель на кнопку старта постройки роботов
+
     CMatrixRobotAI* GetRenderBot()
     {
         return m_Robot;

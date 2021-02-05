@@ -26,7 +26,7 @@ class CPoint : public tagPOINT
 public:
         CPoint() {}
         //CPoint(int zn) {x = zn; y = zn;}
-        CPoint(int ax,int ay) {x = ax; y =ay;}
+        CPoint(int ax, int ay) {x = ax; y =ay;}
         CPoint(const CPoint &p) {x=p.x; y=p.y;}
 
 		bool    operator == (const CPoint & zn) const { return (x==zn.x) && (y==zn.y); }
@@ -34,7 +34,6 @@ public:
 		CPoint & operator -= (const CPoint &zn) { x-=zn.x; y-=zn.y; return *this; }
 
         int Dist2(const CPoint & p) const       { return (p.x-x)*(p.x-x)+(p.y-y)*(p.y-y); }
-
 };
 
 class CRect:public tagRECT

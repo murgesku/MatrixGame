@@ -181,11 +181,11 @@ void CMinimap::SetAngle(float angle)
 
 void CMinimap::BeforeDraw(void)
 {
-    CTextureManaged *pt = NULL;
-    for (int i=0;i<MMT_CNT;++i)
+    CTextureManaged* pt = NULL;
+    for(int i = 0; i < MMT_CNT; ++i)
     {
-        CTextureManaged *pt1 = m_Tex[i].tex;
-        if (pt1 != pt)
+        CTextureManaged* pt1 = m_Tex[i].tex;
+        if(pt1 != pt)
         {
             pt1->Preload();
             pt = pt1;
@@ -193,16 +193,16 @@ void CMinimap::BeforeDraw(void)
     }
 
 
-    if (m_Dirty == 0) return;
+    if(m_Dirty == 0) return;
 
     m_Viewport.X = m_PosX;
-	m_Viewport.Y = m_PosY;
-	m_Viewport.Width = m_SizeX;
-	m_Viewport.Height = m_SizeY;
-	m_Viewport.MinZ=0.0f;
-	m_Viewport.MaxZ=1.0f;
+    m_Viewport.Y = m_PosY;
+    m_Viewport.Width = m_SizeX;
+    m_Viewport.Height = m_SizeY;
+    m_Viewport.MinZ = 0.0f;
+    m_Viewport.MaxZ = 1.0f;
 
-    m_Delta = D3DXVECTOR2(0,0);
+    m_Delta = D3DXVECTOR2(0, 0);
 
     int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = float(sz) * GLOBAL_SCALE;
@@ -216,27 +216,27 @@ void CMinimap::BeforeDraw(void)
     //World2Map(rt, D3DXVECTOR2(g_MatrixMap->m_Size.x * GLOBAL_SCALE, 0));
     World2Map(rb, D3DXVECTOR2(x0 + fsz, y0 + fsz));
 
-    if (lt.x > float(m_PosX)) m_Delta.x = float(m_PosX) - lt.x;
-    if (lt.y > float(m_PosY)) m_Delta.y = float(m_PosY) - lt.y;
-    if (rb.x < float(m_PosX+m_SizeX)) m_Delta.x = float(m_PosX+m_SizeX) - rb.x;
-    if (rb.y < float(m_PosY+m_SizeY))
+    if(lt.x > float(m_PosX)) m_Delta.x = float(m_PosX) - lt.x;
+    if(lt.y > float(m_PosY)) m_Delta.y = float(m_PosY) - lt.y;
+    if(rb.x < float(m_PosX + m_SizeX)) m_Delta.x = float(m_PosX + m_SizeX) - rb.x;
+    if(rb.y < float(m_PosY + m_SizeY))
     {
-        m_Delta.y = float(m_PosY+m_SizeY) - rb.y;
+        m_Delta.y = float(m_PosY + m_SizeY) - rb.y;
     }
 
     lt += m_Delta;
     rb += m_Delta;
 
-    m_Verts[0].p = D3DXVECTOR4( lt.x, rb.y, MINIMAP_Z, 1.0f );
+    m_Verts[0].p = D3DXVECTOR4(lt.x, rb.y, MINIMAP_Z, 1.0f);
     m_Verts[0].tu = 0; m_Verts[0].tv = 1.0f;
 
-	m_Verts[1].p = D3DXVECTOR4( lt.x,  lt.y, MINIMAP_Z, 1.0f );
+    m_Verts[1].p = D3DXVECTOR4(lt.x, lt.y, MINIMAP_Z, 1.0f);
     m_Verts[1].tu = 0; m_Verts[1].tv = 0.0f;
 
-	m_Verts[2].p = D3DXVECTOR4( rb.x, rb.y, MINIMAP_Z, 1.0f );
+    m_Verts[2].p = D3DXVECTOR4(rb.x, rb.y, MINIMAP_Z, 1.0f);
     m_Verts[2].tu = 1.0f; m_Verts[2].tv = 1.0f;
 
-	m_Verts[3].p = D3DXVECTOR4( rb.x,  lt.y, MINIMAP_Z, 1.0f );
+    m_Verts[3].p = D3DXVECTOR4(rb.x, lt.y, MINIMAP_Z, 1.0f);
     m_Verts[3].tu = 1.0f; m_Verts[3].tv = 0.0f;
     
 #ifdef MINIMAP_SUPPORT_ROTATION
@@ -333,14 +333,14 @@ void CMinimap::AddEvent(float x, float y, DWORD color1, DWORD color2)
 {
     DTRACE();
     int idx = m_EventsCnt; 
-    if (m_EventsCnt >= MINIMAP_MAX_EVENTS)
+    if(m_EventsCnt >= MINIMAP_MAX_EVENTS)
     {
         int mini = 0;
         float mint = m_Events[0].ttl;
 
-        for (int i = 1; i<MINIMAP_MAX_EVENTS; ++i)
+        for(int i = 1; i<MINIMAP_MAX_EVENTS; ++i)
         {
-            if (m_Events[i].ttl < mint)
+            if(m_Events[i].ttl < mint)
             {
                 mini = i;
                 mint = m_Events[i].ttl;
@@ -348,22 +348,19 @@ void CMinimap::AddEvent(float x, float y, DWORD color1, DWORD color2)
         }
         idx = mini;
 
-
-    } else ++m_EventsCnt;
-
+    }
+    else ++m_EventsCnt;
 
     m_Events[idx].pos_in_world = D3DXVECTOR2(x,y);
     m_Events[idx].color1 = color1;
     m_Events[idx].color2 = color2;
     m_Events[idx].ttl = 1;
-
 }
 
 void CMinimap::PauseTakt(float takt)
 {
     float mul = (float)(1.0 - pow(0.995, double(takt)));
     m_Scale += (m_TgtScale - m_Scale) * mul;
-
 }
 
 void CMinimap::Takt(float takt)
@@ -1234,7 +1231,7 @@ render:
 void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
 {
     DTRACE();
-    SETFLAG(g_MatrixMap->m_Flags,MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+    SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
     bool f1 = g_Config.m_ShowStencilShadows;
     bool f2 = g_Config.m_ShowProjShadows;
@@ -1244,15 +1241,14 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
     g_Config.m_ShowStencilShadows = f1;
     g_Config.m_ShowProjShadows = f2;
 
-
-    IDirect3DSurface9 * newZ, * oldZ = NULL;
+    IDirect3DSurface9* newZ, * oldZ = NULL;
     bool CustomZ = (MINIMAP_SIZE > g_ScreenY) || (MINIMAP_SIZE > g_ScreenX);
-    if (CustomZ)
+    if(CustomZ)
     {
         D3DSURFACE_DESC d;
         g_D3DD->GetDepthStencilSurface(&oldZ);
         oldZ->GetDesc(&d);
-        g_D3DD->CreateDepthStencilSurface(MINIMAP_SIZE,MINIMAP_SIZE, d.Format, d.MultiSampleType, d.MultiSampleQuality, TRUE, &newZ, NULL);
+        g_D3DD->CreateDepthStencilSurface(MINIMAP_SIZE, MINIMAP_SIZE, d.Format, d.MultiSampleType, d.MultiSampleQuality, TRUE, &newZ, NULL);
         g_D3DD->SetDepthStencilSurface(newZ);
         newZ->Release();
     }
@@ -1263,13 +1259,13 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
 
     // set new viewport
     D3DVIEWPORT9 newViewport;
-	newViewport.X=0;
-	newViewport.Y=0;
-	newViewport.Width=MINIMAP_SIZE;
-	newViewport.Height=MINIMAP_SIZE;
-	newViewport.MinZ=0.0f;
-	newViewport.MaxZ=1.0f;
-	FAILED_DX(g_D3DD->SetViewport(&newViewport));
+    newViewport.X = 0;
+    newViewport.Y = 0;
+    newViewport.Width = MINIMAP_SIZE;
+    newViewport.Height = MINIMAP_SIZE;
+    newViewport.MinZ = 0.0f;
+    newViewport.MaxZ = 1.0f;
+    FAILED_DX(g_D3DD->SetViewport(&newViewport));
 
     // store old render target
     IDirect3DSurface9 * oldTarget;
@@ -1281,19 +1277,20 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
     //MessageBox(NULL, CStr(int(m_Texture->Tex())), "", MB_OK);
 
 	ASSERT_DX(m_Texture->Tex()->GetSurfaceLevel(0, &newTarget));
-	ASSERT_DX(g_D3DD->SetRenderTarget(0,newTarget));
+	ASSERT_DX(g_D3DD->SetRenderTarget(0, newTarget));
 
-    if (FLAG(g_Flags,GFLAG_STENCILAVAILABLE))
+    if(FLAG(g_Flags,GFLAG_STENCILAVAILABLE))
     {
         FAILED_DX(g_D3DD->Clear(0,NULL,D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL,0x0000F000L, 1.0f, 0L ));
-    } else
+    }
+    else
     {
         FAILED_DX(g_D3DD->Clear(0,NULL,D3DCLEAR_ZBUFFER,0x0000F000L, 1.0f, 0L ));
     }
 
     D3DXMATRIX mView;
-    D3DXVECTOR3 campos(float(g_MatrixMap->m_Size.x)*(GLOBAL_SCALE/2), float(g_MatrixMap->m_Size.y)*(GLOBAL_SCALE/2), 1300);
-    D3DXMatrixLookAtLH(&mView,&campos,&(campos-D3DXVECTOR3(0,0,1)),&D3DXVECTOR3(0,-1,0));
+    D3DXVECTOR3 campos(float(g_MatrixMap->m_Size.x) * (GLOBAL_SCALE / 2), float(g_MatrixMap->m_Size.y) * (GLOBAL_SCALE / 2), 1300);
+    D3DXMatrixLookAtLH(&mView, &campos, &(campos - D3DXVECTOR3(0, 0, 1)), &D3DXVECTOR3(0, -1, 0));
 
     int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(sz) * GLOBAL_SCALE);
@@ -1302,11 +1299,11 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
     mView._11 *= scale; mView._21 *= scale; mView._31 *= scale; mView._41 *= scale;
     mView._12 *= scale; mView._22 *= scale; mView._32 *= scale; mView._42 *= scale;
 
-	ASSERT_DX(g_D3DD->SetTransform( D3DTS_VIEW, &mView ));
-	D3DXMATRIX mProj;
-	D3DXMatrixOrthoLH(&mProj,1.0f,1.0f,1.0f,10000.0f);
+    ASSERT_DX(g_D3DD->SetTransform(D3DTS_VIEW, &mView));
+    D3DXMATRIX mProj;
+    D3DXMatrixOrthoLH(&mProj, 1.0f, 1.0f, 1.0f, 10000.0f);
 
-    ASSERT_DX(g_D3DD->SetTransform( D3DTS_PROJECTION, &mProj ));
+    ASSERT_DX(g_D3DD->SetTransform( D3DTS_PROJECTION, &mProj));
 
     ASSERT_DX(g_D3DD->BeginScene());
 
@@ -1327,15 +1324,14 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s)
 	oldTarget->Release();
 	newTarget->Release();
 
-    if (CustomZ)
+    if(CustomZ)
     {
         g_D3DD->SetDepthStencilSurface(oldZ);
         oldZ->Release();
     }
 
 	ASSERT_DX(g_D3DD->SetViewport(&oldViewport));
-    RESETFLAG(g_MatrixMap->m_Flags,MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
-
+    RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 }
 
     //if (m_KeyDown && m_KeyScan == KEY_PGDN) {m_KeyDown = false; m_Minimap.SetOutParams(m_Minimap.GetScale() * 0.8f);}
@@ -1373,7 +1369,6 @@ bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt)
 
         //CHelper::Create(10000,111)->Cone(D3DXVECTOR3(t.x, t.y, 0), D3DXVECTOR3(t.x, t.y, 1000), 30, 30, 0xFFFFFFFF, 0xFFFFFFFF, 20);
 
-
         tgt = t;
         return true;
     }
@@ -1383,8 +1378,10 @@ bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt)
 void __stdcall CMinimap::ShowPlayerBots(void *object)
 {
     CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();
-    while(objects){
-        if(objects->IsRobot() && objects->GetSide() == PLAYER_SIDE){
+    while(objects)
+    {
+        if(objects->IsRobot() && objects->GetSide() == PLAYER_SIDE)
+        {
             g_MatrixMap->m_Minimap.AddEvent(objects->GetGeoCenter().x, objects->GetGeoCenter().y, EVENT_SHOWPB_C1, EVENT_SHOWPB_C2);
         }
         objects = objects->GetNextLogic();

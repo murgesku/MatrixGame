@@ -2178,30 +2178,33 @@ void CMatrixRoadNetwork::CalcRadiusPlaceRegion(int no)
     region->m_RadiusPlace=int(sqrt(double(region->m_RadiusPlace)))+2;
 }
 
-bool CMatrixRoadNetwork::IsNerestRegion(int r1,int r2)
+bool CMatrixRoadNetwork::IsNearestRegion(int r1, int r2)
 {
-    if(r1<0 || r2<0) return false;
+    if(r1 < 0 || r2 < 0) return false;
 
-    SMatrixRegion * region=GetRegion(r1);
+    SMatrixRegion* region = GetRegion(r1);
 
-    for(int i=0;i<region->m_NearCnt;i++) {
-        if(region->m_Near[i]==r2) return true;
+    for(int i = 0; i < region->m_NearCnt; ++i)
+    {
+        if(region->m_Near[i] == r2) return true;
     }
     return false;
 }
 
-int CMatrixRoadNetwork::FindNerestRegion(const CPoint & tp)
+int CMatrixRoadNetwork::FindNearestRegion(const CPoint& tp)
 {
-    if(m_RegionCnt<=0) return -1;
+    if(m_RegionCnt <= 0) return -1;
 
-    int mindist=tp.Dist2(m_Region[0].m_Center);
-    int r=0;
+    int mindist = tp.Dist2(m_Region[0].m_Center);
+    int r = 0;
 
-    for(int i=1;i<m_RegionCnt;i++) {
-        int t=tp.Dist2(m_Region[i].m_Center);
-        if(t<mindist) {
-            mindist=t;
-            r=i;
+    for(int i = 1; i < m_RegionCnt; ++i)
+    {
+        int t = tp.Dist2(m_Region[i].m_Center);
+        if(t < mindist)
+        {
+            mindist = t;
+            r = i;
         }
     }
     return r;
@@ -2211,7 +2214,7 @@ int CMatrixRoadNetwork::FindNerestRegion(const CPoint & tp)
 #define POW2(x) ((x)*(x))
 #endif
 
-int CMatrixRoadNetwork::FindNerestRegionByRadius(const CPoint & tp, int curregion)
+int CMatrixRoadNetwork::FindNearestRegionByRadius(const CPoint & tp, int curregion)
 {
     int i,r;
 

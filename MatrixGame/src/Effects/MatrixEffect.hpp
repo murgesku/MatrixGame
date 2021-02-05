@@ -272,7 +272,7 @@ enum EEffectType
 #define BIGBOOMF_PREPARED   SETBIT(1)
 
 // only MoveTo flags
-#define MOVETOF_PREPARED    SETBIT(1)
+#define MOVETOF_PREPARED       SETBIT(1)
 
 
 typedef struct
@@ -281,16 +281,16 @@ typedef struct
     float t;
 } SGradient;
 
-__forceinline  float CalcGradient(float t, const SGradient *grad)
+__forceinline  float CalcGradient(float t, const SGradient* grad)
 {
     int i = 1;
-    for(;;++i)
+    for(; ; ++i)
     {
-        if (t >= grad[i].t)
+        if(t >= grad[i].t)
         {
             continue;
         }
-        return (grad[i].c-grad[i-1].c) * (t - grad[i-1].t) / (grad[i].t - grad[i-1].t) + grad[i-1].c;
+        return (grad[i].c - grad[i - 1].c) * (t - grad[i - 1].t) / (grad[i].t - grad[i - 1].t) + grad[i - 1].c;
     }
 }
 
@@ -420,8 +420,8 @@ public:
     static void            CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &pos, float angle, float scale, ESpotType  type = SPOT_CONSTANT);  // automaticaly adds to Effects list; can return NULL
     static void            CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask,  CMatrixMapStatic * skip, FIRE_END_HANDLER = NULL, DWORD user = 0); // automaticaly adds to Effects list; can return NULL
     static void            CreateBuoy(SEffectHandler *eh, const D3DXVECTOR3 &pos, EBuoyType bt);
-    static void            CreateMoveto(void);
-    static void            CreateMoveto(const D3DXVECTOR3 &pos);
+    static void            CreateMoveto(int type);
+    static void            CreateMoveto(const D3DXVECTOR3 &pos, int type);
     static void            DeleteAllMoveto(void);
     static CMatrixEffect * CreateSelection(const D3DXVECTOR3 &pos, float r, DWORD color = SEL_COLOR_DEFAULT);
     static CMatrixEffect * CreatePath(const D3DXVECTOR3 *pos, int cnt);

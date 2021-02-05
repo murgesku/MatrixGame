@@ -13,9 +13,11 @@
 #include "CBuf.hpp"
 #include "Tracer.hpp"
 
+#define SFT(x) SFT_fun(CStr() + x)
+
 namespace Base {
 
-void SFT(CStr out);
+void SFT_fun(CStr out);
 
 class CBlockPar;
 class BPCompiler;

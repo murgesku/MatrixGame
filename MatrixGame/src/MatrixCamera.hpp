@@ -232,33 +232,23 @@ public:
     //ƒл€ вычислени€ смещени€ камеры от центра точки центровки с учЄтом еЄ текущего горизонтального угла
     //dist - дальность необходимого смещени€
     //par_type - смещение по какой координате вернуть: 0 - X, !0 - Y
-    float CamAngleToCoordOffset(float dist, int par_type)
+    float CamAngleToCoordOffset(double dist, int par_type)
     {
-        //ѕолучаем радианы с учЄтом только одного полного оборота камеры по часовой стрелке
-        //ƒолго отлаживал это говно, только чтобы убедитьс€, что вариант с переводом в градусы оптимальнее и удобнее (Klaxons)
-        /*
-        double ang = m_Ang_Strategy;
-        if(abs(ang) > 6.28319)
-        {
-            ang /= 6.28319;
-            ang = std::modf(ang, &ang);
-            ang *= 6.28319;
-        }
-        if(ang < 0) ang += 6.28319;
-        */
-
         //ƒл€ перевода радиан в градусы
-        double ang = m_Ang_Strategy / 0.0174533;
-        ang = int(ang) % 360;
-        if(ang < 0) ang += 360.0;
+        //double ang = m_Ang_Strategy / 0.0174533;
+        //ang = int(ang) % 360;
+        //if(ang < 0) ang += 360.0;
         //ќбратите внимание, переводим угол из дабологики (где начало окружности находитс€ на юге и продвигаетс€ по часовой стрелке) в нормальную систему
-        if(ang <= 270) ang -= abs(270);
-        else ang = 360 - ang + 270;
+        //if(ang <= 270.0) ang = fabs(ang - 270.0);
+        //else ang = 360.0 - ang + 270.0;
 
-        //¬ычисл€ем смещение по X (смещени€ вычисл€ем от нул€)
-        if(par_type) return sin(ang * PI / 180) * dist;
+        //¬ычисл€ем смещение по X
+        //if(par_type) return sin(ang * PI / 180.0) * dist;
         //¬ычисл€ем смещение по Y
-        else return cos(ang * PI / 180) * dist;
+        //else return cos(ang * PI / 180.0) * dist;
+
+        if(!par_type) return -sin(m_Ang_Strategy) * dist;
+        else return cos(m_Ang_Strategy) * dist;
     }
 
     CMatrixCamera(void);

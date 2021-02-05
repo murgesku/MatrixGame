@@ -217,12 +217,15 @@ struct SMatrixPlayerGroup
 {
 private:
     DWORD m_Bits;
-    //bool m_War;                                     // Группа вступила в бой
-    //bool m_ShowPlace;
+    //bool m_War;                       //Группа вступила в бой
+    //bool m_ShowPlace;                 //Отображение точки, на которую направлен приказ
     //bool m_PatrolReturn;
     //EMatrixPlayerOrder m_Order;
 public:
+
+    //Какой тип приказа задан
     EMatrixPlayerOrder Order(void) const {return EMatrixPlayerOrder(m_Bits & 0xFF);}
+    //Задать тип приказа
     void Order(EMatrixPlayerOrder o) { m_Bits = (m_Bits & 0xFFFFFF00) | o;}
 
     bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31));}
@@ -237,11 +240,11 @@ public:
     int m_RobotCnt;
     CPoint m_From;
     CPoint m_To;
-    CMatrixMapStatic * m_Obj;
+    CMatrixMapStatic* m_Obj;
     int m_Region;
-    int m_RegionPathCnt;                          // Кол-во регионов в пути
-    int m_RegionPath[REGION_PATH_MAX_CNT];        // Путь по регионам
-    CMatrixRoadRoute * m_RoadPath;
+    int m_RegionPathCnt;                          //Кол-во регионов в пути
+    int m_RegionPath[REGION_PATH_MAX_CNT];        //Путь по регионам
+    CMatrixRoadRoute* m_RoadPath;
 };
 
 struct SMatrixTeam
@@ -395,7 +398,7 @@ private:
 
     int m_Statistic[MAX_STATISTICS];
 
-    CMatrixMapStatic *m_Arcaded;
+    CMatrixMapStatic* m_Arcaded;
     DWORD             m_ArcadedP_available;
     D3DXVECTOR3       m_ArcadedP_cur;
     D3DXVECTOR3       m_ArcadedP_prevrp;
@@ -597,14 +600,14 @@ public:
 
     void SoundCapture(int pg);
 
-    void TaktPL(int onlygroup=-1);
+    void TaktPL(int onlygroup = -1);
     bool FirePL(int group);
     void RepairPL(int group);
     void WarPL(int group);
     int SelGroupToLogicGroup(void);
-    int RobotToLogicGroup(CMatrixRobotAI * robot);
+    int RobotToLogicGroup(CMatrixRobotAI* robot);
     void PGOrderStop(int no);
-    void PGOrderMoveTo(int no,CPoint & tp);
+    void PGOrderMoveTo(int no, CPoint & tp);
     void PGOrderCapture(int no,CMatrixBuilding * building);
     void PGOrderAttack(int no,const CPoint & tp,CMatrixMapStatic * terget_obj);
     void PGOrderPatrol(int no,CPoint & tp);

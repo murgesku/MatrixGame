@@ -529,8 +529,7 @@ void CTextureManaged::Load(void)
     {
         ASSERT_DX(m_TexFrom->AddDirtyRect(NULL));
         ASSERT_DX(g_D3DD->UpdateTexture(m_TexFrom, m_Tex));
-
-        //g_TexManagedCnt++;
+        //++g_TexManagedCnt;
     }
 #endif
 
@@ -544,7 +543,8 @@ void CTextureManaged::Unload(void)
     DTRACE();
 	if(m_Tex)
     {
-        m_Tex->Release(); m_Tex=NULL; /*g_TexManagedCnt--;*/
+        m_Tex->Release(); /*g_TexManagedCnt--;*/
+        m_Tex = NULL;
     }
 #endif
     //CDText::T("texcnt", CStr(g_TexManagedCnt));
@@ -625,9 +625,9 @@ void CTextureManaged::LoadFromBitmap(int level, const CBitmap & bm, bool convert
 
             const BYTE * sou=bm.ByteData();
             BYTE * des=(BYTE *)lr.pBits;
-            for(int y=0;y<ly;y++,sou+=bm.Pitch()-lx*4,des+=lr.Pitch-lx*2)
+            for(int y=0;y<ly;++y,sou+=bm.Pitch()-lx*4,des+=lr.Pitch-lx*2)
             {
-                for(int x=0;x<lx;x++,sou+=4,des+=2)
+                for(int x=0;x<lx;++x,sou+=4,des+=2)
                 {
                     *(des) = (*(sou+1) & 0xF0) | (*(sou+2) >> 4);
                     *(des+1) = (*(sou+3) & 0xF0) | (*(sou+0) >> 4);
@@ -642,16 +642,16 @@ void CTextureManaged::LoadFromBitmap(int level, const CBitmap & bm, bool convert
 #endif
 //            m_SizeInMemory+=lr.Pitch*ly;
 
-            BYTE * sou=(BYTE *)bm.Data();
-            BYTE * des=(BYTE *)lr.pBits;
-            for(int y=0;y<ly;y++,sou+=bm.Pitch()-lx*4,des+=lr.Pitch-lx*4)
+            BYTE* sou = (BYTE*)bm.Data();
+            BYTE* des = (BYTE*)lr.pBits;
+            for(int y = 0; y < ly; ++y, sou += bm.Pitch() - lx * 4, des += lr.Pitch - lx * 4)
             {
-                for(int x=0;x<lx;x++,sou+=4,des+=4)
+                for(int x = 0; x < lx; ++x, sou += 4, des += 4)
                 {
-                    *(des)=*(sou+2);
-                    *(des+1)=*(sou+1);
-                    *(des+2)=*(sou+0);
-                    *(des+3)=*(sou+3);
+                    *(des) = *(sou + 2);
+                    *(des + 1) = *(sou + 1);
+                    *(des + 2) = *(sou + 0);
+                    *(des + 3) = *(sou + 3);
                 }
             }
 
