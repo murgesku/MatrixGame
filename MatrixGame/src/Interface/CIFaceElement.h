@@ -18,12 +18,15 @@ class CAnimation;
 #define IFEF_VISIBLE    SETBIT(0)
 #define IFEF_CLEARRECT  SETBIT(1)
 
-struct SElementHint {
+struct SElementHint
+{
     CWStr   HintTemplate;
     int     timer;
     int     x;
     int     y;
-    SElementHint():HintTemplate(g_MatrixHeap){
+
+    SElementHint():HintTemplate(g_MatrixHeap)
+    {
         timer = 0;
         x = 0;
         y = 0;
@@ -87,8 +90,8 @@ public:
 	virtual void Render(BYTE m_VisibleAlpha);
 	virtual void Reset();
     void LogicTakt(int ms);
-        
-    void    RecalcPos(const float &x, const float &y, bool ichanged=true);
+
+    void RecalcPos(const float &x, const float &y, bool ichanged = true);
 
 
     //void    GenerateClearRect(void);

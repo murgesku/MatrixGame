@@ -303,7 +303,6 @@ void CDevConsole::Keyboard(int scan, bool down)
                 --m_CurPos;
                 m_Text.Del(m_CurPos, 1);
             }
-
         }
         else if(scan == KEY_DELETE)
         {
@@ -311,7 +310,6 @@ void CDevConsole::Keyboard(int scan, bool down)
             {
                 m_Text.Del(m_CurPos, 1);
             }
-
         }
         else if(scan == KEY_LEFT)
         {
@@ -319,7 +317,6 @@ void CDevConsole::Keyboard(int scan, bool down)
             {
                 --m_CurPos;
             }
-
         }
         else if(scan == KEY_RIGHT)
         {
@@ -327,17 +324,14 @@ void CDevConsole::Keyboard(int scan, bool down)
             {
                 ++m_CurPos;
             }
-
         }
         else if(scan == KEY_HOME)
         {
             m_CurPos = 0;
-
         }
         else if(scan == KEY_END)
         {
             m_CurPos = m_Text.GetLen();
-
         }
         else if(scan == KEY_ENTER)
         {
@@ -346,11 +340,11 @@ void CDevConsole::Keyboard(int scan, bool down)
             int i = 0;
             while(i < m_Text.GetLen())
             {
-                if (m_Text[i] == ' ') break;
+                if(m_Text[i] == ' ') break;
                 ++i;
             }
             cmd.Set(m_Text.Get(), i);
-            if (i<m_Text.GetLen()) params.Set(m_Text.Get()+i+1);
+            if(i < m_Text.GetLen()) params.Set(m_Text.Get() + i + 1);
             cmd.UpperCase();
 
             i = 0;
@@ -365,7 +359,6 @@ void CDevConsole::Keyboard(int scan, bool down)
                 }
                 ++i;
             }
-
         }
         else if(scan == KEY_ESC)
         {

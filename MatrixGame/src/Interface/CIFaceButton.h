@@ -8,9 +8,10 @@
 
 //////////////////////////////////////////////////
 //Button Class
-class CIFaceButton : public  CIFaceElement {
+class CIFaceButton : public  CIFaceElement
+{
 public:
-	
+
 	bool OnMouseMove(CPoint);
 	void OnMouseLBUp();
 	bool OnMouseLBDown();

@@ -165,7 +165,8 @@ struct SPneumaticData
     DWORD       newlink;
 };
 
-class CMatrixRobot : public CMatrixMapStatic {
+class CMatrixRobot : public CMatrixMapStatic
+{
         EAnimation  m_Animation;
 		CMatrixBuilding *m_Base; //база из который вышел робот
 
@@ -178,7 +179,7 @@ protected:
         float       m_MaxHitPointInversed; // for normalized calcs
 
 
-        static      SPneumaticData * m_Pneumaic;
+        static      SPneumaticData* m_Pneumaic;
 
         //DWORD       m_RobotFlags; // m_ObjectState used instead. do not uncomment!
 public:
@@ -266,8 +267,15 @@ public:
         
 
 
-        void    SetBase(CMatrixBuilding *b) {m_Base = b; m_TimeWithBase = 0;}
-        CMatrixBuilding *GetBase(void) const {return m_Base;}
+        void SetBase(CMatrixBuilding* b)
+        {
+            m_Base = b;
+            m_TimeWithBase = 0;
+        }
+        CMatrixBuilding* GetBase(void) const
+        {
+            return m_Base;
+        }
 
 
         void SwitchAnimation(EAnimation a);

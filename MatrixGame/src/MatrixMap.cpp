@@ -136,9 +136,9 @@ m_BeforeWinLooseDialogCount(0)
                     m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0,L",") / 100.0);
                     m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetDoublePar(1,L",") / 100.0);
 					m_Difficulty.k_friendly_fire = 1.0f + float(t2.GetDoublePar(2,L",") / 100.0);
-                    if (m_Difficulty.k_damage_enemy_to_player < 0.01f) m_Difficulty.k_damage_enemy_to_player = 0.01f;
-                    if (m_Difficulty.k_time_before_maintenance < 0.01f) m_Difficulty.k_time_before_maintenance = 0.01f;
-					if (m_Difficulty.k_friendly_fire < 0.01f) m_Difficulty.k_friendly_fire = 0.01f;
+                    if(m_Difficulty.k_damage_enemy_to_player < 0.01f) m_Difficulty.k_damage_enemy_to_player = 0.01f;
+                    if(m_Difficulty.k_time_before_maintenance < 0.01f) m_Difficulty.k_time_before_maintenance = 0.01f;
+					if(m_Difficulty.k_friendly_fire < 0.01f) m_Difficulty.k_friendly_fire = 0.01f;
                 }
             }
         }
@@ -218,7 +218,7 @@ void CMatrixMap::IdsClear()
 
 	if(m_Ids)
     {
-		for(int i=0;i<m_IdsCnt;i++)
+		for(int i=0;i<m_IdsCnt;++i)
         {
             m_Ids[i].~CWStr();
 		}
@@ -231,46 +231,46 @@ void CMatrixMap::IdsClear()
 void CMatrixMap::RobotPreload(void)
 {
     g_LoadProgress->SetCurLP(LP_PRELOADROBOTS);
-    g_LoadProgress->InitCurLP(ROBOT_HEAD_CNT+ROBOT_CHASSIS_CNT+ROBOT_WEAPON_CNT+ROBOT_ARMOR_CNT);
+    g_LoadProgress->InitCurLP(ROBOT_HEAD_CNT + ROBOT_CHASSIS_CNT + ROBOT_WEAPON_CNT + ROBOT_ARMOR_CNT);
     int curlp = 0;
 
 
-    ZeroMemory(m_RobotWeaponMatrix,sizeof(m_RobotWeaponMatrix));
+    ZeroMemory(m_RobotWeaponMatrix, sizeof(m_RobotWeaponMatrix));
 
-    CWStr tstr(g_MatrixHeap),tstr2(g_MatrixHeap),part(g_MatrixHeap);
+    CWStr tstr(g_MatrixHeap), tstr2(g_MatrixHeap), part(g_MatrixHeap);
 
-    for(int i=1; i<=ROBOT_HEAD_CNT; i++)
+    for(int i = 1; i <= ROBOT_HEAD_CNT; ++i)
     {
         part.Set(CWStr(OBJECT_PATH_ROBOT_HEAD).Add(L".").Add(i));
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
+        CVectorObject* vo = (CVectorObject*)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
 
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         g_LoadProgress->SetCurLPPos(curlp++);
     }
-    for(int i=1; i<=ROBOT_CHASSIS_CNT; i++)
+    for(int i = 1; i <= ROBOT_CHASSIS_CNT; i++)
     {
         part.Set(CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(L".").Add(i));
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
+        CVectorObject* vo = (CVectorObject*)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
-        if (i == RUK_CHASSIS_PNEUMATIC)
+        if(i == RUK_CHASSIS_PNEUMATIC)
         {
             CMatrixRobot::BuildPneumaticData(vo);
         }
 
         g_LoadProgress->SetCurLPPos(curlp++);
     }
-    for(int i=1; i<=ROBOT_WEAPON_CNT; i++)
+    for(int i = 1; i <= ROBOT_WEAPON_CNT; ++i)
     {
         part.Set(CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(L".").Add(i));
-        CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
+        CVectorObject* vo = (CVectorObject*)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         g_LoadProgress->SetCurLPPos(curlp++);
     }
 
-    for(int i=0; i<ROBOT_ARMOR_CNT; i++)
+    for(int i = 0; i < ROBOT_ARMOR_CNT; ++i)
     {
         part.Set(CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(L".").Add(i+1));
         CVectorObject * vo = (CVectorObject *)g_Cache->Get(cc_VO, (g_CacheData->ParPathGet(part + L".Model") + L".vo").Get());
@@ -316,9 +316,9 @@ void CMatrixMap::RobotPreload(void)
         }
 
         // sort by id
-        for(int u=0;u<m_RobotWeaponMatrix[i].cnt-1;u++)
+        for(int u=0;u<m_RobotWeaponMatrix[i].cnt-1;++u)
         {
-            for(int t=u+1;t<m_RobotWeaponMatrix[i].cnt;t++)
+            for(int t=u+1;t<m_RobotWeaponMatrix[i].cnt;++t)
             {
                 if(m_RobotWeaponMatrix[i].list[u].id>m_RobotWeaponMatrix[i].list[t].id)
                 {
@@ -970,7 +970,7 @@ void CMatrixMap::MacrotextureInit(const CWStr& path)
 	m_Macrotexture=(CTextureManaged *)g_Cache->Get(cc_TextureManaged,path.Get());
 
 	int cnt=path.GetCountPar(L"?");
-	for (int i=1; i<cnt; i++)
+	for (int i=1; i<cnt; ++i)
     {
 		CWStr op(path.GetStrPar(i,L"?").Trim(), g_CacheHeap);
 		if(op.CompareFirst(L"SIM")) m_MacrotextureSize=op.GetInt();
@@ -1024,7 +1024,7 @@ void CMatrixMap::LoadSide(CBlockPar & bp)
 	for(int i=0;i<m_SideCnt;i++) m_Side[i].CMatrixSideUnit::CMatrixSideUnit();
 
     int idx = 0;
-	for (int i=0; i<cnt; i++)
+	for (int i=0; i<cnt; ++i)
     {
         int id = bp.ParGetName(i).GetInt();
         const CWStr * name = &bp.ParGet(i);
@@ -1061,12 +1061,12 @@ void CMatrixMap::WaterClear()
 {
     DTRACE();
 
-    if (m_Water) 
+    if(m_Water) 
     {
         HDelete(CMatrixWater, m_Water, g_MatrixHeap);
         m_Water = NULL;
     }
-    if (m_VisWater)
+    if(m_VisWater)
     {
         HDelete(CBuf, m_VisWater, g_MatrixHeap);
         m_VisWater = NULL;
@@ -1078,10 +1078,10 @@ void CMatrixMap::WaterInit()
 {
     DTRACE();
 
-    if (!m_Water) m_Water = HNew(g_MatrixHeap) CMatrixWater;
+    if(!m_Water) m_Water = HNew(g_MatrixHeap) CMatrixWater;
     else m_Water->Clear();
 
-    if (!m_VisWater) m_VisWater = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
+    if(!m_VisWater) m_VisWater = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
     else m_VisWater->Clear();
 
     m_Water->Init();
@@ -1156,19 +1156,19 @@ void CMatrixMap::BeforeDraw(void)
 
     //TAKT_BEGIN();
     m_TraceStopObj = Trace(&m_TraceStopPos, m_Camera.GetFrustumCenter(), m_Camera.GetFrustumCenter() + (m_MouseDir * 10000.0f), TRACE_ALL, g_MatrixMap->GetPlayerSide()->GetArcadedObject());
-    if (IS_TRACE_STOP_OBJECT(m_TraceStopObj))
+    if(IS_TRACE_STOP_OBJECT(m_TraceStopObj))
     {
-        if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING)
+        if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING)
         {
-            ((CMatrixBuilding *)m_TraceStopObj)->ShowHitpoint();
+            ((CMatrixBuilding*)m_TraceStopObj)->ShowHitpoint();
         }
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
         {
-            ((CMatrixRobotAI *)m_TraceStopObj)->ShowHitpoint();
+            ((CMatrixRobotAI*)m_TraceStopObj)->ShowHitpoint();
         }
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
         {
-            ((CMatrixCannon *)m_TraceStopObj)->ShowHitpoint();
+            ((CMatrixCannon*)m_TraceStopObj)->ShowHitpoint();
 
             //for (int i=0;i<m_TraceStopObj->GetGroupCnt();++i)
             //{
@@ -1179,30 +1179,30 @@ void CMatrixMap::BeforeDraw(void)
             //}
 
         }
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
         {
-            ((CMatrixFlyer *)m_TraceStopObj)->ShowHitpoint();
+            ((CMatrixFlyer*)m_TraceStopObj)->ShowHitpoint();
         }
     
 
 
 #ifdef _DEBUG
-        if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_MAPOBJECT) m_DI.T(L"Under cursor", L"Mesh",1000);
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
-            m_DI.T(L"Under cursor", CWStr().Format(L"Robot <b=16><u>   S<b=10><i> T<i> G<i>",DWORD(m_TraceStopObj),m_TraceStopObj->GetSide(),((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic()).Get(),1000);
+        if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_MAPOBJECT) m_DI.T(L"Under cursor", L"Mesh", 1000);
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
+            m_DI.T(L"Under cursor", CWStr().Format(L"Robot <b=16><u>   S<b=10><i> T<i> G<i>", DWORD(m_TraceStopObj), m_TraceStopObj->GetSide(), ((CMatrixRobotAI*)m_TraceStopObj)->GetTeam(), ((CMatrixRobotAI*)m_TraceStopObj)->GetGroupLogic()).Get(), 1000);
         }
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON) m_DI.T(L"Under cursor", L"Cannon",1000);
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING)
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON) m_DI.T(L"Under cursor", L"Cannon", 1000);
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING)
         {
-            
-            m_DI.T(L"Under cursor", CWStr(L"Building: 0x", g_CacheHeap).AddHex((void *)m_TraceStopObj).Get(),1000);
+
+            m_DI.T(L"Under cursor", CWStr(L"Building: 0x", g_CacheHeap).AddHex((void*)m_TraceStopObj).Get(), 1000);
         }
-        else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER) m_DI.T(L"Under cursor", L"Flyer",1000);
+        else if(m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER) m_DI.T(L"Under cursor", L"Flyer", 1000);
 #endif
     }
 
     //flyer
-    CMatrixSideUnit *player_side = GetPlayerSide();
+    CMatrixSideUnit* player_side = GetPlayerSide();
 
     //CDText::T("sel", CStr(player_side->m_CurrSel));
     //if(player_side->IsArcadeMode() &&  player_side->GetArcadedObject()->GetObjectType() == OBJECT_TYPE_FLYER && (GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000)==0x8000 && g_IFaceList->m_InFocus != INTERFACE)
@@ -2496,9 +2496,18 @@ void CMatrixMap::Takt(int step)
     DTRACE();
 
 
+    //if(m_GatheringPointsList.Count)
+    //{
+    //    for(int i = 0; i < m_GatheringPointsList.Count; ++i)
+    //    {
+    //        CMatrixBuilding* bld = m_GatheringPointsList.BuildingsList[i];
+    //        bld->ShowGatheringPointTakt(step);
+    //    }
+    //}
+
     float fstep = float(step);
 
-    m_SkyAngle += m_SkyDeltaAngle * step;
+    m_SkyAngle += m_SkyDeltaAngle* step;
 
     int i;
 
@@ -3265,28 +3274,27 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
 
 }
 
-void    CMatrixMap::LeaveDialogMode(void)
+void CMatrixMap::LeaveDialogMode(void)
 {
-    if (m_DialogModeName == NULL) return;
+    if(m_DialogModeName == NULL) return;
 
-    if (0==wcscmp(m_DialogModeName, TEMPLATE_DIALOG_MENU))
+    if(0 == wcscmp(m_DialogModeName, TEMPLATE_DIALOG_MENU))
     {
-        m_DialogModeHints.Buff<CMatrixHint *>()[0]->SoundOut();
+        m_DialogModeHints.Buff<CMatrixHint*>()[0]->SoundOut();
     }
 
     RESETFLAG(m_Flags, MMFLAG_DIALOG_MODE);
     Pause(false);
-    DWORD *a = m_DialogModeHints.Buff<DWORD>();
-    DWORD *b = m_DialogModeHints.BuffEnd<DWORD>();
-    for (;a<b;++a)
+    DWORD* a = m_DialogModeHints.Buff<DWORD>();
+    DWORD* b = m_DialogModeHints.BuffEnd<DWORD>();
+    for(; a < b; ++a)
     {
-        ((CMatrixHint *)(*a))->Release();
+        ((CMatrixHint*)(*a))->Release();
     }
 
     m_DialogModeHints.Clear();
     g_IFaceList->HideHintButtons();
     m_DialogModeName = NULL;
-
 }
 
 static void OkHandler(void)
@@ -3326,10 +3334,10 @@ static void OkSurrenderHandler(void)
     g_ExitState = 4;
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG);
 
-    for (int i=0;i<g_MatrixMap->m_SideCnt;++i)
+    for(int i = 0; i < g_MatrixMap->m_SideCnt; ++i)
     {
-        CMatrixSideUnit *su = g_MatrixMap->m_Side + i;
-        if (su->GetStatus() == SS_ACTIVE && su != g_MatrixMap->GetPlayerSide())
+        CMatrixSideUnit* su = g_MatrixMap->m_Side + i;
+        if(su->GetStatus() == SS_ACTIVE && su != g_MatrixMap->GetPlayerSide())
         {
             su->SetStatValue(STAT_TIME, -su->GetStatValue(STAT_TIME));
         }
@@ -3345,8 +3353,8 @@ static void OkResetHandler(void)
 }
 void ConfirmCancelHandler(void)
 {
-    CMatrixHint *h = (CMatrixHint *)g_MatrixMap->m_DialogModeHints.Buff<DWORD>()[1];
-    g_MatrixMap->m_DialogModeHints.SetLenNoShrink(g_MatrixMap->m_DialogModeHints.Len()-sizeof(DWORD));
+    CMatrixHint* h = (CMatrixHint*)g_MatrixMap->m_DialogModeHints.Buff<DWORD>()[1];
+    g_MatrixMap->m_DialogModeHints.SetLenNoShrink(g_MatrixMap->m_DialogModeHints.Len() - sizeof(DWORD));
     h->Release();
 
     g_IFaceList->EnableMainMenuButton(HINT_CANCEL_MENU);
@@ -3355,47 +3363,41 @@ void ConfirmCancelHandler(void)
     g_IFaceList->EnableMainMenuButton(HINT_RESET);
     g_IFaceList->EnableMainMenuButton(HINT_EXIT);
 
-
     g_IFaceList->HideHintButton(HINT_OK);
     g_IFaceList->HideHintButton(HINT_CANCEL);
-
 }
 
-
-
-static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler)
+static void CreateConfirmation(const wchar* hint, DialogButtonHandler handler)
 {
-    
+
     g_IFaceList->DisableMainMenuButton(HINT_CANCEL_MENU);
     g_IFaceList->DisableMainMenuButton(HINT_CONTINUE);
     g_IFaceList->DisableMainMenuButton(HINT_SURRENDER);
     g_IFaceList->DisableMainMenuButton(HINT_RESET);
     g_IFaceList->DisableMainMenuButton(HINT_EXIT);
 
-
     g_MatrixMap->m_DialogModeHints.Pointer(g_MatrixMap->m_DialogModeHints.Len());
 
-    CMatrixHint *h = CMatrixHint::Build(CWStr(hint,g_CacheHeap), hint);
+    CMatrixHint* h = CMatrixHint::Build(CWStr(hint, g_CacheHeap), hint);
     int ww = (g_ScreenX - h->m_Width) / 2;
-    int hh = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY)*0.09f);
+    int hh = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
     h->Show(ww, hh);
 
-    if (h->GetCopyPosCnt() > 0)
+    if(h->GetCopyPosCnt() > 0)
     {
         int x = h->m_PosX + h->GetCopyPos(0).x;
         int y = h->m_PosY + h->GetCopyPos(0).y;
-        g_IFaceList->CreateHintButton(x,y,HINT_OK, handler);
+        g_IFaceList->CreateHintButton(x, y, HINT_OK, handler);
 
     }
-    if (h->GetCopyPosCnt() > 1)
+    if(h->GetCopyPosCnt() > 1)
     {
         int x = h->m_PosX + h->GetCopyPos(1).x;
         int y = h->m_PosY + h->GetCopyPos(1).y;
-        g_IFaceList->CreateHintButton(x,y,HINT_CANCEL, ConfirmCancelHandler);
-    } 
+        g_IFaceList->CreateHintButton(x, y, HINT_CANCEL, ConfirmCancelHandler);
+    }
 
     g_MatrixMap->m_DialogModeHints.Dword((DWORD)h);
-
 }
 
 void ExitRequestHandler(void)
@@ -3412,24 +3414,22 @@ void HelpRequestHandler(void)
 {
     g_MatrixMap->LeaveDialogMode();
     CWStr fn(g_CacheHeap);
-    if (CFile::FileExist(fn,L"Manual.exe"))
+    if(CFile::FileExist(fn, L"Manual.exe"))
     {
         PROCESS_INFORMATION  pi0;
         STARTUPINFOA         si0;
 
-        ZeroMemory( &si0, sizeof(si0) );
+        ZeroMemory(&si0, sizeof(si0));
         si0.cb = sizeof(si0);
-        ZeroMemory( &pi0, sizeof(pi0) );
+        ZeroMemory(&pi0, sizeof(pi0));
 
         CreateProcess("Manual.exe", "", NULL, NULL, FALSE, 0, NULL, NULL, &si0, &pi0);
 
         ShowWindow(g_Wnd, SW_MINIMIZE);
 
-        CloseHandle( pi0.hProcess );
-        CloseHandle( pi0.hThread );
-
+        CloseHandle(pi0.hProcess);
+        CloseHandle(pi0.hThread);
     }
-
 }
 
 void SurrenderRequestHandler(void)
@@ -3437,9 +3437,9 @@ void SurrenderRequestHandler(void)
     CreateConfirmation(TEMPLATE_DIALOG_SURRENDER, OkSurrenderHandler);
 }
 
-void    CMatrixMap::EnterDialogMode(const wchar *hint_i)
+void CMatrixMap::EnterDialogMode(const wchar* hint_i)
 {
-    if (m_PauseHint)
+    if(m_PauseHint)
     {
         m_PauseHint->Release();
         m_PauseHint = NULL;
@@ -3449,135 +3449,135 @@ void    CMatrixMap::EnterDialogMode(const wchar *hint_i)
     SETFLAG(m_Flags, MMFLAG_DIALOG_MODE);
     m_DialogModeName = hint_i;
 
-    if (0!=wcscmp(hint_i, TEMPLATE_DIALOG_BEGIN))
+    if(0 != wcscmp(hint_i, TEMPLATE_DIALOG_BEGIN))
     {
         g_MatrixMap->GetPlayerSide()->PLDropAllActions();
     }
 
     m_DialogModeHints.Pointer(m_DialogModeHints.Len());
 
-    CBlockPar *bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
+    CBlockPar* bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
 
     int cnt = bp->ParCount();
 
     int ww = 20;
     int hh = 62;
 
-    const wchar *hint = hint_i;
-    if (0==wcscmp(hint_i, TEMPLATE_DIALOG_STATISTICS_D))
+    const wchar* hint = hint_i;
+    if(0 == wcscmp(hint_i, TEMPLATE_DIALOG_STATISTICS_D))
     {
         hint = TEMPLATE_DIALOG_STATISTICS;
     }
 
-    for (int i=0;i<cnt;++i)
+    for(int i = 0; i < cnt; ++i)
     {
-        if (bp->ParGetName(i) == hint)
+        if(bp->ParGetName(i) == hint)
         {
-
             CWStr templ(bp->ParGet(i), g_CacheHeap);
             CWStr templ2(g_CacheHeap);
             if (templ[0] == '|') continue;
 
             int ii = i + 1;
-            for (;ii<cnt;++ii)
+            for(; ii < cnt; ++ii)
             {
-                if (bp->ParGetName(ii) == hint)
+                if(bp->ParGetName(ii) == hint)
                 {
                     templ2 = bp->ParGet(ii);
-                    if (templ2[0] == '|') templ += templ2;
+                    if(templ2[0] == '|') templ += templ2;
                 }
             }
 
-            CMatrixHint *h = CMatrixHint::Build(templ, g_MatrixData->BlockGet(PAR_REPLACE), hint);
+            CMatrixHint* h = CMatrixHint::Build(templ, g_MatrixData->BlockGet(PAR_REPLACE), hint);
 
-            if (0==wcscmp(hint, TEMPLATE_DIALOG_MENU))
+            if(0 == wcscmp(hint, TEMPLATE_DIALOG_MENU))
             {
                 h->m_PosX = (g_ScreenX - h->m_Width) / 2;
-                h->m_PosY = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY)*0.09f);
+                h->m_PosY = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
                 h->SetVisible(false);
                 h->SoundIn();
-            } else if (0==wcscmp(hint, TEMPLATE_DIALOG_STATISTICS))
+            }
+            else if(0 == wcscmp(hint, TEMPLATE_DIALOG_STATISTICS))
             {
                 h->m_PosX = (g_ScreenX - h->m_Width) / 2;
-                h->m_PosY = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY)*0.09f);
+                h->m_PosY = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
                 h->SetVisible(true);
-
-            } else
+            }
+            else
             {
                 h->Show(ww, hh);
             }
 
-            
-
-            if (h->GetCopyPosCnt() > 0)
+            if(h->GetCopyPosCnt() > 0)
             {
                 int x = h->m_PosX + h->GetCopyPos(0).x;
                 int y = h->m_PosY + h->GetCopyPos(0).y;
 
-                if (0==wcscmp(hint, TEMPLATE_DIALOG_MENU))
+                if(0 == wcscmp(hint, TEMPLATE_DIALOG_MENU))
                 {
-                    g_IFaceList->CreateHintButton(x,y,HINT_CONTINUE, OkHandler);
+                    g_IFaceList->CreateHintButton(x, y, HINT_CONTINUE, OkHandler);
 
-                } else if (0==wcscmp(hint, TEMPLATE_DIALOG_WIN))
+                }
+                else if(0 == wcscmp(hint, TEMPLATE_DIALOG_WIN))
                 {
-                    g_IFaceList->CreateHintButton(x,y,HINT_OK, OkExitWinHandler);
+                    g_IFaceList->CreateHintButton(x, y, HINT_OK, OkExitWinHandler);
 
-                } else if (0==wcscmp(hint, TEMPLATE_DIALOG_LOOSE))
+                }
+                else if(0 == wcscmp(hint, TEMPLATE_DIALOG_LOOSE))
                 {
-                    g_IFaceList->CreateHintButton(x,y,HINT_OK, OkExitLooseHandler);
+                    g_IFaceList->CreateHintButton(x, y, HINT_OK, OkExitLooseHandler);
 
-                } else if (0==wcscmp(hint, TEMPLATE_DIALOG_STATISTICS))
+                }
+                else if(0 == wcscmp(hint, TEMPLATE_DIALOG_STATISTICS))
                 {
-                    if (0==wcscmp(hint_i, TEMPLATE_DIALOG_STATISTICS_D))
+                    if(0 == wcscmp(hint_i, TEMPLATE_DIALOG_STATISTICS_D))
                     {
-                        g_IFaceList->CreateHintButton(x,y,HINT_OK, OkHandler);
-                    } else
-                    {
-                        g_IFaceList->CreateHintButton(x,y,HINT_OK, OkJustExitHandler);
+                        g_IFaceList->CreateHintButton(x, y, HINT_OK, OkHandler);
                     }
-                } else
+                    else
+                    {
+                        g_IFaceList->CreateHintButton(x, y, HINT_OK, OkJustExitHandler);
+                    }
+                }
+                else
                 {
-                    g_IFaceList->CreateHintButton(x,y,HINT_OK, OkHandler);
+                    g_IFaceList->CreateHintButton(x, y, HINT_OK, OkHandler);
                 }
             }
-            if (h->GetCopyPosCnt() > 1)
+            if(h->GetCopyPosCnt() > 1)
             {
                 int x = h->m_PosX + h->GetCopyPos(1).x;
                 int y = h->m_PosY + h->GetCopyPos(1).y;
-                g_IFaceList->CreateHintButton(x,y,HINT_RESET, ResetRequestHandler);
-            } 
-            if (h->GetCopyPosCnt() > 2)
+                g_IFaceList->CreateHintButton(x, y, HINT_RESET, ResetRequestHandler);
+            }
+            if(h->GetCopyPosCnt() > 2)
             {
                 int x = h->m_PosX + h->GetCopyPos(2).x;
                 int y = h->m_PosY + h->GetCopyPos(2).y;
-                g_IFaceList->CreateHintButton(x,y,HINT_HELP, HelpRequestHandler);
-            } 
-            if (h->GetCopyPosCnt() > 3)
+                g_IFaceList->CreateHintButton(x, y, HINT_HELP, HelpRequestHandler);
+            }
+            if(h->GetCopyPosCnt() > 3)
             {
                 int x = h->m_PosX + h->GetCopyPos(3).x;
                 int y = h->m_PosY + h->GetCopyPos(3).y;
-                g_IFaceList->CreateHintButton(x,y,HINT_SURRENDER, SurrenderRequestHandler);
-            } 
-            if (h->GetCopyPosCnt() > 4)
+                g_IFaceList->CreateHintButton(x, y, HINT_SURRENDER, SurrenderRequestHandler);
+            }
+            if(h->GetCopyPosCnt() > 4)
             {
                 int x = h->m_PosX + h->GetCopyPos(4).x;
                 int y = h->m_PosY + h->GetCopyPos(4).y;
-                g_IFaceList->CreateHintButton(x,y,HINT_EXIT, ExitRequestHandler);
-            } 
-            if (h->GetCopyPosCnt() > 5)
+                g_IFaceList->CreateHintButton(x, y, HINT_EXIT, ExitRequestHandler);
+            }
+            if(h->GetCopyPosCnt() > 5)
             {
                 int x = h->m_PosX + h->GetCopyPos(5).x;
                 int y = h->m_PosY + h->GetCopyPos(5).y;
-                g_IFaceList->CreateHintButton(x,y,HINT_CANCEL_MENU, OkHandler);
+                g_IFaceList->CreateHintButton(x, y, HINT_CANCEL_MENU, OkHandler);
             }
-
-
 
             ww += h->m_Width + 20;
             m_DialogModeHints.Dword((DWORD)h);
         }
     }
-
 }
 
 void CMatrixMap::RestoreMusicVolume(void)

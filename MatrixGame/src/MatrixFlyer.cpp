@@ -1569,11 +1569,11 @@ void CMatrixFlyer::CalcTrajectory(const D3DXVECTOR3 &target)
 
     //D3DXVECTOR3 pp;
     //m_Trajectory->CalcPoint(pp,0);
-    //for (float t = 0.01f; t <= 1.0f; t += 0.01f)
+    //for(float t = 0.01f; t <= 1.0f; t += 0.01f)
     //{
     //    D3DXVECTOR3 ppp;
-    //    m_Trajectory->CalcPoint(ppp,t);
-    //    CHelper::Create(100000,123)->Line(pp,ppp);
+    //    m_Trajectory->CalcPoint(ppp, t);
+    //    CHelper::Create(100000, 123)->Line(pp, ppp);
 
     //    pp = ppp;
     //}
@@ -1598,10 +1598,7 @@ void CMatrixFlyer::CancelTrajectory(void)
 #define MAXDA 0.017f
 void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td)
 {
-    //FILE* file;
-    //const char* out = "\ncrush_ahead\n";
-    //file = fopen("MatrixSFT.txt", "a");
-    //fwrite(out, strlen(out), 1, file);
+    //SFT("crush_ahead");
 
     DTRACE();
 
@@ -1610,16 +1607,14 @@ void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td)
 
     D3DXVECTOR3 p;
     m_Trajectory->CalcPoint(p, m_TrajectoryPos); //Спавн вертолёта ломается здесь
-    D3DXVECTOR3 fdir(p-m_Pos);
+    D3DXVECTOR3 fdir(p - m_Pos);
 
-    //out = "\ncrush_avoided";
-    //fwrite(out, strlen(out), 1, file);
-    //fclose(file);
+    //SFT("crush_avoided");
 
     float dd = D3DXVec3Length(&fdir);
     m_MoveSpeed = dd / td.ms;
 
-    float a = (float)atan2(-fdir.x,fdir.y);
+    float a = (float)atan2(-fdir.x, fdir.y);
     float aa = float(AngleDist(a, m_TrajectoryTargetAngle));
     a += KSCALE(m_TrajectoryPos, 0.8f, 0.99f) * aa;
 
@@ -1637,8 +1632,8 @@ void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td)
     float mul = (float)(1.0 - pow(0.997, double(td.ms))) * da;
     SetAngle(GetAngle() + mul);
 
-    m_TargetEngineAngle = LERPFLOAT(0.5f,ENGINE_ANGLE_STAY, ENGINE_ANGLE_MOVE - m_Yaw);
-    m_TargetYawAngle = LERPFLOAT(0.5f,YAW_ANGLE_STAY,YAW_ANGLE_MOVE);
+    m_TargetEngineAngle = LERPFLOAT(0.5f, ENGINE_ANGLE_STAY, ENGINE_ANGLE_MOVE - m_Yaw);
+    m_TargetYawAngle = LERPFLOAT(0.5f, YAW_ANGLE_STAY, YAW_ANGLE_MOVE);
         
     //if (m_TrajectoryPos > stopt)
     //{
@@ -1671,8 +1666,8 @@ void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td)
         }
         else
         {
-            D3DXVECTOR3 dirto((m_StoreTarget-m_Pos));
-            m_TrajectoryTargetAngle = (float)atan2(-dirto.x,dirto.y);
+            D3DXVECTOR3 dirto((m_StoreTarget - m_Pos));
+            m_TrajectoryTargetAngle = (float)atan2(-dirto.x, dirto.y);
 
             float da = float(AngleDist(GetAngle(), m_TrajectoryTargetAngle));
 
@@ -1987,11 +1982,7 @@ void CMatrixFlyer::Begin(CMatrixBuilding *b)
 
     JoinToGroup();
 
-    //FILE* file;
-    //const char* out = "\nbuild_is_done";
-    //file = fopen("MatrixSFT.txt", "a");
-    //fwrite(out, strlen(out), 1, file);
-    //fclose(file);
+    //SFT("build_is_done");
 }
 
 bool CMatrixFlyer::SelectByGroup()

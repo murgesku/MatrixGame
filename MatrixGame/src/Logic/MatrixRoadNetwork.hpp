@@ -315,7 +315,7 @@ class CMatrixRoadNetwork : public Base::CMain {
         void FindPathFromRegionPath(byte mm,int rcnt,int * rlist,CMatrixRoadRoute * rr,bool test=false);
 
         void ClearPlace(void);
-        SMatrixPlace * GetPlace(int no)                 { return m_Place+no; }
+        SMatrixPlace* GetPlace(int no)                 { return m_Place+no; }
         void SetPlaceCnt(int cnt);
         int AllocPlace(void);
         void FreePlace(int no);
@@ -328,9 +328,9 @@ class CMatrixRoadNetwork : public Base::CMain {
         void CalcCenterRegion(int no);
         int CalcRadiusRegion(int no);
         void CalcRadiusPlaceRegion(int no);
-        bool IsNerestRegion(int r1,int r2);
-        int FindNerestRegion(const CPoint & tp);
-        int FindNerestRegionByRadius(const CPoint & tp, int curregion=-1);
+        bool IsNearestRegion(int r1,int r2);
+        int FindNearestRegion(const CPoint & tp);
+        int FindNearestRegionByRadius(const CPoint & tp, int curregion=-1);
 
         void FindPathInRegionInit(void);
         int FindPathInRegionRun(byte mm,int rstart,int rend,int * path,int maxpath,bool err=true);

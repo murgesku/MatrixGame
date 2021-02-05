@@ -84,22 +84,23 @@ void CIFaceElement::ElementGeomInit(void *pObj, bool full_size)
 }
 
 
-void CIFaceElement::CheckGroupReset(CIFaceElement *pFirstElement, CIFaceElement* pButton){
-	CIFaceButton *pObjectsList = (CIFaceButton*)pFirstElement; 
-	while(pObjectsList != NULL)
+void CIFaceElement::CheckGroupReset(CIFaceElement* pFirstElement, CIFaceElement* pButton)
+{
+    CIFaceButton* pObjectsList = (CIFaceButton*)pFirstElement;
+    while(pObjectsList != NULL)
     {
-		if(pObjectsList->m_nGroup == pButton->m_nGroup && pObjectsList != (CIFaceButton*)pButton &&
-			(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON))
+        if(pObjectsList->m_nGroup == pButton->m_nGroup && pObjectsList != (CIFaceButton*)pButton &&
+            (pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL || pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON))
         {
-			pObjectsList->SetState(IFACE_NORMAL);
-			pObjectsList->m_DefState = IFACE_NORMAL;
+            pObjectsList->SetState(IFACE_NORMAL);
+            pObjectsList->m_DefState = IFACE_NORMAL;
             if(pObjectsList->m_Type == IFACE_CHECK_BUTTON || pObjectsList->m_Type == IFACE_CHECK_BUTTON_SPECIAL)
             {
                 pObjectsList->Action(ON_UN_PRESS);
             }
-		}
-		pObjectsList = (CIFaceButton*)pObjectsList->m_NextElement;
-	}
+        }
+        pObjectsList = (CIFaceButton*)pObjectsList->m_NextElement;
+    }
 }
 
 bool CIFaceElement::SetStateImage(IFaceElementState State, CTextureManaged *pImage, float x, float y, float width, float height)
@@ -138,7 +139,7 @@ void CIFaceElement::BeforeRender(void)
 {
     m_StateImages[m_CurState].pImage->Preload();
 
-    if (HasClearRect())
+    if(HasClearRect())
     {
         D3DRECT r;
         
@@ -149,7 +150,6 @@ void CIFaceElement::BeforeRender(void)
         r.x2 = m_ClearRect.right + x;
         r.y2 = m_ClearRect.bottom + y;
         CInterface::ClearRects_Add(r);
-
     }
 }
 
@@ -171,13 +171,12 @@ void CIFaceElement::Render(BYTE alpha)
     SetAlphaOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
     SetColorOpDisable(1);
 
-    g_D3DD->SetRenderState( D3DRS_TEXTUREFACTOR,     ((DWORD)alpha << 24) );
+    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR,     ((DWORD)alpha << 24));
 
     CInstDraw::BeginDraw(IDFVF_V4_UV);
 
     if(m_nId == IF_CALLHELL_ID && GetState() == IFACE_DISABLED)
     {
-
         m_StateImages[GetState()].pImage->Prepare();
 
         SVert_V4_UV geom[8];
@@ -202,16 +201,14 @@ void CIFaceElement::Render(BYTE alpha)
         geom[3+4].tv = geom[2+4].tv - ht * t;
 
         float d = wg / float(m_StateImages[GetState()].pImage->GetSizeX());
-        for (int i=4;i<8;++i)
+        for (int i = 4; i < 8; ++i)
         {
             geom[i].tu += d;
         }
 
-        CInstDraw::AddVerts(geom, 
-                            m_StateImages[GetState()].pImage);
+        CInstDraw::AddVerts(geom, m_StateImages[GetState()].pImage);
 
-        CInstDraw::AddVerts(geom + 4, 
-                            m_StateImages[GetState()].pImage);
+        CInstDraw::AddVerts(geom + 4, m_StateImages[GetState()].pImage);
 
     }
     else
@@ -219,7 +216,7 @@ void CIFaceElement::Render(BYTE alpha)
 
 #if defined _TRACE || defined _DEBUG
     int st = GetState();
-    if (st < 0 || st >= 5) _asm int 3
+    if(st < 0 || st >= 5) _asm int 3
 #endif
 
 #if defined _TRACE || defined _DEBUG
@@ -228,14 +225,15 @@ void CIFaceElement::Render(BYTE alpha)
 #endif
         m_StateImages[GetState()].pImage->Prepare();
 #if defined _TRACE || defined _DEBUG
-    } catch (...)
+    }
+    catch(...)
     {
+        SFT("Planetary Battle Exception! Crash in GUI: <" + CStr(m_strName) + ">,<" + m_nId + ">,<" + m_iParam + ">");
         ERROR_S(L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">");
     }
 #endif
 
-        CInstDraw::AddVerts(m_StateImages[GetState()].m_Geom, 
-                            m_StateImages[GetState()].pImage);
+        CInstDraw::AddVerts(m_StateImages[GetState()].m_Geom, m_StateImages[GetState()].pImage);
 
         if(m_Animation)
         {
@@ -263,8 +261,8 @@ void CIFaceElement::Render(BYTE alpha)
     }
     else if(m_iParam == IF_RADAR_PNI)
     {
-        g_MatrixMap->m_Minimap.DrawRadar(float(g_IFaceList->m_IFRadarPosX+90), float(g_IFaceList->m_IFRadarPosY+93), RADAR_RADIUS);//90,92
-    } 
+        g_MatrixMap->m_Minimap.DrawRadar(float(g_IFaceList->m_IFRadarPosX + 90), float(g_IFaceList->m_IFRadarPosY + 93), RADAR_RADIUS);//90,92
+    }
     
     return;
 }
@@ -310,7 +308,8 @@ void CIFaceElement::Reset()
     if(GetState() != IFACE_DISABLED)
     {
         SetState(m_DefState);
-        //if(m_strName == IF_BASE_PILON_HULL || m_strName == IF_BASE_PILON_CHASSIS || m_strName == IF_BASE_PILON_HEAD || m_strName == IF_BASE_PILON1 || m_strName == IF_BASE_PILON2 || m_strName == IF_BASE_PILON3 || m_strName == IF_BASE_PILON4 || m_strName == IF_BASE_PILON5 || m_strName == IF_BASE_HEAD_EMPTY || m_strName == IF_BASE_WEAPON_EMPTY){
+        //if(m_strName == IF_BASE_PILON_HULL || m_strName == IF_BASE_PILON_CHASSIS || m_strName == IF_BASE_PILON_HEAD || m_strName == IF_BASE_PILON1 || m_strName == IF_BASE_PILON2 || m_strName == IF_BASE_PILON3 || m_strName == IF_BASE_PILON4 || m_strName == IF_BASE_PILON5 || m_strName == IF_BASE_HEAD_EMPTY || m_strName == IF_BASE_WEAPON_EMPTY)
+        //{
             Action(ON_UN_FOCUS);
         //}
     }
@@ -321,8 +320,8 @@ bool CIFaceElement::ElementAlpha(CPoint mouse)
     int x = Float2Int(mouse.x - (m_PosElInX));
     int y = Float2Int(mouse.y - (m_PosElInY));
     DWORD color = m_StateImages[GetState()].pImage->GetPixelColor(Float2Int(m_StateImages[GetState()].xTexPos) + x, Float2Int(m_StateImages[GetState()].yTexPos) + y);
-    if((color & (0xff000000)))
-        return true;
+    if((color & (0xff000000))) return true;
+
     return false;
 }
 
@@ -335,6 +334,7 @@ void CIFaceElement::Action(EActions action)
             DialogButtonHandler(m_Actions[action].m_function)();
             //SetVisibility(false);
         }
+        //Срабатывает при нажатиях/отжатиях кнопок
         else
         {
             void* a = (void*)(&m_Actions[action]);
@@ -351,25 +351,25 @@ void CIFaceElement::LogicTakt(int ms)
     {
         CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
         int i = player_side->GetCurSelNum();
-        float pos = (i+1.0f) / 3.0f;
+        float pos = (i + 1.0f) / 3.0f;
 
-        float x,y;
+        float x, y;
         if(pos <= 1)
         {
-            x = (float)(223 + 48*i);
+            x = (float)(223 + 48 * i);
             y = 45;
         }
         else if(pos > 1 && pos <= 2)
         {
-            x = (float)((223 + 48*i)-48*3);
-            y = 48*2;
+            x = (float)((223 + 48 * i) - 48 * 3);
+            y = 48 * 2;
         }
         else if(pos > 2)
         {
-            x = (float)((223 + 48*i)-48*6);
-            y = 48*3;
+            x = (float)((223 + 48 * i) - 48 * 6);
+            y = 48 * 3;
         }
-        RecalcPos(x,y,false);
+        RecalcPos(x, y, false);
     }
 }
 
@@ -389,20 +389,20 @@ void CIFaceElement::RecalcPos(
     float i_y = y;
     if(!ichanged)
     {
-        i_x = m_StateImages[IFACE_NORMAL].m_Geom[1].p.x+0.5f - m_xPos;
-        i_y = m_StateImages[IFACE_NORMAL].m_Geom[1].p.y+0.5f - m_yPos;
+        i_x = m_StateImages[IFACE_NORMAL].m_Geom[1].p.x + 0.5f - m_xPos;
+        i_y = m_StateImages[IFACE_NORMAL].m_Geom[1].p.y + 0.5f - m_yPos;
         m_xPos = x;
         m_yPos = y;
     }
     int nC;
-    for(nC = 0; nC < MAX_STATES; nC++)
+    for(nC = 0; nC < MAX_STATES; ++nC)
     {
         if(m_StateImages[nC].Set)
         {
-            m_StateImages[nC].m_Geom[0].p = D3DXVECTOR4(0-0.5f, m_ySize-0.5f, 0,1);
-            m_StateImages[nC].m_Geom[1].p = D3DXVECTOR4(0-0.5f, 0-0.5f, 0, 1);
-		    m_StateImages[nC].m_Geom[2].p = D3DXVECTOR4(m_xSize-0.5f, m_ySize-0.5f, 0, 1);
-		    m_StateImages[nC].m_Geom[3].p = D3DXVECTOR4(m_xSize-0.5f, 0-0.5f, 0, 1);
+            m_StateImages[nC].m_Geom[0].p = D3DXVECTOR4(0 - 0.5f, m_ySize - 0.5f, 0, 1);
+            m_StateImages[nC].m_Geom[1].p = D3DXVECTOR4(0 - 0.5f, 0 - 0.5f, 0, 1);
+            m_StateImages[nC].m_Geom[2].p = D3DXVECTOR4(m_xSize - 0.5f, m_ySize - 0.5f, 0, 1);
+            m_StateImages[nC].m_Geom[3].p = D3DXVECTOR4(m_xSize - 0.5f, 0 - 0.5f, 0, 1);
         }
 
     }
@@ -412,7 +412,7 @@ void CIFaceElement::RecalcPos(
     nC = 0;
 	while(m_StateImages[nC].Set && nC < MAX_STATES)
     {
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 4; ++i)
         {
 			m_StateImages[nC].m_Geom[i].p.x += dp.x;
             m_StateImages[nC].m_Geom[i].p.y += dp.y;
@@ -420,12 +420,12 @@ void CIFaceElement::RecalcPos(
             m_PosElInX = dp.x;
             m_PosElInY = dp.y;
 		}
-    	nC++;
+        ++nC;
 	}
 }
 
 
-//void    CIFaceElement::GenerateClearRect(void)
+//void CIFaceElement::GenerateClearRect(void)
 //{
 //    
 //    D3DSURFACE_DESC desc;

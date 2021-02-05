@@ -895,7 +895,7 @@ void CMatrixMapObject::Draw(void)
         m_Core->m_TerainColor = 0xFFFFFFFF;
     }
 
-    for(int i=0;i<4;i++)
+    for(int i = 0; i < 4; ++i)
     {
         ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&m_TexBias))));
     }
@@ -993,11 +993,13 @@ void    CMatrixMapObject::Init(int ids)
     if (temp.CompareFirst(L"Stencil"))
     {
         m_ShadowType = SHADOW_STENCIL;
-    } else
+    }
+    else
     if (temp.CompareFirst(L"Proj,"))
     {
         m_ShadowType = SHADOW_PROJ_STATIC;
-    } else
+    }
+    else
     if (temp.CompareFirst(L"ProjEx,"))
     {
         m_ShadowType = SHADOW_PROJ_DYNAMIC;
@@ -1010,7 +1012,8 @@ void    CMatrixMapObject::Init(int ids)
         if (temp == L"1")
         {
             SETFLAG(m_ObjectState, OBJECT_STATE_TRACE_INVISIBLE);
-        } else
+        }
+        else
         {
             RESETFLAG(m_ObjectState, OBJECT_STATE_TRACE_INVISIBLE);
         }
@@ -1041,7 +1044,8 @@ void    CMatrixMapObject::Init(int ids)
 
             m_BurnSkin = (SMatrixSkin *)CSkinManager::GetSkin( (g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*") + temp.GetStrPar(1,L",")).Get(), GSP_ORDINAL);
         }
-    } else if (temp.CompareFirst(L"Break"))
+    }
+    else if (temp.CompareFirst(L"Break"))
     {
         m_BreakHitPoint = temp.GetIntPar(2,L",");
         m_BreakHitPointMax = m_BreakHitPoint;
@@ -1058,7 +1062,8 @@ void    CMatrixMapObject::Init(int ids)
             AddLT();
         }
 
-    } else if (temp.CompareFirst(L"Anim"))
+    }
+    else if (temp.CompareFirst(L"Anim"))
     {
         if (temp[5] == 'P')
         {
@@ -1067,14 +1072,16 @@ void    CMatrixMapObject::Init(int ids)
             m_PhotoTime = g_MatrixMap->Rnd(1000,2000);
             m_Photo = 0;
 
-        } else
+        }
+        else
         {
             m_BehFlag = BEHF_ANIM;
             ApplyAnimState(0);
             m_PB = NULL;
             AddLT();
         }
-    } else if (temp.CompareFirst(L"Sens"))
+    }
+    else if (temp.CompareFirst(L"Sens"))
     {
         m_BehFlag = BEHF_SENS;
         m_PrevStateRobotsInRadius = -1;
@@ -1082,7 +1089,8 @@ void    CMatrixMapObject::Init(int ids)
 
         SetAblazeTTL(101);
         AddLT();
-    } else if (temp.CompareFirst(L"Spawn"))
+    }
+    else if (temp.CompareFirst(L"Spawn"))
     {
         m_BehFlag = BEHF_SPAWNER;
         m_PrevStateRobotsInRadius = -1;
@@ -1391,10 +1399,10 @@ void CMatrixMapObject::LogicTakt(int ms)
                 // spawn robot!
                 CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
 
-                CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
+                CBlockPar* bpr = g_MatrixData->BlockGet(L"RobotSpawn");
 
                 int robot;
-                if (!temp.GetStrPar(1, L",").TrimFull().IsEmpty()) robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetIntPar(2, L":"), temp.GetStrPar(1, L",").GetIntPar(3, L":"));
+                if(!temp.GetStrPar(1, L",").TrimFull().IsEmpty()) robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetIntPar(2, L":"), temp.GetStrPar(1, L",").GetIntPar(3, L":"));
                 else robot = g_MatrixMap->Rnd(0, bpr->ParCount() - 1);
 
                 SSpecialBot bot;
@@ -1402,10 +1410,7 @@ void CMatrixMapObject::LogicTakt(int ms)
 
                 if(!bot.BuildFromPar(bpr->ParGetName(robot), bpr->ParGet(robot).GetInt(), true))
                 {
-                    //char out[256];
-                    //sprintf(out, "Exception occurred! Error while spawning bot from Terron cabin #%d", robot);
-                    CStr out = "Exception occurred! Error while spawning bot from Terron cabin #%d" + CStr(robot);
-                    SFT(out);
+                    SFT("Exception occurred! Error while spawning bot from Terron cabin #" + robot);
                     ERROR_S2(L"Spawner bot_no=", CWStr(robot).Get());
                 }
 

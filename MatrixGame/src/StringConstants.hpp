@@ -87,11 +87,11 @@
 //#define TEXTURE_PATH_GUN_FIRE3                  L"Matrix\\Textures\\Billboard\\gun_fire03"
 //#define TEXTURE_PATH_TRASSA                     L"Matrix\\Textures\\Billboard\\minomet"
 //#define TEXTURE_PATH_SHLEIF                     L"Matrix\\Textures\\Billboard\\minomet"
-//#define TEXTURE_PATH_FIRESTREAM1                  L"Matrix\\Textures\\Billboard\\firestream0"
-//#define TEXTURE_PATH_FIRESTREAM2                  L"Matrix\\Textures\\Billboard\\firestream1"
-//#define TEXTURE_PATH_FIRESTREAM3                  L"Matrix\\Textures\\Billboard\\firestream2"
-//#define TEXTURE_PATH_FIRESTREAM4                  L"Matrix\\Textures\\Billboard\\firestream3"
-//#define TEXTURE_PATH_FIRESTREAM5                  L"Matrix\\Textures\\Billboard\\firestream4"
+//#define TEXTURE_PATH_FIRESTREAM1                L"Matrix\\Textures\\Billboard\\firestream0"
+//#define TEXTURE_PATH_FIRESTREAM2                L"Matrix\\Textures\\Billboard\\firestream1"
+//#define TEXTURE_PATH_FIRESTREAM3                L"Matrix\\Textures\\Billboard\\firestream2"
+//#define TEXTURE_PATH_FIRESTREAM4                L"Matrix\\Textures\\Billboard\\firestream3"
+//#define TEXTURE_PATH_FIRESTREAM5                L"Matrix\\Textures\\Billboard\\firestream4"
 //#define TEXTURE_PATH_GLOWBEAM                   L"Matrix\\Textures\\Billboard\\GlowBeam0"
 //#define TEXTURE_PATH_FLAMELINE                  L"Matrix\\Textures\\Billboard\\flameline"
 //#define TEXTURE_PATH_PLASMA1                    L"Matrix\\Textures\\Billboard\\plasma1"
@@ -111,7 +111,7 @@
 #define TEXTURE_PATH_HIT                        L"Matrix\\Textures\\LandSpots\\spot_hit"
 #define TEXTURE_PATH_SELECTION                  L"Matrix\\Textures\\LandSpots\\spot_move_to"
 #define TEXTURE_PATH_VORONKA                    L"Matrix\\Textures\\LandSpots\\varonka"
-#define TEXTURE_PATH_TURRET_RADIUS              L"Matrix\\Textures\\LandSpots\\spot_turr2"
+#define TEXTURE_PATH_TURRET_RADIUS              L"Mods\\PlanetaryBattles\\PBEngine\\Matrix\\Textures\\LandSpots\\TurretSpot"
 #define TEXTURE_PATH_SOLE_TRACK                 L"Matrix\\Textures\\LandSpots\\sole"
 #define TEXTURE_PATH_SOLE_WHEEL                 L"Matrix\\Textures\\LandSpots\\sole_w"
 #define TEXTURE_PATH_SOLE_PNEUMATIC             L"Matrix\\Textures\\LandSpots\\sole_p"
@@ -124,7 +124,6 @@
 #define TEXTURE_PATH_REFLECTION                 L"Matrix\\Textures\\reflection"
 
 #define TEXTURE_PATH_DUST                       L"Matrix\\Textures\\Billboard\\Dust"
-
 
 #define TEXTURE_PATH_BIGBOOM                    L"Matrix\\Textures\\Effects\\bigboom"
 
@@ -139,8 +138,8 @@
 #define TEXTURE_PATH_ZAHVAT                     L"Matrix\\Textures\\Billboard\\zahspot"
 #define TEXTURE_PATH_OBJSEL                     L"Matrix\\Textures\\Billboard\\selection"
 
-#define TEXTURE_PATH_MOVETO                     L"Matrix\\Textures\\Billboard\\moveto"
-
+#define TEXTURE_PATH_MOVETO                     L"Mods\\PlanetaryBattles\\PBEngine\\Matrix\\Textures\\Billboard\\WayPoint"
+#define TEXTURE_PATH_GATHER_POINT               L"Mods\\PlanetaryBattles\\PBEngine\\Matrix\\Textures\\Billboard\\GatheringPoint"
 
 //#define TEXTURE_FLYER_BODY                      L"Matrix\\Helicopter\\main.png"
 //#define TEXTURE_FLYER_ENGINE                    L"Matrix\\Helicopter\\main.png"

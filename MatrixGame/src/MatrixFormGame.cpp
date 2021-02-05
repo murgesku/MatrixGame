@@ -18,19 +18,21 @@
 #include "Interface/MatrixHint.hpp"
 #include "MatrixObjectCannon.hpp"
 #include "Interface/CCounter.h"
+#include "Interface/CIFaceButton.h"
+#include "Interface/CHistory.h"
 
 #include <time.h>
 #include <sys/timeb.h>
 #include "stdio.h"
 
-CFormMatrixGame::CFormMatrixGame():CForm()
+CFormMatrixGame::CFormMatrixGame() :CForm()
 {
     DTRACE();
-	m_Name=L"MatrixGame";
+    m_Name = L"MatrixGame";
 
-	m_LastWorldX=0; m_LastWorldY=0;
-	m_Action=0;
-    ZeroMemory(m_LastScans, sizeof(SKeyScan)*MAX_SCANS);
+    m_LastWorldX = 0; m_LastWorldY = 0;
+    m_Action = 0;
+    ZeroMemory(m_LastScans, sizeof(SKeyScan) * MAX_SCANS);
 }
 
 CFormMatrixGame::~CFormMatrixGame()
@@ -225,65 +227,67 @@ void CFormMatrixGame::Takt(int step)
 {
     DTRACE();
 
-    if (g_MatrixMap->CheckLostDevice()) return;
+    if(g_MatrixMap->CheckLostDevice()) return;
 
 	g_MatrixMap->Takt(step);
 
     CPoint mp = g_MatrixMap->m_Cursor.GetPos();
 
-    if (!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
+    if(!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
     {
-        if (mp.x >= 0 && mp.x < g_ScreenX && mp.y >= 0 && mp.y < g_ScreenY)
+        if(mp.x >= 0 && mp.x < g_ScreenX && mp.y >= 0 && mp.y < g_ScreenY)
         {
-            if (mp.x < MOUSE_BORDER) g_MatrixMap->m_Camera.MoveLeft();
-            if (mp.x > (g_ScreenX - MOUSE_BORDER)) g_MatrixMap->m_Camera.MoveRight();
-            if (mp.y < MOUSE_BORDER) g_MatrixMap->m_Camera.MoveUp();
-            if (mp.y > (g_ScreenY - MOUSE_BORDER)) g_MatrixMap->m_Camera.MoveDown();
+            if(mp.x < MOUSE_BORDER) g_MatrixMap->m_Camera.MoveLeft();
+            if(mp.x > (g_ScreenX - MOUSE_BORDER)) g_MatrixMap->m_Camera.MoveRight();
+            if(mp.y < MOUSE_BORDER) g_MatrixMap->m_Camera.MoveUp();
+            if(mp.y > (g_ScreenY - MOUSE_BORDER)) g_MatrixMap->m_Camera.MoveDown();
         }
     }
 
-    if (g_MatrixMap->m_Console.IsActive()) return;
+    if(g_MatrixMap->m_Console.IsActive()) return;
 
-    if (!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
+    if(!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
     {
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT_ALT]) & 0x8000)==0x8000))
+        //Перед движением камеры по клавишам делаем проверку на то, что игрок не находится в режиме конструктора
+        //В режиме конструктора стандартные кнопки движения камеры используются под другие бинды
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT_ALT]) & 0x8000) == 0x8000))
         {
-            g_MatrixMap->m_Camera.MoveLeft();
+            if(!g_MatrixMap->GetPlayerSide()->m_ConstructPanel->IsActive()) g_MatrixMap->m_Camera.MoveLeft();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT_ALT]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT_ALT]) & 0x8000) == 0x8000))
         {
-            g_MatrixMap->m_Camera.MoveRight();
+            if(!g_MatrixMap->GetPlayerSide()->m_ConstructPanel->IsActive()) g_MatrixMap->m_Camera.MoveRight();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP_ALT]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP_ALT]) & 0x8000) == 0x8000))
         {
-            g_MatrixMap->m_Camera.MoveUp();
+            if(!g_MatrixMap->GetPlayerSide()->m_ConstructPanel->IsActive()) g_MatrixMap->m_Camera.MoveUp();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN_ALT]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN_ALT]) & 0x8000) == 0x8000))
         {
-            g_MatrixMap->m_Camera.MoveDown();
+            if(!g_MatrixMap->GetPlayerSide()->m_ConstructPanel->IsActive()) g_MatrixMap->m_Camera.MoveDown();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT_ALT]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT_ALT]) & 0x8000) == 0x8000))
         {
             g_MatrixMap->m_Camera.RotLeft();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT_ALT]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT_ALT]) & 0x8000) == 0x8000))
         {
             g_MatrixMap->m_Camera.RotRight();
         }
     }
 
     {
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_UP]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_UP]) & 0x8000) == 0x8000))
         {
             g_MatrixMap->m_Camera.RotUp();
         }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_DOWN]) & 0x8000)==0x8000))
+        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_DOWN]) & 0x8000) == 0x8000))
         {
             g_MatrixMap->m_Camera.RotDown();
         }
     }
 
-	if (GetAsyncKeyState(/*VK_SNAPSHOT*/VK_F9) != 0)
+	if(GetAsyncKeyState(/*VK_SNAPSHOT*/VK_F9) != 0)
     {
         CreateDirectory(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS), NULL);
 
@@ -295,7 +299,7 @@ void CFormMatrixGame::Takt(int step)
 
         int slen = strlen(FILE_NAME_SCREENSHOT);
 		
-        CStr    n(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS),g_CacheHeap);
+        CStr n(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS), g_CacheHeap);
 		
         n += "\\";
         n.Add(FILE_NAME_SCREENSHOT, slen);
@@ -309,14 +313,14 @@ void CFormMatrixGame::Takt(int step)
                 if((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
                 {
                     n = fd.cFileName;
-                    int idx = n.FindR(FILE_NAME_SCREENSHOT,slen);
+                    int idx = n.FindR(FILE_NAME_SCREENSHOT, slen);
                     n.Del(0, idx + slen);
-                    idx = n.Find(".",1);
-                    if (idx > 0) n.SetLen(idx);
+                    idx = n.Find(".", 1);
+                    if(idx > 0) n.SetLen(idx);
                     int nn = n.GetInt();
-                    if (nn > maxn) maxn = nn;
+                    if(nn > maxn) maxn = nn;
                 }
-                if (0 == FindNextFile(ff, &fd)) break;
+                if(0 == FindNextFile(ff, &fd)) break;
             }
             FindClose(ff);
             ++maxn;
@@ -809,14 +813,14 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                     dx = 2;
                     dy = 2;
                 }
-                CMultiSelection::m_GameSelection = CMultiSelection::Begin(CPoint(g_MatrixMap->m_Cursor.GetPos().x-dx,g_MatrixMap->m_Cursor.GetPos().y-dy));
+                CMultiSelection::m_GameSelection = CMultiSelection::Begin(CPoint(g_MatrixMap->m_Cursor.GetPos().x - dx, g_MatrixMap->m_Cursor.GetPos().y - dy));
                 if(CMultiSelection::m_GameSelection)
                 {
                     SCallback cbs;
                     cbs.mp = g_MatrixMap->m_Cursor.GetPos();
                     cbs.calls = 0;
 
-                    CMultiSelection::m_GameSelection->Update(g_MatrixMap->m_Cursor.GetPos(), TRACE_ROBOT|TRACE_BUILDING, selcallback, (DWORD)&cbs);
+                    CMultiSelection::m_GameSelection->Update(g_MatrixMap->m_Cursor.GetPos(), TRACE_ROBOT | TRACE_BUILDING, selcallback, (DWORD)&cbs);
                 }
             }
             g_MatrixMap->GetPlayerSide()->OnLButtonDown(CPoint(x, y));
@@ -927,7 +931,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
     bool fCtrl = (GetAsyncKeyState(VK_CONTROL) & 0x8000) == 0x8000;
 
     //Если была активирована дев-консоль, то обработка всех прочих нажатий отрубается
-    //С активной консолью все нажатия должен начать перехватывать код консоли
+    //С активной консолью все нажатия должен начать перехватывать код консоли в DevConsole.cpp
     if(g_MatrixMap->m_Console.IsActive())
     {
         //g_MatrixMap->m_Console.SetActive(true);
@@ -940,6 +944,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         memcpy(&m_LastScans[0], &m_LastScans[1], sizeof(SKeyScan) * (MAX_SCANS - 1));
         m_LastScans[MAX_SCANS - 1].scan = scan;
         m_LastScans[MAX_SCANS - 1].time = g_MatrixMap->GetTime();
+
+//Обработчики набора читов
 #ifdef CHEATS_ON
 //Вызов консоли не срабатывает, нужно откапывать оригинальную функцию вызова
 /*
@@ -1058,23 +1064,24 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                                         //CSound::Play(S_TURRET_BUILD_2, SL_ALL);
 
                                         if(FLAG(g_MatrixMap->m_Flags, MMFLAG_MEGABUSTALREADY))
-                                        //if (0)
+                                        //if(0)
                                         {
-                                            CMatrixMapStatic * s = CMatrixMapStatic::GetFirstLogic();
+                                            CMatrixMapStatic* s = CMatrixMapStatic::GetFirstLogic();
                                             for(; s; s = s->GetNextLogic())
                                             {
-                                                if (s->GetSide() == PLAYER_SIDE)
+                                                if(s->GetSide() == PLAYER_SIDE)
                                                 {
-                                                    if (s->IsRobot() && !s->AsRobot()->IsAutomaticMode())
+                                                    if(s->IsRobot() && !s->AsRobot()->IsAutomaticMode())
                                                     {
                                                         s->AsRobot()->MustDie();
                                                     }
-                                                    //else if (s->IsCannon())
+                                                    //else if(s->IsCannon())
                                                     //{
-                                                    //    s->AsCannon()->InitMaxHitpoint(s->AsCannon()->GetMaxHitPoint()*20);
-                                                    //} else if (s->IsBuilding())
+                                                    //    s->AsCannon()->InitMaxHitpoint(s->AsCannon()->GetMaxHitPoint() * 20);
+                                                    //}
+                                                    //else if(s->IsBuilding())
                                                     //{
-                                                    //    s->AsBuilding()->InitMaxHitpoint(s->AsBuilding()->GetMaxHitPoint()*20);
+                                                    //    s->AsBuilding()->InitMaxHitpoint(s->AsBuilding()->GetMaxHitPoint() * 20);
                                                     //}
 
                                                 }
@@ -1084,7 +1091,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                                         }
                                         else
                                         {
-                                            CMatrixMapStatic * s = CMatrixMapStatic::GetFirstLogic();
+                                            CMatrixMapStatic* s = CMatrixMapStatic::GetFirstLogic();
                                             for(; s; s = s->GetNextLogic())
                                             {
                                                 if (s->GetSide() == PLAYER_SIDE)
@@ -1228,6 +1235,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
 #endif
     }
 
+    //Горячие клавиши для команд в игровом меню (выйти, рестарт, сдаться и т.д.)
     if(scan == KEY_ENTER && down)
     {
         if(g_MatrixMap->m_DialogModeName && (g_MatrixMap->m_DialogModeHints.Len() > 4 || wcscmp(g_MatrixMap->m_DialogModeName, TEMPLATE_DIALOG_MENU) != 0))
@@ -1524,7 +1532,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     {
                         if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000) == 0x8000)
                         {
-                            //"T"urrel - Переход в меню выбора турелей
+                            //"T"urrel - переход в меню выбора турели
                             CPoint pl[MAX_PLACES];
                             bool cant_build_tu = false;
 
@@ -1562,7 +1570,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         //Игрок выбрал базу и находится на её общем экране
                         if(!ps->m_ConstructPanel->IsActive())
                         {
-                            //"B"ase - переход в режим конструктора роботов
+                            //"B"uild - переход в режим конструктора роботов
                             if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000)
                             {
                                 g_IFaceList->m_RCountControl->Reset();
@@ -1572,21 +1580,66 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                             //"G"athering point - установка точки сбора базы
                             else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_GATHERING_POINT]) & 0x8000) == 0x8000)
                             {
-                                SFT(CStr("Gathering point"));
+                                bld->SetGatheringPoint(Float2Int(g_MatrixMap->m_TraceStopPos.x), Float2Int(g_MatrixMap->m_TraceStopPos.y));
+                                //Первоначальная отрисовка точки сбора (перенесена в функцию общей постоянной отрисовки)
+                                //CMatrixEffect::CreateMoveto(2);
                             }
                         }
                         //Игрок находится в режиме конструктора роботов выбранной базы
                         else
                         {
-                            //"B"ase - выход из режима конструктора роботов
+                            //"B"uild - выход из режима конструктора роботов
                             if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000)
                             {
-                                //g_IFaceList->m_RCountControl->Reset();
-                                //g_IFaceList->m_RCountControl->CheckUp();
                                 ps->m_ConstructPanel->ResetGroupNClose();
                             }
+                            //"Enter" - запуск производства робота
+                            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT_START]) & 0x8000) == 0x8000)
+                            {
+                                if(g_MatrixMap->GetPlayerSide()->m_Constructor->m_BaseConstBuildBut->GetState() != IFACE_DISABLED)
+                                {
+                                    CSound::Play(S_BUILD_CLICK, SL_INTERFACE);
+                                    g_MatrixMap->GetPlayerSide()->m_Constructor->RemoteBuild(NULL);
+                                }
+                            }
+                            //"Arrow Up" - увеличение числа роботов для постройки
+                            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT_QUANTITY_UP]) & 0x8000) == 0x8000)
+                            {
+                                if(g_IFaceList->m_RCountControl->m_ButtonUp->GetState() != IFACE_DISABLED)
+                                {
+                                    CSound::Play(S_BCLICK, SL_INTERFACE);
+                                    g_IFaceList->m_RCountControl->Up(NULL);
+                                }
+                            }
+                            //"Arrow Down" - снижение числа роботов для постройки
+                            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT_QUANTITY_DOWN]) & 0x8000) == 0x8000)
+                            {
+                                if(g_IFaceList->m_RCountControl->m_ButtonDown->GetState() != IFACE_DISABLED)
+                                {
+                                    CSound::Play(S_BCLICK, SL_INTERFACE);
+                                    g_IFaceList->m_RCountControl->Down(NULL);
+                                }
+                            }
+                            //"Arrow Left" - выбор схемы робота для постройки влево
+                            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT_CHOOSE_LEFT]) & 0x8000) == 0x8000)
+                            {
+                                if(g_ConfigHistory->IsPrev())
+                                {
+                                    CSound::Play(S_BCLICK, SL_INTERFACE);
+                                    g_ConfigHistory->PrevConfig(NULL);
+                                }
+                            }
+                            //"Arrow Right" - выбор схемы робота для постройки вправо
+                            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT_CHOOSE_RIGHT]) & 0x8000) == 0x8000)
+                            {
+                                if(g_ConfigHistory->IsNext())
+                                {
+                                    CSound::Play(S_BCLICK, SL_INTERFACE);
+                                    g_ConfigHistory->NextConfig(NULL);
+                                }
+                            }
                             //Были нажаты цифровые клавиши 1-9 (по местной нумерации 2-10)
-                            if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->m_FocusedElement)
+                            else if(scan > 1 && scan <= 11 && ps->m_ConstructPanel->m_FocusedElement)
                             {
                                 int key = 0;
                                 if (scan != 11) key = scan - 1;
@@ -1606,63 +1659,63 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                                 //RUK_WEAPON_ELECTRIC        = 9,  7
                                 //RUK_WEAPON_REPAIR          = 10, 8
 
-                                if (ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON1)
+                                if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON1)
                                 {
                                     pilon = 0;
                                     type = MRT_WEAPON;
                                 }
-                                else if (ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON2)
+                                else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON2)
                                 {
                                     pilon = 1;
                                     type = MRT_WEAPON;
                                 }
-                                else if (ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON3)
+                                else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON3)
                                 {
                                     pilon = 2;
                                     type = MRT_WEAPON;
                                 }
-                                else if (ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON4)
+                                else if(ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON4)
                                 {
                                     pilon = 3;
                                     type = MRT_WEAPON;
                                 }
-                                else if (key <= 2 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON5)
+                                else if(key <= 2 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON5)
                                 {
                                     pilon = 4;
                                     type = MRT_WEAPON;
 
                                     kind = ERobotUnitKind(key);
 
-                                    if (key == 1) kind = RUK_WEAPON_MORTAR;
-                                    else if (key == 2) kind = RUK_WEAPON_BOMB;
+                                    if(key == 1) kind = RUK_WEAPON_MORTAR;
+                                    else if(key == 2) kind = RUK_WEAPON_BOMB;
                                 }
-                                else if (key <= 4 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HEAD)
+                                else if(key <= 4 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HEAD)
                                 {
                                     pilon = 0;
                                     type = MRT_HEAD;
 
                                     kind = ERobotUnitKind(key);
                                 }
-                                else if (key && key <= 6 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HULL)
+                                else if(key && key <= 6 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_HULL)
                                 {
                                     pilon = 0;
                                     type = MRT_ARMOR;
 
-                                    if (key == 1) kind = ERobotUnitKind(6);
+                                    if(key == 1) kind = ERobotUnitKind(6);
                                     else kind = ERobotUnitKind(key - 1);
                                 }
-                                else if (key && key <= 5 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_CHASSIS)
+                                else if(key && key <= 5 && ps->m_ConstructPanel->m_FocusedElement->m_strName == IF_BASE_PILON_CHASSIS)
                                 {
                                     pilon = 0;
                                     type = MRT_CHASSIS;
                                     kind = ERobotUnitKind(key);
                                 }
 
-                                if (key <= 8 && type == MRT_WEAPON && pilon < 4)
+                                if(key <= 8 && type == MRT_WEAPON && pilon < 4)
                                 {
-                                    if (key == 0) kind = ERobotUnitKind(0);
-                                    else if (key == 5) kind = ERobotUnitKind(key + 1);
-                                    else if (key > 5) kind = ERobotUnitKind(key + 2);
+                                    if(key == 0) kind = ERobotUnitKind(0);
+                                    else if(key == 5) kind = ERobotUnitKind(key + 1);
+                                    else if(key > 5) kind = ERobotUnitKind(key + 2);
                                     else kind = ERobotUnitKind(key);
                                 }
 
@@ -1679,31 +1732,38 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 {
                     //player_side->IsEnoughResources(g_Config.m_CannonsProps[1].m_Resources)
                     //Меню выбора турелей:
-                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_CANNON]) & 0x8000) == 0x8000))
+                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_CANNON]) & 0x8000) == 0x8000)
                     {
                         //"C"annon - Турель
                         g_IFaceList->BeginBuildTurret(1);
                     }
-                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_GUN]) & 0x8000) == 0x8000))
+                    else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_GUN]) & 0x8000) == 0x8000)
                     {
                         //"G"un - Пушка
                         g_IFaceList->BeginBuildTurret(2);
                     }
-                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_LASER]) & 0x8000) == 0x8000))
+                    else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_LASER]) & 0x8000) == 0x8000)
                     {
                         //"L"azer - Лазер
                         g_IFaceList->BeginBuildTurret(3);
                     }
-                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_ROCKET]) & 0x8000) == 0x8000))
+                    else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_TURRET_ROCKET]) & 0x8000) == 0x8000)
                     {
                         //"R"ocket - Ракетница
                         g_IFaceList->BeginBuildTurret(4);
                     }
+                    //Нафиг не нужно, поскольку и так сбрасывается на X
+                    /*
+                    else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_TURRET]) & 0x8000) == 0x8000)
+                    {
+                        //"T"urret - выход из меню выбора турели
+                        g_IFaceList->ResetOrderingMode();
+                    }
+                    */
                 }
-
-                if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000) == 0x8000))
+                if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000) == 0x8000)
                 {
-                    //Канцел
+                    //Отмена постройки турели, закрытие меню выбора (в том числе, если уже была выбрана турель)
                     if(ps->m_CurrentAction == BUILDING_TURRET)
                     {
                         ps->m_CannonForBuild.Delete();
@@ -1713,17 +1773,17 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 }
             }
             //Общее для стратегического режима
-            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMIN]) & 0x8000) == 0x8000))
+            if((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMIN]) & 0x8000) == 0x8000)
             {
                 //приблизить карту
                 g_MatrixMap->m_Minimap.ButtonZoomIn(NULL);
             }
-            else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMOUT]) & 0x8000) == 0x8000))
+            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_MINIMAP_ZOOMOUT]) & 0x8000) == 0x8000)
             {
                 //отдалить карту
                 g_MatrixMap->m_Minimap.ButtonZoomOut(NULL);
             }
-            else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH1]) & 0x8000) == 0x8000))
+            else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_ROBOT_SWITCH1]) & 0x8000) == 0x8000)
             {
                 //","
                 CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
@@ -1752,7 +1812,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         {
                             return;
                         }
-                        cnt++;
+                        ++cnt;
                         obj = CMatrixMapStatic::GetLastLogic();
                     }
                 }

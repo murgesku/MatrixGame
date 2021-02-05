@@ -21,7 +21,6 @@ int gIndex[] = {
 
 CIFaceButton::CIFaceButton()
 {
-	
 	m_Type = IFACE_PUSH_BUTTON;
 	m_CurState = IFACE_NORMAL;
 	//ZeroMemory(m_StateImages, sizeof(m_StateImages));
@@ -31,6 +30,8 @@ CIFaceButton::~CIFaceButton()
 {
 }
 
+//Обработчик нажатия левой кнопки мыши
+//В основном проигрывает всякие звуки, т.к. полезное действие чаще происходит при отжатии элемента интерфейса (кнопки)
 bool CIFaceButton::OnMouseLBDown()
 {
     if(GetState() == IFACE_DISABLED)
@@ -118,6 +119,7 @@ bool CIFaceButton::OnMouseLBDown()
     return FALSE;
 }
 
+//Обработчик отжатия левой кнопки мыши, проверяет фокус элемента и вызывает действие, если возможно
 void CIFaceButton::OnMouseLBUp()
 {
     if(g_IFaceList && g_IFaceList->m_CurrentHint && g_IFaceList->m_CurrentHintControlName == m_strName)
@@ -171,9 +173,9 @@ bool CIFaceButton::OnMouseMove(CPoint mouse)
             if(g_IFaceList->CheckShowHintLogic(m_strName))
             {
                 g_IFaceList->AddHintReplacements(m_strName);
-                CMatrixHint * hint = CMatrixHint::Build(m_Hint.HintTemplate, m_strName);
-                int x = Float2Int(m_PosElInX)+m_Hint.x;
-                int y = Float2Int(m_PosElInY)+m_Hint.y;
+                CMatrixHint* hint = CMatrixHint::Build(m_Hint.HintTemplate, m_strName);
+                int x = Float2Int(m_PosElInX) + m_Hint.x;
+                int y = Float2Int(m_PosElInY) + m_Hint.y;
                 g_IFaceList->CorrectCoordinates(g_ScreenX, g_ScreenY, x, y, hint->m_Width, hint->m_Height, m_strName);
                 hint->Show(x, y);
                 g_IFaceList->m_CurrentHint = hint;
@@ -189,32 +191,32 @@ bool CIFaceButton::OnMouseMove(CPoint mouse)
                 Action(ON_FOCUS);
                 CSound::Play(S_BENTER, SL_INTERFACE);
             }
-		}
+        }
         else if(m_Type == IFACE_CHECK_BUTTON || m_Type == IFACE_CHECK_BUTTON_SPECIAL)
         {
-			if(GetState() == IFACE_NORMAL)
+            if(GetState() == IFACE_NORMAL)
             {
-				SetState(IFACE_FOCUSED);
+                SetState(IFACE_FOCUSED);
                 Action(ON_FOCUS);
                 CSound::Play(S_BENTER, SL_INTERFACE);
-			}
+            }
             else if(GetState() == IFACE_PRESSED_UNFOCUSED)
             {
-				SetState(IFACE_PRESSED);
+                SetState(IFACE_PRESSED);
                 Action(ON_FOCUS);
                 CSound::Play(S_BENTER, SL_INTERFACE);
-			}
+            }
         }
         else if(m_Type == IFACE_CHECK_PUSH_BUTTON)
         {
             if(GetState() == IFACE_NORMAL)
             {
-				SetState(IFACE_FOCUSED);
+                SetState(IFACE_FOCUSED);
                 Action(ON_FOCUS);
                 CSound::Play(S_BENTER, SL_INTERFACE);
             }
         }
-		return TRUE;
+        return TRUE;
     }
     else
     {
@@ -239,13 +241,12 @@ bool CIFaceButton::OnMouseRBDown()
         {
             if(g_PopupMenu)
             {
-
-                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; i++)
+                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; ++i)
                 {
                     int kind = i;
                     if(kind == 5)
                     {
-                        kind++;
+                        ++kind;
                     }
                     else if(kind > 5)
                     {
@@ -260,19 +261,19 @@ bool CIFaceButton::OnMouseRBDown()
                         g_PopupWeaponNormal[i].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_PILON1, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX+242, g_IFaceList->m_BaseY+155, this, g_PopupWeaponNormal);
+                g_PopupMenu->CreateMenu(MENU_PARENT_PILON1, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX + 242, g_IFaceList->m_BaseY + 155, this, g_PopupWeaponNormal);
             }
         }
         else if(m_strName == IF_BASE_PILON2)
         {
             if(g_PopupMenu)
             {
-                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; i++)
+                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; ++i)
                 {
                     int kind = i;
                     if(kind == 5)
                     {
-                        kind++;
+                        ++kind;
                     }
                     else if(kind > 5)
                     {
@@ -287,19 +288,19 @@ bool CIFaceButton::OnMouseRBDown()
                         g_PopupWeaponNormal[i].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_PILON2, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX+389, g_IFaceList->m_BaseY+155, this, g_PopupWeaponNormal);
+                g_PopupMenu->CreateMenu(MENU_PARENT_PILON2, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX + 389, g_IFaceList->m_BaseY + 155, this, g_PopupWeaponNormal);
             }
         }
         else if(m_strName == IF_BASE_PILON3)
         {
             if(g_PopupMenu)
             {
-                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; i++)
+                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; ++i)
                 {
                     int kind = i;
                     if(kind == 5)
                     {
-                        kind++;
+                        ++kind;
                     }
                     else if(kind > 5)
                     {
@@ -314,20 +315,19 @@ bool CIFaceButton::OnMouseRBDown()
                         g_PopupWeaponNormal[i].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_PILON3, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX+242, g_IFaceList->m_BaseY+135, this, g_PopupWeaponNormal);
-
+                g_PopupMenu->CreateMenu(MENU_PARENT_PILON3, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX + 242, g_IFaceList->m_BaseY + 135, this, g_PopupWeaponNormal);
             }
         }
         else if(m_strName == IF_BASE_PILON4)
         {
             if(g_PopupMenu)
             {
-                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; i++)
+                for(int i = 1; i < MENU_WEAPONNORM_ITEMS; ++i)
                 {
                     int kind = i;
                     if(kind == 5)
                     {
-                        kind++;
+                        ++kind;
                     }
                     else if(kind > 5)
                     {
@@ -342,7 +342,7 @@ bool CIFaceButton::OnMouseRBDown()
                         g_PopupWeaponNormal[i].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_PILON4, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX+389, g_IFaceList->m_BaseY+135, this, g_PopupWeaponNormal);
+                g_PopupMenu->CreateMenu(MENU_PARENT_PILON4, MENU_WEAPONNORM_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX + 389, g_IFaceList->m_BaseY + 135, this, g_PopupWeaponNormal);
             }
         }
         else if(m_strName == IF_BASE_PILON5)
@@ -365,14 +365,14 @@ bool CIFaceButton::OnMouseRBDown()
                 {
                     g_PopupWeaponExtern[2].color = DEFAULT_LABELS_COLOR;
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_PILON5, MENU_WEAPONEXTERN_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX+389, g_IFaceList->m_BaseY+76, this, g_PopupWeaponExtern);
+                g_PopupMenu->CreateMenu(MENU_PARENT_PILON5, MENU_WEAPONEXTERN_ITEMS, WEAPON_MENU_WIDTH, g_IFaceList->m_BaseX + 389, g_IFaceList->m_BaseY + 76, this, g_PopupWeaponExtern);
             }
         }
         else if(m_strName == IF_BASE_PILON_HEAD)
         {
             if(g_PopupMenu)
             {
-                for(int i = 1; i < MENU_HEAD_ITEMS; i++)
+                for(int i = 1; i < MENU_HEAD_ITEMS; ++i)
                 {
                     if(!player_side->m_ConstructPanel->IsEnoughResourcesForThisPieceOfShit(1, MRT_HEAD, ERobotUnitKind(i)))
                     {
@@ -383,14 +383,14 @@ bool CIFaceButton::OnMouseRBDown()
                         g_PopupHead[i].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_HEAD, MENU_HEAD_ITEMS, HEAD_MENU_WIDTH, g_IFaceList->m_BaseX+315, g_IFaceList->m_BaseY+76, this, g_PopupHead);
+                g_PopupMenu->CreateMenu(MENU_PARENT_HEAD, MENU_HEAD_ITEMS, HEAD_MENU_WIDTH, g_IFaceList->m_BaseX + 315, g_IFaceList->m_BaseY + 76, this, g_PopupHead);
             }
         }
         else if(m_strName == IF_BASE_PILON_HULL)
 {
             if(g_PopupMenu)
             {
-                for(int i = 1; i <= MENU_HULL_ITEMS; i++)
+                for(int i = 1; i <= MENU_HULL_ITEMS; ++i)
                 {
                     int kind;
 
@@ -404,32 +404,32 @@ bool CIFaceButton::OnMouseRBDown()
                     }
                     if(!player_side->m_ConstructPanel->IsEnoughResourcesForThisPieceOfShit(1, MRT_ARMOR, ERobotUnitKind(kind)))
                     {
-                        g_PopupHull[i-1].color = NERES_LABELS_COLOR;
+                        g_PopupHull[i - 1].color = NERES_LABELS_COLOR;
                     }
                     else
                     {
-                        g_PopupHull[i-1].color = DEFAULT_LABELS_COLOR;
+                        g_PopupHull[i - 1].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_HULL, MENU_HULL_ITEMS, HULL_MENU_WIDTH, g_IFaceList->m_BaseX+321, g_IFaceList->m_BaseY+148, this, g_PopupHull);
+                g_PopupMenu->CreateMenu(MENU_PARENT_HULL, MENU_HULL_ITEMS, HULL_MENU_WIDTH, g_IFaceList->m_BaseX + 321, g_IFaceList->m_BaseY + 148, this, g_PopupHull);
             }
         }
         else if(m_strName == IF_BASE_PILON_CHASSIS)
 {
             if(g_PopupMenu)
             {
-                for(int i = 1; i <= MENU_CHASSIS_ITEMS; i++)
+                for(int i = 1; i <= MENU_CHASSIS_ITEMS; ++i)
                 {
                     if(!player_side->m_ConstructPanel->IsEnoughResourcesForThisPieceOfShit(1, MRT_CHASSIS, ERobotUnitKind(i)))
                     {
-                        g_PopupChassis[i-1].color = NERES_LABELS_COLOR;
+                        g_PopupChassis[i - 1].color = NERES_LABELS_COLOR;
                     }
                     else
                     {
-                        g_PopupChassis[i-1].color = DEFAULT_LABELS_COLOR;
+                        g_PopupChassis[i - 1].color = DEFAULT_LABELS_COLOR;
                     }
                 }
-                g_PopupMenu->CreateMenu(MENU_PARENT_CHASSIS, MENU_CHASSIS_ITEMS, CHASSIS_MENU_WIDTH, g_IFaceList->m_BaseX+321, g_IFaceList->m_BaseY+231, this, g_PopupChassis);
+                g_PopupMenu->CreateMenu(MENU_PARENT_CHASSIS, MENU_CHASSIS_ITEMS, CHASSIS_MENU_WIDTH, g_IFaceList->m_BaseX + 321, g_IFaceList->m_BaseY + 231, this, g_PopupChassis);
             }
         }
         return true;

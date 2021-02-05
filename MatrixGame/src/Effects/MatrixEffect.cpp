@@ -238,7 +238,7 @@ void    CMatrixEffect::ClearEffects(void)
     DTRACE();
     if (m_DebrisCnt > 0)
     {
-        for (int i = 0; i<m_DebrisCnt; ++i)
+        for (int i = 0; i < m_DebrisCnt; ++i)
         {
             m_Debris[i].~CDebris();
         }
@@ -392,7 +392,6 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
 
     // init billboards
 
-
     CBlockPar &bb = *bp_in.BlockGet(PAR_SOURCE_BILLBOARDS);
     CBlockPar &tex = *bb.BlockGet(PAR_SOURCE_BILLBOARDS_TEXTURES);
 
@@ -404,19 +403,19 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
     CBillboard::SetSortTexture(ts);
 
     CWStr texp(m_Heap);
-    for (int i=0; i<BBT_LAST; ++i)
+    for(int i = 0; i < BBT_LAST; ++i)
     {
         texp = tex.ParGet(bb2tn[i].name);
-        SBillboardTextureArrayElement *e =  m_BBTextures + bb2tn[i].id;
-        if (texp.GetIntPar(0,L",") == 0)
+        SBillboardTextureArrayElement* e = m_BBTextures + bb2tn[i].id;
+        if (texp.GetIntPar(0, L",") == 0)
         {
             RESETFLAG(e->flags, BBT_FLAG_INTENSE);
 
-            int x0,y0,sx,sy;
-            x0 = texp.GetIntPar(1,L",");
-            y0 = texp.GetIntPar(2,L",");
-            sx = texp.GetIntPar(3,L",");
-            sy = texp.GetIntPar(4,L",");
+            int x0, y0, sx, sy;
+            x0 = texp.GetIntPar(1, L",");
+            y0 = texp.GetIntPar(2, L",");
+            sx = texp.GetIntPar(3, L",");
+            sy = texp.GetIntPar(4, L",");
 
             e->bbt.tu0 = float(x0) / float(ts->GetSizeX());
             e->bbt.tv0 = float(y0) / float(ts->GetSizeY());
@@ -424,7 +423,8 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
             e->bbt.tu1 = float(x0 + sx) / float(ts->GetSizeX());
             e->bbt.tv1 = float(y0 + sy) / float(ts->GetSizeY());
 
-        } else
+        }
+        else
         {
             SETFLAG(e->flags, BBT_FLAG_INTENSE);
 
@@ -432,7 +432,6 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
             e->tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texp.GetStrPar(1,L",").Get());
             //e->tex->Preload();
         }
-
 
     }
 
@@ -665,7 +664,7 @@ void  CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &
 void CMatrixEffect::CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask, CMatrixMapStatic * skip,  FIRE_END_HANDLER handler, DWORD user)
 {
     DTRACE();
-    CMatrixEffectMovingObject *e = HNew(m_Heap) CMatrixEffectMovingObject(props, hitmask, skip,  handler, user);
+    CMatrixEffectMovingObject* e = HNew(m_Heap) CMatrixEffectMovingObject(props, hitmask, skip,  handler, user);
     if (!g_MatrixMap->AddEffect(e)) e = NULL;
     if (eh && e)
     {
@@ -679,49 +678,49 @@ void CMatrixEffect::CreateMovingObject(SEffectHandler *eh, const SMOProps &props
     }
 }
 
-void CMatrixEffect::CreateMoveto(void)
+//Упрощённый вызов функции отрисовки вейпоинта, отрисовывает данный эффект в текущей точке положения курсора
+void CMatrixEffect::CreateMoveto(int type)
 {
     DTRACE();
 
-    CreateMoveto(g_MatrixMap->m_TraceStopPos);
+    CreateMoveto(g_MatrixMap->m_TraceStopPos, type);
 }
-
-void CMatrixEffect::CreateMoveto(const D3DXVECTOR3 &pos)
+//Непосредственный вызов отрисовки вейпоинта на поверхности (необходимо указывать точный вектор)
+void CMatrixEffect::CreateMoveto(const D3DXVECTOR3& pos, int type)
 {
     DTRACE();
 
     D3DXVECTOR3 tp = g_MatrixMap->m_Camera.GetFrustumCenter() - pos;
     D3DXVec3Normalize(&tp, &tp);
 
-    CMatrixEffectMoveto *e = HNew(m_Heap) CMatrixEffectMoveto(pos + tp * 10);
+    CMatrixEffectMoveto* e = HNew(m_Heap) CMatrixEffectMoveto(pos + tp * 10, type);
 
     g_MatrixMap->AddEffect(e);
-
 }
 
-void            CMatrixEffect::DeleteAllMoveto()
+void CMatrixEffect::DeleteAllMoveto()
 {
-    while (ELIST_FIRST(EFFECT_MOVETO)) ELSIT_REMOVE_OLDEST(EFFECT_MOVETO);
+    while(ELIST_FIRST(EFFECT_MOVETO)) ELSIT_REMOVE_OLDEST(EFFECT_MOVETO);
 }
 
-void CMatrixEffect::CreateBuoy(SEffectHandler *eh, const D3DXVECTOR3 &pos, EBuoyType bt)
+void CMatrixEffect::CreateBuoy(SEffectHandler* eh, const D3DXVECTOR3& pos, EBuoyType bt)
 {
     DTRACE();
 
     SMOProps mo;
-    memset(&mo,0,sizeof(mo));
+    memset(&mo, 0, sizeof(mo));
     mo.curpos = pos;
     mo.buoytype = bt;
-    //mo.velocity = D3DXVECTOR3(1,1,1);
+    //mo.velocity = D3DXVECTOR3(1, 1, 1);
 
-    const wchar *name = OBJECT_PATH_LOGO_RED;
+    const wchar* name = OBJECT_PATH_LOGO_RED;
 
-    if (bt == BUOY_BLUE) name = OBJECT_PATH_LOGO_BLUE;
-    else if (bt == BUOY_GREEN) name = OBJECT_PATH_LOGO_GREEN;
+    if(bt == BUOY_BLUE) name = OBJECT_PATH_LOGO_BLUE;
+    else if(bt == BUOY_GREEN) name = OBJECT_PATH_LOGO_GREEN;
 
     mo.object = LoadObject(name, m_Heap);
 
-    CMatrixEffectBuoy *e = HNew(m_Heap) CMatrixEffectBuoy(mo);
+    CMatrixEffectBuoy* e = HNew(m_Heap) CMatrixEffectBuoy(mo);
     if (!g_MatrixMap->AddEffect(e)) e = NULL;
     if (eh && e)
     {

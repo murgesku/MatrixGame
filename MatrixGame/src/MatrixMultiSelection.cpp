@@ -10,10 +10,10 @@
 #include "MatrixFlyer.hpp"
 #include "MatrixMapStatic.hpp"
 
-CMultiSelection * CMultiSelection::m_GameSelection;
-CMultiSelection * CMultiSelection::m_First;
-CMultiSelection * CMultiSelection::m_Last;
-int               CMultiSelection::m_Time;
+CMultiSelection* CMultiSelection::m_GameSelection;
+CMultiSelection* CMultiSelection::m_First;
+CMultiSelection* CMultiSelection::m_Last;
+int              CMultiSelection::m_Time;
 
 #define MS_RAMKA_COLOR      0xFF00FF00
 #define MS_RAMKA_COLOR2     0x80000000
@@ -21,25 +21,26 @@ int               CMultiSelection::m_Time;
 
 #define MS_Z            0
 
+//Как обычно, оставили в закомментированном виде кусок кода по натягиванию клёвой текстуры на область выделения
+//Но зато сам код подстановки нахрен весь потёрли, что теперь быстро не восстановить - чётка! (Klaxons)
 CMultiSelection::CMultiSelection(const Base::CPoint &pos):m_LT(pos), m_RB(pos), m_Flags(0), m_SelItems(g_MatrixHeap)
 {
-    //m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SELBACK);
+    //m_Tex = (CTextureManaged*)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SELBACK);
     //m_Tex->MipmapOff();
     //m_Tex->Preload();
 }
 
-
-CMultiSelection * CMultiSelection::Begin(const Base::CPoint &pos)
+CMultiSelection* CMultiSelection::Begin(const Base::CPoint& pos)
 {
-    if (g_MatrixMap->IsPaused()) return NULL;
-    CMultiSelection *s = HNew(g_MatrixHeap) CMultiSelection(pos);
-    LIST_ADD(s,m_First, m_Last, m_Prev, m_Next);
+    if(g_MatrixMap->IsPaused()) return NULL;
+    CMultiSelection* s = HNew(g_MatrixHeap) CMultiSelection(pos);
+    LIST_ADD(s, m_First, m_Last, m_Prev, m_Next);
     return s;
 }
 
 bool CMultiSelection::DrawPass1(void)
 {
-    if (FLAG(m_Flags, MS_FLAG_DIP)) return false;
+    if(FLAG(m_Flags, MS_FLAG_DIP)) return false;
 
     //D3DXVECTOR4  v[4];
     //v[0] = D3DXVECTOR4( float(m_LT.x), float(m_RB.y), 1.0f, 1.0f );
@@ -47,20 +48,20 @@ bool CMultiSelection::DrawPass1(void)
     //v[2] = D3DXVECTOR4( float(m_RB.x), float(m_RB.y), 1.0f, 1.0f );
     //v[3] = D3DXVECTOR4( float(m_RB.x), float(m_LT.y), 1.0f, 1.0f );
 
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILENABLE,	TRUE));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILENABLE,	 TRUE));
 
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	FALSE));
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,	 FALSE));
     g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE );
     //ASSERT_DX(g_D3DD->SetRenderState(D3DRS_COLORWRITEENABLE, 0x0));
 
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILFUNC,		D3DCMP_ALWAYS ));
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILZFAIL,	D3DSTENCILOP_KEEP ));
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILFAIL,		D3DSTENCILOP_KEEP ));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILFUNC,		 D3DCMP_ALWAYS));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILZFAIL,	 D3DSTENCILOP_KEEP));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILFAIL,		 D3DSTENCILOP_KEEP));
 
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILREF,		0x1));
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILMASK,		0xffffffff));
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILWRITEMASK,0xffffffff));
-	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILPASS,		D3DSTENCILOP_REPLACE));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILREF,		 0x1));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILMASK,		 0xffffffff));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff));
+	ASSERT_DX(g_D3DD->SetRenderState(D3DRS_STENCILPASS,		 D3DSTENCILOP_REPLACE));
 
     D3DRECT r;
     r.x1 = m_LT.x;
@@ -122,33 +123,35 @@ void CMultiSelection::Draw(void)
         //backcolor = LIC(MS_SELBACK_COLOR, (MS_SELBACK_COLOR & 0x00FFFFFF), k);
     }
 
-//    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, backcolor);
+    //Хотя нет, вот он код для отрисовки выделения с текстурой, только не работает нихрена
+    /*
+    g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, backcolor);
 
-    //SetColorOpAnyOrder(0,D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
-    //SetAlphaOpAnyOrder(0,D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
-    //SetColorOpDisable(1);
+    SetColorOpAnyOrder(0,D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
+    SetAlphaOpAnyOrder(0,D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
+    SetColorOpDisable(1);
 
-    //g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_ONE  );
+    g_D3DD->SetRenderState(D3DRS_DESTBLEND,  D3DBLEND_ONE  );
 
-    //float ll_x = 0.0f;
-    //float ll_y = 0.0f;
-    //float rr_x = float(m_RB.x - m_LT.x) * INVERT(128.0f);
-    //float rr_y = float(m_RB.y - m_LT.y) * INVERT(128.0f);
+    float ll_x = 0.0f;
+    float ll_y = 0.0f;
+    float rr_x = float(m_RB.x - m_LT.x) * INVERT(128.0f);
+    float rr_y = float(m_RB.y - m_LT.y) * INVERT(128.0f);
 
+    float dx = (float(g_MatrixMap->GetTime() & 4095) * INVERT(4096.0f)) + rr_x * 0.5f;
+    ll_x -= dx;
+    rr_x -= dx;
 
-    //float dx = (float(g_MatrixMap->GetTime() & 4095) * INVERT(4096.0f)) + rr_x * 0.5f;
-    //ll_x -= dx;
-    //rr_x -= dx;
-
-    //float dy = (float(g_MatrixMap->GetTime() & 8191) * INVERT(8192.0f)) + rr_y * 0.5f;
-    //ll_y += dy;
-    //rr_y += dy;
+    float dy = (float(g_MatrixMap->GetTime() & 8191) * INVERT(8192.0f)) + rr_y * 0.5f;
+    ll_y += dy;
+    rr_y += dy;
+    */
 
     D3DXVECTOR4 v2[5];
-    v2[0] = D3DXVECTOR4( float(m_LT.x), float(m_LT.y), MS_Z, 1.0f );
-    v2[1] = D3DXVECTOR4( float(m_RB.x), float(m_LT.y), MS_Z, 1.0f );
-    v2[2] = D3DXVECTOR4( float(m_RB.x), float(m_RB.y), MS_Z, 1.0f );
-    v2[3] = D3DXVECTOR4( float(m_LT.x), float(m_RB.y), MS_Z, 1.0f );
+    v2[0] = D3DXVECTOR4(float(m_LT.x), float(m_LT.y), MS_Z, 1.0f);
+    v2[1] = D3DXVECTOR4(float(m_RB.x), float(m_LT.y), MS_Z, 1.0f);
+    v2[2] = D3DXVECTOR4(float(m_RB.x), float(m_RB.y), MS_Z, 1.0f);
+    v2[3] = D3DXVECTOR4(float(m_LT.x), float(m_RB.y), MS_Z, 1.0f);
     v2[4] = v2[0];
 
     g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, ramkacolor);
@@ -179,7 +182,6 @@ void CMultiSelection::Draw(void)
 
     v2[4] = v2[0];
 
-
     g_D3DD->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &v2, sizeof(D3DXVECTOR4));
 
     v2[0].x += 2.0f;
@@ -196,12 +198,10 @@ void CMultiSelection::Draw(void)
 
     v2[4] = v2[0];
 
-
     g_D3DD->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &v2, sizeof(D3DXVECTOR4));
-
 }
 
-void CMultiSelection::Update(const Base::CPoint &pos,DWORD mask, SELECT_ENUM callback, DWORD param)
+void CMultiSelection::Update(const Base::CPoint& pos, DWORD mask, SELECT_ENUM callback, DWORD param)
 {
     m_RB = pos;
 
@@ -212,7 +212,7 @@ void CMultiSelection::Update(const Base::CPoint &pos,DWORD mask, SELECT_ENUM cal
 
     RemoveSelItems();
     int n = CMatrixMapStatic::GetVisObjCnt();
-    for (int i = 0; i<n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         CMatrixMapStatic * o = CMatrixMapStatic::GetVisObj(i);
 
@@ -247,7 +247,8 @@ void CMultiSelection::Update(const Base::CPoint &pos,DWORD mask, SELECT_ENUM cal
                     RemoveSelItems();
                 }
                 SETFLAG(m_Flags, MS_FLAG_ROBOTS);
-            } else if (o->IsBuilding())
+            }
+            else if (o->IsBuilding())
             {
                 if (FLAG(m_Flags, MS_FLAG_ROBOTS)) continue; // do not add buildings if there are some robots present
                 SETFLAG(m_Flags, MS_FLAG_BUILDINGS);
@@ -299,14 +300,14 @@ void CMultiSelection::End(bool add_to_selection)
 
 }
 
-bool CMultiSelection::FindItem(const CMatrixMapStatic* o) 
+bool CMultiSelection::FindItem(const CMatrixMapStatic* o)
 {
     CMatrixMapStatic** items = m_SelItems.Buff<CMatrixMapStatic*>();
     CMatrixMapStatic** iteme = m_SelItems.BuffEnd<CMatrixMapStatic*>();
 
-    for(;items < iteme; ++items)
+    for(; items < iteme; ++items)
     {
-        if (o == (*items))
+        if(o == (*items))
         {
             return true;
         }
@@ -319,11 +320,11 @@ void CMultiSelection::Remove(const CMatrixMapStatic* o)
     CMatrixMapStatic** items = m_SelItems.Buff<CMatrixMapStatic*>();
     CMatrixMapStatic** iteme = m_SelItems.BuffEnd<CMatrixMapStatic*>();
 
-    for(;items < iteme; ++items)
+    for(; items < iteme; ++items)
     {
-        if (o == (*items))
+        if(o == (*items))
         {
-            *items = *(iteme-1);
+            *items = *(iteme - 1);
             m_SelItems.SetLenNoShrink(m_SelItems.Len() - sizeof(DWORD));
             return;
         }

@@ -7,14 +7,15 @@
 #include "CBlockPar.hpp"
 #include "CFile.hpp"
 #include "CException.hpp"
-//Используется для функции вывода логов SFT
+//Используется для функции вывода логов SFT_fun
 #include <stdio.h>
 #include "shlobj.h"
 
 namespace Base {
 
-//Функция для быстрого вывода отладочных строк в общий игровой лог ########.log (пример: SFT(CStr("some string"));)
-void SFT(CStr out)
+//Функция для быстрого вывода отладочных строк в общий игровой лог ########.log
+//При вызове из кода используется удобный define SFT (пример: SFT("some string" + 10))
+void SFT_fun(CStr out)
 {
 	CHAR system_folder[MAX_PATH];
 	SHGetSpecialFolderPath(0, system_folder, CSIDL_PERSONAL, true);

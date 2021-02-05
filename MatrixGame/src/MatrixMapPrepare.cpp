@@ -830,11 +830,13 @@ skip_this_cannon:
                 while(prop==1 || prop==2)
                 {
                     // Ищем ближайший завод или базу
-                    CMatrixBuilding * building=NULL;
-                    CMatrixMapStatic * ms=CMatrixMapStatic::GetFirstLogic();
+                    CMatrixBuilding* building=NULL;
+                    CMatrixMapStatic* ms=CMatrixMapStatic::GetFirstLogic();
                     float mindist=1e20f;
-                    while(ms) {
-                        if(ms->GetObjectType()==OBJECT_TYPE_BUILDING) {
+                    while(ms)
+                    {
+                        if(ms->GetObjectType()==OBJECT_TYPE_BUILDING)
+                        {
                             CMatrixBuilding * cb=(CMatrixBuilding *)ms;
                             float cdist=POW2(c->m_Pos.x-cb->m_Pos.x)+POW2(c->m_Pos.y-cb->m_Pos.y);
                             if(cb->m_TurretsPlacesCnt<MAX_PLACES && cdist<mindist && cdist<POW2(MAX_DISTANCE_CANNON_BUILDING)) {
@@ -866,7 +868,7 @@ skip_this_cannon:
                     break;
                 }
 
-                if (prop == 2)
+                if(prop == 2)
                 {
                     ++i;
                     if (i>=n)
@@ -879,23 +881,21 @@ skip_this_cannon:
                 }
 
 
-            } else
+            }
+            else
             {
                 int prop = 0; // single cannon
-
-
-
             }
 
             c->OnLoad();
         }
 
-        CMatrixMapStatic * ms=CMatrixMapStatic::GetFirstLogic();
+        CMatrixMapStatic* ms=CMatrixMapStatic::GetFirstLogic();
         while(ms)
         {
             if(ms->GetObjectType()==OBJECT_TYPE_BUILDING)
             {
-                CMatrixBuilding * cb=(CMatrixBuilding *)ms;
+                CMatrixBuilding* cb=(CMatrixBuilding *)ms;
                 cb->m_TurretsMax=EBuildingTurrets(min(cb->m_TurretsMax,cb->m_TurretsPlacesCnt));
                 //if(cb->GetSide() == PLAYER_SIDE && g_MatrixMap->GetPlayerSide()->m_ActiveObject == cb)
                 //{
@@ -1632,7 +1632,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname)
         m_GroupVis = (SGroupVisibility *)HAllocClear(sizeof(SGroupVisibility) * gcnt, g_MatrixHeap);
         ASSERT(gcnt == dbl->GetArraysCount());
 
-        for (int i=0;i<gcnt;++i)
+        for (int i=0; i<gcnt; ++i)
         {
             SGroupVisibility *gv = m_GroupVis + i;
 
@@ -1788,21 +1788,30 @@ void CMatrixMap::StaticPrepare(int ocnt, bool skip_progress)
 //y 72,302
 //z 51,103
 
-            if ((*sb)->IsBuilding())
+            if((*sb)->IsBuilding())
             {
                 SObjectCore* core = (*sb)->GetCore(DEBUG_CALL_INFO);
-                if((*sb)->AsBuilding()->m_Kind == BUILDING_BASE){
+                if((*sb)->AsBuilding()->m_Kind == BUILDING_BASE)
+                {
                     D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(-8.896f, -68.774f, 55.495f), &core->m_Matrix);
-                }else if((*sb)->AsBuilding()->m_Kind == BUILDING_TITAN){
+                }
+                else if((*sb)->AsBuilding()->m_Kind == BUILDING_TITAN)
+                {
                     D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.455f, 58.688f, 73.993f), &core->m_Matrix);
-                }else if((*sb)->AsBuilding()->m_Kind == BUILDING_ELECTRONIC){
+                }
+                else if((*sb)->AsBuilding()->m_Kind == BUILDING_ELECTRONIC)
+                {
                     D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.124f, 64.68f, 75.081f), &core->m_Matrix);
-                }else if((*sb)->AsBuilding()->m_Kind == BUILDING_ENERGY){
+                }
+                else if((*sb)->AsBuilding()->m_Kind == BUILDING_ENERGY)
+                {
                     D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.1f, 110.0f, 51.103f), &core->m_Matrix);
-                }else if((*sb)->AsBuilding()->m_Kind == BUILDING_PLASMA){
+                }
+                else if((*sb)->AsBuilding()->m_Kind == BUILDING_PLASMA)
+                {
                     D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(-0.149f, 105.0f, 72.981f), &core->m_Matrix);
                 }
-                
+
                 core->Release();
             }
         }
@@ -1810,54 +1819,49 @@ void CMatrixMap::StaticPrepare(int ocnt, bool skip_progress)
         ++n;
 	}
 
-    
-
-    // prepare shadows geometry
-    sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-	while(sb < se)
+    //Prepare shadows geometry
+    sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+    while(sb < se)
     {
         (*sb)->RNeed(MR_ShadowProjGeom);
         //ms->FreeDynamicResources();
-		++sb;
+        ++sb;
         if (!skip_progress)
         {
             g_LoadProgress->SetCurLPPos(n++);
         }
-	}
+    }
 }
 
 
 void CMatrixMap::Restart(void)
 {
-
 	m_BeforeWinCount = 0;
     m_BeforeWinLooseDialogCount = 0;
-    if (SETFLAG(m_Flags, MMFLAG_WIN))
-        RESETFLAG(m_Flags, MMFLAG_WIN);
+    if(SETFLAG(m_Flags, MMFLAG_WIN)) RESETFLAG(m_Flags, MMFLAG_WIN);
 
     CDWORDMap dm(g_CacheHeap);
 
-    CMatrixMapStatic ** sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic ** se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    for (;sb < se;++sb)
+    CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+    CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
+    for(; sb < se; ++sb)
     {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
+        if((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
         {
-            if ((*sb)->IsNotOnMinimap())
+            if((*sb)->IsNotOnMinimap())
             {
-                int uid = ((CMatrixMapObject *)(*sb))->m_UID;
-                if (uid >= 0) dm.Set(uid,0);
+                int uid = ((CMatrixMapObject*)(*sb))->m_UID;
+                if(uid >= 0) dm.Set(uid,0);
             }
         }
     }
     
-
-    // removing all objects
+    //Removing all objects from map
     StaticClear();
 
-    if (m_EffectSpawners)
+    if(m_EffectSpawners)
     {
-        for (int i = 0; i<m_EffectSpawnersCnt; ++i)
+        for(int i = 0; i<m_EffectSpawnersCnt; ++i)
         {
             m_EffectSpawners[i].~CEffectSpawner();
         }
@@ -1867,7 +1871,7 @@ void CMatrixMap::Restart(void)
     m_EffectSpawners = NULL;
 
     // removing all effects
-    while (m_EffectsFirst)
+    while(m_EffectsFirst)
     {
 #ifdef _DEBUG
         SubEffect(DEBUG_CALL_INFO, m_EffectsFirst);
@@ -1879,7 +1883,7 @@ void CMatrixMap::Restart(void)
     //CMatrixEffectPointLight::ClearAll();
 
     m_StartTime = timeGetTime();
-    for (int i=0;i<m_SideCnt;++i)
+    for(int i = 0; i < m_SideCnt; ++i)
     {
         m_Side[i].SetStatus(SS_NONE);
         m_Side[i].ClearStatistics();
@@ -1890,18 +1894,16 @@ void CMatrixMap::Restart(void)
     CMatrixMapStatic::ValidateAfterReset();
 #endif
 
-
-
     CStorage stor(g_CacheHeap);
 
     stor.Load(MapName());
 
     ReloadDynamics(stor, RS_SIDEAI);
     ReloadDynamics(stor, RS_RESOURCES);
-    int allobj = ReloadDynamics(stor,RS_MAPOBJECTS);    // objects
-    allobj += ReloadDynamics(stor,RS_BUILDINGS);       // buildings
+    int allobj = ReloadDynamics(stor, RS_MAPOBJECTS);    // objects
+    allobj += ReloadDynamics(stor, RS_BUILDINGS);       // buildings
     CBuf robots(g_CacheHeap);
-    allobj += ReloadDynamics(stor, RS_ROBOTS,&robots);
+    allobj += ReloadDynamics(stor, RS_ROBOTS, &robots);
     allobj += ReloadDynamics(stor, RS_CANNONS);
 
     ReloadDynamics(stor, RS_EFFECTS);
@@ -1911,27 +1913,22 @@ void CMatrixMap::Restart(void)
 
     ReloadDynamics(stor, RS_CAMPOS);
 
-    // minimap rendering
+    //Minimap rendering
     {
-
-	    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-        CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
+        CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+        CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
 
         DWORD flags = 0;
 
-        if (g_Config.m_DrawAllObjectsToMinimap == 1) flags = MR_Matrix|MR_Graph|MR_MiniMap;
-        else if (g_Config.m_DrawAllObjectsToMinimap == 2)
-        {
+        if(g_Config.m_DrawAllObjectsToMinimap == 1) flags = MR_Matrix | MR_Graph | MR_MiniMap;
+        else if(g_Config.m_DrawAllObjectsToMinimap == 2) flags = MR_Matrix | MR_Graph | MR_MiniMap;
 
-            flags = MR_Matrix|MR_Graph|MR_MiniMap;
-        }
-
-        if (flags != 0)
+        if(flags != 0)
         {
-	        while(sb < se)
+            while(sb < se)
             {
-                int uid = ((CMatrixMapObject *)(*sb))->m_UID;
-                if (dm.Get(uid,NULL))
+                int uid = ((CMatrixMapObject*)(*sb))->m_UID;
+                if(dm.Get(uid, NULL))
                 {
                     dm.Del(uid);
                     flags &= ~MR_MiniMap;
@@ -1939,19 +1936,23 @@ void CMatrixMap::Restart(void)
                 }
 
                 (*sb)->RNeed(flags);
-		        ++sb;
-	        }
+                ++sb;
+            }
         }
     }
 
-    CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
-    while(ms!=NULL)
+    CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+    while(ms != NULL)
     {
-        if (ms->IsLiveBuilding())
+        if(ms->GetObjectType() == OBJECT_TYPE_BUILDING)
         {
-            ((CMatrixBuilding *)ms)->LogicTakt(100000);
-            ms->RNeed(MR_Matrix|MR_Graph|MR_MiniMap);
-            //RenderBuildingToMiniMapBackground((CMatrixBuilding *)ms);
+            if(ms->AsBuilding()->GatheringPointIsSet()) ms->AsBuilding()->ClearGatheringPoint();
+            if(ms->IsLiveBuilding())
+            {
+                ms->AsBuilding()->LogicTakt(100000);
+                ms->RNeed(MR_Matrix | MR_Graph | MR_MiniMap);
+                //RenderBuildingToMiniMapBackground((CMatrixBuilding*)ms);
+            }
         }
         ms = ms->GetNextLogic();
     }
@@ -1961,17 +1962,16 @@ void CMatrixMap::Restart(void)
     RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_BASE_SEL_ENABLED);
 
     g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
-
 }
 
 void CMatrixMap::InitObjectsLights(void)
 {
     // init lights
-	CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-	for(;sb < se;++sb)
+	CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+    CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
+	for(; sb < se; ++sb)
     {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
+        if((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
         {
             ((CMatrixMapObject *)(*sb))->m_Graph->InitLights(CMatrixEffect::GetBBTexI(BBT_POINTLIGHT));
         }
@@ -1979,23 +1979,23 @@ void CMatrixMap::InitObjectsLights(void)
 
 }
 
-void    CMatrixMap::CreatePoolDefaultResources(bool loading)
+void CMatrixMap::CreatePoolDefaultResources(bool loading)
 {
     // side color textures
     DTRACE();
 
-    for (int i=0;i<m_SideCnt;++i)
+    for(int i = 0; i < m_SideCnt; ++i)
     {
-        if (m_Side[i].m_ColorTexture == NULL)
+        if(m_Side[i].m_ColorTexture == NULL)
         {
             m_Side[i].m_ColorTexture = CACHE_CREATE_TEXTURE();
-            m_Side[i].m_ColorTexture->MakeSolidTexture(2,2,m_Side[i].m_Color);
+            m_Side[i].m_ColorTexture->MakeSolidTexture(2, 2, m_Side[i].m_Color);
         }
     }
-    if (m_NeutralSideColorTexture == NULL)
+    if(m_NeutralSideColorTexture == NULL)
     {
         m_NeutralSideColorTexture = CACHE_CREATE_TEXTURE();
-        m_NeutralSideColorTexture->MakeSolidTexture(2,2,m_NeutralSideColor);
+        m_NeutralSideColorTexture->MakeSolidTexture(2, 2, m_NeutralSideColor);
     }
 
 
@@ -2012,19 +2012,19 @@ void    CMatrixMap::CreatePoolDefaultResources(bool loading)
     CREATE_VB(sizeof(SShadowRectVertex)*4, D3DFVF_XYZRHW|D3DFVF_DIFFUSE, m_ShadowVB);
     LOCK_VB(m_ShadowVB,&v);
 	
-    v[0].p = D3DXVECTOR4(  0, float(g_ScreenY), 0.0f, 1.0f );
+    v[0].p = D3DXVECTOR4(0, float(g_ScreenY), 0.0f, 1.0f );
 	v[0].color = m_ShadowColor;
-	v[1].p = D3DXVECTOR4(  0,  0, 0.0f, 1.0f );
+	v[1].p = D3DXVECTOR4(0, 0, 0.0f, 1.0f);
 	v[1].color = m_ShadowColor;
-	v[2].p = D3DXVECTOR4( float(g_ScreenX), float(g_ScreenY), 0.0f, 1.0f );
+	v[2].p = D3DXVECTOR4(float(g_ScreenX), float(g_ScreenY), 0.0f, 1.0f );
 	v[2].color = m_ShadowColor;
-	v[3].p = D3DXVECTOR4( float(g_ScreenX),  0, 0.0f, 1.0f );
+	v[3].p = D3DXVECTOR4(float(g_ScreenX), 0, 0.0f, 1.0f );
 	v[3].color = m_ShadowColor;
 
     UNLOCK_VB(m_ShadowVB);
 
 
-    if (loading)
+    if(loading)
     {
         StaticPrepare2(robots_buf);
 
@@ -2034,7 +2034,7 @@ void    CMatrixMap::CreatePoolDefaultResources(bool loading)
         m_Minimap.Init();
         CWStr nnn(MapName(),g_CacheHeap);
         int iii = max(nnn.FindR('\\'), nnn.FindR('/')) ;
-        if (iii >=0) nnn.Del(0,iii+1);
+        if (iii >= 0) nnn.Del(0, iii + 1);
 
         m_Minimap.RenderBackground(nnn, uniq);
 
@@ -2105,7 +2105,7 @@ void    CMatrixMap::ReleasePoolDefaultResources(void)
 
     m_DeviceState->StoreState();
 
-    for (int i=0;i<m_SideCnt;++i)
+    for (int i=0; i<m_SideCnt; ++i)
     {
         if (m_Side[i].m_ColorTexture != NULL)
         {
@@ -2170,10 +2170,11 @@ bool    CMatrixMap::CheckLostDevice(void)
 
 //        D3DResource::Dump(D3DRESTYPE_VB);
         hr = g_D3DD->Reset( &g_D3Dpp );
-        if (hr != D3D_OK)
+        if(hr != D3D_OK)
         {
             return true;
-        } else
+        }
+        else
         {
             CreatePoolDefaultResources(false);
             break;

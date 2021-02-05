@@ -240,13 +240,14 @@ void CConstructor::StackRobot(
 
 void __stdcall CConstructor::RemoteBuild(void* pObj)
 {
-	DTRACE();
+    DTRACE();
     if(m_Base->m_Side != PLAYER_SIDE)
     {
         return;
     }
+
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
-    
+
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
     g_ConfigHistory->AddConfig(&player_side->m_ConstructPanel->m_Configs[cfg_num]);
 
@@ -257,10 +258,10 @@ void __stdcall CConstructor::RemoteBuild(void* pObj)
 
     int res[MAX_RESOURCES];
     GetConstructionPrice(res);
-    player_side->AddResourceAmount(TITAN,-res[TITAN]*g_IFaceList->m_RCountControl->GetCounter());
-    player_side->AddResourceAmount(ELECTRONICS,-res[ELECTRONICS]*g_IFaceList->m_RCountControl->GetCounter());
-    player_side->AddResourceAmount(ENERGY,-res[ENERGY]*g_IFaceList->m_RCountControl->GetCounter());
-    player_side->AddResourceAmount(PLASMA,-res[PLASMA]*g_IFaceList->m_RCountControl->GetCounter());
+    player_side->AddResourceAmount(TITAN, -res[TITAN] * g_IFaceList->m_RCountControl->GetCounter());
+    player_side->AddResourceAmount(ELECTRONICS, -res[ELECTRONICS] * g_IFaceList->m_RCountControl->GetCounter());
+    player_side->AddResourceAmount(ENERGY, -res[ENERGY] * g_IFaceList->m_RCountControl->GetCounter());
+    player_side->AddResourceAmount(PLASMA, -res[PLASMA] * g_IFaceList->m_RCountControl->GetCounter());
 
     if(player_side && player_side->m_ConstructPanel)
     {
@@ -268,16 +269,15 @@ void __stdcall CConstructor::RemoteBuild(void* pObj)
     }
     g_IFaceList->m_RCountControl->Reset();
     g_IFaceList->m_RCountControl->CheckUp();
-
 }
 void CConstructor::BeforeRender(void)
 {
 	//static float za = 0;
- //   SinCos(za, &m_Robot->m_Forward.x, &m_Robot->m_Forward.y );
+    //SinCos(za, &m_Robot->m_Forward.x, &m_Robot->m_Forward.y);
     m_Robot->m_HullForward = m_Robot->m_Forward;
     m_Robot->m_Forward.z = 0;
 	//za += 0.001f;
- //   if (za > M_PI_MUL(2)) za -= M_PI_MUL(2);
+    //if(za > M_PI_MUL(2)) za -= M_PI_MUL(2);
 
     m_Robot->RChange(MR_Matrix|MR_Graph);
     m_Robot->BeforeDraw();
@@ -968,7 +968,7 @@ void CConstructor::OperateCurrentConstruction()
     OperateUnit(MRT_CHASSIS, ps->m_ConstructPanel->m_Configs[cfg_num].m_Chassis.m_nKind);
     OperateUnit(MRT_ARMOR, ps->m_ConstructPanel->m_Configs[cfg_num].m_Hull.m_Unit.m_nKind);
 
-    for(int i = 0; i < MAX_WEAPON_CNT; i++)
+    for(int i = 0; i < MAX_WEAPON_CNT; ++i)
     {
         if(ps->m_ConstructPanel->m_Configs[cfg_num].m_Weapon[i].m_nKind)
         {
@@ -982,9 +982,9 @@ void CConstructor::OperateCurrentConstruction()
 void CConstructor::GetConstructionPrice(int* res)
 {
     CMatrixRobotAI* robot = m_Robot;
-    ZeroMemory(res, sizeof(int)*MAX_RESOURCES);
+    ZeroMemory(res, sizeof(int) * MAX_RESOURCES);
 
-    for(int i = 0; i < robot->m_UnitCnt; i++)
+    for(int i = 0; i < robot->m_UnitCnt; ++i)
     {
         int price[MAX_RESOURCES];
         ZeroMemory(price, sizeof(price));
@@ -1006,7 +1006,7 @@ void CConstructor::GetConstructionPrice(int* res)
             memcpy(price, &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].m_Kind-1)*4], sizeof(int)*4);
         }
 
-        for(int j = 0; j < MAX_RESOURCES; j++)
+        for(int j = 0; j < MAX_RESOURCES; ++j)
         {
             res[j] += price[j];
         }
@@ -1018,7 +1018,7 @@ int CConstructor::GetConstructionStructure()
     CMatrixRobotAI* robot = m_Robot;
     int structure = 0;
 
-    for(int i = 0; i < robot->m_UnitCnt; i++)
+    for(int i = 0; i < robot->m_UnitCnt; ++i)
     {
         if(robot->m_Unit[i].m_Type == MRT_CHASSIS)
         {
@@ -1225,11 +1225,11 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
             set_extra = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind-1].extra;
             memcpy(minus_res, &g_Config.m_Price[ARMOR1_TITAN + (int(m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind)-1)*4], sizeof(int)*4);
 
-            for(int i=0; i < MAX_WEAPON_CNT;i++)
+            for(int i=0; i < MAX_WEAPON_CNT; ++i)
             {
                 if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind)
                 {
-                    for(int j = 0;j < 4; j++)
+                    for(int j = 0; j < 4; ++j)
                     {
                         minus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                     }
@@ -1239,11 +1239,11 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
         memcpy(plus_res, &g_Config.m_Price[ARMOR1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         memcpy(item_res, &g_Config.m_Price[ARMOR1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
         
-        for(int i = 0; i < MAX_WEAPON_CNT && try_common; i++)
+        for(int i = 0; i < MAX_WEAPON_CNT && try_common; ++i)
         {
             if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_BOMB && m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind != RUK_WEAPON_MORTAR)
             {
-                for(int j = 0;j < 4; j++)
+                for(int j = 0; j < 4; ++j)
                 {
                     plus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                 }
@@ -1251,11 +1251,11 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
             }
         }
 
-        for(int i = 0; i < MAX_WEAPON_CNT && try_extra; i++)
+        for(int i = 0; i < MAX_WEAPON_CNT && try_extra; ++i)
         {
             if(m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_BOMB || m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind == RUK_WEAPON_MORTAR)
             {
-                for(int j = 0;j < 4; j++)
+                for(int j = 0; j < 4; ++j)
                 {
                     plus_res[j] += g_Config.m_Price[WEAPON1_TITAN + ((m_Configs[m_CurrentConfig].m_Weapon[i].m_nKind-1)*4) + j];
                 }
@@ -1283,7 +1283,7 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
         memcpy(item_res, &g_Config.m_Price[WEAPON1_TITAN + (int(kind)-1)*4], sizeof(int)*4);
     }
     
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 4; ++i)
     {
         total_res[i] -= minus_res[i];
         total_res[i] += plus_res[i];
@@ -1297,10 +1297,9 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(
     //    return true;
     //}
 
-    for (int i=0;i<MAX_RESOURCES;++i)
+    for (int i=0; i<MAX_RESOURCES; ++i)
     {
-        if(ps->GetResourcesAmount(ERes(i)) < total_res[i] && item_res[i] != 0)
-            return false;
+        if(ps->GetResourcesAmount(ERes(i)) < total_res[i] && item_res[i] != 0) return false;
     }
     return true;
 
@@ -1375,7 +1374,7 @@ void CConstructorPanel::MakeItemReplacements(
         {
             int ccc = bp->ParCount();
             CWStr repl(g_CacheHeap);
-            for (int i=0; i<ccc; i++)
+            for (int i=0; i<ccc; ++i)
             {
                 double sign = 1;
 
@@ -1475,8 +1474,8 @@ void CConstructorPanel::SetLabelsAndPrice(ERobotUnitType type, ERobotUnitKind ki
 void SPrice::SetPrice(ERobotUnitType type, ERobotUnitKind kind)
 {
     ZeroMemory(m_Resources, sizeof(m_Resources));
-    if(!kind)
-        return;
+    if(!kind) return;
+
     switch(type)
     {
         case MRT_HEAD:
@@ -1549,7 +1548,7 @@ CMatrixRobotAI* SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id)
     
     if(m_Armor.m_Unit.m_nKind != 0)
     {
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        for(int nC = 0; nC < MAX_WEAPON_CNT; ++nC)
         {
 		    if(m_Weapon[nC].m_Unit.m_nKind != 0)
             {
@@ -1567,7 +1566,7 @@ CMatrixRobotAI* SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id)
 
     if(m_Armor.m_Unit.m_nKind != 0)
     {
-        for(int nC = 0; nC < MAX_WEAPON_CNT; nC++)
+        for(int nC = 0; nC < MAX_WEAPON_CNT; ++nC)
         {
 		    if(weapons[nC].m_Unit.m_nKind != 0)
             {
@@ -1666,7 +1665,7 @@ void SSpecialBot::CalcStrength()
 {
     m_Strength=0.0f;
 
-    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    for(int i=0; i<MAX_WEAPON_CNT; ++i)
     {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
         m_Strength+=g_Config.m_WeaponStrengthAI[m_Weapon[i].m_Unit.m_nKind];
@@ -1676,26 +1675,26 @@ void SSpecialBot::CalcStrength()
 float SSpecialBot::DifWeapon(SSpecialBot & other)
 {
     int t1=0,t2=0;
-    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    for(int i=0; i<MAX_WEAPON_CNT; ++i)
     {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
-        t1++;
+        ++t1;
     }
-    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    for(int i=0; i<MAX_WEAPON_CNT; ++i)
     {
         if(other.m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
-        t2++;
+        ++t2;
     }
     if(t2>t1) return other.DifWeapon(*this);
 
     float cnt=0;
     float cntr=0;
-    for(int i=0; i<MAX_WEAPON_CNT; i++) 
+    for(int i=0; i<MAX_WEAPON_CNT; ++i)
     {
         if(m_Weapon[i].m_Unit.m_nType!=MRT_WEAPON) continue;
         cnt+=1.0f;
 
-        for(int u=0; u<MAX_WEAPON_CNT; u++) 
+        for(int u=0; u<MAX_WEAPON_CNT; ++u)
         {
             if(other.m_Weapon[u].m_Unit.m_nType!=MRT_WEAPON) continue;
 
@@ -1746,8 +1745,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
         m_Weapon[u].m_Pos = u;
     }
 
-    for (int k = 0; k < MAX_RESOURCES; ++k)
-        m_Resources[k] = 0;
+    for(int k = 0; k < MAX_RESOURCES; ++k) m_Resources[k] = 0;
 
     // Chassis ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1762,7 +1760,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     else return false;
 
     m_Chassis.m_Price.SetPrice(m_Chassis.m_nType, m_Chassis.m_nKind);
-    for (int k = 0; k < MAX_RESOURCES; k++)
+    for (int k = 0; k < MAX_RESOURCES; ++k)
         m_Resources[k] += m_Chassis.m_Price.m_Resources[k];
     
     // Armor /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1781,7 +1779,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     m_Armor.m_MaxCommonWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].common;
     m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[m_Armor.m_Unit.m_nKind-1].extra;
     m_Armor.m_Unit.m_Price.SetPrice(m_Armor.m_Unit.m_nType, m_Armor.m_Unit.m_nKind);
-    for (int k = 0; k < MAX_RESOURCES; k++)
+    for (int k = 0; k < MAX_RESOURCES; ++k)
         m_Resources[k] += m_Armor.m_Unit.m_Price.m_Resources[k];
     
     // Hitpoints & Strength //////////////////////////////////////////////////////////////////////////////
@@ -1814,60 +1812,60 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
         int cntextra = 0;
 
         //Перебор пушек из шаблона
-        for (int u = 0; u < str.GetLen(); u++)
+        for (int u = 0; u < str.GetLen(); ++u)
         {
             wchar ch = str.GetBuf()[u];
             if (ch == L'G')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN;
             }
             else if (ch == L'C')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_CANNON;
             }
             else if (ch == L'M')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
             }
             else if (ch == L'F')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_FLAMETHROWER;
             }
             else if (ch == L'L')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_LASER;
             }
             else if (ch == L'P')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_PLASMA;
             }
             else if (ch == L'E')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_ELECTRIC;
             }
             else if (ch == L'R')
             {
-                cntnormal++;
+                ++cntnormal;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_REPAIR;
                 m_HaveRepair = true;
             }
             else if (ch == L'O')
             {
                 u = 4; // Установка оружия в слот для особого вооружения
-                cntextra++;
+                ++cntextra;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MORTAR;
             }
             else if (ch == L'B')
             {
                 u = 4; // Установка оружия в слот для особого вооружения
-                cntextra++;
+                ++cntextra;
                 m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_BOMB;
                 m_HaveBomb = true;
             }

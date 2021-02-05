@@ -9,36 +9,38 @@
 #include "MatrixProgressBar.hpp"
 #include "MatrixSoundManager.hpp"
 
-#define BASE_FLOOR_Z    (-63.0f)
-#define BASE_FLOOR_SPEED    0.0008f
-#define MAX_ZAHVAT_POINTS 14
+#define BASE_FLOOR_Z        (-63.0f) //Высота подъёма готового юнита из недр базы (на визуальную глубину залегания подъемника не влияет)
+#define BASE_FLOOR_SPEED    0.0008f  //Скорость воспроизведения подъёма лифта и юнита на нём (так можно ускорить спавн)
+#define MAX_ZAHVAT_POINTS   14
 
 #define BUILDING_EXPLOSION_PERIOD_SND_1    100
 #define BUILDING_EXPLOSION_PERIOD_SND_2    500
-#define BUILDING_EXPLOSION_PERIOD    10
-#define BUILDING_EXPLOSION_TIME         1000
-#define BUILDING_BASE_EXPLOSION_TIME    2000
+#define BUILDING_EXPLOSION_PERIOD          10
+#define BUILDING_EXPLOSION_TIME            1000
+#define BUILDING_BASE_EXPLOSION_TIME       2000
 
-#define RESOURCES_INCOME        10
-#define RESOURCES_INCOME_BASE   3
+#define RESOURCES_INCOME            10
+#define RESOURCES_INCOME_BASE       3
 
-#define BUILDING_SELECTION_SIZE    50
+#define GATHERING_POINT_SHOW_TIME   1650
+
+#define BUILDING_SELECTION_SIZE     50
 
 #define CAPTURE_RADIUS              50
-#define CAPTURE_SEEK_ROBOT_PERIOD       500
+#define CAPTURE_SEEK_ROBOT_PERIOD   500
 
 #define DISTANCE_CAPTURE_ME         300
 
-#define MAX_PLACES  4
+#define MAX_PLACES                  4
 
 //#define RES_TITAN_PERIOD       10000
 //#define RES_PLASMA_PERIOD      5000
 //#define RES_ENERGY_PERIOD      15000
 //#define RES_ELECTRO_PERIOD     8500
 //
-//#define ROBOT_BUILD_TIME        5000
-//#define FLYER_BUILD_TIME        5000
-//#define TURRET_BUILD_TIME       5000
+//#define ROBOT_BUILD_TIME       5000
+//#define FLYER_BUILD_TIME       5000
+//#define TURRET_BUILD_TIME      5000
 
 #define MAX_STACK_UNITS         6
 
@@ -98,14 +100,13 @@ struct STrueColor
         m_ColoredCnt = 0;
         m_Color = 0;
     }
-
 };
 
 struct SResource
 {
     EBuildingType   m_Type;
     int             m_Amount;
-    //int             m_BaseRCycle;
+    //int           m_BaseRCycle;
 };
 
 class CBuildStack : public CMain
@@ -149,6 +150,18 @@ struct STurretPlace
     int     m_CannonType;
 };
 
+struct SGatheringPoint
+{
+    SGatheringPoint() : IsSet(false) {}
+
+    bool    IsSet;
+
+    int     CoordX;
+    int     CoordY;
+
+    CPoint  Coords;
+};
+
 class CMatrixBuilding : public CMatrixMapStatic 
 {
     union
@@ -165,7 +178,7 @@ class CMatrixBuilding : public CMatrixMapStatic
         };
     };
 
-    CMatrixEffectSelection *m_Selection;
+    CMatrixEffectSelection* m_Selection;
     int m_UnderAttackTime;
     int m_CaptureMeNextTime;
     int m_CtrlGroup;
@@ -175,22 +188,61 @@ public:
     CWStr           m_Name;
     int             m_defHitPoint;
     CBuildStack     m_BS;
-    
+
+    //Точка сбора для базы
+    SGatheringPoint m_GatheringPoint;
+    int m_ShowGatheringPointTime;
+
+    bool GatheringPointIsSet()
+    {
+        return m_GatheringPoint.IsSet;
+    }
+    void SetGatheringPoint(int x, int y)
+    {
+        m_GatheringPoint.IsSet = true;
+        //Чистые X и Y здесь нужны для расчёта точки отрисовки сборочного пункта
+        m_GatheringPoint.CoordX = x;
+        m_GatheringPoint.CoordY = y;
+        //А в координаты построенным роботам передаётся уже вот это значение
+        //Так запоминаются координаты для AssignPlace > GetRegion
+        m_GatheringPoint.Coords = CPoint(x / GLOBAL_SCALE_MOVE, y / GLOBAL_SCALE_MOVE);
+        //А так запоминаются координаты для PGOrderMoveTo
+        //m_GatheringPoint.Coords = CPoint(x - ROBOT_MOVECELLS_PER_SIZE / 2, y - ROBOT_MOVECELLS_PER_SIZE / 2);
+        m_ShowGatheringPointTime = g_MatrixMap->GetTime();
+        //Заносим указатель на здание в массив для перебора и отрисовки всех установленных точек сбора
+        g_MatrixMap->AddGPoint(this);
+    }
+    CPoint GetGatheringPoint()
+    {
+        if(GatheringPointIsSet()) return m_GatheringPoint.Coords;
+    }
+    void ClearGatheringPoint()
+    {
+        //Убираем маркер наличия точки сбора у здания
+        m_GatheringPoint.IsSet = false;
+        //И удаляем указатель на это здание из массива, перебирающего все здания со сборными точками для их отрисовки
+        g_MatrixMap->RemoveGPoint(this);
+    }
+    void CMatrixBuilding::ShowGatheringPointTakt(int cms);
+
     D3DXVECTOR2 m_Pos;
 	int m_Angle;
 
+
 	int m_Side;		// 1-8
+
 	EBuildingType m_Kind;
     EBuildingTurrets    m_TurretsMax;
     int                 m_TurretsHave;
     STurretPlace        m_TurretsPlaces[MAX_PLACES];
     int                 m_TurretsPlacesCnt;
 
+
     bool HaveMaxTurrets(void)  const          { return m_TurretsHave >= (int)m_TurretsMax; }
 
     bool CanBeCaptured(void) const {return !FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);}
     bool IsCaptured(void) const {return FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);}
-    void SetCapturedBy(CMatrixMapStatic *ms)
+    void SetCapturedBy(CMatrixMapStatic* ms)
     {
         SETFLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);
         m_Capturer = ms;
@@ -207,23 +259,24 @@ public:
     float m_BaseFloor;
     float m_BuildZ;
 
-	CVectorObjectGroup * m_GGraph;
-	CMatrixShadowProj * m_ShadowProj;
+	CVectorObjectGroup* m_GGraph;
+	CMatrixShadowProj* m_ShadowProj;
 
     EBaseState m_State; 
 
-    CMatrixEffectZahvat *m_capture;
+    CMatrixEffectZahvat* m_capture;
     STrueColor m_TrueColor;
-    ECaptureStatus Capture(CMatrixRobotAI *by);
-    int     m_InCaptureTime;
+    ECaptureStatus Capture(CMatrixRobotAI* by);
+
+    int m_InCaptureTime;
     union
     {
-        int     m_InCaptureNextTimeErase;
-        int     m_CaptureNextTimeRollback;
+        int m_InCaptureNextTimeErase;
+        int m_CaptureNextTimeRollback;
     };
     int                 m_InCaptureNextTimePaint;
     int                 m_CaptureSeekRobotNextTime;
-    CMatrixMapStatic   *m_Capturer; // used only for check
+    CMatrixMapStatic*   m_Capturer; // used only for check
 
     // hitpoint
     CMatrixProgressBar m_PB;
@@ -270,17 +323,34 @@ public:
         CSound::AddSound(S_DOORS_CLOSE, GetGeoCenter());
         CSound::AddSound(S_PLATFORM_DOWN, GetGeoCenter());
     }
-    EBaseState  State(void) const {return m_State;}
+    EBaseState State(void) const
+    {
+        return m_State;
+    }
 
     bool IsSpawningBot(void) const {return FLAG(m_ObjectState, BUILDING_SPAWNBOT);};
     void ResetSpawningBot(void) { RESETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
     void SetSpawningBot(void) { SETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
 
-    void    ShowHitpoint(void) {m_ShowHitpointTime = HITPOINT_SHOW_TIME;}
-    void    InitMaxHitpoint(float hp) {m_HitPoint = hp; m_HitPointMax = hp; m_MaxHitPointInversed = 1.0f / hp;}
-    float    GetMaxHitPoint() { return m_HitPointMax / 10; }
-    float   GetHitPoint() { return m_HitPoint / 10; }
-    void    ReleaseMe();
+    void ShowHitpoint(void)
+    {
+        m_ShowHitpointTime = HITPOINT_SHOW_TIME;
+    }
+    void InitMaxHitpoint(float hp)
+    {
+        m_HitPoint = hp;
+        m_HitPointMax = hp;
+        m_MaxHitPointInversed = 1.0f / hp;
+    }
+    float GetMaxHitPoint()
+    {
+        return m_HitPointMax / 10;
+    }
+    float GetHitPoint()
+    {
+        return m_HitPoint / 10;
+    }
+    void ReleaseMe();
 
     void SetNeutral(void);
 
@@ -301,7 +371,7 @@ public:
     bool Select(void);
     void UnSelect(void);
 
-	virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt) const;
+	virtual bool Pick(const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, float* outt) const;
 
     virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
 	virtual void BeforeDraw(void);
@@ -316,29 +386,29 @@ public:
     virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
 
     virtual int  GetSide(void) const {return m_Side;};
-    virtual bool  NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
+    virtual bool NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
     virtual bool InRect(const CRect &rect) const;
 
     void    OnOutScreen(void);
 
     // STUB:
-    int GetPlacesForTurrets(CPoint * places);
+    int  GetPlacesForTurrets(CPoint* places);
     void CreatePlacesShow();
     void DeletePlacesShow();
 };
 
 __forceinline bool CMatrixMapStatic::IsBase(void) const
 {
-    if (GetObjectType() == OBJECT_TYPE_BUILDING)
+    if(GetObjectType() == OBJECT_TYPE_BUILDING)
     {
-        if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE) return true;
+        if(((CMatrixBuilding*)this)->m_Kind == BUILDING_BASE) return true;
     }
     return false;
 }
 
 __forceinline bool CMatrixMapStatic::IsLiveBuilding(void) const
 {
-    return IsBuilding() && ((CMatrixBuilding *)this)->m_State!=BUILDING_DIP && ((CMatrixBuilding *)this)->m_State!=BUILDING_DIP_EXPLODED;
+    return IsBuilding() && ((CMatrixBuilding*)this)->m_State!=BUILDING_DIP && ((CMatrixBuilding*)this)->m_State != BUILDING_DIP_EXPLODED;
 }
 
 

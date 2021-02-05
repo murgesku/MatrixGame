@@ -138,7 +138,7 @@ public:
         int         m_WeaponCnt;
         int         m_FireMatrix[2];
 
-        SObjectCore *m_TargetCore;
+        SObjectCore* m_TargetCore;
 
         int                 m_LastDelayDamageSide;
         int                 m_MiniMapFlashTime;
@@ -153,7 +153,10 @@ public:
 
         void DIPTakt(float ms);
 
-        void    ShowHitpoint(void) {m_ShowHitpointTime = HITPOINT_SHOW_TIME;}
+        void    ShowHitpoint(void)
+        {
+            m_ShowHitpointTime = HITPOINT_SHOW_TIME;
+        }
         float   GetHitPoint(void) const {return m_HitPoint;}
         float   GetMaxHitPoint() { return m_HitPointMax; }
         void    InitMaxHitpoint(float hp) {m_HitPoint = hp; m_HitPointMax = hp; m_MaxHitPointInversed = 1.0f / hp;}
