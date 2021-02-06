@@ -1005,7 +1005,8 @@ void CMatrixBuilding::BeforeDraw(void)
             pos = GetGeoCenter() - *(D3DXVECTOR3 *)&m_Core->m_Matrix._21 * 20;
             r *= 0.7f;
             pos.z = g_MatrixMap->GetZ(pos.x, pos.y) + 90;
-        } else
+        }
+        else
         {
             pos = GetGeoCenter();
             pos.z = g_MatrixMap->GetZ(pos.x, pos.y) + 80;

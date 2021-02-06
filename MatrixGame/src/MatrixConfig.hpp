@@ -90,7 +90,6 @@ struct SStringPair
 
 enum EKeyAction
 {
-
     KA_SCROLL_LEFT,
     KA_SCROLL_RIGHT,
     KA_SCROLL_UP,
@@ -100,7 +99,6 @@ enum EKeyAction
     KA_SCROLL_RIGHT_ALT,
     KA_SCROLL_UP_ALT,
     KA_SCROLL_DOWN_ALT,
-
 
     KA_ROTATE_LEFT,
     KA_ROTATE_RIGHT,

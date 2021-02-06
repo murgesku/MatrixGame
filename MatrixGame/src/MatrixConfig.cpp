@@ -14,7 +14,7 @@ struct SKeyCodes
     int code;
 };
 
-static SKeyCodes    key_codes[] =
+static SKeyCodes key_codes[] =
 {
     {L"KEY_LMB",        VK_LBUTTON},
     {L"KEY_RMB",        VK_RBUTTON},
@@ -142,16 +142,85 @@ static SKeyCodes    key_codes[] =
     {NULL,              -1}
 };
 
-static SKeyCodes    key_action_codes[] =
+static SKeyCodes key_action_codes[] =
 {
-    {L"KeyMapScrollUp",        KA_SCROLL_UP},
-    {L"KeyMapScrollDown",      KA_SCROLL_DOWN},
-    {L"KeyMapScrollLeft",      KA_SCROLL_LEFT},
-    {L"KeyMapScrollRight",     KA_SCROLL_RIGHT},
-    {L"KeyMapScrollUpAlt",     KA_SCROLL_UP_ALT},
-    {L"KeyMapScrollDownAlt",   KA_SCROLL_DOWN_ALT},
-    {L"KeyMapScrollLeftAlt",   KA_SCROLL_LEFT_ALT},
-    {L"KeyMapScrollRightAlt",  KA_SCROLL_RIGHT_ALT},
+    {L"CamMoveUp",         KA_SCROLL_UP},
+    {L"CamMoveDown",       KA_SCROLL_DOWN},
+    {L"CamMoveLeft",       KA_SCROLL_LEFT},
+    {L"CamMoveRight",      KA_SCROLL_RIGHT},
+
+    {L"CamMoveUpAlt",      KA_SCROLL_UP_ALT},
+    {L"CamMoveDownAlt",    KA_SCROLL_DOWN_ALT},
+    {L"CamMoveLeftAlt",    KA_SCROLL_LEFT_ALT},
+    {L"CamMoveRightAlt",   KA_SCROLL_RIGHT_ALT},
+
+    {L"CamRotateUp",       KA_ROTATE_UP},
+    {L"CamRotateDown",     KA_ROTATE_DOWN},
+    {L"CamRotateLeft",     KA_ROTATE_LEFT},
+    {L"CamRotateRight",    KA_ROTATE_RIGHT},
+
+    {L"CamDefaultPos",     KA_CAM_SETDEFAULT},
+
+    {L"RobotMoveUp",       KA_UNIT_FORWARD},
+    {L"RobotMoveDown",     KA_UNIT_BACKWARD},
+    {L"RobotMoveLeft",     KA_UNIT_LEFT},
+    {L"RobotMoveRight",    KA_UNIT_RIGHT},
+
+    {L"RobotMoveUpAlt",    KA_UNIT_FORWARD_ALT},
+    {L"RobotMoveDownAlt",  KA_UNIT_BACKWARD_ALT},
+    {L"RobotMoveLeftAlt",  KA_UNIT_LEFT_ALT},
+    {L"RobotMoveRightAlt", KA_UNIT_RIGHT_ALT},
+
+    /*
+    KA_CAM_SETDEFAULT,  // zak
+
+    KA_FIRE,
+    KA_AUTO,
+
+    KA_SHIFT,
+    KA_CTRL,
+
+    KA_ROTATE_LEFT_ALT, // zak
+    KA_ROTATE_RIGHT_ALT, // zak
+
+    KA_MINIMAP_ZOOMIN,  // sub
+    KA_MINIMAP_ZOOMOUT, // sub
+
+    KA_AUTOORDER_CAPTURE, // sub
+    KA_AUTOORDER_ATTACK, // sub
+    KA_AUTOORDER_DEFEND, // sub
+
+    KA_ORDER_MOVE, // sub
+    KA_ORDER_STOP, // sub
+    KA_ORDER_CAPTURE, // sub
+    KA_ORDER_PATROL, // sub
+    KA_ORDER_EXPLODE, // sub
+    KA_ORDER_REPAIR, // sub
+    KA_ORDER_ATTACK, // sub
+    KA_ORDER_ROBOT_SWITCH1, // sub
+    KA_ORDER_ROBOT_SWITCH2, // sub
+
+    KA_ORDER_CANCEL, // sub
+
+    KA_UNIT_BOOM, //sub
+    KA_UNIT_ENTER, //sub (! if not dialog mode)
+    KA_UNIT_ENTER_ALT, //sub (! if not dialog mode)
+
+    KA_GATHERING_POINT,
+    KA_BUILD_ROBOT,  //sub
+    KA_BUILD_ROBOT_START,
+    KA_BUILD_ROBOT_QUANTITY_UP,
+    KA_BUILD_ROBOT_QUANTITY_DOWN,
+    KA_BUILD_ROBOT_CHOOSE_LEFT,
+    KA_BUILD_ROBOT_CHOOSE_RIGHT,
+    KA_BUILD_TURRET, //sub
+    KA_BUILD_HELP, //sub
+
+    KA_TURRET_CANNON,
+    KA_TURRET_GUN,
+    KA_TURRET_LASER,
+    KA_TURRET_ROCKET,
+    */
 
     {NULL,             -1}
 };
@@ -180,7 +249,7 @@ static int KeyActionName2KeyActionCode(const CWStr& name)
     return -1;
 }
 
-void CMatrixConfig::ApplySettings(SRobotsSettings *set)
+void CMatrixConfig::ApplySettings(SRobotsSettings* set)
 {
     m_IzvratMS = set->m_IzvratMS;
     m_LandTexturesGloss = set->m_LandTexturesGloss;
@@ -213,6 +282,8 @@ void CMatrixConfig::SetDefaults(void)
     g_ShadowsDrawDistance = 1024;
     g_ThinFogDrawDistance = 0.5;
     g_DenseFogDrawDistance = 0.7;
+    g_PlayerRobotsAutoBoom = false;
+    g_EnableFlyers = false;
 
     //m_TexTopDownScalefactor = 0;
     //m_TexTopMinSize = 32;
@@ -450,50 +521,63 @@ void CMatrixConfig::ReadParams(void)
         m_IzvratMS = cfg_par->Par(CFG_IZVRAT_MS).GetInt() == 1;
     }
 
-    if (cfg_par->ParCount(CFG_SKY_BOX) != 0)
+    if(cfg_par->ParCount(CFG_SKY_BOX) != 0)
     {
         m_SkyBox = (byte)(cfg_par->Par(CFG_SKY_BOX).GetInt() & 0xFF);
     }
 
-    if (cfg_par->ParCount(CFG_MAX_FPS) != 0)
+    if(cfg_par->ParCount(CFG_MAX_FPS) != 0)
     {
         g_MaxFPS = cfg_par->Par(CFG_MAX_FPS).GetInt();
     }
 
-    if (cfg_par->ParCount(CFG_MAX_VIEW_DISTANCE) != 0)
+    if(cfg_par->ParCount(CFG_MAX_VIEW_DISTANCE) != 0)
     {
         //Дистанция дальности отрисовки мира вокруг камеры
         g_MaxViewDistance = (float)cfg_par->Par(CFG_MAX_VIEW_DISTANCE).GetDouble();
     }
 
-    if (cfg_par->ParCount(CFG_OBJECTS_PER_SCREEN) != 0)
+    if(cfg_par->ParCount(CFG_OBJECTS_PER_SCREEN) != 0)
     {
         //Самое максимальное значение 5120 (размер статического массива), устанавливается в константе MAX_OBJECTS_PER_SCREEN
         g_MaxObjectsPerScreen = cfg_par->Par(CFG_OBJECTS_PER_SCREEN).GetInt();
     }
 
-    if (cfg_par->ParCount(CFG_EFFECTS_COUNT) != 0)
+    if(cfg_par->ParCount(CFG_EFFECTS_COUNT) != 0)
     {
         //Альтернативно можно регулировать через определение MAX_EFFECTS_COUNT (закомментирована)
         g_MaxEffectsCount = cfg_par->Par(CFG_EFFECTS_COUNT).GetInt();
     }
 
-    if (cfg_par->ParCount(CFG_SHADOWS_DRAW_DISTANCE) != 0)
+    if(cfg_par->ParCount(CFG_SHADOWS_DRAW_DISTANCE) != 0)
     {
         //Используется в определении DRAW_SHADOWS_DISTANCE_SQ
         g_ShadowsDrawDistance = cfg_par->Par(CFG_SHADOWS_DRAW_DISTANCE).GetInt();
     }
 
-    if (cfg_par->ParCount(CFG_THIN_FOG_DRAW_DISTANCE) != 0)
+    if(cfg_par->ParCount(CFG_THIN_FOG_DRAW_DISTANCE) != 0)
     {
         //Точка удаления от камеры, в которой начинается отрисовка разреженного тумана
         g_ThinFogDrawDistance = (float)cfg_par->Par(CFG_THIN_FOG_DRAW_DISTANCE).GetDouble();
     }
 
-    if (cfg_par->ParCount(CFG_DENSE_FOG_DRAW_DISTANCE) != 0)
+    if(cfg_par->ParCount(CFG_DENSE_FOG_DRAW_DISTANCE) != 0)
     {
         //Точка удаления от камеры, в которой начинается отрисовка сплошного тумана
         g_DenseFogDrawDistance = (float)cfg_par->Par(CFG_DENSE_FOG_DRAW_DISTANCE).GetDouble();
+    }
+
+    if(cfg_par->ParCount(CFG_PLAYER_ROBOTS_AUTO_BOOM) != 0)
+    {
+        //Проверяем, включена ли опция автоматического подрыва бомбы на роботах игрока в случаях, когда их HP падает до нуля
+        g_PlayerRobotsAutoBoom = cfg_par->Par(CFG_PLAYER_ROBOTS_AUTO_BOOM).GetInt() == 1;
+    }
+
+    if(cfg_par->ParCount(CFG_ENABLE_FLYERS) != 0)
+    {
+        //Проверяем, включена ли опция активации вертолётов в качестве играбельного класса юнитов
+        //(В данный момент вертолёты не работают)
+        g_EnableFlyers = cfg_par->Par(CFG_ENABLE_FLYERS).GetInt() == 1;
     }
         
     if (cfg_par->ParCount(CFG_OBJECTTOMINIMAP) != 0)
@@ -1016,7 +1100,8 @@ void CMatrixConfig::ReadParams(void)
     bp_tmp = bpl->BlockGetNE(PAR_SOURCE_ITEMS_LABELS);
 
     m_Labels = (CWStr*)HAlloc(sizeof(CWStr)*LABELS_LAST, g_MatrixHeap);
-    for(int i = 0 ;i < LABELS_LAST; i++){
+    for(int i = 0; i < LABELS_LAST; ++i)
+    {
         m_Labels[i].CWStr::CWStr(g_MatrixHeap);
     }
     m_Labels[W1_CHAR] = bp_tmp->Par(PAR_SOURCE_W1_CHAR);
@@ -1052,7 +1137,8 @@ void CMatrixConfig::ReadParams(void)
     bp_tmp = bpl->BlockGetNE(PAR_SOURCE_ITEMS_DESCRIPTIONS);
 
     m_Descriptions = (CWStr*)HAlloc(sizeof(CWStr)*DESCRIPTIONS_LAST, g_MatrixHeap);
-    for(int i = 0 ;i < DESCRIPTIONS_LAST; i++){
+    for(int i = 0; i < DESCRIPTIONS_LAST; ++i)
+    {
         m_Descriptions[i].CWStr::CWStr(g_MatrixHeap);
     }
     m_Descriptions[W1_DESCR] = bp_tmp->Par(PAR_SOURCE_W1_DESCR);
@@ -1132,9 +1218,9 @@ void CMatrixConfig::ReadParams(void)
     {
         int cnt = bp_tmp->BlockCount();
         ASSERT(cnt == CANNON_TYPE_CNT);
-        for (int i = 0; i < cnt; ++i)
+        for(int i = 0; i < cnt; ++i)
         {
-            CBlockPar *bp = bp_tmp->BlockGet(i);
+            CBlockPar* bp = bp_tmp->BlockGet(i);
 
             m_CannonsProps[i].max_top_angle = GRAD2RAD((float)bp->ParGet(PAR_SOURCE_CANNONS_MAX_TOP_ANGLE).GetDouble());
             m_CannonsProps[i].max_bottom_angle = GRAD2RAD((float)bp->ParGet(PAR_SOURCE_CANNONS_MAX_BOTTOM_ANGLE).GetDouble());
@@ -1153,7 +1239,7 @@ void CMatrixConfig::ReadParams(void)
     
 }
 
-static void GenRamp(WORD *out, SGammaVals & vals)
+static void GenRamp(WORD* out, SGammaVals& vals)
 {
     const float brk = 1;
     const float cok = 1;
