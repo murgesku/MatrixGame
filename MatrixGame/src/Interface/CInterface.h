@@ -17,8 +17,7 @@ class CMatrixHint;
 #define HINT_OTSTUP     2
 #define RADAR_RADIUS    85
 #define IS_VISIBLE      255
-#define IS_VISIBLEA     255
-#define IS_NOT_VISIBLEA 0
+#define IS_NOT_VISIBLE  0
 
 #define CRITICAL_RAMKA  0xFFFF8C00
 #define NORMAL_RAMKA    0xFFB6E68B

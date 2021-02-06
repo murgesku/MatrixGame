@@ -641,7 +641,7 @@ DCP();
             CBlockPar load = CBlockPar(true, g_MatrixHeap);
             load.LoadFromTextFile(robotscfg_path);
             CBlockPar *bot_designs = load.BlockGetNE(L"BotDesigns");
-            if (bot_designs != nullptr)
+            if(bot_designs != nullptr)
             {
                 int counter = 0;
                 //Расшифровываем строку цифро-буквенного шаблона робота, полученную из txt-конфига

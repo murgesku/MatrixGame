@@ -44,6 +44,10 @@ extern int g_ShadowsDrawDistance;
 extern float g_ThinFogDrawDistance;
 extern float g_DenseFogDrawDistance;
 extern int g_AvailableTexMem;
+
+extern bool g_PlayerRobotsAutoBoom;
+extern bool g_EnableFlyers;
+
 //extern CReminder* g_Reminder;
 extern D3DPRESENT_PARAMETERS g_D3Dpp; 
 

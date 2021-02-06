@@ -25,7 +25,7 @@ CIFaceElement::CIFaceElement(void):m_Flags(0)
 	SETFLAG(m_Flags,IFEF_VISIBLE);
     m_PosElInX = 0; 
     m_PosElInY = 0;
-    m_VisibleAlpha = IS_VISIBLEA;
+    m_VisibleAlpha = IS_VISIBLE;
     m_CurState = IFACE_NORMAL;
     m_DefState = IFACE_NORMAL;
 

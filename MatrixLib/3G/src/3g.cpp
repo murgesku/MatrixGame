@@ -44,6 +44,9 @@ int g_DrawFPSTime = 0;
 int g_TaktTime = 0;
 int g_AvailableTexMem;
 
+bool g_PlayerRobotsAutoBoom = false;
+bool g_EnableFlyers = false;
+
 #ifdef DO_SMART_COLOROPS
 
 STextureStageOp     g_ColorOp[8] = {{D3DTOP_DISABLE, D3DTA_CURRENT, D3DTA_CURRENT}, {D3DTOP_DISABLE, D3DTA_CURRENT, D3DTA_CURRENT}, {D3DTOP_DISABLE, D3DTA_CURRENT, D3DTA_CURRENT}, {D3DTOP_DISABLE, D3DTA_CURRENT, D3DTA_CURRENT},

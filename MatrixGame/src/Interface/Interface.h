@@ -10,7 +10,8 @@
 
 #include "../MatrixInstantDraw.hpp"
 
-enum IFaceElementType {
+enum IFaceElementType
+{
 	IFACE_UNDEF = -1,
 	IFACE_STATIC = 0,
 	IFACE_ANIMATION = 1,
@@ -56,14 +57,16 @@ enum EActions
     EActions_FORCE_DWORD = 0x7FFFFFFF
 };
 
-struct SAction {
+struct SAction
+{
 	void* m_class;
 	void* m_function;
 
     SAction(): m_class(NULL), m_function(NULL) {}
 };
 
-struct SStateImages {
+struct SStateImages
+{
 	CTextureManaged*        pImage;
 	SVert_V4_UV             m_Geom[4];
 	float                   xTexPos;
@@ -89,17 +92,31 @@ struct SStateImages {
 	DWORD                   Set; // This is boolean var. Used DWORD because align!
 
 
-    void SetStateText(bool copy);
-    void SetStateLabelParams(int x, int y, int bound_x, int bound_y, int xAlign, int yAlign, int perenos, int smeX, int smeY, CRect clipRect, CWStr t, CWStr font, DWORD color);
-	
-    SStateImages():m_Caption(g_MatrixHeap), m_Font(g_MatrixHeap)
+	void SetStateText(bool copy);
+	void SetStateLabelParams(
+		int x,
+		int y,
+		int bound_x,
+		int bound_y,
+		int xAlign,
+		int yAlign,
+		int perenos,
+		int smeX,
+		int smeY,
+		CRect clipRect,
+		CWStr t,
+		CWStr font,
+		DWORD color
+	);
+
+	SStateImages() :m_Caption(g_MatrixHeap), m_Font(g_MatrixHeap)
 	{
 		xTexPos = yTexPos = TexWidth = TexHeight = 0;
-        m_x = m_y = m_boundX = m_boundY = m_xAlign = m_yAlign = m_Perenos = m_SmeX = m_SmeY = 0;
+		m_x = m_y = m_boundX = m_boundY = m_xAlign = m_yAlign = m_Perenos = m_SmeX = m_SmeY = 0;
 		m_Color = 0;
-        pImage = NULL;
+		pImage = NULL;
 		ZeroMemory(m_Geom, sizeof(m_Geom));
-        ZeroMemory(&m_ClipRect, sizeof(CRect));
+		ZeroMemory(&m_ClipRect, sizeof(CRect));
 		Set = false;
 	}
 };
@@ -108,23 +125,23 @@ struct SStateImages {
 void* g_asm_iface_tmp;
 
 #define FSET(dest, pObj, src) \
-	dest.m_class=(void *)pObj;\
-	g_asm_iface_tmp=dest.m_function;\
-	__asm {mov eax,src}\
-	__asm {mov g_asm_iface_tmp,eax}\
+	dest.m_class = (void*)pObj; \
+	g_asm_iface_tmp = dest.m_function; \
+	__asm {mov eax, src} \
+	__asm {mov g_asm_iface_tmp, eax} \
 	dest.m_function = g_asm_iface_tmp;
 */
 
-//Задаёт фокус указанному элементу интерфейса
+//Производит начальную настройку кнопки при подгрузке элементов интерфейса
 #define FSET(act, pBut, cl, fn, pObj, src) \
-	cl=(void *)pObj;\
-	__asm {mov eax, offset src}\
-	__asm {mov [fn], eax}\
-	pBut->m_Actions[act].m_class = cl;\
+	cl = (void*)pObj; \
+	__asm {mov eax, offset src} \
+	__asm {mov [fn], eax} \
+	pBut->m_Actions[act].m_class = cl; \
 	pBut->m_Actions[act].m_function = fn;
 
 
-#define FCALL(a,from) \
+#define FCALL(a, from) \
 	__asm push	from \
 	__asm mov	eax, (a)->m_class \
 	__asm push	eax \
@@ -132,20 +149,20 @@ void* g_asm_iface_tmp;
 	__asm call	eax
 
 #define FCALLFROMCLASS(a) \
-	__asm push	this\
-	__asm mov	eax, dword ptr a\
-	__asm add	eax, dword ptr this\
-	__asm push	[eax]\
-	__asm add	eax, 4\
-	__asm mov	eax, [eax]\
+	__asm push	this \
+	__asm mov	eax, dword ptr a \
+	__asm add	eax, dword ptr this \
+	__asm push	[eax] \
+	__asm add	eax, 4 \
+	__asm mov	eax, [eax] \
 	__asm call	eax
 
 #define FCALLFROMCLASS2(a) \
-	__asm push	this\
-	__asm mov	eax, dword ptr a\
-	__asm push	[eax]\
-	__asm add	eax, 4\
-	__asm mov	eax, [eax]\
+	__asm push	this \
+	__asm mov	eax, dword ptr a \
+	__asm push	[eax] \
+	__asm add	eax, 4 \
+	__asm mov	eax, [eax] \
 	__asm call	eax
 
 

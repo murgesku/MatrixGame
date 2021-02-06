@@ -2030,41 +2030,41 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECT
 
     CMatrixEffectWeapon::SoundHit(weap, pos);
 
-    if (m_HitPoint > g_Config.m_RobotDamages[idx].mindamage)
+    if(m_HitPoint > g_Config.m_RobotDamages[idx].mindamage)
     {
-        float damage = damagek * float(friendly_fire?g_Config.m_RobotDamages[idx].friend_damage:g_Config.m_RobotDamages[idx].damage);
-        if (weap == WEAPON_BIGBOOM) damage -= damage * m_BombProtect;
+        float damage = damagek * float(friendly_fire ? g_Config.m_RobotDamages[idx].friend_damage : g_Config.m_RobotDamages[idx].damage);
+        if(weap == WEAPON_BIGBOOM) damage -= damage * m_BombProtect;
         m_HitPoint -= damage;
 
-        if (m_HitPoint >= 0)
+        if(m_HitPoint >= 0)
         {
-            m_PB.Modify( m_HitPoint * m_MaxHitPointInversed);
-        } else
-        {
-            m_PB.Modify( 0 );
+            m_PB.Modify(m_HitPoint * m_MaxHitPointInversed);
         }
-        if (!friendly_fire)
-            m_MiniMapFlashTime = FLASH_PERIOD;
-
-        if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
+        else
         {
-            if (attaker)
-                g_MatrixMap->m_Camera.AddWarPair(this,attaker);
+            m_PB.Modify(0);
+        }
+        if(!friendly_fire) m_MiniMapFlashTime = FLASH_PERIOD;
+
+        if(FLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM))
+        {
+            if(attaker) g_MatrixMap->m_Camera.AddWarPair(this, attaker);
         }
     }
 
-    if (weap == WEAPON_FLAMETHROWER)
+    if(weap == WEAPON_FLAMETHROWER)
     {
         MarkAblaze();
         m_LastDelayDamageSide = attacker_side;
 
         int ttl = GetAblazeTTL();
         ttl += 300;
-		if(ttl>5000) ttl=5000;
+        if(ttl > 5000) ttl = 5000;
         SetAblazeTTL(ttl);
 
         m_NextTimeAblaze = g_MatrixMap->GetTime();
-    } else if (weap == WEAPON_LIGHTENING)
+    }
+    else if(weap == WEAPON_LIGHTENING)
     {
         LowLevelStopFire();
 
@@ -2074,80 +2074,80 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECT
 
         int ttl = GetShortedTTL();
         ttl += 500 - Float2Int(500.0f * m_LightProtect);
-        int maxl = 3000 - Float2Int(3000.0f*m_LightProtect);
-		if(ttl>maxl) ttl=maxl;
+        int maxl = 3000 - Float2Int(3000.0f * m_LightProtect);
+        if(ttl > maxl) ttl = maxl;
 
         SetShortedTTL(ttl);
 
         m_NextTimeShorted = g_MatrixMap->GetTime();
-    } else
+    }
+    else
     {
         m_LastDelayDamageSide = 0;
     }
 
-    if (m_HitPoint > 50)
+    if(m_HitPoint > 50)
     {
-        if (weap != WEAPON_ABLAZE && weap != WEAPON_SHORTED && weap != WEAPON_LIGHTENING && weap != WEAPON_FLAMETHROWER)
+        if(weap != WEAPON_ABLAZE && weap != WEAPON_SHORTED && weap != WEAPON_LIGHTENING && weap != WEAPON_FLAMETHROWER)
         {
             CMatrixEffect::CreateExplosion(pos, ExplosionRobotHit);
         }
-    } else if(m_HitPoint > 0){
-    } else {//if(m_HitPoint > 0){
-
-        if (attacker_side != 0 && !friendly_fire)
+    }
+    //else if(m_HitPoint > 0) {}
+    else if(m_HitPoint <= 0)
+    {
+        if(attacker_side != 0 && !friendly_fire)
         {
             g_MatrixMap->GetSideById(attacker_side)->IncStatValue(STAT_ROBOT_KILL);
         }
 
 inst_death:;
 
-        if (IsInPosition())
+        if(IsInPosition())
         {
             g_MatrixMap->ShowPortrets();
         }
 
-   		for(int nC = 0; nC < m_WeaponsCnt; ++nC)
+        for(int nC = 0; nC < m_WeaponsCnt; ++nC)
         {
             if(m_Weapons[nC].IsEffectPresent() && m_Weapons[nC].GetWeaponType() == WEAPON_BIGBOOM)
             {
-
-                if(GetSide()==PLAYER_SIDE)
+                if(GetSide() == PLAYER_SIDE)
                 {
-//                    BigBoom(nC);
+                    if(g_PlayerRobotsAutoBoom) BigBoom(nC);
                 }
                 else
                 {
-                    float danager=0.0f;
-                    CMatrixMapStatic * ms = CMatrixMapStatic::GetFirstLogic();
-                    for(;ms;ms=ms->GetNextLogic())
+                    float danager = 0.0f;
+                    CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+                    for(; ms; ms = ms->GetNextLogic())
                     {
-                        if(ms!=this && ms->IsLiveRobot())
+                        if(ms != this && ms->IsLiveRobot())
                         {
-                            if((POW2(ms->AsRobot()->m_PosX-m_PosX)+POW2(ms->AsRobot()->m_PosY-m_PosY))<POW2(m_Weapons[nC].GetWeaponDist()*1.0f))
+                            if((POW2(ms->AsRobot()->m_PosX - m_PosX) + POW2(ms->AsRobot()->m_PosY - m_PosY)) < POW2(m_Weapons[nC].GetWeaponDist() * 1.0f))
                             {
-                                if(ms->GetSide()==GetSide()) danager-=ms->AsRobot()->GetStrength();
-                                else danager+=ms->AsRobot()->GetStrength();
+                                if(ms->GetSide() == GetSide()) danager -= ms->AsRobot()->GetStrength();
+                                else danager += ms->AsRobot()->GetStrength();
                             }
                         }
-                        else if(ms->IsLiveCannon() && ms->AsCannon()->m_CurrState!=CANNON_UNDER_CONSTRUCTION)
+                        else if(ms->IsLiveCannon() && ms->AsCannon()->m_CurrState != CANNON_UNDER_CONSTRUCTION)
                         {
-                            if((POW2(ms->AsCannon()->m_Pos.x-m_PosX)+POW2(ms->AsCannon()->m_Pos.y-m_PosY))<POW2(m_Weapons[nC].GetWeaponDist()*1.0f))
+                            if((POW2(ms->AsCannon()->m_Pos.x - m_PosX) + POW2(ms->AsCannon()->m_Pos.y - m_PosY)) < POW2(m_Weapons[nC].GetWeaponDist() * 1.0f))
                             {
-                                if(ms->GetSide()==GetSide()) danager-=ms->AsCannon()->GetStrength();
-                                else danager+=ms->AsCannon()->GetStrength();
+                                if(ms->GetSide() == GetSide()) danager -= ms->AsCannon()->GetStrength();
+                                else danager += ms->AsCannon()->GetStrength();
                             }
                         }
-                        
                     }
 
-                    if(danager>0.0f)
+                    if(danager > 0.0f)
                     {
                         BigBoom(nC);
                     }
                 }
                 break;
-			}
-		}
+            }
+        }
 
         ResetMustDie(); // to avoid MUST_DIE flag checking... robot already dieing...
 
@@ -5058,16 +5058,16 @@ void CMatrixRobotAI::MoveToBack(int mx, int my)
 
     m_ZoneDes = -1;
     m_ZonePathCnt = 0;
-	m_ZonePathNext = -1;
+    m_ZonePathNext = -1;
     //m_ZoneNear = -1;
-	m_MovePathCnt = 0;
-	m_MovePathCur = 0;
+    m_MovePathCnt = 0;
+    m_MovePathCur = 0;
     m_DesX = mx;
     m_DesY = my;
 
-#if (defined _DEBUG) &&  !(defined _RELDEBUG)
-if(m_DesX<0 || m_DesX>=g_MatrixMap->m_SizeMove.x) __asm int 3;
-if(m_DesY<0 || m_DesY>=g_MatrixMap->m_SizeMove.y) __asm int 3;
+#if(defined _DEBUG) && !(defined _RELDEBUG)
+if(m_DesX < 0 || m_DesX >= g_MatrixMap->m_SizeMove.x) __asm int 3;
+if(m_DesY < 0 || m_DesY >= g_MatrixMap->m_SizeMove.y) __asm int 3;
 #endif
 
 }
@@ -5084,7 +5084,7 @@ void CMatrixRobotAI::MoveReturn(int mx, int my)
         }
     }
     SOrder* order = AllocPlaceForOrderOnTop();
-    if(order == NULL) return;
+    if (order == NULL) return;
     order->SetOrder(ROT_MOVE_RETURN, (float)mx, (float)my, 0, 0);
 }
 
@@ -5116,11 +5116,11 @@ void CMatrixRobotAI::StopMoving(void)
     }
     m_ZoneDes = -1;
     m_ZonePathCnt = 0;
-	m_ZonePathNext = -1;
+    m_ZonePathNext = -1;
     //m_ZoneNear = -1;
-	m_MovePathCnt = 0;
-	m_MovePathCur = 0;
-    
+    m_MovePathCnt = 0;
+    m_MovePathCur = 0;
+
     //LowLevelStop();
 }
 
@@ -5130,7 +5130,7 @@ void CMatrixRobotAI::Fire(const D3DXVECTOR3 &fire_pos, int type)
 
     RemoveOrder(ROT_FIRE);
     SOrder* order = AllocPlaceForOrderOnTop();
-    if (order == NULL) return;
+    if(order == NULL) return;
     order->SetOrder(ROT_FIRE, fire_pos.x, fire_pos.y, fire_pos.z, type);
 }
 
@@ -5149,19 +5149,18 @@ void CMatrixRobotAI::StopFire(void)
 
 void CMatrixRobotAI::BigBoom(int nc)
 {
-    if (nc < 0)
+    if(nc < 0)
     {
    	    for(nc = 0; nc < m_WeaponsCnt; ++nc)
         {
-            if(m_Weapons[nc].IsEffectPresent() && m_Weapons[nc].GetWeaponType() == WEAPON_BIGBOOM)
-                break;
+            if(m_Weapons[nc].IsEffectPresent() && m_Weapons[nc].GetWeaponType() == WEAPON_BIGBOOM) break;
         }
         if(nc >= m_WeaponsCnt) return;
     }
-    if (nc >= 0)
+    if(nc >= 0)
     {
-        m_Weapons[nc].Modify(GetGeoCenter(), D3DXVECTOR3(m_PosX, m_PosY, 0), m_Velocity * (1.0f/LOGIC_TAKT_PERIOD));
-        m_Weapons[nc].FireBegin(m_Velocity * (1.0f/LOGIC_TAKT_PERIOD), this);
+        m_Weapons[nc].Modify(GetGeoCenter(), D3DXVECTOR3(m_PosX, m_PosY, 0), m_Velocity * (1.0f / LOGIC_TAKT_PERIOD));
+        m_Weapons[nc].FireBegin(m_Velocity * (1.0f / LOGIC_TAKT_PERIOD), this);
         m_Weapons[nc].Takt(1);
     }
 
@@ -5170,8 +5169,8 @@ void CMatrixRobotAI::BigBoom(int nc)
 
 struct SSeekCaptureMeB
 {
-    CMatrixBuilding *b;
-    CMatrixRobotAI *r;
+    CMatrixBuilding* b;
+    CMatrixRobotAI* r;
     float dist2;
 };
 
@@ -5183,19 +5182,18 @@ void CMatrixRobotAI::CaptureFactory(CMatrixBuilding *factory)
 
     RemoveOrder(ROT_CAPTURE_FACTORY);
 
-    SOrder *capture_order = AllocPlaceForOrderOnTop();
-    if (capture_order == NULL) return;
+    SOrder* capture_order = AllocPlaceForOrderOnTop();
+    if(capture_order == NULL) return;
     capture_order->SetOrder(ROT_CAPTURE_FACTORY, factory);
-
 }
 
 CMatrixBuilding * CMatrixRobotAI::GetCaptureFactory(void)
 {
-    for(int cnt = 0; cnt < m_OrdersInPool; cnt++)
+    for(int cnt = 0; cnt < m_OrdersInPool; ++cnt)
     {
         if(m_OrdersList[cnt].GetOrderType() == ROT_CAPTURE_FACTORY)
         {
-            return (CMatrixBuilding *)m_OrdersList[cnt].GetStatic();
+            return (CMatrixBuilding*)m_OrdersList[cnt].GetStatic();
         }
     }
     return NULL;
@@ -5759,13 +5757,14 @@ void CMatrixRobotAI::CreateTextures()
     rt[1].ts = TEXSIZE_64;
     rt[2].ts = TEXSIZE_32;
 
-    if (RenderToTexture(rt,3))
+    if(RenderToTexture(rt,3))
     {
 
         m_BigTexture = rt[0].tex;
         m_MedTexture = rt[1].tex;
         m_SmallTexture = rt[2].tex;
-    } else
+    }
+    else
     {
         m_BigTexture = NULL;
         m_MedTexture = NULL;

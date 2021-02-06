@@ -246,6 +246,8 @@
 #define CFG_THIN_FOG_DRAW_DISTANCE				L"ThinFogDrawDistance"
 #define CFG_DENSE_FOG_DRAW_DISTANCE				L"DenseFogDrawDistance"
 #define CFG_DESIGNS_TO_SAVE						L"MaxDesignsToSave"
+#define CFG_PLAYER_ROBOTS_AUTO_BOOM				L"PlayerRobotsAutoBoom"
+#define CFG_ENABLE_FLYERS						L"EnableFlyers"
 
 #define PAR_TEMPLATES                           L"Templates"
 #define PAR_REPLACE                             L"Replaces"

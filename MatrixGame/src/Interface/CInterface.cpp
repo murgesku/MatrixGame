@@ -21,16 +21,13 @@
 #include "MatrixHint.hpp"
 #include "../MatrixFormGame.hpp"
 
-//static int g_EnableFlyers = g_MatrixData->BlockGet(L"Config")->ParGet(L"EnableFlyers").GetInt();
-bool g_EnableFlyers = false;
+CIFaceList* g_IFaceList = NULL;
 
-CIFaceList *g_IFaceList = NULL;
-
-SMenuItemText *g_PopupHead;
-SMenuItemText *g_PopupWeaponNormal;
-SMenuItemText *g_PopupWeaponExtern;
-SMenuItemText *g_PopupHull;
-SMenuItemText *g_PopupChassis;
+SMenuItemText* g_PopupHead;
+SMenuItemText* g_PopupWeaponNormal;
+SMenuItemText* g_PopupWeaponExtern;
+SMenuItemText* g_PopupHull;
+SMenuItemText* g_PopupChassis;
 
 //Constructor destructor
 CInterface::CInterface():name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label1(g_MatrixHeap), item_label2(g_MatrixHeap), rcname(g_MatrixHeap)
@@ -102,7 +99,7 @@ CInterface::CInterface():name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label
 
 
     m_InterfaceFlags = 0;
-    m_VisibleAlpha = IS_NOT_VISIBLEA;
+    m_VisibleAlpha = IS_NOT_VISIBLE;
 	m_xPos = 0;
 	m_yPos = 0;
 	m_zPos = 0;
@@ -1153,7 +1150,7 @@ void CInterface::BeforeRender(void)
     {
 #endif
     DCP();
-	    if(m_VisibleAlpha == IS_VISIBLEA || m_AlwaysOnTop)
+	    if(m_VisibleAlpha == IS_VISIBLE || m_AlwaysOnTop)
         {
     DCP();
             CIFaceElement *pObjectsList = m_FirstElement;
@@ -1194,7 +1191,7 @@ void CInterface::BeforeRender(void)
 void CInterface::Render()
 {
 	DTRACE();
-	if(m_VisibleAlpha == IS_VISIBLEA || m_AlwaysOnTop)
+	if(m_VisibleAlpha == IS_VISIBLE || m_AlwaysOnTop)
     {
         CIFaceElement* pObjectsList = m_FirstElement;
 
@@ -1518,12 +1515,12 @@ void CInterface::Init(void)
     DTRACE();
 
     int nC = 0;
-	CIFaceElement *pElement = m_FirstElement;
+	CIFaceElement* pElement = m_FirstElement;
     CMatrixSideUnit* player_side = g_MatrixMap->GetPlayerSide();
 
 	if(m_AlwaysOnTop)
     {
-        m_VisibleAlpha = IS_VISIBLEA;
+        m_VisibleAlpha = IS_VISIBLE;
         
         if(m_strName == IF_MINI_MAP)
         {
@@ -2434,7 +2431,7 @@ void CInterface::Init(void)
         return;
     }
     
-    m_VisibleAlpha = IS_NOT_VISIBLEA;
+    m_VisibleAlpha = IS_NOT_VISIBLE;
 
     if((m_strName == IF_BASE) && (player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) && player_side->m_ActiveObject && player_side->m_ActiveObject->GetObjectType() == OBJECT_TYPE_BUILDING)
     {
@@ -2450,7 +2447,7 @@ void CInterface::Init(void)
         }
 
         bool build_flag = (building->m_TurretsHave < building->m_TurretsMax);
-        m_VisibleAlpha = IS_VISIBLEA;
+        m_VisibleAlpha = IS_VISIBLE;
         int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
         
         while(pElement)
@@ -3236,7 +3233,7 @@ void CInterface::Init(void)
     }
     else if(m_strName == IF_HINTS)
     {
-        m_VisibleAlpha = IS_VISIBLEA;
+        m_VisibleAlpha = IS_VISIBLE;
         CIFaceElement* e = m_FirstElement;
         while(e)
         {
@@ -3246,7 +3243,7 @@ void CInterface::Init(void)
     }
     else if(m_strName == IF_POPUP_MENU && FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE))
     {
-        m_VisibleAlpha = IS_VISIBLEA;
+        m_VisibleAlpha = IS_VISIBLE;
         CIFaceElement* pElement = m_FirstElement;
         while(pElement)
         {
