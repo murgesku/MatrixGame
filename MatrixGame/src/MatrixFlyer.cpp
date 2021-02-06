@@ -811,7 +811,6 @@ void CMatrixFlyer::LogicTaktArcade(SFlyerTaktData &td)
     if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000)==0x8000) && g_IFaceList->m_InFocus != INTERFACE)
     {
         FireBegin();
-
     }
     else
     {

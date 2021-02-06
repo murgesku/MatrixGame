@@ -1170,7 +1170,7 @@ void CMatrixMap::BeforeDraw(void)
         {
             ((CMatrixCannon*)m_TraceStopObj)->ShowHitpoint();
 
-            //for (int i=0;i<m_TraceStopObj->GetGroupCnt();++i)
+            //for (int i=0; i<m_TraceStopObj->GetGroupCnt(); ++i)
             //{
             //    CMatrixMapGroup *g =  m_TraceStopObj->GetGroup(i);
             //    g->DrawBBox();
@@ -1204,29 +1204,32 @@ void CMatrixMap::BeforeDraw(void)
     //flyer
     CMatrixSideUnit* player_side = GetPlayerSide();
 
-    //CDText::T("sel", CStr(player_side->m_CurrSel));
-    //if(player_side->IsArcadeMode() &&  player_side->GetArcadedObject()->GetObjectType() == OBJECT_TYPE_FLYER && (GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000)==0x8000 && g_IFaceList->m_InFocus != INTERFACE)
-    //{
-    //    CMatrixFlyer * fl = (CMatrixFlyer *)player_side->GetArcadedObject();
+    /*
+    CDText::T("sel", CStr(player_side->m_CurrSel));
+    if(player_side->IsArcadeMode() && player_side->GetArcadedObject()->GetObjectType() == OBJECT_TYPE_FLYER && (GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000) == 0x8000 && g_IFaceList->m_InFocus != INTERFACE)
+    {
+        CMatrixFlyer* fl = (CMatrixFlyer*)player_side->GetArcadedObject();
 
-    //    SPlane hp;
-    //    hp.BuildFromPointNormal(hp, fl->GetPos(), D3DXVECTOR3(0,0,1));
+        SPlane hp;
+        hp.BuildFromPointNormal(hp, fl->GetPos(), D3DXVECTOR3(0, 0, 1));
 
-    //    float t = 0;
-    //    bool hit = hp.FindIntersect(m_Camera.GetFrustumCenter(), vdir, t);
-    //    if (hit)
-    //    {
-    //        fl->SetTarget(D3DXVECTOR2(m_Camera.GetFrustumCenter().x + vdir.x * t,  m_Camera.GetFrustumCenter().y + vdir.y * t));
+        float t = 0;
+        bool hit = hp.FindIntersect(m_Camera.GetFrustumCenter(), vdir, t);
+        if(hit)
+        {
+            fl->SetTarget(D3DXVECTOR2(m_Camera.GetFrustumCenter().x + vdir.x * t, m_Camera.GetFrustumCenter().y + vdir.y * t));
 
-    //        CMatrixSideUnit *player_side = GetPlayerSide();
-    //        //if (player_side->HasFlyer()) player_side->Select(HELICOPTER, NULL);
+            CMatrixSideUnit* player_side = GetPlayerSide();
 
-    //        //D3DXVECTOR3 p = m_Camera.GetFrustumCenter() + vdir * t;
-    //        //CHelper::Create(1,0)->Line(p, p + D3DXVECTOR3(0,0,-100));
-    //    }
+            //if(player_side->HasFlyer()) player_side->Select(HELICOPTER, NULL);
 
-    //    //player_side->GetFlyer()->SetTarget(D3DXVECTOR2(m_TraceStopPos.x, m_TraceStopPos.y));
-    //}
+            //D3DXVECTOR3 p = m_Camera.GetFrustumCenter() + vdir * t;
+            //CHelper::Create(1, 0)->Line(p, p + D3DXVECTOR3(0, 0, -100));
+        }
+
+        //player_side->GetFlyer()->SetTarget(D3DXVECTOR2(m_TraceStopPos.x, m_TraceStopPos.y));
+    }
+    */
 
 #ifdef _DEBUG
 

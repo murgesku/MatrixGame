@@ -713,7 +713,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                 {
     DCP();
                     ps->GetCurSelGroup()->RemoveBuildings();                    
-                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000)==0x8000 && ps->GetCurGroup())
+                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
                     {
                         if(ps->GetCurGroup()->FindObject(ps->GetCurSelGroup()->m_FirstObject->GetObject()))
                         {
@@ -739,7 +739,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                 {
     DCP();
                     ps->GetCurSelGroup()->RemoveBuildings();                    
-                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000)==0x8000 && ps->GetCurGroup())
+                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
                     {
                         if(ps->GetCurGroup()->FindObject(ps->GetCurSelGroup()->m_FirstObject->GetObject()))
                         {
@@ -1588,8 +1588,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                         //Игрок находится в режиме конструктора роботов выбранной базы
                         else
                         {
-                            //"B"uild - выход из режима конструктора роботов
-                            if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000)
+                            //"B"uild (либо "X") - выход из режима конструктора роботов
+                            if((GetAsyncKeyState(g_Config.m_KeyActions[KA_BUILD_ROBOT]) & 0x8000) == 0x8000 || (GetAsyncKeyState(g_Config.m_KeyActions[KA_ORDER_CANCEL]) & 0x8000) == 0x8000)
                             {
                                 ps->m_ConstructPanel->ResetGroupNClose();
                             }

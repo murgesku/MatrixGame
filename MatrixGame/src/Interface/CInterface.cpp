@@ -1279,21 +1279,21 @@ bool CInterface::OnMouseMove(CPoint mouse)
 		}
 	}
 
+    //Клики мышью по миникарте, центрующие экран на указанную на миникарте точку
     if(!bCatch && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN) && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG))
     {
-       
-        if(!IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000) == 0x8000))
-        {
-            g_MatrixMap->m_Minimap.ButtonClick(NULL);
-            RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
-
-        }
-        else if(IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000) == 0x8000))
+        //Клик левой кнопкой мыши по миникарте (если не выбран приказа с панели управления роботом)
+        if(!IS_PREORDERING_NOSELECT && (GetAsyncKeyState(VK_LBUTTON) & 0x8000) == 0x8000)
         {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
         }
-        
+        //Клик правой кнопкой мыши по миникарте (если приказ с панели управления роботом был выбран (курсор изменил вид))
+        else if(IS_PREORDERING_NOSELECT && (GetAsyncKeyState(VK_RBUTTON) & 0x8000) == 0x8000)
+        {
+            g_MatrixMap->m_Minimap.ButtonClick(NULL);
+            RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
+        }
     }
     //if(!bCatch && bCatchStatic)
     //{
