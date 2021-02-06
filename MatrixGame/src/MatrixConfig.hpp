@@ -150,7 +150,7 @@ enum EKeyAction
     KA_UNIT_ENTER_ALT, //sub (! if not dialog mode)
 
     KA_GATHERING_POINT,
-    KA_BUILD_ROBOT,  //sub
+    KA_BUILD_ROBOT, //sub
     KA_BUILD_ROBOT_START,
     KA_BUILD_ROBOT_QUANTITY_UP,
     KA_BUILD_ROBOT_QUANTITY_DOWN,

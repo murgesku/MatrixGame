@@ -242,19 +242,19 @@ protected:
         struct SEVH_data
         {
             D3DXMATRIX m;
-            const CRect      *rect;
+            const CRect* rect;
             bool        found;
         };
 
         DWORD           m_ObjectState;      // битовый набор.
         DWORD           m_RChange;          // Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
 
-        SObjectCore    *m_Core;
+        SObjectCore*    m_Core;
 
-        void            SetShortedTTL(int ttl) {m_ObjectStateTTLShorted=ttl;};
-        void            SetAblazeTTL(int ttl) {m_ObjectStateTTLAblaze=ttl;};
-        int             GetShortedTTL(void) {return m_ObjectStateTTLShorted;}
-        int             GetAblazeTTL(void) {return m_ObjectStateTTLAblaze;}
+        void            SetShortedTTL(int ttl) { m_ObjectStateTTLShorted = ttl; };
+        void            SetAblazeTTL(int ttl) { m_ObjectStateTTLAblaze = ttl; };
+        int             GetShortedTTL(void) { return m_ObjectStateTTLShorted; }
+        int             GetAblazeTTL(void) { return m_ObjectStateTTLAblaze; }
         bool            IsAblaze(void) const { return FLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
         bool            IsShorted(void) const { return FLAG(m_ObjectState, OBJECT_STATE_SHORTED); } //Проверка, не был ли робот вырублен разрядником
         void            MarkAblaze(void) { SETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
@@ -262,10 +262,10 @@ protected:
         void            UnmarkAblaze(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
         void            UnmarkShorted(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
 
-        static CMatrixMapStatic * m_FirstLogicTemp;
-        static CMatrixMapStatic * m_LastLogicTemp;
-        CMatrixMapStatic * m_PrevLogicTemp;
-        CMatrixMapStatic * m_NextLogicTemp;
+        static CMatrixMapStatic* m_FirstLogicTemp;
+        static CMatrixMapStatic* m_LastLogicTemp;
+        CMatrixMapStatic* m_PrevLogicTemp;
+        CMatrixMapStatic* m_NextLogicTemp;
 
         PCMatrixMapGroup m_InGroups[MAX_GROUPS_PER_OBJECT];    // max size of object is MAX_GROUPS_PER_OBJECT groups
         int              m_InCnt;
@@ -392,17 +392,17 @@ public:
 
         bool FitToMask(DWORD mask);
 
-        __forceinline CMatrixRobotAI * AsRobot(void) { return (CMatrixRobotAI *)this;}
-        __forceinline CMatrixCannon * AsCannon(void) { return (CMatrixCannon *)this;}
-        __forceinline CMatrixBuilding * AsBuilding(void) { return (CMatrixBuilding *)this;}
-        __forceinline CMatrixFlyer * AsFlyer(void) { return (CMatrixFlyer *)this;}
+        __forceinline CMatrixRobotAI* AsRobot(void) { return (CMatrixRobotAI*)this; }
+        __forceinline CMatrixCannon* AsCannon(void) { return (CMatrixCannon*)this; }
+        __forceinline CMatrixBuilding* AsBuilding(void) { return (CMatrixBuilding*)this; }
+        __forceinline CMatrixFlyer* AsFlyer(void) { return (CMatrixFlyer*)this; }
 
         __forceinline bool IsNearBase(void) const {return m_NearBaseCnt != 0;}
 
-        void  RecalcTerainColor(void);
-        __forceinline DWORD   GetTerrainColor(void) const {return m_Core->m_TerainColor;}
+        void RecalcTerainColor(void);
+        __forceinline DWORD GetTerrainColor(void) const {return m_Core->m_TerainColor;}
 
-        void Sort(const D3DXMATRIX &sort);
+        void Sort(const D3DXMATRIX& sort);
         static void SortBegin(void);
         static  void OnEndOfDraw(void); // this must be called before any sorting stuf
 

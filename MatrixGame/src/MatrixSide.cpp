@@ -867,7 +867,7 @@ void CMatrixSideUnit::OnLButtonUp(const CPoint &)
 }
 
 //Игрок кликнул правой клавишей мыши
-void CMatrixSideUnit::OnRButtonDown(const CPoint &)
+void CMatrixSideUnit::OnRButtonDown(const CPoint&)
 {
     DTRACE();
     //В режиме ручного управления роботом данная функция не обрабатывается
@@ -877,10 +877,10 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
     //Если ранее игрок выбрал для строительства определённую турель, правый клик сбросит её установку
     if(IS_PREORDERING && m_CurrentAction == BUILDING_TURRET)
     {
-    DCP();
+        DCP();
         g_IFaceList->ResetOrderingMode();
-        m_CannonForBuild.Delete();        
-        m_CurrentAction = NOTHING_SPECIAL; 
+        m_CannonForBuild.Delete();
+        m_CurrentAction = NOTHING_SPECIAL;
         return;
     }
     DCP();
@@ -888,7 +888,7 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
     //Определяется возможный объект клика (если игрок кликнул на конкретный объект)
     CMatrixMapStatic* pObject = MouseToLand();
     DCP();
-    
+
     //Определяются координаты места клика
     int mx = Float2Int(g_MatrixMap->m_TraceStopPos.x / GLOBAL_SCALE_MOVE);
     int my = Float2Int(g_MatrixMap->m_TraceStopPos.y / GLOBAL_SCALE_MOVE);
@@ -909,56 +909,66 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint &)
         }
     }
 
-
     if(pObject == TRACE_STOP_NONE) return;
-    
-    //Если игрок не выбирал приказы с правой панели юнита и в данный момент выделен какой-либо робот, вертолёт или группа
-    if(!IS_PREORDERING && (m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED))
-    {
-        //Игрок кликнул по зданию противника (либо нейтральному): приказ захвата
-        if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide() != m_Id)
-        {
-            //Capture - приказ захвата всей выделенной группе
-            PGOrderCapture(SelGroupToLogicGroup(), (CMatrixBuilding *)pObject);
-        }
-        //Игрок кликнул по противнику: приказ атаки
-        else if(IS_TRACE_STOP_OBJECT(pObject) && ((IsLiveUnit(pObject) && pObject->GetSide() != m_Id) || pObject->IsSpecial()))
-        {
-            //Attack - приказ атаки всей выделенной группе
-            PGOrderAttack(SelGroupToLogicGroup(), GetMapPos(pObject), pObject);
-        }
-        //Игрок кликнул по свободному пространству на карте: приказ движения
-        else if(pObject == TRACE_STOP_LANDSCAPE || pObject == TRACE_STOP_WATER  || (IS_TRACE_STOP_OBJECT(pObject)))
-        {
-            //MoveTo - приказ движения всей выделенной группе
-            PGOrderMoveTo(SelGroupToLogicGroup(), CPoint(mx - ROBOT_MOVECELLS_PER_SIZE / 2, my - ROBOT_MOVECELLS_PER_SIZE / 2));
 
-            //Подробный расчёт точки движения на случай, если в выделенной группе имелись вертолёты
-            CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-            while(objs)
+    //Если игрок не выбирал приказы с правой панели юнита
+    if(!IS_PREORDERING)
+    {
+        //Если в данный момент выделен какой-либо робот, вертолёт или группа
+        if(m_CurrSel == GROUP_SELECTED || m_CurrSel == ROBOT_SELECTED || m_CurrSel == FLYER_SELECTED)
+        {
+            //Игрок кликнул по зданию противника (либо нейтральному): приказ захвата
+            if(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveBuilding() && pObject->GetSide() != m_Id)
             {
-                if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
-                {
-                    int param = (GetCurGroup()->GetObjectsCnt() - GetCurGroup()->GetRobotsCnt()) - 1;
-                    if(param > 4) param = 4;
-                    float x = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.x - param * GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.x + param * GLOBAL_SCALE_MOVE);
-                    float y = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.y - param * GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.y + param * GLOBAL_SCALE_MOVE);
-                    ((CMatrixFlyer*)objs->GetObject())->SetTarget(D3DXVECTOR2(x, y));
-                }
-                objs = objs->m_NextObject;
+                //Capture - приказ захвата всей выделенной группе
+                PGOrderCapture(SelGroupToLogicGroup(), (CMatrixBuilding*)pObject);
             }
+            //Игрок кликнул по противнику: приказ атаки
+            else if(IS_TRACE_STOP_OBJECT(pObject) && ((IsLiveUnit(pObject) && pObject->GetSide() != m_Id) || pObject->IsSpecial()))
+            {
+                //Attack - приказ атаки всей выделенной группе
+                PGOrderAttack(SelGroupToLogicGroup(), GetMapPos(pObject), pObject);
+            }
+            //Игрок кликнул по свободному пространству на карте: приказ движения
+            else if(pObject == TRACE_STOP_LANDSCAPE || pObject == TRACE_STOP_WATER || (IS_TRACE_STOP_OBJECT(pObject)))
+            {
+                //MoveTo - приказ движения всей выделенной группе
+                PGOrderMoveTo(SelGroupToLogicGroup(), CPoint(mx - ROBOT_MOVECELLS_PER_SIZE / 2, my - ROBOT_MOVECELLS_PER_SIZE / 2));
+
+                //Подробный расчёт точки движения на случай, если в выделенной группе имелись вертолёты
+                CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
+                while(objs)
+                {
+                    if(objs->GetObject() && objs->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
+                    {
+                        int param = (GetCurGroup()->GetObjectsCnt() - GetCurGroup()->GetRobotsCnt()) - 1;
+                        if(param > 4) param = 4;
+                        float x = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.x - param * GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.x + param * GLOBAL_SCALE_MOVE);
+                        float y = (float)g_MatrixMap->RndFloat(g_MatrixMap->m_TraceStopPos.y - param * GLOBAL_SCALE_MOVE, g_MatrixMap->m_TraceStopPos.y + param * GLOBAL_SCALE_MOVE);
+                        ((CMatrixFlyer*)objs->GetObject())->SetTarget(D3DXVECTOR2(x, y));
+                    }
+                    objs = objs->m_NextObject;
+                }
+            }
+        }
+        //Если в данный момент выбрана база, то устанавливаем точку сбора
+        else if(m_CurrSel == BASE_SELECTED)
+        {
+            GetCurSelObject()->AsBuilding()->SetGatheringPoint(Float2Int(g_MatrixMap->m_TraceStopPos.x), Float2Int(g_MatrixMap->m_TraceStopPos.y));
+            //Первоначальная отрисовка точки сбора (перенесена в функцию общей постоянной отрисовки)
+            //CMatrixEffect::CreateMoveto(2);
         }
     }
 }
-
-void CMatrixSideUnit::OnRButtonUp(const CPoint &)
+//Игрок отжал правую кнопку мыши после клика
+void CMatrixSideUnit::OnRButtonUp(const CPoint&)
 {
     DTRACE();
     if(IsArcadeMode()) return;
 }
 
 //Двойной клик правой кнопкой мыши
-void CMatrixSideUnit::OnRButtonDouble(const CPoint &)
+void CMatrixSideUnit::OnRButtonDouble(const CPoint&)
 {
     //В данный функционала не имеет
     return;
@@ -1595,7 +1605,12 @@ void CMatrixSideUnit::SetCurSelNum(int i)
 CMatrixMapStatic* CMatrixSideUnit::GetCurSelObject()
 {
     DTRACE();
-    if(!GetCurGroup()) return NULL;
+
+    if(!GetCurGroup())
+    {
+        if(m_CurrSel == BASE_SELECTED || m_CurrSel == BUILDING_SELECTED) return m_ActiveObject;
+        else return NULL;
+    }
 
     CMatrixGroupObject* go = GetCurGroup()->m_FirstObject;
     for(int i = 0; i < m_CurSelNum && go; ++i)
@@ -4765,7 +4780,7 @@ void CMatrixSideUnit::TaktTL()
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Forward) {
                 if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился, то повинуемся
 //                u=0;
-                for(i=0;i<rlcnt && orderok;i++) {
+                for(i=0; i<rlcnt && orderok; ++i) {
                     // Робот находится в регионе назночения или идет туда
                     if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
 
@@ -4777,7 +4792,7 @@ void CMatrixSideUnit::TaktTL()
             } else  if(m_LogicGroup[g].m_Action.m_Type==mlat_Retreat) {
                 if(!CmpOrder(team,g)) { CopyOrder(team,g); orderok=false; continue; } // Если приказ изменился, то повинуемся
 
-                for(i=0;i<rlcnt && orderok;i++) {
+                for(i=0; i<rlcnt && orderok; ++i) {
                     if(CanChangePlace(rl[i]) && GetDesRegion(rl[i])!=m_LogicGroup[g].m_Action.m_Region) { orderok=false; break; }
                 }
             }
@@ -4785,79 +4800,87 @@ void CMatrixSideUnit::TaktTL()
         }
         if(orderok) continue;
 
-        if(m_LogicGroup[g].m_Action.m_Type==mlat_Attack && !m_LogicGroup[g].IsWar()) {
-            if(!m_LogicGroup[g].IsWar()) { // Если приказ только что установился то старые места не действительны
-                for(i=0;i<rlcnt;i++) rl[i]->GetEnv()->m_Place=-1;
+        if(m_LogicGroup[g].m_Action.m_Type==mlat_Attack && !m_LogicGroup[g].IsWar())
+        {
+            if(!m_LogicGroup[g].IsWar()) //Если приказ только что установился то старые места не действительны
+            {
+                for(i=0; i<rlcnt; ++i) rl[i]->GetEnv()->m_Place=-1;
             }
         }
 
         m_LogicGroup[g].SetWar(false);
 
         // Назначаем новый приказ
-        if(m_LogicGroup[g].m_Action.m_Type==mlat_Defence) {
+        if (m_LogicGroup[g].m_Action.m_Type == mlat_Defence)
+        {
 
-            for(i=0;i<rlcnt;i++) {
+            for(i = 0; i < rlcnt; ++i)
+            {
                 if(rl[i]->GetEnv()->GetEnemyCnt()) break;
             }
-            if(i<rlcnt) {
+            if(i < rlcnt)
+            {
                 m_LogicGroup[g].SetWar(true);
-            } else {
-                AssignPlace(g,m_LogicGroup[g].m_Action.m_Region);
+            }
+            else
+            {
+                AssignPlace(g, m_LogicGroup[g].m_Action.m_Region);
 
-                for(i=0;i<rlcnt;i++) {
-                    if(PrepareBreakOrder(rl[i])) {
+                for(i = 0; i < rlcnt; ++i)
+                {
+                    if(PrepareBreakOrder(rl[i]))
+                    {
                         //rl[i]->BreakAllOrders();
-                        SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
-                        if(place) rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+                        SMatrixPlace* place = GetPlacePtr(rl[i]->GetEnv()->m_Place);
+                        if(place) rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                     }
                 }
             }
-
         }
-        else if(m_LogicGroup[g].m_Action.m_Type==mlat_Attack)
+        else if(m_LogicGroup[g].m_Action.m_Type == mlat_Attack)
         {
-//            AssignPlace(g,m_LogicGroup[g].m_Action.m_Region);
+//          AssignPlace(g, m_LogicGroup[g].m_Action.m_Region);
             m_LogicGroup[g].SetWar(true);
 
 /*            for(i = 0; i < rlcnt; ++i)
               {
-                if(rl[i]->GetEnv()->GetEnemyCnt()<=0) { // Если робот не видит врага идем в регион
+                if(rl[i]->GetEnv()->GetEnemyCnt() <= 0)//Если робот не видит врага идем в регион
+                {
                     SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
                 }
             }*/
 
         }
-        else if(m_LogicGroup[g].m_Action.m_Type==mlat_Forward)
+        else if(m_LogicGroup[g].m_Action.m_Type == mlat_Forward)
         {
-            AssignPlace(g,m_LogicGroup[g].m_Action.m_Region);
+            AssignPlace(g, m_LogicGroup[g].m_Action.m_Region);
 
-            for(i=0; i<rlcnt; ++i)
+            for(i = 0; i < rlcnt; ++i)
             {
                 if(PrepareBreakOrder(rl[i]))
                 {
-                    SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
+                    SMatrixPlace* place = GetPlacePtr(rl[i]->GetEnv()->m_Place);
                     //rl[i]->BreakAllOrders();
-                    if(place) rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+                    if(place) rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                 }
             }
-
         }
-        else if(m_LogicGroup[g].m_Action.m_Type==mlat_Retreat)
+        else if(m_LogicGroup[g].m_Action.m_Type == mlat_Retreat)
         {
-            AssignPlace(g,m_LogicGroup[g].m_Action.m_Region);
+            AssignPlace(g, m_LogicGroup[g].m_Action.m_Region);
 
-            for(i=0; i<rlcnt; ++i)
+            for(i = 0; i < rlcnt; ++i)
             {
                 if(PrepareBreakOrder(rl[i]))
                 {
-                    SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
-                    if(place) rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+                    SMatrixPlace* place = GetPlacePtr(rl[i]->GetEnv()->m_Place);
+                    if(place) rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                 }
             }
-
-        } else if(m_LogicGroup[g].m_Action.m_Type==mlat_Capture)
+        }
+        else if(m_LogicGroup[g].m_Action.m_Type == mlat_Capture)
         {
-            AssignPlace(g,m_LogicGroup[g].m_Action.m_Region);
+            AssignPlace(g, m_LogicGroup[g].m_Action.m_Region);
 
 //            for(i=0;i<rlcnt;++i) rl[i]->BreakAllOrders();
 
@@ -4865,40 +4888,39 @@ void CMatrixSideUnit::TaktTL()
             obj = CMatrixMapStatic::GetFirstLogic();
             while(obj)
             {
-                if(obj->IsLiveBuilding() && obj->GetSide()!=m_Id && obj->AsBuilding()->CanBeCaptured())
+                if(obj->IsLiveBuilding() && obj->GetSide() != m_Id && obj->AsBuilding()->CanBeCaptured())
                 {
-                    i=GetRegion(GetMapPos(obj));
-                    if(i==m_LogicGroup[g].m_Action.m_Region)
+                    i = GetRegion(GetMapPos(obj));
+                    if(i == m_LogicGroup[g].m_Action.m_Region)
                     {
-
-                        CMatrixMapStatic * obj2=CMatrixMapStatic::GetFirstLogic();
+                        CMatrixMapStatic* obj2 = CMatrixMapStatic::GetFirstLogic();
                         while(obj2)
                         {
-                            if(obj2->IsLiveRobot() && obj2->GetSide()==m_Id)
+                            if(obj2->IsLiveRobot() && obj2->GetSide() == m_Id)
                             {
-                                if(obj2->AsRobot()->FindOrder(ROT_CAPTURE_FACTORY,obj)) break;
+                                if(obj2->AsRobot()->FindOrder(ROT_CAPTURE_FACTORY, obj)) break;
                             }
                             obj2 = obj2->GetNextLogic();
                         }
-                        if(obj2==NULL)
+                        if(obj2 == NULL)
                         {
-                            u=-1;
-                            float mindist=1e20f;
-                            for(i=0; i<rlcnt; ++i)
+                            u = -1;
+                            float mindist = 1e20f;
+                            for(i = 0; i < rlcnt; ++i)
                             {
                                 if(rl[i]->FindOrderLikeThat(ROT_CAPTURE_FACTORY)) continue;
-                                float d=Dist2(GetWorldPos(rl[i]),GetWorldPos(obj));
-                                if(d<mindist)
+                                float d = Dist2(GetWorldPos(rl[i]), GetWorldPos(obj));
+                                if(d < mindist)
                                 {
-                                    mindist=d;
-                                    u=i;
+                                    mindist = d;
+                                    u = i;
                                 }
                             }
-                            if(u>=0)
+                            if(u >= 0)
                             {
                                 if(PrepareBreakOrder(rl[u]))
                                 {
-                                    rl[u]->CaptureFactory((CMatrixBuilding *)obj);
+                                    rl[u]->CaptureFactory((CMatrixBuilding*)obj);
                                 }
                             }
                         }
@@ -4906,15 +4928,15 @@ void CMatrixSideUnit::TaktTL()
                 }
                 obj = obj->GetNextLogic();
             }
-            // Остальных растовляем по местам
-            for(i=0; i<rlcnt; ++i)
+            //Остальных растовляем по местам
+            for(i = 0; i < rlcnt; ++i)
             {
                 if(rl[i]->FindOrderLikeThat(ROT_CAPTURE_FACTORY)) continue;
 
                 if(PrepareBreakOrder(rl[i]))
                 {
-                    SMatrixPlace * place=GetPlacePtr(rl[i]->GetEnv()->m_Place);
-                    if(place) rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+                    SMatrixPlace* place = GetPlacePtr(rl[i]->GetEnv()->m_Place);
+                    if(place) rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                 }
             }
         }
@@ -4954,10 +4976,10 @@ void CMatrixSideUnit::TaktTL()
         obj = obj->GetNextLogic();
     }*/
 /*    CHelper::DestroyByGroup(5001);
-    for(i=0;i<g_MatrixMap->m_RN.m_RegionCnt;++i) {
+    for(i=0; i<g_MatrixMap->m_RN.m_RegionCnt; ++i) {
         CPoint tp=g_MatrixMap->m_RN.m_Region[i].m_Center;
         CHelper::Create(10,5001)->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,0),D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,20),1.0f,1.0f,g_MatrixMap->m_RN.m_Region[i].m_Color,g_MatrixMap->m_RN.m_Region[i].m_Color,5);
-        for(u=0;u<i;u++) {
+        for(u=0; u<i; ++u) {
             CHelper::Create(10,5001)->Sphere(D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,20.0f+8.0f*(u+1)),1.0f,3,g_MatrixMap->m_RN.m_Region[i].m_Color);
         }
         CHelper::Create(10,5001)->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,0),D3DXVECTOR3(GLOBAL_SCALE_MOVE*tp.x,GLOBAL_SCALE_MOVE*tp.y,40),GLOBAL_SCALE_MOVE*g_MatrixMap->m_RN.m_Region[i].m_RadiusPlace,GLOBAL_SCALE_MOVE*g_MatrixMap->m_RN.m_Region[i].m_RadiusPlace,g_MatrixMap->m_RN.m_Region[i].m_Color,g_MatrixMap->m_RN.m_Region[i].m_Color,20);
@@ -5201,7 +5223,7 @@ v1.y=center.y*GLOBAL_SCALE_MOVE;
 v1.z=g_MatrixMap->GetZ(v1.x,v1.y);
 CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+50.0f),3.0f,3.0f,0xffffffff,0xffffffff,3);
 
-for(i=0;i<listcnt;i++) {
+for(i=0; i<listcnt; ++i) {
 D3DXVECTOR3 v1;
 v1.x=g_MatrixMap->m_RN.m_Place[m_PlaceList[i]].m_Pos.x*GLOBAL_SCALE_MOVE;
 v1.y=g_MatrixMap->m_RN.m_Place[m_PlaceList[i]].m_Pos.y*GLOBAL_SCALE_MOVE;
@@ -5213,7 +5235,7 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         //int growsizemin=0;
         //int growsizemax=0;
 
-        //for(i=0;i<rlcnt;i++) {
+        //for(i=0; i<rlcnt; ++i) {
         //    growsizemin=max(growsizemin,int(rl[i]->GetMinFireDist()/GLOBAL_SCALE_MOVE));
         //    growsizemax=max(growsizemax,int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
 
@@ -5232,110 +5254,115 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         //if(!rect.IsEmpty()) {
             // Помечаем уже занетые места
 //            g_MatrixMap->m_RN.ActionDataPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax),0);
-/*            for(i=0;i<rlcnt;i++) {
+/*            for(i=0; i<rlcnt; ++i) {
                 if(!rlokmove[i]) continue;
                 if(rl[i]->GetEnv()->m_Place<0) continue;
                 GetPlacePtr(rl[i]->GetEnv()->m_Place)->m_Data=1;
             }*/
 
-            for(i=0; i<listcnt; ++i) g_MatrixMap->m_RN.m_Place[m_PlaceList[i]].m_Data=0;
+            for(i = 0; i < listcnt; ++i) g_MatrixMap->m_RN.m_Place[m_PlaceList[i]].m_Data = 0;
             obj = CMatrixMapStatic::GetFirstLogic();
             while(obj)
             {
-                if(IsLiveUnit(obj)) ObjPlaceData(obj,1);
+                if(IsLiveUnit(obj)) ObjPlaceData(obj, 1);
                 obj = obj->GetNextLogic();
             }
 
-            // Находим лучшее место для каждого робота
+            //Находим лучшее место для каждого робота
 //            CRect plr=g_MatrixMap->m_RN.CorrectRectPL(CRect(rect.left-growsizemax,rect.top-growsizemax,rect.right+growsizemax,rect.bottom+growsizemax));
-            for(i=0; i<rlcnt; ++i)
+            for(i = 0; i < rlcnt; ++i)
             {
                 if(rlokmove[i]) continue;
                 if(!rl[i]->GetEnv()->m_TargetAttack) continue; // Если нет цели, то пропускаем
 
-                bool havebomb=rl[i]->HaveBomb();
+                bool havebomb = rl[i]->HaveBomb();
 
-                int placebest=-1;
-                float s_f1=0.0f;
-                int s_underfire=0;
-                bool s_close=false;
+                int placebest = -1;
+                float s_f1 = 0.0f;
+                int s_underfire = 0;
+                bool s_close = false;
 
-                float tvx,tvy; // To target
+                float tvx, tvy; // To target
                 int enemy_fire_dist;
 
-                if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_ROBOTAI)
+                if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType() == OBJECT_TYPE_ROBOTAI)
                 {
-                    tvx=((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->m_PosX-rl[i]->m_PosX; 
-                    tvy=((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->m_PosY-rl[i]->m_PosY;
-                    enemy_fire_dist=Float2Int(((CMatrixRobotAI *)(rl[i]->GetEnv()->m_TargetAttack))->GetMaxFireDist());
+                    tvx = ((CMatrixRobotAI*)(rl[i]->GetEnv()->m_TargetAttack))->m_PosX - rl[i]->m_PosX;
+                    tvy = ((CMatrixRobotAI*)(rl[i]->GetEnv()->m_TargetAttack))->m_PosY - rl[i]->m_PosY;
+                    enemy_fire_dist = Float2Int(((CMatrixRobotAI*)(rl[i]->GetEnv()->m_TargetAttack))->GetMaxFireDist());
                 }
-                else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON) {
-                    tvx=((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.x-rl[i]->m_PosX;
-                    tvy=((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.y-rl[i]->m_PosY;
-                    enemy_fire_dist=int(((CMatrixCannon *)(rl[i]->GetEnv()->m_TargetAttack))->GetFireRadius()+GLOBAL_SCALE_MOVE);
+                else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType() == OBJECT_TYPE_CANNON)
+                {
+                    tvx = ((CMatrixCannon*)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.x - rl[i]->m_PosX;
+                    tvy = ((CMatrixCannon*)(rl[i]->GetEnv()->m_TargetAttack))->m_Pos.y - rl[i]->m_PosY;
+                    enemy_fire_dist = int(((CMatrixCannon*)(rl[i]->GetEnv()->m_TargetAttack))->GetFireRadius() + GLOBAL_SCALE_MOVE);
                 }
                 else continue;
-                float tsize2=tvx*tvx+tvy*tvy;
-                float tsize2o=1.0f/tsize2;
+                float tsize2 = tvx * tvx + tvy * tvy;
+                float tsize2o = 1.0f / tsize2;
 
                 //SMatrixPlaceList * plist=g_MatrixMap->m_RN.m_PLList+plr.left+plr.top*g_MatrixMap->m_RN.m_PLSizeX;
-                //for(y=plr.top;y<plr.bottom;y++,plist+=g_MatrixMap->m_RN.m_PLSizeX-(plr.right-plr.left)) {
-                //    for(x=plr.left;x<plr.right;x++,plist++) {
+                //for(y=plr.top; y<plr.bottom; ++y,plist+=g_MatrixMap->m_RN.m_PLSizeX-(plr.right-plr.left)) {
+                //    for(x=plr.left; x<plr.right; ++x, ++plist) {
                 //        SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+plist->m_Sme;
-                //        for(u=0;u<plist->m_Cnt;u++,place++) {
+                //        for(u=0; u<plist->m_Cnt; ++u, ++place) {
                         for(u = 0; u < listcnt; ++u)
                         {
-                            int iplace=m_PlaceList[u];
-                            SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+iplace;
+                            int iplace = m_PlaceList[u];
+                            SMatrixPlace* place = g_MatrixMap->m_RN.m_Place + iplace;
 
                             if(place->m_Data) continue; // Занетые места игнорируем
-                            if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
+                            if(place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1))) continue; // Если робот не может стоять на этом месте то пропускаем
                             if(rl[i]->GetEnv()->IsBadPlace(iplace)) continue; // Плохое место пропускаем
 
-                            float pcx=GLOBAL_SCALE_MOVE*place->m_Pos.x+(GLOBAL_SCALE_MOVE*4.0f/2.0f); // Center place
-                            float pcy=GLOBAL_SCALE_MOVE*place->m_Pos.y+(GLOBAL_SCALE_MOVE*4.0f/2.0f);
+                            float pcx = GLOBAL_SCALE_MOVE * place->m_Pos.x + (GLOBAL_SCALE_MOVE * 4.0f / 2.0f); // Center place
+                            float pcy = GLOBAL_SCALE_MOVE * place->m_Pos.y + (GLOBAL_SCALE_MOVE * 4.0f / 2.0f);
 
-                            float pvx=pcx-rl[i]->m_PosX; // To place
-                            float pvy=pcy-rl[i]->m_PosY;
+                            float pvx = pcx - rl[i]->m_PosX; // To place
+                            float pvy = pcy - rl[i]->m_PosY;
 
-                            float k=(pvx*tvx+pvy*tvy)*tsize2o;
-                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON)
+                            float k = (pvx * tvx + pvy * tvy) * tsize2o;
+                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType() == OBJECT_TYPE_CANNON)
                             {
-//                                if(k>1.5) continue; // Места за врагом не расматриваем
-
+                                //if(k>1.5) continue; // Места за врагом не расматриваем
                             }
-                            else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()!=OBJECT_TYPE_BUILDING)
+                            else if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType() != OBJECT_TYPE_BUILDING)
                             {
-                            if(k>0.95) continue; // Места за врагом не расматриваем
-
+                                if(k > 0.95) continue; // Места за врагом не расматриваем
                             }
                             else if(!havebomb)
                             {
-                                if(k>1.2) continue; // Места сильно за врагом не расматриваем
+                                if(k > 1.2) continue; // Места сильно за врагом не расматриваем
                             }
-//                            if(k>0.95) continue; // Места за врагом не расматриваем
-//                            if(k<0.0) continue; // Места за роботом игнорируем
-                            float m=(-pvx*tvy+pvy*tvx)*tsize2o;
-                            float distfrom2=POW2(-m*tvy)+POW2(m*tvx); // Дистанция отклонения
-                            float distplace2=POW2(tvx-pcx/*pvx*/)+POW2(tvy-pcx/*pvy*/); // Дистанция от места до врага
-//                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
-                            if((placebest<0) || (rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_CANNON && (rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE)>enemy_fire_dist)) {
-                            if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
-                            } else {
-                                if(distplace2>POW2(0.95*rl[i]->GetMinFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+//                            if(k > 0.95) continue; // Места за врагом не расматриваем
+//                            if(k < 0.0) continue; // Места за роботом игнорируем
+                            float m = (-pvx * tvy + pvy * tvx) * tsize2o;
+                            float distfrom2 = POW2(-m * tvy) + POW2(m * tvx); // Дистанция отклонения
+                            float distplace2 = POW2(tvx - pcx/*pvx*/) + POW2(tvy - pcx/*pvy*/); // Дистанция от места до врага
+//                          if(distplace2>POW2(0.95*rl[i]->GetMaxFireDist()-GLOBAL_SCALE_MOVE*ROBOT_MOVECELLS_PER_SIZE/2)) continue; // Робот должен достовать врага
+                            if((placebest < 0) || (rl[i]->GetEnv()->m_TargetAttack->GetObjectType() == OBJECT_TYPE_CANNON && (rl[i]->GetMaxFireDist() - GLOBAL_SCALE_MOVE) > enemy_fire_dist))
+                            {
+                                if(distplace2 > POW2(0.95 * rl[i]->GetMaxFireDist() - GLOBAL_SCALE_MOVE * ROBOT_MOVECELLS_PER_SIZE / 2)) continue; // Робот должен достовать врага
+                            }
+                            else
+                            {
+                                if(distplace2 > POW2(0.95 * rl[i]->GetMinFireDist() - GLOBAL_SCALE_MOVE * ROBOT_MOVECELLS_PER_SIZE / 2)) continue; // Робот должен достовать врага
                             }
 
-                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_ROBOTAI) {
+                            if(!havebomb && rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_ROBOTAI)
+                            {
                                 if(distfrom2>POW2(200+100)) continue; // Робот не должен отклонится слишком далеко
-//                            } else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_BUILDING) {
+//                              }
+                                //else if(rl[i]->GetEnv()->m_TargetAttack->GetObjectType()==OBJECT_TYPE_BUILDING)
+                                //{
 //                                if(distfrom2>POW2(300+100)) continue; // Робот не должен отклонится слишком далеко
                             }
 
-                            int underfire=place->m_Underfire;
-                            if(distplace2<=POW2(enemy_fire_dist)) underfire++;
+                            int underfire = place->m_Underfire;
+                            if(distplace2 <= POW2(enemy_fire_dist)) ++underfire;
 
-                            CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, D3DXVECTOR3(pcx,pcy,g_MatrixMap->GetZ(pcx,pcy)+20.0f) /*rl[i]->GetGeoCenter()*/, PointOfAim(rl[i]->GetEnv()->m_TargetAttack), TRACE_OBJECT|TRACE_NONOBJECT|TRACE_OBJECTSPHERE|TRACE_SKIP_INVISIBLE, rl[i]);
-                            bool close=(IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE);
+                            CMatrixMapStatic* trace_res = g_MatrixMap->Trace(NULL, D3DXVECTOR3(pcx, pcy, g_MatrixMap->GetZ(pcx, pcy) + 20.0f) /*rl[i]->GetGeoCenter()*/, PointOfAim(rl[i]->GetEnv()->m_TargetAttack), TRACE_OBJECT | TRACE_NONOBJECT | TRACE_OBJECTSPHERE | TRACE_SKIP_INVISIBLE, rl[i]);
+                            bool close = (IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType() == OBJECT_TYPE_MAPOBJECT) || (trace_res == TRACE_STOP_WATER) || (trace_res == TRACE_STOP_LANDSCAPE);
 
                             if(placebest >= 0) //Если уже найдено место то выбираем наилучшее
                             {
@@ -5368,58 +5395,73 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 //                    }
 //                }
 
-                if(placebest>=0) {
-                    cplr=false;
+                if(placebest >= 0)
+                {
+                    cplr = false;
 
-                    SMatrixPlace * place=GetPlacePtr(placebest);
-                    place->m_Data=1;
-                    rl[i]->GetEnv()->m_Place=placebest;
-                    if(PrepareBreakOrder(rl[i])) {
-                        rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
+                    SMatrixPlace* place = GetPlacePtr(placebest);
+                    place->m_Data = 1;
+                    rl[i]->GetEnv()->m_Place = placebest;
+                    if(PrepareBreakOrder(rl[i]))
+                    {
+                        rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
                     }
-                } else if(cplr) {
-                    cplr=false;
-                    if(g_MatrixMap->PlaceList(mm,GetMapPos(rl[0]),center,radiusrobot,false,m_PlaceList,&listcnt)==0) {
-                        for(u=0; u<rlcnt; ++u) rl[u]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
+                }
+                else if(cplr)
+                {
+                    cplr = false;
+                    if(g_MatrixMap->PlaceList(mm, GetMapPos(rl[0]), center, radiusrobot, false, m_PlaceList, &listcnt) == 0)
+                    {
+                        for(u = 0; u < rlcnt; ++u) rl[u]->GetEnv()->m_PlaceNotFound = g_MatrixMap->GetTime();
                         break;
-                    } else {
-                        for(u=0; u<listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
+                    }
+                    else
+                    {
+                        for(u = 0; u < listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data = 0;
                         obj = CMatrixMapStatic::GetFirstLogic();
-                        while(obj) {
-                            if(IsLiveUnit(obj)) ObjPlaceData(obj,1);
+                        while(obj)
+                        {
+                            if(IsLiveUnit(obj)) ObjPlaceData(obj, 1);
                             obj = obj->GetNextLogic();
                         }
-                        i=-1;
+                        i = -1;
                         continue;
                     }
-
-                } else { // Не нашли
-                    rl[i]->GetEnv()->m_PlaceNotFound=g_MatrixMap->GetTime();
+                }
+                else // Не нашли
+                {
+                    rl[i]->GetEnv()->m_PlaceNotFound = g_MatrixMap->GetTime();
 
                     int iplace;
-                    SMatrixPlace * place;
+                    SMatrixPlace* place;
 
-                    for(u=0; u<listcnt; ++u) {
-                        iplace=m_PlaceList[u];
-                        place=g_MatrixMap->m_RN.m_Place+iplace;
+                    for(u = 0; u < listcnt; ++u)
+                    {
+                        iplace = m_PlaceList[u];
+                        place = g_MatrixMap->m_RN.m_Place + iplace;
 
                         if(place->m_Data) continue; // Занетые места игнорируем
-                        if(place->m_Move & (1<<(rl[i]->m_Unit[0].m_Kind-1))) continue; // Если робот не может стоять на этом месте то пропускаем
+                        if(place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1))) continue; // Если робот не может стоять на этом месте то пропускаем
                         break;
                     }
-                    if(u<listcnt) {
-                        place->m_Data=1;
-                        rl[i]->GetEnv()->m_Place=iplace;
-                        if(PrepareBreakOrder(rl[i])) {
-                            rl[i]->MoveToHigh(place->m_Pos.x,place->m_Pos.y);
-                }
-                    } else { // Расширяем
-                        if(g_MatrixMap->PlaceListGrow(mm,m_PlaceList,&listcnt,rlcnt)<=0) continue;
+                    if(u < listcnt)
+                    {
+                        place->m_Data = 1;
+                        rl[i]->GetEnv()->m_Place = iplace;
+                        if(PrepareBreakOrder(rl[i]))
+                        {
+                            rl[i]->MoveToHigh(place->m_Pos.x, place->m_Pos.y);
+                        }
+                    }
+                    else //Расширяем
+                    {
+                        if(g_MatrixMap->PlaceListGrow(mm, m_PlaceList, &listcnt, rlcnt) <= 0) continue;
 
-                        for(u=0; u<listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data=0;
+                        for(u = 0; u < listcnt; ++u) g_MatrixMap->m_RN.m_Place[m_PlaceList[u]].m_Data = 0;
                         obj = CMatrixMapStatic::GetFirstLogic();
-                        while(obj) {
-                            if(IsLiveUnit(obj)) ObjPlaceData(obj,1);
+                        while(obj)
+                        {
+                            if(IsLiveUnit(obj)) ObjPlaceData(obj, 1);
                             obj = obj->GetNextLogic();
                         }
                     }
@@ -5428,13 +5470,13 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
         }
     }
 
-    // Корректируем точку выстрела
-    D3DXVECTOR3 des,from,dir,p;
-    float t,dist;
+    //Корректируем точку выстрела
+    D3DXVECTOR3 des, from, dir, p;
+    float t, dist;
 
-    int curTime=g_MatrixMap->GetTime();
+    int curTime = g_MatrixMap->GetTime();
 
-    for(i=0; i<rlcnt; ++i)
+    for(i = 0; i < rlcnt; ++i)
     {
         if(rl[i]->GetEnv()->m_TargetAttack)
         {
@@ -5444,36 +5486,37 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                 continue;
             }
 
-            des=PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
+            des = PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
             // Не стрелять из прямого оружия, если на пути к цели свои
-            from=rl[i]->GetGeoCenter();
-            dist=sqrt(POW2(from.x-des.x)+POW2(from.y-des.y)+POW2(from.z-des.z));
+            from = rl[i]->GetGeoCenter();
+            dist = sqrt(POW2(from.x - des.x) + POW2(from.y - des.y) + POW2(from.z - des.z));
 
-            bool fireline=rl[i]->HaveRepair()!=2;
+            bool fireline = rl[i]->HaveRepair() != 2;
 
-            if(fireline && dist>0.0f) {
-                t=1.0f/dist;
-                dir.x=(des.x-from.x)*t;
-                dir.y=(des.y-from.y)*t;
-                dir.z=(des.z-from.z)*t;
+            if(fireline && dist > 0.0f)
+            {
+                t = 1.0f / dist;
+                dir.x = (des.x - from.x) * t;
+                dir.y = (des.y - from.y) * t;
+                dir.z = (des.z - from.z) * t;
 
                 obj = CMatrixMapStatic::GetFirstLogic();
                 while(obj)
                 {
-                    if(IsLiveUnit(obj) && obj->GetSide()==m_Id && rl[i]!=obj) {
-                        p=PointOfAim(obj);
+                    if(IsLiveUnit(obj) && obj->GetSide() == m_Id && rl[i] != obj)
+                    {
+                        p = PointOfAim(obj);
 
-                        if(IsIntersectSphere(p,25.0f,from,dir,t))
+                        if(IsIntersectSphere(p, 25.0f, from, dir, t))
                         {
-                            if(t>=0.0f && t<dist)
+                            if(t >= 0.0f && t < dist)
                             {
-
 //CHelper::DestroyByGroup(DWORD(this)+4);
 //CHelper::Create(10,DWORD(this)+4)->Cone(from,des,1.0f,1.0f,0xffffffff,0xffffffff,3);
 //CHelper::Create(10,DWORD(this)+4)->Sphere(D3DXVECTOR3(from.x+dir.x*t,from.y+dir.y*t,from.z+dir.z*t),2,5,0xffff0000);
 
-                                fireline=false;
+                                fireline = false;
                                 break;
                             }
                         }
@@ -5486,31 +5529,34 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 //            des.y+=(float)g_MatrixMap->RndFloat(-5.0f,+5.0f);
 //            des.z+=(float)g_MatrixMap->RndFloat(-5.0f,+5.0f);
 
-            CInfo * env=GetEnv(rl[i]);
-            if(env->m_TargetAttack!=env->m_TargetLast)
+            CInfo* env = GetEnv(rl[i]);
+            if(env->m_TargetAttack != env->m_TargetLast)
             {
-                env->m_TargetLast=env->m_TargetAttack;
-                env->m_TargetChange=curTime;
+                env->m_TargetLast = env->m_TargetAttack;
+                env->m_TargetChange = curTime;
             }
 
-            if(fireline) { 
-                D3DXVECTOR3 v1=rl[i]->GetGeoCenter();
-                D3DXVECTOR3 v2=PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
+            if(fireline)
+            {
+                D3DXVECTOR3 v1 = rl[i]->GetGeoCenter();
+                D3DXVECTOR3 v2 = PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-                fireline=D3DXVec3LengthSq(&(v2-v1))<=POW2(rl[i]->GetMaxFireDist());
+                fireline = D3DXVec3LengthSq(&(v2 - v1)) <= POW2(rl[i]->GetMaxFireDist());
 
                 if(fireline)
                 {
-                    CMatrixMapStatic * trace_res = g_MatrixMap->Trace(NULL, v1, v2, TRACE_OBJECT|TRACE_NONOBJECT, rl[i]);
-                    fireline=!((IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType()==OBJECT_TYPE_MAPOBJECT) || (trace_res==TRACE_STOP_WATER) || (trace_res==TRACE_STOP_LANDSCAPE));
+                    CMatrixMapStatic* trace_res = g_MatrixMap->Trace(NULL, v1, v2, TRACE_OBJECT | TRACE_NONOBJECT, rl[i]);
+                    fireline = !((IS_TRACE_STOP_OBJECT(trace_res) && trace_res->GetObjectType() == OBJECT_TYPE_MAPOBJECT) || (trace_res == TRACE_STOP_WATER) || (trace_res == TRACE_STOP_LANDSCAPE));
                 }
             }
 
             if(fireline)
             {
-                // Если у цели голова Firewall то в нее сложнее попасть
-                /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
-                    if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
+                //Если у цели голова Firewall то в неё сложнее попасть
+                /*if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0)
+                {
+                    if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad)
+                    {
                         env->m_TargetAngle=0.0f;
 
                         env->m_TargetAngle=min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
@@ -5519,73 +5565,94 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                     else if(env->m_TargetAngle>0) env->m_TargetAngle-=1.0f*ToRad;
                     else env->m_TargetAngle+=1.0f*ToRad;*/
 
-                if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect>0) {
-                    if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.3f*ToRad){//>=15.0f*env->m_TargetAttack->AsRobot()->m_AimProtect*ToRad) {
-                        env->m_TargetAngle=0.0f;
+                if(env->m_TargetAttack->IsRobot() && env->m_TargetAttack->AsRobot()->m_AimProtect > 0)
+                {
+                    if(env->m_Target != env->m_TargetAttack || fabs(env->m_TargetAngle) <= 1.3f * ToRad)//>=15.0f*env->m_TargetAttack->AsRobot()->m_AimProtect*ToRad) {
+                    {
+                        env->m_TargetAngle = 0.0f;
 
-                        env->m_TargetAngle=min(8.0f*ToRad,(float)g_MatrixMap->Rnd(1,100)/100.0f*16.0f*env->m_TargetAttack->AsRobot()->m_AimProtect*ToRad);
-                        if(g_MatrixMap->Rnd(0,9)<5) env->m_TargetAngle=-env->m_TargetAngle;
+                        env->m_TargetAngle = min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f * env->m_TargetAttack->AsRobot()->m_AimProtect * ToRad);
+                        if(g_MatrixMap->Rnd(0, 9) < 5) env->m_TargetAngle = -env->m_TargetAngle;
                     }
-                    //else if(env->m_TargetAngle>0) env->m_TargetAngle+=1.0f*ToRad;
-					//else if(env->m_TargetAngle<0) env->m_TargetAngle-=1.0f*ToRad;
-					//else if(fabs(env->m_TargetAngle)>1.0f) env->m_TargetAngle*=0.7f;
-                    //else env->m_TargetAngle=(2*g_MatrixMap->Rnd(0,1)-1)*ToRad;
-					else env->m_TargetAngle*=0.75f;
 
-                    if(env->m_TargetAngle!=0.0f) {
-                        float vx=des.x-rl[i]->m_PosX;
-                        float vy=des.y-rl[i]->m_PosY;
-                        float sa,ca;
-                        SinCos(env->m_TargetAngle,&sa,&ca);
-                        des.x=(ca*vx+sa*vy)+rl[i]->m_PosX;
-                        des.y=(-sa*vx+ca*vy)+rl[i]->m_PosY;
+                    /*
+                    else if(env->m_TargetAngle > 0) env->m_TargetAngle += 1.0f * ToRad;
+                    else if(env->m_TargetAngle < 0) env->m_TargetAngle -= 1.0f * ToRad;
+                    else if(fabs(env->m_TargetAngle) > 1.0f) env->m_TargetAngle *= 0.7f;
+                    else env->m_TargetAngle = (2 * g_MatrixMap->Rnd(0, 1) - 1) * ToRad;
+                    */
+
+                    else env->m_TargetAngle *= 0.75f;
+
+                    if(env->m_TargetAngle != 0.0f)
+                    {
+                        float vx = des.x - rl[i]->m_PosX;
+                        float vy = des.y - rl[i]->m_PosY;
+                        float sa, ca;
+                        SinCos(env->m_TargetAngle, &sa, &ca);
+                        des.x = (ca * vx + sa * vy) + rl[i]->m_PosX;
+                        des.y = (-sa * vx + ca * vy) + rl[i]->m_PosY;
                     }
                 }
 
-                env->m_Target=env->m_TargetAttack;
-                env->m_LastFire=curTime; 
+                env->m_Target = env->m_TargetAttack;
+                env->m_LastFire = curTime;
 
-                rl[i]->Fire(des); 
+                rl[i]->Fire(des);
 
 //CHelper::DestroyByGroup(DWORD(this)+6);
 //CHelper::Create(10,DWORD(this)+6)->Cone(rl[i]->GetGeoCenter(),des,1.0f,1.0f,0xffffffff,0xffffffff,3);
 
                 // Если стоим на месте
-                if(IsInPlace(rl[i])) {
+                if(IsInPlace(rl[i]))
+                {
                     // Если несколько врагов и в цель не попадаем в течении долгого времени, то переназначаем цель
-                    if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
-                        env->m_TargetAttack=NULL;
+                    if(env->m_EnemyCnt > 1 && (curTime - env->m_TargetChange) > 4000 && (curTime - env->m_LastHitTarget) > 4000)
+                    {
+                        env->m_TargetAttack = NULL;
                     }
                     // Если один враг и в цель не попадаем в течении долгого времени и стоим на месте, то переназначаем место
-                    if(env->m_EnemyCnt==1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastHitTarget)>4000) {
+                    if(env->m_EnemyCnt == 1 && (curTime - env->m_TargetChange) > 4000 && (curTime - env->m_LastHitTarget) > 4000)
+                    {
                         env->AddBadPlace(env->m_Place);
-                        env->m_Place=-1;
+                        env->m_Place = -1;
                     }
                     // Если очень долго не попадаем в цель, то меняем позицию
-                    if((curTime-env->m_TargetChange)>2000 && (curTime-env->m_LastHitTarget)>10000) {
+                    if((curTime - env->m_TargetChange) > 2000 && (curTime - env->m_LastHitTarget) > 10000)
+                    {
                         env->AddBadPlace(env->m_Place);
-                        env->m_Place=-1;
+                        env->m_Place = -1;
                     }
-                } else env->m_TargetChange=curTime;
-            } else {
-                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime()-rl[i]->GetEnv()->m_TargetChangeRepair)>1000) { // Ищем робота для починки
-                    D3DXVECTOR2 v,v2;
+                }
+                else env->m_TargetChange = curTime;
+            }
+            else
+            {
+                if(rl[i]->HaveRepair() && (g_MatrixMap->GetTime() - rl[i]->GetEnv()->m_TargetChangeRepair) > 1000) //Ищем робота для починки
+                {
+                    D3DXVECTOR2 v, v2;
 
-                    if(rl[i]->GetEnv()->m_Target && IsLiveUnit(rl[i]->GetEnv()->m_Target) && rl[i]->GetEnv()->m_Target->GetSide()==m_Id && rl[i]->GetEnv()->m_Target->NeedRepair()) {
-                        v=GetWorldPos(rl[i]);
-                        v2=GetWorldPos(rl[i]->GetEnv()->m_Target);
-                        if((POW2(v.x-v2.x)+POW2(v.y-v2.y))>POW2(rl[i]->GetRepairDist())) rl[i]->GetEnv()->m_Target=NULL;
-                    } else rl[i]->GetEnv()->m_Target=NULL;
+                    if(rl[i]->GetEnv()->m_Target && IsLiveUnit(rl[i]->GetEnv()->m_Target) && rl[i]->GetEnv()->m_Target->GetSide() == m_Id && rl[i]->GetEnv()->m_Target->NeedRepair())
+                    {
+                        v = GetWorldPos(rl[i]);
+                        v2 = GetWorldPos(rl[i]->GetEnv()->m_Target);
+                        if((POW2(v.x - v2.x) + POW2(v.y - v2.y)) > POW2(rl[i]->GetRepairDist())) rl[i]->GetEnv()->m_Target = NULL;
+                    }
+                    else rl[i]->GetEnv()->m_Target = NULL;
 
-                    if(!rl[i]->GetEnv()->m_Target) {
+                    if(!rl[i]->GetEnv()->m_Target)
+                    {
                         obj = CMatrixMapStatic::GetFirstLogic();
-                        while(obj) {
-                            if(obj!=rl[i] && IsLiveUnit(obj) && obj->GetSide()==m_Id && obj->NeedRepair()) {
-                                v=GetWorldPos(rl[i]);
-                                v2=GetWorldPos(obj);
-                                if((POW2(v.x-v2.x)+POW2(v.y-v2.y))<POW2(rl[i]->GetRepairDist())) {
-                                    rl[i]->GetEnv()->m_Target=obj;
-                                    rl[i]->GetEnv()->m_TargetChangeRepair=g_MatrixMap->GetTime();
+                        while(obj)
+                        {
+                            if(obj != rl[i] && IsLiveUnit(obj) && obj->GetSide() == m_Id && obj->NeedRepair())
+                            {
+                                v = GetWorldPos(rl[i]);
+                                v2 = GetWorldPos(obj);
+                                if((POW2(v.x - v2.x) + POW2(v.y - v2.y)) < POW2(rl[i]->GetRepairDist()))
+                                {
+                                    rl[i]->GetEnv()->m_Target = obj;
+                                    rl[i]->GetEnv()->m_TargetChangeRepair = g_MatrixMap->GetTime();
                                     break;
                                 }
                             }
@@ -5594,23 +5661,28 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
                     }
                 }
 
-                if(rl[i]->GetEnv()->TargetType()==2) rl[i]->Fire(PointOfAim(rl[i]->GetEnv()->m_Target),2);
+                if(rl[i]->GetEnv()->TargetType() == 2) rl[i]->Fire(PointOfAim(rl[i]->GetEnv()->m_Target), 2);
                 else rl[i]->StopFire();
 
                 // Если стоим на месте
-                if(IsInPlace(rl[i])) {
+                if(IsInPlace(rl[i]))
+                {
                     // Если несколько врагов, а текущий долго закрыт своими, то переназначаем цель
-                    if(env->m_EnemyCnt>1 && (curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>4000) { 
-                        env->m_TargetAttack=NULL;
+                    if(env->m_EnemyCnt > 1 && (curTime - env->m_TargetChange) > 4000 && (curTime - env->m_LastFire) > 4000)
+                    {
+                        env->m_TargetAttack = NULL;
                     }
                     // Если долго закрыт своими, то меняем позицию
-                    if((curTime-env->m_TargetChange)>4000 && (curTime-env->m_LastFire)>6000) {
-                        if(CanChangePlace(rl[i])) {
+                    if((curTime - env->m_TargetChange) > 4000 && (curTime - env->m_LastFire) > 6000)
+                    {
+                        if(CanChangePlace(rl[i]))
+                        {
                             env->AddBadPlace(env->m_Place);
-                            env->m_Place=-1;
+                            env->m_Place = -1;
                         }
                     }
-                } else env->m_TargetChange=curTime;
+                }
+                else env->m_TargetChange = curTime;
             }
         }
     }
@@ -5618,39 +5690,46 @@ CHelper::Create(3000,524234)->Cone(v1,D3DXVECTOR3(v1.x,v1.y,v1.z+30.0f),1.0f,1.0
 
 void CMatrixSideUnit::RepairTL(int group)
 {
-    int i,rlcnt=0;
-    CMatrixMapStatic * obj;
-    CMatrixRobotAI * rl[MAX_ROBOTS]; // Список роботов на карте
-    D3DXVECTOR2 v,v2;
+    int i, rlcnt = 0;
+    CMatrixMapStatic* obj;
+    CMatrixRobotAI* rl[MAX_ROBOTS]; //Список роботов на карте
+    D3DXVECTOR2 v, v2;
 
     obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveRobot() && obj->GetSide()==m_Id && GetGroupLogic(obj)==group) {
-            rl[rlcnt]=obj->AsRobot();
-            rlcnt++;
+    while(obj)
+    {
+        if(obj->IsLiveRobot() && obj->GetSide() == m_Id && GetGroupLogic(obj) == group)
+        {
+            rl[rlcnt] = obj->AsRobot();
+            ++rlcnt;
         }
         obj = obj->GetNextLogic();
     }
-    if(rlcnt<=0) return;
+    if(rlcnt <= 0) return;
 
-    // Если нет цели для починки, то ищем ее
-    for(i=0;i<rlcnt;i++) {
-        if(rl[i]->GetRepairDist()<=0) continue;
-        if(rl[i]->GetEnv()->m_Target && rl[i]->GetEnv()->m_Target->IsLive() && rl[i]->GetEnv()->m_Target->NeedRepair()) {
-            v=GetWorldPos(rl[i]);
-            v2=GetWorldPos(rl[i]->GetEnv()->m_Target);
-            if((POW2(v.x-v2.x)+POW2(v.y-v2.y))<POW2(rl[i]->GetRepairDist())) continue;
+    //Если нет цели для починки, то ищем её
+    for(i = 0; i < rlcnt; ++i)
+    {
+        if(rl[i]->GetRepairDist() <= 0) continue;
+        if(rl[i]->GetEnv()->m_Target && rl[i]->GetEnv()->m_Target->IsLive() && rl[i]->GetEnv()->m_Target->NeedRepair())
+        {
+            v = GetWorldPos(rl[i]);
+            v2 = GetWorldPos(rl[i]->GetEnv()->m_Target);
+            if((POW2(v.x - v2.x) + POW2(v.y - v2.y)) < POW2(rl[i]->GetRepairDist())) continue;
         }
 
-        rl[i]->GetEnv()->m_Target=NULL;
+        rl[i]->GetEnv()->m_Target = NULL;
 
         obj = CMatrixMapStatic::GetFirstLogic();
-        while(obj) {
-            if(obj!=rl[i] && obj->IsLive() && obj->GetSide()==m_Id && obj->NeedRepair()) {
-                v=GetWorldPos(rl[i]);
-                v2=GetWorldPos(obj);
-                if((POW2(v.x-v2.x)+POW2(v.y-v2.y))<POW2(rl[i]->GetRepairDist())) {
-                    rl[i]->GetEnv()->m_Target=obj;
+        while(obj)
+        {
+            if(obj != rl[i] && obj->IsLive() && obj->GetSide() == m_Id && obj->NeedRepair())
+            {
+                v = GetWorldPos(rl[i]);
+                v2 = GetWorldPos(obj);
+                if((POW2(v.x - v2.x) + POW2(v.y - v2.y)) < POW2(rl[i]->GetRepairDist()))
+                {
+                    rl[i]->GetEnv()->m_Target = obj;
                     break;
                 }
             }
@@ -5659,12 +5738,13 @@ void CMatrixSideUnit::RepairTL(int group)
     }
 
     // Корректируем точку выстрела
-    for(i=0;i<rlcnt;i++) {
+    for(i = 0; i < rlcnt; ++i)
+    {
         if(!rl[i]->GetEnv()->m_Target) continue;
 
-        D3DXVECTOR3 des=PointOfAim(rl[i]->GetEnv()->m_Target);
+        D3DXVECTOR3 des = PointOfAim(rl[i]->GetEnv()->m_Target);
 
-        rl[i]->Fire(des,2); 
+        rl[i]->Fire(des, 2);
     }
 }
 
@@ -5674,27 +5754,27 @@ void CMatrixSideUnit::AssignPlace(CMatrixRobotAI* robot, int region)
     CMatrixMapStatic* obj;
     SMatrixPlace* place;
 
-    // Если текущее место в регионе, то оно нас устраивает
-    if (PlaceInRegion(robot, robot->GetEnv()->m_Place, region)) return;
+    //Если текущее место в регионе, то оно нас устраивает
+    if(PlaceInRegion(robot, robot->GetEnv()->m_Place, region)) return;
 
-    // В текущем регионе помечаем все места как пустые
+    //В текущем регионе помечаем все места как пустые
     SMatrixRegion* uregion = g_MatrixMap->m_RN.GetRegion(region);
-    for (i = 0; i < uregion->m_PlaceAllCnt; ++i) GetPlacePtr(uregion->m_PlaceAll[i])->m_Data = 0;
+    for(i = 0; i < uregion->m_PlaceAllCnt; ++i) GetPlacePtr(uregion->m_PlaceAll[i])->m_Data = 0;
 
-    // Помечаем занятые места кроме текущего робота
+    //Помечаем занятые места кроме текущего робота
     obj = CMatrixMapStatic::GetFirstLogic();
-    while (obj)
+    while(obj)
     {
-        if (IsLiveUnit(obj) && obj != robot) ObjPlaceData(obj, 1);
+        if(IsLiveUnit(obj) && obj != robot) ObjPlaceData(obj, 1);
         obj = obj->GetNextLogic();
     }
 
-    // Находим пустое место
-    for (u = 0; u < uregion->m_PlaceAllCnt; ++u)
+    //Находим пустое место
+    for(u = 0; u < uregion->m_PlaceAllCnt; ++u)
     {
         place = GetPlacePtr(uregion->m_PlaceAll[u]);
-        if (place->m_Data) continue;
-        if (!CanMove(place->m_Move, robot)) continue; // Если робот не может стоять на этом месте, то пропускаем
+        if(place->m_Data) continue;
+        if(!CanMove(place->m_Move, robot)) continue; //Если робот не может стоять на этом месте, то пропускаем
 
         robot->GetEnv()->m_Place = uregion->m_PlaceAll[u];
         place->m_Data = 1;
@@ -8532,19 +8612,23 @@ int CMatrixSideUnit::SelGroupToLogicGroup()
     CMatrixMapStatic * obj;
     int i,no;
 
-    for(i=0;i<MAX_LOGIC_GROUP;i++) m_PlayerGroup[i].m_RobotCnt=0;
+    for(i=0; i<MAX_LOGIC_GROUP; ++i) m_PlayerGroup[i].m_RobotCnt=0;
 
     obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveRobot() && obj->GetSide()==m_Id) {
-            if(obj->AsRobot()->GetGroupLogic()>=0 && obj->AsRobot()->GetGroupLogic()<MAX_LOGIC_GROUP) {
+    while(obj) 
+    {
+        if(obj->IsLiveRobot() && obj->GetSide()==m_Id) 
+        {
+            if(obj->AsRobot()->GetGroupLogic()>=0 && obj->AsRobot()->GetGroupLogic()<MAX_LOGIC_GROUP) 
+            {
                 m_PlayerGroup[obj->AsRobot()->GetGroupLogic()].m_RobotCnt++;
             }
         }
         obj = obj->GetNextLogic();
     }
 
-    for(no=0;no<MAX_LOGIC_GROUP;no++) {
+    for(no=0; no<MAX_LOGIC_GROUP; ++no)
+    {
         if(m_PlayerGroup[no].m_RobotCnt<=0) break;
     }
     ASSERT(no<MAX_LOGIC_GROUP);
@@ -8555,7 +8639,8 @@ int CMatrixSideUnit::SelGroupToLogicGroup()
     m_PlayerGroup[no].m_RoadPath->Clear();
 
     CMatrixGroupObject* objs = GetCurGroup()->m_FirstObject;
-    while(objs){
+    while(objs)
+    {
         if(objs->GetObject() && objs->GetObject()->IsLiveRobot())
         {
             m_PlayerGroup[no].m_RobotCnt++;
@@ -9112,26 +9197,26 @@ void CMatrixSideUnit::PGOrderAutoDefence(int no)
     }
 }
 
-void CMatrixSideUnit::PGRemoveAllPassive(int no,CMatrixMapStatic * skip)
+void CMatrixSideUnit::PGRemoveAllPassive(int no, CMatrixMapStatic* skip)
 {
-#define IsPassive(obj) (((obj)->GetObjectType()==OBJECT_TYPE_BUILDING) || ((obj)->IsLive() && (obj)->GetSide()==m_Id))
+#define IsPassive(obj) (((obj)->GetObjectType() == OBJECT_TYPE_BUILDING) || ((obj)->IsLive() && (obj)->GetSide() == m_Id))
 
-    CMatrixMapStatic * obj;
+    CMatrixMapStatic* obj;
     obj = CMatrixMapStatic::GetFirstLogic();
     while(obj)
     {
-        if(obj->IsLiveRobot() && obj->GetSide()==m_Id && obj->AsRobot()->GetGroupLogic()==no)
+        if(obj->IsLiveRobot() && obj->GetSide() == m_Id && obj->AsRobot()->GetGroupLogic() == no)
         {
-            CMatrixRobotAI * robot=(CMatrixRobotAI *)obj;
-            CInfo * env=robot->GetEnv();
+            CMatrixRobotAI* robot = (CMatrixRobotAI*)obj;
+            CInfo* env = robot->GetEnv();
 
-            if(env->m_Target && env->m_Target!=skip && IsPassive(env->m_Target)) env->m_Target=NULL;
-            CEnemy * enemie = env->m_FirstEnemy;
+            if(env->m_Target && env->m_Target != skip && IsPassive(env->m_Target)) env->m_Target = NULL;
+            CEnemy* enemie = env->m_FirstEnemy;
             while(enemie)
             {
-                CEnemy * e2=enemie;
+                CEnemy* e2 = enemie;
                 enemie = enemie->m_NextEnemy;
-                if(e2->GetEnemy()!=skip && IsPassive(e2->GetEnemy())) env->RemoveFromList(e2);
+                if(e2->GetEnemy() != skip && IsPassive(e2->GetEnemy())) env->RemoveFromList(e2);
             }
 
         }

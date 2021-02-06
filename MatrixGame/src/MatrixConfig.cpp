@@ -16,213 +16,217 @@ struct SKeyCodes
 
 static SKeyCodes key_codes[] =
 {
-    {L"KEY_LMB",        VK_LBUTTON},
-    {L"KEY_RMB",        VK_RBUTTON},
+    {L"LMB",        VK_LBUTTON},
+    {L"RMB",        VK_RBUTTON},
 
-    {L"KEY_ESC",        VK_ESCAPE},
-    {L"KEY_F1",         0x70},
-    {L"KEY_F2",         0x71},
-    {L"KEY_F3",         0x72},
-    {L"KEY_F4",         0x73},
-    {L"KEY_F5",         0x74},
-    {L"KEY_F6",         0x75},
-    {L"KEY_F7",         0x76},
-    {L"KEY_F8",         0x77},
-    {L"KEY_F9",         0x78},
-    {L"KEY_F10",        0x79},
-    {L"KEY_F11",        0x7A},
-    {L"KEY_F12",        0x7B},
+    {L"Esc",        VK_ESCAPE},
+    {L"F1",         0x70},
+    {L"F2",         0x71},
+    {L"F3",         0x72},
+    {L"F4",         0x73},
+    {L"F5",         0x74},
+    {L"F6",         0x75},
+    {L"F7",         0x76},
+    {L"F8",         0x77},
+    {L"F9",         0x78},
+    {L"F10",        0x79},
+    {L"F11",        0x7A},
+    {L"F12",        0x7B},
 
-    {L"KEY_PAUSE",      VK_PAUSE},
+    {L"Pause",      VK_PAUSE},
 
-    {L"KEY_SLOCK",      VK_SCROLL},
-    {L"KEY_CLOCK",      VK_CAPITAL},
-    {L"KEY_NLOCK",      VK_NUMLOCK},
+    {L"ScrollLock", VK_SCROLL},
+    {L"CapsLock",   VK_CAPITAL},
+    {L"NumLock",    VK_NUMLOCK},
 
-    {L"KEY_TILDA",      -1}, // ?
-    {L"KEY_RSLASH",     -1}, // ?
-    {L"KEY_LSLASH",     VK_OEM_5}, // ?
-    {L"KEY_COMMA",      VK_OEM_COMMA}, // ?
-    {L"KEY_COLON",      VK_OEM_PERIOD}, // ?
-    {L"KEY_SEMICOLON",  -1}, // ?
-    {L"KEY_APOSTROF",   -1}, // ?
-    {L"KEY_LBRACKET",   VK_OEM_4}, // ?
-    {L"KEY_RBRACKET",   VK_OEM_6}, // ?
-    {L"KEY_MINUS",      VK_OEM_MINUS}, // ?
-    {L"KEY_EQUAL",      VK_OEM_PLUS}, // ?
+    {L"~",          0xC0},
+    {L"/",          0xBF},
+    {L"\\",         VK_OEM_5},
+    {L"<",          VK_OEM_COMMA},
+    {L">",          VK_OEM_PERIOD},
+    {L";",          0xBA},
+    {L"'",          0xDE},
+    {L"[",          VK_OEM_4},
+    {L"]",          VK_OEM_6},
+    {L"-",          VK_OEM_MINUS},
+    {L"+",          VK_OEM_PLUS},
 
-    {L"KEY_PADSLASH",   VK_DIVIDE},
-    {L"KEY_PADSTAR",    VK_MULTIPLY},
-    {L"KEY_PADMINUS",   VK_SUBTRACT},
-    {L"KEY_PADPLUS",    VK_ADD},
-    {L"KEY_PADENTER",   -1}, // ?
-    {L"KEY_PADDEL",     VK_SEPARATOR},
-    {L"KEY_PAD0",       VK_NUMPAD0},
-    {L"KEY_PAD1",       VK_NUMPAD1},
-    {L"KEY_PAD2",       VK_NUMPAD2},
-    {L"KEY_PAD3",       VK_NUMPAD3},
-    {L"KEY_PAD4",       VK_NUMPAD4},
-    {L"KEY_PAD5",       VK_NUMPAD5},
-    {L"KEY_PAD6",       VK_NUMPAD6},
-    {L"KEY_PAD7",       VK_NUMPAD7},
-    {L"KEY_PAD8",       VK_NUMPAD8},
-    {L"KEY_PAD9",       VK_NUMPAD9},
+    {L"NumPad/",    VK_DIVIDE},
+    {L"NumPad*",    VK_MULTIPLY},
+    {L"NumPad-",    VK_SUBTRACT},
+    {L"NumPad+",    VK_ADD},
+    //{L"NumPadEnter",   -1}, //?
+    {L"NumPad.",    VK_SEPARATOR},
+    {L"NumPad0",    VK_NUMPAD0},
+    {L"NumPad1",    VK_NUMPAD1},
+    {L"NumPad2",    VK_NUMPAD2},
+    {L"NumPad3",    VK_NUMPAD3},
+    {L"NumPad4",    VK_NUMPAD4},
+    {L"NumPad5",    VK_NUMPAD5},
+    {L"NumPad6",    VK_NUMPAD6},
+    {L"NumPad7",    VK_NUMPAD7},
+    {L"NumPad8",    VK_NUMPAD8},
+    {L"NumPad9",    VK_NUMPAD9},
 
-    {L"KEY_0",          0x30},
-    {L"KEY_1",          0x31},
-    {L"KEY_2",          0x32},
-    {L"KEY_3",          0x33},
-    {L"KEY_4",          0x34},
-    {L"KEY_5",          0x35},
-    {L"KEY_6",          0x36},
-    {L"KEY_7",          0x37},
-    {L"KEY_8",          0x38},
-    {L"KEY_9",          0x39},
-    
-    {L"KEY_LEFT",       VK_LEFT},
-    {L"KEY_RIGHT",      VK_RIGHT},
-    {L"KEY_UP",         VK_UP},
-    {L"KEY_DOWN",       VK_DOWN},
+    {L"0",          0x30},
+    {L"1",          0x31},
+    {L"2",          0x32},
+    {L"3",          0x33},
+    {L"4",          0x34},
+    {L"5",          0x35},
+    {L"6",          0x36},
+    {L"7",          0x37},
+    {L"8",          0x38},
+    {L"9",          0x39},
 
-    {L"KEY_BACKSPACE",  VK_BACK},
-    {L"KEY_TAB",        VK_TAB},
-    {L"KEY_ENTER",      VK_RETURN},
-    {L"KEY_SPACE",      VK_SPACE},
+    {L"Left",       VK_LEFT},
+    {L"Right",      VK_RIGHT},
+    {L"Up",         VK_UP},
+    {L"Down",       VK_DOWN},
 
-    {L"KEY_INSERT",     VK_INSERT},
-    {L"KEY_DELETE",     VK_DELETE},
-    {L"KEY_HOME",       VK_HOME},
-    {L"KEY_END",        VK_END},
-    {L"KEY_PGUP",       VK_PRIOR},
-    {L"KEY_PGDN",       VK_NEXT},
+    {L"Backspace",  VK_BACK},
+    {L"Tab",        VK_TAB},
+    {L"Enter",      VK_RETURN},
+    {L"Space",      VK_SPACE},
 
-    {L"KEY_SHIFT",      VK_SHIFT},
-    {L"KEY_LSHIFT",     VK_LSHIFT},
-    {L"KEY_RSHIFT",     VK_RSHIFT},
-    {L"KEY_ALT",        VK_MENU},
-    {L"KEY_LALT",       VK_LMENU},
-    {L"KEY_RALT",       VK_RMENU},
-    {L"KEY_CTRL",       VK_CONTROL},
-    {L"KEY_LCTRL",      VK_LCONTROL},
-    {L"KEY_RCTRL",      VK_RCONTROL},
+    {L"Insert",     VK_INSERT},
+    {L"Delete",     VK_DELETE},
+    {L"Home",       VK_HOME},
+    {L"End",        VK_END},
+    {L"PageUp",     VK_PRIOR},
+    {L"PageDown",   VK_NEXT},
 
-    {L"KEY_LWIN",       VK_LWIN},
-    {L"KEY_RWIN",       VK_RWIN},
-    {L"KEY_MENU",       VK_APPS},
+    {L"Shift",      VK_SHIFT},
+    {L"LShift",     VK_LSHIFT},
+    {L"RShift",     VK_RSHIFT},
+    {L"Alt",        VK_MENU},
+    {L"LAlt",       VK_LMENU},
+    {L"RAlt",       VK_RMENU},
+    {L"Ctrl",       VK_CONTROL},
+    {L"LCtrl",      VK_LCONTROL},
+    {L"RCtrl",      VK_RCONTROL},
 
-    {L"KEY_Q",          0x51},
-    {L"KEY_W",          0x57},
-    {L"KEY_E",          0x45},
-    {L"KEY_R",          0x52},
-    {L"KEY_T",          0x54},
-    {L"KEY_Y",          0x59},
-    {L"KEY_U",          0x55},
-    {L"KEY_I",          0x49},
-    {L"KEY_O",          0x4F},
-    {L"KEY_P",          0x50},
+    {L"LWin",       VK_LWIN},
+    {L"RWin",       VK_RWIN},
+    {L"Apps",       VK_APPS},
 
-    {L"KEY_A",          0x41},
-    {L"KEY_S",          0x53},
-    {L"KEY_D",          0x44},
-    {L"KEY_F",          0x46},
-    {L"KEY_G",          0x47},
-    {L"KEY_H",          0x48},
-    {L"KEY_J",          0x4A},
-    {L"KEY_K",          0x4B},
-    {L"KEY_L",          0x4C},
+    {L"Q",          0x51},
+    {L"W",          0x57},
+    {L"E",          0x45},
+    {L"R",          0x52},
+    {L"T",          0x54},
+    {L"Y",          0x59},
+    {L"U",          0x55},
+    {L"I",          0x49},
+    {L"O",          0x4F},
+    {L"P",          0x50},
 
-    {L"KEY_Z",          0x5A},
-    {L"KEY_X",          0x58},
-    {L"KEY_C",          0x43},
-    {L"KEY_V",          0x56},
-    {L"KEY_B",          0x42},
-    {L"KEY_N",          0x4E},
-    {L"KEY_M",          0x4D},
+    {L"A",          0x41},
+    {L"S",          0x53},
+    {L"D",          0x44},
+    {L"F",          0x46},
+    {L"G",          0x47},
+    {L"H",          0x48},
+    {L"J",          0x4A},
+    {L"K",          0x4B},
+    {L"L",          0x4C},
 
-    {NULL,              -1}
+    {L"Z",          0x5A},
+    {L"X",          0x58},
+    {L"C",          0x43},
+    {L"V",          0x56},
+    {L"B",          0x42},
+    {L"N",          0x4E},
+    {L"M",          0x4D},
+
+    {NULL,          -1}
 };
 
 static SKeyCodes key_action_codes[] =
 {
-    {L"CamMoveUp",         KA_SCROLL_UP},
-    {L"CamMoveDown",       KA_SCROLL_DOWN},
-    {L"CamMoveLeft",       KA_SCROLL_LEFT},
-    {L"CamMoveRight",      KA_SCROLL_RIGHT},
+    //Управление камерой
+    {L"CamMoveUp",          KA_SCROLL_UP},
+    {L"CamMoveDown",        KA_SCROLL_DOWN},
+    {L"CamMoveLeft",        KA_SCROLL_LEFT},
+    {L"CamMoveRight",       KA_SCROLL_RIGHT},
 
-    {L"CamMoveUpAlt",      KA_SCROLL_UP_ALT},
-    {L"CamMoveDownAlt",    KA_SCROLL_DOWN_ALT},
-    {L"CamMoveLeftAlt",    KA_SCROLL_LEFT_ALT},
-    {L"CamMoveRightAlt",   KA_SCROLL_RIGHT_ALT},
+    {L"CamMoveUpAlt",       KA_SCROLL_UP_ALT},
+    {L"CamMoveDownAlt",     KA_SCROLL_DOWN_ALT},
+    {L"CamMoveLeftAlt",     KA_SCROLL_LEFT_ALT},
+    {L"CamMoveRightAlt",    KA_SCROLL_RIGHT_ALT},
 
-    {L"CamRotateUp",       KA_ROTATE_UP},
-    {L"CamRotateDown",     KA_ROTATE_DOWN},
-    {L"CamRotateLeft",     KA_ROTATE_LEFT},
-    {L"CamRotateRight",    KA_ROTATE_RIGHT},
+    {L"CamRotateUp",        KA_ROTATE_UP},
+    {L"CamRotateDown",      KA_ROTATE_DOWN},
+    {L"CamRotateLeft",      KA_ROTATE_LEFT},
+    {L"CamRotateRight",     KA_ROTATE_RIGHT},
+    {L"CamRotateLeftAlt",   KA_ROTATE_LEFT_ALT},
+    {L"CamRotateRightAlt",  KA_ROTATE_RIGHT_ALT},
 
-    {L"CamDefaultPos",     KA_CAM_SETDEFAULT},
+    {L"CamDefaultPos",      KA_CAM_SETDEFAULT},
 
-    {L"RobotMoveUp",       KA_UNIT_FORWARD},
-    {L"RobotMoveDown",     KA_UNIT_BACKWARD},
-    {L"RobotMoveLeft",     KA_UNIT_LEFT},
-    {L"RobotMoveRight",    KA_UNIT_RIGHT},
+    //Масштабирование миникарты
+    {L"MinimapZoomIn",      KA_MINIMAP_ZOOMIN},
+    {L"MinimapZoomOut",     KA_MINIMAP_ZOOMOUT},
 
-    {L"RobotMoveUpAlt",    KA_UNIT_FORWARD_ALT},
-    {L"RobotMoveDownAlt",  KA_UNIT_BACKWARD_ALT},
-    {L"RobotMoveLeftAlt",  KA_UNIT_LEFT_ALT},
-    {L"RobotMoveRightAlt", KA_UNIT_RIGHT_ALT},
+    //Меню управления зданиями (в основном базой)
+    {L"BaseSetGatheringPoint",      KA_GATHERING_POINT},
 
-    /*
-    KA_CAM_SETDEFAULT,  // zak
+    {L"BaseConstMenuEnter",         KA_BUILD_ROBOT},
+    {L"BaseConstMenuLunch",         KA_BUILD_ROBOT_START},
+    {L"BaseConstMenuIncrease",      KA_BUILD_ROBOT_QUANTITY_UP},
+    {L"BaseConstMenuDecrease",      KA_BUILD_ROBOT_QUANTITY_DOWN},
+    {L"BaseConstMenuChooseLeft",    KA_BUILD_ROBOT_CHOOSE_LEFT},
+    {L"BaseConstMenuChooseRight",   KA_BUILD_ROBOT_CHOOSE_RIGHT},
 
-    KA_FIRE,
-    KA_AUTO,
+    {L"BuildTurrMenuEnter",         KA_BUILD_TURRET},
+    {L"BuildTurrMenuLightCannon",   KA_TURRET_CANNON},
+    {L"BuildTurrMenuHeavyCannon",   KA_TURRET_GUN},
+    {L"BuildTurrMenuLaserCannon",   KA_TURRET_LASER},
+    {L"BuildTurrMenuMissileCannon", KA_TURRET_ROCKET},
 
-    KA_SHIFT,
-    KA_CTRL,
+    {L"CallForReinforcements",      KA_BUILD_HELP},
 
-    KA_ROTATE_LEFT_ALT, // zak
-    KA_ROTATE_RIGHT_ALT, // zak
+    //Выделение/переключение юнитов
+    {L"UnitInGroupSelect",          KA_SHIFT},
+    {L"SetCtrlGroup",               KA_CTRL},
+    {L"UnitSelectPrev",             KA_ORDER_ROBOT_SWITCH1},
+    {L"UnitSelectNext",             KA_ORDER_ROBOT_SWITCH2},
 
-    KA_MINIMAP_ZOOMIN,  // sub
-    KA_MINIMAP_ZOOMOUT, // sub
+    //Меню приказов для юнитов
+    {L"UnitSetMoveOrder",           KA_ORDER_MOVE},
+    {L"UnitSetStopOrder",           KA_ORDER_STOP},
+    {L"UnitSetAttackOrder",         KA_ORDER_ATTACK},
+    {L"UnitSetCaptureOrder",        KA_ORDER_CAPTURE},
+    {L"UnitSetPatrolOrder",         KA_ORDER_PATROL},
+    {L"UnitSetExplodeOrder",        KA_ORDER_EXPLODE},
+    {L"UnitSetRepairOrder",         KA_ORDER_REPAIR},
 
-    KA_AUTOORDER_CAPTURE, // sub
-    KA_AUTOORDER_ATTACK, // sub
-    KA_AUTOORDER_DEFEND, // sub
+    //Помимо отмены выбранных приказов также используется для закрытия меню постройки турелей и конструктора роботов
+    {L"OrderCancel",                KA_ORDER_CANCEL},
 
-    KA_ORDER_MOVE, // sub
-    KA_ORDER_STOP, // sub
-    KA_ORDER_CAPTURE, // sub
-    KA_ORDER_PATROL, // sub
-    KA_ORDER_EXPLODE, // sub
-    KA_ORDER_REPAIR, // sub
-    KA_ORDER_ATTACK, // sub
-    KA_ORDER_ROBOT_SWITCH1, // sub
-    KA_ORDER_ROBOT_SWITCH2, // sub
+    //Программы автоматического поведения юнитов
+    {L"UnitSetAgressiveBehavior",   KA_AUTOORDER_ATTACK},
+    {L"UnitSetCaptureBehavior",     KA_AUTOORDER_CAPTURE},
+    {L"UnitSetDefensiveBehavior",   KA_AUTOORDER_DEFEND},
 
-    KA_ORDER_CANCEL, // sub
+    //Ручное управление юнитом (аркадный режим)
+    {L"ManualControlEnter",         KA_UNIT_ENTER},
+    {L"ManualControlEnterAlt",      KA_UNIT_ENTER_ALT},
+    {L"ManualControlFire",          KA_FIRE},
+    {L"ManualControlAutoAltitude",  KA_AUTO},
+    {L"ManualControlExplode",       KA_UNIT_BOOM},
 
-    KA_UNIT_BOOM, //sub
-    KA_UNIT_ENTER, //sub (! if not dialog mode)
-    KA_UNIT_ENTER_ALT, //sub (! if not dialog mode)
+    {L"ManualControlMoveUp",        KA_UNIT_FORWARD},
+    {L"ManualControlMoveDown",      KA_UNIT_BACKWARD},
+    {L"ManualControlMoveLeft",      KA_UNIT_LEFT},
+    {L"ManualControlMoveRight",     KA_UNIT_RIGHT},
 
-    KA_GATHERING_POINT,
-    KA_BUILD_ROBOT,  //sub
-    KA_BUILD_ROBOT_START,
-    KA_BUILD_ROBOT_QUANTITY_UP,
-    KA_BUILD_ROBOT_QUANTITY_DOWN,
-    KA_BUILD_ROBOT_CHOOSE_LEFT,
-    KA_BUILD_ROBOT_CHOOSE_RIGHT,
-    KA_BUILD_TURRET, //sub
-    KA_BUILD_HELP, //sub
+    {L"ManualControlMoveUpAlt",     KA_UNIT_FORWARD_ALT},
+    {L"ManualControlMoveDownAlt",   KA_UNIT_BACKWARD_ALT},
+    {L"ManualControlMoveLeftAlt",   KA_UNIT_LEFT_ALT},
+    {L"ManualControlMoveRightAlt",  KA_UNIT_RIGHT_ALT},
 
-    KA_TURRET_CANNON,
-    KA_TURRET_GUN,
-    KA_TURRET_LASER,
-    KA_TURRET_ROCKET,
-    */
-
-    {NULL,             -1}
+    {NULL,                          -1}
 };
 
 static int KeyName2KeyCode(const CWStr& name)
@@ -346,87 +350,105 @@ void CMatrixConfig::SetDefaults(void)
     m_CamParams[CAMERA_INROBOT].m_CamAngleParam    = 0.0f;
     m_CamParams[CAMERA_INROBOT].m_CamHeight        = 40.0f;
 
-    m_CamBaseAngleZ     = 0;//GRAD2RAD(38.0f);
-    m_CamMoveSpeed      = 1.05f;
+    m_CamBaseAngleZ      = 0; //GRAD2RAD(38.0f);
+    m_CamMoveSpeed       = 1.05f;
     m_CamInRobotForward0 = 10.0f;
     m_CamInRobotForward1 = 30.0f;
 
-    
-    m_KeyActions[KA_ROTATE_LEFT] = VK_HOME;
-    m_KeyActions[KA_ROTATE_RIGHT] = VK_END;
-    m_KeyActions[KA_ROTATE_UP] = VK_PRIOR;
-    m_KeyActions[KA_ROTATE_DOWN] = VK_NEXT;
+    //Кнопки управления движением камеры в стратегическом режиме
+    //Эти две кнопки также управляют наклоном камеры в ручном (аркадном) режиме управления юнитом
+    m_KeyActions[KA_ROTATE_UP] = VK_PRIOR; //клавиша "PageUp"
+    m_KeyActions[KA_ROTATE_DOWN] = VK_NEXT; //клавиша "PageDown"
 
-    m_KeyActions[KA_SCROLL_UP_ALT] = VK_UP; //0x57;
-    m_KeyActions[KA_SCROLL_DOWN_ALT] = VK_DOWN; //0x53;
-    m_KeyActions[KA_SCROLL_LEFT_ALT] = VK_LEFT; //0x41;
-    m_KeyActions[KA_SCROLL_RIGHT_ALT] = VK_RIGHT; //0x44;
+    //Повороты камеры в горизонтальной плоскости (только стратегический режим)
+    m_KeyActions[KA_ROTATE_LEFT] = VK_HOME; //клавиша "Home"
+    m_KeyActions[KA_ROTATE_RIGHT] = VK_END; //клавиша "End"
+    m_KeyActions[KA_ROTATE_LEFT_ALT] = VK_OEM_4; //zak, клавиша "["
+    m_KeyActions[KA_ROTATE_RIGHT_ALT] = VK_OEM_6; //zak, клавиша "]"
 
     m_KeyActions[KA_SCROLL_UP] = VK_UP;
     m_KeyActions[KA_SCROLL_DOWN] = VK_DOWN;
     m_KeyActions[KA_SCROLL_LEFT] = VK_LEFT;
     m_KeyActions[KA_SCROLL_RIGHT] = VK_RIGHT;
 
-    m_KeyActions[KA_UNIT_FORWARD] = 0x57;
-    m_KeyActions[KA_UNIT_BACKWARD] = 0x53;
-    m_KeyActions[KA_UNIT_LEFT] = 0x41;
-    m_KeyActions[KA_UNIT_RIGHT] = 0x44;
+    //Должны были использоваться в качестве альтернативы движения камеры как WASD, но не получилось, не фартануло
+    //(точнее забиндить WASD сюда можно, но тогда он будет перебивать некоторые другие хоткии вроде постройки турелей, что не есть гут)
+    m_KeyActions[KA_SCROLL_UP_ALT] = VK_UP; //0x57;
+    m_KeyActions[KA_SCROLL_DOWN_ALT] = VK_DOWN; //0x53;
+    m_KeyActions[KA_SCROLL_LEFT_ALT] = VK_LEFT; //0x41;
+    m_KeyActions[KA_SCROLL_RIGHT_ALT] = VK_RIGHT; //0x44;
+
+    //Выставление камеры в базовое положение (сбрасываются углы, но не позиции на карте)
+    m_KeyActions[KA_CAM_SETDEFAULT] = VK_OEM_5;  //zak, клавиша "\"
+
+    //Кнопки управления движением юнита в ручном (аркадном) режиме
+    m_KeyActions[KA_UNIT_FORWARD] = 0x57; //W
+    m_KeyActions[KA_UNIT_BACKWARD] = 0x53; //S
+    m_KeyActions[KA_UNIT_LEFT] = 0x41; //A
+    m_KeyActions[KA_UNIT_RIGHT] = 0x44; //D
 
     m_KeyActions[KA_UNIT_FORWARD_ALT] = VK_UP;
     m_KeyActions[KA_UNIT_BACKWARD_ALT] = VK_DOWN;
     m_KeyActions[KA_UNIT_LEFT_ALT] = VK_LEFT;
     m_KeyActions[KA_UNIT_RIGHT_ALT] = VK_RIGHT;
 
+    //Кнопки масштабирования миникарты
+    m_KeyActions[KA_MINIMAP_ZOOMIN] = VK_OEM_PLUS; //sub, клавиша "+"
+    m_KeyActions[KA_MINIMAP_ZOOMOUT] = VK_OEM_MINUS; //sub, клавиша "-"
 
+    //Используется для стрельбы в режиме ручного управления роботом (аркадный режим)
     m_KeyActions[KA_FIRE] = VK_LBUTTON;
+    //Используется при ручном управлении вертолётом, автоматически выставляя оптимальную высоту (аркадный режим)
     m_KeyActions[KA_AUTO] = VK_RBUTTON;
 
+    //Используется для добавления/удаления юнитов в выделенную группу (с зажатым Shift)
     m_KeyActions[KA_SHIFT] = VK_SHIFT;
+    //Используется для назначения Ctrl-группы (нажать желаемую цифру с зажатым Ctrl, предварительно выделив юнита/группу/здание)
     m_KeyActions[KA_CTRL] = VK_CONTROL;
 
+    //Выбор приказа с панели приказов для робота (только в стратегическом режиме)
+    m_KeyActions[KA_ORDER_MOVE] = 0x4D; //sub, выбор приказа на движение в указанную точку, клавиша "M"
+    m_KeyActions[KA_ORDER_STOP] = 0x53; //sub, приказ на остановку, клавиша "S"
+    m_KeyActions[KA_ORDER_CAPTURE] = 0x4B; //sub, выбор приказа на захват, клавиша "K"
+    m_KeyActions[KA_ORDER_PATROL] = 0x50; //sub, выбор приказа на патрулирование, клавиша "P"
+    m_KeyActions[KA_ORDER_EXPLODE] = 0x45; //sub, выбор приказа на подрыв бомбы (если у робота она есть), клавиша "E"
+    m_KeyActions[KA_ORDER_REPAIR] = 0x52; //sub, выбор приказа на ремонт (если есть ремонтник), клавиша "R"
+    m_KeyActions[KA_ORDER_ATTACK] = 0x41; //sub, выбор приказа на атаку, клавиша "A"
 
-    m_KeyActions[KA_ROTATE_LEFT_ALT] = VK_OEM_4; // zak
-    m_KeyActions[KA_ROTATE_RIGHT_ALT] = VK_OEM_6; // zak
+    //Переключение с выделением (по очереди) всех дружественных роботов на карте
+    m_KeyActions[KA_ORDER_ROBOT_SWITCH1] = VK_OEM_COMMA; //sub, клавиша "<"
+    m_KeyActions[KA_ORDER_ROBOT_SWITCH2] = VK_OEM_PERIOD; //sub, клавиша ">"
 
-    m_KeyActions[KA_MINIMAP_ZOOMIN] = VK_OEM_PLUS;  // sub
-    m_KeyActions[KA_MINIMAP_ZOOMOUT] = VK_OEM_MINUS;  // sub
+    //Активация программы автоматического поведения робота (только в стратегическом режиме)
+    m_KeyActions[KA_AUTOORDER_CAPTURE] = 0x43; //sub, активация программы захвата, клавиша "C"
+    m_KeyActions[KA_AUTOORDER_ATTACK] = 0x55; //sub, активация программы наступления, клавиша "U"
+    m_KeyActions[KA_AUTOORDER_DEFEND] = 0x44; //sub, активация программы защиты, клавиша "D"
 
-    m_KeyActions[KA_CAM_SETDEFAULT] = VK_OEM_5;  // zak
+    //Общая клавиша отмены, сбрасывает меню выбора любого приказа, а также закрывает конструктор роботов
+    m_KeyActions[KA_ORDER_CANCEL] = 0x58; //клавиша "X"
 
-    m_KeyActions[KA_AUTOORDER_CAPTURE] = 0x43;// sub
-    m_KeyActions[KA_AUTOORDER_ATTACK] = 0x55; // sub
-    m_KeyActions[KA_AUTOORDER_DEFEND] = 0x44; // sub
+    //Вход/выход в режим ручного управления юнитом
+    m_KeyActions[KA_UNIT_ENTER] = VK_RETURN; //sub (if not dialog mode!), клавиша "Enter"
+    m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE; //sub (if not dialog mode!), клавиша "Space"
+    //Подрыв бомбы из режима ручного управления юнитом
+    m_KeyActions[KA_UNIT_BOOM] = 0x45; //sub, клавиша "E"
 
-    m_KeyActions[KA_ORDER_MOVE] = 0x4D; // sub
-    m_KeyActions[KA_ORDER_STOP] = 0x53; // sub
-    m_KeyActions[KA_ORDER_CAPTURE] = 0x4B; // sub
-    m_KeyActions[KA_ORDER_PATROL] = 0x50; // sub
-    m_KeyActions[KA_ORDER_EXPLODE] = 0x45; // sub
-    m_KeyActions[KA_ORDER_REPAIR] = 0x52; // sub
-    m_KeyActions[KA_ORDER_ATTACK] = 0x41; // sub
-    m_KeyActions[KA_ORDER_CANCEL] = 0x58;
-    m_KeyActions[KA_ORDER_ROBOT_SWITCH1] = VK_OEM_COMMA; // sub
-    m_KeyActions[KA_ORDER_ROBOT_SWITCH2] = VK_OEM_PERIOD; // sub
-
-    m_KeyActions[KA_UNIT_BOOM] = 0x45;  //sub
-    m_KeyActions[KA_UNIT_ENTER] = VK_RETURN; //sub (! if not dialog mode)
-    m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE; //sub (! if not dialog mode)
-
-    m_KeyActions[KA_GATHERING_POINT] = 0x47; //Установка точки сбора базы, клавиша G, sub
-    m_KeyActions[KA_BUILD_ROBOT] = 0x42;  //Открывает и закрывает меню строительства робота, sub
-       //Только из меню строительства
-       m_KeyActions[KA_BUILD_ROBOT_START] = VK_RETURN;
-       m_KeyActions[KA_BUILD_ROBOT_QUANTITY_UP] = VK_UP;
-       m_KeyActions[KA_BUILD_ROBOT_QUANTITY_DOWN] = VK_DOWN;
-       m_KeyActions[KA_BUILD_ROBOT_CHOOSE_LEFT] = VK_LEFT;
-       m_KeyActions[KA_BUILD_ROBOT_CHOOSE_RIGHT] = VK_RIGHT;
-    m_KeyActions[KA_BUILD_TURRET] = 0x54; //Открывает и закрывает меню выбора турели, sub
-    m_KeyActions[KA_BUILD_HELP] = 0x48; //sub
-
-    m_KeyActions[KA_TURRET_CANNON] = 0x43;
-    m_KeyActions[KA_TURRET_GUN] = 0x47;
-    m_KeyActions[KA_TURRET_LASER] = 0x4C;
-    m_KeyActions[KA_TURRET_ROCKET] = 0x52;
+    //Клавиши для управления базой
+    m_KeyActions[KA_GATHERING_POINT] = 0x47; //sub, установка точки сбора базы, клавиша "G"
+    m_KeyActions[KA_BUILD_ROBOT] = 0x42;  //sub, открывает и закрывает меню конструктора робота, клавиша "B"
+        //Только из меню конструктора роботов
+        m_KeyActions[KA_BUILD_ROBOT_START] = VK_RETURN; //клавиша "Enter"
+        m_KeyActions[KA_BUILD_ROBOT_QUANTITY_UP] = VK_UP; 
+        m_KeyActions[KA_BUILD_ROBOT_QUANTITY_DOWN] = VK_DOWN;
+        m_KeyActions[KA_BUILD_ROBOT_CHOOSE_LEFT] = VK_LEFT;
+        m_KeyActions[KA_BUILD_ROBOT_CHOOSE_RIGHT] = VK_RIGHT;
+    m_KeyActions[KA_BUILD_TURRET] = 0x54; //sub, открывает и закрывает меню выбора турели, клавиша "T"
+        //Только из меню выбора турели
+        m_KeyActions[KA_TURRET_CANNON] = 0x43; //выбор лёгкой пушки, клавиша "C"
+        m_KeyActions[KA_TURRET_GUN] = 0x47; //выбор тяжёлой пушки, клавиша "G"
+        m_KeyActions[KA_TURRET_LASER] = 0x4C; //выбор лазера, клавиша "L"
+        m_KeyActions[KA_TURRET_ROCKET] = 0x52; //выбор ракетницы, клавиша "R"
+    m_KeyActions[KA_BUILD_HELP] = 0x48; //sub, вызывает подкрепление, клавиша "H"
 
 
     
@@ -580,48 +602,47 @@ void CMatrixConfig::ReadParams(void)
         g_EnableFlyers = cfg_par->Par(CFG_ENABLE_FLYERS).GetInt() == 1;
     }
         
-    if (cfg_par->ParCount(CFG_OBJECTTOMINIMAP) != 0)
+    if(cfg_par->ParCount(CFG_OBJECTTOMINIMAP) != 0)
     {
         m_DrawAllObjectsToMinimap = (byte)(cfg_par->Par(CFG_OBJECTTOMINIMAP).GetInt() & 0xFF);
     }
 
-    if (cfg_par->ParCount(CFG_DEBUG_INFO) != 0)
+    if(cfg_par->ParCount(CFG_DEBUG_INFO) != 0)
     {
         m_DIFlags = cfg_par->Par(CFG_DEBUG_INFO).GetHexUnsigned();
     }
 
-    if (cfg_par->ParCount(CFG_VERTEX_LIGHT) != 0)
+    if(cfg_par->ParCount(CFG_VERTEX_LIGHT) != 0)
     {
         m_VertexLight = cfg_par->Par(CFG_VERTEX_LIGHT).GetInt() == 1;
     }
 
-    if (cfg_par->BlockCount(CFG_GAMMA_RAMP) != 0)
+    if(cfg_par->BlockCount(CFG_GAMMA_RAMP) != 0)
     {
-        CBlockPar *g = cfg_par->BlockGet(CFG_GAMMA_RAMP);
-        m_GammaR.brightness = (float)g->ParGet(L"R").GetDoublePar(0,L",");
-        m_GammaR.contrast = (float)g->ParGet(L"R").GetDoublePar(1,L",");
-        m_GammaR.gamma = (float)g->ParGet(L"R").GetDoublePar(2,L",");
+        CBlockPar* g = cfg_par->BlockGet(CFG_GAMMA_RAMP);
+        m_GammaR.brightness = (float)g->ParGet(L"R").GetDoublePar(0, L",");
+        m_GammaR.contrast = (float)g->ParGet(L"R").GetDoublePar(1, L",");
+        m_GammaR.gamma = (float)g->ParGet(L"R").GetDoublePar(2, L",");
 
-        m_GammaG.brightness = (float)g->ParGet(L"G").GetDoublePar(0,L",");
-        m_GammaG.contrast = (float)g->ParGet(L"G").GetDoublePar(1,L",");
-        m_GammaG.gamma = (float)g->ParGet(L"G").GetDoublePar(2,L",");
+        m_GammaG.brightness = (float)g->ParGet(L"G").GetDoublePar(0, L",");
+        m_GammaG.contrast = (float)g->ParGet(L"G").GetDoublePar(1, L",");
+        m_GammaG.gamma = (float)g->ParGet(L"G").GetDoublePar(2, L",");
 
-        m_GammaB.brightness = (float)g->ParGet(L"B").GetDoublePar(0,L",");
-        m_GammaB.contrast = (float)g->ParGet(L"B").GetDoublePar(1,L",");
-        m_GammaB.gamma = (float)g->ParGet(L"B").GetDoublePar(2,L",");
+        m_GammaB.brightness = (float)g->ParGet(L"B").GetDoublePar(0, L",");
+        m_GammaB.contrast = (float)g->ParGet(L"B").GetDoublePar(1, L",");
+        m_GammaB.gamma = (float)g->ParGet(L"B").GetDoublePar(2, L",");
     }
 
     ApplyGammaRamp();
 
-    if (cfg_par->BlockCount(CFG_ASSIGN_KEY) != 0)
+    if(cfg_par->BlockCount(CFG_ASSIGN_KEY) != 0)
     {
-        CBlockPar *ak = cfg_par->BlockGet(CFG_ASSIGN_KEY);
+        CBlockPar* ak = cfg_par->BlockGet(CFG_ASSIGN_KEY);
         int n = ak->ParCount();
-        for (int i = 0; i < n; ++i)
+        for(int i = 0; i < n; ++i)
         {
-            //int akn = ak->ParGetName(i).GetInt();
             int akn = KeyActionName2KeyActionCode(ak->ParGetName(i));
-            if (akn < 0  || akn >= KA_LAST)
+            if(akn < 0  || akn >= KA_LAST)
             {
                 continue;
             }
@@ -631,12 +652,12 @@ void CMatrixConfig::ReadParams(void)
         }
     }
     
-    if (cfg_par->ParCount(CFG_ROBOT_SHADOW) != 0)
+    if(cfg_par->ParCount(CFG_ROBOT_SHADOW) != 0)
     {
         int sh = cfg_par->Par(CFG_ROBOT_SHADOW).GetInt();
 
-        if (sh == 0) m_RobotShadow = SHADOW_OFF;
-        else if (sh == 1) m_RobotShadow = SHADOW_STENCIL;
+        if(sh == 0) m_RobotShadow = SHADOW_OFF;
+        else if(sh == 1) m_RobotShadow = SHADOW_STENCIL;
     }
 
     // load damages
