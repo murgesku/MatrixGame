@@ -120,6 +120,7 @@ enum EKeyAction
 
     KA_SHIFT,
     KA_CTRL,
+    KA_ALL_UNITS_SELECT,
 
     KA_ROTATE_LEFT_ALT, // zak
     KA_ROTATE_RIGHT_ALT, // zak
@@ -128,6 +129,9 @@ enum EKeyAction
     KA_MINIMAP_ZOOMOUT, // sub
 
     KA_CAM_SETDEFAULT,  // zak
+    KA_TAKE_SCREENSHOT,
+    KA_SAVE_SCREENSHOT,
+    KA_GAME_PAUSED,
 
     KA_AUTOORDER_CAPTURE, // sub
     KA_AUTOORDER_ATTACK, // sub

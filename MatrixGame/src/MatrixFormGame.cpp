@@ -276,18 +276,17 @@ void CFormMatrixGame::Takt(int step)
         }
     }
 
+    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_UP]) & 0x8000) == 0x8000)
     {
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_UP]) & 0x8000) == 0x8000))
-        {
-            g_MatrixMap->m_Camera.RotUp();
-        }
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_DOWN]) & 0x8000) == 0x8000))
-        {
-            g_MatrixMap->m_Camera.RotDown();
-        }
+        g_MatrixMap->m_Camera.RotUp();
+    }
+    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_DOWN]) & 0x8000) == 0x8000)
+    {
+        g_MatrixMap->m_Camera.RotDown();
     }
 
-	if(GetAsyncKeyState(/*VK_SNAPSHOT*/VK_F9) != 0)
+    //Создаётся и сохраняется игровой скриншот (не заносится в буфер обмена)
+    if(GetAsyncKeyState(g_Config.m_KeyActions[KA_SAVE_SCREENSHOT]))
     {
         CreateDirectory(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS), NULL);
 
@@ -354,147 +353,140 @@ void CFormMatrixGame::Takt(int step)
         n.Insert(0, FILE_NAME_SCREENSHOT, slen);
         n.Insert(0, "\\", 1);
         n.Insert(0, PathToOutputFiles(FOLDER_NAME_SCREENSHOTS));
- 		n.Add(".png",4);       
-
-
+        n.Add(".png", 4);
 
         DeleteFile(n.Get());
 
-        if (!g_D3Dpp.Windowed)
+        if(!g_D3Dpp.Windowed)
         {
-          IDirect3DSurface9 * pTargetSurface = NULL;
-          HRESULT hr = D3D_OK;
+            IDirect3DSurface9* pTargetSurface = NULL;
+            HRESULT hr = D3D_OK;
 
-          if (!g_D3Dpp.MultiSampleType)
+            if(!g_D3Dpp.MultiSampleType)
             hr = g_D3DD->GetRenderTarget(0, &pTargetSurface);
 
-          if (hr == D3D_OK)
-          {
-            D3DSURFACE_DESC desc;
+            if(hr == D3D_OK)
+            {
+                D3DSURFACE_DESC desc;
 
-            if (!g_D3Dpp.MultiSampleType)
-            {
-              hr = pTargetSurface->GetDesc(&desc);
-            }
-            else
-            {
-              desc.Width = g_ScreenX;
-              desc.Height = g_ScreenY;
-              desc.Format = D3DFMT_A8R8G8B8;
-            }
-            if (hr == D3D_OK)
-            {
-              IDirect3DSurface9 * pSurface = NULL;
-              hr = g_D3DD->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3DPOOL_SYSTEMMEM, &pSurface, NULL);
-              if (hr == D3D_OK)
-              {
-                if (!g_D3Dpp.MultiSampleType)
+                if(!g_D3Dpp.MultiSampleType)
                 {
-                  hr = g_D3DD->GetRenderTargetData(pTargetSurface, pSurface);
+                    hr = pTargetSurface->GetDesc(&desc);
                 }
                 else
                 {
-                  hr = g_D3DD->GetFrontBufferData(0, pSurface);
+                    desc.Width = g_ScreenX;
+                    desc.Height = g_ScreenY;
+                    desc.Format = D3DFMT_A8R8G8B8;
                 }
-                if (hr == D3D_OK)
+                if(hr == D3D_OK)
                 {
-                  D3DLOCKED_RECT lockrect;
-                  hr = pSurface->LockRect(&lockrect, NULL, 0);
-                  if (hr == D3D_OK)
-                  {
-                    CBitmap bm;
-                    bm.CreateRGB(desc.Width, desc.Height);
-
-                    for (UINT y = 0; y < desc.Height; y++)
+                    IDirect3DSurface9 * pSurface = NULL;
+                    hr = g_D3DD->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3DPOOL_SYSTEMMEM, &pSurface, NULL);
+                    if(hr == D3D_OK)
                     {
-                      unsigned char * buf_src = (unsigned char *)lockrect.pBits + lockrect.Pitch * y;
-                      unsigned char * buf_des = (unsigned char *)bm.Data() + bm.Pitch() * y;
+                        if(!g_D3Dpp.MultiSampleType)
+                        {
+                            hr = g_D3DD->GetRenderTargetData(pTargetSurface, pSurface);
+                        }
+                        else
+                        {
+                            hr = g_D3DD->GetFrontBufferData(0, pSurface);
+                        }
+                        if(hr == D3D_OK)
+                        {
+                            D3DLOCKED_RECT lockrect;
+                            hr = pSurface->LockRect(&lockrect, NULL, 0);
+                            if(hr == D3D_OK)
+                            {
+                                CBitmap bm;
+                                bm.CreateRGB(desc.Width, desc.Height);
 
-                      for (UINT x = 0; x < desc.Width; x++)
-                      {
-                        //memcpy(buf_des, buf_src, 3);
-                        buf_des[0] = buf_src[2];
-                        buf_des[1] = buf_src[1];
-                        buf_des[2] = buf_src[0];
+                                for(UINT y = 0; y < desc.Height; ++y)
+                                {
+                                    unsigned char* buf_src = (unsigned char*)lockrect.pBits + lockrect.Pitch * y;
+                                    unsigned char* buf_des = (unsigned char*)bm.Data() + bm.Pitch() * y;
 
-                        buf_src += 4;
-                        buf_des += 3;
-                      }
+                                    for(UINT x = 0; x < desc.Width; ++x)
+                                    {
+                                        //memcpy(buf_des, buf_src, 3);
+                                        buf_des[0] = buf_src[2];
+                                        buf_des[1] = buf_src[1];
+                                        buf_des[2] = buf_src[0];
+
+                                        buf_src += 4;
+                                        buf_des += 3;
+                                    }
+                                }
+
+                                pSurface->UnlockRect();
+
+                                bm.SaveInPNG(CWStr(n).Get());
+                                g_MatrixMap->m_DI.T(L"Screen shot has been saved", L"");
+                            }
+                            else
+                            {
+                                //LockRect fail
+                                //OutputDebugStringA("LockRect fail\n");
+                            }
+                        }
+                        else
+                        {
+                            // GetRenderTargetData fail
+                            //char s[256];
+                            //sprintf_s(s, sizeof(s), "GetRenderTargetData fail - 0x%08X, %u, %d\n", hr, hr, hr);
+                            //OutputDebugStringA(s);
+                        }
+                        pSurface->Release();
                     }
-
-                    pSurface->UnlockRect();
-
-                    bm.SaveInPNG(CWStr(n).Get());
-                    g_MatrixMap->m_DI.T(L"Screen shot has been saved", L"");
-                  }
-                  else
-                  {
-                    // LockRect fail
-                    //OutputDebugStringA("LockRect fail\n");
-                  }
+                    else
+                    {
+                        //CreateOffscreenPlainSurface fail
+                        //OutputDebugStringA("CreateOffscreenPlainSurface fail\n");
+                    }
                 }
                 else
                 {
-                  // GetRenderTargetData fail
-                  //char s[256];
-                  //sprintf_s(s, sizeof(s), "GetRenderTargetData fail - 0x%08X, %u, %d\n", hr, hr, hr);
-                  //OutputDebugStringA(s);
+                    // GetDesc fail
+                    //OutputDebugStringA("GetDesc fail\n");
                 }
-                pSurface->Release();
-              }
-              else
-              {
-                // CreateOffscreenPlainSurface fail
-                //OutputDebugStringA("CreateOffscreenPlainSurface fail\n");
-              }
+            
+                if(pTargetSurface) pTargetSurface->Release();
             }
             else
             {
-              // GetDesc fail
-              //OutputDebugStringA("GetDesc fail\n");
+                //GetRenderTarget fail
+                //OutputDebugStringA("GetRenderTarget fail\n");
             }
-            
-            if (pTargetSurface)
-              pTargetSurface->Release();
-          }
-          else
-          {
-            // GetRenderTarget fail
-            //OutputDebugStringA("GetRenderTarget fail\n");
-          }
 
-          return;
+            return;
         }
 
         CBitmap bm(g_CacheHeap);
         CBitmap bmout(g_CacheHeap);
-        bmout.CreateRGB(g_ScreenX,g_ScreenY);
+        bmout.CreateRGB(g_ScreenX, g_ScreenY);
 
         HDC hdc = GetDC(g_Wnd);
 
-
-
-	    bm.WBM_Bitmap(CreateCompatibleBitmap(hdc,g_ScreenX,g_ScreenY));
-	    bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
-	    if(SelectObject(bm.WBM_BitmapDC(),bm.WBM_Bitmap())==0)
+        bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
+        bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
+        if(SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0)
         {
             ReleaseDC(g_Wnd, hdc);
             return;
         }
-	    BitBlt(bm.WBM_BitmapDC(),0,0,g_ScreenX,g_ScreenY,hdc,0,0,SRCCOPY);
+        BitBlt(bm.WBM_BitmapDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
 
-        ReleaseDC(g_Wnd,hdc);
+        ReleaseDC(g_Wnd, hdc);
 
         bm.WBM_Save(true);
 
-        bmout.Copy(CPoint(0,0), bm.Size(), bm, CPoint(0,0));
+        bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
         bmout.SaveInPNG(CWStr(n).Get());
 		
         //HFree(data, g_CacheHeap);
 
         g_MatrixMap->m_DI.T(L"Screen shot has been saved", L"");
-
-
     }
 }
 
@@ -920,7 +912,7 @@ static STextInfo stuff[] =
     {L" Ilia <Ilik> Plusnin", L"", 0},
 
     {L"Thats all folks :)", L"", 3000},
-    {NULL,NULL}
+    {NULL, NULL}
 };
 
 //Обработчики нажатия кнопок на клавиатуре
@@ -1350,61 +1342,65 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         g_MatrixMap->GetPlayerSide()->OnBackward(true);
     }
 
-
     if(down)
     {
-        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_CAM_SETDEFAULT]) & 0x8000) == 0x8000))
+        //Выставление камеры в позицию по умолчанию
+        if((GetAsyncKeyState(g_Config.m_KeyActions[KA_CAM_SETDEFAULT]) & 0x8000) == 0x8000)
         {
             g_MatrixMap->m_Camera.ResetAngles();
             return;
         }
 
+        //Стандартный скриншот с занесением изображения в буфер обмена
+        //Не пиняйте строго, код взял на stackoverflow
+        //К тому же оно не сохраняет эффекты на экране, вообще хз (Klaxons)
+        if(GetAsyncKeyState(g_Config.m_KeyActions[KA_TAKE_SCREENSHOT]))//if(scan == KEY_SNAPSHOT)
+        {
+            int x1, y1, x2, y2, w, h;
+
+            // get screen dimensions
+            x1 = GetSystemMetrics(SM_XVIRTUALSCREEN);
+            y1 = GetSystemMetrics(SM_YVIRTUALSCREEN);
+            x2 = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+            y2 = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+            w = x2 - x1;
+            h = y2 - y1;
+
+            // copy screen to bitmap
+            HDC     hScreen = GetDC(NULL);
+            HDC     hDC = CreateCompatibleDC(hScreen);
+            HBITMAP hBitmap = CreateCompatibleBitmap(hScreen, w, h);
+            HGDIOBJ old_obj = SelectObject(hDC, hBitmap);
+            BOOL    bRet = BitBlt(hDC, 0, 0, w, h, hScreen, x1, y1, SRCCOPY);
+
+            // save bitmap to clipboard
+            OpenClipboard(NULL);
+            EmptyClipboard();
+            SetClipboardData(CF_BITMAP, hBitmap);
+            CloseClipboard();
+
+            // clean up
+            SelectObject(hDC, old_obj);
+            DeleteDC(hDC);
+            ReleaseDC(NULL, hScreen);
+            DeleteObject(hBitmap);
+
+            return;
+        }
+
         //Выставление паузы :|
-        CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-        if(scan == KEY_PAUSE)
+        if(GetAsyncKeyState(g_Config.m_KeyActions[KA_GAME_PAUSED]))//if(scan == KEY_PAUSE)
         {
             g_MatrixMap->Pause(!g_MatrixMap->IsPaused());
             return;
         }
 
-        //Выбор всех роботов игрока на карте по нажатию клавиши F2
-        if(scan == KEY_F2)
-        {
-            CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
-            if(ps->GetCurGroup())
-            {
-                ps->SelectedGroupUnselect();
-                ps->GetCurSelGroup()->RemoveAll();
-            }
-
-            while(o)
-            {
-                if(o->GetSide() == PLAYER_SIDE && o->IsLiveRobot())
-                {
-                    ps->GetCurSelGroup()->AddObject(o, -4);
-                }
-                o = o->GetNextLogic();
-            }
-
-            ps->CreateGroupFromCurrent();
-
-            if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1)
-            {
-                ps->Select(ROBOT, NULL);
-            }
-            else if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() > 1)
-            {
-                ps->Select(GROUP, NULL);
-            }
-
-            return;
-        }
-
+        CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
         if(ps->IsRobotMode())
         {
             CMatrixRobotAI* robot = ps->GetArcadedObject()->AsRobot();
 
-            if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BOOM]) & 0x8000) == 0x8000))
+            if((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BOOM]) & 0x8000) == 0x8000)
             {
                 //"E" - Взорвать.
                 robot->BigBoom(); 
@@ -1419,7 +1415,39 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
         }
         else
         {
-            CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+            //Выбор всех роботов игрока на карте
+            if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ALL_UNITS_SELECT]) & 0x8000) == 0x8000)//if(scan == KEY_F2)
+            {
+                CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
+                if(ps->GetCurGroup())
+                {
+                    ps->SelectedGroupUnselect();
+                    ps->GetCurSelGroup()->RemoveAll();
+                }
+
+                while(o)
+                {
+                    if(o->GetSide() == PLAYER_SIDE && o->IsLiveRobot())
+                    {
+                        ps->GetCurSelGroup()->AddObject(o, -4);
+                    }
+                    o = o->GetNextLogic();
+                }
+
+                ps->CreateGroupFromCurrent();
+
+                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1)
+                {
+                    ps->Select(ROBOT, NULL);
+                }
+                else if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() > 1)
+                {
+                    ps->Select(GROUP, NULL);
+                }
+
+                return;
+            }
+
             if(!FLAG(g_IFaceList->m_IfListFlags, ORDERING_MODE)/*!IS_PREORDERING_NOSELECT*/)
             {
                 //Если мы не в режиме приказа

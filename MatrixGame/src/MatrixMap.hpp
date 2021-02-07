@@ -674,8 +674,8 @@ protected:
         
         __forceinline void  Pause(bool p)
         {
-            if(FLAG(m_Flags,MMFLAG_DIALOG_MODE)) return; // disable pasue/unpause in dialog mode
-            INITFLAG(m_Flags,MMFLAG_PAUSE, p);
+            if(FLAG(m_Flags, MMFLAG_DIALOG_MODE)) return; // disable pasue/unpause in dialog mode
+            INITFLAG(m_Flags, MMFLAG_PAUSE, p);
             if(p) CSound::StopPlayAllSounds();
         }
         __forceinline bool  IsPaused(void) {return FLAG(m_Flags, MMFLAG_PAUSE);}

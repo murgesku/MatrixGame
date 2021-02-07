@@ -33,6 +33,7 @@ static SKeyCodes key_codes[] =
     {L"F11",        0x7A},
     {L"F12",        0x7B},
 
+    {L"PrintScreen",VK_SNAPSHOT},
     {L"Pause",      VK_PAUSE},
 
     {L"ScrollLock", VK_SCROLL},
@@ -191,6 +192,7 @@ static SKeyCodes key_action_codes[] =
     {L"SetCtrlGroup",               KA_CTRL},
     {L"UnitSelectPrev",             KA_ORDER_ROBOT_SWITCH1},
     {L"UnitSelectNext",             KA_ORDER_ROBOT_SWITCH2},
+    {L"UnitSelectAll",              KA_ALL_UNITS_SELECT},
 
     //Меню приказов для юнитов
     {L"UnitSetMoveOrder",           KA_ORDER_MOVE},
@@ -202,7 +204,7 @@ static SKeyCodes key_action_codes[] =
     {L"UnitSetRepairOrder",         KA_ORDER_REPAIR},
 
     //Помимо отмены выбранных приказов также используется для закрытия меню постройки турелей и конструктора роботов
-    {L"OrderCancel",                KA_ORDER_CANCEL},
+    {L"AnyOrderCancel",             KA_ORDER_CANCEL},
 
     //Программы автоматического поведения юнитов
     {L"UnitSetAgressiveBehavior",   KA_AUTOORDER_ATTACK},
@@ -225,6 +227,11 @@ static SKeyCodes key_action_codes[] =
     {L"ManualControlMoveDownAlt",   KA_UNIT_BACKWARD_ALT},
     {L"ManualControlMoveLeftAlt",   KA_UNIT_LEFT_ALT},
     {L"ManualControlMoveRightAlt",  KA_UNIT_RIGHT_ALT},
+
+    //Прочее
+    {L"TakeScreenShot",             KA_TAKE_SCREENSHOT},
+    {L"SaveScreenShot",             KA_SAVE_SCREENSHOT},
+    {L"PauseTheGame",               KA_GAME_PAUSED},
 
     {NULL,                          -1}
 };
@@ -405,6 +412,14 @@ void CMatrixConfig::SetDefaults(void)
     m_KeyActions[KA_SHIFT] = VK_SHIFT;
     //Используется для назначения Ctrl-группы (нажать желаемую цифру с зажатым Ctrl, предварительно выделив юнита/группу/здание)
     m_KeyActions[KA_CTRL] = VK_CONTROL;
+    //Выделение всех юнитов игрока на карте
+    m_KeyActions[KA_ALL_UNITS_SELECT] = VK_F2;
+    //Сохранить скриншот в игровую папку в моих документах
+    m_KeyActions[KA_SAVE_SCREENSHOT] = VK_F9;
+    //Записать скриншот в буфер обмена
+    m_KeyActions[KA_TAKE_SCREENSHOT] = VK_SNAPSHOT;
+    //Включение/выключение паузы
+    m_KeyActions[KA_GAME_PAUSED] = VK_PAUSE;
 
     //Выбор приказа с панели приказов для робота (только в стратегическом режиме)
     m_KeyActions[KA_ORDER_MOVE] = 0x4D; //sub, выбор приказа на движение в указанную точку, клавиша "M"
