@@ -134,18 +134,16 @@ class /* BITMAP_API */ CBitmap : public Base::CMain {
         DWORD ARGBPixel(int x, int y) // get ARGB color of specified pixel
         {
             DWORD c;
-            c = *(DWORD *)((BYTE *)m_Data + (y * m_Pitch + x * m_BytePP));
-            if (m_Format==BMF_PALATE)
+			c = *(DWORD*)((BYTE*)m_Data + (y * m_Pitch + x * m_BytePP));
+            if(m_Format==BMF_PALATE)
             {
                 return 0; // не работаем с палитровыми изображениями
             }
             DWORD mask = 0xFF;
-            if (m_BytePP == 2) mask = 0x0000FFFF;
-            else
-            if (m_BytePP == 3) mask = 0x00FFFFFF;
-            else
-            if (m_BytePP == 4) mask = 0xFFFFFFFF;
-            return c & mask;
+            if(m_BytePP == 2) mask = 0x0000FFFF;
+            else if(m_BytePP == 3) mask = 0x00FFFFFF;
+            else if(m_BytePP == 4) mask = 0xFFFFFFFF;
+			return c & mask;
         }
 
         DWORD Hash(void);
@@ -172,9 +170,8 @@ class /* BITMAP_API */ CBitmap : public Base::CMain {
 		int SaveInPNG(void * buf, int buflen);
 		bool SaveInPNG(Base::CBuf & buf);
 		bool SaveInPNG(const wchar * filename, int filenamelen);
-		bool SaveInPNG(const wchar * filename)						{ return SaveInPNG(filename,Base::WStrLen(filename)); }
+		bool SaveInPNG(const wchar * filename)						{ return SaveInPNG(filename, Base::WStrLen(filename)); }
 #endif
-
 
 };
 

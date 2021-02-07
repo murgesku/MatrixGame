@@ -181,25 +181,26 @@ __forceinline void SetAlphaOpSelect(int stage, DWORD p){ g_D3DD->SetTextureStage
 __forceinline void SetAlphaOpDisable(int stage) { g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_DISABLE );}
 #endif 
 
-class CExceptionD3D : public CException {
-	public:
-		HRESULT m_Error;
-	public:
-		CExceptionD3D(char * file,int line,HRESULT err):CException(file,line) { m_Error=err; }
+class CExceptionD3D : public CException
+{
+public:
+    HRESULT m_Error;
+public:
+    CExceptionD3D(char* file, int line, HRESULT err) :CException(file, line) { m_Error = err; }
 
-		virtual CWStr Info(void);
+    virtual CWStr Info(void);
 };
 
 #define FAILED_DX(x) { HRESULT hr=x; if(hr!=D3D_OK) throw new CExceptionD3D(__FILE__,__LINE__,hr); }
 
 #ifdef ASSERT_OFF
-	#define ASSERT_DX(x) x
+#define ASSERT_DX(x) x
 #else
 	#define ASSERT_DX(x) FAILED_DX(x)
 #endif
 
-void L3GInitAsEXE(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * captionname);
-void L3GInitAsDLL(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * captionname, HWND hwnd, long FDirect3D, long FD3DDevice);
+void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, wchar* sysname, wchar* captionname);
+void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, wchar* sysname, wchar* captionname, HWND hwnd, long FDirect3D, long FD3DDevice);
 void L3GDeinit(void);
 int L3GRun(void);
 
@@ -218,12 +219,12 @@ inline byte __fastcall lp2key(dword lp)
 {
     _asm
     {
-        mov eax,lp
-        shr eax,15
-        shr ah,1
-        shr ah,1
-        rcr al,1
-        //and eax,255
+        mov eax, lp
+        shr eax, 15
+        shr ah, 1
+        shr ah, 1
+        rcr al, 1
+        //and eax, 255
     };
 }
 #pragma warning (default: 4035)
@@ -242,6 +243,7 @@ inline byte __fastcall lp2key(dword lp)
 #define KEY_F11         87
 #define KEY_F12         88
 
+#define KEY_SNAPSHOT    56
 #define KEY_PAUSE       69
 
 #define KEY_SLOCK       70
@@ -307,8 +309,8 @@ inline byte __fastcall lp2key(dword lp)
 
 #define KEY_LSHIFT      42
 #define KEY_RSHIFT      54
-#define KEY_LALT        56
-#define KEY_RALT        184
+//#define KEY_LALT        56 //По какой-то причине номер этой кнопки совпадает с номером PrintScreen
+//#define KEY_RALT        184
 #define KEY_LCTRL       29
 #define KEY_RCTRL       157
 

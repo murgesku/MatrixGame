@@ -1914,7 +1914,7 @@ void CBitmap::SaveInBMP(Base::CBuf & buf) const
     {
         if (m_BytePP==3)
         {
-	        for(int y=0;y<m_Size.y;y++,sou-=m_Pitch)
+	        for(int y=0; y<m_Size.y; ++y,sou-=m_Pitch)
             {
                 BYTE *sb = (BYTE *)sou;
                 buf.TestAdd(len);
@@ -1933,7 +1933,7 @@ void CBitmap::SaveInBMP(Base::CBuf & buf) const
             }
         } else if (m_BytePP==4)
         {
-	        for(int y=0;y<m_Size.y;y++,sou-=m_Pitch)
+	        for(int y=0; y<m_Size.y; ++y,sou-=m_Pitch)
             {
                 BYTE *sb = (BYTE *)sou;
                 buf.TestAdd(len);
@@ -1956,7 +1956,7 @@ void CBitmap::SaveInBMP(Base::CBuf & buf) const
     } else
     {
 oformat:
-	    for(int y=0;y<m_Size.y;y++,sou-=m_Pitch)
+	    for(int y=0; y<m_Size.y; ++y,sou-=m_Pitch)
         {
 		    buf.BufAdd(sou,len);
 		    if(len<lPitch) buf.ByteLoop(0,lPitch-len);
@@ -1966,11 +1966,11 @@ oformat:
 	//if((m_BytePP==3 || m_BytePP==4) && m_MColor[0]==0x0ff && m_MColor[1]==0x0ff00 && m_MColor[2]==0x0ff0000) SwapByte(CPoint(0,0),m_Size,0,2);
 }
 
-void CBitmap::SaveInBMP(const wchar * filename, int filenamelen) const
+void CBitmap::SaveInBMP(const wchar* filename, int filenamelen) const
 {
-	CBuf buf(m_Heap);
-	SaveInBMP(buf);
-	buf.SaveInFile(filename,filenamelen);
+    CBuf buf(m_Heap);
+    SaveInBMP(buf);
+    buf.SaveInFile(filename, filenamelen);
 }
 
 #pragma warning (disable : 4731)
@@ -2004,18 +2004,18 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf & buf) const
     ddsp->ddpfPixelFormat.dwRBitMask = 0x00FF0000;
     ddsp->ddpfPixelFormat.dwGBitMask = 0x0000FF00;
     ddsp->ddpfPixelFormat.dwBBitMask = 0x000000FF;
-    if (m_BytePP == 4) ddsp->ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
+    if(m_BytePP == 4) ddsp->ddpfPixelFormat.dwRGBAlphaBitMask = 0xFF000000;
 
     ddsp->ddsCaps.dwCaps = DDSCAPS_TEXTURE;
 
-    if (m_Size.x < 4)
+    if(m_Size.x < 4)
     {
         int cnt = m_Size.x * m_Size.y;
         BYTE *des = (BYTE *)(ddsp + 1);
         BYTE *sou = (BYTE *)m_Data;
-        if (m_BytePP == 3)
+        if(m_BytePP == 3)
         {
-            while (cnt-- > 0)
+            while(cnt-- > 0)
             {
                 *des = *(sou + 2);
                 *(des+1) = *(sou + 1);
@@ -2023,9 +2023,10 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf & buf) const
                 sou += 3;
                 des += 3;
             }
-        } else
+        }
+        else
         {
-            while (cnt-- > 0)
+            while(cnt-- > 0)
             {
                 *des = *(sou + 2);
                 *(des+1) = *(sou + 1);
@@ -2164,98 +2165,113 @@ loop2:
 }
 #pragma warning (default : 4731)
 
-void CBitmap::SaveInDDSUncompressed(const wchar * filename, int filenamelen) const
+void CBitmap::SaveInDDSUncompressed(const wchar* filename, int filenamelen) const
 {
-	CBuf buf(m_Heap);
-	SaveInDDSUncompressed(buf);
-	buf.SaveInFile(filename,filenamelen);
+    CBuf buf(m_Heap);
+    SaveInDDSUncompressed(buf);
+    buf.SaveInFile(filename, filenamelen);
 }
 
 
 #ifdef USE_PNGLIB
-bool CBitmap::LoadFromPNG(void * buf, int buflen)
+bool CBitmap::LoadFromPNG(void* buf, int buflen)
 {
-	Clear();
+    Clear();
 
-	DWORD lenx,leny,countcolor,format;
+    DWORD lenx, leny, countcolor, format;
 
-	DWORD id=FilePNG_ReadStart_Buf(buf,buflen,&lenx,&leny,&countcolor,&format);
-	if(id==0) return false;
+    DWORD id = FilePNG_ReadStart_Buf(buf, buflen, &lenx, &leny, &countcolor, &format);
+    if(id == 0) return false;
 
-	if(format==1) {
-		CreateGrayscale(lenx,leny);
-	} else if(format==2) {
-		CreateRGB(lenx,leny);
-	} else if(format==3) {
-		CreateRGBA(lenx,leny);
-	} else if(format==4) {
-		CreatePalate(lenx,leny,countcolor);
-	} else ERROR_E;
+    if(format == 1)
+    {
+        CreateGrayscale(lenx, leny);
+    }
+    else if(format == 2)
+    {
+        CreateRGB(lenx, leny);
+    }
+    else if(format == 3)
+    {
+        CreateRGBA(lenx, leny);
+    }
+    else if(format == 4)
+    {
+        CreatePalate(lenx, leny, countcolor);
+    }
+    else ERROR_E;
 
-	if(!FilePNG_Read(id,m_Data,m_Pitch,(DWORD *)m_AddData[0])) {
-		Clear();
-		return false;
-	}
+    if(!FilePNG_Read(id, m_Data, m_Pitch, (DWORD*)m_AddData[0]))
+    {
+        Clear();
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
-bool CBitmap::LoadFromPNG(const wchar * filename)
+bool CBitmap::LoadFromPNG(const wchar* filename)
 {
-	CFile file(filename,m_Heap);
-	file.OpenRead();
-	int size=file.Size();
-	if(size<0) return false;
-	void * buf;
-    if (size <= 32768)
+    CFile file(filename, m_Heap);
+    file.OpenRead();
+    int size = file.Size();
+    if(size < 0) return false;
+    void* buf;
+    if(size <= 32768)
     {
         buf = _alloca(size);
-    } else
-    {
-        buf = HAlloc(size,m_Heap);
     }
-	try {
-		file.Read(buf,size);
-		LoadFromPNG(buf,size);
-		if (size > 32768) HFree(buf,m_Heap);
-		return true;
-	} catch(...) {
-		if (size > 32768) HFree(buf,m_Heap);
-		throw;
-	}
+    else
+    {
+        buf = HAlloc(size, m_Heap);
+    }
+    try
+    {
+        file.Read(buf, size);
+        LoadFromPNG(buf, size);
+        if(size > 32768) HFree(buf, m_Heap);
+        return true;
+    }
+    catch(...)
+    {
+        if(size > 32768) HFree(buf, m_Heap);
+        throw;
+    }
 }
 
-int CBitmap::SaveInPNG(void * buf, int buflen)
+int CBitmap::SaveInPNG(void* buf, int buflen)
 {
-	if(m_Format!=BMF_FLAT) return 0;
-	if(m_Size.x<=0 || m_Size.y<=0) return 0;
+    if(m_Format != BMF_FLAT) return 0;
+    if(m_Size.x <= 0 || m_Size.y <= 0) return 0;
 
-	return FilePNG_Write(buf,buflen,m_Data,m_Pitch,m_Size.x,m_Size.y,m_BytePP,0);
+    return FilePNG_Write(buf, buflen, m_Data, m_Pitch, m_Size.x, m_Size.y, m_BytePP, 0);
 }
 
-bool CBitmap::SaveInPNG(CBuf & buf)
+bool CBitmap::SaveInPNG(CBuf& buf)
 {
-    int len = m_Pitch*m_Size.y+100;
-	buf.Len(len);
-	len=SaveInPNG(buf.Get(),buf.Len());
-	if(len>buf.Len()) {
-		buf.Len(len);
-		len=SaveInPNG(buf.Get(),buf.Len());
-	} else buf.Len(len);
-	return len>0;
+    int len = m_Pitch * m_Size.y + 100;
+    buf.Len(len);
+    len = SaveInPNG(buf.Get(), buf.Len());
+    if(len > buf.Len())
+    {
+        buf.Len(len);
+        len = SaveInPNG(buf.Get(), buf.Len());
+    }
+    else buf.Len(len);
+    return len > 0;
 }
 
-bool CBitmap::SaveInPNG(const wchar * filename, int filenamelen)
+bool CBitmap::SaveInPNG(const wchar* filename, int filenamelen)
 {
-	CBuf buf(m_Heap);
-	if(!SaveInPNG(buf)) return false;
+    CBuf buf(m_Heap);
+    if(!SaveInPNG(buf)) return false;
 
-	CFile file(filename,filenamelen,m_Heap);
-	file.Create();
-	file.Write(buf.Get(),buf.Len());
-	file.Close();
+    CFile file(filename, filenamelen, m_Heap);
+    file.Create();
+    file.Write(buf.Get(), buf.Len());
+    file.Close();
 
-	return true;
+    return true;
 }
 
 #endif
