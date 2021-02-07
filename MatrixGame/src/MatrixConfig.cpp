@@ -204,7 +204,7 @@ static SKeyCodes key_action_codes[] =
     {L"UnitSetRepairOrder",         KA_ORDER_REPAIR},
 
     //Помимо отмены выбранных приказов также используется для закрытия меню постройки турелей и конструктора роботов
-    {L"AnyOrderCancel",             KA_ORDER_CANCEL},
+    {L"ChoosedOrderCancel",             KA_ORDER_CANCEL},
 
     //Программы автоматического поведения юнитов
     {L"UnitSetAgressiveBehavior",   KA_AUTOORDER_ATTACK},
