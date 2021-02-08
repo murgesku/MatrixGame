@@ -384,6 +384,7 @@ void CMatrixConfig::SetDefaults(void)
     m_CamInRobotForward0 = 10.0f;
     m_CamInRobotForward1 = 30.0f;
 
+    //Все назначения контрольных клавиш были перенесены в структуру key_action_codes
     /*
     //Кнопки управления движением камеры в стратегическом режиме
     //Эти две кнопки также управляют наклоном камеры в ручном (аркадном) режиме управления юнитом
@@ -680,9 +681,6 @@ void CMatrixConfig::ReadParams(void)
 
     ApplyGammaRamp();
 
-
-
-    
     if(cfg_par->ParCount(CFG_ROBOT_SHADOW) != 0)
     {
         int sh = cfg_par->Par(CFG_ROBOT_SHADOW).GetInt();
