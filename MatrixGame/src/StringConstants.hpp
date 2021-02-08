@@ -232,7 +232,7 @@
 #define CFG_OBJECT_TEX_16                       L"ObjectTextures16Bit"
 #define CFG_DEBUG_INFO                          L"DebugInfo"
 #define CFG_VERTEX_LIGHT                        L"VertexLight"
-#define CFG_ASSIGN_KEY                          L"AssignKey"
+#define CFG_ASSIGN_KEYS                         L"AssignKeys"
 #define CFG_IZVRAT_MS                           L"IzvratMultiSelection"
 #define CFG_ROBOT_SHADOW                        L"RobotShadow"
 #define CFG_SKY_BOX                             L"SkyBox"

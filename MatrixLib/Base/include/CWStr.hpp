@@ -13,20 +13,20 @@
 
 namespace Base {
 
-__forceinline int WStrLen(const wchar * str)
+__forceinline int WStrLen(const wchar* str)
 {
-    if(str==NULL) {return 0;}
-	int len=0;
-    while(str[len]!=0) {len++;}
+	if (str == NULL) return 0;
+	int len = 0;
+	while(str[len] != 0) ++len;
 	return len;
 }
 
-__forceinline bool WStrCmp(const wchar_t * s1,const wchar_t * s2) 
+__forceinline bool WStrCmp(const wchar_t* s1, const wchar_t* s2)
 {
-	for(;;)
+	while(true)
     {
-        if(*s1!=*s2) {return false;}
-        if(*s1==0) {return true;}
+		if(*s1 != *s2) return false;
+		if(!*s1) return true;
 		s1++;
 		s2++;
 	}
@@ -50,7 +50,7 @@ struct CWStrData
 class BASE_API CWStr : public CMain
 {
 
-        CWStrData * m_Data;
+        CWStrData* m_Data;
 
         void Tream(int len);
         void ModifyLen(CHeap *heap, int len);
@@ -100,20 +100,20 @@ class BASE_API CWStr : public CMain
 		void SetHex(void * zn);
 		void SetHex(BYTE zn);
 
-		CWStr & Add(const CWStr & cstr);
-		CWStr & Add(const wchar * str);
-        CWStr & Add(const wchar * str,int lstr);
-		CWStr & Add(wchar sim);
-		CWStr & Add(wchar sim,int count);
-		CWStr & Add(int zn)						{ Add(CWStr(zn)); return *this; }
-		CWStr & Add(double zn,int zpz=8)		{ Add(CWStr(zn,zpz)); return *this; }
-		CWStr & AddHex(void * zn)				{ CWStr s(GetHeap()); s.SetHex(zn); Add(s); return *this; }
-		CWStr & AddHex(BYTE zn)					{ CWStr s(GetHeap()); s.SetHex(zn); Add(s); return *this; }
+		CWStr& Add(const CWStr& cstr);
+		CWStr& Add(const wchar* str);
+        CWStr& Add(const wchar* str, int lstr);
+		CWStr& Add(wchar sim);
+		CWStr& Add(wchar sim, int count);
+		CWStr& Add(int zn)						{ Add(CWStr(zn)); return *this; }
+		CWStr& Add(double zn, int zpz = 8)		{ Add(CWStr(zn, zpz)); return *this; }
+		CWStr& AddHex(void* zn)				{ CWStr s(GetHeap()); s.SetHex(zn); Add(s); return *this; }
+		CWStr& AddHex(BYTE zn)					{ CWStr s(GetHeap()); s.SetHex(zn); Add(s); return *this; }
 
-        const wchar * Get(void)	const				{ return m_Data->Data(); }
-        const wchar * GetEx(void)	const		    { if(IsEmpty()) return NULL; else return m_Data->Data(); }
-        wchar * GetBuf(void)                        { return m_Data->Data(); }
-        wchar * GetBufEx(void)                      { if(IsEmpty()) return NULL; else return m_Data->Data(); }
+        const wchar* Get(void)	const				{ return m_Data->Data(); }
+        const wchar* GetEx(void)	const		    { if(IsEmpty()) return NULL; else return m_Data->Data(); }
+        wchar* GetBuf(void)                        { return m_Data->Data(); }
+        wchar* GetBufEx(void)                      { if(IsEmpty()) return NULL; else return m_Data->Data(); }
         int GetLen(void)	const					{ return m_Data->m_Len; }
 
 		int GetInt(void) const ;
@@ -199,10 +199,10 @@ class BASE_API CWStr : public CMain
 	        int lens1=zn1.GetLen();
             if(lens1!=zn2.GetLen()) return false;
 
-	        const wchar * str1=zn1.Get();
-	        const wchar * str2=zn2.Get();
+	        const wchar* str1=zn1.Get();
+	        const wchar* str2=zn2.Get();
 
-	        for(int i=0;i<lens1;i++) if(str1[i]!=str2[i]) return false;
+	        for(int i=0; i<lens1; ++i) if(str1[i]!=str2[i]) return false;
             return true;
         }
 		friend bool operator == (const CWStr & zn1,const wchar * zn2)
@@ -212,7 +212,7 @@ class BASE_API CWStr : public CMain
         	
 	        const wchar * str1=zn1.Get();
 
-	        for(int i=0;i<lens1;i++) if(str1[i]!=zn2[i]) return false;
+	        for(int i=0; i<lens1; ++i) if(str1[i]!=zn2[i]) return false;
             return true;
         }
 		friend bool operator == (const wchar * zn1,const CWStr & zn2) 					{ return zn2==zn1; }
@@ -270,7 +270,8 @@ __forceinline void CWStr::Tream(int len)
         m_Data->m_Len=len;
         m_Data->m_Max=len+16;
         m_Data=(CWStrData *)HAllocEx(m_Data,sizeof(CWStrData)+(len+16+1)*2,m_Data->m_Heap);
-    } else
+    }
+	else
     {
         m_Data->m_Len=len;
     }
@@ -293,7 +294,8 @@ __forceinline void CWStr::ModifyLen(CHeap *heap,int len)
 		olddata->RefDec();
 		NewDataLen(heap,len);
 		memcpy(m_Data->Data(),olddata->Data(),(min(len,olddata->m_Len)+1)*sizeof(wchar));
-	} else
+	}
+	else
     {
 		Tream(len);
 	}
@@ -306,7 +308,8 @@ __forceinline void CWStr::ModifyLenNoCopy(CHeap *heap,int len)
 		CWStrData * olddata=m_Data;
 		olddata->RefDec();
 		NewDataLen(heap,len);
-	} else
+	}
+	else
     {
 		Tream(len);
 	}

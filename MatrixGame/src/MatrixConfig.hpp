@@ -84,8 +84,6 @@ struct SStringPair
 {
     CWStr   key;
     CWStr   val;
-    
-
 };
 
 enum EKeyAction
@@ -243,7 +241,8 @@ enum EOverHeat
     OVERHEAT_LAST
 };
 
-enum EPrice {
+enum EPrice
+{
 
     HEAD1_TITAN,
 	HEAD1_ELECTRONICS,
@@ -374,7 +373,8 @@ enum EPrice {
     PRICE_LAST
 };
 
-enum ELabels{
+enum ELabels
+{
 	W1_CHAR,
 	W2_CHAR,
 	W3_CHAR,
@@ -408,7 +408,8 @@ enum ELabels{
     LABELS_LAST
 };
 
-enum EDescriptions{
+enum EDescriptions
+{
 	W1_DESCR,
 	W2_DESCR,
 	W3_DESCR,
@@ -515,12 +516,12 @@ struct SCannonProps
     float   max_top_angle;
     float   max_bottom_angle;
     EWeapon weapon;
-    float   max_da;             // if 0 then best rotation
+    float   max_da; // if 0 then best rotation
     float   seek_radius;
 
-    int m_Resources[MAX_RESOURCES];
-    float m_Strength;
-    float m_Hitpoint;
+    int     m_Resources[MAX_RESOURCES];
+    float   m_Strength;
+    float   m_Hitpoint;
 };
 
 struct SCamParam
@@ -571,8 +572,8 @@ class CMatrixConfig : public CMain
 
 public:
 
-    SStringPair* m_Cursors;
-    int          m_CursorsCnt;
+    SStringPair*    m_Cursors;
+    int             m_CursorsCnt;
 
     SWeaponDamage   m_CannonDamages[WEAPON_COUNT];
 
@@ -639,13 +640,14 @@ public:
     int   m_CaptureTimeRolback;
 
     int   m_KeyActions[KA_LAST];
+
     int   m_Timings[TIMING_LAST];
     int   m_Price[PRICE_LAST];
     int   m_Overheat[OVERHEAT_LAST];
     float m_ItemChars[CHARS_LAST];
 
-    CWStr *m_Labels;
-    CWStr *m_Descriptions;
+    CWStr* m_Labels;
+    CWStr* m_Descriptions;
 
     float m_RobotRadarR;
     float m_FlyerRadarR;
@@ -653,7 +655,6 @@ public:
     EShadowType m_RobotShadow;
 
     void Clear(void);
-
 
     void SetDefaults(void);
     void ReadParams(void);
@@ -663,14 +664,13 @@ public:
 
     CMatrixConfig(void):CMain() 
     { 
-        m_Labels = NULL; m_Descriptions = NULL;
+        m_Labels = NULL;
+        m_Descriptions = NULL;
     };
     ~CMatrixConfig()  {};
     
 };
 
 extern CMatrixConfig       g_Config;
-
-
 
 #endif
