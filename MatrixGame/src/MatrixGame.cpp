@@ -38,9 +38,6 @@ CMatrixMapLogic* g_MatrixMap;
 CRenderPipeline* g_Render;
 CLoadProgress* g_LoadProgress;
 
-//Переменная для хранения данных о числе сохраняемых шаблонов роботов игрока
-// static unsigned char m_MaxDesignsToSave = 0;
-
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE ,
                      LPTSTR    ,
@@ -174,7 +171,7 @@ static void static_init(void)
 #ifdef _DEBUG
     D3DResource::StaticInit();
 #endif
-#if (defined _DEBUG) &&  !(defined _RELDEBUG)
+#if(defined _DEBUG) && !(defined _RELDEBUG)
     CHelper::StaticInit();
 #endif
     CCacheData::StaticInit();
@@ -229,7 +226,7 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
 
     CBlockPar moddata(g_MatrixHeap);
 
-    for (int i = 0; i < modlist.GetCountPar(L","); ++i)
+    for(int i = 0; i < modlist.GetCountPar(L","); ++i)
     {
         curmod = modlist.GetStrPar(i, L",");
         curmod.Trim();
@@ -240,7 +237,7 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
         moddata_name += L"\\";
         moddata_name += FILE_CONFIGURATION_LOCATION;
 
-        if (lang != NULL)
+        if(lang != NULL)
         {
             moddata_name += lang;
             moddata_name += L"\\";
@@ -248,7 +245,7 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
         moddata_name += L"Robots\\";
         moddata_name += bp_name;
 
-        if (CFile::FileExist(moddata_name, moddata_name.Get()))
+        if(CFile::FileExist(moddata_name, moddata_name.Get()))
         {
             moddata.LoadFromTextFile(moddata_name);
             base_bp.BlockMerge(moddata);
@@ -256,7 +253,17 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
     }
 }
 
-void MatrixGameInit(HINSTANCE inst,HWND wnd,wchar * map,SRobotsSettings * set,wchar * lang,wchar * txt_start,wchar * txt_win,wchar * txt_loss, wchar *planet)
+void MatrixGameInit(
+    HINSTANCE inst,       //???
+    HWND wnd,             //???
+    wchar* map,           //???
+    SRobotsSettings* set, //Уровень сложности?
+    wchar* lang,          //???
+    wchar* txt_start,     //Вступительный текст
+    wchar* txt_win,       //Текст при победе
+    wchar* txt_loss,      //Текст при поражении
+    wchar* planet         //Название планеты
+)
 {
     static_init();
 
@@ -270,17 +277,17 @@ void MatrixGameInit(HINSTANCE inst,HWND wnd,wchar * map,SRobotsSettings * set,wc
     CWStr modlist(g_MatrixHeap);
     LoadModList(modlist);
 
-    CLoadProgress   lp;
+    CLoadProgress     lp;
     g_LoadProgress = &lp;
 DCP();
 
     CStorage    stor_cfg(g_MatrixHeap);
     bool        stor_cfg_present = false;
     CWStr       stor_cfg_name(g_MatrixHeap);
-	wchar conf_file[80];
+	wchar       conf_file[80];
 	wcscpy(conf_file, FILE_CONFIGURATION_LOCATION);
 
-	if (lang!=NULL)
+	if(lang != NULL)
     {
 	    wcscat(conf_file, lang);
 	    wcscat(conf_file, L"\\");
@@ -288,7 +295,7 @@ DCP();
 
 	wcscat(conf_file, FILE_CONFIGURATION);
 
-    if (CFile::FileExist(stor_cfg_name, conf_file))
+    if(CFile::FileExist(stor_cfg_name, conf_file))
     {
         stor_cfg.Load(conf_file);
         stor_cfg_present = true;
@@ -296,13 +303,13 @@ DCP();
 
 
 	g_MatrixData = HNew(g_MatrixHeap) CBlockPar(1, g_MatrixHeap);
-    if (stor_cfg_present)
+    if(stor_cfg_present)
     {
         stor_cfg.RestoreBlockPar(L"da", *g_MatrixData);
 		//stor_cfg.RestoreBlockPar(L"if", *g_MatrixData);
         //g_MatrixData->SaveInTextFile(L"bbb.txt");
 
-        if (CFile::FileExist(stor_cfg_name, L"cfg\\robots\\cfg.txt"))
+        if(CFile::FileExist(stor_cfg_name, L"cfg\\robots\\cfg.txt"))
         {
             CBlockPar* bpc = g_MatrixData->BlockGet(L"Config");
             bpc->LoadFromTextFile(L"cfg\\robots\\cfg.txt");
@@ -316,23 +323,23 @@ DCP();
     // The code for loading data configs from mods
     LoadCfgFromMods(modlist, *g_MatrixData, lang, L"data.txt");
     {
-        CBlockPar *repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
+        CBlockPar* repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
 
         // init menu replaces
 
-        CBlockPar *rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
+        CBlockPar* rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
         int cnt = rr->ParCount();
-        for (int i = 0; i < cnt; ++i)
+        for(int i = 0; i < cnt; ++i)
         {
             repl->ParAdd(rr->ParGetName(i), rr->ParGet(i));
         }
 
-        if (txt_start)
+        if(txt_start)
         {
-            if (txt_start[0] >= '1' && txt_start[0] <= '6')
+            if(txt_start[0] >= '1' && txt_start[0] <= '6')
             {
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start,1,g_MatrixHeap));
-                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start+1,2,g_MatrixHeap));
+                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start, 1, g_MatrixHeap));
+                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start + 1, 2, g_MatrixHeap));
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
             }
             else
@@ -348,16 +355,16 @@ DCP();
             repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, L"Go! Go! Go!");
         }
 
-        if (txt_win)
+        if(txt_win)
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, txt_win);
-
         }
         else
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, L"Good job man :)");
         }
-        if (txt_loss)
+
+        if(txt_loss)
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, txt_loss);
         }
@@ -365,7 +372,8 @@ DCP();
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, L"Sux :(");
         }
-        if (planet)
+
+        if(planet)
         {
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
         }
@@ -382,7 +390,7 @@ DCP();
 DCP();
 
 
-    /*if (g_RangersInterface)
+    /*if(g_RangersInterface)
     {
         // run from rangers
         // do not set fullscreen
@@ -393,11 +401,11 @@ DCP();
 	g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
 #endif
 
-	if (set) L3GInitAsDLL(inst,*g_MatrixData->BlockGet(L"Config"),L"MatrixGame",L"Matrix Game",wnd, set->FDirect3D, set->FD3DDevice);
+	if(set) L3GInitAsDLL(inst,*g_MatrixData->BlockGet(L"Config"),L"MatrixGame",L"Matrix Game",wnd, set->FDirect3D, set->FD3DDevice);
 	else L3GInitAsEXE(inst,*g_MatrixData->BlockGet(L"Config"),L"MatrixGame",L"Matrix Game");
 	
 
-    if (set)
+    if(set)
     {
         g_ScreenX = set->m_ResolutionX;
         g_ScreenY = set->m_ResolutionY;
@@ -621,41 +629,38 @@ DCP();
     g_MatrixMap->GetPlayerSide()->Select(BUILDING, g_MatrixMap->GetPlayerSide()->m_ActiveObject);
     g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
 
-    if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
+    if(!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
 
     //Проверяем, включена ли настройка сохранения шаблонов в конфиге
-    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Config");
-    int maxDesignsToSave = iface_par->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
+    int maxDesignsToSave = g_MatrixData->BlockGet(L"Config")->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
 
     //Загружаем сохранённые шаблоны роботов игрока из txt-конфига и заносим их в конструктор роботов
-    if (maxDesignsToSave > 0)
+    if(maxDesignsToSave > 0)
     {
-        wchar robotscfg_path[MAX_PATH];
-        SHGetSpecialFolderPathW(0, robotscfg_path, CSIDL_PERSONAL, true);
-        wcscat(robotscfg_path, L"\\SpaceRangersHD\\RobotsCFG.txt");
+        wchar robotsCFG_path[MAX_PATH];
+        SHGetSpecialFolderPathW(0, robotsCFG_path, CSIDL_PERSONAL, true);
+        wcscat(robotsCFG_path, L"\\SpaceRangersHD\\RobotsCFG.txt");
 
         //Если обнаружили искомый конфиг
         CWStr temp_path(g_MatrixHeap);
-        if (CFile::FileExist(temp_path, robotscfg_path))
+        if(CFile::FileExist(temp_path, robotsCFG_path))
         {
-            CBlockPar load = CBlockPar(true, g_MatrixHeap);
-            load.LoadFromTextFile(robotscfg_path);
-            CBlockPar *bot_designs = load.BlockGetNE(L"BotDesigns");
+            CBlockPar robotsCFG = CBlockPar(true, g_MatrixHeap);
+            robotsCFG.LoadFromTextFile(robotsCFG_path);
+            CBlockPar* bot_designs = robotsCFG.BlockGetNE(L"BotDesigns");
             if(bot_designs != nullptr)
             {
                 int counter = 0;
                 //Расшифровываем строку цифро-буквенного шаблона робота, полученную из txt-конфига
                 CWStr confStr;
                 SRobotConfig conf;
-                while (counter < maxDesignsToSave)
+                while(counter < maxDesignsToSave)
                 {
                     confStr = bot_designs->ParGetNE(L"Bot" + CWStr(counter+1));
-                    if (confStr.IsEmpty())
-                        break;
+                    if(confStr.IsEmpty()) break;
 
                     //Исключаем заведомо невалидные по длине шаблоны
-                    if (confStr.GetCountPar(L",") < 2)
-                        continue;
+                    if(confStr.GetCountPar(L",") < 2) continue;
 
                     // предварительно очищаем и инициализируем шаблон
                     ZeroMemory(&conf, sizeof(conf)); 
@@ -670,22 +675,22 @@ DCP();
                     //Определяем шасси
                     CWStr t_str = confStr.GetStrPar(0, L",");
                     t_str.Trim();
-                    if (t_str == L"P") conf.m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
-                    else if (t_str == L"W") conf.m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
-                    else if (t_str == L"T") conf.m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
-                    else if (t_str == L"H") conf.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
-                    else if (t_str == L"A") conf.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+                    if(t_str == L"P") conf.m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
+                    else if(t_str == L"W") conf.m_Chassis.m_nKind = RUK_CHASSIS_WHEEL;
+                    else if(t_str == L"T") conf.m_Chassis.m_nKind = RUK_CHASSIS_TRACK;
+                    else if(t_str == L"H") conf.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
+                    else if(t_str == L"A") conf.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
                     else continue;
 
                     //Определяем корпус
                     t_str = confStr.GetStrPar(1, L",");
                     t_str.Trim();
-                    if (t_str == L"1") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_6;
-                    else if (t_str == L"1S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PASSIVE;
-                    else if (t_str == L"2") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
-                    else if (t_str == L"2S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
-                    else if (t_str == L"3") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
-                    else if (t_str == L"4S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+                    if(t_str == L"1") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_6;
+                    else if(t_str == L"1S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PASSIVE;
+                    else if(t_str == L"2") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
+                    else if(t_str == L"2S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
+                    else if(t_str == L"3") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
+                    else if(t_str == L"4S") conf.m_Hull.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
                     else continue;
 
                     //Записываем в конфиг предельное число обычных и особых орудий для данного типа корпуса
@@ -693,67 +698,66 @@ DCP();
                     conf.m_Hull.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[conf.m_Hull.m_Unit.m_nKind - 1].extra;
 
                     //Определяем оружие
-                    if (confStr.GetCountPar(L",") >= 3)
+                    if(confStr.GetCountPar(L",") >= 3)
                     {
                         t_str = confStr.GetStrPar(2, L",");
                         t_str.Trim();
 
-                        if (t_str.GetLen() > (conf.m_Hull.m_MaxCommonWeaponCnt + conf.m_Hull.m_MaxExtraWeaponCnt))
-                            continue;
+                        if(t_str.GetLen() > (conf.m_Hull.m_MaxCommonWeaponCnt + conf.m_Hull.m_MaxExtraWeaponCnt)) continue;
 
                         int cnt_normal = 0;
                         int cnt_extra = 0;
 
-                        for (int u = 0; u < t_str.GetLen(); ++u)
+                        for(int u = 0; u < t_str.GetLen(); ++u)
                         {
                             wchar ch = t_str.GetBuf()[u];
-                            if (ch == L'G')
+                            if(ch == L'G')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MACHINEGUN;
                             }
-                            else if (ch == L'C')
+                            else if(ch == L'C')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_CANNON;
                             }
-                            else if (ch == L'M')
+                            else if(ch == L'M')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MISSILE;
                             }
-                            else if (ch == L'F')
+                            else if(ch == L'F')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_FLAMETHROWER;
                             }
-                            else if (ch == L'L')
+                            else if(ch == L'L')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_LASER;
                             }
-                            else if (ch == L'P')
+                            else if(ch == L'P')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_PLASMA;
                             }
-                            else if (ch == L'E')
+                            else if(ch == L'E')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_ELECTRIC;
                             }
-                            else if (ch == L'R')
+                            else if(ch == L'R')
                             {
                                 ++cnt_normal;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_REPAIR;
                             }
-                            else if (ch == L'O')
+                            else if(ch == L'O')
                             {
                                 u = 4; // Установка оружия в слот для особого вооружения
                                 ++cnt_extra;
                                 conf.m_Weapon[u].m_nKind = RUK_WEAPON_MORTAR;
                             }
-                            else if (ch == L'B')
+                            else if(ch == L'B')
                             {
                                 u = 4; // Установка оружия в слот для особого вооружения
                                 ++cnt_extra;
@@ -764,31 +768,31 @@ DCP();
                             conf.m_Weapon[u].m_nType = MRT_WEAPON;
                         }
 
-                        if (cnt_normal > conf.m_Hull.m_MaxCommonWeaponCnt) continue;
+                        if(cnt_normal > conf.m_Hull.m_MaxCommonWeaponCnt) continue;
 
-                        if (cnt_extra > conf.m_Hull.m_MaxExtraWeaponCnt) continue;
+                        if(cnt_extra > conf.m_Hull.m_MaxExtraWeaponCnt) continue;
                     }
 
                     //Определяем голову
-                    if (confStr.GetCountPar(L",") >= 4)
+                    if(confStr.GetCountPar(L",") >= 4)
                     {
                         t_str = confStr.GetStrPar(3, L",");
                         t_str.Trim();
 
-                        if (t_str == L"S") conf.m_Head.m_nKind = RUK_HEAD_BLOCKER;
-                        else if (t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DYNAMO;
-                        else if (t_str == L"L") conf.m_Head.m_nKind = RUK_HEAD_LOCKATOR;
-                        else if (t_str == L"F") conf.m_Head.m_nKind = RUK_HEAD_FIREWALL;
-                        else if (t_str == L"R") conf.m_Head.m_nKind = RUK_HEAD_RAPID;
-                        else if (t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DESIGN;
-                        else if (t_str == L"P") conf.m_Head.m_nKind = RUK_HEAD_SPEAKER;
+                        if(t_str == L"S") conf.m_Head.m_nKind = RUK_HEAD_BLOCKER;
+                        else if(t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DYNAMO;
+                        else if(t_str == L"L") conf.m_Head.m_nKind = RUK_HEAD_LOCKATOR;
+                        else if(t_str == L"F") conf.m_Head.m_nKind = RUK_HEAD_FIREWALL;
+                        else if(t_str == L"R") conf.m_Head.m_nKind = RUK_HEAD_RAPID;
+                        else if(t_str == L"D") conf.m_Head.m_nKind = RUK_HEAD_DESIGN;
+                        else if(t_str == L"P") conf.m_Head.m_nKind = RUK_HEAD_SPEAKER;
                         else continue;
                     }
 
                     //Заносим готовый конфиг в историю
                     g_ConfigHistory->AddConfig(&conf);
 
-                    counter++;
+                    ++counter;
                 }
                 //Убираем начальный стоковый чертёж завода и заменяем его на первый из списка загруженных
                 g_ConfigHistory->m_CurrentConfig = g_ConfigHistory->m_FirstConfig;
@@ -799,7 +803,7 @@ DCP();
 
     // this code can be safely removed from release : RELEASE_OFF
 
-    //if (iface_save) bpi.SaveInTextFile(IF_PATH, true);
+    //if(iface_save) bpi.SaveInTextFile(IF_PATH, true);
 }
 
 void SRobotsSettings::ApplyVideoParams(void)
@@ -919,12 +923,12 @@ void SRobotsSettings::ApplyVideoParams(void)
 	mtrl.Specular.g = 0.5f;
 	mtrl.Specular.b = 0.5f;
 	mtrl.Specular.a = 0.5f;
-	g_D3DD->SetMaterial(&mtrl );
+	g_D3DD->SetMaterial(&mtrl);
 	g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
 
 	D3DXVECTOR3 vecDir;
 	D3DLIGHT9 light;
-	ZeroMemory( &light, sizeof(D3DLIGHT9));
+	ZeroMemory(&light, sizeof(D3DLIGHT9));
 	light.Type = D3DLIGHT_DIRECTIONAL;//D3DLIGHT_POINT;//D3DLIGHT_DIRECTIONAL;
 	light.Diffuse.r  = GetColorR(g_MatrixMap->m_LightMainColorObj);
 	light.Diffuse.g  = GetColorG(g_MatrixMap->m_LightMainColorObj);
@@ -935,7 +939,7 @@ void SRobotsSettings::ApplyVideoParams(void)
 	light.Specular.r = GetColorR(g_MatrixMap->m_LightMainColorObj);
 	light.Specular.g = GetColorG(g_MatrixMap->m_LightMainColorObj);
 	light.Specular.b = GetColorB(g_MatrixMap->m_LightMainColorObj);
-	//light.Range       = 0;
+	//light.Range    = 0;
 	light.Direction	= g_MatrixMap->m_LightMain;
 //	light.Direction=D3DXVECTOR3(250.0f,-50.0f,-250.0f);
 //	D3DXVec3Normalize((D3DXVECTOR3 *)(&(light.Direction)),(D3DXVECTOR3 *)(&(light.Direction)));
@@ -949,30 +953,37 @@ void MatrixGameDeinit(void)
     DTRACE();
 
     //Сохраняем указанное число шаблонов роботов игрока, если настройка MaxDesignsToSave не равна нулю
-    CBlockPar* iface_par = g_MatrixData->BlockGet(L"Config");
-    int maxDesignsToSave = iface_par->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
+    int maxDesignsToSave = g_MatrixData->BlockGet(L"Config")->ParGet(CFG_DESIGNS_TO_SAVE).GetInt();
 
-    if (maxDesignsToSave > 0)
+    if(maxDesignsToSave > 0)
     {
-        if (g_ConfigHistory->m_CurrentConfig != nullptr)
+        //Если есть что сохранять (игрок построил хотя бы одного робота за матч)
+        if(g_ConfigHistory->m_CurrentConfig != nullptr)
         {
-            CBlockPar save = CBlockPar(true, g_MatrixHeap);
-            CBlockPar* bot_designs = save.BlockGetAdd(L"BotDesigns");
+            CBlockPar robotsCFG = CBlockPar(true, g_MatrixHeap);
+            wchar robotsCFG_Path[MAX_PATH];
+            SHGetSpecialFolderPathW(0, robotsCFG_Path, CSIDL_PERSONAL, true);
+            wcscat(robotsCFG_Path, L"\\SpaceRangersHD\\RobotsCFG.txt");
 
-            wchar robotscfg_path[MAX_PATH];
-            SHGetSpecialFolderPathW(0, robotscfg_path, CSIDL_PERSONAL, true);
-            wcscat(robotscfg_path, L"\\SpaceRangersHD\\RobotsCFG.txt");
+            //Если обнаружили искомый конфиг, то загружаем его во избежание потери прочих возможно содержащихся в нём данных
+            CWStr temp_path(g_MatrixHeap);
+            if(CFile::FileExist(temp_path, robotsCFG_Path)) robotsCFG.LoadFromTextFile(robotsCFG_Path);
+            //Иначе создаём совершенно новый объект документа
+            else robotsCFG = CBlockPar(true, g_MatrixHeap);
+            //Перед записью шаблонов удаляем возможно уже имевшийся там ранее блок
+            robotsCFG.BlockDeleteNE(L"BotDesigns", 10);
+            CBlockPar* bot_designs = robotsCFG.BlockAdd(L"BotDesigns");
 
             SRobotConfig* cur_config = g_ConfigHistory->m_LastConfig;
 
             int counter = maxDesignsToSave;
             //Начинаем перебор с конца списка шаблонов
             //И определяем "точку" начала отсчёта в списке шаблонов для сохранения
-            while (counter > 1)
+            while(counter > 1)
             {
-                if (cur_config != g_ConfigHistory->m_FirstConfig && cur_config != nullptr)
+                if(cur_config != g_ConfigHistory->m_FirstConfig && cur_config != nullptr)
                 {
-                    counter--;
+                    --counter;
                     cur_config = cur_config->m_PrevConfig;
                 }
                 else break;
@@ -980,64 +991,64 @@ void MatrixGameDeinit(void)
 
             CWStr to_config(g_MatrixHeap);
             counter = 0;
-            while ((cur_config != nullptr) && (counter < maxDesignsToSave))
+            while((cur_config != nullptr) && (counter < maxDesignsToSave))
             {
                 to_config.Clear();
 
                 //Формируем строку цифро-буквенного шаблона робота для записи в txt-конфиг
                 //Определяем шасси
                 auto cur_gear = cur_config->m_Chassis.m_nKind;
-                if (cur_gear == RUK_CHASSIS_PNEUMATIC) to_config += L"P";
-                else if (cur_gear == RUK_CHASSIS_WHEEL) to_config += L"W";
-                else if (cur_gear == RUK_CHASSIS_TRACK) to_config += L"T";
-                else if (cur_gear == RUK_CHASSIS_HOVERCRAFT) to_config += L"H";
-                else if (cur_gear == RUK_CHASSIS_ANTIGRAVITY) to_config += L"A";
+                if(cur_gear == RUK_CHASSIS_PNEUMATIC) to_config += L"P";
+                else if(cur_gear == RUK_CHASSIS_WHEEL) to_config += L"W";
+                else if(cur_gear == RUK_CHASSIS_TRACK) to_config += L"T";
+                else if(cur_gear == RUK_CHASSIS_HOVERCRAFT) to_config += L"H";
+                else if(cur_gear == RUK_CHASSIS_ANTIGRAVITY) to_config += L"A";
 
                 //Определяем туловище
                 cur_gear = cur_config->m_Hull.m_Unit.m_nKind;
                 to_config += L",";
-                if (cur_gear == RUK_ARMOR_6) to_config += L"1";
-                else if (cur_gear == RUK_ARMOR_PASSIVE) to_config += L"1S";
-                else if (cur_gear == RUK_ARMOR_ACTIVE) to_config += L"2";
-                else if (cur_gear == RUK_ARMOR_FIREPROOF) to_config += L"2S";
-                else if (cur_gear == RUK_ARMOR_PLASMIC) to_config += L"3";
-                else if (cur_gear == RUK_ARMOR_NUCLEAR) to_config += L"4S";
+                if(cur_gear == RUK_ARMOR_6) to_config += L"1";
+                else if(cur_gear == RUK_ARMOR_PASSIVE) to_config += L"1S";
+                else if(cur_gear == RUK_ARMOR_ACTIVE) to_config += L"2";
+                else if(cur_gear == RUK_ARMOR_FIREPROOF) to_config += L"2S";
+                else if(cur_gear == RUK_ARMOR_PLASMIC) to_config += L"3";
+                else if(cur_gear == RUK_ARMOR_NUCLEAR) to_config += L"4S";
 
                 //Определяем оружие
                 bool t_mark = false;
-                for (int i = 0; i < MAX_WEAPON_CNT; ++i)
+                for(int i = 0; i < MAX_WEAPON_CNT; ++i)
                 {
                     cur_gear = cur_config->m_Weapon[i].m_nKind;
-                    if (cur_gear)
+                    if(cur_gear)
                     {
-                        if (!t_mark)
+                        if(!t_mark)
                         {
                             to_config += L",";
                             t_mark = true;
                         }
-                        if (cur_gear == RUK_WEAPON_MACHINEGUN) to_config += L"G";
-                        else if (cur_gear == RUK_WEAPON_CANNON) to_config += L"C";
-                        else if (cur_gear == RUK_WEAPON_MISSILE) to_config += L"M";
-                        else if (cur_gear == RUK_WEAPON_FLAMETHROWER) to_config += L"F";
-                        else if (cur_gear == RUK_WEAPON_LASER) to_config += L"L";
-                        else if (cur_gear == RUK_WEAPON_PLASMA) to_config += L"P";
-                        else if (cur_gear == RUK_WEAPON_ELECTRIC) to_config += L"E";
-                        else if (cur_gear == RUK_WEAPON_REPAIR) to_config += L"R";
-                        else if (cur_gear == RUK_WEAPON_MORTAR) to_config += L"O";
-                        else if (cur_gear == RUK_WEAPON_BOMB) to_config += L"B";
+                        if(cur_gear == RUK_WEAPON_MACHINEGUN) to_config += L"G";
+                        else if(cur_gear == RUK_WEAPON_CANNON) to_config += L"C";
+                        else if(cur_gear == RUK_WEAPON_MISSILE) to_config += L"M";
+                        else if(cur_gear == RUK_WEAPON_FLAMETHROWER) to_config += L"F";
+                        else if(cur_gear == RUK_WEAPON_LASER) to_config += L"L";
+                        else if(cur_gear == RUK_WEAPON_PLASMA) to_config += L"P";
+                        else if(cur_gear == RUK_WEAPON_ELECTRIC) to_config += L"E";
+                        else if(cur_gear == RUK_WEAPON_REPAIR) to_config += L"R";
+                        else if(cur_gear == RUK_WEAPON_MORTAR) to_config += L"O";
+                        else if(cur_gear == RUK_WEAPON_BOMB) to_config += L"B";
                     }
                 }
 
                 //Определяем голову
                 cur_gear = cur_config->m_Head.m_nKind;
-                if (cur_gear) to_config += L",";
-                if (cur_gear == RUK_HEAD_BLOCKER) to_config += L"S";
-                else if (cur_gear == RUK_HEAD_DYNAMO) to_config += L"D";
-                else if (cur_gear == RUK_HEAD_LOCKATOR) to_config += L"L";
-                else if (cur_gear == RUK_HEAD_FIREWALL) to_config += L"F";
-                else if (cur_gear == RUK_HEAD_RAPID) to_config += L"R";
-                else if (cur_gear == RUK_HEAD_DESIGN) to_config += L"D";
-                else if (cur_gear == RUK_HEAD_SPEAKER) to_config += L"P";
+                if(cur_gear) to_config += L",";
+                if(cur_gear == RUK_HEAD_BLOCKER) to_config += L"S";
+                else if(cur_gear == RUK_HEAD_DYNAMO) to_config += L"D";
+                else if(cur_gear == RUK_HEAD_LOCKATOR) to_config += L"L";
+                else if(cur_gear == RUK_HEAD_FIREWALL) to_config += L"F";
+                else if(cur_gear == RUK_HEAD_RAPID) to_config += L"R";
+                else if(cur_gear == RUK_HEAD_DESIGN) to_config += L"D";
+                else if(cur_gear == RUK_HEAD_SPEAKER) to_config += L"P";
 
                 //Заносим готовый шаблон в список сохранения
                 bot_designs->ParAdd(L"Bot" + CWStr(counter+1), to_config);
@@ -1045,10 +1056,10 @@ void MatrixGameDeinit(void)
                 //Выбираем следующий конфиг
                 cur_config = cur_config->m_NextConfig;
 
-                counter++;
+                ++counter;
             }
             //Записываем готовые шаблоны в txt-конфиг
-            save.SaveInTextFile(robotscfg_path);
+            robotsCFG.SaveInTextFile(robotsCFG_Path);
         }
     }
 

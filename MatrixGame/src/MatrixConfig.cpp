@@ -10,7 +10,7 @@
 
 struct SKeyCodes
 {
-    const wchar *name;
+    const wchar* name;
     int code;
 };
 
@@ -143,100 +143,110 @@ static SKeyCodes key_codes[] =
     {NULL,          -1}
 };
 
-static SKeyCodes key_action_codes[] =
+struct SKeyActions
 {
-    //Управление камерой
-    {L"CamMoveUp",          KA_SCROLL_UP},
-    {L"CamMoveDown",        KA_SCROLL_DOWN},
-    {L"CamMoveLeft",        KA_SCROLL_LEFT},
-    {L"CamMoveRight",       KA_SCROLL_RIGHT},
-
-    {L"CamMoveUpAlt",       KA_SCROLL_UP_ALT},
-    {L"CamMoveDownAlt",     KA_SCROLL_DOWN_ALT},
-    {L"CamMoveLeftAlt",     KA_SCROLL_LEFT_ALT},
-    {L"CamMoveRightAlt",    KA_SCROLL_RIGHT_ALT},
-
-    {L"CamRotateUp",        KA_ROTATE_UP},
-    {L"CamRotateDown",      KA_ROTATE_DOWN},
-    {L"CamRotateLeft",      KA_ROTATE_LEFT},
-    {L"CamRotateRight",     KA_ROTATE_RIGHT},
-    {L"CamRotateLeftAlt",   KA_ROTATE_LEFT_ALT},
-    {L"CamRotateRightAlt",  KA_ROTATE_RIGHT_ALT},
-
-    {L"CamDefaultPos",      KA_CAM_SETDEFAULT},
-
-    //Масштабирование миникарты
-    {L"MinimapZoomIn",      KA_MINIMAP_ZOOMIN},
-    {L"MinimapZoomOut",     KA_MINIMAP_ZOOMOUT},
-
-    //Меню управления зданиями (в основном базой)
-    {L"BaseSetGatheringPoint",      KA_GATHERING_POINT},
-
-    {L"BaseConstMenuEnter",         KA_BUILD_ROBOT},
-    {L"BaseConstMenuLunch",         KA_BUILD_ROBOT_START},
-    {L"BaseConstMenuIncrease",      KA_BUILD_ROBOT_QUANTITY_UP},
-    {L"BaseConstMenuDecrease",      KA_BUILD_ROBOT_QUANTITY_DOWN},
-    {L"BaseConstMenuChooseLeft",    KA_BUILD_ROBOT_CHOOSE_LEFT},
-    {L"BaseConstMenuChooseRight",   KA_BUILD_ROBOT_CHOOSE_RIGHT},
-
-    {L"BuildTurrMenuEnter",         KA_BUILD_TURRET},
-    {L"BuildTurrMenuLightCannon",   KA_TURRET_CANNON},
-    {L"BuildTurrMenuHeavyCannon",   KA_TURRET_GUN},
-    {L"BuildTurrMenuLaserCannon",   KA_TURRET_LASER},
-    {L"BuildTurrMenuMissileCannon", KA_TURRET_ROCKET},
-
-    {L"CallForReinforcements",      KA_BUILD_HELP},
-
-    //Выделение/переключение юнитов
-    {L"UnitInGroupSelect",          KA_SHIFT},
-    {L"SetCtrlGroup",               KA_CTRL},
-    {L"UnitSelectPrev",             KA_ORDER_ROBOT_SWITCH1},
-    {L"UnitSelectNext",             KA_ORDER_ROBOT_SWITCH2},
-    {L"UnitSelectAll",              KA_ALL_UNITS_SELECT},
-
-    //Меню приказов для юнитов
-    {L"UnitSetMoveOrder",           KA_ORDER_MOVE},
-    {L"UnitSetStopOrder",           KA_ORDER_STOP},
-    {L"UnitSetAttackOrder",         KA_ORDER_ATTACK},
-    {L"UnitSetCaptureOrder",        KA_ORDER_CAPTURE},
-    {L"UnitSetPatrolOrder",         KA_ORDER_PATROL},
-    {L"UnitSetExplodeOrder",        KA_ORDER_EXPLODE},
-    {L"UnitSetRepairOrder",         KA_ORDER_REPAIR},
-
-    //Помимо отмены выбранных приказов также используется для закрытия меню постройки турелей и конструктора роботов
-    {L"ChoosedOrderCancel",             KA_ORDER_CANCEL},
-
-    //Программы автоматического поведения юнитов
-    {L"UnitSetAgressiveBehavior",   KA_AUTOORDER_ATTACK},
-    {L"UnitSetCaptureBehavior",     KA_AUTOORDER_CAPTURE},
-    {L"UnitSetDefensiveBehavior",   KA_AUTOORDER_DEFEND},
-
-    //Ручное управление юнитом (аркадный режим)
-    {L"ManualControlEnter",         KA_UNIT_ENTER},
-    {L"ManualControlEnterAlt",      KA_UNIT_ENTER_ALT},
-    {L"ManualControlFire",          KA_FIRE},
-    {L"ManualControlAutoAltitude",  KA_AUTO},
-    {L"ManualControlExplode",       KA_UNIT_BOOM},
-
-    {L"ManualControlMoveUp",        KA_UNIT_FORWARD},
-    {L"ManualControlMoveDown",      KA_UNIT_BACKWARD},
-    {L"ManualControlMoveLeft",      KA_UNIT_LEFT},
-    {L"ManualControlMoveRight",     KA_UNIT_RIGHT},
-
-    {L"ManualControlMoveUpAlt",     KA_UNIT_FORWARD_ALT},
-    {L"ManualControlMoveDownAlt",   KA_UNIT_BACKWARD_ALT},
-    {L"ManualControlMoveLeftAlt",   KA_UNIT_LEFT_ALT},
-    {L"ManualControlMoveRightAlt",  KA_UNIT_RIGHT_ALT},
-
-    //Прочее
-    {L"TakeScreenShot",             KA_TAKE_SCREENSHOT},
-    {L"SaveScreenShot",             KA_SAVE_SCREENSHOT},
-    {L"PauseTheGame",               KA_GAME_PAUSED},
-
-    {NULL,                          -1}
+    const wchar* name;
+    int code;
+    int base_key;
 };
 
-static int KeyName2KeyCode(const CWStr& name)
+static SKeyActions key_action_codes[] =
+{
+    //Управление камерой
+    {L"CamMoveUp",          		KA_SCROLL_UP,                  VK_UP},
+    {L"CamMoveDown",        		KA_SCROLL_DOWN,                VK_DOWN},
+    {L"CamMoveLeft",        		KA_SCROLL_LEFT,                VK_LEFT},
+    {L"CamMoveRight",       		KA_SCROLL_RIGHT,               VK_RIGHT},
+
+    {L"CamMoveUpAlt",       		KA_SCROLL_UP_ALT,              VK_UP}, //0x57},
+    {L"CamMoveDownAlt",     		KA_SCROLL_DOWN_ALT,            VK_DOWN}, //0x53},
+    {L"CamMoveLeftAlt",     		KA_SCROLL_LEFT_ALT,            VK_LEFT}, //0x41},
+    {L"CamMoveRightAlt",    		KA_SCROLL_RIGHT_ALT,           VK_RIGHT}, //0x44},
+
+    {L"CamRotateUp",        		KA_ROTATE_UP,                  VK_PRIOR}, //клавиша "PageUp"
+    {L"CamRotateDown",      		KA_ROTATE_DOWN,                VK_NEXT}, //клавиша "PageDown"
+    {L"CamRotateLeft",      		KA_ROTATE_LEFT,                VK_HOME}, //клавиша "Home"
+    {L"CamRotateRight",    			KA_ROTATE_RIGHT,               VK_END}, //клавиша "End"
+    {L"CamRotateLeftAlt",   		KA_ROTATE_LEFT_ALT,            VK_OEM_4}, //zak, клавиша "["
+    {L"CamRotateRightAlt",  		KA_ROTATE_RIGHT_ALT,           VK_OEM_6}, //zak, клавиша "]"
+
+    {L"CamDefaultPos",      		KA_CAM_SETDEFAULT,             VK_OEM_5},  //zak, клавиша "\"
+
+    //Масштабирование миникарты
+    {L"MinimapZoomIn",      		KA_MINIMAP_ZOOMIN,             VK_OEM_PLUS}, //sub, клавиша "+"
+    {L"MinimapZoomOut",     		KA_MINIMAP_ZOOMOUT,            VK_OEM_MINUS}, //sub, клавиша "-"
+
+    //Меню управления зданиями (в основном базой)
+    {L"BaseSetGatheringPoint",      KA_GATHERING_POINT,            0x47}, //sub, установка точки сбора базы, клавиша "G"
+
+    {L"BaseConstMenuEnter",         KA_BUILD_ROBOT,                0x42}, //sub, открывает и закрывает меню конструктора робота, клавиша "B"
+    //Только из меню конструктора роботов
+    {L"BaseConstMenuLunch",         KA_BUILD_ROBOT_START,          VK_RETURN}, //клавиша "Enter"
+    {L"BaseConstMenuIncrease",      KA_BUILD_ROBOT_QUANTITY_UP,    VK_UP},
+    {L"BaseConstMenuDecrease",      KA_BUILD_ROBOT_QUANTITY_DOWN,  VK_DOWN},
+    {L"BaseConstMenuChooseLeft",    KA_BUILD_ROBOT_CHOOSE_LEFT,    VK_LEFT},
+    {L"BaseConstMenuChooseRight",   KA_BUILD_ROBOT_CHOOSE_RIGHT,   VK_RIGHT},
+
+    {L"BuildTurrMenuEnter",         KA_BUILD_TURRET,               0x54}, //sub, открывает и закрывает меню выбора турели, клавиша "T"
+    //Только из меню выбора турели
+    {L"BuildTurrMenuLightCannon",   KA_TURRET_CANNON,              0x43}, //выбор лёгкой пушки, клавиша "C"
+    {L"BuildTurrMenuHeavyCannon",   KA_TURRET_GUN,                 0x47}, //выбор тяжёлой пушки, клавиша "G"
+    {L"BuildTurrMenuLaserCannon",   KA_TURRET_LASER,               0x4C}, //выбор лазера, клавиша "L"
+    {L"BuildTurrMenuMissileCannon", KA_TURRET_ROCKET,              0x52}, //выбор ракетницы, клавиша "R"
+
+    {L"CallForReinforcements",      KA_BUILD_HELP,                 0x48}, //sub, вызывает подкрепление, клавиша "H"
+
+    //Выделение/переключение юнитов
+    {L"UnitInGroupSelect",          KA_SHIFT,                      VK_SHIFT},
+    {L"SetCtrlGroup",               KA_CTRL,                       VK_CONTROL},
+    {L"UnitSelectPrev",             KA_ORDER_ROBOT_SWITCH1,        VK_OEM_COMMA}, //sub, клавиша "<"
+    {L"UnitSelectNext",             KA_ORDER_ROBOT_SWITCH2,        VK_OEM_PERIOD}, //sub, клавиша ">"
+    {L"UnitSelectAll",              KA_ALL_UNITS_SELECT,           VK_F2},
+
+    //Меню приказов для юнитов
+    {L"UnitSetMoveOrder",           KA_ORDER_MOVE,                 0x4D}, //sub, выбор приказа на движение в указанную точку, клавиша "M"
+    {L"UnitSetStopOrder",           KA_ORDER_STOP,                 0x53}, //sub, приказ на остановку, клавиша "S"
+    {L"UnitSetAttackOrder",         KA_ORDER_ATTACK,               0x41}, //sub, выбор приказа на атаку, клавиша "A"
+    {L"UnitSetCaptureOrder",        KA_ORDER_CAPTURE,              0x4B}, //sub, выбор приказа на захват, клавиша "K"
+    {L"UnitSetPatrolOrder",         KA_ORDER_PATROL,               0x50}, //sub, выбор приказа на патрулирование, клавиша "P"
+    {L"UnitSetExplodeOrder",        KA_ORDER_EXPLODE,              0x45}, //sub, выбор приказа на подрыв бомбы (если у робота она есть), клавиша "E"
+    {L"UnitSetRepairOrder",         KA_ORDER_REPAIR,               0x52}, //sub, выбор приказа на ремонт (если есть ремонтник), клавиша "R"
+
+    //Помимо отмены выбранных приказов также используется для закрытия меню постройки турелей и конструктора роботов
+    {L"ChoosedOrderCancel",         KA_ORDER_CANCEL,               0x58}, //клавиша "X"
+
+    //Программы автоматического поведения юнитов
+    {L"UnitSetAgressiveBehavior",   KA_AUTOORDER_ATTACK,           0x55}, //sub, активация программы наступления, клавиша "U"
+    {L"UnitSetCaptureBehavior",     KA_AUTOORDER_CAPTURE,          0x43}, //sub, активация программы захвата, клавиша "C"
+    {L"UnitSetDefensiveBehavior",   KA_AUTOORDER_DEFEND,           0x44}, //sub, активация программы защиты, клавиша "D"
+
+    //Ручное управление юнитом (аркадный режим)
+    {L"ManualControlEnter",         KA_UNIT_ENTER,                 VK_RETURN}, //sub (if not dialog mode!), клавиша "Enter"
+    {L"ManualControlEnterAlt",      KA_UNIT_ENTER_ALT,             VK_SPACE}, //sub (if not dialog mode!), клавиша "Space"
+    {L"ManualControlFire",          KA_FIRE,                       VK_LBUTTON},
+    {L"ManualControlAutoAltitude",  KA_AUTO,                       VK_RBUTTON},
+    {L"ManualControlExplode",       KA_UNIT_BOOM,                  0x45}, //sub, клавиша "E"
+
+    {L"ManualControlMoveUp",        KA_UNIT_FORWARD,               0x57}, //W
+    {L"ManualControlMoveDown",      KA_UNIT_BACKWARD,              0x53}, //S
+    {L"ManualControlMoveLeft",      KA_UNIT_LEFT,                  0x41}, //A
+    {L"ManualControlMoveRight",     KA_UNIT_RIGHT,                 0x44}, //D
+
+    {L"ManualControlMoveUpAlt",     KA_UNIT_FORWARD_ALT,           VK_UP},
+    {L"ManualControlMoveDownAlt",   KA_UNIT_BACKWARD_ALT,          VK_DOWN},
+    {L"ManualControlMoveLeftAlt",   KA_UNIT_LEFT_ALT,              VK_LEFT},
+    {L"ManualControlMoveRightAlt",  KA_UNIT_RIGHT_ALT,             VK_RIGHT},
+
+    //Прочее
+    {L"TakeScreenShot",             KA_TAKE_SCREENSHOT,            VK_SNAPSHOT},
+    {L"SaveScreenShot",             KA_SAVE_SCREENSHOT,            VK_F9},
+    {L"PauseTheGame",               KA_GAME_PAUSED,                VK_PAUSE},
+
+    {NULL,                          -1,                            -1}
+};
+
+//Возвращаем/проверяем наличие кода клавиши привязанной к имени клавиши
+static const int KeyName2KeyCode(const CWStr& name)
 {
     int i = 0;
     while(key_codes[i].name != NULL)
@@ -247,8 +257,20 @@ static int KeyName2KeyCode(const CWStr& name)
 
     return -1;
 }
+//Возвращаем/проверяем наличие названия клавиши, соответствующей базовому бинду номера действия
+static const wchar* KeyActionNum2KeyName(const int& num)
+{
+    int i = 0;
+    while(key_codes[i].name != NULL)
+    {
+        if(key_codes[i].code == key_action_codes[num].base_key) return key_codes[i].name;
+        ++i;
+    }
 
-static int KeyActionName2KeyActionCode(const CWStr& name)
+    return NULL;
+}
+//Возвращаем/проверяем наличие кода действия привязанного к имени действия
+static const int KeyActionName2KeyActionCode(const CWStr& name)
 {
     int i = 0;
     while(key_action_codes[i].name != NULL)
@@ -362,6 +384,7 @@ void CMatrixConfig::SetDefaults(void)
     m_CamInRobotForward0 = 10.0f;
     m_CamInRobotForward1 = 30.0f;
 
+    /*
     //Кнопки управления движением камеры в стратегическом режиме
     //Эти две кнопки также управляют наклоном камеры в ручном (аркадном) режиме управления юнитом
     m_KeyActions[KA_ROTATE_UP] = VK_PRIOR; //клавиша "PageUp"
@@ -464,7 +487,14 @@ void CMatrixConfig::SetDefaults(void)
         m_KeyActions[KA_TURRET_LASER] = 0x4C; //выбор лазера, клавиша "L"
         m_KeyActions[KA_TURRET_ROCKET] = 0x52; //выбор ракетницы, клавиша "R"
     m_KeyActions[KA_BUILD_HELP] = 0x48; //sub, вызывает подкрепление, клавиша "H"
-
+    */
+   
+    int i = 0;
+    while(key_action_codes[i].name != NULL)
+    {
+        m_KeyActions[key_action_codes[i].code] = key_action_codes[i].base_key;
+        ++i;
+    }
 
     
     m_CaptureTimeErase = 750;
@@ -513,47 +543,47 @@ void CMatrixConfig::ReadParams(void)
     }
 
     // top size
-    //if (g_MatrixCfg->ParCount(CFG_TOP_SIZE) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_TOP_SIZE) != 0)
     //    m_TexTopMinSize = g_MatrixCfg->Par(CFG_TOP_SIZE).GetInt();
 
-    //if (g_MatrixCfg->ParCount(CFG_TOP_SCALE) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_TOP_SCALE) != 0)
     //    m_TexTopDownScalefactor = g_MatrixCfg->Par(CFG_TOP_SCALE).GetInt();
 
-    //if (m_TexTopMinSize < 32) m_TexTopMinSize = 32;
+    //if(m_TexTopMinSize < 32) m_TexTopMinSize = 32;
 
     // bottom size
-    //if (g_MatrixCfg->ParCount(CFG_BOT_SIZE) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_BOT_SIZE) != 0)
     //    m_TexBotMinSize = g_MatrixCfg->Par(CFG_BOT_SIZE).GetInt();
 
-    //if (g_MatrixCfg->ParCount(CFG_BOT_SCALE) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_BOT_SCALE) != 0)
     //    m_TexBotDownScalefactor = g_MatrixCfg->Par(CFG_BOT_SCALE).GetInt();
 
-    //if (m_TexBotMinSize < 32) m_TexBotMinSize = 32;
-    //if (m_TexBotMinSize < 16) m_TexBotMinSize = 16;
+    //if(m_TexBotMinSize < 32) m_TexBotMinSize = 32;
+    //if(m_TexBotMinSize < 16) m_TexBotMinSize = 16;
 
-    //if (g_MatrixCfg->ParCount(CFG_LAND_TEXTURES_16) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_LAND_TEXTURES_16) != 0)
     //    m_LandTextures16 = g_MatrixCfg->Par(CFG_LAND_TEXTURES_16).GetInt() == 1;
 
-    if (cfg_par->ParCount(CFG_SOFTWARE_CURSOR) != 0)
+    if(cfg_par->ParCount(CFG_SOFTWARE_CURSOR) != 0)
     {
         m_SoftwareCursor = cfg_par->Par(CFG_SOFTWARE_CURSOR).GetInt() == 1;
     }
 
-    if (cfg_par->ParCount(CFG_GLOSS_LAND) != 0)
+    if(cfg_par->ParCount(CFG_GLOSS_LAND) != 0)
     {
         m_LandTexturesGloss = cfg_par->Par(CFG_GLOSS_LAND).GetInt() == 1;
     }
 
-    if (cfg_par->ParCount(CFG_GLOSS_OBJECT) != 0)
+    if(cfg_par->ParCount(CFG_GLOSS_OBJECT) != 0)
     {
         m_ObjTexturesGloss = cfg_par->Par(CFG_GLOSS_OBJECT).GetInt() == 1;
     }
-    //if (g_MatrixCfg->ParCount(CFG_OBJECT_TEX_16) != 0)
+    //if(g_MatrixCfg->ParCount(CFG_OBJECT_TEX_16) != 0)
     //{
     //    m_ObjTextures16 = g_MatrixCfg->Par(CFG_OBJECT_TEX_16).GetInt() == 1;
     //}
 
-    if (cfg_par->ParCount(CFG_IZVRAT_MS) != 0)
+    if(cfg_par->ParCount(CFG_IZVRAT_MS) != 0)
     {
         m_IzvratMS = cfg_par->Par(CFG_IZVRAT_MS).GetInt() == 1;
     }
@@ -650,22 +680,8 @@ void CMatrixConfig::ReadParams(void)
 
     ApplyGammaRamp();
 
-    if(cfg_par->BlockCount(CFG_ASSIGN_KEY) != 0)
-    {
-        CBlockPar* ak = cfg_par->BlockGet(CFG_ASSIGN_KEY);
-        int n = ak->ParCount();
-        for(int i = 0; i < n; ++i)
-        {
-            int akn = KeyActionName2KeyActionCode(ak->ParGetName(i));
-            if(akn < 0  || akn >= KA_LAST)
-            {
-                continue;
-            }
-            int kk = KeyName2KeyCode(ak->ParGet(i));
 
-            m_KeyActions[akn] = kk;
-        }
-    }
+
     
     if(cfg_par->ParCount(CFG_ROBOT_SHADOW) != 0)
     {
@@ -704,14 +720,14 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_BuildingDamages, 0, sizeof(m_BuildingDamages));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
-        if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
+        if(WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
-            for (int j = 0; j < nn; ++j)
+            for(int j = 0; j < nn; ++j)
             {
                 m_BuildingHitPoints[j] = par.GetIntPar(j, L",");
             }
@@ -719,7 +735,7 @@ void CMatrixConfig::ReadParams(void)
         else
         {
             int idx = WeapName2Index(name);
-            if (idx >=0)
+            if(idx >=0)
             {
                 const CWStr &par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
@@ -737,7 +753,7 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_FlyerDamages, 0, sizeof(m_FlyerDamages));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         //if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
@@ -751,13 +767,13 @@ void CMatrixConfig::ReadParams(void)
         //} else
         {
             int idx = WeapName2Index(name);
-            if (idx >= 0)
+            if(idx >= 0)
             {
                 const CWStr &par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
                 m_FlyerDamages[idx].damage = par.GetIntPar(0, L",");
-                if (nn > 1) m_FlyerDamages[idx].mindamage = par.GetIntPar(1, L",");
-                if (nn > 2) m_FlyerDamages[idx].friend_damage = par.GetIntPar(2, L","); else m_FlyerDamages[idx].friend_damage = m_FlyerDamages[idx].damage;
+                if(nn > 1) m_FlyerDamages[idx].mindamage = par.GetIntPar(1, L",");
+                if(nn > 2) m_FlyerDamages[idx].friend_damage = par.GetIntPar(2, L","); else m_FlyerDamages[idx].friend_damage = m_FlyerDamages[idx].damage;
             }
         }
     }
@@ -768,17 +784,17 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_RobotDamages, 0, sizeof(m_RobotDamages));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >= 0)
+        if(idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             m_RobotDamages[idx].damage = par.GetIntPar(0, L",");
-            if (nn > 1) m_RobotDamages[idx].mindamage = par.GetIntPar(1, L",");
-            if (nn > 2) m_RobotDamages[idx].friend_damage = par.GetIntPar(2, L","); else m_RobotDamages[idx].friend_damage = m_RobotDamages[idx].damage;
+            if(nn > 1) m_RobotDamages[idx].mindamage = par.GetIntPar(1, L",");
+            if(nn > 2) m_RobotDamages[idx].friend_damage = par.GetIntPar(2, L","); else m_RobotDamages[idx].friend_damage = m_RobotDamages[idx].damage;
         }
 
     }
@@ -790,16 +806,16 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_ObjectDamages, 0, sizeof(m_ObjectDamages));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >= 0)
+        if(idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             m_ObjectDamages[idx].damage = par.GetIntPar(0, L",");
-            if (nn > 1) m_ObjectDamages[idx].mindamage = par.GetIntPar(1, L",");
+            if(nn > 1) m_ObjectDamages[idx].mindamage = par.GetIntPar(1, L",");
         }
     }
 
@@ -808,11 +824,11 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_WeaponRadius, 0, sizeof(m_WeaponRadius));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >= 0)
+        if(idx >= 0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             m_WeaponRadius[idx] = (float)par.GetDouble();
@@ -824,11 +840,11 @@ void CMatrixConfig::ReadParams(void)
     memset(&m_WeaponCooldown, 0, sizeof(m_WeaponCooldown));
 
     n = bp_tmp->ParCount();
-    for (int i = 0; i < n; ++i)
+    for(int i = 0; i < n; ++i)
     {
         const wchar *name = bp_tmp->ParGetName(i);
         int idx = WeapName2Index(name);
-        if (idx >=0)
+        if(idx >=0)
         {
             const CWStr &par = bp_tmp->ParGet(i);
             m_WeaponCooldown[idx] = par.GetInt();
@@ -1208,10 +1224,10 @@ void CMatrixConfig::ReadParams(void)
 
     // camera properties
     bp_tmp = g_MatrixData->BlockGetNE(PAR_SOURCE_CAMERA);
-    if (bp_tmp)
+    if(bp_tmp)
     {
         int cnt = bp_tmp->ParCount();
-        for (int i = 0; i < cnt; ++i)
+        for(int i = 0; i < cnt; ++i)
         {
             if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_BASEANGLEZ) m_CamBaseAngleZ = GRAD2RAD((float)bp_tmp->ParGet(i).GetDouble());
             else if (bp_tmp->ParGetName(i) == PAR_SOURCE_CAMERA_INROBOTFWD0) m_CamInRobotForward0 = (float)bp_tmp->ParGet(i).GetDouble();
@@ -1221,7 +1237,7 @@ void CMatrixConfig::ReadParams(void)
         }
 
         cnt = bp_tmp->BlockCount();
-        for (int i = 0; i < cnt; ++i)
+        for(int i = 0; i < cnt; ++i)
         {
             int index = -1;
             if (bp_tmp->BlockGetName(i) == PAR_SOURCE_CAMERA_STRATEGY) index = CAMERA_STRATEGY;
@@ -1264,15 +1280,72 @@ void CMatrixConfig::ReadParams(void)
             m_CannonsProps[i].max_da = GRAD2RAD((float)bp->ParGet(PAR_SOURCE_CANNONS_ROTATION).GetDouble());
             m_CannonsProps[i].weapon = WeapName2Weap(bp->ParGet(PAR_SOURCE_CANNONS_WEAPON).Get());
             //m_CannonsProps[i].cooldown = bp->ParGet(PAR_SOURCE_CANNONS_COOLDOWN).GetInt();
-            m_CannonsProps[i].m_Resources[TITAN]=bp->ParGet(L"Titan").GetInt();
-            m_CannonsProps[i].m_Resources[ENERGY]=bp->ParGet(L"Energy").GetInt();
-            m_CannonsProps[i].m_Resources[PLASMA]=bp->ParGet(L"Plasm").GetInt();
-            m_CannonsProps[i].m_Resources[ELECTRONICS]=bp->ParGet(L"Electronics").GetInt();
-            m_CannonsProps[i].m_Strength=float(bp->ParGet(L"Strength").GetDouble());
-            m_CannonsProps[i].m_Hitpoint=float(bp->ParGet(L"Hitpoint").GetDouble());
+            m_CannonsProps[i].m_Resources[TITAN] = bp->ParGet(L"Titan").GetInt();
+            m_CannonsProps[i].m_Resources[ENERGY] = bp->ParGet(L"Energy").GetInt();
+            m_CannonsProps[i].m_Resources[PLASMA] = bp->ParGet(L"Plasm").GetInt();
+            m_CannonsProps[i].m_Resources[ELECTRONICS] = bp->ParGet(L"Electronics").GetInt();
+            m_CannonsProps[i].m_Strength = float(bp->ParGet(L"Strength").GetDouble());
+            m_CannonsProps[i].m_Hitpoint = float(bp->ParGet(L"Hitpoint").GetDouble());
         }
     }
-    
+
+    //Перебираем блок AssignKeys в RobotsCFG.txt, ищем соответствия имён параметров прописанным игровым действиям
+    CBlockPar robotsCFG = CBlockPar(true, g_MatrixHeap);
+    wchar robotsCFG_Path[MAX_PATH];
+    SHGetSpecialFolderPathW(0, robotsCFG_Path, CSIDL_PERSONAL, true);
+    wcscat(robotsCFG_Path, L"\\SpaceRangersHD\\RobotsCFG.txt");
+
+    //Если обнаружили искомый конфиг, то загружаем его во избежание потери прочих возможно содержащихся в нём данных
+    CWStr temp_path(g_MatrixHeap);
+    if(CFile::FileExist(temp_path, robotsCFG_Path)) robotsCFG.LoadFromTextFile(robotsCFG_Path);
+    //Иначе создаём совершенно новый объект документа
+    else robotsCFG = CBlockPar(true, g_MatrixHeap);
+    CBlockPar* assignKeys = robotsCFG.BlockGetAdd(CFG_ASSIGN_KEYS);
+
+    //Число параметров должно соответствовать числу прописанных биндов, всё что выше - отбрасывается
+    int i = 0;
+    for(int i = 0; i < KA_LAST; ++i)
+    {
+        CWStr par = assignKeys->ParGetNE(key_action_codes[i].name);
+        if(par != NULL)
+        {
+            //Присваиваем прописанную в параметре клавишу определённому игровому действию
+            int akn = key_action_codes[i].code;
+            //Если указанная за корректным именем параметра клавиша невалидна
+            if(akn < 0 || akn >= KA_LAST) continue;
+
+            int kk = KeyName2KeyCode(par);
+            //Если в качестве названия клавиши вписан невалид
+            if(kk == -1)
+            {
+                SFT(CStr("Planetary battle warning! Key binded to \"") + CStr(key_action_codes[i].name) + CStr("\" was not found! Reassign is unavailable."));
+                continue;
+            }
+
+            m_KeyActions[akn] = kk;
+        }
+        else assignKeys->ParAdd(key_action_codes[i].name, KeyActionNum2KeyName(i));
+    }
+    //Записываем готовый блок с параметрами-биндами в RobotsCFG.txt
+    robotsCFG.SaveInTextFile(robotsCFG_Path);
+
+    //Вариант для опциональной подгрузки того же блока AssignKeys, но из data.txt
+    /*
+    if(cfg_par->BlockCount(CFG_ASSIGN_KEYS) != 0)
+    {
+        CBlockPar* ak = cfg_par->BlockGet(CFG_ASSIGN_KEYS);
+        int n = ak->ParCount();
+        for(int i = 0; i < n; ++i)
+        {
+            int akn = KeyActionName2KeyActionCode(ak->ParGetName(i));
+
+            if(akn < 0 || akn >= KA_LAST) continue;
+
+            int kk = KeyName2KeyCode(ak->ParGet(i));
+            m_KeyActions[akn] = kk;
+        }
+    }
+    */
 }
 
 static void GenRamp(WORD* out, SGammaVals& vals)
