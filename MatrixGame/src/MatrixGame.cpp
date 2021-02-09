@@ -612,12 +612,12 @@ DCP();
         g_RangersInterface->m_Begin();
     }
 
-    if (set) set->ApplyVideoParams();
+    if(set) set->ApplyVideoParams();
 	else g_D3DD->Reset(&g_D3Dpp);
 
 	/*IDirect3DSurface9 * surf;
 	g_D3DD->GetRenderTarget(0, &surf);
-	if (!(surf == NULL)) g_D3DD->ColorFill(surf, NULL, 0);
+	if(!(surf == NULL)) g_D3DD->ColorFill(surf, NULL, 0);
 	surf->Release();*/
 
     g_MatrixMap->m_Transition.RenderToPrimaryScreen();
@@ -656,7 +656,7 @@ DCP();
                 SRobotConfig conf;
                 while(counter < maxDesignsToSave)
                 {
-                    confStr = bot_designs->ParGetNE(L"Bot" + CWStr(counter+1));
+                    confStr = bot_designs->ParGetNE(L"Bot" + CWStr(counter + 1));
                     if(confStr.IsEmpty()) break;
 
                     //Исключаем заведомо невалидные по длине шаблоны
