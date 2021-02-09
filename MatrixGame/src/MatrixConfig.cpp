@@ -10,8 +10,8 @@
 
 struct SKeyCodes
 {
-    const wchar* name_shift;
     const wchar* name;
+    const wchar* name_alt;
     int code;
 };
 
@@ -23,7 +23,7 @@ static SKeyCodes key_codes[] =
     {L"X1MB", L"X1Mouse", VK_XBUTTON1},
     {L"X2MB", L"X2Mouse", VK_XBUTTON2},
 
-    {L"Esc", L"Esc", VK_ESCAPE},
+    {L"Esc", L"Escape", VK_ESCAPE},
     {L"F1",  L"F1",  0x70},
     {L"F2",  L"F2",  0x71},
     {L"F3",  L"F3",  0x72},
@@ -45,15 +45,16 @@ static SKeyCodes key_codes[] =
     {L"NumLock",     L"NumLk",    VK_NUMLOCK},
 
     {L"~",  L"`",   0xC0},
-    {L"?",  L"/",   0xBF},
-    {L"|",  L"\\",  VK_OEM_5},
+    {L"/",  L"?",   0xBF},
+    {L"\\", L"|",  VK_OEM_5},
     {L"<",  L",",   VK_OEM_COMMA},
     {L">",  L".",   VK_OEM_PERIOD},
-    {L":",  L";",   0xBA},
-    {L"\"", L"'",   0xDE},
-    {L"{",  L"[",   VK_OEM_4},
-    {L"}",  L"]",   VK_OEM_6},
-    {L"_",  L"-",   VK_OEM_MINUS},
+    {L";",  L":",   0xBA},
+    {L"'",  L"\"",  0xDE},
+    //Для этих скобок нельзя задавать альтернативу { }, иначе парсер блокпара ломается
+    {L"[",  L"[",   VK_OEM_4},
+    {L"]",  L"]",   VK_OEM_6},
+    {L"-",  L"_",   VK_OEM_MINUS},
     {L"+",  L"=",   VK_OEM_PLUS},
 
     {L"NumPad/", L"Num/", VK_DIVIDE},
@@ -73,16 +74,16 @@ static SKeyCodes key_codes[] =
     {L"NumPad8", L"Num8", VK_NUMPAD8},
     {L"NumPad9", L"Num9", VK_NUMPAD9},
 
-    {L")", L"0",    0x30},
-    {L"!", L"1",    0x31},
-    {L"@", L"2",    0x32},
-    {L"#", L"3",    0x33},
-    {L"$", L"4",    0x34},
-    {L"%", L"5",    0x35},
-    {L"^", L"6",    0x36},
-    {L"&", L"7",    0x37},
-    {L"*", L"8",    0x38},
-    {L"(", L"9",    0x39},
+    {L"0", L")",    0x30},
+    {L"1", L"!",    0x31},
+    {L"2", L"@",    0x32},
+    {L"3", L"#",    0x33},
+    {L"4", L"$",    0x34},
+    {L"5", L"%",    0x35},
+    {L"6", L"^",    0x36},
+    {L"7", L"&",    0x37},
+    {L"8", L"*",    0x38},
+    {L"9", L"(",    0x39},
 
     {L"Left",  L"LeftKey",       VK_LEFT},
     {L"Right", L"RightKey",      VK_RIGHT},
@@ -91,7 +92,7 @@ static SKeyCodes key_codes[] =
 
     {L"Backspace", L"Backspace", VK_BACK},
     {L"Tab",       L"Tab",       VK_TAB},
-    {L"Enter",     L"Enter",     VK_RETURN},
+    {L"Enter",     L"Return",    VK_RETURN},
     {L"Space",     L"Space",     VK_SPACE},
 
     {L"Insert",    L"Ins",       VK_INSERT},
@@ -255,7 +256,7 @@ static const int KeyName2KeyCode(const CWStr& name)
     int i = 0;
     while(key_codes[i].name != NULL)
     {
-        if(key_codes[i].name_shift == name || key_codes[i].name == name) return key_codes[i].code;
+        if(key_codes[i].name == name || key_codes[i].name_alt == name) return key_codes[i].code;
         ++i;
     }
 
@@ -267,7 +268,7 @@ static const wchar* KeyActionNum2KeyName(const int& num)
     int i = 0;
     while(key_codes[i].name != NULL)
     {
-        if(key_codes[i].code == key_action_codes[num].base_key) return key_codes[i].name_shift;
+        if(key_codes[i].code == key_action_codes[num].base_key) return key_codes[i].name;
         ++i;
     }
 
