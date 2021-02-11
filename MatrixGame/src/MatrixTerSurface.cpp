@@ -116,13 +116,13 @@ void CTerSurface::Load(BYTE *raw)
     CWStr name(g_CacheHeap);
     name = g_MatrixMap->IdsGet(ids).GetStrPar(0, L"?");
 
-    m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, name.Get());
+    m_Tex = (CTextureManaged*)g_Cache->Get(cc_TextureManaged, name.Get());
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
-    if (par > 1)
+    if(par > 1)
     {
         CWStr parn(g_CacheHeap), park(g_CacheHeap), parv(g_CacheHeap);
-        for (int i=1; i<par; ++i)
+        for(int i=1; i<par; ++i)
         {
             parn = g_MatrixMap->IdsGet(ids).GetStrPar(i,L"?");
             park = parn.GetStrPar(0,L"=");
@@ -209,16 +209,16 @@ void CTerSurface::LoadM(BYTE *raw)
     m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, name.Get());
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
-    if (par > 1)
+    if(par > 1)
     {
         CWStr parn(g_CacheHeap), park(g_CacheHeap), parv(g_CacheHeap);
-        for (int i=1; i<par; ++i)
+        for(int i = 1; i < par; ++i)
         {
             parn = g_MatrixMap->IdsGet(ids).GetStrPar(i,L"?");
             park = parn.GetStrPar(0,L"=");
             parv = parn.GetStrPar(1,L"=");
 
-            if (g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park))
+            if(g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park))
             {
                 CWStr gloss_name(g_CacheHeap);
                 CacheReplaceFileNameAndExt(gloss_name,name.Get(), parv.Get());

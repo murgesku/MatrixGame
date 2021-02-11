@@ -37,14 +37,11 @@ struct SRobotsSettings
 
     float   m_Brightness;
     float   m_Contrast;
-	
 
 	int m_FSAASamples;
 	int m_AFDegree;
 	float m_MaxDistance;
 	bool m_VSync;
-
-	
 
     void ApplyVideoParams(void);
 };
