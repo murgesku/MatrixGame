@@ -9,6 +9,7 @@
 #include "Effects/MatrixEffect.hpp"
 #include "Logic/MatrixRoadNetwork.hpp"
 #include "MatrixConfig.hpp"
+#include <vector>
 
 //#define MAX_ROBOTS_BUILD        10
 #define MAX_ROBOTS              60
@@ -584,7 +585,7 @@ public:
     void TaktTL(void);
     void WarTL(int group);
     void RepairTL(int group);
-    void AssignPlace(CMatrixRobotAI * robot, int region);
+    void AssignPlace(CMatrixRobotAI* robot, int region, CPoint* target = nullptr, std::vector<SMatrixRegion*>*all_regions = nullptr);
     void AssignPlace(int group, int region);
     void SortRobotList(CMatrixRobotAI * * rl, int rlcnt);
     bool CmpOrder(int team, int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // Путь не сравнивается

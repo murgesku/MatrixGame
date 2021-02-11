@@ -10,7 +10,8 @@
 #include "MatrixObjectCannon.hpp"
 #include "MatrixFlyer.hpp"
 #include "Interface/CInterface.h"
-
+#include <vector>
+#include <algorithm>
 
 void SWeaponRepairData::Release(void)
 {
@@ -224,7 +225,7 @@ void CMatrixRobotAI::DIPTakt(float ms)
             if(g_MatrixMap->GetZ(hitpos.x, hitpos.y) < WATER_LEVEL)
             {
                 m_Unit[i].m_TTL = 0;
-                CMatrixEffect::CreateKonusSplash(hitpos, D3DXVECTOR3(0,0,1), 10, 5, FSRND(M_PI), 1000, true, (CTextureManaged *)g_Cache->Get(cc_TextureManaged,TEXTURE_PATH_SPLASH));
+                CMatrixEffect::CreateKonusSplash(hitpos, D3DXVECTOR3(0, 0, 1), 10, 5, FSRND(M_PI), 1000, true, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SPLASH));
                 if(m_Unit[i].Smoke().effect)
                 {
                     ((CMatrixEffectSmoke*)m_Unit[i].Smoke().effect)->SetTTL(1000);
@@ -313,7 +314,6 @@ void CMatrixRobotAI::PauseTakt(int cms)
     }
 
 }
-
 
 void CMatrixRobotAI::LogicTakt(int ms)
 {
@@ -2393,16 +2393,21 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding* pBase)
             //Робот получает стартовое место, в которое он направится после выхода с базы
             if(pBase->GatheringPointIsSet())
             {
-                //Работает херово, надо доработать как-то
-                side->AssignPlace(this, g_MatrixMap->GetRegion(pBase->GetGatheringPoint()));
-                //SFT(g_MatrixMap->GetRegion(pBase->GetGatheringPoint()));
-                //side->Select(ROBOT, this);
+                std::vector<SMatrixRegion*> all_regions;
+                for(int i = 0; i < g_MatrixMap->m_RN.m_RegionCnt; ++i) all_regions.push_back(&g_MatrixMap->m_RN.m_Region[i]);
+                std::sort(all_regions.begin(), all_regions.end(),
+                    [&](const SMatrixRegion* a, const SMatrixRegion* b)->bool
+                    {
+                        const CPoint point = pBase->GetGatheringPoint();
+                        return a->m_Center.Dist2(point) < b->m_Center.Dist2(point);
+                    }
+                );
+                side->AssignPlace(this, g_MatrixMap->GetRegion(pBase->GetGatheringPoint()), &pBase->GetGatheringPoint(), &all_regions);
                 //side->PGOrderMoveTo(side->RobotToLogicGroup(this), pBase->GetGatheringPoint());
             }
             else
             {
                 side->AssignPlace(this, g_MatrixMap->GetRegion(CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE))));
-                //SFT(g_MatrixMap->GetRegion(CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE))));
             }
 
             if(GetEnv()->m_Place < 0) side->PGOrderAttack(side->RobotToLogicGroup(this), CPoint(int(pBase->m_Pos.x / GLOBAL_SCALE_MOVE), int(pBase->m_Pos.y / GLOBAL_SCALE_MOVE)), NULL);
@@ -5572,21 +5577,24 @@ void CMatrixRobotAI::ReleaseMe(void)
 
     m_Environment.Clear();
 
-    if (m_CurrState == ROBOT_CARRYING)
+    if(m_CurrState == ROBOT_CARRYING)
     {
         Carry(NULL);
     }
 
-    if(m_BigTexture){
+    if(m_BigTexture)
+    {
         g_Cache->Destroy(m_BigTexture);
         m_BigTexture = NULL;
     }
-    if(m_MedTexture){
+    if(m_MedTexture)
+    {
         g_Cache->Destroy(m_MedTexture);
         m_MedTexture = NULL;
     }
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
-    if(m_SmallTexture){
+    if(m_SmallTexture)
+    {
         g_Cache->Destroy(m_SmallTexture);
         m_SmallTexture = NULL;
     }

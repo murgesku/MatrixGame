@@ -1598,15 +1598,15 @@ void CMatrixMap::DrawLandscape(bool all)
 	int cnt;
 	CMatrixMapGroup * * md;
 
-    if (all)
+    if(all)
     {
 	    cnt = m_GroupSize.x*m_GroupSize.y;
 	    md = m_Group;
 	    while(cnt > 0)
         {
             if ((*md)) (*md)->Draw();
-            md++;
-		    cnt--;
+            ++md;
+		    --cnt;
         }
 
     }
@@ -1640,8 +1640,8 @@ void CMatrixMap::DrawLandscape(bool all)
     #endif
 
 
-            md++;
-		    cnt--;
+            ++md;
+		    --cnt;
 	    }
 
     }

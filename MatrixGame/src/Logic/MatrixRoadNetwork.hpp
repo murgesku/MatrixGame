@@ -249,7 +249,6 @@ class CMatrixRoadNetwork : public Base::CMain {
         int m_PLShift;
         int m_PLMask;
 
-    public:
         CMatrixRoadNetwork(Base::CHeap * he);
         ~CMatrixRoadNetwork();
 

@@ -23,6 +23,7 @@
 #include "MatrixFlyer.hpp"
 #include "Interface/CCounter.h"
 #include <time.h>
+#include <math.h>
 
 // robot->GetEnv()->m_Place -   место куда робот идет или где стоит. 
 //                              <0 - роботу нужно назначить приказ
@@ -5748,6 +5749,7 @@ void CMatrixSideUnit::RepairTL(int group)
     }
 }
 
+/*
 void CMatrixSideUnit::AssignPlace(CMatrixRobotAI* robot, int region)
 {
     int i, u;
@@ -5779,6 +5781,83 @@ void CMatrixSideUnit::AssignPlace(CMatrixRobotAI* robot, int region)
         robot->GetEnv()->m_Place = uregion->m_PlaceAll[u];
         place->m_Data = 1;
         break;
+    }
+}
+*/
+
+void CMatrixSideUnit::AssignPlace(
+    CMatrixRobotAI* robot,
+    int region,
+    CPoint* target,
+    std::vector<SMatrixRegion*>*all_regions)
+{
+    int i, u;
+    CMatrixMapStatic* obj;
+    SMatrixPlace* place;
+
+    //Если текущее место в регионе, то оно нас устраивает
+    if(PlaceInRegion(robot, robot->GetEnv()->m_Place, region)) return;
+
+    //В текущем регионе помечаем все места как пустые
+    SMatrixRegion* uregion = g_MatrixMap->m_RN.GetRegion(region);
+    for(i = 0; i < uregion->m_PlaceAllCnt; ++i) GetPlacePtr(uregion->m_PlaceAll[i])->m_Data = 0;
+
+    //Помечаем занятые места кроме текущего робота
+    obj = CMatrixMapStatic::GetFirstLogic();
+    while(obj)
+    {
+        if(IsLiveUnit(obj) && obj != robot) ObjPlaceData(obj, 1);
+        obj = obj->GetNextLogic();
+    }
+
+    int closest_point = -1;
+    double min_dist = 2000000000;
+
+    if(target != nullptr)
+    {
+        int count = all_regions->size() < 3 ? all_regions->size() : 3;
+        for(int i = 0; i < count; ++i)
+        {
+            SMatrixRegion* tempRegion = (*all_regions)[i];
+
+            for(int j = 0; j < tempRegion->m_PlaceAllCnt; ++j)
+            {
+                place = GetPlacePtr(tempRegion->m_PlaceAll[j]);
+
+                double x1 = target->x;
+                double x2 = place->m_Pos.x;
+                double y1 = target->y;
+                double y2 = place->m_Pos.y;
+
+                double distance = sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+                if(distance < min_dist)
+                {
+                    closest_point = tempRegion->m_PlaceAll[j];
+                    min_dist = distance;
+                }
+            }
+        }
+    }
+
+    if(target == nullptr || closest_point == -1)
+    {
+        //Находим пустое место
+        for(u = 0; u < uregion->m_PlaceAllCnt; ++u)
+        {
+            place = GetPlacePtr(uregion->m_PlaceAll[u]);
+            if(place->m_Data) continue;
+            if(!CanMove(place->m_Move, robot)) continue; //Если робот не может стоять на этом месте, то пропускаем
+
+            robot->GetEnv()->m_Place = uregion->m_PlaceAll[u];
+            place->m_Data = 1;
+            break;
+        }
+    }
+    else if(target != nullptr && closest_point != -1)
+    {
+        robot->GetEnv()->m_Place = closest_point;
+        place = GetPlacePtr(closest_point);
+        place->m_Data = 1;
     }
 }
 
@@ -6660,7 +6739,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup)
     EscapeFromBomb();
 
     // Для всех мест рассчитываем коэффициент вражеских объектов в зоне поражения
-    if(m_LastTaktUnderfire==0 || (g_MatrixMap->GetTime()-m_LastTaktUnderfire)>500)
+    if(m_LastTaktUnderfire == 0 || (g_MatrixMap->GetTime()-m_LastTaktUnderfire) > 500)
     {
         m_LastTaktUnderfire=g_MatrixMap->GetTime();
 

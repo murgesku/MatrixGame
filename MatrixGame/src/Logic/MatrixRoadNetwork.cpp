@@ -2159,7 +2159,8 @@ int CMatrixRoadNetwork::CalcRadiusRegion(int no)
     SMatrixRegion * region=GetRegion(no);
 
     int r=0;
-    for(int u=0;u<region->m_CrotchCnt;u++) {
+    for(int u=0; u<region->m_CrotchCnt; ++u)
+    {
         r=max(r,region->m_Center.Dist2(m_Zone[region->m_Crotch[u]->m_Zone].m_Center));
     }
     return int(sqrt(double(r)));
@@ -2167,11 +2168,12 @@ int CMatrixRoadNetwork::CalcRadiusRegion(int no)
 
 void CMatrixRoadNetwork::CalcRadiusPlaceRegion(int no)
 {
-    SMatrixRegion * region=GetRegion(no);
+    SMatrixRegion* region=GetRegion(no);
 
     region->m_RadiusPlace=0;
 
-    for(int i=0;i<region->m_PlaceCnt;i++) {
+    for(int i=0; i<region->m_PlaceCnt; ++i)
+    {
         SMatrixPlace * place=GetPlace(region->m_Place[i]);
         region->m_RadiusPlace=max(region->m_RadiusPlace,region->m_Center.Dist2(CPoint(place->m_Pos.x+2,place->m_Pos.y+2)));
     }
