@@ -44,7 +44,7 @@ void CTransition::BuildTexture(void)
     {
         gameCFG.LoadFromTextFile(gameCFG_Path);
         CWStr animChangeForm = gameCFG.ParGetNE(L"AnimChangeForm");
-        if(animChangeForm != NULL)
+        if(animChangeForm != L"")
         {
             if(animChangeForm != L"True") return;
         }
