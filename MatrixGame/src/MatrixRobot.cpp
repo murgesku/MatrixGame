@@ -2403,7 +2403,6 @@ void CMatrixRobotAI::RobotSpawn(CMatrixBuilding* pBase)
                     }
                 );
                 side->AssignPlace(this, g_MatrixMap->GetRegion(pBase->GetGatheringPoint()), &pBase->GetGatheringPoint(), &all_regions);
-                //side->PGOrderMoveTo(side->RobotToLogicGroup(this), pBase->GetGatheringPoint());
             }
             else
             {

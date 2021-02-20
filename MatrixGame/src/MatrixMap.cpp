@@ -35,10 +35,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-CMatrixMap::CMatrixMap():CMain(),m_Console(),m_Camera(),m_CurFrame(0), m_IntersectFlagTracer(0), m_IntersectFlagFindObjects(0),
+CMatrixMap::CMatrixMap():CMain(), m_Console(), m_Camera(), m_CurFrame(0), m_IntersectFlagTracer(0), m_IntersectFlagFindObjects(0),
 m_AllObjects(g_MatrixHeap,1024), m_RN(g_MatrixHeap), m_EffectsFirst(NULL), m_EffectsLast(NULL),
 m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName(g_MatrixHeap),m_SkyAngle(0), m_SkyDeltaAngle(0),
-m_PrevTimeCheckStatus(-1500),m_Time(0),m_BeforeWinCount(0), m_PauseHint(NULL),m_DialogModeHints(g_MatrixHeap),m_DialogModeName(NULL),
+m_PrevTimeCheckStatus(-1500), m_Time(0), m_BeforeWinCount(0), m_PauseHint(NULL), m_DialogModeHints(g_MatrixHeap), m_DialogModeName(NULL),
 m_BeforeWinLooseDialogCount(0)
 {
     DTRACE();

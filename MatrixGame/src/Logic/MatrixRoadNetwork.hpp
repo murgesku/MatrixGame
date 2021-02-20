@@ -12,19 +12,19 @@ class CMatrixRoadNetwork;
 
 class CMatrixRoad : public Base::CMain {
     public:
-        CMatrixRoadNetwork * m_Parent;
-        CMatrixRoad * m_Prev;
-        CMatrixRoad * m_Next;
+        CMatrixRoadNetwork* m_Parent;
+        CMatrixRoad* m_Prev;
+        CMatrixRoad* m_Next;
 
-        CMatrixCrotch * m_Start;
-        CMatrixCrotch * m_End;
+        CMatrixCrotch* m_Start;
+        CMatrixCrotch* m_End;
 
         int m_PathCnt;
-        Base::CPoint * m_Path;
+        Base::CPoint* m_Path;
 
         int m_ZoneCnt;
         int m_ZoneCntMax;
-        int * m_Zone;
+        int* m_Zone;
 
         int m_Dist;
 
@@ -35,31 +35,31 @@ class CMatrixRoad : public Base::CMain {
         CMatrixRoad(void);
         ~CMatrixRoad();
 
-        void DeleteCrotch(const CMatrixCrotch * crotch);
+        void DeleteCrotch(const CMatrixCrotch* crotch);
 
         void DeletePath(void);
-        void LoadPath(const int cnt,const Base::CPoint * path);
-        void AddPath(int x,int y);
-        void AddPathFromRoad(CMatrixRoad * road);
+        void LoadPath(const int cnt, const Base::CPoint* path);
+        void AddPath(int x, int y);
+        void AddPathFromRoad(CMatrixRoad* road);
         void CorrectStartEndByPath(void);
 
         void DeleteZone(void);
-        void LoadZone(const int cnt,const int * path);
+        void LoadZone(const int cnt, const int* path);
         void AddZone(int zone);
-        int GetIndexZone(int zone);
+        int  GetIndexZone(int zone);
         void CorrectStartEndByZone(void);
-        void SplitZone(int index,CMatrixRoad * road);
-        void AddZoneFromRoad(CMatrixRoad * road);
+        void SplitZone(int index, CMatrixRoad* road);
+        void AddZoneFromRoad(CMatrixRoad* road);
         void DeleteZoneByIndex(int index);
 
         void DeleteCircleZone(void);
-        bool CompareZone(CMatrixRoad * road);
+        bool CompareZone(CMatrixRoad* road);
 
         void MarkZoneRoad(void);
 
         void CalcDist(void);
 
-        CMatrixCrotch * GetOtherCrotch(const CMatrixCrotch * crotch)            { if(m_Start!=crotch) return m_Start; else return m_End; }
+        CMatrixCrotch* GetOtherCrotch(const CMatrixCrotch* crotch) { if (m_Start != crotch) return m_Start; else return m_End; }
 };
 
 class CMatrixCrotch : public Base::CMain {

@@ -199,17 +199,16 @@ static void static_init(void)
     SInshorewave::StaticInit();
 
     g_Flags = 0; //GFLAG_FORMACCESS;
-
 }
 
-void LoadModList(CWStr & modlist)
+void LoadModList(CWStr& modlist)
 {
     DTRACE();
 
     CWStr modcfg_name(g_MatrixHeap);
     CBlockPar modcfg(g_MatrixHeap);
     
-    if (CFile::FileExist(modcfg_name, L"Mods\\ModCFG.txt"))
+    if(CFile::FileExist(modcfg_name, L"Mods\\ModCFG.txt"))
     {
         modcfg.LoadFromTextFile(L"Mods\\ModCFG.txt");
         modlist.Set(modcfg.ParGet(L"CurrentMod"));
@@ -217,7 +216,7 @@ void LoadModList(CWStr & modlist)
     else modlist.Set(L"");
 }
 
-void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, const wchar * bp_name)
+void LoadCfgFromMods(CWStr& modlist, CBlockPar& base_bp, const wchar* lang, const wchar* bp_name)
 {
     DTRACE();
 
@@ -226,10 +225,17 @@ void LoadCfgFromMods(CWStr & modlist, CBlockPar & base_bp, const wchar * lang, c
 
     CBlockPar moddata(g_MatrixHeap);
 
-    for(int i = 0; i < modlist.GetCountPar(L","); ++i)
+    for(int i = -1; i < modlist.GetCountPar(L","); ++i)
     {
-        curmod = modlist.GetStrPar(i, L",");
-        curmod.Trim();
+        //Мод PBEngine заносится в список вне очереди
+        if(i < 0) curmod = L"PlanetaryBattles\\PBEngine";
+        else
+        {
+            curmod = modlist.GetStrPar(i, L",");
+            curmod.Trim();
+
+            if(curmod == L"PlanetaryBattles\\PBEngine") continue;
+        }
 
         moddata_name.Clear();
         moddata_name += L"Mods\\";
@@ -301,7 +307,6 @@ DCP();
         stor_cfg_present = true;
     }
 
-
 	g_MatrixData = HNew(g_MatrixHeap) CBlockPar(1, g_MatrixHeap);
     if(stor_cfg_present)
     {
@@ -320,67 +325,65 @@ DCP();
         g_MatrixData->LoadFromTextFile(L"cfg\\robots\\data.txt");
     }
 
-    // The code for loading data configs from mods
+    // Code for loading data configs from mods
     LoadCfgFromMods(modlist, *g_MatrixData, lang, L"data.txt");
+
+    CBlockPar* repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
+
+    // init menu replaces
+
+    CBlockPar* rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
+    int cnt = rr->ParCount();
+    for(int i = 0; i < cnt; ++i)
     {
-        CBlockPar* repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
+        repl->ParAdd(rr->ParGetName(i), rr->ParGet(i));
+    }
 
-        // init menu replaces
-
-        CBlockPar* rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
-        int cnt = rr->ParCount();
-        for(int i = 0; i < cnt; ++i)
+    if(txt_start)
+    {
+        if(txt_start[0] >= '1' && txt_start[0] <= '6')
         {
-            repl->ParAdd(rr->ParGetName(i), rr->ParGet(i));
-        }
-
-        if(txt_start)
-        {
-            if(txt_start[0] >= '1' && txt_start[0] <= '6')
-            {
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start, 1, g_MatrixHeap));
-                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start + 1, 2, g_MatrixHeap));
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
-            }
-            else
-            {
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, L"1");
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start);
-            }
-            
+            repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start, 1, g_MatrixHeap));
+            repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start + 1, 2, g_MatrixHeap));
+            repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
         }
         else
         {
             repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, L"1");
-            repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, L"Go! Go! Go!");
+            repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start);
         }
+    }
+    else
+    {
+        repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, L"1");
+        repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, L"Go! Go! Go!");
+    }
 
-        if(txt_win)
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, txt_win);
-        }
-        else
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, L"Good job man :)");
-        }
+    if(txt_win)
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, txt_win);
+    }
+    else
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_WIN, L"Good job man :)");
+    }
 
-        if(txt_loss)
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, txt_loss);
-        }
-        else
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, L"Sux :(");
-        }
+    if(txt_loss)
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, txt_loss);
+    }
+    else
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_LOOSE, L"Sux :(");
+    }
 
-        if(planet)
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
-        }
-        else
-        {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
-        }
+    if(planet)
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
+    }
+    else
+    {
+        repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
     }
 
 DCP();
@@ -401,8 +404,8 @@ DCP();
 	g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
 #endif
 
-	if(set) L3GInitAsDLL(inst,*g_MatrixData->BlockGet(L"Config"),L"MatrixGame",L"Matrix Game",wnd, set->FDirect3D, set->FD3DDevice);
-	else L3GInitAsEXE(inst,*g_MatrixData->BlockGet(L"Config"),L"MatrixGame",L"Matrix Game");
+	if(set) L3GInitAsDLL(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game", wnd, set->FDirect3D, set->FD3DDevice);
+	else L3GInitAsEXE(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game");
 	
 
     if(set)
@@ -416,21 +419,17 @@ DCP();
 	ShowWindow(g_Wnd, SW_SHOWNORMAL);
 	UpdateWindow(g_Wnd);
 
-
-
 DCP();
 
     g_Config.SetDefaults();
     g_Config.ReadParams();
-    if (set)
+    if(set)
 	{
 		g_Config.ApplySettings(set);
 		g_Sampler.ApplySettings(set);
 	}
 
-
 DCP();
-	
 
 	g_MatrixMap =  HNew(g_MatrixHeap) CMatrixMapLogic;
 
@@ -449,7 +448,7 @@ DCP();
 
     if(map)
     {
-		if(wcschr(map,'\\')==NULL)
+		if(wcschr(map, '\\') == NULL)
         {
 			mapname.Set(L"Matrix\\Map\\");
 			mapname.Add(map);
@@ -467,14 +466,14 @@ DCP();
 	stor.Load(mapname);
 DCP();
 	
-    if (0 > g_MatrixMap->PrepareMap(stor, mapname))
+    if(0 > g_MatrixMap->PrepareMap(stor, mapname))
     {
         ERROR_S(L"Unable to load map. Error happens.");
     }
 
     CWStr mn(g_MatrixMap->MapName(), g_MatrixHeap);
     mn.LowerCase();
-    if (mn.Find(L"demo") >= 0)
+    if(mn.Find(L"demo") >= 0)
     {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE|MMFLAG_FLYCAM|MMFLAG_FULLAUTO);
     }
@@ -482,13 +481,12 @@ DCP();
     g_MatrixMap->CalcCannonPlace();
     SSpecialBot::LoadAIRobotType(*g_MatrixData->BlockGet(L"AIRobotType"));
 
-
     g_LoadProgress->SetCurLP(LP_PREPARININTERFACE);
     g_LoadProgress->InitCurLP(701);
 
 
     CBlockPar bpi(1, g_CacheHeap);
-    if (stor_cfg_present)
+    if(stor_cfg_present)
     {
         stor_cfg.RestoreBlockPar(L"if", bpi);
     }

@@ -136,10 +136,10 @@ class BASE_API CStr : public CMain
             const char *c = Get();
             int ogl = (int)strlen(ogsim);
             
-            for(;*c; ++c)
+            for(; *c; ++c)
             {
                 const char *cc = ogsim;
-                for(;*cc; ++cc)
+                for(; *cc; ++cc)
                 {
                     if (*c == *cc) 
                     {

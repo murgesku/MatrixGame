@@ -248,6 +248,7 @@
 #define CFG_DESIGNS_TO_SAVE						L"MaxDesignsToSave"
 #define CFG_PLAYER_ROBOTS_AUTO_BOOM				L"PlayerRobotsAutoBoom"
 #define CFG_ENABLE_FLYERS						L"EnableFlyers"
+#define CFG_LOADING_SCREEN_ANIM					L"LoadingScreenAnim"
 
 #define PAR_TEMPLATES                           L"Templates"
 #define PAR_REPLACE                             L"Replaces"

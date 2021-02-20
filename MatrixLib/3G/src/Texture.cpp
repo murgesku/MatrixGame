@@ -751,14 +751,14 @@ void CTextureManaged::LoadFromBitmap(int level, const CBitmap & bm, bool convert
 
 }
 
-void CTextureManaged::LoadFromBitmap(const CBitmap & bm, D3DFORMAT fmt, int levels)
+void CTextureManaged::LoadFromBitmap(const CBitmap& bm, D3DFORMAT fmt, int levels)
 {
 #ifdef USE_DX_MANAGED_TEXTURES
-    if (m_Tex) m_Tex->Release();
+    if(m_Tex) m_Tex->Release();
     m_Tex = NULL;
 #else
 	Unload();
-    if (m_TexFrom) m_TexFrom->Release();
+    if(m_TexFrom) m_TexFrom->Release();
 #endif
 
     CBuf buf(g_CacheHeap);
@@ -768,23 +768,23 @@ void CTextureManaged::LoadFromBitmap(const CBitmap & bm, D3DFORMAT fmt, int leve
     //((CBitmap *)&bm)->SaveInPNG(buf);   // const hack
 
 #ifdef USE_DX_MANAGED_TEXTURES
-    D3DXCreateTextureFromFileInMemoryEx(g_D3DD,buf.Get(),buf.Len(),0,0,levels,0,fmt, D3DPOOL_MANAGED , D3DX_FILTER_NONE, D3DX_FILTER_BOX, 0, NULL, NULL, &m_Tex);
+    D3DXCreateTextureFromFileInMemoryEx(g_D3DD, buf.Get(), buf.Len(), 0, 0, levels, 0, fmt, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_BOX, 0, NULL, NULL, &m_Tex);
 #else
-    D3DXCreateTextureFromFileInMemoryEx(g_D3DD,buf.Get(),buf.Len(),0,0,levels,0,fmt, D3DPOOL_SYSTEMMEM , D3DX_FILTER_NONE, D3DX_FILTER_BOX, 0, NULL, NULL, &m_TexFrom);
+    D3DXCreateTextureFromFileInMemoryEx(g_D3DD, buf.Get(), buf.Len(), 0, 0, levels, 0, fmt, D3DPOOL_SYSTEMMEM, D3DX_FILTER_NONE, D3DX_FILTER_BOX, 0, NULL, NULL, &m_TexFrom);
 #endif
     //m_TexFrom->GenerateMipSubLevels(
 
 
 #ifdef USE_DX_MANAGED_TEXTURES
-    if (m_Tex != NULL)
+    if(m_Tex != NULL)
     {
         D3DSURFACE_DESC desc;
-        m_Tex->GetLevelDesc(0,&desc);
+        m_Tex->GetLevelDesc(0, &desc);
         m_Size.x = desc.Width;
         m_Size.y = desc.Height;
     }
 #else
-    if (m_TexFrom != NULL)
+    if(m_TexFrom != NULL)
     {
         m_Levelcnt = m_TexFrom->GetLevelCount();
         D3DSURFACE_DESC desc;
@@ -795,43 +795,42 @@ void CTextureManaged::LoadFromBitmap(const CBitmap & bm, D3DFORMAT fmt, int leve
         m_Size.y = desc.Height;
     }
 #endif
-
 }
 
-void CTextureManaged::LoadFromBitmap(const CBitmap & bm, bool convert_to_16bit, int levelcnt)
+void CTextureManaged::LoadFromBitmap(const CBitmap& bm, bool convert_to_16bit, int levelcnt)
 {
     DTRACE();
 
 #ifdef USE_DX_MANAGED_TEXTURES
-    if (m_Tex) m_Tex->Release();
+    if(m_Tex) m_Tex->Release();
     m_Tex = NULL;
 #else
 	Unload();
-    if (m_TexFrom) m_TexFrom->Release();
+    if(m_TexFrom) m_TexFrom->Release();
 #endif
 
-    int lx,ly;
+    int lx, ly;
     D3DLOCKED_RECT lr;
 
-    lx=bm.SizeX();
-    ly=bm.SizeY();
-    m_Size.x=lx;
-    m_Size.y=ly;
-//    m_SizeInMemory=0;
+    lx = bm.SizeX();
+    ly = bm.SizeY();
+    m_Size.x = lx;
+    m_Size.y = ly;
+//  m_SizeInMemory = 0;
 
 
-    if(bm.BytePP()==4)
+    if(bm.BytePP() == 4)
     {
-        if (convert_to_16bit)
+        if(convert_to_16bit)
         {
 #ifdef USE_DX_MANAGED_TEXTURES
-            if (D3D_OK !=(g_D3DD->CreateTexture(lx,ly,levelcnt,0,D3DFMT_A4R4G4B4,D3DPOOL_MANAGED,&m_Tex,0)))
+            if(D3D_OK != (g_D3DD->CreateTexture(lx, ly, levelcnt, 0, D3DFMT_A4R4G4B4, D3DPOOL_MANAGED, &m_Tex, 0)))
             {
                 m_Tex = NULL;
                 return;
             }
 #else
-            if (D3D_OK !=(g_D3DD->CreateTexture(lx,ly,levelcnt,0,D3DFMT_A4R4G4B4,D3DPOOL_SYSTEMMEM,&m_TexFrom,0)))
+            if(D3D_OK != (g_D3DD->CreateTexture(lx, ly, levelcnt, 0, D3DFMT_A4R4G4B4, D3DPOOL_SYSTEMMEM, &m_TexFrom, 0)))
             {
                 m_TexFrom = NULL;
                 return;
@@ -840,7 +839,8 @@ void CTextureManaged::LoadFromBitmap(const CBitmap & bm, bool convert_to_16bit, 
             m_Levelcnt = m_TexFrom->GetLevelCount();
 #endif
 
-        } else
+        }
+        else
         {
 #ifdef USE_DX_MANAGED_TEXTURES
             if (D3D_OK !=(g_D3DD->CreateTexture(lx,ly,levelcnt,0,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,&m_Tex,0)))

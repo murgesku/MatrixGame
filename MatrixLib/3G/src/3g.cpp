@@ -258,10 +258,10 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * c
 
     if (FLAG(g_Flags, GFLAG_GAMMA)) g_D3DD->GetGammaRamp(0, &g_StoreRamp0);
 
-    g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024*1024);
+    g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024 * 1024);
 
 #ifdef DO_SMART_COLOROPS
-    for(int i=0;i<8;i++)
+    for(int i = 0; i < 8; ++i)
     {
 		ASSERT_DX(g_D3DD->SetTextureStageState(i,D3DTSS_COLOROP,		D3DTOP_DISABLE ));
         ASSERT_DX(g_D3DD->SetTextureStageState(i,D3DTSS_COLORARG1,		D3DTA_CURRENT ));
@@ -307,10 +307,10 @@ void L3GInitAsDLL(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * c
 
     if (FLAG(g_Flags, GFLAG_GAMMA)) g_D3DD->GetGammaRamp(0, &g_StoreRamp0);
     
-    g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024*1024);
+    g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024 * 1024);
 
 #ifdef DO_SMART_COLOROPS
-    for(int i=0;i<8;i++)
+    for(int i = 0; i < 8; ++i)
     {
 		ASSERT_DX(g_D3DD->SetTextureStageState(i,D3DTSS_COLOROP,		D3DTOP_DISABLE ));
         ASSERT_DX(g_D3DD->SetTextureStageState(i,D3DTSS_COLORARG1,		D3DTA_CURRENT ));

@@ -756,7 +756,7 @@ void CMatrixRoadNetwork::SplitRoad()
 
     CMatrixRoad * road=m_RoadFirst;
     while(road) {
-        for(int i=0;/*!crotch &&*/ i<road->m_ZoneCnt/*-1*/;i++) {
+        for(int i=0;/*!crotch &&*/ i<road->m_ZoneCnt/*-1*/; ++i) {
             CMatrixCrotch * crotch=NULL;
             
 if(road->m_Zone[i]==129) {
@@ -2234,10 +2234,12 @@ int CMatrixRoadNetwork::FindNearestRegionByRadius(const CPoint & tp, int curregi
     // Находим ближайший
     int mindist=1000000000;
     r=-1;
-    for(i=0;i<m_RegionCnt;i++) {
+    for(i=0; i<m_RegionCnt; ++i)
+    {
         int t=m_Region[i].m_Center.Dist2(tp);
         if(POW2(m_Region[i].m_RadiusPlace)>=t) return i;
-        if(t<mindist) {
+        if(t<mindist)
+        {
             mindist=t;
             r=i;
         }
@@ -2249,7 +2251,7 @@ int CMatrixRoadNetwork::FindNearestRegionByRadius(const CPoint & tp, int curregi
 void CMatrixRoadNetwork::FindPathInRegionInit()
 {
     SMatrixRegion * r=m_Region;
-    for(int i=0;i<m_RegionCnt;i++,r++) { r->m_FPWt=1; }
+    for(int i=0; i<m_RegionCnt; ++i, ++r) { r->m_FPWt=1; }
 }
 
 int CMatrixRoadNetwork::FindPathInRegionRun(byte mm,int rstart,int rend,int * path,int maxpath,bool err)
@@ -2261,7 +2263,7 @@ int CMatrixRoadNetwork::FindPathInRegionRun(byte mm,int rstart,int rend,int * pa
 
     SMatrixRegion * r2;
     SMatrixRegion * r=m_Region;
-    for(int i=0;i<m_RegionCnt;i++,r++) { r->m_FPLevel=-1; r->m_FPWtp=0; }
+    for(int i=0; i<m_RegionCnt; ++i, ++r) { r->m_FPLevel=-1; r->m_FPWtp=0; }
 
     int sme=0;
     int cnt=1;
@@ -2273,32 +2275,37 @@ int CMatrixRoadNetwork::FindPathInRegionRun(byte mm,int rstart,int rend,int * pa
 
     bool ok=false;
 
-    while(sme<cnt) {
+    while(sme<cnt)
+    {
         r=m_Region+m_RegionFindIndex[sme];
 
-        for(int i=0;i<r->m_NearCnt;i++) {
+        for(int i=0; i<r->m_NearCnt; ++i)
+        {
             if(r->m_NearMove[i] & mm) continue;
             int cr=r->m_Near[i];
             int nr=r->m_Near[i];
             r2=m_Region+nr;
             int wtp=r->m_FPWtp+r2->m_FPWt;
 
-            if(r2->m_FPLevel<0 || wtp<r2->m_FPWtp) {
+            if(r2->m_FPLevel<0 || wtp<r2->m_FPWtp)
+            {
                 r2->m_FPLevel=level;
                 r2->m_FPWtp=wtp;
 
                 m_RegionFindIndex[cnt]=nr;
-				cnt++;
+                ++cnt;
 
                 if(nr==rstart) ok=true;
             }
         }
 
-        sme++;
-        if(sme>=next) {
+        ++sme;
+        if(sme>=next)
+        {
             next=cnt;
-            level++;
-            if(!ok && level>maxpath) {
+            ++level;
+            if(!ok && level>maxpath)
+            {
                 if(err) ERROR_E;
                 else return 0;
             }

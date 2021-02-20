@@ -21,8 +21,8 @@ class CTransition : public CMain
     };
 
 
-    CTextureManaged *m_Tex;
-    SGeom           *m_Geom;
+    CTextureManaged* m_Tex;
+    SGeom*           m_Geom;
     int              m_GeomCnt;
 
     int              m_ScreenX;
@@ -30,7 +30,7 @@ class CTransition : public CMain
 
 public:
 
-    CTransition(void):CMain(),m_Tex(NULL),m_Geom(NULL),m_GeomCnt(0) {}
+    CTransition(void):CMain(), m_Tex(NULL), m_Geom(NULL), m_GeomCnt(0) {}
     ~CTransition() { Clear(); }
 
     void Clear(void);
@@ -38,7 +38,6 @@ public:
     void RenderToPrimaryScreen(void);
     void Render(void);
     void Takt(int ms);
-
 };
 
 

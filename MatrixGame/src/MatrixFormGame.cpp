@@ -470,11 +470,13 @@ void CFormMatrixGame::Takt(int step)
 
         bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
         bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
-        if(SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0)
+
+        if(!SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()))
         {
             ReleaseDC(g_Wnd, hdc);
             return;
         }
+
         BitBlt(bm.WBM_BitmapDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
 
         ReleaseDC(g_Wnd, hdc);

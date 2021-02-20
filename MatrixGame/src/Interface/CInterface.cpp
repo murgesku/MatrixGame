@@ -126,7 +126,7 @@ CInterface::CInterface():name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label
 CInterface::~CInterface()
 {
 	DTRACE();
-    CIFaceImage   *images = m_FirstImage; 
+    CIFaceImage* images = m_FirstImage; 
 	ASSERT(g_MatrixHeap);
 
 	//List dest
@@ -150,7 +150,7 @@ CInterface::~CInterface()
 }
 
 //Main routines
-bool CInterface::Load(CBlockPar &bp, const wchar *name)
+bool CInterface::Load(CBlockPar &bp, const wchar* name)
 {
 	DTRACE();
     bool need2save = false;
