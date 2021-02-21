@@ -714,7 +714,6 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                 {
     DCP();
                     ps->GetCurSelGroup()->RemoveBuildings();
-                    if(!ps->GetCurSelGroup()->GetRobotsCnt())
 
                     //Если игрок выделяет юнитов с зажатым Shift
                     if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
