@@ -1410,8 +1410,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             }
             if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000) == 0x8000))
             {
-                //"Esc", "Пробел", "Enter" - Войти и выйти из робота.
-                g_IFaceList->LeaveRobot();
+                //"Esc", "Пробел", "Enter" - выйти из режима ручного управления роботом
+                if(!robot->IsManualControlLocked()) g_IFaceList->LeaveRobot();
                 return;
             }
         }
@@ -1458,11 +1458,14 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     //Стратегический режим - выбрана группа
                     if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_ENTER_ALT]) & 0x8000) == 0x8000))
                     {
-                        //"Esc", "Пробел", "Enter" - Войти и выйти из робота.
+                        //"Esc", "Пробел", "Enter" - войти в режим ручного управления роботом
                         CMatrixMapStatic* obj = ps->GetCurGroup()->GetObjectByN(ps->GetCurSelNum());
-                        ps->GetCurSelGroup()->RemoveAll();
-                        ps->CreateGroupFromCurrent(obj);
-                        g_IFaceList->EnterRobot(false);
+                        if(!obj->IsManualControlLocked())
+                        {
+                            ps->GetCurSelGroup()->RemoveAll();
+                            ps->CreateGroupFromCurrent(obj);
+                            g_IFaceList->EnterRobot(false);
+                        }
                     }
                     else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_ATTACK]) & 0x8000) == 0x8000))
                     {

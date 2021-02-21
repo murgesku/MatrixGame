@@ -291,15 +291,16 @@ public:
         CMatrixMapStatic* m_NextStackItem;
         CMatrixMapStatic* m_PrevStackItem;
         
-        bool            IsNotOnMinimap(void) const {return FLAG(m_RChange,MR_MiniMap);}
+        bool            IsNotOnMinimap(void) const { return FLAG(m_RChange, MR_MiniMap); }
         void            SetInvulnerability(void) { SETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
         void            ResetInvulnerability(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
         bool            IsInvulnerable(void) const { return FLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
-        bool            IsTraceInvisible(void) const {return FLAG(m_ObjectState,OBJECT_STATE_TRACE_INVISIBLE);}
-        bool            IsSpecial(void) const { return FLAG(m_ObjectState,OBJECT_STATE_SPECIAL); }
+        bool            IsTraceInvisible(void) const { return FLAG(m_ObjectState, OBJECT_STATE_TRACE_INVISIBLE); }
+        bool            IsSpecial(void) const { return FLAG(m_ObjectState, OBJECT_STATE_SPECIAL); }
+        bool            IsManualControlLocked(void) const { return FLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL); }
 
-        bool            IsDIP(void) const {return FLAG(m_ObjectState,OBJECT_STATE_DIP);}
-        void            SetDIP(void) { SETFLAG(m_ObjectState,OBJECT_STATE_DIP);}
+        bool            IsDIP(void) const { return FLAG(m_ObjectState, OBJECT_STATE_DIP); }
+        void            SetDIP(void) { SETFLAG(m_ObjectState, OBJECT_STATE_DIP); }
 
         static void StaticInit(void)
         {
@@ -317,10 +318,10 @@ public:
 #ifdef _DEBUG
         static void ValidateAfterReset(void)
         {
-            if (m_FirstLogicTemp || m_LastLogicTemp) _asm int 3
-            if (objects_left != objects_rite) _asm int 3
-            if (m_FirstVisNew || m_LastVisNew) _asm int 3
-            if (m_FirstVisOld || m_LastVisOld) _asm int 3
+            if(m_FirstLogicTemp || m_LastLogicTemp) _asm int 3
+            if(objects_left != objects_rite) _asm int 3
+            if(m_FirstVisNew || m_LastVisNew) _asm int 3
+            if(m_FirstVisOld || m_LastVisOld) _asm int 3
         }
 #endif
         

@@ -4392,7 +4392,7 @@ void CIFaceList::EnterRobot(bool pos)
         {
             if(ifs->m_strName == IF_MAIN)
             {
-                ifs->m_xPos = float(g_ScreenX - (1024-(447+196)));
+                ifs->m_xPos = float(g_ScreenX - (1024 - (447 + 196)));
                 ifs->ReCalcElementsPos();
             }
             ifs = ifs->m_NextInterface;
@@ -4404,8 +4404,7 @@ void CIFaceList::EnterRobot(bool pos)
 
 void __stdcall CIFaceList::PlayerAction(void* object)
 {
-    if(!object)
-        return;
+    if(!object) return;
     
     CIFaceElement* element = (CIFaceElement*)object;
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
