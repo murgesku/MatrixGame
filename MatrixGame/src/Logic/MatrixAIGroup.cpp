@@ -347,6 +347,7 @@ void CMatrixGroup::CalcGroupSpeed()
     
 }
 
+//Удаляем из выделяемой группы все здания
 void CMatrixGroup::RemoveBuildings()
 {
     if(m_BuildingsCnt)
@@ -360,8 +361,8 @@ void CMatrixGroup::RemoveBuildings()
                 CMatrixGroupObject* go2 = go->m_NextObject; 
                 LIST_DEL(go, m_FirstObject, m_LastObject, m_PrevObject, m_NextObject);
                 HDelete(CMatrixGroupObject, go, g_MatrixHeap);
-                m_BuildingsCnt--;
-                m_ObjectsCnt--;
+                --m_BuildingsCnt;
+                --m_ObjectsCnt;
                 go = go2;
                 continue;
             }

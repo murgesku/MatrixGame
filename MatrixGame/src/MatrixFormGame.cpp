@@ -658,25 +658,31 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
 
     DCP();
 
+    //Игрок кликнул левой кнопкой мыши (отпустил), после того, как под его курсором уже сформировалась область выделения
+    //Область выделения формируется под курсором даже в случае быстрого однократного клика,
+    //однако в выделение в таком случае попадает лишь один объект под курсором
+    //Все базовые выделения мышью юнитов и зданий происходят тут
     if(status == B_UP && key == VK_LBUTTON)
     {
     DCP();
         CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
-        if (CMultiSelection::m_GameSelection)
+        if(CMultiSelection::m_GameSelection)
         {
             SCallback cbs;
             cbs.mp = CPoint(-1, -1);
             cbs.calls = 0;
 
+            //Завершаем процесс расширения анимации области выделения
             CMultiSelection::m_GameSelection->End();
     DCP();
-
-            if(1/*cbs.calls > 0*/)
+            if(true/*cbs.calls > 0*/)
             {
     DCP();
-                if(ps->GetCurSelGroup()->GetFlyersCnt() > 1 || ps->GetCurSelGroup()->GetRobotsCnt() > 1 || (ps->GetCurSelGroup()->GetFlyersCnt() + ps->GetCurSelGroup()->GetRobotsCnt()) > 1)
+                //Если в текущей выделяемой группе имеется либо несколько роботов, либо несколько вертолётов, либо как минимум один робот и один вертолёт
+                if(ps->GetCurSelGroup()->GetRobotsCnt() > 1 || ps->GetCurSelGroup()->GetFlyersCnt() > 1 || (ps->GetCurSelGroup()->GetRobotsCnt() + ps->GetCurSelGroup()->GetFlyersCnt()) > 1)
                 {
                     ps->GetCurSelGroup()->RemoveBuildings();
+                    //Если игрок выделяет юнитов с зажатым Shift
                     if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
                     {
                         CMatrixGroupObject* go = ps->GetCurSelGroup()->m_FirstObject;
@@ -703,36 +709,14 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                     }
                     ps->Select(GROUP, NULL);
                 }
-                else if(ps->GetCurSelGroup()->GetFlyersCnt() == 1 && !ps->GetCurSelGroup()->GetRobotsCnt())
-                {
-    DCP();
-                    ps->GetCurSelGroup()->RemoveBuildings();                    
-                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
-                    {
-                        if(ps->GetCurGroup()->FindObject(ps->GetCurSelGroup()->m_FirstObject->GetObject()))
-                        {
-                            ps->RemoveObjectFromSelectedGroup(ps->GetCurSelGroup()->m_FirstObject->GetObject());
-                        }
-                        else
-                        {
-                            ps->AddToCurrentGroup();
-                        }
-                        if(ps->GetCurGroup() && ps->GetCurGroup()->GetRobotsCnt() && ps->GetCurGroup()->GetFlyersCnt())
-                        {
-                            ps->GetCurGroup()->SortFlyers();
-                        }
-                        ps->Select(GROUP, NULL);
-                    }
-                    else
-                    {
-                        ps->SetCurGroup(ps->CreateGroupFromCurrent());
-                        ps->Select(FLYER, NULL);
-                    }
-                }
+                //Если в текущей выделяемой группе находится всего один робот
                 else if(ps->GetCurSelGroup()->GetRobotsCnt() == 1 && !ps->GetCurSelGroup()->GetFlyersCnt())
                 {
     DCP();
-                    ps->GetCurSelGroup()->RemoveBuildings();                    
+                    ps->GetCurSelGroup()->RemoveBuildings();
+                    if(!ps->GetCurSelGroup()->GetRobotsCnt())
+
+                    //Если игрок выделяет юнитов с зажатым Shift
                     if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
                     {
                         if(ps->GetCurGroup()->FindObject(ps->GetCurSelGroup()->m_FirstObject->GetObject()))
@@ -756,6 +740,34 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                         ps->Select(ROBOT, NULL);
                     }
                 }
+                //Если в текущей выделяемой группе находится всего один вертолёт
+                else if(ps->GetCurSelGroup()->GetFlyersCnt() == 1 && !ps->GetCurSelGroup()->GetRobotsCnt())
+                {
+                    DCP();
+                    ps->GetCurSelGroup()->RemoveBuildings();
+                    if((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000 && ps->GetCurGroup())
+                    {
+                        if(ps->GetCurGroup()->FindObject(ps->GetCurSelGroup()->m_FirstObject->GetObject()))
+                        {
+                            ps->RemoveObjectFromSelectedGroup(ps->GetCurSelGroup()->m_FirstObject->GetObject());
+                        }
+                        else
+                        {
+                            ps->AddToCurrentGroup();
+                        }
+                        if(ps->GetCurGroup() && ps->GetCurGroup()->GetRobotsCnt() && ps->GetCurGroup()->GetFlyersCnt())
+                        {
+                            ps->GetCurGroup()->SortFlyers();
+                        }
+                        ps->Select(GROUP, NULL);
+                    }
+                    else
+                    {
+                        ps->SetCurGroup(ps->CreateGroupFromCurrent());
+                        ps->Select(FLYER, NULL);
+                    }
+                }
+                //Если в текущей выделяемой группе находится здание
                 else if(ps->GetCurSelGroup()->GetBuildingsCnt() && !ps->GetCurSelGroup()->GetRobotsCnt() && !ps->GetCurSelGroup()->GetFlyersCnt())
                 {
     DCP();
@@ -767,8 +779,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
                 }
             }
         }
-        CMultiSelection::m_GameSelection = NULL;   
-
+        CMultiSelection::m_GameSelection = NULL;
 	}
     DCP();
 
@@ -799,7 +810,8 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y)
         else if(status == B_DOWN && key==VK_LBUTTON)
         {
     DCP();
-            if (CMultiSelection::m_GameSelection == NULL && !g_MatrixMap->GetPlayerSide()->IsArcadeMode() && !IS_PREORDERING_NOSELECT && !(g_MatrixMap->GetPlayerSide()->m_CurrentAction == BUILDING_TURRET))
+            //Если игрок зажал левую кнопку мыши и расширяет область выделения
+            if(CMultiSelection::m_GameSelection == NULL && !g_MatrixMap->GetPlayerSide()->IsArcadeMode() && !IS_PREORDERING_NOSELECT && !(g_MatrixMap->GetPlayerSide()->m_CurrentAction == BUILDING_TURRET))
             {
                 int dx = 0, dy = 0;
                 if(IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj) && IS_TRACE_UNIT(g_MatrixMap->m_TraceStopObj))
@@ -1429,7 +1441,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
 
                 while(o)
                 {
-                    if(o->GetSide() == PLAYER_SIDE && o->IsLiveRobot())
+                    if(o->GetSide() == PLAYER_SIDE && o->IsLiveRobot() && !o->AsRobot()->IsCrazy())
                     {
                         ps->GetCurSelGroup()->AddObject(o, -4);
                     }

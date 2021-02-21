@@ -1327,6 +1327,7 @@ void CInterface::SetAlpha(BYTE alpha)
     }
 }
 
+//Клик левой кнопкой мыши (нажал) по элементу интерфейса
 bool CInterface::OnMouseLBDown()
 {
 	DTRACE();

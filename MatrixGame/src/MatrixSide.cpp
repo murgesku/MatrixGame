@@ -405,7 +405,7 @@ int CMatrixSideUnit::GetIncomePerTime(int building, int ms)
 void CMatrixSideUnit::BufPrepare()
 {
     DTRACE();
-    if(!m_PlaceList) m_PlaceList=(int *)HAllocClear(sizeof(int)*g_MatrixMap->m_RN.m_PlaceCnt,g_MatrixHeap);
+    if(!m_PlaceList) m_PlaceList = (int*)HAllocClear(sizeof(int) * g_MatrixMap->m_RN.m_PlaceCnt, g_MatrixHeap);
 }
 
 //Здесь спавнятся и получают приказ вертолёты, занимающиеся доставкой подкреплений
@@ -569,7 +569,7 @@ DCP();
                     
                     CPoint places[MAX_PLACES];
                     int places_cnt = m_CannonForBuild.m_ParentBuilding->GetPlacesForTurrets(places);
-                    //places->x, places+1->y
+                    //places->x, places + 1->y
 
                     D3DXVECTOR3 pos = g_MatrixMap->m_TraceStopPos;
                     g_MatrixMap->Trace(&pos, g_MatrixMap->m_Camera.GetFrustumCenter(), g_MatrixMap->m_Camera.GetFrustumCenter() + (g_MatrixMap->m_MouseDir * 10000.0f), TRACE_LANDSCAPE|TRACE_WATER);
@@ -642,7 +642,7 @@ DCP();
 DCP();
 }
 
-
+//Игрок водит мышкой по карте (либо управляет роботом в ручном режиме)
 void CMatrixSideUnit::OnMouseMove()
 {
     DTRACE();
@@ -652,7 +652,7 @@ void CMatrixSideUnit::OnMouseMove()
     }
 }
 
-
+//Игрок кликнул (нажал) левой клавишей мыши
 void CMatrixSideUnit::OnLButtonDown(const CPoint&)
 {
     DTRACE();
@@ -662,54 +662,60 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint&)
 
     if(pObject == TRACE_STOP_NONE) return;
 
-    if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon && m_CannonForBuild.m_CanBuildFlag/* && (m_CannonForBuild.m_ParentBuilding->m_TurretsHave < m_CannonForBuild.m_ParentBuilding->m_TurretsMax)*/)
-    {
-        if(g_MatrixMap->IsPaused()) return;
-		CMatrixCannon* ca = g_MatrixMap->StaticAdd<CMatrixCannon>(true);
-        ca->m_CurrState = CANNON_UNDER_CONSTRUCTION;
-
-        ca->SetInvulnerability();
-        ca->m_Pos.x = m_CannonForBuild.m_Cannon->m_Pos.x;//g_MatrixMap->m_TraceStopPos.x;
-        ca->m_Pos.y = m_CannonForBuild.m_Cannon->m_Pos.y;//g_MatrixMap->m_TraceStopPos.y;
-        ca->m_Place = m_CannonForBuild.m_Cannon->m_Place;
-        ca->SetSide(m_Id);
-        ca->UnitInit(m_CannonForBuild.m_Cannon->m_Num);
-
-        ca->m_Angle=m_CannonForBuild.m_Cannon->GetMustBeAngle();
-        ca->m_AddH = 0;
-
-        ca->m_ShadowType = SHADOW_STENCIL;
-        ca->m_ShadowSize = 128;
-
-        ca->RNeed(MR_Matrix|MR_Graph);
-        ca->m_ParentBuilding = (CMatrixBuilding*)m_ActiveObject;
-        ca->JoinToGroup();
-        
-        m_CannonForBuild.m_ParentBuilding->m_TurretsHave++;
-        ca->SetHitPoint(0);
-        ((CMatrixBuilding*)m_ActiveObject)->m_BS.AddItem(ca);
-
-        AddResourceAmount(TITAN,-g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[TITAN]);
-        AddResourceAmount(ELECTRONICS,-g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[ELECTRONICS]);
-        AddResourceAmount(ENERGY,-g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[ENERGY]);
-        AddResourceAmount(PLASMA,-g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[PLASMA]);
-        
-        m_CurrentAction = NOTHING_SPECIAL;
-        m_CannonForBuild.Delete();
-        CSound::Play(S_TURRET_BUILD_START, SL_ALL);
-        g_IFaceList->ResetBuildCaMode();
-        return;
-    }
-    
-    
+    //Если игрок выбрал турель для постройки
     if(m_CurrentAction == BUILDING_TURRET && m_CannonForBuild.m_Cannon)
     {
-        return;
+        //Игрок установил постройку турели, кликнув выбранной турелью по подходящему месту
+        if(m_CannonForBuild.m_CanBuildFlag/* && (m_CannonForBuild.m_ParentBuilding->m_TurretsHave < m_CannonForBuild.m_ParentBuilding->m_TurretsMax)*/)
+        {
+            if(g_MatrixMap->IsPaused()) return;
+		    CMatrixCannon* ca = g_MatrixMap->StaticAdd<CMatrixCannon>(true);
+            ca->m_CurrState = CANNON_UNDER_CONSTRUCTION;
+
+            ca->SetInvulnerability();
+            ca->m_Pos.x = m_CannonForBuild.m_Cannon->m_Pos.x;//g_MatrixMap->m_TraceStopPos.x;
+            ca->m_Pos.y = m_CannonForBuild.m_Cannon->m_Pos.y;//g_MatrixMap->m_TraceStopPos.y;
+            ca->m_Place = m_CannonForBuild.m_Cannon->m_Place;
+            ca->SetSide(m_Id);
+            ca->UnitInit(m_CannonForBuild.m_Cannon->m_Num);
+
+            ca->m_Angle = m_CannonForBuild.m_Cannon->GetMustBeAngle();
+            ca->m_AddH = 0;
+
+            ca->m_ShadowType = SHADOW_STENCIL;
+            ca->m_ShadowSize = 128;
+
+            ca->RNeed(MR_Matrix|MR_Graph);
+            ca->m_ParentBuilding = (CMatrixBuilding*)m_ActiveObject;
+            ca->JoinToGroup();
+        
+            m_CannonForBuild.m_ParentBuilding->m_TurretsHave++;
+            ca->SetHitPoint(0);
+            ((CMatrixBuilding*)m_ActiveObject)->m_BS.AddItem(ca);
+
+            AddResourceAmount(TITAN, -g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[TITAN]);
+            AddResourceAmount(ELECTRONICS, -g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[ELECTRONICS]);
+            AddResourceAmount(ENERGY, -g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[ENERGY]);
+            AddResourceAmount(PLASMA, -g_Config.m_CannonsProps[m_CannonForBuild.m_Cannon->m_Num-1].m_Resources[PLASMA]);
+        
+            m_CurrentAction = NOTHING_SPECIAL;
+            m_CannonForBuild.Delete();
+            CSound::Play(S_TURRET_BUILD_START, SL_ALL);
+            g_IFaceList->ResetBuildCaMode();
+            return;
+        }
+        //Игрок кликнул выбранной турелью в неподходящую точку на карте
+        else
+        {
+            return;
+        }
     }
+
     int mx = Float2Int(g_MatrixMap->m_TraceStopPos.x / GLOBAL_SCALE_MOVE);
     int my = Float2Int(g_MatrixMap->m_TraceStopPos.y / GLOBAL_SCALE_MOVE);
     D3DXVECTOR3 tpos = g_MatrixMap->m_TraceStopPos;
 
+    //Игрок кликнул по миникарте
     if(g_IFaceList->m_InFocus == INTERFACE && g_IFaceList->m_FocusedInterface->m_strName == IF_MINI_MAP)
     {
         D3DXVECTOR2 tgt;
@@ -809,6 +815,20 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint&)
     }
 }
 
+//Игрок кликнул (отпустил) левой клавишей мыши
+void CMatrixSideUnit::OnLButtonUp(const CPoint&)
+{
+    DTRACE();
+    if(IsArcadeMode()) return;
+
+    CMatrixMapStatic* pObject = MouseToLand();
+
+    if(pObject == TRACE_STOP_NONE) return;
+
+    if(IS_TRACE_STOP_OBJECT(pObject)) {}
+}
+
+//Двойной клик левой клавишей мыши
 void CMatrixSideUnit::OnLButtonDouble(const CPoint& mouse)
 {
     DTRACE();
@@ -816,6 +836,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint& mouse)
 
     CMatrixMapStatic* pObject = MouseToLand();
 
+    //Если двойной клик пришелся на пустое место, либо не по роботу игрока, то прерываем исполнение
     if(pObject == TRACE_STOP_NONE || !(IS_TRACE_STOP_OBJECT(pObject) && pObject->IsLiveRobot() && pObject->GetSide() == PLAYER_SIDE))
         return;
 
@@ -833,7 +854,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint& mouse)
 
         while(st)
         {
-            if(st->GetSide() == PLAYER_SIDE && st->IsLiveRobot())
+            if(st->GetSide() == PLAYER_SIDE && st->IsLiveRobot() && !st->AsRobot()->IsCrazy())
             {
                 if(D3DXVec3LengthSq(&(o_pos-st->GetGeoCenter())) <= FRIENDLY_SEARCH_RADIUS * FRIENDLY_SEARCH_RADIUS)
                 {
@@ -855,19 +876,7 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint& mouse)
     }
 }
 
-void CMatrixSideUnit::OnLButtonUp(const CPoint &)
-{
-    DTRACE();
-    if(IsArcadeMode()) return;
-
-    CMatrixMapStatic* pObject = MouseToLand();
-
-    if(pObject == TRACE_STOP_NONE) return;
-
-    if(IS_TRACE_STOP_OBJECT(pObject)){}
-}
-
-//Игрок кликнул правой клавишей мыши
+//Игрок кликнул (нажал) правой клавишей мыши
 void CMatrixSideUnit::OnRButtonDown(const CPoint&)
 {
     DTRACE();
@@ -961,14 +970,15 @@ void CMatrixSideUnit::OnRButtonDown(const CPoint&)
         }
     }
 }
-//Игрок отжал правую кнопку мыши после клика
+
+//Игрок кликнул (отпустил) правой клавишей мыши
 void CMatrixSideUnit::OnRButtonUp(const CPoint&)
 {
     DTRACE();
     if(IsArcadeMode()) return;
 }
 
-//Двойной клик правой кнопкой мыши
+//Двойной клик правой клавишей мыши
 void CMatrixSideUnit::OnRButtonDouble(const CPoint&)
 {
     //В данный функционала не имеет
@@ -1633,19 +1643,23 @@ CMatrixGroup* CMatrixSideUnit::CreateGroupFromCurrent()
     CMatrixGroupObject* go = m_CurSelGroup->m_FirstObject;
     while(go)
     {
-        ng->AddObject(go->GetObject(), -4);
+        CMatrixMapStatic* obj = go->GetObject();
+
+        ng->AddObject(obj, -4);
         CMatrixGroup* grps = m_FirstGroup;
         while(grps)
         {
-            grps->RemoveObject(go->GetObject());
+            grps->RemoveObject(obj);
             //if(grps->m_Tactics)
             //{
-            //    grps->m_Tactics->RemoveObjectFromT(go->GetObject());
+            //    grps->m_Tactics->RemoveObjectFromT(obj);
             //}
-            grps=grps->m_NextGroup;
+            grps = grps->m_NextGroup;
         }
+
         go = go->m_NextObject;
     }
+
     LIST_ADD(ng, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
     m_CurSelGroup->RemoveAll();
 
@@ -9547,10 +9561,10 @@ void CMatrixSideUnit::PGAssignPlace(int no, CPoint & center)
             CPoint tp=GetMapPos(obj);
 
             SMatrixPlaceList * plist=g_MatrixMap->m_RN.m_PLList+plr.left+plr.top*g_MatrixMap->m_RN.m_PLSizeX;
-            for(y=plr.top;y<plr.bottom;y++,plist+=g_MatrixMap->m_RN.m_PLSizeX-(plr.right-plr.left)) {
-                for(x=plr.left;x<plr.right;x++,plist++) {
+            for(y=plr.top;y<plr.bottom;++y,plist+=g_MatrixMap->m_RN.m_PLSizeX-(plr.right-plr.left)) {
+                for(x=plr.left;x<plr.right;++x,++plist) {
                     SMatrixPlace * place=g_MatrixMap->m_RN.m_Place+plist->m_Sme;
-                    for(u=0;u<plist->m_Cnt;u++,place++) {
+                    for(u=0;u<plist->m_Cnt;++u,++place) {
                         if(place->m_Data) continue; // Занетые места игнорируем
                         if(!CanMove(place->m_Move,robot)) continue; // Если робот не может стоять на этом месте, то пропускаем
 
