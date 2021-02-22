@@ -429,18 +429,6 @@ DCP();
 		g_Sampler.ApplySettings(set);
 	}
 
-DCP();
-
-	g_MatrixMap =  HNew(g_MatrixHeap) CMatrixMapLogic;
-
-	g_MatrixMap->LoadSide(*g_MatrixData->BlockGet(L"Side"));
-	//g_MatrixMap->LoadTactics(*g_MatrixData->BlockGet(L"Tactics"));
-	g_IFaceList = HNew(g_MatrixHeap) CIFaceList;
-
-	// load new map
-DCP();
-    g_MatrixMap->RobotPreload();
-
     CStorage stor(g_CacheHeap);
 DCP();
 
@@ -463,7 +451,28 @@ DCP();
         mapname = g_MatrixData->BlockGet(L"Config")->Par(L"Map");
     }
 
-	stor.Load(mapname);
+    stor.Load(mapname);
+
+    // Load replacements for MatrixData from map
+    if (stor.IsTablePresent(L"da"))
+    {
+        CBlockPar map_data(g_CacheHeap);
+        stor.RestoreBlockPar(L"da", map_data);
+        g_MatrixData->BlockMerge(map_data);
+    }
+
+DCP();
+
+	g_MatrixMap =  HNew(g_MatrixHeap) CMatrixMapLogic;
+
+	g_MatrixMap->LoadSide(*g_MatrixData->BlockGet(L"Side"));
+	//g_MatrixMap->LoadTactics(*g_MatrixData->BlockGet(L"Tactics"));
+	g_IFaceList = HNew(g_MatrixHeap) CIFaceList;
+
+	// load new map
+DCP();
+    g_MatrixMap->RobotPreload();
+    
 DCP();
 	
     if(0 > g_MatrixMap->PrepareMap(stor, mapname))
