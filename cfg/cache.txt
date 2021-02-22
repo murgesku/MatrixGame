@@ -1,0 +1,204 @@
+Robot {
+    Armor {
+        1 {
+            Model=Matrix\Robot\Armor1
+            Texture=Matrix\Robot\Armor1
+            Enemy {
+                Texture=Matrix\Robot\Armor1_e
+            }
+        }
+        2 {
+            Model=Matrix\Robot\Armor2
+            Texture=Matrix\Robot\Armor2
+            Enemy {
+                Texture=Matrix\Robot\Armor2_e
+            }
+        }
+        3 {
+            Model=Matrix\Robot\Armor3
+            Texture=Matrix\Robot\Armor3
+            Enemy {
+                Texture=Matrix\Robot\Armor3_e
+            }
+        }
+        4 {
+            Model=Matrix\Robot\Armor4
+            Texture=Matrix\Robot\Armor4
+            Enemy {
+                Texture=Matrix\Robot\Armor4_e
+            }
+        }
+        5 {
+            Model=Matrix\Robot\Armor5
+            Texture=Matrix\Robot\Armor5
+            Enemy {
+                Texture=Matrix\Robot\Armor5_e
+            }
+        }
+        6 {
+            Model=Matrix\Robot\Armor6
+            Texture=Matrix\Robot\Armor6
+            Enemy {
+                Texture=Matrix\Robot\Armor6_e
+            }
+        }
+    }
+    Chassis {
+        1 {
+            Model=Matrix\Robot\Chassis1
+            Texture=Matrix\Robot\Chassis1
+            Enemy {
+                Texture=Matrix\Robot\Chassis1_e
+            }
+        }
+        2 {
+            Model=Matrix\Robot\Chassis2
+            Texture=Matrix\Robot\Chassis2
+            Enemy {
+                Texture=Matrix\Robot\Chassis2_e
+            }
+        }
+        3 {
+            Model=Matrix\Robot\Chassis3
+            Texture=Matrix\Robot\Chassis3
+            Enemy {
+                Texture=Matrix\Robot\Chassis3_e
+            }
+        }
+        4 {
+            Model=Matrix\Robot\Chassis4
+            Texture=Matrix\Robot\Chassis4
+            Enemy {
+                Texture=Matrix\Robot\Chassis4_e
+            }
+        }
+        5 {
+            Model=Matrix\Robot\Chassis5
+            Texture=Matrix\Robot\Chassis5
+            Enemy {
+                Texture=Matrix\Robot\Chassis5_e
+            }
+        }
+    }
+    Head {
+        1 {
+            Model=Matrix\Robot\Head1
+            Texture=Matrix\Robot\Head1
+            Enemy {
+                Texture=Matrix\Robot\Head1_e
+            }
+        }
+        2 {
+            Model=Matrix\Robot\Head2
+            Texture=Matrix\Robot\Head2
+            Enemy {
+                Texture=Matrix\Robot\Head2_e
+            }
+        }
+        3 {
+            Model=Matrix\Robot\Head3
+            Texture=Matrix\Robot\Head3
+            Enemy {
+                Texture=Matrix\Robot\Head3_e
+            }
+        }
+        4 {
+            Model=Matrix\Robot\Head4
+            Texture=Matrix\Robot\Head4
+            Enemy {
+                Texture=Matrix\Robot\Head4_e
+            }
+        }
+    }
+    Weapon {
+        1 {
+            Model=Matrix\Robot\Weapon1
+            Texture=Matrix\Robot\Weapon1
+            Enemy {
+                Texture=Matrix\Robot\Weapon1_e
+            }
+        }
+        2 {
+            Model=Matrix\Robot\Weapon2
+            Texture=Matrix\Robot\Weapon2
+            Enemy {
+                Texture=Matrix\Robot\Weapon2_e
+            }
+        }
+        3 {
+            Model=Matrix\Robot\Weapon3
+            Texture=Matrix\Robot\Weapon3
+            Enemy {
+                Texture=Matrix\Robot\Weapon3_e
+            }
+        }
+        4 {
+            Model=Matrix\Robot\Weapon4
+            Texture=Matrix\Robot\Weapon4
+            Enemy {
+                Texture=Matrix\Robot\Weapon4_e
+            }
+        }
+        5 {
+            Model=Matrix\Robot\Weapon5
+            Texture=Matrix\Robot\Weapon5
+            Enemy {
+                Texture=Matrix\Robot\Weapon5_e
+            }
+        }
+        6 {
+            Model=Matrix\Robot\Weapon6
+            Texture=Matrix\Robot\Weapon6
+            Enemy {
+                Texture=Matrix\Robot\Weapon6_e
+            }
+        }
+        7 {
+            Model=Matrix\Robot\Weapon7
+            Texture=Matrix\Robot\Weapon7
+            Enemy {
+                Texture=Matrix\Robot\Weapon7_e
+            }
+        }
+        8 {
+            Model=Matrix\Robot\Weapon8
+            Texture=Matrix\Robot\Weapon8
+            Enemy {
+                Texture=Matrix\Robot\Weapon8_e
+            }
+        }
+        9 {
+            Model=Matrix\Robot\Weapon9
+            Texture=Matrix\Robot\Weapon9
+            Enemy {
+                Texture=Matrix\Robot\Weapon9_e
+            }
+        }
+        10 {
+            Model=Matrix\Robot\Weapon10
+            Texture=Matrix\Robot\Weapon10
+            Enemy {
+                Texture=Matrix\Robot\Weapon10_e
+            }
+        }
+    }
+}
+Interface {
+    Panels {
+        1=Matrix\IFace\interface1
+        2=Matrix\IFace\interface2
+        3=Matrix\IFace\interface3
+    }
+    Windows {
+        1=Matrix\IFace\base_1
+        2=Matrix\IFace\base_2
+        3=Matrix\IFace\base_3
+        4=Matrix\IFace\base_4
+        5=Matrix\IFace\base_5
+        6=Matrix\IFace\base_6 // не используется
+    }
+    Text {
+        1=Matrix\IFace\text_1
+        2=Matrix\IFace\text_2 // не используется
+    }
+}

@@ -425,6 +425,10 @@ void CMatrixSideUnit::OrderFlyer(const D3DXVECTOR2 &to, EFlyerOrder order, float
 void CMatrixSideUnit::BuildCrazyBot(void)
 {
     DTRACE();
+
+    //Добавлено временно для проверки. Удалить после того, как отпадёт необходимость.
+    SFT("Crazy bot construction started.");
+
     SSpecialBot bot;
     ZeroMemory(&bot, sizeof(SSpecialBot));
 
