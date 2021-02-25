@@ -608,19 +608,19 @@ public:
     int SelGroupToLogicGroup(void);
     int RobotToLogicGroup(CMatrixRobotAI* robot);
     void PGOrderStop(int no);
-    void PGOrderMoveTo(int no, CPoint & tp);
-    void PGOrderCapture(int no,CMatrixBuilding * building);
-    void PGOrderAttack(int no,const CPoint & tp,CMatrixMapStatic * terget_obj);
-    void PGOrderPatrol(int no,CPoint & tp);
-    void PGOrderRepair(int no,CMatrixMapStatic * terget_obj);
-    void PGOrderBomb(int no,CPoint & tp,CMatrixMapStatic * terget_obj);
+    void PGOrderMoveTo(int no, CPoint& tp);
+    void PGOrderCapture(int no, CMatrixBuilding* building);
+    void PGOrderAttack(int no, const CPoint& tp, CMatrixMapStatic* terget_obj);
+    void PGOrderPatrol(int no, CPoint& tp);
+    void PGOrderRepair(int no, CMatrixMapStatic* terget_obj);
+    void PGOrderBomb(int no, CPoint& tp, CMatrixMapStatic* terget_obj);
     void PGOrderAutoCapture(int no);
     void PGOrderAutoAttack(int no);
     void PGOrderAutoDefence(int no);
-    void PGRemoveAllPassive(int no,CMatrixMapStatic * skip);
-    void PGAssignPlace(int no,CPoint & center);
-    void PGAssignPlacePlayer(int no,CPoint & center);
-    void PGSetPlace(CMatrixRobotAI * robot, CPoint & p);
+    void PGRemoveAllPassive(int no, CMatrixMapStatic* skip);
+    void PGAssignPlace(int no, CPoint& center);
+    void PGAssignPlacePlayer(int no, CPoint& center);
+    void PGSetPlace(CMatrixRobotAI* robot, CPoint& p);
     void PGPlaceClear(int no);
     CPoint PGCalcCenterGroup(int no);
     CPoint PGCalcPlaceCenter(int no);
@@ -629,14 +629,13 @@ public:
     void PGFindCaptureFactory(int no);
     void PGFindAttackTarget(int no);
     void PGFindDefenceTarget(int no);
-    void PGCalcRegionPath(SMatrixPlayerGroup * pg,int rend,byte mm);
+    void PGCalcRegionPath(SMatrixPlayerGroup* pg, int rend, byte mm);
 
     void BuildCrazyBot(void);
 
-    void DMTeam(int team,EMatrixLogicActionType ot,int state,const wchar * format,...);
-    void DMSide(const wchar * format,...);
+    void DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar* format, ...);
+    void DMSide(const wchar* format,...);
 
 };
 
-void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param);
-
+void SideSelectionCallBack(CMatrixMapStatic* ms, DWORD param);

@@ -1,0 +1,409 @@
+AIRobotType!r {
+    P,3,RRM=10
+    W,3,RRM=10
+    T,3,RRM=10
+    P,1S,FO=10
+    W,1S,FO=10
+    T,1S,FO=10
+    H,1S,FO=10
+    A,1S,FO=10
+    W,1S,FB=10
+    H,1S,FB=10
+    A,1S,FB=10
+    P,3,RRL=11
+    W,3,RRL=11
+    P,3,RRP=12
+    W,3,RRP=12
+    H,3,RRM=12
+    H,3,RRL=14
+    A,3,RRL=14
+    H,3,RRP=15
+    A,3,RRP=15
+    A,3,RRM=15
+    P,3,FFG=15
+    W,3,FFG=15
+    T,3,FFG=15
+    H,3,FFG=15
+    A,3,FFG=15
+    P,2,CC=15
+    W,2,CC=15
+    T,2,CC=15
+    H,2,CC=15
+    A,2,CC=15
+    P,1S,LO=15
+    W,1S,LO=15
+    T,1S,LO=15
+    H,1S,LO=15
+    A,1S,LO=15
+    W,1S,LB=15
+    H,1S,LB=15
+    A,1S,LB=15
+    P,2,LE=18
+    W,2,LE=18
+    T,2,LE=18
+    H,2,LE=18
+    A,2,LE=18
+    P,1,G=2
+    W,1,G=2
+    T,1,G=2
+    H,1,G=2
+    A,1,G=2
+    P,3,GMR=20
+    W,3,GMR=20
+    T,3,GMR=20
+    H,3,GMR=20
+    A,3,GMR=20
+    P,2S,MFO=20
+    W,2S,MFO=20
+    T,2S,MFO=20
+    H,2S,MFO=20
+    A,2S,MFO=20
+    P,2S,CLO=20
+    W,2S,CLO=20
+    T,2S,CLO=20
+    H,2S,CLO=20
+    A,2S,CLO=20
+    P,2S,MMO=20
+    W,2S,MMO=20
+    T,2S,MMO=20
+    H,2S,MMO=20
+    A,2S,MMO=20
+    W,2S,MFB=20
+    H,2S,MFB=20
+    A,2S,MFB=20
+    W,2S,CLB=20
+    H,2S,CLB=20
+    A,2S,CLB=20
+    W,2S,MMB=20
+    H,2S,MMB=20
+    A,2S,MMB=20
+    W,4S,GGGGO=25
+    P,3,CCF=25
+    W,3,CCF=25
+    T,3,CCF=25
+    H,3,CCF=25
+    A,3,CCF=25
+    P,3,CCE=25
+    W,3,CCE=25
+    T,3,CCE=25
+    H,3,CCE=25
+    A,3,CCE=25
+    P,3,FFP=25
+    W,3,FFP=25
+    T,3,FFP=25
+    H,3,FFP=25
+    A,3,FFP=25
+    P,3,GMF=30
+    W,3,GMF=30
+    T,3,GMF=30
+    H,3,GMF=30
+    A,3,GMF=30
+    P,3,MMM=35
+    W,3,MMM=35
+    T,3,MMM=35
+    H,3,MMM=35
+    A,3,MMM=35
+    P,1,C=4
+    W,1,C=4
+    T,1,C=4
+    H,1,C=4
+    A,1,C=4
+    T,4S,CCEEO,S=40
+    T,4S,LLEEO,F=40
+    P,4S,CCEEO=40
+    P,4S,GGEEO=40
+    H,4S,MMPPO,D=40
+    H,4S,RGGGO,D=40
+    H,4S,RRMM,D=40
+    H,4S,RRPE,D=40
+    H,4S,RFFF,L=45
+    H,4S,RRMMO,D=45
+    H,4S,RRPEO,D=45
+    P,1S,GO=5
+    W,1S,GO=5
+    T,1S,GO=5
+    H,1S,GO=5
+    A,1S,GO=5
+    W,1S,GB=5
+    H,1S,GB=5
+    A,1S,GB=5
+    A,4S,FFEPO,D=50
+    P,4S,FFEPO=50
+    W,4S,LLEEO=50
+    T,4S,LLEEO=50
+    H,4S,MMPEO=50
+    A,4S,MMFFB=50
+    A,4S,MMFFO=50
+    P,1,M=6
+    W,1,M=6
+    T,1,M=6
+    H,1,M=6
+    A,1,M=6
+    P,2,GG=8
+    W,2,GG=8
+    T,2,GG=8
+    H,2,GG=8
+    A,2,GG=8
+    P,2,RL=8
+    W,2,RL=8
+    T,2,RL=8
+    H,2,RL=8
+    A,2,RL=8
+    P,1S,CO=8
+    W,1S,CO=8
+    T,1S,CO=8
+    H,1S,CO=8
+    A,1S,CO=8
+    W,1S,CB=8
+    H,1S,CB=8
+    A,1S,CB=8
+}
+AllLabels {
+    Items {
+		he1_char=Броня корпуса: <Color=247,195,0>+<Size></Color> ед.
+		he2_char=Скорострельность: <Color=247,195,0>+<WeaponSpeed>%</Color><br>Перегрев оружия: <Color=247,195,0>-<WeaponHeat>%</Color><br>Скорость шасси: <Color=247,195,0>+<ChassisSpeed>%</Color>
+		he3_char=Дальнобойность: <Color=247,195,0>+<WeaponRadius>%</Color><br>Радиус радара: <Color=247,195,0>+<RadarRadius>%</Color>
+		he4_char=Попадания врага: <Color=247,195,0>-<LessHit>%</Color><br>Блок разрядника: <Color=247,195,0><Max>%</Color><br>Защита от бомбы: <Color=247,195,0>+<BombProtect>%</Color>
+		w7_char=Повреждение <Damage> ед.<br>Радиус средний.<br>Специальное оружие.
+    }
+}
+Constants {
+    ARCADEBOT_WEAPON_COEFF=1.2
+    DEFBOT_WEAPON_COEFF=1.0
+}
+FlyerOrders!r {
+    GiveBot {
+        Distance=1000
+        Flyer=2
+        Height=500
+        Hitpoint=30000
+        LandHeight=150
+        Templates {
+            A,4S,4000,0,PPPPO,L=100
+            P,3,1200,0,MMC,S=20
+            W,2S,1300,0,MMO,D=20
+            W,1S,1300,0,PO,F=20
+            T,1S,1400,0,FO,F=20
+            P,4S,1400,0,CCCCO,S=20
+            T,2S,1800,0,MMO,L=25
+            T,2S,2000,0,MM,D=25
+            W,4S,1800,0,MMCCO,D=25
+            P,4S,1800,0,CCCEO,L=25
+            T,2S,2000,0,FFO,L=25
+            P,4S,2400,700,MMME,L=30
+            T,4S,2400,700,MMFFO,L=30
+            A,3,2400,0,LLF,L=30
+            T,3,2600,0,MMM,L=30
+            A,2S,2500,0,PPO,F=30
+            T,3,2500,0,MMM,F=30
+            W,3,2800,0,MMM,F=35
+            A,3,2900,0,MMM,F=35
+            A,3,3000,0,MME,S=35
+            T,3,2800,0,LLL,S=35
+            P,4S,4000,0,GGGGO,F=35
+            H,3,4200,0,LLE,L=40
+            P,3,4200,0,MEP,L=40
+            P,3,4200,0,PPF,D=40
+            A,4S,4500,0,CCCEO,L=50
+            H,3,4500,0,PPE,L=50
+            T,3,4500,0,PPR,F=50
+            T,4S,4500,0,MMMMO,F=50
+            P,4S,4500,0,FFFFO,L=50
+            T,2S,4800,0,PPO,F=60
+            H,4S,4800,0,PPMMO,F=60
+            A,4S,4800,0,LLLLO,D=60
+            A,3,4800,0,EPP,F=60
+            T,4S,4800,0,LLMMO,L=60
+            A,2,5500,0,PP,L=70
+            A,1S,8000,0,PO,D=80
+        }
+    }
+}
+RobotSpawn!r {
+    W,2S,1000,0,MMO,D=10
+    P,3,1000,0,MMC,S=10
+    W,2,1000,0,PL,F=10
+    T,2,1200,0,FF,F=10
+    P,4S,1200,0,CCCCO,S=10
+    T,2S,1200,0,MMO,L=10
+    T,2S,1200,0,MM,D=10
+}
+Config!r {
+	Resolution=1024,768
+	FullScreen=0
+	SoftwareCursor=0
+	LandTexturesUseGloss=1
+	ObjectTexturesUseGloss=1
+	VertexLight=1
+	RobotShadow=1
+	IzvratMultiSelection=0
+	SkyBox=1
+	MaxFps=100
+	DebugInfo=0
+	FSAA=False
+	FSAASamples=4
+	Map=Matrix\Map\desert1_3e.cmap
+	GammaRamp {
+		B=0.5,0.5,1
+		G=0.5,0.5,1
+		R=0.5,0.5,1
+	}
+	AssignKeys { //Переназначение клавиш теперь записывается в RobotsCFG.txt
+		// CamMoveUp=Up
+		// CamMoveDown=Down
+		// CamMoveLeft=Left
+		// CamMoveRight=Right
+		// CamMoveUpAlt=Up
+		// CamMoveDownAlt=Down
+		// CamMoveLeftAlt=Left
+		// CamMoveRightAlt=Right
+		// CamRotateUp=PageUp
+		// CamRotateDown=PageDown
+		// CamRotateLeft=Home
+		// CamRotateRight=End
+		// CamRotateLeftAlt=[
+		// CamRotateRightAlt=]
+		// CamDefaultPos=\
+		// MinimapZoomIn=+
+		// MinimapZoomOut=-
+		// BaseSetGatheringPoint=G
+		// BaseConstMenuEnter=B
+		// BaseConstMenuLunch=Enter
+		// BaseConstMenuIncrease=Up
+		// BaseConstMenuDecrease=Down
+		// BaseConstMenuChooseLeft=Left
+		// BaseConstMenuChooseRight=Right
+		// BuildTurrMenuEnter=T
+		// BuildTurrMenuLightCannon=C
+		// BuildTurrMenuHeavyCannon=G
+		// BuildTurrMenuLaserCannon=L
+		// BuildTurrMenuMissileCannon=R
+		// CallForReinforcements=H
+		// UnitInGroupSelect=Shift
+		// SetCtrlGroup=Ctrl
+		// UnitSelectPrev=<
+		// UnitSelectNext=>
+		// UnitSelectAll=F2
+		// UnitSetMoveOrder=M
+		// UnitSetStopOrder=S
+		// UnitSetAttackOrder=A
+		// UnitSetCaptureOrder=K
+		// UnitSetPatrolOrder=P
+		// UnitSetExplodeOrder=E
+		// UnitSetRepairOrder=R
+		// ChoosedOrderCancel=X
+		// UnitSetAgressiveBehavior=U
+		// UnitSetCaptureBehavior=C
+		// UnitSetDefensiveBehavior=D
+		// ManualControlEnter=Enter
+		// ManualControlEnterAlt=Space
+		// ManualControlFire=LMB
+		// ManualControlAutoAltitude=RMB
+		// ManualControlExplode=E
+		// ManualControlMoveUp=W
+		// ManualControlMoveDown=S
+		// ManualControlMoveLeft=A
+		// ManualControlMoveRight=D
+		// ManualControlMoveUpAlt=Up
+		// ManualControlMoveDownAlt=Down
+		// ManualControlMoveLeftAlt=Left
+		// ManualControlMoveRightAlt=Right
+		// TakeScreenShot=PrintScreen
+		// SaveScreenShot=F9
+		// PauseTheGame=Pause
+	}
+	//Новые
+	MaxViewDistance=8000.0 //В оригинале установлено на 4000.0
+	MaxObjectsPerScreen=3200 //Максимально допустимое значение 5120 (оригинальное 1024)
+	MaxEffectsCount=1600 //(оригинальное 512)
+	ShadowsDrawDistance=2048 //(оригинальное 1024)
+	ThinFogDrawDistance=0.4 //Оригинальное значение было 0.5, но 0.4 красивее (отрицательное значение "отключает" данный туман)
+	DenseFogDrawDistance=0.7 //(отрицательное значение "отключает" данный туман)
+	MaxDesignsToSave=0
+	PlayerRobotsAutoBoom=0
+	EnableFlyers=0
+	LoadingScreenAnim=0 //Включает отрисовку раскрываемых створок сразу после загрузки ПБ
+}
+Camera!r {
+	CamBaseAngleZ=0
+	CamInRobotForward0=30
+	CamInRobotForward1=40
+	CamMoveSpeed=1.05
+	//Новые
+	CamFieldOfView=60.0 //В оригинале установлено на 60 градусов (после 170 начинается полный треш)
+	Strategy {
+		CamAngleParam=0.7
+		CamDistMax=300
+		CamDistMin=150
+		CamHeight=100
+		CamMouseWheelStep=0.05
+		CamRotAngleMax=20
+		CamRotAngleMin=100
+		CamRotSpeedX=0.0005
+		CamRotSpeedZ=0.001
+		//Новые
+		CamDistParam=1.0 //От 0.25 до 4.0
+	}
+	InRobot {
+		CamAngleParam=0.2
+		CamDistMin=50
+		CamDistMax=150
+		CamHeight=5
+		CamMouseWheelStep=0.05
+		CamRotAngleMax=20
+		CamRotAngleMin=75
+		CamRotSpeedX=0.0005
+		CamRotSpeedZ=0.001
+		//Новые
+		CamDistParam=1.0 //От 0.25 до 4.0
+	}
+}
+//Точки, по которым скриншот экрана загрузки разрезается на 4 части, для создания раздвигающихся створок сразу после загрузки ПБ
+//Первое значение после запятой (например, Down,0.634) задаёт скорость движения данной конкретной створки
+Transitions!r {
+	1024.768 {
+		Down,0.634=130,768|298,470|728,470|298,768
+		Down,0.634=298,768|728,470|895,768|728,768
+		Left,0.634=0,0|130,0|298,470|0,470
+		Left,0.634=0,470|298,470|130,768|0,768
+		Right,0.634=895,0|1024,0|1024,470|728,470
+		Right,0.634=728,470|1024,470|1024,768|895,768
+		Up,1=130,0|895,0|728,470|298,470
+	}
+	800.600 {
+		Down,0.639=231,366|570,366|700,600|100,600
+		Left,0.631=0,0|100,0|231,366|0,366
+		Left,0.631=0,366|231,366|100,600|0,600
+		Right,0.631=700,0|800,0|800,366|570,366
+		Right,0.631=570,366|800,366|800,600|700,600
+		Up,1=100,0|700,0|570,366|231,366
+	}
+}
+Sounds {//Звуки спавна вертолётов, заменил для теста
+	f_build_e {
+		attn=0
+		pan=-0,0
+		path=Sound.RReady
+		vol=0.5,1
+	}
+	f_build_ea {
+		attn=0
+		pan=-0,0
+		path=Sound.RReadyA
+		vol=1,1
+	}
+	fl_start {
+		attn=3
+		looped=0
+		pan=-0.2,0.2
+		path=Sound.VertStart
+		vol=0,0.6
+	}
+	fl_cont {
+		attn=3
+		looped=1
+		pan=-0.2,0.2
+		path=Sound.VertLoop
+		vol=0,0.6
+	}
+}

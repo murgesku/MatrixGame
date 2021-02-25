@@ -953,7 +953,7 @@ void CConstructor::BuildSpecialBot(const SSpecialBot &bot)
 	}
 //HEAD
     OperateUnit(MRT_HEAD, bot.m_Head.m_nKind);
-    StackRobot(NULL,bot.m_Team);
+    StackRobot(NULL, bot.m_Team);
 }
 
 void CConstructor::OperateCurrentConstruction()
