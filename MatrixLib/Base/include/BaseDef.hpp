@@ -24,40 +24,40 @@ namespace Base {
 class CPoint : public tagPOINT
 {
 public:
-        CPoint() {}
-        //CPoint(int zn) {x = zn; y = zn;}
-        CPoint(int ax, int ay) {x = ax; y =ay;}
-        CPoint(const CPoint &p) {x=p.x; y=p.y;}
+    CPoint() {}
+    //CPoint(int zn) {x = zn; y = zn;}
+    CPoint(int ax, int ay) { x = ax; y = ay; }
+    CPoint(const CPoint &p) { x = p.x; y = p.y; }
 
-		bool    operator == (const CPoint & zn) const { return (x==zn.x) && (y==zn.y); }
-        CPoint & operator += (const CPoint &zn) { x+=zn.x; y+=zn.y; return *this; }
-		CPoint & operator -= (const CPoint &zn) { x-=zn.x; y-=zn.y; return *this; }
+    bool     operator == (const CPoint &zn) const { return (x == zn.x) && (y == zn.y); }
+    CPoint  &operator += (const CPoint &zn) { x += zn.x; y += zn.y; return *this; }
+    CPoint  &operator -= (const CPoint &zn) { x -= zn.x; y -= zn.y; return *this; }
 
-        int Dist2(const CPoint & p) const       { return (p.x-x)*(p.x-x)+(p.y-y)*(p.y-y); }
+    int Dist2(const CPoint &p) const { return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y); }
 };
 
 class CRect:public tagRECT
 {
 	public:
 		CRect() {}
-		//CRect(int zn) { left=top=right=bottom=zn; }
-		CRect(int _left,int _top,int _right,int _bottom) { left=_left; top=_top; right=_right; bottom=_bottom; }
+		//CRect(int zn) { left = top = right = bottom = zn; }
+        CRect(int _left, int _top, int _right, int _bottom) { left = _left; top = _top; right = _right; bottom = _bottom; }
 
-        bool IsEmpty(void) const {return (right<=left) || (bottom<=top); }
+        bool IsEmpty(void) const { return (right <= left) || (bottom <= top); }
         bool IsInRect(const CPoint &pos) const
         {
-            return (left < pos.x && top < pos.y && right > pos.x && bottom > pos.y);
+            return(left < pos.x && top < pos.y && right > pos.x && bottom > pos.y);
         }
 
         void Normalize(void)
         {
-            if (left > right)
+            if(left > right)
             {
                 left ^= right;
                 right ^= left;
                 left ^= right;
             }
-            if (top > bottom)
+            if(top > bottom)
             {
                 top ^= bottom;
                 bottom ^= top;

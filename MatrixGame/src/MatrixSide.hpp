@@ -15,7 +15,7 @@
 #define MAX_ROBOTS              60
 #define MAX_FACTORIES           10
 #define PLAYER_SIDE             1
-#define MAX_LOGIC_GROUP         (MAX_ROBOTS+1)
+#define MAX_LOGIC_GROUP         (MAX_ROBOTS + 1)
 
 #define MAX_TEAM_CNT            3
 #define MAX_SELECTION_GROUPS    10
@@ -26,7 +26,9 @@
 #define ROBOTS_BY_MAIN          4
 #define ROBOTS_BY_FACTORY       1
 
-#define SPEED_BOOST             1.1f
+//Использовалось в качестве аркадного коэффициента-бонуса к скорости
+//Было заменено на переменную g_UnitSpeedArcadeCoef, которую можно выставлять из конфига
+//#define SPEED_BOOST             1.1f
 
 #define FRIENDLY_SEARCH_RADIUS  400
 
@@ -241,7 +243,7 @@ public:
     int m_RobotCnt;
     CPoint m_From;
     CPoint m_To;
-    CMatrixMapStatic* m_Obj;
+    CMatrixMapStatic *m_Obj;
     int m_Region;
     int m_RegionPathCnt;                          //Кол-во регионов в пути
     int m_RegionPath[REGION_PATH_MAX_CNT];        //Путь по регионам
@@ -399,7 +401,7 @@ private:
 
     int m_Statistic[MAX_STATISTICS];
 
-    CMatrixMapStatic* m_Arcaded;
+    CMatrixMapStatic *m_Arcaded;
     DWORD             m_ArcadedP_available;
     D3DXVECTOR3       m_ArcadedP_cur;
     D3DXVECTOR3       m_ArcadedP_prevrp;
@@ -408,12 +410,12 @@ private:
     D3DXVECTOR3       m_ArcadedP_ppos1;
     float             m_ArcadedP_k;
     
-    CMatrixGroup* m_CurSelGroup;
-    CMatrixGroup* m_FirstGroup;
-    CMatrixGroup* m_LastGroup;
+    CMatrixGroup *m_CurSelGroup;
+    CMatrixGroup *m_FirstGroup;
+    CMatrixGroup *m_LastGroup;
 
 public:
-    int * m_PlaceList;
+    int *m_PlaceList;
 
     SMatrixLogicGroup m_LogicGroup[MAX_LOGIC_GROUP];
     SMatrixPlayerGroup m_PlayerGroup[MAX_LOGIC_GROUP];
@@ -449,7 +451,7 @@ public:
     void GetResourceIncome(int &base_i, int &fa_i, ERes resource_type);
     int  GetIncomePerTime(int building, int ms);
     void PLDropAllActions();
-    SMatrixTeam * GetTeam(int no)                   { return m_Team+no; }
+    SMatrixTeam *GetTeam(int no)                   { return m_Team + no; }
 
     int m_Id;
 	CWStr m_Name;
@@ -472,7 +474,7 @@ public:
 	void LogicTakt(int ms);
 
 //Player
-    CConstructorPanel* m_ConstructPanel;
+    CConstructorPanel *m_ConstructPanel;
     void InitPlayerSide();
     CWStr m_PlayerName;	
     EPlayerActions m_CurrentAction;
@@ -480,13 +482,13 @@ public:
 	ESelection m_CurrSel;
 
 private:
-    CMatrixGroup* m_CurrentGroup; //CMatrixGroup* m_CurGroup;
+    CMatrixGroup *m_CurrentGroup; //CMatrixGroup* m_CurGroup;
 public:
     
-    CMatrixGroup* GetCurGroup()                     { return m_CurrentGroup; }
-    void SetCurGroup(CMatrixGroup* group);           
+    CMatrixGroup *GetCurGroup()                     { return m_CurrentGroup; }
+    void SetCurGroup(CMatrixGroup *group);           
     
-    void RemoveObjectFromSelectedGroup(CMatrixMapStatic* o);
+    void RemoveObjectFromSelectedGroup(CMatrixMapStatic *o);
 	
 	CMatrixMapStatic *m_ActiveObject;
 	SRobot           m_Robots[MAX_ROBOTS];
@@ -495,28 +497,28 @@ public:
     int  GetCurSelNum()                                                         { return m_CurSelNum; }
     void SetCurSelNum(int i);                                                   
     void ResetSelection();
-    CMatrixMapStatic* GetCurSelObject();
+    CMatrixMapStatic *GetCurSelObject();
     
 
-    CMatrixGroup* CreateGroupFromCurrent();
-    void CreateGroupFromCurrent(CMatrixMapStatic* obj);
+    CMatrixGroup *CreateGroupFromCurrent();
+    void CreateGroupFromCurrent(CMatrixMapStatic *obj);
     void AddToCurrentGroup();
     void SelectedGroupUnselect();
     void GroupsUnselectSoft();
     void SelectedGroupBreakOrders();
     void SelectedGroupMoveTo(const D3DXVECTOR2 &pos);
-    void SelectedGroupAttack(CMatrixMapStatic* victim);
-    void SelectedGroupCapture(CMatrixMapStatic* building);
+    void SelectedGroupAttack(CMatrixMapStatic *victim);
+    void SelectedGroupCapture(CMatrixMapStatic *building);
     void PumpGroups();
 
-    CMatrixGroup* GetFirstGroup()                                               { return m_FirstGroup; }
-    CMatrixGroup* GetLastGroup()                                                { return m_LastGroup; }
-    CMatrixGroup* GetCurSelGroup()                                              { return m_CurSelGroup; }
+    CMatrixGroup *GetFirstGroup()                                               { return m_FirstGroup; }
+    CMatrixGroup *GetLastGroup()                                                { return m_LastGroup; }
+    CMatrixGroup *GetCurSelGroup()                                              { return m_CurSelGroup; }
 
-    void RemoveFromSelection(CMatrixMapStatic* o);
-    bool FindObjectInSelection(CMatrixMapStatic* o);
+    void RemoveFromSelection(CMatrixMapStatic *o);
+    bool FindObjectInSelection(CMatrixMapStatic *o);
     void ResetSystemSelection();
-    void __stdcall PlayerAction(void* object);
+    void __stdcall PlayerAction(void *object);
 
     void RobotStop(void *pObject);
     void Select(ESelType type, CMatrixMapStatic *object);
@@ -548,9 +550,9 @@ public:
     bool    IsRobotMode();
     bool    IsFlyerMode();
     CMatrixMapStatic * GetArcadedObject(void) {return m_Arcaded;}
-    void SetArcadedObject(CMatrixMapStatic * o);
+    void SetArcadedObject(CMatrixMapStatic *o);
 
-    D3DXVECTOR3 CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRobot * robot);
+    D3DXVECTOR3 CorrectArcadedRobotArmorP(D3DXVECTOR3 &p, CMatrixRobot *robot);
     //void SetArcadedRobotArmorP(const D3DXVECTOR3 &p);
     void InterpolateArcadedRobotArmorP(int ms);
 
@@ -561,20 +563,20 @@ public:
 	~CMatrixSideUnit();
 
     // STUB:
-    int IsInPlaces(const CPoint * places, int placescnt, int x, int y);
+    int IsInPlaces(const CPoint *places, int placescnt, int x, int y);
 
     // High logic
     void CalcStrength(void);
     void Regroup(void);
     void ClearTeam(int team);
-    int ClacSpawnTeam(int region,int nsh);
+    int ClacSpawnTeam(int region, int nsh);
     void EscapeFromBomb(void);
     void GroupNoTeamRobot(void);
     void CalcMaxSpeed(void);
     void TaktHL(void);
-    int FindNearRegionWithUTR(int from, int * exclude_list, int exclude_cnt, DWORD flags); // 1-our 2-netral 4-enemy 8-base 16-building 32-robot 64-cannon
+    int FindNearRegionWithUTR(int from, int *exclude_list, int exclude_cnt, DWORD flags); // 1-our 2-netral 4-enemy 8-base 16-building 32-robot 64-cannon
     int CompareRegionForward(int team, int r1, int r2);
-    int CompareAction(int team,SMatrixLogicAction * a1,SMatrixLogicAction * a2);
+    int CompareAction(int team,SMatrixLogicAction *a1, SMatrixLogicAction *a2);
     void BestAction(int team);
     void LiveAction(int team);
     float BuildRobotMinStrange(CMatrixBuilding * base);
@@ -585,15 +587,15 @@ public:
     void TaktTL(void);
     void WarTL(int group);
     void RepairTL(int group);
-    void AssignPlace(CMatrixRobotAI* robot, int region, CPoint* target = nullptr, std::vector<SMatrixRegion*>*all_regions = nullptr);
+    void AssignPlace(CMatrixRobotAI *robot, int region, CPoint *target = nullptr, std::vector<SMatrixRegion*>*all_regions = nullptr);
     void AssignPlace(int group, int region);
-    void SortRobotList(CMatrixRobotAI * * rl, int rlcnt);
+    void SortRobotList(CMatrixRobotAI **rl, int rlcnt);
     bool CmpOrder(int team, int group)                   { ASSERT(team>=0 && team<m_TeamCnt); return m_LogicGroup[group].m_Action.m_Type==m_Team[team].m_Action.m_Type && m_LogicGroup[group].m_Action.m_Region==m_Team[team].m_Action.m_Region; } // Путь не сравнивается
     void CopyOrder(int team, int group)                  { ASSERT(team>=0 && team<m_TeamCnt); m_LogicGroup[group].m_Action=m_Team[team].m_Action; }
 
-    bool PlaceInRegion(CMatrixRobotAI * robot, int place, int region);
+    bool PlaceInRegion(CMatrixRobotAI *robot, int place, int region);
 
-    void CalcRegionPath(SMatrixLogicAction * ac, int rend,byte mm);
+    void CalcRegionPath(SMatrixLogicAction *ac, int rend, byte mm);
 
     bool CanMoveNoEnemy(byte mm, int r1, int r2);
 
@@ -606,21 +608,21 @@ public:
     void RepairPL(int group);
     void WarPL(int group);
     int SelGroupToLogicGroup(void);
-    int RobotToLogicGroup(CMatrixRobotAI* robot);
+    int RobotToLogicGroup(CMatrixRobotAI *robot);
     void PGOrderStop(int no);
-    void PGOrderMoveTo(int no, CPoint& tp);
-    void PGOrderCapture(int no, CMatrixBuilding* building);
-    void PGOrderAttack(int no, const CPoint& tp, CMatrixMapStatic* terget_obj);
-    void PGOrderPatrol(int no, CPoint& tp);
-    void PGOrderRepair(int no, CMatrixMapStatic* terget_obj);
-    void PGOrderBomb(int no, CPoint& tp, CMatrixMapStatic* terget_obj);
+    void PGOrderMoveTo(int no, CPoint &tp);
+    void PGOrderCapture(int no, CMatrixBuilding *building);
+    void PGOrderAttack(int no, const CPoint &tp, CMatrixMapStatic *terget_obj);
+    void PGOrderPatrol(int no, CPoint &tp);
+    void PGOrderRepair(int no, CMatrixMapStatic *terget_obj);
+    void PGOrderBomb(int no, CPoint &tp, CMatrixMapStatic *terget_obj);
     void PGOrderAutoCapture(int no);
     void PGOrderAutoAttack(int no);
     void PGOrderAutoDefence(int no);
-    void PGRemoveAllPassive(int no, CMatrixMapStatic* skip);
-    void PGAssignPlace(int no, CPoint& center);
-    void PGAssignPlacePlayer(int no, CPoint& center);
-    void PGSetPlace(CMatrixRobotAI* robot, CPoint& p);
+    void PGRemoveAllPassive(int no, CMatrixMapStatic *skip);
+    void PGAssignPlace(int no, CPoint &center);
+    void PGAssignPlacePlayer(int no, CPoint &center);
+    void PGSetPlace(CMatrixRobotAI *robot, CPoint &p);
     void PGPlaceClear(int no);
     CPoint PGCalcCenterGroup(int no);
     CPoint PGCalcPlaceCenter(int no);
@@ -629,13 +631,13 @@ public:
     void PGFindCaptureFactory(int no);
     void PGFindAttackTarget(int no);
     void PGFindDefenceTarget(int no);
-    void PGCalcRegionPath(SMatrixPlayerGroup* pg, int rend, byte mm);
+    void PGCalcRegionPath(SMatrixPlayerGroup *pg, int rend, byte mm);
 
     void BuildCrazyBot(void);
 
-    void DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar* format, ...);
-    void DMSide(const wchar* format,...);
+    void DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar *format, ...);
+    void DMSide(const wchar *format,...);
 
 };
 
-void SideSelectionCallBack(CMatrixMapStatic* ms, DWORD param);
+void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param);

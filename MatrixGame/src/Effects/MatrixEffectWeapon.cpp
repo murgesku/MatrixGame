@@ -64,9 +64,9 @@ void CMatrixEffectWeapon::WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &p
 }
 
 
-CMatrixEffectWeapon::CMatrixEffectWeapon(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown):
-CMatrixEffect(), m_Type(type), m_User(user), m_Handler(handler), m_Pos(pos), m_Dir(dir), m_CoolDown(cooldown?float(cooldown):((float)(int)type)), m_Time(0),
-m_Volcano(NULL), m_Ref(1), m_Sound(SOUND_ID_EMPTY),m_Owner(NULL),m_SideStorage(0)
+CMatrixEffectWeapon::CMatrixEffectWeapon(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown) :
+    CMatrixEffect(), m_Type(type), m_User(user), m_Handler(handler), m_Pos(pos), m_Dir(dir), m_CoolDown(cooldown ? float(cooldown) : ((float)(int)type)), m_Time(0),
+    m_Volcano(NULL), m_Ref(1), m_Sound(SOUND_ID_EMPTY), m_Owner(NULL), m_SideStorage(0)
 #ifdef _DEBUG
 ,m_Effect(DEBUG_CALL_INFO)
 #endif
@@ -80,14 +80,12 @@ m_Volcano(NULL), m_Ref(1), m_Sound(SOUND_ID_EMPTY),m_Owner(NULL),m_SideStorage(0
 
     int widx = Weap2Index(m_Type);
 
-
     m_WeaponDist = g_Config.m_WeaponRadius[widx];
-    m_WeaponCoefficient = DEFBOT_WEAPON_COEFF;
-    if (g_Config.m_WeaponCooldown[widx] > 0)
-        m_CoolDown = (float)g_Config.m_WeaponCooldown[widx];
+    m_WeaponCoefficient = g_WeaponDamageNormalCoef;
+    if(g_Config.m_WeaponCooldown[widx] > 0) m_CoolDown = (float)g_Config.m_WeaponCooldown[widx];
 
-
-    switch(m_Type){
+    switch(m_Type)
+    {
         case WEAPON_PLASMA:
             m_SoundType = S_WEAPON_PLASMA;
             RESETFLAG(m_Flags, WEAPFLAGS_SND_OFF);
@@ -162,7 +160,6 @@ m_Volcano(NULL), m_Ref(1), m_Sound(SOUND_ID_EMPTY),m_Owner(NULL),m_SideStorage(0
             m_SoundType = S_NONE;
     }
 //EndOfShit
-    
 }
 
 
@@ -171,10 +168,9 @@ CMatrixEffectWeapon::~CMatrixEffectWeapon()
     DTRACE();
     FireEnd();
 
-    if (m_Type == WEAPON_FLAMETHROWER)
+    if(m_Type == WEAPON_FLAMETHROWER)
     {
-        if (m_Effect.effect)
-            m_Effect.Unconnect();
+        if(m_Effect.effect) m_Effect.Unconnect();
     }
 
 #ifdef _DEBUG
@@ -183,7 +179,7 @@ CMatrixEffectWeapon::~CMatrixEffectWeapon()
     m_Effect.Release();
 #endif
 
-    if (m_Owner) m_Owner->Release();
+    if(m_Owner) m_Owner->Release();
 }
 
 void CMatrixEffectWeapon::Release(void)
@@ -191,9 +187,9 @@ void CMatrixEffectWeapon::Release(void)
     DTRACE();
     --m_Ref;
 #ifdef _DEBUG
-    if (m_Ref < 0) _asm int 3
+    if(m_Ref < 0) _asm int 3
 #endif
-    if (m_Ref <= 0)
+    if(m_Ref <= 0)
     {
         SetDIP();
         HDelete(CMatrixEffectWeapon, this, m_Heap);
@@ -204,26 +200,24 @@ void CMatrixEffectWeapon::Takt(float step)
 {
     DTRACE();
     
-    if (m_Time < 0) m_Time += step;
-    if (m_Time > 0 && !IsFire()) m_Time = 0;
+    if(m_Time < 0) m_Time += step;
+    if(m_Time > 0 && !IsFire()) m_Time = 0;
 
-    if (m_Sound != SOUND_ID_EMPTY)
+    if(m_Sound != SOUND_ID_EMPTY)
     {
         m_Sound = CSound::ChangePos(m_Sound, m_SoundType, m_Pos);
     }
 
-    if (IsFire())
+    if(IsFire())
     {
-        while (m_Time >= 0)
+        while(m_Time >= 0)
         {
             Fire();
             SETFLAG(m_Flags, WEAPFLAGS_FIREWAS);
             m_Time -= m_CoolDown;
 
         }
-
     }
-
 }
 
 void CMatrixEffectWeapon::Modify(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, const D3DXVECTOR3 &speed)
@@ -233,33 +227,36 @@ void CMatrixEffectWeapon::Modify(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir,
     m_Pos = pos;
     m_Dir = dir;
     m_Speed = speed;
-    if (m_Type == WEAPON_PLASMA)
+
+    if(m_Type == WEAPON_PLASMA)
     {
-        
-        if (m_Effect.effect && m_Effect.effect->GetType() == EFFECT_KONUS)
+        if(m_Effect.effect && m_Effect.effect->GetType() == EFFECT_KONUS)
         {
             ((CMatrixEffectKonus *)m_Effect.effect)->Modify(pos,dir);
         }
-    } else
-    if (m_Type == WEAPON_VOLCANO)
+    }
+    else
+    if(m_Type == WEAPON_VOLCANO)
     {
-        if (m_Volcano)
+        if(m_Volcano)
         {
             m_Volcano->SetPos(pos,pos + dir*VOLCANO_FIRE_LENGHT, dir);
         }
-    } else
-    if (m_Type == WEAPON_LIGHTENING)
+    }
+    else
+    if(m_Type == WEAPON_LIGHTENING)
     {
-        if (m_Effect.effect && m_Effect.effect->GetType() == EFFECT_LIGHTENING)
+        if(m_Effect.effect && m_Effect.effect->GetType() == EFFECT_LIGHTENING)
         {
             D3DXVECTOR3 hitpos(m_Pos + m_Dir * m_WeaponDist * m_WeaponCoefficient);
             g_MatrixMap->Trace(&hitpos, m_Pos, hitpos, TRACE_ALL, m_Skip);
             ((CMatrixEffectLightening *)m_Effect.effect)->SetPos(m_Pos, hitpos);
         }
-    } else
-    if (m_Type == WEAPON_LASER || m_Type == WEAPON_CANNON2)
+    }
+    else
+    if(m_Type == WEAPON_LASER || m_Type == WEAPON_CANNON2)
     {
-        if (m_Laser)
+        if(m_Laser)
         {
             D3DXVECTOR3 hitpos(m_Pos + m_Dir * m_WeaponDist * m_WeaponCoefficient);
             g_MatrixMap->Trace(&hitpos, m_Pos, hitpos, TRACE_ALL, m_Skip);
@@ -267,15 +264,15 @@ void CMatrixEffectWeapon::Modify(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir,
             m_Laser->SetPos(m_Pos, hitpos);
      
         }
-    } else
-    if (m_Type == WEAPON_REPAIR)
+    }
+    else
+    if(m_Type == WEAPON_REPAIR)
     {
-        if (m_Repair)
+        if(m_Repair)
         {
             m_Repair->UpdateData(pos, dir);
         }
     }
-
 }
 
 void CMatrixEffectWeapon::Fire(void)
@@ -284,12 +281,13 @@ void CMatrixEffectWeapon::Fire(void)
 
     ++m_FireCount;
 
-    if (m_SoundType != S_NONE)
+    if(m_SoundType != S_NONE)
     {
-        if (FLAG(m_Flags, WEAPFLAGS_SND_SKIP))
+        if(FLAG(m_Flags, WEAPFLAGS_SND_SKIP))
         {
             m_Sound = CSound::Play(m_Sound, m_SoundType, m_Pos);
-        } else
+        }
+        else
         {
             m_Sound = CSound::Play(m_SoundType, m_Pos);
         }
@@ -297,31 +295,32 @@ void CMatrixEffectWeapon::Fire(void)
 
     DCP();
 
-    switch (m_Type)
+    switch(m_Type)
     {
     case WEAPON_PLASMA:
         {
             DCP();
             float ang = float(2 * M_PI / 4096.0) * (g_MatrixMap->GetTime() & 4095);
             CMatrixEffect::CreateKonus(&m_Effect, m_Pos, m_Dir, 10, 10, ang, 300, true, NULL);
-            m_Ref++;
+            ++m_Ref;
             CMatrixEffect::CreateFirePlasma(m_Pos, m_Pos + (m_Dir * m_WeaponDist * m_WeaponCoefficient), 0.5f, TRACE_ALL, m_Skip, WeaponHit,(DWORD)this);
             break;
         }
     case WEAPON_VOLCANO:
         {
             DCP();
-            if (m_Volcano)
+            if(m_Volcano)
             {
                 //g_MatrixMap->SubEffect(m_Konus);
                 float ang = float(2 * M_PI / 4096.0) * (g_MatrixMap->GetTime() & 4095);
                 m_Volcano->SetPos(m_Pos, m_Pos + m_Dir * VOLCANO_FIRE_LENGHT, m_Dir, ang);
 
-            } else
+            }
+            else
             {
                 float ang = float(2 * M_PI / 4096.0) * (g_MatrixMap->GetTime() & 4095);
                 m_Volcano = HNew (m_Heap) CVolcano(m_Pos, m_Dir, ang);
-                if (!g_MatrixMap->AddEffect(m_Volcano)) m_Volcano = NULL;
+                if(!g_MatrixMap->AddEffect(m_Volcano)) m_Volcano = NULL;
             }
 
             DWORD flags_add = FEHF_LASTHIT;
@@ -329,23 +328,25 @@ void CMatrixEffectWeapon::Fire(void)
             D3DXVECTOR3 hitpos;
             D3DXVECTOR3 splash;
             CMatrixMapStatic * s = g_MatrixMap->Trace(&hitpos, m_Pos, m_Pos + m_Dir * m_WeaponDist * m_WeaponCoefficient, TRACE_ALL, m_Skip);
-            if (s == TRACE_STOP_NONE) break;
-            if (IS_TRACE_STOP_OBJECT(s))
+            if(s == TRACE_STOP_NONE) break;
+            if(IS_TRACE_STOP_OBJECT(s))
             {
                 bool dead = s->Damage(m_Type, hitpos, m_Dir, GetSideStorage(), GetOwner());
                 SETFLAG(m_Flags, WEAPFLAGS_HITWAS);
-                if (dead)
+                if(dead)
                 {
                     s = TRACE_STOP_NONE;
                 }
                 splash = -m_Dir;
-            } else
-            if (s == TRACE_STOP_WATER)
+            }
+            else
+            if(s == TRACE_STOP_WATER)
             {
                 splash = D3DXVECTOR3(0,0,1);
                 CMatrixEffect::CreateKonusSplash(hitpos, splash, 10, 5, FSRND(M_PI), 1000, true, (CTextureManaged *)g_Cache->Get(cc_TextureManaged,TEXTURE_PATH_SPLASH));
 
-            } else
+            }
+            else
             {
                 g_MatrixMap->GetNormal(&splash, hitpos.x, hitpos.y);
                 CMatrixEffect::CreateKonus(NULL, hitpos, splash, 5, 10, FSRND(M_PI), 300, true, (CTextureManaged *)g_Cache->Get(cc_TextureManaged,TEXTURE_PATH_GUN_BULLETS1));
@@ -353,15 +354,14 @@ void CMatrixEffectWeapon::Fire(void)
 
             }
 
-            if (FRND(1)<0.1f)
+            if(FRND(1) < 0.1f)
             {
 
                 //CHelper::Create(1,1)->Line(m_Pos, hitpos, 0x80808080, 0x80808080);
                 CMatrixEffect::CreateBillboardLine(NULL, m_Pos, hitpos , 0.5f, 0x80FFFFFF, 0, 100, m_BBTextures[BBT_TRASSA].tex);
             }
 
-
-            if (m_Handler) m_Handler(s, hitpos, m_User, FEHF_LASTHIT);
+            if(m_Handler) m_Handler(s, hitpos, m_User, FEHF_LASTHIT);
 
             break;
         }

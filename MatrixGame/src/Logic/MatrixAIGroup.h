@@ -72,14 +72,14 @@ class CMatrixGroup : public CMain
         CMatrixGroup*       m_PrevGroup;
 
     public:
-        void AddObject(CMatrixMapStatic* object, int team);
-        void RemoveObject(CMatrixMapStatic* object);
+        void AddObject(CMatrixMapStatic *object, int team);
+        void RemoveObject(CMatrixMapStatic *object);
         bool RemoveObject(int num);
         void RemoveAll();
         void RemoveBuildings();
         void SortFlyers();
 
-        CMatrixMapStatic* GetObjectByN(int num);
+        CMatrixMapStatic *GetObjectByN(int num);
 
         int GetObjectsCnt() { return m_ObjectsCnt; }
         
@@ -90,8 +90,8 @@ class CMatrixGroup : public CMain
         void SetTeam(int team) { m_Team = team; }
         int GetTeam() { return m_Team; }
 
-        void FindNearObjects(CMatrixGroupObject* object);
-        bool FindObject(CMatrixMapStatic* object);
+        void FindNearObjects(CMatrixGroupObject *object);
+        bool FindObject(CMatrixMapStatic *object);
 
         //void InstallTactics(TacticsType type, CBlockPar* par);
         //void DeInstallTactics();

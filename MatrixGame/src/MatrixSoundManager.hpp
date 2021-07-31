@@ -237,7 +237,6 @@ class CSound : public CMain
 {
     struct SSoundItem
     {
-    private:
     public:
         float vol0,vol1;
         float pan0, pan1;
@@ -336,7 +335,7 @@ public:
 
     static __forceinline DWORD Pos2Key(const D3DXVECTOR3 &pos);
 
-    static void    SaveSoundLog(void);
+    static void SaveSoundLog(void);
 };
 
 class CSoundArray : public Base::CBuf
@@ -372,7 +371,6 @@ public:
     }
     void SetSoundPos(const D3DXVECTOR3 &pos);
     void UpdateTimings(float ms);
-
 };
 
 

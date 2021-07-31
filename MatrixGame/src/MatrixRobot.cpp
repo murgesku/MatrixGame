@@ -781,6 +781,7 @@ DCP();
 		    if(GetBase()->m_State == BASE_OPENED)
             {
 			    m_CurrState = ROBOT_BASE_MOVEOUT;
+                SetAfterManual(false);
 		    }
         }
     }
@@ -1061,17 +1062,17 @@ DCP();
                 DCP();
                 if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject())
                 {
-                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD_ALT]) & 0x8000)==0x8000))
+                    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD_ALT]) & 0x8000) == 0x8000))
                     {
                         D3DXVECTOR3 dest(m_PosX, m_PosY, 0);
-                        dest += m_Forward*m_maxSpeed;
-                        LowLevelMove(ms,dest, true, true, false);
+                        dest += m_Forward * m_maxSpeed;
+                        LowLevelMove(ms, dest, true, true, false);
                     }
-                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD]) & 0x8000)==0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD_ALT]) & 0x8000)==0x8000))
+                    else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD]) & 0x8000) == 0x8000) || ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD_ALT]) & 0x8000) == 0x8000))
                     {
                         D3DXVECTOR3 dest(m_PosX, m_PosY, 0);
-                        dest -= m_Forward*m_maxSpeed;
-                        LowLevelMove(ms,dest, true, true, false,true);
+                        dest -= m_Forward * m_maxSpeed;
+                        LowLevelMove(ms, dest, true, true, false, true);
                     }
                     else
                     {
@@ -1090,7 +1091,7 @@ DCP();
                         if(factory && factory->IsBase()) break;
                     }
                 }
-                if(i<m_OrdersInPool) break;
+                if(i < m_OrdersInPool) break;
 
                 //int x0 = TruncFloat(robot_pos.x * INVERT(GLOBAL_SCALE_MOVE)) - COLLIDE_FIELD_R;
                 //int y0 = TruncFloat(robot_pos.y * INVERT(GLOBAL_SCALE_MOVE)) - COLLIDE_FIELD_R;
@@ -1099,30 +1100,30 @@ DCP();
                 MapPosCalc();
 
                 CHECK_ROBOT_POS();
-                //	            if(!(g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,this))) ERROR_E;
+                //if(!(g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,this))) ERROR_E;
 
 	            ZoneCurFind();
 
 	            if(m_ZoneCur < 0)
                 {
                     if(m_MovePathCnt > 0) MoveByMovePath(ms);
-
                     break;
 	            }
 
-/*                if(m_ZonePathNext>=0 && m_ZonePathNext<m_ZonePathCnt) {
-			        if(m_ZoneCur==m_ZonePath[m_ZonePathNext]) {
-				        m_ZonePathNext++;
-				        m_MovePathCur=0;
-				        m_MovePathCnt=0;
+/*                if(m_ZonePathNext >= 0 && m_ZonePathNext < m_ZonePathCnt)
+                  {
+			        if(m_ZoneCur == m_ZonePath[m_ZonePathNext])
+                    {
+				        ++m_ZonePathNext;
+				        m_MovePathCur = 0;
+				        m_MovePathCnt = 0;
 			        }
 		        }*/
-                if(m_ZonePathNext>=0 && m_ZonePathNext<m_ZonePathCnt)
+                if(m_ZonePathNext >= 0 && m_ZonePathNext < m_ZonePathCnt)
                 {
-                    if(m_MovePathDistFollow>m_MovePathDist*0.7)
+                    if(m_MovePathDistFollow > m_MovePathDist * 0.7)
                     {
-                        int i;
-                        for(i = m_ZonePathNext; i < m_ZonePathCnt; ++i)
+                        for(int i = m_ZonePathNext; i < m_ZonePathCnt; ++i)
                         {
                             if(m_ZonePath[i] == m_ZoneCur)
                             {
@@ -1141,18 +1142,18 @@ DCP();
                     }
 		        }
 
-		        if(m_MovePathCnt>0)
+		        if(m_MovePathCnt > 0)
                 {
 			        MoveByMovePath(ms);
 			        break;
 		        }
-		        if(m_ZoneDes<0)
+		        if(m_ZoneDes < 0)
                 {
-			        m_ZoneDes=g_MatrixMap->ZoneFindNear(m_Unit[0].m_Kind - 1, m_DesX, m_DesY);
-			        m_ZonePathCnt=0;
+			        m_ZoneDes = g_MatrixMap->ZoneFindNear(m_Unit[0].m_Kind - 1, m_DesX, m_DesY);
+			        m_ZonePathCnt = 0;
 		        }
 
-		        if(m_ZonePathCnt<=0)
+		        if(m_ZonePathCnt <= 0)
                 {
 			        ZonePathCalc();
 		        }
@@ -1180,7 +1181,7 @@ DCP();
             case ROT_STOP_MOVE:
             {
                 DCP();
-                if(0/*this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject()*/)
+                if(0)//this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject())
                 {
                     LowLevelDecelerate(ms, true, true);
                     if(m_Speed <= ZERO_VELOCITY)
@@ -1235,25 +1236,23 @@ DCP();
 			        m_WeaponDir.y = f2;
 			        m_WeaponDir.z = f3;
                 }
-                for(int nC = 0; nC < m_WeaponsCnt; nC++)
+                for(int nC = 0; nC < m_WeaponsCnt; ++nC)
                 {
 				    if(m_Weapons[nC].IsEffectPresent())
                     {
                         if(m_Weapons[nC].GetWeaponType() == WEAPON_REPAIR)
                         {
-                            if(type==2) m_Weapons[nC].FireBegin(m_Velocity * (1.0f/LOGIC_TAKT_PERIOD), this);
+                            if(type == 2) m_Weapons[nC].FireBegin(m_Velocity * (1.0f / LOGIC_TAKT_PERIOD), this);
                             else m_Weapons[nC].FireEnd();
-
                         }
                         else if(m_Weapons[nC].GetWeaponType() == WEAPON_BOMB)
                         {
-                            if(type==0) m_Weapons[nC].FireBegin(D3DXVECTOR3(f1, f2, f3), this);
+                            if(!type) m_Weapons[nC].FireBegin(D3DXVECTOR3(f1, f2, f3), this);
                             else m_Weapons[nC].FireEnd();
-
                         }
                         else
                         {
-                            if(type==0) m_Weapons[nC].FireBegin(m_Velocity * (1.0f/LOGIC_TAKT_PERIOD), this);
+                            if(!type) m_Weapons[nC].FireBegin(m_Velocity * (1.0f / LOGIC_TAKT_PERIOD), this);
                             else m_Weapons[nC].FireEnd();
                         }
 				    }
@@ -1348,11 +1347,11 @@ DCP();
 
                             SETFLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL);
 
-                            LowLevelMove(ms,D3DXVECTOR3(factory->m_Pos.x,factory->m_Pos.y,0), false, false);
+                            LowLevelMove(ms, D3DXVECTOR3(factory->m_Pos.x, factory->m_Pos.y, 0), false, false);
                         }
                         else
                         {
-                            LowLevelMove(ms,D3DXVECTOR3(factory->m_Pos.x,factory->m_Pos.y,0), true, true);
+                            LowLevelMove(ms, D3DXVECTOR3(factory->m_Pos.x, factory->m_Pos.y, 0), true, true);
                         }
 
                         if(fabs(m_PosX - factory->m_Pos.x) < 2.0f && fabs(m_PosY - factory->m_Pos.y) < 2.0f)
@@ -1373,10 +1372,10 @@ DCP();
                     }
                     else if(m_OrdersList[0].GetOrderPhase() == ROP_CAPTURING)
                     {
-                        CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+                        CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
                         if(ps->m_CurrSel == BUILDING_SELECTED || ps->m_CurrSel == BASE_SELECTED)
                         {
-                            CMatrixBuilding* bld = ((CMatrixBuilding*)ps->m_ActiveObject);
+                            CMatrixBuilding *bld = ((CMatrixBuilding*)ps->m_ActiveObject);
                             if(bld == factory)
                             {
                                 ps->Select(NOTHING, NULL);
@@ -1704,23 +1703,23 @@ void CMatrixRobotAI::ZoneCurFind()
 void CMatrixRobotAI::ZonePathCalc()
 {
     if(m_ZoneCur < 0) return;
-	ASSERT(m_ZoneCur >= 0);
+    ASSERT(m_ZoneCur >= 0);
 
     if(!m_ZonePath) m_ZonePath = (int*)HAlloc(g_MatrixMap->m_RN.m_ZoneCnt * sizeof(int), g_MatrixHeap);
-//	m_ZonePathCnt = g_MatrixMap->ZoneFindPath(m_Unit[0].m_Kind-1, m_ZoneCur, m_ZoneDes, m_ZonePath);
+    //m_ZonePathCnt = g_MatrixMap->ZoneFindPath(m_Unit[0].m_Kind-1, m_ZoneCur, m_ZoneDes, m_ZonePath);
     
     CMatrixSideUnit* side = g_MatrixMap->GetSideById(GetSide());
-    if(GetSide() == PLAYER_SIDE && GetGroupLogic()>=0 && side->m_PlayerGroup[GetGroupLogic()].m_RoadPath->m_ListCnt>0)
+    if(GetSide() == PLAYER_SIDE && GetGroupLogic() >= 0 && side->m_PlayerGroup[GetGroupLogic()].m_RoadPath->m_ListCnt > 0)
     {
-        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind-1,m_ZoneCur,m_ZoneDes,side->m_PlayerGroup[GetGroupLogic()].m_RoadPath,0,m_ZonePath,g_TestRobot==this);
+        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind - 1, m_ZoneCur, m_ZoneDes, side->m_PlayerGroup[GetGroupLogic()].m_RoadPath, 0, m_ZonePath, g_TestRobot == this);
     }
-    else if(GetSide()!=PLAYER_SIDE && GetTeam()>=0 && side->m_Team[GetTeam()].m_RoadPath->m_ListCnt>0)
+    else if(GetSide() != PLAYER_SIDE && GetTeam() >= 0 && side->m_Team[GetTeam()].m_RoadPath->m_ListCnt > 0)
     {
-        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind-1,m_ZoneCur,m_ZoneDes,side->m_Team[GetTeam()].m_RoadPath,0,m_ZonePath,g_TestRobot==this);
+        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind - 1, m_ZoneCur, m_ZoneDes, side->m_Team[GetTeam()].m_RoadPath, 0, m_ZonePath, g_TestRobot == this);
     }
     else
     {
-        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind-1,m_ZoneCur,m_ZoneDes,NULL,0,m_ZonePath,g_TestRobot==this);
+        m_ZonePathCnt = g_MatrixMap->FindPathInZone(m_Unit[0].m_Kind - 1, m_ZoneCur, m_ZoneDes, NULL, 0, m_ZonePath, g_TestRobot == this);
     }
 	if(m_ZonePathCnt > 0)
     {
@@ -1740,89 +1739,95 @@ void CMatrixRobotAI::ZonePathCalc()
 void CMatrixRobotAI::ZoneMoveCalc()
 {
     if(m_ZoneCur < 0) return;
-	ASSERT(m_ZoneCur>=0);
-//	ASSERT(m_ZoneNear>=0);
+	ASSERT(m_ZoneCur >= 0);
+    //ASSERT(m_ZoneNear >= 0);
 
-    int other_cnt=0;
+    int other_cnt = 0;
     int other_size[200];
-    CPoint * other_path_list[200];
+    CPoint *other_path_list[200];
     int other_path_cnt[200];
     CPoint other_des[200];
 
     m_MoveTestChange = g_MatrixMap->GetTime();
 
-    CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
+    CMatrixMapStatic *obj = CMatrixMapStatic::GetFirstLogic();
     while(obj)
     {
-        if(obj->IsLiveRobot() && obj!=this)
+        if(obj->IsLiveRobot() && obj != this)
         {
-            CMatrixRobotAI * r=(CMatrixRobotAI*)obj;
+            CMatrixRobotAI *r = (CMatrixRobotAI*)obj;
             CPoint tp;
             if(r->GetMoveToCoords(tp))
             {
-                ASSERT(other_cnt<200);
-                other_size[other_cnt]=4;
-                if(r->m_MovePath && r->m_MovePathCur<r->m_MovePathCnt)
+                ASSERT(other_cnt < 200);
+                other_size[other_cnt] = 4;
+                if(r->m_MovePath && r->m_MovePathCur < r->m_MovePathCnt)
                 {
-                    other_path_list[other_cnt]=r->m_MovePath+r->m_MovePathCur;
-                    other_path_cnt[other_cnt]=r->m_MovePathCnt-r->m_MovePathCur;
+                    other_path_list[other_cnt] = r->m_MovePath + r->m_MovePathCur;
+                    other_path_cnt[other_cnt] = r->m_MovePathCnt - r->m_MovePathCur;
                 }
                 else
                 {
-                    other_path_list[other_cnt]=NULL;
-                    other_path_cnt[other_cnt]=0;
+                    other_path_list[other_cnt] = NULL;
+                    other_path_cnt[other_cnt] = 0;
                 }
-                other_des[other_cnt]=CPoint(r->m_DesX,r->m_DesY);
-                other_cnt++;
+                other_des[other_cnt] = CPoint(r->m_DesX, r->m_DesY);
+                ++other_cnt;
             }
             else
             {
-                ASSERT(other_cnt<200);
-                other_size[other_cnt]=4;
-                other_path_list[other_cnt]=NULL;
-                other_path_cnt[other_cnt]=0;
-                other_des[other_cnt]=CPoint(r->m_MapX,r->m_MapY);
-                other_cnt++;
+                ASSERT(other_cnt < 200);
+                other_size[other_cnt] = 4;
+                other_path_list[other_cnt] = NULL;
+                other_path_cnt[other_cnt] = 0;
+                other_des[other_cnt] = CPoint(r->m_MapX, r->m_MapY);
+                ++other_cnt;
             }
         }
         else if(obj->IsLiveCannon())
         {
-            ASSERT(other_cnt<200);
-            other_size[other_cnt]=4;
-            other_path_list[other_cnt]=NULL;
-            other_path_cnt[other_cnt]=0;
-            other_des[other_cnt]=CPoint(Float2Int(obj->AsCannon()->m_Pos.x/GLOBAL_SCALE_MOVE)-ROBOT_MOVECELLS_PER_SIZE/2,Float2Int(obj->AsCannon()->m_Pos.y/GLOBAL_SCALE_MOVE)-ROBOT_MOVECELLS_PER_SIZE/2);
-            other_cnt++;
+            ASSERT(other_cnt < 200);
+            other_size[other_cnt] = 4;
+            other_path_list[other_cnt] = NULL;
+            other_path_cnt[other_cnt] = 0;
+            other_des[other_cnt] = CPoint(Float2Int(obj->AsCannon()->m_Pos.x / GLOBAL_SCALE_MOVE) - ROBOT_MOVECELLS_PER_SIZE / 2, Float2Int(obj->AsCannon()->m_Pos.y / GLOBAL_SCALE_MOVE) - ROBOT_MOVECELLS_PER_SIZE / 2);
+            ++other_cnt;
         }
         obj = obj->GetNextLogic();
     }
 
-    if(m_ZonePathNext>=0)
+    if(m_ZonePathNext >= 0)
     {
-        m_MovePathCnt=g_MatrixMap->FindLocalPath(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,m_ZonePath+m_ZonePathNext-1,m_ZonePathCnt-(m_ZonePathNext-1),m_DesX,m_DesY,m_MovePath,
-            other_cnt,other_size,other_path_list,other_path_cnt,other_des,
-            g_TestRobot==this);
+        m_MovePathCnt = g_MatrixMap->FindLocalPath(m_Unit[0].m_Kind - 1, 4, m_MapX, m_MapY, m_ZonePath + m_ZonePathNext - 1, m_ZonePathCnt - (m_ZonePathNext - 1), m_DesX, m_DesY, m_MovePath,
+            other_cnt, other_size, other_path_list, other_path_cnt, other_des,
+            g_TestRobot == this);
     }
     else
     {
-        m_MovePathCnt=g_MatrixMap->FindLocalPath(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,&m_ZoneCur,1,m_DesX,m_DesY,m_MovePath,
-            other_cnt,other_size,other_path_list,other_path_cnt,other_des,
-            g_TestRobot==this);
+        m_MovePathCnt = g_MatrixMap->FindLocalPath(m_Unit[0].m_Kind - 1, 4, m_MapX, m_MapY, &m_ZoneCur, 1, m_DesX, m_DesY, m_MovePath,
+            other_cnt, other_size, other_path_list, other_path_cnt, other_des,
+            g_TestRobot == this);
     }
 
-    //int zonesou1=m_ZoneCur;
-	//int zonesou2=m_ZoneCur;
-	//int zonesou3=m_ZoneCur;
-	//if(m_ZonePathNext>=0 && m_ZonePathNext<m_ZonePathCnt) {
-	//	zonesou1=zonesou2=zonesou3=m_ZonePath[m_ZonePathNext];
-	//	if((m_ZonePathNext+1)<m_ZonePathCnt) zonesou2=zonesou3=m_ZonePath[m_ZonePathNext+1];
-	//}
- //   if((m_ZonePathNext+2)>=m_ZonePathCnt) {
-	//    m_MovePathCnt=g_MatrixMap->ZoneMoveFind(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,m_ZoneCur,zonesou1,-1,zonesou3,m_DesX,m_DesY,m_MovePath);
- //   } else if(/*m_MovePathCnt<3 &&*/ (m_ZonePathNext+2)<m_ZonePathCnt) {
-	//	zonesou3=m_ZonePath[m_ZonePathNext+2];
-	//	m_MovePathCnt=g_MatrixMap->ZoneMoveFind(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,m_ZoneCur,zonesou1,zonesou2,zonesou3,m_DesX,m_DesY,m_MovePath);
-	//}
+    /*
+    int zonesou1 = m_ZoneCur;
+    int zonesou2 = m_ZoneCur;
+    int zonesou3 = m_ZoneCur;
+    if(m_ZonePathNext >= 0 && m_ZonePathNext < m_ZonePathCnt)
+    {
+        zonesou1 = zonesou2 = zonesou3 = m_ZonePath[m_ZonePathNext];
+        if ((m_ZonePathNext + 1) < m_ZonePathCnt) zonesou2 = zonesou3 = m_ZonePath[m_ZonePathNext + 1];
+    }
+    if((m_ZonePathNext + 2) >= m_ZonePathCnt)
+    {
+        m_MovePathCnt = g_MatrixMap->ZoneMoveFind(m_Unit[0].m_Kind - 1, 4, m_MapX, m_MapY, m_ZoneCur, zonesou1, -1, zonesou3, m_DesX, m_DesY, m_MovePath);
+    }
+    else if((m_ZonePathNext + 2) < m_ZonePathCnt)//&& m_MovePathCnt < 3)
+    {
+        zonesou3 = m_ZonePath[m_ZonePathNext + 2];
+        m_MovePathCnt = g_MatrixMap->ZoneMoveFind(m_Unit[0].m_Kind - 1, 4, m_MapX, m_MapY, m_ZoneCur, zonesou1, zonesou2, zonesou3, m_DesX, m_DesY, m_MovePath);
+    }
+    */
 
     m_MovePathCnt = g_MatrixMap->OptimizeMovePath(m_Unit[0].m_Kind - 1, 4, m_MovePathCnt, m_MovePath);
     m_MovePathCur = 0;
@@ -1835,40 +1840,42 @@ void CMatrixRobotAI::ZoneMoveCalc()
     }
 }
 
-/*void CMatrixRobotAI::ZoneMoveCalcTo()
+/*
+void CMatrixRobotAI::ZoneMoveCalcTo()
 {
-	ASSERT(m_ZoneCur>=0);
-	m_MovePathCnt=g_MatrixMap->ZoneMoveIn(m_Unit[0].m_Kind-1,4,m_MapX,m_MapY,m_DesX,m_DesY,m_MovePath);
-	m_MovePathCnt=g_MatrixMap->OptimizeMovePath(m_Unit[0].m_Kind-1,m_MovePathCnt,m_MovePath);
-	m_MovePathCur=0;
-}*/
+	ASSERT(m_ZoneCur >= 0);
+	m_MovePathCnt = g_MatrixMap->ZoneMoveIn(m_Unit[0].m_Kind-1, 4, m_MapX, m_MapY, m_DesX, m_DesY, m_MovePath);
+	m_MovePathCnt = g_MatrixMap->OptimizeMovePath(m_Unit[0].m_Kind-1, m_MovePathCnt, m_MovePath);
+	m_MovePathCur = 0;
+}
+*/
 
 float CMatrixRobotAI::CalcPathLength()
 {
-    float dist=0.0f;
-    for(int i=m_MovePathCur; i<m_MovePathCnt-1; ++i)
+    float dist = 0.0f;
+    for(int i = m_MovePathCur; i < m_MovePathCnt - 1; ++i)
     {
-        dist += (float)sqrt(float(POW2(GLOBAL_SCALE_MOVE*m_MovePath[i].x-GLOBAL_SCALE_MOVE*m_MovePath[i+1].x)+POW2(GLOBAL_SCALE_MOVE*m_MovePath[i].y-GLOBAL_SCALE_MOVE*m_MovePath[i+1].y)));
+        dist += (float)sqrt(float(POW2(GLOBAL_SCALE_MOVE * m_MovePath[i].x - GLOBAL_SCALE_MOVE * m_MovePath[i + 1].x) + POW2(GLOBAL_SCALE_MOVE * m_MovePath[i].y - GLOBAL_SCALE_MOVE * m_MovePath[i + 1].y)));
     }
     return dist;
 }
 
 void CMatrixRobotAI::MoveByMovePath(int ms)
 {
-	ASSERT(m_MovePathCnt>0);
-	ASSERT(m_MovePathCur>=0 || m_MovePathCur<m_MovePathCnt-1);
+    ASSERT(m_MovePathCnt > 0);
+    ASSERT(m_MovePathCur >= 0 || m_MovePathCur < m_MovePathCnt - 1);
 
-	float sou_x=GLOBAL_SCALE_MOVE*m_MovePath[m_MovePathCur].x+GLOBAL_SCALE_MOVE*2.0f;//+GLOBAL_SCALE;//+5.0f;
-	float sou_y=GLOBAL_SCALE_MOVE*m_MovePath[m_MovePathCur].y+GLOBAL_SCALE_MOVE*2.0f;//+GLOBAL_SCALE;//+5.0f;
-	float des_x=GLOBAL_SCALE_MOVE*m_MovePath[m_MovePathCur+1].x+GLOBAL_SCALE_MOVE*2.0f;//+GLOBAL_SCALE;//+5.0f;
-	float des_y=GLOBAL_SCALE_MOVE*m_MovePath[m_MovePathCur+1].y+GLOBAL_SCALE_MOVE*2.0f;//+GLOBAL_SCALE;//+5.0f;
+    float sou_x = GLOBAL_SCALE_MOVE * m_MovePath[m_MovePathCur].x + GLOBAL_SCALE_MOVE * 2.0f;// + GLOBAL_SCALE;// + 5.0f;
+    float sou_y = GLOBAL_SCALE_MOVE * m_MovePath[m_MovePathCur].y + GLOBAL_SCALE_MOVE * 2.0f;// + GLOBAL_SCALE;// + 5.0f;
+    float des_x = GLOBAL_SCALE_MOVE * m_MovePath[m_MovePathCur + 1].x + GLOBAL_SCALE_MOVE * 2.0f;// + GLOBAL_SCALE;// + 5.0f;
+    float des_y = GLOBAL_SCALE_MOVE * m_MovePath[m_MovePathCur + 1].y + GLOBAL_SCALE_MOVE * 2.0f;// + GLOBAL_SCALE;// + 5.0f;
 
-	//float v_x=des_x-sou_x;
-	//float v_y=des_y-sou_y;
+	//float v_x = des_x - sou_x;
+	//float v_y = des_y - sou_y;
 
-    bool globalend=(m_DesX==m_MovePath[m_MovePathCur+1].x) && (m_DesY==m_MovePath[m_MovePathCur+1].y);
+    bool globalend = (m_DesX == m_MovePath[m_MovePathCur + 1].x) && (m_DesY == m_MovePath[m_MovePathCur + 1].y);
 
-	LowLevelMove(ms,D3DXVECTOR3(des_x, des_y , 0), true, true, globalend && (m_MovePathCur+1)==(m_MovePathCnt-1));
+    LowLevelMove(ms, D3DXVECTOR3(des_x, des_y, 0), true, true, globalend && (m_MovePathCur + 1) == (m_MovePathCnt - 1));
 	
 	D3DXVECTOR2 vMe = D3DXVECTOR2(m_PosX, m_PosY) - D3DXVECTOR2(sou_x, sou_y);
 	D3DXVECTOR2 vPath = D3DXVECTOR2(des_x, des_y) - D3DXVECTOR2(sou_x, sou_y);
@@ -1879,114 +1886,125 @@ void CMatrixRobotAI::MoveByMovePath(int ms)
 	float lengthPathSq = D3DXVec2LengthSq(&vPath);
 
 	if(
-        (!globalend && (lengthMeProjSq >= lengthPathSq)) || 
-        (globalend && (POW2(m_PosX-des_x)+POW2(m_PosY-des_y)<0.2f))
+        (!globalend && (lengthMeProjSq >= lengthPathSq)) ||
+        (globalend && (POW2(m_PosX - des_x) + POW2(m_PosY - des_y) < 0.2f))
       )
     {
-		m_MovePathCur++;
-		if(m_MovePathCur>=m_MovePathCnt-1) 
+        ++m_MovePathCur;
+		if(m_MovePathCur >= m_MovePathCnt - 1) 
         {
-			m_ZonePathNext++;
-			if(m_ZonePathNext<m_ZonePathCnt)
+            ++m_ZonePathNext;
+			if(m_ZonePathNext < m_ZonePathCnt)
             {
-				m_MovePathCur=0;
-				m_MovePathCnt=0;
+				m_MovePathCur = 0;
+				m_MovePathCnt = 0;
 			}
             else 
             {
-                m_PosX=des_x;
-                m_PosY=des_y;
+                m_PosX = des_x;
+                m_PosY = des_y;
 				StopMoving();
 			}
 		}
 	}
 
     // Если долго стоим на месте, то перерассчитать маршрут
-    if((POW2(m_MoveTestPos.x-m_PosX)+POW2(m_MoveTestPos.y-m_PosY))>POW2(5.0f)) 
+    if((POW2(m_MoveTestPos.x - m_PosX) + POW2(m_MoveTestPos.y - m_PosY)) > POW2(5.0f))
     {
-        m_MoveTestPos.x=m_PosX;
-        m_MoveTestPos.y=m_PosY;
-        m_MoveTestChange=g_MatrixMap->GetTime();
+        m_MoveTestPos.x = m_PosX;
+        m_MoveTestPos.y = m_PosY;
+        m_MoveTestChange = g_MatrixMap->GetTime();
     }
-    else if((g_MatrixMap->GetTime()-m_MoveTestChange)>2000) 
+    else if((g_MatrixMap->GetTime() - m_MoveTestChange) > 2000)
     {
-        m_ZonePathCnt=0;
-		m_MovePathCur=0;
-    	m_MovePathCnt=0;
+        m_ZonePathCnt = 0;
+        m_MovePathCur = 0;
+        m_MovePathCnt = 0;
     }
 
-	RChange(MR_Matrix|MR_Rotate|MR_Pos|MR_ShadowStencil|MR_ShadowProjGeom|MR_ShadowProjTex);
+    RChange(MR_Matrix | MR_Rotate | MR_Pos | MR_ShadowStencil | MR_ShadowProjGeom | MR_ShadowProjTex);
 }
 
-//void CMatrixRobotAI::LowOrderStop()
-//{
-//	m_LowOrder=0;
-//	m_ZoneDes=-1;
-//	m_ZonePathCnt=0;
-//	m_ZonePathNext=-1;
-////	m_ZoneNear=-1;
-//	m_MovePathCnt=0;
-//	m_MovePathCur=0;
-//}
+/*
+void CMatrixRobotAI::LowOrderStop()
+{
+	m_LowOrder = 0;
+	m_ZoneDes = -1;
+	m_ZonePathCnt = 0;
+	m_ZonePathNext = -1;
+    //m_ZoneNear = -1;
+	m_MovePathCnt = 0;
+	m_MovePathCur = 0;
+}
 
-//void CMatrixRobotAI::LowOrderMoveTo(int mx,int my)
-//{
-//	LowOrderStop();
-//	m_DesX=mx; m_DesY=my;
-//	m_LowOrder=1;
-//}
+void CMatrixRobotAI::LowOrderMoveTo(int mx, int my)
+{
+	LowOrderStop();
+	m_DesX = mx;
+    m_DesY = my;
+	m_LowOrder = 1;
+}
+*/
 
 
-//void CMatrixRobotAI::MoveToRndBuilding()
-//{
-//	CMatrixMapStatic * ms=g_MatrixMap->m_StaticFirstNT;
-//	while(ms) {
-//		if(ms->GetObjectType()==OBJECT_TYPE_BUILDING && (g_MatrixMap->Rnd(0,10)<=5) /*&& ((CMatrixBuilding*)ms)->m_Kind != 0*/) {
-//            if(((CMatrixBuilding *)ms)->m_Side != m_Side && !((CMatrixBuilding *)ms)->m_Busy){
-//                CaptureFactory(((CMatrixBuilding *)ms));
-//            }
-///*
-//			float x=GLOBAL_SCALE*(((CMatrixBuilding *)ms)->m_MapPos.x);
-//			float y=GLOBAL_SCALE*(((CMatrixBuilding *)ms)->m_MapPos.y+3);
-//
-//            if(((x-m_PosX)*(x-m_PosX)+(y-m_PosY)*(y-m_PosY))>100*100) {
-//				int mx=int(x/GLOBAL_SCALE);
-//				int my=int(y/GLOBAL_SCALE);
-//
-//				g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind-1,4,mx,my);
-//
-//                MoveTo(mx, my);
-//				break;
-//			}
-//*/
-//        }else if(ms != this && ms->GetObjectType()==OBJECT_TYPE_ROBOTAI && (g_MatrixMap->Rnd(0,10)<=5)){
-//			float x=(ms->AsRobot()->m_PosX);
-//			float y=(ms->AsRobot()->m_PosY+30);
-//
-//          if(ms->AsRobot()->m_CurrState == ROBOT_SUCCESSFULLY_BUILD && ((x-m_PosX)*(x-m_PosX)+(y-m_PosY)*(y-m_PosY))>100*100)
-//          {
-//				int mx=int(x/GLOBAL_SCALE);
-//				int my=int(y/GLOBAL_SCALE);
-//
-//				g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind-1,4,mx,my);
-//
-//                MoveTo(mx, my);
-//				break;
-//			}
-//      
-//        }
-//		ms=ms->m_NextNT;
-//	}
-//}
+/*
+void CMatrixRobotAI::MoveToRndBuilding()
+{
+    CMatrixMapStatic *ms = g_MatrixMap->m_StaticFirstNT;
+    while(ms)
+    {
+        if(ms->GetObjectType() == OBJECT_TYPE_BUILDING && (g_MatrixMap->Rnd(0, 10)<=5))// && ((CMatrixBuilding*)ms)->m_Kind != 0)
+        {
+        if(((CMatrixBuilding*)ms)->m_Side != m_Side && !((CMatrixBuilding*)ms)->m_Busy)
+        {
+            CaptureFactory(((CMatrixBuilding*)ms));
+        }
+        /*
+        float x = GLOBAL_SCALE * (((CMatrixBuilding *)ms)->m_MapPos.x);
+        float y = GLOBAL_SCALE * (((CMatrixBuilding *)ms)->m_MapPos.y + 3);
+
+        if(((x - m_PosX) * (x - m_PosX) + (y - m_PosY) * (y-m_PosY)) > 100 * 100)
+        {
+            int mx = int(x / GLOBAL_SCALE);
+            int my = int(y / GLOBAL_SCALE);
+
+            g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind - 1, 4, mx, my);
+
+            MoveTo(mx, my);
+            break;
+        }
+        /*
+        }
+        else if(ms != this && ms->GetObjectType() == OBJECT_TYPE_ROBOTAI && (g_MatrixMap->Rnd(0, 10) <= 5))
+        {
+        float x = (ms->AsRobot()->m_PosX);
+        float y = (ms->AsRobot()->m_PosY + 30);
+
+        if(ms->AsRobot()->m_CurrState == ROBOT_SUCCESSFULLY_BUILD && ((x - m_PosX) * (x - m_PosX) + (y - m_PosY) * (y - m_PosY)) > 100 * 100)
+        {
+            int mx = int(x / GLOBAL_SCALE);
+            int my = int(y / GLOBAL_SCALE);
+
+            g_MatrixMap->PlaceFindNear(m_Unit[0].m_Kind - 1, 4, mx, my);
+
+            MoveTo(mx, my);
+            break;
+        }
+
+        }
+        ms = ms->m_NextNT;
+    }
+}
+*/
 
 //Функция получения роботом урона в результате чьей-то атаки
-bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3& pos, const D3DXVECTOR3& dir, int attacker_side, CMatrixMapStatic* attaker)
+bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic *attaker)
 {
     DTRACE();
 
     ASSERT(this);
 
-    if (m_CurrState == ROBOT_DIP) return true;
+    if(m_CurrState == ROBOT_DIP) return true;
     DCP();
 
     bool friendly_fire = false;
@@ -2014,7 +2032,7 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3& pos, const D3DXVECT
 #if(defined _DEBUG) && !(defined _RELDEBUG)
     if(attaker != NULL)
     {
-        CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+        CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
         while(ms)
         {
             if(ms == attaker) break;
@@ -2195,7 +2213,9 @@ inst_death:;
 			if(GetBase())
             {
                 if(m_CurrState == ROBOT_BASE_MOVEOUT || m_CurrState == ROBOT_IN_SPAWN)
+                {
                     GetBase()->ResetSpawningBot(); // killing will always close base
+                }
                 GetBase()->Close();
             }
             cstay = false;
@@ -2228,7 +2248,7 @@ inst_death:;
             m_Unit[0].m_dp = 0;
             m_Unit[0].m_dy = 0;
             m_Unit[0].m_dr = 0;
-            m_Unit[0].m_Velocity = D3DXVECTOR3(0,0,0);
+            m_Unit[0].m_Velocity = D3DXVECTOR3(0, 0, 0);
         }
         else
         {
@@ -2862,15 +2882,15 @@ void CMatrixRobotAI::LowLevelMove(int ms, const D3DXVECTOR3& dest, bool robot_co
         }
     }
     
-//DM(L"RC",CWStr().Format(L"rotate=<i> result_coll=<i> GetColsWeight2=<i> end_path=<i> ROBOT_FLAG_COLLISION=<i>",
+//DM(L"RC", CWStr().Format(L"rotate=<i> result_coll=<i> GetColsWeight2=<i> end_path=<i> ROBOT_FLAG_COLLISION=<i>",
 //        int(rotate),
 //        int(result_coll.x != 0 || result_coll.y != 0),
 //        int(GetColsWeight2()),
-//        (end_path && (POW2(dest.x-m_PosX)+POW2(dest.y-m_PosY))<POW2(GLOBAL_SCALE_MOVE)),
-//        FLAG(m_RobotFlags,ROBOT_FLAG_COLLISION)
+//        (end_path && (POW2(dest.x - m_PosX) + POW2(dest.y - m_PosY)) < POW2(GLOBAL_SCALE_MOVE)),
+//        FLAG(m_RobotFlags, ROBOT_FLAG_COLLISION)
 //        ).Get());
 
-//    m_MovePathDistFollow+=sqrt(float(POW2(genetic_mutated_velocity.x + result_coll.x)+POW2(genetic_mutated_velocity.y + result_coll.y)));
+//    m_MovePathDistFollow += sqrt(float(POW2(genetic_mutated_velocity.x + result_coll.x) + POW2(genetic_mutated_velocity.y + result_coll.y)));
     
 //    m_PosX += genetic_mutated_velocity.x + result_coll.x;
 //    m_PosY += genetic_mutated_velocity.y + result_coll.y;
@@ -2928,32 +2948,31 @@ void CMatrixRobotAI::Decelerate()
 {
 	m_Velocity *= DECELERATION_FORCE;
     m_Speed = D3DXVec3Length(&m_Velocity);
-    D3DXVECTOR3 vvv(0,0,0);
+    D3DXVECTOR3 vvv(0, 0, 0);
     D3DXVec3Normalize(&vvv, &m_Velocity);
-    if(!IS_ZERO_VECTOR(vvv))
-		m_Forward = vvv;
+    if(!IS_ZERO_VECTOR(vvv)) m_Forward = vvv;
 }
 
-#if (defined _DEBUG) &&  !(defined _RELDEBUG)
+#if(defined _DEBUG) && !(defined _RELDEBUG)
 void HelperT(D3DXVECTOR2 from,D3DXVECTOR2 to)
 {
     return;
-    CHelper::Create(1,0)->Line(D3DXVECTOR3(from.x, from.y, 2), 
+    CHelper::Create(1, 0)->Line(D3DXVECTOR3(from.x, from.y, 2), 
 						 D3DXVECTOR3(to.x, to.y, 2),
 						 0xffffff00,0xffffff00);
 
-	D3DXVECTOR3 n=to-from;
-	n.z=0;
-	D3DXVec3Normalize(&n,&n);
+	D3DXVECTOR3 n = to - from;
+	n.z = 0;
+	D3DXVec3Normalize(&n, &n);
 
-    CHelper::Create(1,0)->Line(D3DXVECTOR3(to.x-n.y*1.5f, to.y+n.x*1.5f, 2),
-							D3DXVECTOR3(to.x+n.y*1.5f, to.y-n.x*1.5f, 2),
-							0xffffff00,0xffffff00);
+    CHelper::Create(1, 0)->Line(D3DXVECTOR3(to.x-n.y * 1.5f, to.y + n.x * 1.5f, 2),
+							D3DXVECTOR3(to.x + n.y * 1.5f, to.y-n.x * 1.5f, 2),
+							0xffffff00, 0xffffff00);
 }
 #endif
 
 
-D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr, const D3DXVECTOR3 & vel)
+D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr, const D3DXVECTOR3 &vel)
 {
 		
 	D3DXVECTOR2 robot_pos;
@@ -4945,7 +4964,7 @@ DCP();
         gobj = gobj->m_NextObject;
     }*/
 //Classify all enemies
-    CEnemy* enemies = m_Environment.m_FirstEnemy;
+    CEnemy *enemies = m_Environment.m_FirstEnemy;
     DCP();
     while(enemies)
     {
@@ -4957,21 +4976,22 @@ DCP();
     DCP();
 }
 
-SOrder * CMatrixRobotAI::AllocPlaceForOrderOnTop(void)
+SOrder *CMatrixRobotAI::AllocPlaceForOrderOnTop(void)
 {
     if(m_OrdersInPool >= MAX_ORDERS) return NULL;
 
-    if (GetBase() && !FLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL))
+    if(GetBase() && !FLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL))
     {
         // base capturing
         GetBase()->Close();
         SetBase(NULL);
     }
 
-    if(m_OrdersInPool > 0){
-        MoveMemory(&m_OrdersList[1], &m_OrdersList[0], sizeof(SOrder) * m_OrdersInPool);
+    if(m_OrdersInPool > 0)
+    {
+        MoveMemory(&m_OrdersList[1], &m_OrdersList[0], sizeof(SOrder) *m_OrdersInPool);
     }
-    m_OrdersInPool++;
+    ++m_OrdersInPool;
     return m_OrdersList;
 }
 
@@ -4981,8 +5001,7 @@ SOrder * CMatrixRobotAI::AllocPlaceForOrderOnTop(void)
 //        MoveMemory(&m_OrdersList[0], &m_OrdersList[1], sizeof(SOrder) * m_OrdersInPool-1);
 //    }
 //    m_OrdersList[m_OrdersInPool-1] = order;
-//    m_OrdersInPool++;
-//
+//    ++m_OrdersInPool;
 //}
 
 void CMatrixRobotAI::RemoveOrder(int pos)
@@ -5038,7 +5057,7 @@ void CMatrixRobotAI::MoveTo(int mx, int my)
     RemoveOrder(ROT_MOVE_TO_BACK);
     RemoveOrder(ROT_STOP_MOVE);
 
-    SOrder* order = AllocPlaceForOrderOnTop();
+    SOrder *order = AllocPlaceForOrderOnTop();
     if(order == NULL) return;
 
     order->SetOrder(ROT_MOVE_TO, (float)mx, (float)my, 0, 0);

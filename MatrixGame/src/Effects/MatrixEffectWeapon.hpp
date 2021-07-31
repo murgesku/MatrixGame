@@ -15,8 +15,9 @@
 #define VOLCANO_FIRE_KONUS_RADIUS 5
 #define VOLCANO_FIRE_KONUS_LENGTH 5
 
-extern float ARCADEBOT_WEAPON_COEFF;
-extern float DEFBOT_WEAPON_COEFF;
+extern float g_WeaponDamageNormalCoef;
+extern float g_WeaponDamageArcadeCoef;
+extern float g_UnitSpeedArcadeCoef;
 
 //#define WD_PLASMA           300
 //#define WD_VOLCANO          300
@@ -243,8 +244,8 @@ class CMatrixEffectWeapon : public CMatrixEffect
 public:
     
     D3DXVECTOR3 GetPos()                            { return m_Pos; }
-    void SetDefaultCoefficient()                    { m_WeaponCoefficient = DEFBOT_WEAPON_COEFF; }
-    void SetArcadeCoefficient()                     { m_WeaponCoefficient = ARCADEBOT_WEAPON_COEFF; }
+    void SetDefaultCoefficient()                    { m_WeaponCoefficient = g_WeaponDamageNormalCoef; }
+    void SetArcadeCoefficient()                     { m_WeaponCoefficient = g_WeaponDamageArcadeCoef; }
     EWeapon GetWeaponType(void) const {return m_Type;}
     float GetWeaponDist(void) const {return m_WeaponDist * m_WeaponCoefficient;}
     friend class CMatrixEffect;

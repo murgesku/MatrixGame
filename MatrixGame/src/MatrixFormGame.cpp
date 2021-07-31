@@ -43,42 +43,41 @@ CFormMatrixGame::~CFormMatrixGame()
 void CFormMatrixGame::Enter(void)
 {
     DTRACE();
-	S3D_Default();
-	D3DMATERIAL9 mtrl;
-	ZeroMemory(&mtrl,sizeof(D3DMATERIAL9));
-	mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
-	mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
-	mtrl.Diffuse.b = mtrl.Ambient.b = 1.0f;
-	mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
-	mtrl.Specular.r = 0.5f;
-	mtrl.Specular.g = 0.5f;
-	mtrl.Specular.b = 0.5f;
-	mtrl.Specular.a = 0.5f;
-	g_D3DD->SetMaterial(&mtrl );
-	g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
+    S3D_Default();
+    D3DMATERIAL9 mtrl;
+    ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
+    mtrl.Diffuse.r = mtrl.Ambient.r = 1.0f;
+    mtrl.Diffuse.g = mtrl.Ambient.g = 1.0f;
+    mtrl.Diffuse.b = mtrl.Ambient.b = 1.0f;
+    mtrl.Diffuse.a = mtrl.Ambient.a = 1.0f;
+    mtrl.Specular.r = 0.5f;
+    mtrl.Specular.g = 0.5f;
+    mtrl.Specular.b = 0.5f;
+    mtrl.Specular.a = 0.5f;
+    g_D3DD->SetMaterial(&mtrl);
+    g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
 
-	D3DXVECTOR3 vecDir;
-	D3DLIGHT9 light;
-	ZeroMemory( &light, sizeof(D3DLIGHT9));
-	light.Type = D3DLIGHT_DIRECTIONAL;//D3DLIGHT_POINT;//D3DLIGHT_DIRECTIONAL;
-	light.Diffuse.r  = GetColorR(g_MatrixMap->m_LightMainColorObj);
-	light.Diffuse.g  = GetColorG(g_MatrixMap->m_LightMainColorObj);
-	light.Diffuse.b  = GetColorB(g_MatrixMap->m_LightMainColorObj);
-	light.Ambient.r  = 0.0f;
-	light.Ambient.g  = 0.0f;
-	light.Ambient.b  = 0.0f;
-	light.Specular.r = GetColorR(g_MatrixMap->m_LightMainColorObj);
-	light.Specular.g = GetColorG(g_MatrixMap->m_LightMainColorObj);
-	light.Specular.b = GetColorB(g_MatrixMap->m_LightMainColorObj);
-	//light.Range       = 0;
-	light.Direction	= g_MatrixMap->m_LightMain;
-//	light.Direction=D3DXVECTOR3(250.0f,-50.0f,-250.0f);
-//	D3DXVec3Normalize((D3DXVECTOR3 *)(&(light.Direction)),(D3DXVECTOR3 *)(&(light.Direction)));
-	ASSERT_DX(g_D3DD->SetLight(0,&light));
-	ASSERT_DX(g_D3DD->LightEnable(0,TRUE));
+    D3DXVECTOR3 vecDir;
+    D3DLIGHT9 light;
+    ZeroMemory(&light, sizeof(D3DLIGHT9));
+    light.Type = D3DLIGHT_DIRECTIONAL;//D3DLIGHT_POINT;//D3DLIGHT_DIRECTIONAL;
+    light.Diffuse.r = GetColorR(g_MatrixMap->m_LightMainColorObj);
+    light.Diffuse.g = GetColorG(g_MatrixMap->m_LightMainColorObj);
+    light.Diffuse.b = GetColorB(g_MatrixMap->m_LightMainColorObj);
+    light.Ambient.r = 0.0f;
+    light.Ambient.g = 0.0f;
+    light.Ambient.b = 0.0f;
+    light.Specular.r = GetColorR(g_MatrixMap->m_LightMainColorObj);
+    light.Specular.g = GetColorG(g_MatrixMap->m_LightMainColorObj);
+    light.Specular.b = GetColorB(g_MatrixMap->m_LightMainColorObj);
+    //light.Range       = 0;
+    light.Direction = g_MatrixMap->m_LightMain;
+    //	light.Direction=D3DXVECTOR3(250.0f,-50.0f,-250.0f);
+    //	D3DXVec3Normalize((D3DXVECTOR3 *)(&(light.Direction)),(D3DXVECTOR3 *)(&(light.Direction)));
+    ASSERT_DX(g_D3DD->SetLight(0, &light));
+    ASSERT_DX(g_D3DD->LightEnable(0, TRUE));
 
     g_MatrixMap->m_Cursor.SetVisible(true);
-
 }
 
 void CFormMatrixGame::Leave(void)
@@ -90,46 +89,46 @@ void CFormMatrixGame::Draw(void)
 {
     DTRACE();
 
-    if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_VIDEO_RESOURCES_READY)) return;
+    if(!FLAG(g_MatrixMap->m_Flags, MMFLAG_VIDEO_RESOURCES_READY)) return;
 
     CInstDraw::DrawFrameBegin();
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE))
+    if(FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE))
     {
-        g_MatrixMap->m_DI.T(L"Automatic mode",L"");
+        g_MatrixMap->m_DI.T(L"Automatic mode", L"");
     }
 
-    if (FLAG(g_Config.m_DIFlags, DI_DRAWFPS)) g_MatrixMap->m_DI.T(L"FPS",CWStr(g_DrawFPS,g_MatrixHeap).Get());
-    if (FLAG(g_Config.m_DIFlags, DI_TMEM))
+    if(FLAG(g_Config.m_DIFlags, DI_DRAWFPS)) g_MatrixMap->m_DI.T(L"FPS", CWStr(g_DrawFPS, g_MatrixHeap).Get());
+    if(FLAG(g_Config.m_DIFlags, DI_TMEM))
     {
-        g_MatrixMap->m_DI.T(L"Free Texture Mem",CWStr(g_AvailableTexMem,g_MatrixHeap).Get());
+        g_MatrixMap->m_DI.T(L"Free Texture Mem", CWStr(g_AvailableTexMem, g_MatrixHeap).Get());
     }
-    if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD))
+    if(FLAG(g_Config.m_DIFlags, DI_TARGETCOORD))
     {
         CWStr txt(g_MatrixHeap);
         txt = Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f);
-        txt.Insert(txt.GetLen()-1,L".",1);
+        txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
         txt += Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f);
-        txt.Insert(txt.GetLen()-1,L".",1);
+        txt.Insert(txt.GetLen() - 1, L".", 1);
         //txt += L", ";
         //txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
         //txt.Insert(txt.GetLen()-1,L".",1);
-        g_MatrixMap->m_DI.T(L"Camera target",txt.Get());
+        g_MatrixMap->m_DI.T(L"Camera target", txt.Get());
     }
-    if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER))
+    if(FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER))
     {
         CWStr txt(g_MatrixHeap);
 
         txt = Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f);
-        txt.Insert(txt.GetLen()-1,L".",1);
+        txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
         txt += Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f);
-        txt.Insert(txt.GetLen()-1,L".",1);
+        txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
         txt += Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f);
-        txt.Insert(txt.GetLen()-1,L".",1);
-        g_MatrixMap->m_DI.T(L"Frustum Center",txt.Get());
+        txt.Insert(txt.GetLen() - 1, L".", 1);
+        g_MatrixMap->m_DI.T(L"Frustum Center", txt.Get());
 
 
         //txt = Float2Int(D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter()-(g_MatrixMap->m_Camera.GetTarget()+D3DXVECTOR3(0,0,g_MatrixMap->m_Camera.GetZRel())))) * 10.0f);
@@ -1408,10 +1407,10 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             return;
         }
 
-        CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+        CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
         if(ps->IsRobotMode())
         {
-            CMatrixRobotAI* robot = ps->GetArcadedObject()->AsRobot();
+            CMatrixRobotAI *robot = ps->GetArcadedObject()->AsRobot();
 
             if((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BOOM]) & 0x8000) == 0x8000)
             {
@@ -1431,7 +1430,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             //Выбор всех роботов игрока на карте
             if((GetAsyncKeyState(g_Config.m_KeyActions[KA_ALL_UNITS_SELECT]) & 0x8000) == 0x8000)//if(scan == KEY_F2)
             {
-                CMatrixMapStatic* o = CMatrixMapStatic::GetFirstLogic();
+                CMatrixMapStatic *o = CMatrixMapStatic::GetFirstLogic();
                 if(ps->GetCurGroup())
                 {
                     ps->SelectedGroupUnselect();

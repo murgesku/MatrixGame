@@ -379,7 +379,7 @@ public:
      void AddHintReplacements(const CWStr &element_name);
      bool CheckShowHintLogic(const CWStr &element_name);
      void LeaveRobot(void);
-     void EnterRobot(bool pos=false);
+     void EnterRobot(bool pos = false);
      void BeginBuildTurret(int no);
 
      void CreateDynamicTurrets(CMatrixBuilding* building);

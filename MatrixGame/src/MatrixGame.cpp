@@ -263,8 +263,8 @@ void MatrixGameInit(
     HINSTANCE inst,       //???
     HWND wnd,             //???
     wchar* map,           //???
-    SRobotsSettings* set, //Уровень сложности?
-    wchar* lang,          //???
+    SRobotsSettings* set, //???
+    wchar* lang,          //Язык, Rus или Eng, используется при построении путей к папкам с языковыми файлами
     wchar* txt_start,     //Вступительный текст
     wchar* txt_win,       //Текст при победе
     wchar* txt_loss,      //Текст при поражении

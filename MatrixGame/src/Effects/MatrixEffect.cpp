@@ -13,8 +13,9 @@
 
 #define M_PI       3.14159265358979323846
 
-float ARCADEBOT_WEAPON_COEFF = 1.2f;
-float DEFBOT_WEAPON_COEFF = 1.0f;
+float g_WeaponDamageNormalCoef = 1.0f;
+float g_WeaponDamageArcadeCoef = 1.2f;
+float g_UnitSpeedArcadeCoef = 1.1f;
 
 DWORD              CMatrixEffect::m_before_draw_done;
 CDebris           *CMatrixEffect::m_Debris;
@@ -25,7 +26,7 @@ SBillboardTextureArrayElement CMatrixEffect::m_BBTextures[BBT_LAST];
 
 float            CMatrixEffect::m_Dist2;    // used by movin objects (missiles cannons)
 
-Base::CHeap       *CMatrixEffect::m_Heap;
+Base::CHeap     *CMatrixEffect::m_Heap;
 
 ELIST_DECLARE_OUTCLASS(EFFECT_EXPLOSION);
 ELIST_DECLARE_OUTCLASS(EFFECT_POINT_LIGHT);
@@ -264,7 +265,7 @@ void     CMatrixEffect::CreatePoolDefaultResources(void)
     CBillboard::Init();
 }
 
-void     CMatrixEffect::ReleasePoolDefaultResources(void)
+void CMatrixEffect::ReleasePoolDefaultResources(void)
 {
     DTRACE();
     CBillboard::Deinit();
@@ -277,7 +278,7 @@ void     CMatrixEffect::ReleasePoolDefaultResources(void)
 
 }
 
-void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
+void CMatrixEffect::InitEffects(CBlockPar &bp_in)
 {
     DTRACE();
 
@@ -302,8 +303,9 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
 
     // init weapon range modificators
 
-    ARCADEBOT_WEAPON_COEFF = bp_in.BlockGet(L"Constants")->ParGet(L"ARCADEBOT_WEAPON_COEFF").GetDouble();
-    DEFBOT_WEAPON_COEFF = bp_in.BlockGet(L"Constants")->ParGet(L"DEFBOT_WEAPON_COEFF").GetDouble();
+    g_WeaponDamageNormalCoef = bp_in.BlockGet(L"Config")->ParGet(L"WeaponDamageNormalCoef").GetDouble();
+    g_WeaponDamageArcadeCoef = bp_in.BlockGet(L"Config")->ParGet(L"WeaponDamageArcadeCoef").GetDouble();
+    g_UnitSpeedArcadeCoef = bp_in.BlockGet(L"Config")->ParGet(L"UnitSpeedArcadeCoef").GetDouble();
 
     // init debris
 
@@ -312,16 +314,16 @@ void    CMatrixEffect::InitEffects(CBlockPar & bp_in)
 	m_DebrisCnt = bp.ParCount();
     m_Debris = (CDebris *)HAlloc(sizeof(CDebris) * m_DebrisCnt, m_Heap);
 
-    for (int i = 0; i<m_DebrisCnt; ++i)
+    for(int i = 0; i<m_DebrisCnt; ++i)
     {
         m_Debris[i].CDebris::CDebris();
 
-        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO,bp.ParGet(i).Get());
+        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).Get());
         vo->PrepareSpecial(OLF_AUTO, CSkinManager::GetSkin, GSP_ORDINAL);
         m_Debris[i].Init(vo, NULL);
     
 
-        int n = bp.ParGetName(i).GetStrPar(0,L",").GetInt();
+        int n = bp.ParGetName(i).GetStrPar(0, L",").GetInt();
         m_Debris[i].SetDebType(n);
     }
 
@@ -686,14 +688,14 @@ void CMatrixEffect::CreateMoveto(int type)
     CreateMoveto(g_MatrixMap->m_TraceStopPos, type);
 }
 //Непосредственный вызов отрисовки вейпоинта на поверхности (необходимо указывать точный вектор)
-void CMatrixEffect::CreateMoveto(const D3DXVECTOR3& pos, int type)
+void CMatrixEffect::CreateMoveto(const D3DXVECTOR3 &pos, int type)
 {
     DTRACE();
 
     D3DXVECTOR3 tp = g_MatrixMap->m_Camera.GetFrustumCenter() - pos;
     D3DXVec3Normalize(&tp, &tp);
 
-    CMatrixEffectMoveto* e = HNew(m_Heap) CMatrixEffectMoveto(pos + tp * 10, type);
+    CMatrixEffectMoveto *e = HNew(m_Heap) CMatrixEffectMoveto(pos + tp * 10, type);
 
     g_MatrixMap->AddEffect(e);
 }

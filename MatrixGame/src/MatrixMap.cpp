@@ -3035,35 +3035,37 @@ void CMatrixMap::SubEffect(PCMatrixEffect e)
 #endif
 {
     DTRACE();
-    if (e->IsDIP()) return; // already under destruction
+    if(e->IsDIP()) return; // already under destruction
 
 #ifdef _DEBUG
-    if (e->GetType() == EFFECT_LANDSCAPE_SPOT)
+    if(e->GetType() == EFFECT_LANDSCAPE_SPOT)
     {
         ((CMatrixEffectLandscapeSpot *)e)->BeforeRelease(from._file, from._line);
     }
 #endif
 
-    if (e->m_Next == NULL && e->m_Prev == NULL && m_EffectsFirst != e)
+    if(e->m_Next == NULL && e->m_Prev == NULL && m_EffectsFirst != e)
     {
         // effect not in list
         e->Release();
-    } else
+    }
+    else
     {
-//        if (FLAG(m_Flags, MMFLAG_EFF_TAKT))
-//        {
+//       if(FLAG(m_Flags, MMFLAG_EFF_TAKT))
+//       {
 //            if (!(e->m_PrevDel==NULL && e->m_NextDel==NULL && e!=m_Effects2RemoveFirst)) return; // already dead
 //            // effect takt in progress. just put effect to dead list
 //            LIST_ADD(e, m_Effects2RemoveFirst, m_Effects2RemoveLast, m_PrevDel, m_NextDel);
 //            e->Unconnect();
 //
 ////#ifdef _DEBUG
-////            DM("aaaaaaa","del: " + CStr(int(e->GetType())) + " from " + from._file + ":" + from._line);
+////          DM("aaaaaaa","del: " + CStr(int(e->GetType())) + " from " + from._file + ":" + from._line);
 ////#endif
 //
-//        } else
+//      }
+//      else
         {
-            if (m_EffectsNextTakt == e)
+            if(m_EffectsNextTakt == e)
             {
                 m_EffectsNextTakt = e->m_Next;
             }

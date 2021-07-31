@@ -76,7 +76,7 @@ public:
     }
     void                    UpdateRepair(void)
     {
-        if (m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Update(m_Unit);
+        if(m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Update(m_Unit);
     }
 
     void                    Takt(float t)
@@ -84,11 +84,11 @@ public:
         m_Weapon->Takt(t);
         if (m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Update(m_Unit);
     }
-    bool                    IsFireWas(void) const {return m_Weapon->IsFireWas();}
+    bool IsFireWas(void) const {return m_Weapon->IsFireWas();}
 
-    void                    SetOwner(CMatrixMapStatic *ms) {m_Weapon->SetOwner(ms);}
+    void SetOwner(CMatrixMapStatic *ms) {m_Weapon->SetOwner(ms);}
 
-    void                    CreateEffect(DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0)
+    void CreateEffect(DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0)
     {
         m_Weapon = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), user, handler, type, cooldown);
         if(type == WEAPON_REPAIR)
@@ -97,12 +97,12 @@ public:
         }
     }
 
-    void                    FireBegin(const D3DXVECTOR3 &speed, CMatrixMapStatic * skip)
+    void FireBegin(const D3DXVECTOR3 &speed, CMatrixMapStatic *skip)
     {
         m_Weapon->FireBegin(speed, skip);
     }
 
-    void                    FireEnd(void)
+    void FireEnd(void)
     {
         m_Weapon->FireEnd();
         m_Unit->m_Graph->SetAnimLooped(0);
@@ -117,7 +117,6 @@ public:
     }
 
     void PrepareRepair(void);
-
 };
 
 enum OrderType
@@ -186,9 +185,9 @@ public:
 
     CMatrixMapStatic * GetStatic(void)
     {
-        if (m_ObjCore)
+        if(m_ObjCore)
         {
-            if (m_ObjCore->m_Object) return m_ObjCore->m_Object;
+            if(m_ObjCore->m_Object) return m_ObjCore->m_Object;
             m_ObjCore->Release();
             m_ObjCore = NULL;
         }
@@ -218,25 +217,26 @@ public:
 
     void Release(void)
     {
-        if (m_ObjCore)
+        if(m_ObjCore)
         {
-            if (m_ObjCore->m_Object && m_ObjCore->m_Object->IsBuilding())
+            if(m_ObjCore->m_Object && m_ObjCore->m_Object->IsBuilding())
+            {
                 m_ObjCore->m_Object->AsBuilding()->ResetCaptured();
+            }
 
             m_ObjCore->Release();
             m_ObjCore = NULL;
         }
     }
-	
 };
 
 
 class CMatrixRobotAI : public CMatrixRobot
 {
-    CTextureManaged*    m_BigTexture;
-    CTextureManaged*    m_MedTexture;
+    CTextureManaged    *m_BigTexture;
+    CTextureManaged    *m_MedTexture;
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
-    CTextureManaged*    m_SmallTexture;   // hm, may be its no needed //may be, who cares :)
+    CTextureManaged    *m_SmallTexture;   // hm, may be its no needed //may be, who cares :)
 #endif
 
     SEffectHandler      m_Ablaze;
@@ -262,10 +262,10 @@ class CMatrixRobotAI : public CMatrixRobot
     int                 m_ZoneNear;				            // Ближайшая зона от той в которой находится робот по направлению к m_ZoneDes
     int                 m_MovePathCnt;			            // Количество точек в пути движения
     int                 m_MovePathCur;			            // Текущая точка в пути движения
-    int*                m_ZonePath;			                // Список зон до m_ZoneDes
+    int                *m_ZonePath;			                // Список зон до m_ZoneDes
     CPoint              m_MovePath[MatrixPathMoveMax];      // Путь движения
     float               m_MovePathDist;                     // Длина расчитанного пути
-    float               m_MovePathDistFollow;               // Сколько робот прошол по пути
+    float               m_MovePathDistFollow;               // Сколько робот прошёл по пути
     D3DXVECTOR2         m_MoveTestPos;
     int                 m_MoveTestChange;
 
@@ -289,6 +289,10 @@ class CMatrixRobotAI : public CMatrixRobot
     int                 m_CtrlGroup;
     SBotWeapon          m_Weapons[MAX_WEAPON_CNT];          // установленное оружие
     int                 m_WeaponsCnt;
+
+    //Маркер, указывающий, что робот был выведен из ручного контроля игроком, никаких приказов на себе не имеет,
+    //а потому не трогай его, сука, со своими перенаправлениями в ближайший треугольник сетки!
+    bool                m_AfterManualControl;
 
     //CMatrixMapStatic*   m_FireTarget;
 //    int                 m_GatherPeriod;
@@ -375,6 +379,11 @@ public:
     void        KillSelection();
     void        MoveSelection();
 
+    //Маркер, указывающий, что робот был выведен из ручного контроля игроком, никаких приказов на себе не имеет,
+    //а потому не трогай его, сука, со своими перенаправлениями в ближайший треугольник сетки!
+    bool        IsAfterManual() { return m_AfterManualControl; }
+    void        SetAfterManual(bool value) { m_AfterManualControl = value; }
+
     void        PlayHullSound();
     bool        CheckFireDist(const D3DXVECTOR3 &point);
 
@@ -386,7 +395,7 @@ public:
     {
         if(m_Side != PLAYER_SIDE || FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
         {
-            CMatrixBuilding* cf = GetCaptureFactory();
+            CMatrixBuilding *cf = GetCaptureFactory();
             if(cf) 
             {
                 return false; //DO NOT BREAK CAPTURING!!!!!!!!!!!!!!!!!!!!!!!! NEVER!!!!!!!!!!
@@ -402,28 +411,28 @@ public:
     }
 
     void        OBBToAABBCollision(int nHeight, int nWidth);
-	D3DXVECTOR3 LineToAABBIntersection(const D3DXVECTOR2 &s,const D3DXVECTOR2 &e, const D3DXVECTOR2 &vLu,const D3DXVECTOR2 &vLd,const D3DXVECTOR2 &vRu,const D3DXVECTOR2 &vRd, bool revers_x, bool revers_y);
-	D3DXVECTOR3 CornerLineToAABBIntersection(const D3DXVECTOR2 &s,const D3DXVECTOR2 &e, const D3DXVECTOR2 &vLu,const D3DXVECTOR2 &vLd,const D3DXVECTOR2 &vRu,const D3DXVECTOR2 &vRd);
-    D3DXVECTOR3 SphereRobotToAABBObstacleCollision( D3DXVECTOR3 &corr, const D3DXVECTOR3 & vel);
+	D3DXVECTOR3 LineToAABBIntersection(const D3DXVECTOR2 &s,const D3DXVECTOR2 &e, const D3DXVECTOR2 &vLu, const D3DXVECTOR2 &vLd, const D3DXVECTOR2 &vRu, const D3DXVECTOR2 &vRd, bool revers_x, bool revers_y);
+	D3DXVECTOR3 CornerLineToAABBIntersection(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, const D3DXVECTOR2 &vLu, const D3DXVECTOR2 &vLd, const D3DXVECTOR2 &vRu, const D3DXVECTOR2 &vRd);
+    D3DXVECTOR3 SphereRobotToAABBObstacleCollision( D3DXVECTOR3 &corr, const D3DXVECTOR3 &vel);
 	//D3DXVECTOR3 SphereToAABBIntersection(const D3DXVECTOR2 &pos,float r, const D3DXVECTOR2 &vLu,const D3DXVECTOR2 &vLd,const D3DXVECTOR2 &vRu,const D3DXVECTOR2 &vRd, bool revers_x, bool revers_y);
-    D3DXVECTOR3 RobotToObjectCollision(const D3DXVECTOR3 & vel,int ms);
-    void        WallAvoid(const D3DXVECTOR3 &obstacle,const D3DXVECTOR3 &dest);
+    D3DXVECTOR3 RobotToObjectCollision(const D3DXVECTOR3 &vel, int ms);
+    void        WallAvoid(const D3DXVECTOR3 &obstacle, const D3DXVECTOR3 &dest);
     static bool SphereToAABBCheck(const D3DXVECTOR2 &sphere_p, const D3DXVECTOR2 &vMin, const D3DXVECTOR2 &vMax, float &d, float &dx, float &dy);
     D3DXVECTOR3 SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMapMove *smm, const CPoint &cell, BYTE corner); //, bool revers_x, bool revers_y);
 
     void ZoneCurFind(void);		                    // Найти зону в которой находится робот (Out: m_ZoneCur)
-	void ZonePathCalc(void);	                    // Рассчитать путь до m_ZoneDes (In: m_ZoneCur,m_ZoneDes) (Out: m_ZonePathCnt,m_ZonePath)
-	void ZoneMoveCalc(void);                        // Рассчитать путь движения до ближайшей зоны (In: m_ZoneCur,m_ZoneNear) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
+	void ZonePathCalc(void);	                    // Рассчитать путь до m_ZoneDes (In: m_ZoneCur, m_ZoneDes) (Out: m_ZonePathCnt, m_ZonePath)
+	void ZoneMoveCalc(void);                        // Рассчитать путь движения до ближайшей зоны (In: m_ZoneCur, m_ZoneNear) (Out: m_MovePathCnt, m_MovePathCur, m_MovePath)
     float CalcPathLength(void);
-    //void ZoneMoveCalcTo(void);	                // Рассчитать путь в нутрии текущей зоны до точки назначения (In: m_DesX,m_DesY) (Out: m_MovePathCnt,m_MovePathCur,m_MovePath)
+    //void ZoneMoveCalcTo(void);	                // Рассчитать путь в нутрии текущей зоны до точки назначения (In: m_DesX, m_DesY) (Out: m_MovePathCnt, m_MovePathCur, m_MovePath)
 	void MoveByMovePath(int ms);	                // Двигаться по пути движения
     void MoveToRndBuilding();
 
 
     void CalcRobotMass();                           // вычисляет массу, скорость, силу робота
-    bool Seek(const D3DXVECTOR3 &dest, bool & rotate, bool end_path, bool back = false); // поиск вектора смещения робота
+    bool Seek(const D3DXVECTOR3 &dest, bool &rotate, bool end_path, bool back = false); // поиск вектора смещения робота
 	void RotateHull(const D3DXVECTOR3 &direction);  // поворот башни
-    bool RotateRobot(const D3DXVECTOR3 &dest, float * rotateangle=NULL);      // поворот робота
+    bool RotateRobot(const D3DXVECTOR3 &dest, float *rotateangle = NULL);      // поворот робота
 	void Decelerate();                              // замедление
     void RobotWeaponInit();                         // инициализация оружия
     void HitTo(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos);
@@ -433,7 +442,7 @@ public:
 
 
 //Orders stack processing
-    SOrder* AllocPlaceForOrderOnTop(void);  // make sure that order will bi initialized after this call
+    SOrder *AllocPlaceForOrderOnTop(void);  // make sure that order will bi initialized after this call
     //void AddOrderToEnd(const SOrder &order);
 
     void RemoveOrderFromTop(void)
@@ -447,7 +456,7 @@ public:
     void ProcessOrdersList();
 
     bool HaveBomb(void) const;
-    int HaveRepair(void) const                      { return m_HaveRepair; }
+    int HaveRepair(void) const { return m_HaveRepair; }
 
     //High orders
     void MoveToHigh(int mx, int my);
@@ -463,28 +472,28 @@ public:
     void BigBoom(int nc = -1);
 
     void CaptureFactory(CMatrixBuilding* factory);
-    CMatrixBuilding* GetCaptureFactory(void);
+    CMatrixBuilding *GetCaptureFactory(void);
     void StopCapture();
 
     void TaktCaptureCandidate(int ms);
-    void AddCaptureCandidate(CMatrixBuilding* b);
-    void RemoveCaptureCandidate(CMatrixBuilding* b);
+    void AddCaptureCandidate(CMatrixBuilding *b);
+    void RemoveCaptureCandidate(CMatrixBuilding *b);
     void ClearCaptureCandidates(void);
 
-    bool FindOrder(OrderType findOrder, CMatrixMapStatic* obj);
+    bool FindOrder(OrderType findOrder, CMatrixMapStatic *obj);
     bool FindOrderLikeThat(OrderType order) const;
     bool FindOrderLikeThat(OrderType order, OrderPhase phase);
 
     void BreakAllOrders();
     void UpdateOrder_MoveTo(int mx, int my);
-    bool GetMoveToCoords(CPoint & pos);
-    bool GetReturnCoords(CPoint & pos);
+    bool GetMoveToCoords(CPoint &pos);
+    bool GetReturnCoords(CPoint &pos);
 
     void LowLevelStopFire(void);
     void LowLevelStop();
     bool FindWeapon(EWeapon type);
 
-    void LowLevelMove(int ms, const D3DXVECTOR3& dest, bool robot_coll, bool obst_coll, bool end_path = true, bool back = false);
+    void LowLevelMove(int ms, const D3DXVECTOR3 &dest, bool robot_coll, bool obst_coll, bool end_path = true, bool back = false);
     void LowLevelDecelerate(int ms, bool robot_coll, bool obst_coll);
 
     void ReleaseMe();
@@ -493,7 +502,7 @@ public:
     void GetLost(const D3DXVECTOR3 &v);
 //
 
-    void RobotSpawn(CMatrixBuilding* pBase);    // spawn робота		
+    void RobotSpawn(CMatrixBuilding *pBase);    // spawn робота		
     void DIPTakt(float ms);                     // death in progress takt
 
 	virtual void LogicTakt(int cms);
@@ -502,7 +511,7 @@ public:
 #ifdef _DEBUG
     virtual void Draw(void);
 #endif
-    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
+    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic *attaker);
 
     friend class CMatrixRobot;
 
@@ -510,12 +519,12 @@ public:
 	~CMatrixRobotAI();
 };
 
-__forceinline void SBotWeapon::Draw(CMatrixRobotAI* robot)
+__forceinline void SBotWeapon::Draw(CMatrixRobotAI *robot)
 {
-    if (m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
+    if(m_Unit->m_WeaponRepairData) m_Unit->m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
 }
 
-inline SMatrixPlace* GetPlacePtr(int no)
+inline SMatrixPlace *GetPlacePtr(int no)
 {
     if(no < 0) return NULL;
     return g_MatrixMap->m_RN.GetPlace(no);

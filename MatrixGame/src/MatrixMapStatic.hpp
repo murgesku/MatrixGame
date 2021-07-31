@@ -146,7 +146,7 @@ struct  SObjectCore
 
     CMatrixMapStatic *m_Object;
 
-    static SObjectCore * Create(CMatrixMapStatic *obj)
+    static SObjectCore *Create(CMatrixMapStatic *obj)
     {
         SObjectCore *c = (SObjectCore *)HAlloc(sizeof(SObjectCore), g_MatrixHeap);
 #ifdef _DEBUG
@@ -179,10 +179,10 @@ struct  SObjectCore
 //
 //#endif
         --m_Ref;
-        if (m_Ref <=0)
+        if(m_Ref <=0)
         {
 #ifdef _DEBUG
-            if (m_Ref < 0) _asm int 3
+            if(m_Ref < 0) _asm int 3
 #endif
 #ifdef _DEBUG
 
@@ -228,28 +228,28 @@ class CMatrixMapStatic : public CMain
         static int                  objects_rite;
 
 
-        static CMatrixMapStatic* m_FirstVisNew;
-        static CMatrixMapStatic* m_LastVisNew;
+        static CMatrixMapStatic *m_FirstVisNew;
+        static CMatrixMapStatic *m_LastVisNew;
 
-        static CMatrixMapStatic* m_FirstVisOld;
-        static CMatrixMapStatic* m_LastVisOld;
+        static CMatrixMapStatic *m_FirstVisOld;
+        static CMatrixMapStatic *m_LastVisOld;
 
-        CMatrixMapStatic* m_NextVis;
-        CMatrixMapStatic* m_PrevVis;
+        CMatrixMapStatic *m_NextVis;
+        CMatrixMapStatic *m_PrevVis;
 
 protected:
 
         struct SEVH_data
         {
             D3DXMATRIX m;
-            const CRect* rect;
+            const CRect *rect;
             bool        found;
         };
 
         DWORD           m_ObjectState;      // битовый набор.
         DWORD           m_RChange;          // Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
 
-        SObjectCore*    m_Core;
+        SObjectCore     *m_Core;
 
         void            SetShortedTTL(int ttl) { m_ObjectStateTTLShorted = ttl; };
         void            SetAblazeTTL(int ttl) { m_ObjectStateTTLAblaze = ttl; };
@@ -366,10 +366,10 @@ public:
 
         ~CMatrixMapStatic();
 
-        static CMatrixMapStatic * GetFirstLogic(void) {return m_FirstLogicTemp;}
-        static CMatrixMapStatic * GetLastLogic(void) {return m_LastLogicTemp;}
-        CMatrixMapStatic * GetNextLogic(void) {return m_NextLogicTemp;}
-        CMatrixMapStatic * GetPrevLogic(void) {return m_PrevLogicTemp;}
+        static CMatrixMapStatic *GetFirstLogic(void) {return m_FirstLogicTemp;}
+        static CMatrixMapStatic *GetLastLogic(void) {return m_LastLogicTemp;}
+        CMatrixMapStatic *GetNextLogic(void) {return m_NextLogicTemp;}
+        CMatrixMapStatic *GetPrevLogic(void) {return m_PrevLogicTemp;}
 
         bool IsBase(void) const ;
         __forceinline bool IsRobot(void) const {return GetObjectType() == OBJECT_TYPE_ROBOTAI;};
@@ -393,19 +393,19 @@ public:
 
         bool FitToMask(DWORD mask);
 
-        __forceinline CMatrixRobotAI* AsRobot(void) { return (CMatrixRobotAI*)this; }
-        __forceinline CMatrixCannon* AsCannon(void) { return (CMatrixCannon*)this; }
-        __forceinline CMatrixBuilding* AsBuilding(void) { return (CMatrixBuilding*)this; }
-        __forceinline CMatrixFlyer* AsFlyer(void) { return (CMatrixFlyer*)this; }
+        __forceinline CMatrixRobotAI *AsRobot(void) { return (CMatrixRobotAI*)this; }
+        __forceinline CMatrixCannon *AsCannon(void) { return (CMatrixCannon*)this; }
+        __forceinline CMatrixBuilding *AsBuilding(void) { return (CMatrixBuilding*)this; }
+        __forceinline CMatrixFlyer *AsFlyer(void) { return (CMatrixFlyer*)this; }
 
         __forceinline bool IsNearBase(void) const {return m_NearBaseCnt != 0;}
 
         void RecalcTerainColor(void);
         __forceinline DWORD GetTerrainColor(void) const {return m_Core->m_TerainColor;}
 
-        void Sort(const D3DXMATRIX& sort);
+        void Sort(const D3DXMATRIX &sort);
         static void SortBegin(void);
-        static  void OnEndOfDraw(void); // this must be called before any sorting stuf
+        static void OnEndOfDraw(void); // this must be called before any sorting stuf
 
         static void SortEndRecalcTerainColor(void);
         static void SortEndDraw(void);
@@ -419,7 +419,7 @@ public:
         static void RemoveFromSorted(CMatrixMapStatic *ms);
 
         static int GetVisObjCnt(void);
-        static CMatrixMapStatic * GetVisObj(int i);
+        static CMatrixMapStatic *GetVisObj(int i);
 
 
         __forceinline EObjectType GetObjectType(void) const {return m_Core->m_Type;}
@@ -475,9 +475,9 @@ public:
         virtual void Takt(int cms) = 0;
         virtual void LogicTakt(int cms) = 0;
 
-        virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt) const = 0;
+        virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const = 0;
 
-        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker) = 0;
+        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic *attaker) = 0;
 
         virtual void BeforeDraw(void) = 0;
         virtual void Draw(void)  = 0;
@@ -490,8 +490,8 @@ public:
 
         virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax) = 0;
         
-        virtual int  GetSide(void) const = 0;
-        virtual bool  NeedRepair(void) const = 0;
+        virtual int GetSide(void) const = 0;
+        virtual bool NeedRepair(void) const = 0;
 
 
         static bool  EnumVertsHandler(const SVOVertex &v, DWORD data);
@@ -511,14 +511,14 @@ public:
 
 __forceinline  CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void)
 {
-    if (m_Target) return m_Target->m_Object;
+    if(m_Target) return m_Target->m_Object;
     return NULL;
 }
 
 __forceinline void   CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {m_Owner = ms->GetCore(DEBUG_CALL_INFO); m_SideStorage = ms->GetSide();}
 __forceinline       CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void)
 {
-    if (m_Owner) return m_Owner->m_Object;
+    if(m_Owner) return m_Owner->m_Object;
     return NULL;
 }
 

@@ -1374,8 +1374,8 @@ void CMatrixBuilding::Maintenance(void)
 
     int listcnt;
     su->BufPrepare();
-    int ret = g_MatrixMap->PlaceList(1+2+4+8+16, CPoint(cx,cy), CPoint(cx,cy), 100, false, su->m_PlaceList,&listcnt);
-    if (ret == 0) return;
+    int ret = g_MatrixMap->PlaceList(1+2+4+8+16, CPoint(cx,cy), CPoint(cx,cy), 100, false, su->m_PlaceList, &listcnt);
+    if(ret == 0) return;
     g_MatrixMap->InitMaintenanceTime();
     CSound::Play(S_MAINTENANCE);
     //g_MatrixMap->PlaceListGrow(1+2+4+8+16, g_MatrixMap->GetPlayerSide()->m_PlaceList, &listcnt, 2);
@@ -1532,13 +1532,13 @@ bool CMatrixBuilding::InRect(const CRect &rect) const
 {
     D3DXVECTOR3 dir;
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.left, rect.top), dir);
-    if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
+    if(Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
 
     D3DXMATRIX s;
     SEVH_data d;
-    
+
     d.m = g_MatrixMap->m_Camera.GetViewMatrix() * g_MatrixMap->m_Camera.GetProjMatrix();
-    D3DXMatrixScaling(&s, float(g_ScreenX/2),float(-g_ScreenY/2),1);
+    D3DXMatrixScaling(&s, float(g_ScreenX / 2), float(-g_ScreenY / 2), 1);
     s._41 = s._11;
     s._42 = float(g_ScreenY/2);
     d.m *= s;
@@ -1546,17 +1546,17 @@ bool CMatrixBuilding::InRect(const CRect &rect) const
     d.rect = &rect;
 
     m_GGraph->EnumFrameVerts_transform_position(EnumVertsHandler, (DWORD)&d);
-    if (d.found) return true;
+    if(d.found) return true;
 
 
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.left, rect.bottom), dir);
-    if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
+    if(Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
 
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.right, rect.top), dir);
-    if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
+    if(Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
     
     g_MatrixMap->m_Camera.CalcPickVector(CPoint(rect.right, rect.bottom), dir);
-    if (Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
+    if(Pick(g_MatrixMap->m_Camera.GetFrustumCenter(), dir, NULL)) return true;
 
     return false;
 }

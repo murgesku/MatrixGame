@@ -228,7 +228,6 @@ enum EEffectType
 
     EFFECT_TYPE_COUNT,
     EEffectType_FORCE_DWORD = 0x7FFFFFFF
-
 };
 
 // before draw done flags
@@ -323,11 +322,11 @@ struct SEffectHandler
 };
 
 #define ELIST_NAME(n,x)             m_EffectsList##n##x
-#define ELIST_FIRST(n)              ELIST_NAME(n,_First)
-#define ELIST_LAST(n)               ELIST_NAME(n,_Last)
-#define ELIST_CNT(n)                ELIST_NAME(n,_Count)
-#define ELIST_DECLARE_INCLASS(n)    static CMatrixEffect * ELIST_FIRST(n); static CMatrixEffect * ELIST_LAST(n); static int ELIST_CNT(n)
-#define ELIST_DECLARE_OUTCLASS(n)   CMatrixEffect * CMatrixEffect::ELIST_FIRST(n); CMatrixEffect * CMatrixEffect::ELIST_LAST(n); int CMatrixEffect::ELIST_CNT(n)
+#define ELIST_FIRST(n)              ELIST_NAME(n, _First)
+#define ELIST_LAST(n)               ELIST_NAME(n, _Last)
+#define ELIST_CNT(n)                ELIST_NAME(n, _Count)
+#define ELIST_DECLARE_INCLASS(n)    static CMatrixEffect *ELIST_FIRST(n); static CMatrixEffect *ELIST_LAST(n); static int ELIST_CNT(n)
+#define ELIST_DECLARE_OUTCLASS(n)   CMatrixEffect *CMatrixEffect::ELIST_FIRST(n); CMatrixEffect *CMatrixEffect::ELIST_LAST(n); int CMatrixEffect::ELIST_CNT(n)
 #define ELIST_INIT(n)               CMatrixEffect::ELIST_FIRST(n) = NULL; CMatrixEffect::ELIST_LAST(n) = NULL; CMatrixEffect::ELIST_CNT(n) = 0
 #define ELIST_ADD(n)                LIST_ADD(this, ELIST_FIRST(n), ELIST_LAST(n),m_TypePrev,m_TypeNext); ++ELIST_CNT(n)
 #define ELIST_DEL(n)                LIST_DEL(this, ELIST_FIRST(n), ELIST_LAST(n),m_TypePrev,m_TypeNext); --ELIST_CNT(n)
@@ -369,7 +368,7 @@ protected:
 
     void    SetDIP(void) {SETFLAG(m_Flags, EFFF_DIP);}
 
-    CMatrixEffect(void):CMain() ,m_EffectHandler(NULL), m_TypePrev(NULL), m_TypeNext(NULL), m_Prev(NULL), m_Next(NULL),m_Flags(0)
+    CMatrixEffect(void):CMain(), m_EffectHandler(NULL), m_TypePrev(NULL), m_TypeNext(NULL), m_Prev(NULL), m_Next(NULL), m_Flags(0)
 #ifdef _DEBUG
     , m_EffectType(EFFECT_UNDEFINED)
 #endif

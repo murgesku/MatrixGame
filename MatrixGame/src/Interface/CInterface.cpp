@@ -1701,31 +1701,32 @@ void CInterface::Init(void)
                             {
                                 ++repairers_cnt;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_MoveTo)
+                            int bot_order = g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order();
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_MoveTo)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 move = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Capture)
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Capture)
                             {//if(robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
                                 capt = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Attack)
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Attack)
                             {//if(robot->FindOrderLikeThat(ROBOT_FIRE)){
                                 fire = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Stop)
-                            {//if(robot->GetOrdersInPool() == 0){
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Stop)
+                            {//if(!robot->GetOrdersInPool()){
                                 stop = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Patrol)
-                            {//if(robot->GetOrdersInPool() == 0){
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Patrol)
+                            {//if(!robot->GetOrdersInPool()){
                                 patrol = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Bomb)
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Bomb)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 bomb = true;
                             }
-                            if(robot->GetGroupLogic() >= 0 && g_MatrixMap->GetSideById(robot->GetSide())->m_PlayerGroup[robot->GetGroupLogic()].Order() == mpo_Repair)
+                            if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Repair)
                             {//if(robot->FindOrderLikeThat(ROT_MOVE_TO)){
                                 repair = true;
                             }
@@ -1740,11 +1741,8 @@ void CInterface::Init(void)
                     {
                         repairers = true;
                     }
-
                 }
-
             }
-
 
             while(pElement)
             {
@@ -2031,6 +2029,7 @@ void CInterface::Init(void)
                                     {
                                         ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(m_xPos + 68, m_yPos + 179, 68, PBC_CLONE2);
                                     }
+
                                     if(!singlem)
                                     {
                                         ((CMatrixRobotAI*)so->GetObject())->CreateProgressBarClone(pElement->m_xPos + m_xPos, pElement->m_yPos + m_yPos + 36, 46, PBC_CLONE1);
@@ -4333,19 +4332,22 @@ void CIFaceList::SlideFocusedInterfaceLeft()
 
 void CIFaceList::LeaveRobot(void)
 {
-    CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+    CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
+
     if(ps->IsArcadeMode())
     {
-        CMatrixMapStatic* obj = ps->GetArcadedObject();
+        CMatrixMapStatic *obj = ps->GetArcadedObject();
         ESelType type = NOTHING;
 
         if(obj)
         {
-            if(obj->GetObjectType() == OBJECT_TYPE_ROBOTAI)
+            int obj_type = obj->GetObjectType();
+            if(obj_type == OBJECT_TYPE_ROBOTAI)
             {
+                obj->AsRobot()->SetAfterManual(true);
                 type = ROBOT;
             }
-            else if(obj->GetObjectType() == OBJECT_TYPE_FLYER)
+            else if(obj_type == OBJECT_TYPE_FLYER)
             {
                 type = FLYER;
             }
@@ -4353,20 +4355,22 @@ void CIFaceList::LeaveRobot(void)
         
         ps->SetArcadedObject(NULL);
 
-        CMatrixGroup* grp = ps->GetCurSelGroup();
+        CMatrixGroup *grp = ps->GetCurSelGroup();
 
         grp->RemoveAll();
         grp->AddObject(obj, -4);
 
         ps->SetCurGroup(ps->CreateGroupFromCurrent());
-        ps->Select(type, NULL);
+        ps->PGOrderStop(ps->SelGroupToLogicGroup());
+        ps->SelectedGroupBreakOrders();
+        ps->Select(type, obj);
         
-        CInterface* ifs = g_IFaceList->m_First;
+        CInterface *ifs = g_IFaceList->m_First;
         while(ifs)
         {
             if(ifs->m_strName == IF_MAIN)
             {
-                ifs->m_xPos = float(g_ScreenX-(1024-447));
+                ifs->m_xPos = float(g_ScreenX - (1024 - 447));
                 ifs->ReCalcElementsPos();
                 break;
             }
@@ -4377,10 +4381,10 @@ void CIFaceList::LeaveRobot(void)
 
 void CIFaceList::EnterRobot(bool pos)
 {
-    CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+    CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
     if(ps->GetCurGroup() && ps->GetCurGroup()->m_FirstObject)
     {
-        CMatrixMapStatic* o = ps->GetCurGroup()->m_FirstObject->GetObject(); 
+        CMatrixMapStatic *o = ps->GetCurGroup()->m_FirstObject->GetObject(); 
         if(pos)
         {
             o = ps->GetCurGroup()->GetObjectByN(ps->GetCurSelNum());
@@ -4388,7 +4392,7 @@ void CIFaceList::EnterRobot(bool pos)
         
         ps->SetArcadedObject(o);
 
-        CInterface* ifs = g_IFaceList->m_First;
+        CInterface *ifs = g_IFaceList->m_First;
         while(ifs)
         {
             if(ifs->m_strName == IF_MAIN)
@@ -4403,12 +4407,12 @@ void CIFaceList::EnterRobot(bool pos)
 
 
 
-void __stdcall CIFaceList::PlayerAction(void* object)
+void __stdcall CIFaceList::PlayerAction(void *object)
 {
     if(!object) return;
     
-    CIFaceElement* element = (CIFaceElement*)object;
-    CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
+    CIFaceElement *element = (CIFaceElement*)object;
+    CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
     if(element->m_strName == IF_MAIN_MENU_BUTTON)
     {

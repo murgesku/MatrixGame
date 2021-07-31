@@ -16,17 +16,17 @@ namespace Base
 
 //Функция для быстрого вывода отладочных строк в общий игровой лог ########.log
 //При вызове из кода используется удобный define SFT (пример: SFT("some string" + 10))
-	void SFT_fun(CStr out)
-	{
-		CHAR system_folder[MAX_PATH];
-		SHGetSpecialFolderPath(0, system_folder, CSIDL_PERSONAL, true);
+void SFT_fun(CStr out)
+{
+	CHAR system_folder[MAX_PATH];
+	SHGetSpecialFolderPath(0, system_folder, CSIDL_PERSONAL, true);
 
-		FILE* file;
-		errno_t err = fopen_s(&file, strcat(system_folder, "\\SpaceRangersHD\\########.log"), "a");
-		fwrite(out, strlen(out), 1, file);
-		fwrite("\r", 1, 1, file);
-		fclose(file);
-	}
+	FILE* file;
+	errno_t err = fopen_s(&file, strcat(system_folder, "\\SpaceRangersHD\\########.log"), "a");
+	fwrite(out, strlen(out), 1, file);
+	fwrite("\r", 1, 1, file);
+	fclose(file);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

@@ -149,7 +149,7 @@ struct SMatrixMapMove {
 
     BYTE GetType(int nsh) const
     {
-        byte rv=0;
+        byte rv = 0;
 
         if(!(this->m_Stop & (1<<nsh))) return 0xff;
 
@@ -189,7 +189,7 @@ struct SDifficulty
 
 struct SGroupVisibility
 {
-    PCMatrixMapGroup * vis;
+    PCMatrixMapGroup  *vis;
     int                vis_cnt;
     float              z_from;
     int               *levels;
@@ -301,9 +301,9 @@ class CMatrixMap : public CMain
 
 		CPoint m_Size;
 		CPoint m_SizeMove;
-		SMatrixMapUnit * m_Unit;
-		SMatrixMapPoint * m_Point;
-		SMatrixMapMove * m_Move;
+		SMatrixMapUnit *m_Unit;
+		SMatrixMapPoint *m_Point;
+		SMatrixMapMove *m_Move;
 
         SGatheringPointsList m_GatheringPointsList;
 
@@ -333,8 +333,8 @@ class CMatrixMap : public CMain
         CMatrixRoadNetwork m_RN;
 
 		CPoint              m_GroupSize;
-		CMatrixMapGroup * * m_Group;
-        SGroupVisibility  * m_GroupVis;
+		CMatrixMapGroup   **m_Group;
+        SGroupVisibility   *m_GroupVis;
 
         CDevConsole         m_Console;
         CMatrixDebugInfo    m_DI;
@@ -354,10 +354,10 @@ class CMatrixMap : public CMain
         CMatrixWater *m_Water;
 
 		int m_IdsCnt;
-		CWStr * m_Ids;
+		CWStr *m_Ids;
 
-        CMatrixSideUnit * m_PlayerSide;
-		CMatrixSideUnit * m_Side;
+        CMatrixSideUnit  *m_PlayerSide;
+		CMatrixSideUnit  *m_Side;
 		int m_SideCnt;
 
         PCMatrixEffect  m_EffectsFirst;
@@ -369,7 +369,7 @@ class CMatrixMap : public CMain
         CEffectSpawner *m_EffectSpawners;
         int             m_EffectSpawnersCnt;
 
-        CMatrixMapStatic * m_NextLogicObject;
+        CMatrixMapStatic *m_NextLogicObject;
 
         CWStr           m_WaterName;
 
