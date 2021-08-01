@@ -1501,7 +1501,7 @@ void CMatrixBuilding::ReleaseMe(void)
     //}
     
     //Уничтожаем всех ещё не покинувших базу роботов, а все связанные турели переводим на нейтральную сторону
-    CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
+    CMatrixMapStatic *objects = CMatrixMapStatic::GetFirstLogic();   
     while(objects)
     {
         if(objects->IsLiveRobot())
@@ -1514,7 +1514,7 @@ void CMatrixBuilding::ReleaseMe(void)
 
             objects->AsRobot()->RemoveCaptureCandidate(this);
             objects->AsRobot()->GetEnv()->RemoveFromList(this);
-            if(objects->AsRobot()->GetCaptureFactory()==this)
+            if(objects->AsRobot()->GetCaptureBuilding() == this)
             {
                 objects->AsRobot()->StopCapture();
             }
@@ -1635,48 +1635,55 @@ void CMatrixBuilding::DeleteProgressBarClone(EPBCoord clone_type)
     m_PB.KillClone(clone_type);
 }
 
-int CMatrixBuilding::GetPlacesForTurrets(CPoint * places)
+int CMatrixBuilding::GetPlacesForTurrets(CPoint *places)
 {
-    int cx=Float2Int(m_Pos.x/GLOBAL_SCALE_MOVE);
-    int cy=Float2Int(m_Pos.y/GLOBAL_SCALE_MOVE);
+    int cx = Float2Int(m_Pos.x / GLOBAL_SCALE_MOVE);
+    int cy = Float2Int(m_Pos.y / GLOBAL_SCALE_MOVE);
 
-    int cnt=0;
-//    int dist[MAX_PLACES];
+    int cnt = 0;
+    //int dist[MAX_PLACES];
 
-    SMatrixPlace * place=g_MatrixMap->m_RN.m_Place;
-    for(int i=0;i<g_MatrixMap->m_RN.m_PlaceCnt;i++,place++) place->m_Data=0;
+    SMatrixPlace *place = g_MatrixMap->m_RN.m_Place;
+    for(int i = 0; i < g_MatrixMap->m_RN.m_PlaceCnt; ++i, ++place) place->m_Data = 0;
 
-    CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveCannon()) {
-            if(obj->AsCannon()->m_Place>=0) {
-                place=g_MatrixMap->m_RN.GetPlace(obj->AsCannon()->m_Place);
-                place->m_Data=1;
+    CMatrixMapStatic *obj = CMatrixMapStatic::GetFirstLogic();
+    while(obj)
+    {
+        if(obj->IsLiveCannon())
+        {
+            if(obj->AsCannon()->m_Place >= 0)
+            {
+                place = g_MatrixMap->m_RN.GetPlace(obj->AsCannon()->m_Place);
+                place->m_Data = 1;
             }
         }
-        if(obj->IsLiveBuilding()) {
-            CMatrixMapStatic * bi= obj->AsBuilding()->m_BS.GetTopItem();
-            while(bi) {
-                if(bi->IsCannon()) {
-                    place=g_MatrixMap->m_RN.GetPlace(bi->AsCannon()->m_Place);
-                    place->m_Data=1;
+        if(obj->IsLiveBuilding())
+        {
+            CMatrixMapStatic *bi = obj->AsBuilding()->m_BS.GetTopItem();
+            while(bi)
+            {
+                if(bi->IsCannon())
+                {
+                    place = g_MatrixMap->m_RN.GetPlace(bi->AsCannon()->m_Place);
+                    place->m_Data = 1;
                 }
-                bi=bi->m_NextStackItem;
+                bi = bi->m_NextStackItem;
             }
         }
         obj = obj->GetNextLogic();
     }
 
-    for(int i=0;i<m_TurretsPlacesCnt;i++)
+    for(int i = 0; i < m_TurretsPlacesCnt; ++i)
     {
-        place=g_MatrixMap->m_RN.GetPlace(g_MatrixMap->m_RN.FindInPL(m_TurretsPlaces[i].m_Coord));
+        place = g_MatrixMap->m_RN.GetPlace(g_MatrixMap->m_RN.FindInPL(m_TurretsPlaces[i].m_Coord));
         if(place->m_Data) continue;
 
-        places[cnt]=m_TurretsPlaces[i].m_Coord;
-        cnt++;
+        places[cnt] = m_TurretsPlaces[i].m_Coord;
+        ++cnt;
     }
 
-/*    CRect plr=g_MatrixMap->m_RN.CorrectRectPL(CRect(cx-16*2,cy-16*2,cx+16*2,cy+16*2));
+    /*
+    CRect plr=g_MatrixMap->m_RN.CorrectRectPL(CRect(cx-16*2,cy-16*2,cx+16*2,cy+16*2));
     SMatrixPlaceList * plist=g_MatrixMap->m_RN.m_PLList+plr.left+plr.top*g_MatrixMap->m_RN.m_PLSizeX;
     for(int y=plr.top;y<plr.bottom;y++,plist+=g_MatrixMap->m_RN.m_PLSizeX-(plr.right-plr.left)) {
         for(int x=plr.left;x<plr.right;x++,plist++) {
@@ -1711,7 +1718,8 @@ int CMatrixBuilding::GetPlacesForTurrets(CPoint * places)
 
             }
         }
-    }*/
+    }
+    */
     return cnt;
 }
 
@@ -1725,7 +1733,7 @@ void CMatrixBuilding::CreatePlacesShow(void)
     int cnt=GetPlacesForTurrets(pl);
 
     m_PlacesShow = (SEffectHandler*)HAlloc(sizeof(SEffectHandler)*MAX_PLACES, g_MatrixHeap);
-    for(int i = 0;i<MAX_PLACES;++i)
+    for(int i = 0; i < MAX_PLACES; ++i)
     {
 #ifdef _DEBUG
         m_PlacesShow[i].SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);

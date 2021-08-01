@@ -10,8 +10,6 @@
 #include "MatrixProgressBar.hpp"
 #include "Effects/MatrixEffect.hpp"
 
-
-
 class CMatrixFlyer;
 
 enum ERobotState

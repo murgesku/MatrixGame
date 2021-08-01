@@ -128,7 +128,7 @@ enum OrderType
     ROT_STOP_MOVE,
 	ROT_FIRE,
 	ROT_STOP_FIRE,
-    ROT_CAPTURE_FACTORY,
+    ROT_CAPTURE_BUILDING,
     ROT_STOP_CAPTURE,
 
     OrderType_FORCE_DWORD = 0x7FFFFFFF
@@ -183,7 +183,7 @@ public:
             *p4 = m_Param4;
     }
 
-    CMatrixMapStatic * GetStatic(void)
+    CMatrixMapStatic *GetStatic(void)
     {
         if(m_ObjCore)
         {
@@ -203,7 +203,7 @@ public:
         m_Param3 = p3;
         m_Param4 = p4;
     }
-    void SetOrder(const OrderType &orderType, CMatrixMapStatic* obj)
+    void SetOrder(const OrderType &orderType, CMatrixMapStatic *obj)
     {
         Reset();
         m_OrderType = orderType;
@@ -334,8 +334,8 @@ public:
     void        SetColsWeight2(int w)                               { m_ColsWeight2 = w; }
     int         GetMapPosX(void) const                              { return m_MapX; }
     int         GetMapPosY(void) const                              { return m_MapY; }
-    CInfo*      GetEnv()                                            { return &m_Environment; }
-    void        SetEnvTarget(CMatrixMapStatic* t)                   { m_Environment.m_Target = t; }
+    CInfo      *GetEnv()                                            { return &m_Environment; }
+    void        SetEnvTarget(CMatrixMapStatic *t)                   { m_Environment.m_Target = t; }
     int         GetTeam()                                           { return m_Team; }
     void        SetTeam(int t)                                      { m_Team = t; }
     int         GetGroup()                                          { return m_Group; }
@@ -395,7 +395,7 @@ public:
     {
         if(m_Side != PLAYER_SIDE || FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
         {
-            CMatrixBuilding *cf = GetCaptureFactory();
+            CMatrixBuilding *cf = GetCaptureBuilding();
             if(cf) 
             {
                 return false; //DO NOT BREAK CAPTURING!!!!!!!!!!!!!!!!!!!!!!!! NEVER!!!!!!!!!!
@@ -471,8 +471,8 @@ public:
     void StopFire(void);
     void BigBoom(int nc = -1);
 
-    void CaptureFactory(CMatrixBuilding* factory);
-    CMatrixBuilding *GetCaptureFactory(void);
+    void CaptureBuilding(CMatrixBuilding *building);
+    CMatrixBuilding *GetCaptureBuilding(void);
     void StopCapture();
 
     void TaktCaptureCandidate(int ms);

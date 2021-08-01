@@ -26,6 +26,8 @@
 #define ROBOTS_BY_MAIN          4
 #define ROBOTS_BY_FACTORY       1
 
+#define MAIN_ENEMY_RECALC_PERIOD 60000 //Как часто доминаторские стороны будут переопределять своего текущего основного врага (в тактах)
+
 //Использовалось в качестве аркадного коэффициента-бонуса к скорости
 //Было заменено на переменную g_UnitSpeedArcadeCoef, которую можно выставлять из конфига
 //#define SPEED_BOOST             1.1f
@@ -96,7 +98,7 @@ struct SRobot
 {
 	CMatrixRobotAI* m_Robot;
 	D3DXVECTOR3 m_Mark;
-	DWORD m_CrossCatched; // this is bool variable
+	DWORD m_CrossCatched; //This is bool variable
 	SRobot()
     {
 		m_CrossCatched = false;
@@ -105,11 +107,10 @@ struct SRobot
 
 enum ESideStatus
 {
-    SS_NONE,        // side absent
-    SS_ACTIVE,      // active side
-    SS_JUST_DEAD,   // just dead side. switch this status to SS_NONE, after you get it
-    SS_JUST_WIN,    // valid only for player side
-
+    SS_NONE,        // side absent (сторона отсутствовала на карте изначально, либо была уничтожена в процессе боя)
+    SS_ACTIVE,      // active side (сторона участвует в бою)
+    SS_JUST_DEAD,   // just dead side. switch this status to SS_NONE, after you get it (сторона только что была уничтожена, сразу переводим этто статус в SS_NONE)
+    SS_JUST_WIN,    // valid only for player side (сторона только что победила, значит, это точно игрок)
 
     ESideStatus_FORCE_DWORD = 0x7FFFFFFF
 };
@@ -128,8 +129,8 @@ enum EPlayerActions
 
 struct SCannonForBuild
 {
-    CMatrixCannon*              m_Cannon;
-    CMatrixBuilding*            m_ParentBuilding;
+    CMatrixCannon              *m_Cannon;
+    CMatrixBuilding            *m_ParentBuilding;
     SEffectHandler              m_ParentSpot;
     int                         m_CanBuildFlag;
 
@@ -378,11 +379,11 @@ private:
 	int         m_RobotsCnt;
 
     float m_Strength;                       // Сила стороны
-    int m_WarSide;                          // На какую сторону стараемся напасть
-    //float m_WarSideStrangeCancel;           // Перерассчитываем сторону с которой воюем когда сила стороны упадет ниже критической
+    int m_WarSide;                          // На какую сторону стараемся напасть (её Id)
+    //float m_WarSideStrangeCancel;         // Перерассчитываем сторону с которой воюем когда сила стороны упадет ниже критической
 
-    SMatrixLogicRegion * m_Region;
-    int * m_RegionIndex;
+    SMatrixLogicRegion *m_Region;
+    int *m_RegionIndex;
     int m_LastTaktHL;
     int m_LastTaktTL;
     int m_LastTeamChange;
@@ -628,7 +629,7 @@ public:
     CPoint PGCalcPlaceCenter(int no);
     void PGShowPlace(int no);
     void PGCalcStat(void);
-    void PGFindCaptureFactory(int no);
+    void PGFindCaptureBuilding(int no);
     void PGFindAttackTarget(int no);
     void PGFindDefenceTarget(int no);
     void PGCalcRegionPath(SMatrixPlayerGroup *pg, int rend, byte mm);
