@@ -145,32 +145,32 @@ class CMatrixMapLogic : public CMatrixMap {
         int PlaceList(byte mm, CPoint& from, CPoint& to, int radius, bool farpath, int* list, int* listcnt, int* outdist = NULL); // Return 0-not found 1-can move to 2-barrier
         int PlaceListGrow(byte mm, int* list, int* listcnt, int growcnt);
 
-        SMatrixPathObj* ObjAdd(void);
-        void ObjDelete(SMatrixPathObj* obj);
+        SMatrixPathObj *ObjAdd(void);
+        void ObjDelete(SMatrixPathObj *obj);
         void ObjClear(void);
 
-        SMatrixPath* PathAlloc(void);
-        void PathFree(SMatrixPath* path);
+        SMatrixPath *PathAlloc(void);
+        void PathFree(SMatrixPath *path);
         void PathClear(void);
-        void PathAdd(SMatrixPath* path) { LIST_ADD(path, m_PathFirst, m_PathLast, m_Prev, m_Next); }
-        void PathInsert(SMatrixPath* ito, SMatrixPath* path) { LIST_INSERT(ito, path, m_PathFirst, m_PathLast, m_Prev, m_Next); }
-        void PathDelete(SMatrixPath* path, bool free = true) { LIST_DEL(path, m_PathFirst, m_PathLast, m_Prev, m_Next); if (free) PathFree(path); }
-        void PathCalcPosAfter(SMatrixPath* path = NULL);
-        bool PathCheckInFindInsert(SMatrixPath* path);
-        void PathCheckIn(SMatrixPath* path);
-        bool PathCheckInFindPos(SMatrixPath* path, SMatrixPathObj* obj);
-        bool PathIntersectAfter(SMatrixPath* path);
-        bool PathIntersect(SMatrixPath* path, float cx, float cy, float radius);
-        //        bool PathIntersect(SMatrixPath * path1,SMatrixPath * path2);
+        void PathAdd(SMatrixPath *path) { LIST_ADD(path, m_PathFirst, m_PathLast, m_Prev, m_Next); }
+        void PathInsert(SMatrixPath *ito, SMatrixPath *path) { LIST_INSERT(ito, path, m_PathFirst, m_PathLast, m_Prev, m_Next); }
+        void PathDelete(SMatrixPath* path, bool free = true) { LIST_DEL(path, m_PathFirst, m_PathLast, m_Prev, m_Next); if(free) PathFree(path); }
+        void PathCalcPosAfter(SMatrixPath *path = NULL);
+        bool PathCheckInFindInsert(SMatrixPath *path);
+        //void PathCheckIn(SMatrixPath *path);
+        bool PathCheckInFindPos(SMatrixPath *path, SMatrixPathObj *obj);
+        bool PathIntersectAfter(SMatrixPath *path);
+        bool PathIntersect(SMatrixPath *path, float cx, float cy, float radius);
+        //bool PathIntersect(SMatrixPath *path1, SMatrixPath *path2);
 
-        inline int GetRegion(const CPoint& tp);
+        inline int GetRegion(const CPoint &tp);
         inline int GetRegion(int x, int y);
 
         void CalcCannonPlace(void);
 
         void Takt(int step);
 
-        bool IsLogicVisible(CMatrixMapStatic* ofrom, CMatrixMapStatic* oto, float second_z = 0.0f);
+        bool IsLogicVisible(CMatrixMapStatic *ofrom, CMatrixMapStatic *oto, float second_z = 0.0f);
 
         void DumpLogic(void);
 };

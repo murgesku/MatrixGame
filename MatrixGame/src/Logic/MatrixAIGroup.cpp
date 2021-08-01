@@ -50,15 +50,15 @@ CMatrixGroup::~CMatrixGroup()
     //if(m_Tactics) HDelete(CMatrixTactics, m_Tactics, g_MatrixHeap);
 }
 
-void CMatrixGroup::AddObject(CMatrixMapStatic* object, int team)
+void CMatrixGroup::AddObject(CMatrixMapStatic *object, int team)
 {
-    CMatrixGroupObject* objects = m_FirstObject;
+    CMatrixGroupObject *objects = m_FirstObject;
     while(objects)
     {
         if(objects->GetObject() == object) return;
         objects = objects->m_NextObject;
     }
-    CMatrixGroupObject* g_object = HNew(g_MatrixHeap) CMatrixGroupObject;
+    CMatrixGroupObject *g_object = HNew(g_MatrixHeap) CMatrixGroupObject;
     g_object->SetObject(object);
     g_object->SetParentGroup(this);
     g_object->SetTeam(team);
@@ -82,9 +82,9 @@ void CMatrixGroup::AddObject(CMatrixMapStatic* object, int team)
     CalcGroupSpeed();
 }
 
-void CMatrixGroup::RemoveObject(CMatrixMapStatic* object)
+void CMatrixGroup::RemoveObject(CMatrixMapStatic *object)
 {
-    CMatrixGroupObject* g_object = m_FirstObject;
+    CMatrixGroupObject *g_object = m_FirstObject;
     while(g_object)
     {
         if(g_object->GetObject() == object)
@@ -94,17 +94,17 @@ void CMatrixGroup::RemoveObject(CMatrixMapStatic* object)
 
             if(object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
             {
-                m_RobotsCnt--;
+                --m_RobotsCnt;
             }
             else if(object->GetObjectType() == OBJECT_TYPE_FLYER)
             {
-                m_FlyersCnt--;
+                --m_FlyersCnt;
             }
             else if(object->GetObjectType() == OBJECT_TYPE_BUILDING)
             {
-                m_BuildingsCnt--;
+                --m_BuildingsCnt;
             }
-            m_ObjectsCnt--;
+            --m_ObjectsCnt;
 
             CalcGroupPosition();
             CalcGroupSpeed();
@@ -118,7 +118,7 @@ void CMatrixGroup::RemoveObject(CMatrixMapStatic* object)
 void CMatrixGroup::RemoveAll()
 {
     DTRACE();
-    CMatrixGroupObject* Objects = m_FirstObject;
+    CMatrixGroupObject *Objects = m_FirstObject;
 
 	while(Objects != NULL)
     {
@@ -147,7 +147,7 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object)
 
     while(gr_objects)
     {
-        CMatrixMapStatic* ai_object = gr_objects->GetObject();
+        CMatrixMapStatic *ai_object = gr_objects->GetObject();
 
         if(ai_object->GetObjectType() == OBJECT_TYPE_ROBOTAI)
         {
@@ -201,13 +201,13 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object)
             
             FindNearObjects(gr_objects);
         }
-        //
         gr_objects = gr_objects->m_NextObject;
     }
         
 }
 
-/*void CMatrixGroup::InstallTactics(TacticsType type, CBlockPar* par)
+/*
+void CMatrixGroup::InstallTactics(TacticsType type, CBlockPar *par)
 {
     if(par == NULL) return;
     if(m_Tactics != NULL) DeInstallTactics();
@@ -240,7 +240,7 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object)
     int tactics_cnt = par->BlockCount();
     if (tactics_cnt <= 0) return;
 
-    ////Tactics loading
+    //Tactics loading
     for(int cnt = 0; cnt < tactics_cnt; ++cnt)
     {
         if(par->BlockGet(cnt)->ParGetNE(L"Type") == stype)
@@ -262,7 +262,7 @@ void CMatrixGroup::DeInstallTactics()
 
     while(slots)
     {
-        CLogicSlotRobot* robots = slots->m_FirstRobot;
+        CLogicSlotRobot *robots = slots->m_FirstRobot;
         while(robots)
         {
             robots->GetLogicRobot()->BreakAllOrders();
@@ -278,7 +278,7 @@ void CMatrixGroup::DeInstallTactics()
 }
 */
 
-void CMatrixGroup::LogicTakt(CMatrixSideUnit* side)
+void CMatrixGroup::LogicTakt(CMatrixSideUnit *side)
 {
     if(m_SimpleTimer >= JUST_PERIOD || m_SimpleTimer == -1)
     {
@@ -327,12 +327,12 @@ void CMatrixGroup::CalcGroupPosition()
 
 void CMatrixGroup::CalcGroupSpeed()
 {
-    CMatrixGroupObject*  objects = m_FirstObject;
+    CMatrixGroupObject  *objects = m_FirstObject;
     float                lowest_speed = 0;
 
     while(objects)
     {
-        CMatrixMapStatic* ai_object = objects->GetObject();
+        CMatrixMapStatic *ai_object = objects->GetObject();
         if(ai_object->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)ai_object)->GetMaxSpeed() < lowest_speed && ((CMatrixRobotAI*)ai_object)->m_CurrState == ROBOT_SUCCESSFULLY_BUILD/* || !lowest_speed*/)
         {
             lowest_speed = ((CMatrixRobotAI*)ai_object)->GetMaxSpeed();
@@ -352,13 +352,13 @@ void CMatrixGroup::RemoveBuildings()
 {
     if(m_BuildingsCnt)
     {
-        CMatrixGroupObject* go = m_FirstObject;
+        CMatrixGroupObject *go = m_FirstObject;
 
         while(go)
         {
             if(go->GetObject()->GetObjectType() == OBJECT_TYPE_BUILDING)
             {
-                CMatrixGroupObject* go2 = go->m_NextObject; 
+                CMatrixGroupObject *go2 = go->m_NextObject; 
                 LIST_DEL(go, m_FirstObject, m_LastObject, m_PrevObject, m_NextObject);
                 HDelete(CMatrixGroupObject, go, g_MatrixHeap);
                 --m_BuildingsCnt;
@@ -374,7 +374,7 @@ void CMatrixGroup::RemoveBuildings()
 
 void CMatrixGroup::SortFlyers()
 {
-    CMatrixGroupObject* go = m_FirstObject;
+    CMatrixGroupObject *go = m_FirstObject;
 
     while(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER)
     {
@@ -384,13 +384,13 @@ void CMatrixGroup::SortFlyers()
     }
 }
 
-CMatrixMapStatic* CMatrixGroup::GetObjectByN(int num)
+CMatrixMapStatic *CMatrixGroup::GetObjectByN(int num)
 {
     if(num > m_ObjectsCnt)
     {
         return NULL;
     }
-    CMatrixGroupObject* go = m_FirstObject;
+    CMatrixGroupObject *go = m_FirstObject;
     
     while(go && num--)
     {
@@ -406,7 +406,7 @@ CMatrixMapStatic* CMatrixGroup::GetObjectByN(int num)
 
 bool CMatrixGroup::RemoveObject(int num)
 {
-    CMatrixMapStatic* o = GetObjectByN(num);
+    CMatrixMapStatic *o = GetObjectByN(num);
     if(o)
     {
         RemoveObject(o);
@@ -418,7 +418,7 @@ bool CMatrixGroup::RemoveObject(int num)
 bool CMatrixGroup::FindObject(CMatrixMapStatic* object)
 {
     DTRACE();
-    CMatrixGroupObject* objects = m_FirstObject;
+    CMatrixGroupObject *objects = m_FirstObject;
 
     while(objects)
     {
@@ -433,7 +433,7 @@ int CMatrixGroup::GetBombersCnt()
     DTRACE();
     
     int cnt = 0;
-    CMatrixGroupObject* objects = m_FirstObject;
+    CMatrixGroupObject *objects = m_FirstObject;
 
     while(objects)
     {
@@ -455,7 +455,7 @@ int CMatrixGroup::GetRepairsCnt()
     DTRACE();
     
     int cnt = 0;
-    CMatrixGroupObject* objects = m_FirstObject;
+    CMatrixGroupObject *objects = m_FirstObject;
 
     while(objects)
     {
@@ -474,217 +474,224 @@ int CMatrixGroup::GetRepairsCnt()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //_______CMatrixGroupList___PAPA BEAR TO ALPHA TEAM: Next you'll see new class implementation.. out.__________________//
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//CMatrixGroupList::~CMatrixGroupList()
-//{
-//    DTRACE();
-//    CMatrixGroup *groups = m_FirstGroup;
-//
-//	while(groups != NULL){
-//        if(groups->m_NextGroup){
-//			groups = groups->m_NextGroup;
-//        } else {
-//			HDelete(CMatrixGroup, groups, g_MatrixHeap);
-//			groups = NULL;
-//			m_FirstGroup = NULL;
-//			m_LastGroup = NULL;
-//
-//		}
-//
-//		if(groups) HDelete(CMatrixGroup, groups->m_PrevGroup, g_MatrixHeap);
-//	}
-//}
-//
-//CMatrixGroup* CMatrixGroupList::AddNewGroup(int team, int id)
-//{
-//    CMatrixGroup* group = HNew(g_MatrixHeap) CMatrixGroup;
-//    group->SetTeam(team);
-//    group->SetGroupId(id);
-//    LIST_ADD(group, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
-//    ++m_GroupsCnt;
-//    return group;
-//}
-//
-//void CMatrixGroupList::RemoveGroup(CMatrixGroup* group)
-//{
-//    CMatrixGroup* groups = m_FirstGroup;
-//    while(groups){
-//        if(groups == group){
-//            LIST_DEL(groups, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
-//            HDelete(CMatrixGroup, groups, g_MatrixHeap);
-//            m_GroupsCnt--;
-//            return;
-//        }
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
-//void CMatrixGroupList::RemoveGroup(int team)
-//{
-//    CMatrixGroup* groups = m_FirstGroup;
-//    while(groups){
-//        if(groups->GetTeam() == team){
-//            LIST_DEL(groups, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
-//            HDelete(CMatrixGroup, groups, g_MatrixHeap);
-//            m_GroupsCnt--;
-//            return;
-//        }
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
-//void CMatrixGroupList::ReGroup(CMatrixSideUnit* side)
-//{
-//    if(m_GroupsCnt > 0 && m_ReGroupPeriod < REGROUP_PERIOD)
-//        return;
-//
-//    m_ReGroupPeriod = 0;
-//    CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();
-//
-//    CMatrixGroup* side_objects = AddNewGroup(-2, 0);
-//    while(objects){
-//        if(objects->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)objects)->m_Side == side->m_Id){
-//            ((CMatrixRobotAI*)objects)->SetGroup(0);
-//            side_objects->AddObject(objects, ((CMatrixRobotAI*)objects)->GetTeam());
-//        }else if(objects->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)objects)->GetSide() == side->m_Id){
-//            ((CMatrixFlyer*)objects)->m_Group = 0;
-//            side_objects->AddObject(objects, ((CMatrixFlyer*)objects)->m_Team);
-//        }
-//        objects = objects->GetNextLogic();
-//    }
-//    if(side_objects->GetObjectsCnt() <= 0){
-//        RemoveGroup(side_objects);
-//        return;
-//    }
-//
-//    for(int cnt = 0; cnt < 3; cnt++){
-//        CMatrixGroupObject* gr_objects = side_objects->m_FirstObject;
-//        int group = 1;
-//        int team = cnt;
-//        while(gr_objects){
-//            if(gr_objects->GetTeam() == team){
-//                CMatrixMapStatic* ai_object = gr_objects->GetObject();
-//                int ai_group = 0;
-//                if(ai_object->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)ai_object)->GetGroup() == 0) {
-//                    ((CMatrixRobotAI*)ai_object)->SetGroup(group);
-//                    ai_group = group;
-//                    group++;
-//                }else if(ai_object->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)ai_object)->m_Group == 0){
-//                    ((CMatrixFlyer*)ai_object)->m_Group = group;
-//                    ai_group = group;
-//                    group++;
-//                }
-//                AddObject(team, ai_group, ai_object);
-//                side_objects->FindNearObjects(gr_objects);
-//            }
-//            gr_objects = gr_objects->m_NextObject;
-//        }
-//
-//    }
-//    RemoveGroup(side_objects);
-//
-//    CMatrixGroup*   groups = m_FirstGroup;
-//    
-//    while(groups){
-//        CMatrixGroupObject* objects = groups->m_FirstObject;
-//        while(objects){
-//            int ob_group = 0;
-//            if(objects->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
-//                ob_group = ((CMatrixRobotAI*)objects->GetObject())->GetGroup();
-//            }else if(objects->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
-//                ob_group = ((CMatrixFlyer*)objects->GetObject())->m_Group;
-//            }
-//            
-//            if(ob_group != groups->GetGroupId()){
-//                CMatrixGroupObject* rb = objects;
-//                objects = objects->m_NextObject;
-//                if(groups->GetTactics()){
-//                    groups->GetTactics()->RemoveObjectFromT(rb->GetObject());
-//                }
-//        
-//                groups->RemoveObject(rb->GetObject());
-//                continue;
-//            }
-//            objects = objects->m_NextObject;
-//        }
-//        if(groups->GetObjectsCnt() <= 0){
-//            CMatrixGroup* gr = groups;
-//            groups = groups->m_NextGroup;
-//            RemoveGroup(gr);
-//            continue;
-//        }
-//        if(groups->GetTactics()){
-//            groups->GetTactics()->InitialiseTactics(groups,groups->GetTactics()->GetTarget(),groups->GetTactics()->GetRegion());
-//        }
-//
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
-//void CMatrixGroupList::LogicTakt(CMatrixSideUnit* side)
-//{
-//    m_ReGroupPeriod++;
-//    if(m_GroupsCnt == 0)
-//        return;
-//    
-//    CMatrixGroup* groups = m_FirstGroup;
-//
-//    while(groups){
-//        groups->LogicTakt(side);
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
-//void CMatrixGroupList::AddObject(int team, int id, CMatrixMapStatic* object)
-//{
-//    CMatrixGroup* grouppies = m_FirstGroup, *group = NULL;
-//    while(grouppies){
-//        if(grouppies->GetGroupId() == id && grouppies->GetTeam() == team){
-//            group = grouppies;
-//            break;
-//        }
-//        grouppies = grouppies->m_NextGroup;
-//    }
-//    
-//    if(group == NULL) group = AddNewGroup(team, id);
-//    
-//    group->AddObject(object, team);
-//}
-//
-//void CMatrixGroupList::RemoveObject(int team, int id, CMatrixMapStatic* object)
-//{
-//    CMatrixGroup* groups = m_FirstGroup;
-//    while(groups){
-//        if(groups->GetTeam() == team && groups->GetGroupId() == id){
-//            CMatrixTactics* t = groups->GetTactics();
-//            if(t) t->RemoveObjectFromT(object);
-//            groups->RemoveObject(object);
-//            return;
-//        }
-//        groups = groups->m_NextGroup;
-//    }
-//}
+/*
+CMatrixGroupList::~CMatrixGroupList()
+{
+    DTRACE();
+    CMatrixGroup *groups = m_FirstGroup;
 
-//void CMatrixGroupList::AddRobotToTeam(Team team, CMatrixRobotAI* robot)
-//{
-//    CMatrixGroup* groups = m_FirstGroup;
-//    while(groups){
-//        if(groups->GetTeam() == team){
-//            groups->AddRobot(robot, team);
-//            return;
-//        }
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
-//void CMatrixGroupList::RemoveRobotFromTeam(Team team, CMatrixRobotAI* robot)
-//{
-//    CMatrixGroup* groups = m_FirstGroup;
-//    while(groups){
-//        if(groups->GetTeam() == team){
-//            groups->RemoveRobot(robot);
-//            return;
-//        }
-//        groups = groups->m_NextGroup;
-//    }
-//}
-//
+    while(groups != NULL)
+    {
+        if(groups->m_NextGroup)
+        {
+            groups = groups->m_NextGroup;
+        }
+        else
+        {
+            HDelete(CMatrixGroup, groups, g_MatrixHeap);
+            groups = NULL;
+            m_FirstGroup = NULL;
+            m_LastGroup = NULL;
+        }
+
+        if(groups) HDelete(CMatrixGroup, groups->m_PrevGroup, g_MatrixHeap);
+    }
+}
+
+CMatrixGroup *CMatrixGroupList::AddNewGroup(int team, int id)
+{
+    CMatrixGroup *group = HNew(g_MatrixHeap) CMatrixGroup;
+    group->SetTeam(team);
+    group->SetGroupId(id);
+    LIST_ADD(group, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
+    ++m_GroupsCnt;
+    return group;
+}
+
+void CMatrixGroupList::RemoveGroup(CMatrixGroup *group)
+{
+    CMatrixGroup* groups = m_FirstGroup;
+    while (groups) {
+        if (groups == group) {
+            LIST_DEL(groups, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
+            HDelete(CMatrixGroup, groups, g_MatrixHeap);
+            m_GroupsCnt--;
+            return;
+        }
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::RemoveGroup(int team)
+{
+    CMatrixGroup* groups = m_FirstGroup;
+    while (groups) {
+        if (groups->GetTeam() == team) {
+            LIST_DEL(groups, m_FirstGroup, m_LastGroup, m_PrevGroup, m_NextGroup);
+            HDelete(CMatrixGroup, groups, g_MatrixHeap);
+            m_GroupsCnt--;
+            return;
+        }
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::ReGroup(CMatrixSideUnit* side)
+{
+    if (m_GroupsCnt > 0 && m_ReGroupPeriod < REGROUP_PERIOD)
+        return;
+
+    m_ReGroupPeriod = 0;
+    CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();
+
+    CMatrixGroup* side_objects = AddNewGroup(-2, 0);
+    while (objects) {
+        if (objects->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)objects)->m_Side == side->m_Id) {
+            ((CMatrixRobotAI*)objects)->SetGroup(0);
+            side_objects->AddObject(objects, ((CMatrixRobotAI*)objects)->GetTeam());
+        }
+        else if (objects->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)objects)->GetSide() == side->m_Id) {
+            ((CMatrixFlyer*)objects)->m_Group = 0;
+            side_objects->AddObject(objects, ((CMatrixFlyer*)objects)->m_Team);
+        }
+        objects = objects->GetNextLogic();
+    }
+    if (side_objects->GetObjectsCnt() <= 0) {
+        RemoveGroup(side_objects);
+        return;
+    }
+
+    for (int cnt = 0; cnt < 3; cnt++) {
+        CMatrixGroupObject* gr_objects = side_objects->m_FirstObject;
+        int group = 1;
+        int team = cnt;
+        while (gr_objects) {
+            if (gr_objects->GetTeam() == team) {
+                CMatrixMapStatic* ai_object = gr_objects->GetObject();
+                int ai_group = 0;
+                if (ai_object->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)ai_object)->GetGroup() == 0) {
+                    ((CMatrixRobotAI*)ai_object)->SetGroup(group);
+                    ai_group = group;
+                    group++;
+                }
+                else if (ai_object->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer*)ai_object)->m_Group == 0) {
+                    ((CMatrixFlyer*)ai_object)->m_Group = group;
+                    ai_group = group;
+                    group++;
+                }
+                AddObject(team, ai_group, ai_object);
+                side_objects->FindNearObjects(gr_objects);
+            }
+            gr_objects = gr_objects->m_NextObject;
+        }
+
+    }
+    RemoveGroup(side_objects);
+
+    CMatrixGroup* groups = m_FirstGroup;
+
+    while (groups) {
+        CMatrixGroupObject* objects = groups->m_FirstObject;
+        while (objects) {
+            int ob_group = 0;
+            if (objects->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
+                ob_group = ((CMatrixRobotAI*)objects->GetObject())->GetGroup();
+            }
+            else if (objects->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER) {
+                ob_group = ((CMatrixFlyer*)objects->GetObject())->m_Group;
+            }
+
+            if (ob_group != groups->GetGroupId()) {
+                CMatrixGroupObject* rb = objects;
+                objects = objects->m_NextObject;
+                if (groups->GetTactics()) {
+                    groups->GetTactics()->RemoveObjectFromT(rb->GetObject());
+                }
+
+                groups->RemoveObject(rb->GetObject());
+                continue;
+            }
+            objects = objects->m_NextObject;
+        }
+        if (groups->GetObjectsCnt() <= 0) {
+            CMatrixGroup* gr = groups;
+            groups = groups->m_NextGroup;
+            RemoveGroup(gr);
+            continue;
+        }
+        if (groups->GetTactics()) {
+            groups->GetTactics()->InitialiseTactics(groups, groups->GetTactics()->GetTarget(), groups->GetTactics()->GetRegion());
+        }
+
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::LogicTakt(CMatrixSideUnit* side)
+{
+    m_ReGroupPeriod++;
+    if (m_GroupsCnt == 0)
+        return;
+
+    CMatrixGroup* groups = m_FirstGroup;
+
+    while (groups) {
+        groups->LogicTakt(side);
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::AddObject(int team, int id, CMatrixMapStatic* object)
+{
+    CMatrixGroup* grouppies = m_FirstGroup, * group = NULL;
+    while (grouppies) {
+        if (grouppies->GetGroupId() == id && grouppies->GetTeam() == team) {
+            group = grouppies;
+            break;
+        }
+        grouppies = grouppies->m_NextGroup;
+    }
+
+    if (group == NULL) group = AddNewGroup(team, id);
+
+    group->AddObject(object, team);
+}
+
+void CMatrixGroupList::RemoveObject(int team, int id, CMatrixMapStatic* object)
+{
+    CMatrixGroup* groups = m_FirstGroup;
+    while (groups) {
+        if (groups->GetTeam() == team && groups->GetGroupId() == id) {
+            CMatrixTactics* t = groups->GetTactics();
+            if (t) t->RemoveObjectFromT(object);
+            groups->RemoveObject(object);
+            return;
+        }
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::AddRobotToTeam(Team team, CMatrixRobotAI* robot)
+{
+    CMatrixGroup* groups = m_FirstGroup;
+    while (groups) {
+        if (groups->GetTeam() == team) {
+            groups->AddRobot(robot, team);
+            return;
+        }
+        groups = groups->m_NextGroup;
+    }
+}
+
+void CMatrixGroupList::RemoveRobotFromTeam(Team team, CMatrixRobotAI* robot)
+{
+    CMatrixGroup* groups = m_FirstGroup;
+    while (groups) {
+        if (groups->GetTeam() == team) {
+            groups->RemoveRobot(robot);
+            return;
+        }
+        groups = groups->m_NextGroup;
+    }
+}
+*/

@@ -216,7 +216,7 @@ void LoadModList(CWStr& modlist)
     else modlist.Set(L"");
 }
 
-void LoadCfgFromMods(CWStr& modlist, CBlockPar& base_bp, const wchar* lang, const wchar* bp_name)
+void LoadCfgFromMods(CWStr &modlist, CBlockPar &base_bp, const wchar *lang, const wchar *bp_name)
 {
     DTRACE();
 
@@ -262,13 +262,13 @@ void LoadCfgFromMods(CWStr& modlist, CBlockPar& base_bp, const wchar* lang, cons
 void MatrixGameInit(
     HINSTANCE inst,       //???
     HWND wnd,             //???
-    wchar* map,           //???
-    SRobotsSettings* set, //???
-    wchar* lang,          //Язык, Rus или Eng, используется при построении путей к папкам с языковыми файлами
-    wchar* txt_start,     //Вступительный текст
-    wchar* txt_win,       //Текст при победе
-    wchar* txt_loss,      //Текст при поражении
-    wchar* planet         //Название планеты
+    wchar *map,           //Предположительно, путь к файлу карты
+    SRobotsSettings *set, //???
+    wchar *lang,          //Язык, Rus или Eng, используется при построении путей к папкам с языковыми файлами
+    wchar *txt_start,     //Вступительный текст
+    wchar *txt_win,       //Текст при победе
+    wchar *txt_loss,      //Текст при поражении
+    wchar *planet         //Название планеты
 )
 {
     static_init();
@@ -328,11 +328,11 @@ DCP();
     // Code for loading data configs from mods
     LoadCfgFromMods(modlist, *g_MatrixData, lang, L"data.txt");
 
-    CBlockPar* repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
+    CBlockPar *repl = g_MatrixData->BlockGetAdd(PAR_REPLACE);
 
     // init menu replaces
 
-    CBlockPar* rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
+    CBlockPar *rr = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Replaces");
     int cnt = rr->ParCount();
     for(int i = 0; i < cnt; ++i)
     {
@@ -393,12 +393,14 @@ DCP();
 DCP();
 
 
-    /*if(g_RangersInterface)
+    /*
+    if(g_RangersInterface)
     {
         // run from rangers
         // do not set fullscreen
         g_MatrixData->BlockGet(L"Config")->ParSet(L"FullScreen", L"0");
-    }*/
+    }
+    */
 	
 #ifdef _DEBUG
 	g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
