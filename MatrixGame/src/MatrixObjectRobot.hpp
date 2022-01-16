@@ -301,6 +301,6 @@ public:
     void OnOutScreen(void){};
 };
 
-__forceinline bool CMatrixMapStatic::IsLiveRobot(void) const {
+inline bool CMatrixMapStatic::IsLiveRobot(void) const {
     return IsRobot() && ((CMatrixRobot *)this)->m_CurrState != ROBOT_DIP;
 }

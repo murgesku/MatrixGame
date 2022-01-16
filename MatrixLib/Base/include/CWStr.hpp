@@ -11,7 +11,7 @@
 
 namespace Base {
 
-__forceinline int WStrLen(const wchar *str) {
+inline int WStrLen(const wchar *str) {
     if (str == NULL) {
         return 0;
     }
@@ -22,7 +22,7 @@ __forceinline int WStrLen(const wchar *str) {
     return len;
 }
 
-__forceinline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
+inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     for (;;) {
         if (*s1 != *s2) {
             return false;
@@ -477,7 +477,7 @@ public:
     // lint +e1930
 };
 
-__forceinline void CWStr::Tream(int len) {
+inline void CWStr::Tream(int len) {
     if (m_Data->m_Len < len && len >= m_Data->m_Max) {
         m_Data->m_Len = len;
         m_Data->m_Max = len + 16;
@@ -488,7 +488,7 @@ __forceinline void CWStr::Tream(int len) {
     }
 }
 
-__forceinline void CWStr::NewDataLen(CHeap *heap, int len) {
+inline void CWStr::NewDataLen(CHeap *heap, int len) {
     m_Data = (CWStrData *)HAlloc(sizeof(CWStrData) + (len + 16 + 1) * 2, heap);
     m_Data->m_Heap = heap;
     m_Data->m_Refs = 1;
@@ -496,7 +496,7 @@ __forceinline void CWStr::NewDataLen(CHeap *heap, int len) {
     m_Data->m_Max = len + 16;
 }
 
-__forceinline void CWStr::ModifyLen(CHeap *heap, int len) {
+inline void CWStr::ModifyLen(CHeap *heap, int len) {
     if (m_Data->m_Refs > 1) {
         CWStrData *olddata = m_Data;
         olddata->RefDec();
@@ -508,7 +508,7 @@ __forceinline void CWStr::ModifyLen(CHeap *heap, int len) {
     }
 }
 
-__forceinline void CWStr::ModifyLenNoCopy(CHeap *heap, int len) {
+inline void CWStr::ModifyLenNoCopy(CHeap *heap, int len) {
     if (m_Data->m_Refs > 1) {
         CWStrData *olddata = m_Data;
         olddata->RefDec();

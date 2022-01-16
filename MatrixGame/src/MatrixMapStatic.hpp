@@ -352,18 +352,18 @@ public:
     CMatrixMapStatic *GetPrevLogic(void) { return m_PrevLogicTemp; }
 
     bool IsBase(void) const;
-    __forceinline bool IsRobot(void) const { return GetObjectType() == OBJECT_TYPE_ROBOTAI; };
+    inline bool IsRobot(void) const { return GetObjectType() == OBJECT_TYPE_ROBOTAI; };
     bool IsLiveRobot(void) const;
-    __forceinline bool IsBuilding(void) const { return GetObjectType() == OBJECT_TYPE_BUILDING; };
+    inline bool IsBuilding(void) const { return GetObjectType() == OBJECT_TYPE_BUILDING; };
     bool IsLiveBuilding(void) const;
-    __forceinline bool IsCannon(void) const { return GetObjectType() == OBJECT_TYPE_CANNON; };
+    inline bool IsCannon(void) const { return GetObjectType() == OBJECT_TYPE_CANNON; };
     bool IsLiveCannon(void) const;
     bool IsLiveActiveCannon(void) const;
 
-    __forceinline bool IsFlyer(void) const { return GetObjectType() == OBJECT_TYPE_FLYER; };
-    __forceinline bool IsUnit(void) const { return IsRobot() || IsCannon(); }
+    inline bool IsFlyer(void) const { return GetObjectType() == OBJECT_TYPE_FLYER; };
+    inline bool IsUnit(void) const { return IsRobot() || IsCannon(); }
 
-    __forceinline bool IsLive(void) const { return IsLiveRobot() || IsLiveCannon() || IsLiveBuilding(); }
+    inline bool IsLive(void) const { return IsLiveRobot() || IsLiveCannon() || IsLiveBuilding(); }
     //{
     //    if(obj->GetObjectType()==OBJECT_TYPE_ROBOTAI) return obj->AsRobot()->m_CurrState!=ROBOT_DIP;// &&
     //    (obj->AsRobot()->GetSide()!=PLAYER_SIDE || !obj->AsRobot()->IsSelected()) &&
@@ -375,15 +375,15 @@ public:
 
     bool FitToMask(DWORD mask);
 
-    __forceinline CMatrixRobotAI *AsRobot(void) { return (CMatrixRobotAI *)this; }
-    __forceinline CMatrixCannon *AsCannon(void) { return (CMatrixCannon *)this; }
-    __forceinline CMatrixBuilding *AsBuilding(void) { return (CMatrixBuilding *)this; }
-    __forceinline CMatrixFlyer *AsFlyer(void) { return (CMatrixFlyer *)this; }
+    inline CMatrixRobotAI *AsRobot(void) { return (CMatrixRobotAI *)this; }
+    inline CMatrixCannon *AsCannon(void) { return (CMatrixCannon *)this; }
+    inline CMatrixBuilding *AsBuilding(void) { return (CMatrixBuilding *)this; }
+    inline CMatrixFlyer *AsFlyer(void) { return (CMatrixFlyer *)this; }
 
-    __forceinline bool IsNearBase(void) const { return m_NearBaseCnt != 0; }
+    inline bool IsNearBase(void) const { return m_NearBaseCnt != 0; }
 
     void RecalcTerainColor(void);
-    __forceinline DWORD GetTerrainColor(void) const { return m_Core->m_TerainColor; }
+    inline DWORD GetTerrainColor(void) const { return m_Core->m_TerainColor; }
 
     void Sort(const D3DXMATRIX &sort);
     static void SortBegin(void);
@@ -403,21 +403,21 @@ public:
     static int GetVisObjCnt(void);
     static CMatrixMapStatic *GetVisObj(int i);
 
-    __forceinline EObjectType GetObjectType(void) const { return m_Core->m_Type; }
-    __forceinline const D3DXVECTOR3 &GetGeoCenter(void) const { return m_Core->m_GeoCenter; }
-    __forceinline const D3DXMATRIX &GetMatrix(void) const { return m_Core->m_Matrix; }
-    __forceinline float GetRadius(void) const { return m_Core->m_Radius; }
+    inline EObjectType GetObjectType(void) const { return m_Core->m_Type; }
+    inline const D3DXVECTOR3 &GetGeoCenter(void) const { return m_Core->m_GeoCenter; }
+    inline const D3DXMATRIX &GetMatrix(void) const { return m_Core->m_Matrix; }
+    inline float GetRadius(void) const { return m_Core->m_Radius; }
 
 #ifdef _DEBUG
     SObjectCore *GetCore(SDebugCallInfo &dci);
 #else
 #ifdef _TRACE
-    __forceinline SObjectCore *GetCore(SDebugCallInfo &) {
+    inline SObjectCore *GetCore(SDebugCallInfo &) {
         m_Core->RefInc();
         return m_Core;
     }
 #else
-    __forceinline SObjectCore *GetCore(void) {
+    inline SObjectCore *GetCore(void) {
         m_Core->RefInc();
         return m_Core;
     }
@@ -425,15 +425,15 @@ public:
 #endif
 
     // logic temp: list of static objects, у которых временно вызывается логический такт
-    __forceinline bool InLT(void) {
+    inline bool InLT(void) {
         return (m_PrevLogicTemp != NULL) || (m_NextLogicTemp != NULL) || (this == m_FirstLogicTemp);
     }
-    __forceinline void AddLT(void) {
+    inline void AddLT(void) {
         if (!InLT()) {
             LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
         }
     }
-    __forceinline void DelLT(void) {
+    inline void DelLT(void) {
         if (InLT()) {
             LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
         }
@@ -441,8 +441,8 @@ public:
 
     static void ProceedLogic(int ms);
 
-    __forceinline void RChange(dword zn) { m_RChange |= zn; }
-    __forceinline void RNoNeed(dword zn) { m_RChange &= (~zn); }
+    inline void RChange(dword zn) { m_RChange |= zn; }
+    inline void RNoNeed(dword zn) { m_RChange &= (~zn); }
 
     void StaticTakt(int ms);
 
@@ -484,17 +484,17 @@ public:
 #endif
 };
 
-__forceinline CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void) {
+inline CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void) {
     if (m_Target)
         return m_Target->m_Object;
     return NULL;
 }
 
-__forceinline void CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {
+inline void CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {
     m_Owner = ms->GetCore(DEBUG_CALL_INFO);
     m_SideStorage = ms->GetSide();
 }
-__forceinline CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void) {
+inline CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void) {
     if (m_Owner)
         return m_Owner->m_Object;
     return NULL;

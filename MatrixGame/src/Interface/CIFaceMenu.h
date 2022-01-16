@@ -68,7 +68,7 @@ struct SMenuItemText {
     SMenuItemText(CHeap *heap) : text(heap) { color = DEFAULT_LABELS_COLOR; }
 };
 
-__forceinline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind);
+inline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind);
 
 class CIFaceMenu : public CMain {
     float m_Width;

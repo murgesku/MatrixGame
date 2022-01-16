@@ -170,7 +170,7 @@ public:
     }
 
     bool IsInFrustum(void) const;
-    __forceinline bool IsPointIn(const D3DXVECTOR2 &p) {
+    inline bool IsPointIn(const D3DXVECTOR2 &p) {
         return (p.x >= p0.x) && (p.x < p1.x) && (p.y >= p0.y) && (p.y < p1.y);
     }
 

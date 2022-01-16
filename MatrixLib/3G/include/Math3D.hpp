@@ -43,17 +43,17 @@
         r = r * (2.0f - (p)*r);                  \
     }
 
-__forceinline unsigned char FP_NORM_TO_BYTE2(float p) {
+inline unsigned char FP_NORM_TO_BYTE2(float p) {
     float fpTmp = p + 1.0f;
     return ((*(unsigned *)&fpTmp) >> 15) & 0xFF;
 }
 
-__forceinline unsigned char FP_NORM_TO_BYTE3(float p) {
+inline unsigned char FP_NORM_TO_BYTE3(float p) {
     float ftmp = p + 12582912.0f;
     return (BYTE)((*(unsigned long *)&ftmp) & 0xFF);
 }
 
-__forceinline int DetermineGreaterPowerOfTwo(int val) {
+inline int DetermineGreaterPowerOfTwo(int val) {
     int num = 1;
     while (val > num) {
         num <<= 1;
@@ -76,24 +76,24 @@ struct SPlane {
 
     SPlane() {}
 
-    static __forceinline void BuildFromPointNormal(SPlane &out, const D3DXVECTOR3 &pt, const D3DXVECTOR3 &norm) {
+    static inline void BuildFromPointNormal(SPlane &out, const D3DXVECTOR3 &pt, const D3DXVECTOR3 &norm) {
         D3DXPlaneFromPointNormal(&out.dxplane, &pt, &norm);
         out.UpdateSignBits();
     }
 
-    static __forceinline void BuildFromPoints(SPlane &out, const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1,
+    static inline void BuildFromPoints(SPlane &out, const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1,
                                               const D3DXVECTOR3 &p2) {
         D3DXPlaneFromPoints(&out.dxplane, &p0, &p1, &p2);
         out.UpdateSignBits();
     }
 
-    __forceinline void UpdateSignBits(void) {
+    inline void UpdateSignBits(void) {
         signbits = ((norm.x < 0) ? 1 : 0) | ((norm.y < 0) ? 2 : 0) | ((norm.z < 0) ? 4 : 0);
     }
-    __forceinline bool IsOnSide(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm) >= (-dist); }
-    __forceinline float CalcPointDist(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm); }
-    __forceinline float Distance(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm) + dist; }
-    __forceinline byte BoxSide(const D3DXVECTOR3 &mins, const D3DXVECTOR3 &maxs) const {
+    inline bool IsOnSide(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm) >= (-dist); }
+    inline float CalcPointDist(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm); }
+    inline float Distance(const D3DXVECTOR3 &p) const { return D3DXVec3Dot(&p, &norm) + dist; }
+    inline byte BoxSide(const D3DXVECTOR3 &mins, const D3DXVECTOR3 &maxs) const {
         float dist1, dist2;
         switch (signbits) {
             case 0:
@@ -139,7 +139,7 @@ struct SPlane {
         return sides;
     }
 
-    __forceinline bool FindIntersect(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, float &outt) const {
+    inline bool FindIntersect(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, float &outt) const {
         float cs = D3DXVec3Dot(&dir, &norm);
         if (fabs(cs) < 0.00001f)
             return false;
@@ -150,7 +150,7 @@ struct SPlane {
 
 // PURPOSE		: Проверяет с какой стороны линии находится точка
 // RETURN VALUE	: True если справа или на линии, False в остальных случаях
-__forceinline bool PointLineCatch(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, const D3DXVECTOR2 &p) {
+inline bool PointLineCatch(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, const D3DXVECTOR2 &p) {
     D3DXVECTOR2 d1, d2;
 
     d1.x = e.x - s.x;
@@ -165,14 +165,14 @@ __forceinline bool PointLineCatch(const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, co
 
 // PURPISE		:Проверят попала ли точка внутрь 2D AABB
 // RETURN VALUE	: True если попала
-__forceinline bool PointToAABB(const D3DXVECTOR2 &AABB_pos, const D3DXVECTOR2 &p, int nAABB_height, int nAABB_width) {
+inline bool PointToAABB(const D3DXVECTOR2 &AABB_pos, const D3DXVECTOR2 &p, int nAABB_height, int nAABB_width) {
     return ((p.x >= AABB_pos.x && p.x <= AABB_pos.x + nAABB_width) &&
             ((p.y >= AABB_pos.y && p.y <= AABB_pos.y + nAABB_height)));
 }
 
 D3DXVECTOR3 Vec3Projection(/*where*/ const D3DXVECTOR3 &a, /*what*/ const D3DXVECTOR3 &b);
 
-__forceinline float DistOtrezokPoint(const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1, const D3DXVECTOR3 &p) {
+inline float DistOtrezokPoint(const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1, const D3DXVECTOR3 &p) {
     D3DXVECTOR3 v(p1 - p0);
     D3DXVECTOR3 w(p - p0);
     float c1 = D3DXVec3Dot(&w, &v);
@@ -202,7 +202,7 @@ bool IsIntersectRect(float sx1, float sy1, float ex1, float ey1, float sx2, floa
 bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float &t);
 bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, float &t1);
 
-__forceinline double AngleNorm(double a)  // Нормировать угол. Возращает от -pi до +pi
+inline double AngleNorm(double a)  // Нормировать угол. Возращает от -pi до +pi
 {
     while (a > pi_f)
         a -= 2.0 * M_PI;
@@ -211,7 +211,7 @@ __forceinline double AngleNorm(double a)  // Нормировать угол. В
     return a;
 }
 
-__forceinline double AngleDist(double from, double to)  // Дистанция между углами. Возращает от -pi до +pi
+inline double AngleDist(double from, double to)  // Дистанция между углами. Возращает от -pi до +pi
 {
     while (from < 0.0)
         from += 2.0 * M_PI;
@@ -255,7 +255,7 @@ void BuildRotateMatrix(D3DXMATRIX &out, const D3DXVECTOR3 &pos, const D3DXVECTOR
 #define SET_SIGN_FLOAT(to, sign) \
     { *((DWORD *)&(to)) = ((*((DWORD *)&(to))) & 0x7FFFFFFF) | ((DWORD(sign)) << 31); }
 
-__forceinline bool IsVec3Equal(const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1, float dopusk = 0.0001f) {
+inline bool IsVec3Equal(const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1, float dopusk = 0.0001f) {
     if (fabs(v0.x - v1.x) > dopusk)
         return false;
     if (fabs(v0.y - v1.y) > dopusk)
@@ -293,7 +293,7 @@ void inline SinCos(float radians, float *sine, float *cosine) {
 #define FTOIBIAS       12582912.f
 extern float SinCosTable[SIN_TABLE_SIZE];
 
-__forceinline float TableCos(float theta) {
+inline float TableCos(float theta) {
     union {
         int i;
         float f;
@@ -305,7 +305,7 @@ __forceinline float TableCos(float theta) {
     return SinCosTable[ftmp.i & (SIN_TABLE_SIZE - 1)];
 }
 
-__forceinline float TableSin(float theta) {
+inline float TableSin(float theta) {
     union {
         int i;
         float f;
@@ -316,15 +316,15 @@ __forceinline float TableSin(float theta) {
     return SinCosTable[ftmp.i & (SIN_TABLE_SIZE - 1)];
 }
 
-__forceinline int TruncFloat(float x) {
+inline int TruncFloat(float x) {
     return int(x);
 }
-__forceinline int TruncDouble(double x) {
+inline int TruncDouble(double x) {
     return int(x);
 }
 
 #pragma warning(disable : 4035)
-__forceinline int Float2Int(float x) {
+inline int Float2Int(float x) {
     _asm
     { 
         fld x
@@ -333,7 +333,7 @@ __forceinline int Float2Int(float x) {
         pop eax
     }
 }
-__forceinline int Double2Int(double x) {
+inline int Double2Int(double x) {
     _asm
     { 
         fld x
@@ -344,20 +344,20 @@ __forceinline int Double2Int(double x) {
 }
 #pragma warning(default : 4035)
 
-__forceinline float GetColorA(DWORD c) {
+inline float GetColorA(DWORD c) {
     return float((c >> 24) & 255) / 255.0f;
 }
-__forceinline float GetColorR(DWORD c) {
+inline float GetColorR(DWORD c) {
     return float((c >> 16) & 255) / 255.0f;
 }
-__forceinline float GetColorG(DWORD c) {
+inline float GetColorG(DWORD c) {
     return float((c >> 8) & 255) / 255.0f;
 }
-__forceinline float GetColorB(DWORD c) {
+inline float GetColorB(DWORD c) {
     return float((c >> 0) & 255) / 255.0f;
 }
 
-__forceinline DWORD LIC(DWORD c0, DWORD c1, float t) {
+inline DWORD LIC(DWORD c0, DWORD c1, float t) {
     DWORD c = 0;
 
     c |= 0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t);
@@ -376,7 +376,7 @@ __forceinline DWORD LIC(DWORD c0, DWORD c1, float t) {
     return c;
 }
 
-__forceinline void AddSphereToBox(D3DXVECTOR3 &mins, D3DXVECTOR3 &maxs, const D3DXVECTOR3 &center, float radius) {
+inline void AddSphereToBox(D3DXVECTOR3 &mins, D3DXVECTOR3 &maxs, const D3DXVECTOR3 &center, float radius) {
     float minx = center.x - radius;
     float miny = center.y - radius;
     float minz = center.z - radius;
@@ -399,7 +399,7 @@ __forceinline void AddSphereToBox(D3DXVECTOR3 &mins, D3DXVECTOR3 &maxs, const D3
         maxs.z = maxz;
 }
 
-__forceinline D3DXVECTOR2 RotatePoint(D3DXVECTOR2 &point, float angle) {
+inline D3DXVECTOR2 RotatePoint(D3DXVECTOR2 &point, float angle) {
     float s, c;
     D3DXVECTOR2 p;
     SinCos(angle, &s, &c);
@@ -408,7 +408,7 @@ __forceinline D3DXVECTOR2 RotatePoint(D3DXVECTOR2 &point, float angle) {
     return p;
 }
 
-__forceinline D3DXVECTOR3 Vec3Truncate(const D3DXVECTOR3 &vec3, float tValue) {
+inline D3DXVECTOR3 Vec3Truncate(const D3DXVECTOR3 &vec3, float tValue) {
     float sq = D3DXVec3LengthSq(&vec3);
     float sq2 = tValue * tValue;
 
@@ -420,7 +420,7 @@ __forceinline D3DXVECTOR3 Vec3Truncate(const D3DXVECTOR3 &vec3, float tValue) {
     }
 }
 
-__forceinline void Vec2Truncate(D3DXVECTOR2 &vec2, float tValue) {
+inline void Vec2Truncate(D3DXVECTOR2 &vec2, float tValue) {
     float sq = D3DXVec2LengthSq(&vec2);
     float sq2 = tValue * tValue;
 
@@ -440,7 +440,7 @@ void CalcBSplineKoefs1(SBSplineKoefs &out, const D3DXVECTOR3 &p0, const D3DXVECT
                        const D3DXVECTOR3 &p3);
 void CalcBSplineKoefs2(SBSplineKoefs &out, const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1, const D3DXVECTOR3 &p2,
                        const D3DXVECTOR3 &p3);
-__forceinline void CalcBSplinePoint(const SBSplineKoefs &k, D3DXVECTOR3 &out, float t) {
+inline void CalcBSplinePoint(const SBSplineKoefs &k, D3DXVECTOR3 &out, float t) {
     out.x = ((k.a3 * t + k.a2) * t + k.a1) * t + k.pos0.x;
     out.y = ((k.b3 * t + k.b2) * t + k.b1) * t + k.pos0.y;
     out.z = ((k.c3 * t + k.c2) * t + k.c1) * t + k.pos0.z;
@@ -515,14 +515,14 @@ public:
         m_Len = -1;
     }
 
-    __forceinline bool NeedContinue(float t) const {
+    inline bool NeedContinue(float t) const {
         float tseg = t * float(m_SegCnt);
         int seg = TruncFloat(tseg);
         return seg >= (m_SegCnt - 2);
     }
-    __forceinline bool NeedContinue(void) const { return m_CurSeg >= (m_SegCnt - 2); }
+    inline bool NeedContinue(void) const { return m_CurSeg >= (m_SegCnt - 2); }
 
-    __forceinline void GetCurPos(D3DXVECTOR3 &pos) { CalcBSplinePoint(m_Segments[m_CurSeg].koefs, pos, m_CurSegT); }
+    inline void GetCurPos(D3DXVECTOR3 &pos) { CalcBSplinePoint(m_Segments[m_CurSeg].koefs, pos, m_CurSegT); }
 
     void Move(float dist);
 

@@ -78,7 +78,7 @@ void CTerSurface::ClearSurfaces(void) {
         HFree(m_SurfacesDraw, g_MatrixHeap);
 }
 
-//__forceinline bool InSurf(const D3DXVECTOR2 &p, const D3DXVECTOR2 *points)
+//inline bool InSurf(const D3DXVECTOR2 &p, const D3DXVECTOR2 *points)
 //{
 //    return PointLineCatch(points[0], points[1], p) &&
 //           PointLineCatch(points[1], points[2], p) &&

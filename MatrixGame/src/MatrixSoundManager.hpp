@@ -323,7 +323,7 @@ public:
     static void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1,
                          wchar *name);
 
-    static __forceinline DWORD Pos2Key(const D3DXVECTOR3 &pos);
+    static inline DWORD Pos2Key(const D3DXVECTOR3 &pos);
 
     static void SaveSoundLog(void);
 };

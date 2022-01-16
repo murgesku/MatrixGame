@@ -49,11 +49,11 @@ void *get_dead_mem(void *mem);
 
 void remove_by_ptr(void *ptr);
 
-__forceinline bool my_signature(void *s) {
+inline bool my_signature(void *s) {
     int *signature = (int *)s;
     return signature[0] == DPTR_SIGNATURE0 && signature[1] == DPTR_SIGNATURE1 && signature[2] == DPTR_SIGNATURE2;
 }
-__forceinline int my_signature_size(void *s) {
+inline int my_signature_size(void *s) {
     int *signature = (int *)s;
     return signature[3];
 }
@@ -274,7 +274,7 @@ inline void *CHeap::AllocClearEx(void *buf, uint size, const char *file, int lin
 
 #endif
 
-__forceinline void *CHeap::Alloc(size_t size) {
+inline void *CHeap::Alloc(size_t size) {
     void *buf;
     if (this == NULL)
         buf = HeapAlloc(GetProcessHeap(), 0, size);
@@ -285,7 +285,7 @@ __forceinline void *CHeap::Alloc(size_t size) {
     return buf;
 }
 
-__forceinline void *CHeap::AllocClear(size_t size) {
+inline void *CHeap::AllocClear(size_t size) {
     void *buf;
     if (this == NULL)
         buf = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size);
@@ -296,7 +296,7 @@ __forceinline void *CHeap::AllocClear(size_t size) {
     return buf;
 }
 
-__forceinline void *CHeap::ReAlloc(void *buf, size_t size) {
+inline void *CHeap::ReAlloc(void *buf, size_t size) {
     if ((buf = HeapReAlloc(GetProcessHeap(), 0, buf, size)) == NULL)
         ERROR_E;
 
@@ -309,7 +309,7 @@ __forceinline void *CHeap::ReAlloc(void *buf, size_t size) {
     return buf;
 }
 
-__forceinline void *CHeap::ReAllocClear(void *buf, size_t size) {
+inline void *CHeap::ReAllocClear(void *buf, size_t size) {
     if ((buf = HeapReAlloc(GetProcessHeap(), 0, buf, size)) == NULL)
         ERROR_E;
 
@@ -323,7 +323,7 @@ __forceinline void *CHeap::ReAllocClear(void *buf, size_t size) {
     return buf;
 }
 
-__forceinline void *CHeap::AllocEx(void *buf, size_t size) {
+inline void *CHeap::AllocEx(void *buf, size_t size) {
     if (this == NULL) {
         if (size <= 0 && buf != NULL) {
             HeapFree(GetProcessHeap(), 0, buf);
@@ -361,7 +361,7 @@ __forceinline void *CHeap::AllocEx(void *buf, size_t size) {
     return buf;
 }
 
-__forceinline void *CHeap::AllocClearEx(void *buf, size_t size) {
+inline void *CHeap::AllocClearEx(void *buf, size_t size) {
     if (this == NULL) {
         if (size <= 0 && buf != NULL) {
             HeapFree(GetProcessHeap(), 0, buf);
@@ -399,7 +399,7 @@ __forceinline void *CHeap::AllocClearEx(void *buf, size_t size) {
     return buf;
 }
 
-__forceinline void CHeap::Free(void *buf) {
+inline void CHeap::Free(void *buf) {
     if (buf == NULL)
         return;
     if (this == NULL)
@@ -410,8 +410,8 @@ __forceinline void CHeap::Free(void *buf) {
 
 }  // namespace Base
 
-//__forceinline void * operator new (size_t size) { return Base::Alloc(size,NULL); }
-//__forceinline void operator delete (void * buf) { Base::Free(buf,NULL); }
+//inline void * operator new (size_t size) { return Base::Alloc(size,NULL); }
+//inline void operator delete (void * buf) { Base::Free(buf,NULL); }
 
 // lint -e1532
 #ifdef MEM_SPY_ENABLE
@@ -422,10 +422,10 @@ inline BASE_API void operator delete(void *buf, const char *file, int line, Base
     heap->Free(buf, file, line);
 }
 #else
-__forceinline BASE_API void *operator new(size_t size, Base::CHeap *heap) {
+inline BASE_API void *operator new(size_t size, Base::CHeap *heap) {
     return heap->Alloc(size);
 }
-__forceinline BASE_API void operator delete(void *buf, Base::CHeap *heap) {
+inline BASE_API void operator delete(void *buf, Base::CHeap *heap) {
     heap->Free(buf);
 }
 #endif

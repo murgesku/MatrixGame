@@ -11,11 +11,11 @@
 #include <ddraw.h>
 
 #ifndef BASE_MATH_DEFINED
-__forceinline int TruncFloat(float x) {
+inline int TruncFloat(float x) {
     return int(x);
 }
 #pragma warning(disable : 4035)
-__forceinline int Float2Int(float x) {
+inline int Float2Int(float x) {
     _asm
     { 
         fld x
@@ -24,7 +24,7 @@ __forceinline int Float2Int(float x) {
         pop eax
     }
 }
-__forceinline int Double2Int(double x) {
+inline int Double2Int(double x) {
     _asm
     { 
         fld x
@@ -35,7 +35,7 @@ __forceinline int Double2Int(double x) {
 }
 #pragma warning(default : 4035)
 
-__forceinline DWORD LIC(DWORD c0, DWORD c1, float t) {
+inline DWORD LIC(DWORD c0, DWORD c1, float t) {
     DWORD c = 0;
 
     c |= 0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t);

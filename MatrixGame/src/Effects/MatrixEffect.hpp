@@ -264,7 +264,7 @@ typedef struct {
     float t;
 } SGradient;
 
-__forceinline float CalcGradient(float t, const SGradient *grad) {
+inline float CalcGradient(float t, const SGradient *grad) {
     int i = 1;
     for (;; ++i) {
         if (t >= grad[i].t) {
@@ -512,12 +512,12 @@ public:
 };
 typedef CMatrixEffect *PCMatrixEffect;
 
-__forceinline void SEffectHandler::Rebase(void) {
+inline void SEffectHandler::Rebase(void) {
     if (effect)
         effect->SetHandler(this);
 }
 
-__forceinline void SEffectHandler::Unconnect(void) {
+inline void SEffectHandler::Unconnect(void) {
     DTRACE();
 #ifdef _DEBUG
     ASSERT(effect);

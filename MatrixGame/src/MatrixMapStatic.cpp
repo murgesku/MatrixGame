@@ -330,7 +330,7 @@ void CMatrixMapStatic::ProceedLogic(int takts) {
     //   ).Get());
 }
 
-__forceinline DWORD ARGB2ABGR(DWORD c) {
+inline DWORD ARGB2ABGR(DWORD c) {
     if ((c & 0x00FF00FF) == 0x00FF00FF)
         return 0;
     return (0xFF000000) | ((c & 0xFF00FF00) | ((c & 0x00FF0000) >> 16) | ((c & 0x000000FF) << 16));

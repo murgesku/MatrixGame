@@ -518,7 +518,7 @@ public:
     ~CMatrixRobotAI();
 };
 
-__forceinline void SBotWeapon::Draw(CMatrixRobotAI *robot) {
+inline void SBotWeapon::Draw(CMatrixRobotAI *robot) {
     if (m_Unit->m_WeaponRepairData)
         m_Unit->m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
 }
@@ -529,7 +529,7 @@ inline SMatrixPlace *GetPlacePtr(int no) {
     return g_MatrixMap->m_RN.GetPlace(no);
 }
 
-__forceinline bool CMatrixRobotAI::PLIsInPlace(void) const {
+inline bool CMatrixRobotAI::PLIsInPlace(void) const {
     CPoint ptp;
 
     if (FindOrderLikeThat(ROT_MOVE_TO))

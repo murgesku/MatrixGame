@@ -181,10 +181,10 @@ public:
     void DumpLogic(void);
 };
 
-__forceinline int CMatrixMapGroup::ObjectsCnt(void) const {
+inline int CMatrixMapGroup::ObjectsCnt(void) const {
     return m_ObjectsContained;
 }
-__forceinline CMatrixMapStatic *CMatrixMapGroup::GetObject(int i) const {
+inline CMatrixMapStatic *CMatrixMapGroup::GetObject(int i) const {
     return m_Objects[i];
 }
 

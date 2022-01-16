@@ -21,7 +21,7 @@ enum EStorageType {
     ST_COMPRESSED = SETBIT(31)
 };
 
-__forceinline int StorageTypeSize(EStorageType t) {
+inline int StorageTypeSize(EStorageType t) {
     return (t == ST_DOUBLE) ? 8 : ((t == ST_BYTE) ? 1 : ((t == ST_WCHAR) ? 2 : (4)));
 }
 
