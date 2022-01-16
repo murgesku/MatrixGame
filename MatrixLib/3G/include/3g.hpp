@@ -69,7 +69,7 @@ extern STextureStageOp g_AlphaOp[];
     {}
 #endif
 
-__forceinline void SetColorOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetColorOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     if (g_ColorOp[stage].op != op) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, op);
         g_ColorOp[stage].op = op;
@@ -89,7 +89,7 @@ __forceinline void SetColorOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     else
         CHECKTSS(stage, D3DTSS_COLORARG2, p2);
 }
-__forceinline void SetColorOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetColorOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     if (g_ColorOp[stage].op != op) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, op);
         g_ColorOp[stage].op = op;
@@ -125,7 +125,7 @@ __forceinline void SetColorOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWOR
         }
     }
 }
-__forceinline void SetColorOpSelect(int stage, DWORD p) {
+inline void SetColorOpSelect(int stage, DWORD p) {
     if (g_ColorOp[stage].op != D3DTOP_SELECTARG1) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
         g_ColorOp[stage].op = D3DTOP_SELECTARG1;
@@ -139,7 +139,7 @@ __forceinline void SetColorOpSelect(int stage, DWORD p) {
     else
         CHECKTSS(stage, D3DTSS_COLORARG1, p);
 }
-__forceinline void SetColorOpDisable(int stage) {
+inline void SetColorOpDisable(int stage) {
     if (g_ColorOp[stage].op != D3DTOP_DISABLE) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_DISABLE);
         g_ColorOp[stage].op = D3DTOP_DISABLE;
@@ -147,7 +147,7 @@ __forceinline void SetColorOpDisable(int stage) {
     CHECKTSS(stage, D3DTSS_COLOROP, D3DTOP_DISABLE);
 }
 
-__forceinline void SetAlphaOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetAlphaOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     if (g_AlphaOp[stage].op != op) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, op);
         g_AlphaOp[stage].op = op;
@@ -167,7 +167,7 @@ __forceinline void SetAlphaOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     else
         CHECKTSS(stage, D3DTSS_ALPHAARG2, p2);
 }
-__forceinline void SetAlphaOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetAlphaOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     if (g_AlphaOp[stage].op != op) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, op);
         g_AlphaOp[stage].op = op;
@@ -203,7 +203,7 @@ __forceinline void SetAlphaOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWOR
         }
     }
 }
-__forceinline void SetAlphaOpSelect(int stage, DWORD p) {
+inline void SetAlphaOpSelect(int stage, DWORD p) {
     if (g_AlphaOp[stage].op != D3DTOP_SELECTARG1) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
         g_AlphaOp[stage].op = D3DTOP_SELECTARG1;
@@ -213,43 +213,43 @@ __forceinline void SetAlphaOpSelect(int stage, DWORD p) {
         g_AlphaOp[stage].p1 = p;
     }
 }
-__forceinline void SetAlphaOpDisable(int stage) {
+inline void SetAlphaOpDisable(int stage) {
     if (g_AlphaOp[stage].op != D3DTOP_DISABLE) {
         g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
         g_AlphaOp[stage].op = D3DTOP_DISABLE;
     }
 }
 #else
-__forceinline void SetColorOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetColorOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, op);
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLORARG1, p1);
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLORARG2, p2);
 }
-__forceinline void SetAlphaOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetAlphaOp(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, op);
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAARG1, p1);
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAARG2, p2);
 }
-__forceinline void SetColorOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetColorOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     SetColorOp(stage, op, p1, p2);
 }
-__forceinline void SetAlphaOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
+inline void SetAlphaOpAnyOrder(int stage, D3DTEXTUREOP op, DWORD p1, DWORD p2) {
     SetAlphaOp(stage, op, p1, p2);
 }
-__forceinline void SetColorOpSelect(int stage, DWORD p) {
+inline void SetColorOpSelect(int stage, DWORD p) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLORARG1, p);
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLORARG2, p);
 }
-__forceinline void SetColorOpDisable(int stage) {
+inline void SetColorOpDisable(int stage) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_COLOROP, D3DTOP_DISABLE);
 }
-__forceinline void SetAlphaOpSelect(int stage, DWORD p) {
+inline void SetAlphaOpSelect(int stage, DWORD p) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAARG1, p);
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAARG2, p);
 }
-__forceinline void SetAlphaOpDisable(int stage) {
+inline void SetAlphaOpDisable(int stage) {
     g_D3DD->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 }
 #endif

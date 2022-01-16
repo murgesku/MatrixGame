@@ -17,26 +17,26 @@ DWORD CSound::m_LastID;
 CSound::SPlayedSound CSound::m_AllSounds[MAX_SOUNDS];
 CDWORDMap *CSound::m_PosSounds;
 
-__forceinline DWORD snd_create(wchar *n, int i, int j) {
+inline DWORD snd_create(wchar *n, int i, int j) {
     DTRACE();
     return g_RangersInterface->m_SoundCreate(n, i, j);
 }
 
-__forceinline void snd_destroy(DWORD s) {
+inline void snd_destroy(DWORD s) {
     DTRACE();
     g_RangersInterface->m_SoundDestroy(s);
 }
 
-__forceinline void snd_pan(DWORD s, float v) {
+inline void snd_pan(DWORD s, float v) {
     DTRACE();
     g_RangersInterface->m_SoundPan(s, v);
 }
-__forceinline void snd_vol(DWORD s, float v) {
+inline void snd_vol(DWORD s, float v) {
     DTRACE();
     g_RangersInterface->m_SoundVolume(s, v);
 }
 
-__forceinline void snd_play(DWORD s) {
+inline void snd_play(DWORD s) {
     DTRACE();
     g_RangersInterface->m_SoundPlay(s);
 }
@@ -780,7 +780,7 @@ void CSound::StopPlay(DWORD id) {
     }
 }
 
-__forceinline DWORD CSound::Pos2Key(const D3DXVECTOR3 &pos) {
+inline DWORD CSound::Pos2Key(const D3DXVECTOR3 &pos) {
     DTRACE();
 
     int x = Float2Int(pos.x / SOUND_POS_DIVIDER);

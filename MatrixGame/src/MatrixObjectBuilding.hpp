@@ -315,7 +315,7 @@ public:
     void DeletePlacesShow();
 };
 
-__forceinline bool CMatrixMapStatic::IsBase(void) const {
+inline bool CMatrixMapStatic::IsBase(void) const {
     if (GetObjectType() == OBJECT_TYPE_BUILDING) {
         if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE)
             return true;
@@ -323,7 +323,7 @@ __forceinline bool CMatrixMapStatic::IsBase(void) const {
     return false;
 }
 
-__forceinline bool CMatrixMapStatic::IsLiveBuilding(void) const {
+inline bool CMatrixMapStatic::IsLiveBuilding(void) const {
     return IsBuilding() && ((CMatrixBuilding *)this)->m_State != BUILDING_DIP &&
            ((CMatrixBuilding *)this)->m_State != BUILDING_DIP_EXPLODED;
 }

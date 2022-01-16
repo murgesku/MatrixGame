@@ -102,7 +102,7 @@ public:
 };
 
 template <class V>
-__forceinline void SBigVBOne<V>::PrepareVB(void) {
+inline void SBigVBOne<V>::PrepareVB(void) {
     if (IS_VB(vb))
         return;
     // CREATE_VBM(vbsize, V::FVF, vb);
@@ -122,7 +122,7 @@ __forceinline void SBigVBOne<V>::PrepareVB(void) {
 }
 
 template <class V>
-__forceinline int SBigVBSource<V>::Select(CBigVB<V> *bvb) {
+inline int SBigVBSource<V>::Select(CBigVB<V> *bvb) {
     // ASSERT(!IsDirty(bvb) && !IsMarkedNoNeed(bvb));
 #ifdef _DEBUG
     if (IsDirty(bvb) || IsMarkedNoNeed(bvb)) {
@@ -141,17 +141,17 @@ __forceinline int SBigVBSource<V>::Select(CBigVB<V> *bvb) {
 }
 
 template <class V>
-__forceinline bool SBigVBSource<V>::IsDirty(CBigVB<V> *bvb) {
+inline bool SBigVBSource<V>::IsDirty(CBigVB<V> *bvb) {
     return FLAG(bvb->m_VB_array[one].parts[part].flags, BVB_DIRTY_PART);
 }
 
 template <class V>
-__forceinline bool SBigVBSource<V>::IsMarkedNoNeed(CBigVB<V> *bvb) {
+inline bool SBigVBSource<V>::IsMarkedNoNeed(CBigVB<V> *bvb) {
     return FLAG(bvb->m_VB_array[one].parts[part].flags, BVB_NONEED_PART);
 }
 
 template <class V>
-__forceinline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb, int stl) {
+inline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb, int stl) {
     DTRACE();
 #ifdef _DEBUG
     bvb->m_Preparewas = true;
@@ -186,7 +186,7 @@ __forceinline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb, int stl) {
 }
 
 template <class V>
-__forceinline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb) {
+inline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb) {
     DTRACE();
 #ifdef _DEBUG
     bvb->m_Preparewas = true;
@@ -221,7 +221,7 @@ __forceinline bool SBigVBSource<V>::Prepare(CBigVB<V> *bvb) {
 }
 
 template <class V>
-__forceinline void SBigVBSource<V>::Invalidate(CBigVB<V> *bvb) {
+inline void SBigVBSource<V>::Invalidate(CBigVB<V> *bvb) {
     MarkNoNeed(bvb);
     if (!IsDirty(bvb)) {
         SBigVBOne<V> *bvbo = bvb->m_VB_array + one;
@@ -230,7 +230,7 @@ __forceinline void SBigVBSource<V>::Invalidate(CBigVB<V> *bvb) {
 }
 
 template <class V>
-__forceinline void SBigVBSource<V>::MarkNoNeed(CBigVB<V> *bvb) {
+inline void SBigVBSource<V>::MarkNoNeed(CBigVB<V> *bvb) {
     if (!IsMarkedNoNeed(bvb)) {
         SBigVBOne<V> *bvbo = bvb->m_VB_array + one;
 
@@ -255,7 +255,7 @@ __forceinline void SBigVBSource<V>::MarkNoNeed(CBigVB<V> *bvb) {
 }
 
 template <class V>
-__forceinline void CBigVB<V>::ReleaseBuffers(void) {
+inline void CBigVB<V>::ReleaseBuffers(void) {
     for (int i = 0; i < m_VB_count; ++i) {
         SBigVBOne<V> *bvbo = m_VB_array + i;
 
@@ -271,7 +271,7 @@ __forceinline void CBigVB<V>::ReleaseBuffers(void) {
 }
 
 template <class V>
-__forceinline void CBigVB<V>::AddSource(SBigVBSource<V> *src) {
+inline void CBigVB<V>::AddSource(SBigVBSource<V> *src) {
     int index;
 
     if (m_VB_count == 0) {
@@ -422,7 +422,7 @@ __inline bool CBigVB<V>::DelSource(SBigVBSource<V> *src)  // return true if BigV
 }
 
 template <class V>
-__forceinline void CBigVB<V>::PrepareAll(void) {
+inline void CBigVB<V>::PrepareAll(void) {
     for (int i = 0; i < m_VB_count; ++i) {
         for (int j = 0; j < m_VB_array[i].count; ++j) {
             m_VB_array[i].parts[j].source->Prepare(this);

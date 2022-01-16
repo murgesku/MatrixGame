@@ -209,11 +209,11 @@ public:
     float GetStrength(void);
 };
 
-__forceinline bool CMatrixMapStatic::IsLiveCannon(void) const {
+inline bool CMatrixMapStatic::IsLiveCannon(void) const {
     return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP;
 }
 
-__forceinline bool CMatrixMapStatic::IsLiveActiveCannon(void) const {
+inline bool CMatrixMapStatic::IsLiveActiveCannon(void) const {
     return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP &&
            ((CMatrixCannon *)this)->m_CurrState != CANNON_UNDER_CONSTRUCTION;
 }

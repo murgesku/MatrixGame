@@ -572,7 +572,7 @@ void CIFaceMenu::CalcSelectedItem(bool set) {
         ps->m_Constructor->Djeans007(type, kind, pilon);
 }
 
-__forceinline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind) {
+inline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind) {
     if (type == MRT_WEAPON && kind == 0)
         return 0;
     if (type == MRT_HEAD && kind == 0)

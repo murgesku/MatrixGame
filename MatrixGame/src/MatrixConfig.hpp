@@ -518,7 +518,7 @@ enum {
     CAMERA_PARAM_CNT
 };
 
-__forceinline int WeapKind2Index(ERobotUnitKind w) {
+inline int WeapKind2Index(ERobotUnitKind w) {
     if (w == RUK_WEAPON_PLASMA)
         return 0;
     if (w == RUK_WEAPON_MACHINEGUN)

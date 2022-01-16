@@ -58,7 +58,7 @@ enum EWeapon {
     EWeapon_FORCE_DWORD = 0x7FFFFFFF
 };
 
-__forceinline int WeapName2Index(const wchar *w) {
+inline int WeapName2Index(const wchar *w) {
     if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_PLASMA))
         return 0;
     if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_VOLCANO))
@@ -96,7 +96,7 @@ __forceinline int WeapName2Index(const wchar *w) {
     return -1;
 }
 
-__forceinline EWeapon WeapName2Weap(const wchar *w) {
+inline EWeapon WeapName2Weap(const wchar *w) {
     if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_PLASMA))
         return WEAPON_PLASMA;
     if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_VOLCANO))
@@ -131,7 +131,7 @@ __forceinline EWeapon WeapName2Weap(const wchar *w) {
     return WEAPON_NONE;
 }
 
-__forceinline int Weap2Index(EWeapon w) {
+inline int Weap2Index(EWeapon w) {
     if (w == WEAPON_PLASMA)
         return 0;
     if (w == WEAPON_VOLCANO)

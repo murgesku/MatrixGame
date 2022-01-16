@@ -45,11 +45,11 @@ public:
     void Clear(void);
 };
 
-__forceinline CDWORDMap::~CDWORDMap() {
+inline CDWORDMap::~CDWORDMap() {
     Clear();
 }
 
-__forceinline void CDWORDMap::Clear(void) {
+inline void CDWORDMap::Clear(void) {
     for (int i = 0; i < HASH_TABLE_SIZE; ++i) {
         if (m_Table[i])
             HFree(m_Table[i], m_Heap);
@@ -57,7 +57,7 @@ __forceinline void CDWORDMap::Clear(void) {
     }
 }
 
-__forceinline void CDWORDMap::Set(DWORD key, DWORD v) {
+inline void CDWORDMap::Set(DWORD key, DWORD v) {
     DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
     if (vv == NULL) {
@@ -105,7 +105,7 @@ __forceinline void CDWORDMap::Set(DWORD key, DWORD v) {
     }
 }
 
-__forceinline bool CDWORDMap::Get(DWORD key, DWORD *v) {
+inline bool CDWORDMap::Get(DWORD key, DWORD *v) {
     DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
     if (vv == NULL) {
@@ -127,7 +127,7 @@ __forceinline bool CDWORDMap::Get(DWORD key, DWORD *v) {
     }
 }
 
-__forceinline bool CDWORDMap::Del(DWORD key) {
+inline bool CDWORDMap::Del(DWORD key) {
     DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
     if (vv == NULL) {

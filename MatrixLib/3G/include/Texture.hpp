@@ -35,7 +35,7 @@ enum ETexSize {
     TEXSIZE_2048
 };
 
-__forceinline int ConvertTexSize(ETexSize ts) {
+inline int ConvertTexSize(ETexSize ts) {
     return (1 << ts);
 }
 
@@ -303,7 +303,7 @@ public:
 };
 
 #ifndef USE_DX_MANAGED_TEXTURES
-__forceinline CTextureManaged *CTextureManaged::Get(const wchar *name, bool c16) {
+inline CTextureManaged *CTextureManaged::Get(const wchar *name, bool c16) {
     CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
     CBitmap bm(g_CacheHeap);
     CWStr tn(name, g_CacheHeap);

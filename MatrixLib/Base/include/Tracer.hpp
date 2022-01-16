@@ -12,7 +12,7 @@ void writedump(const char *txt);
 
 // lint -e522, -e10, -e533, -e1712
 #pragma warning(disable : 4508)
-__forceinline unsigned __int64 GetCPUTakt(void) {
+inline unsigned __int64 GetCPUTakt(void) {
     return __rdtsc();  // 0x0F, 0x31
     //        _emit      0x0f
     //        _emit      0x31

@@ -171,7 +171,7 @@ private:
 public:
     int RobotsCnt(void) const { return m_Bits & 0xFFFF; }
     void RobotsCnt(int a) { m_Bits = (m_Bits & 0xFFFF0000) | a; }
-    __forceinline void IncRobotsCnt(int cc = 1) { m_Bits += cc; }
+    inline void IncRobotsCnt(int cc = 1) { m_Bits += cc; }
 
     bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31)); }
     void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w); }

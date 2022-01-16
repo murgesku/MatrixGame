@@ -177,7 +177,7 @@ class CMatrixCamera : public CMain {
     //   float m_DistArcadedStart;
     //   float m_AngleArcadedStart;
 
-    __forceinline float LerpDist(int index = -1) {
+    inline float LerpDist(int index = -1) {
         if (index < 0) {
             index = m_ModeIndex;
         }
@@ -185,7 +185,7 @@ class CMatrixCamera : public CMain {
         return LERPFLOAT(m_DistParam[m_ModeIndex], cp->m_CamDistMin, cp->m_CamDistMax);
     }
 
-    __forceinline float LerpAng(int index = -1) {
+    inline float LerpAng(int index = -1) {
         if (index < 0) {
             index = m_ModeIndex;
         }
@@ -201,16 +201,16 @@ public:
     CMatrixCamera(void);
     ~CMatrixCamera(void);
 
-    __forceinline float GetResXInversed(void) const { return _res_x_inversed; }
-    __forceinline float GetResYInversed(void) const { return _res_y_inversed; }
+    inline float GetResXInversed(void) const { return _res_x_inversed; }
+    inline float GetResYInversed(void) const { return _res_y_inversed; }
 
-    __forceinline void SetAngleParam(float p) { m_AngleParam[m_ModeIndex] = p; }
+    inline void SetAngleParam(float p) { m_AngleParam[m_ModeIndex] = p; }
 
-    __forceinline float GetAngleX(void) const { return m_AngleX; }
-    __forceinline float GetAngleZ(void) const { return m_AngleZ; }
-    __forceinline void SetAngleZ(float angle) { m_AngleZ = angle; }
-    //__forceinline void    RotateZ( float da)          { m_AngleZ += da; }
-    //__forceinline void    RotateX(float angle)        { m_AngleX += angle; }
+    inline float GetAngleX(void) const { return m_AngleX; }
+    inline float GetAngleZ(void) const { return m_AngleZ; }
+    inline void SetAngleZ(float angle) { m_AngleZ = angle; }
+    //inline void    RotateZ( float da)          { m_AngleZ += da; }
+    //inline void    RotateX(float angle)        { m_AngleX += angle; }
 
     void RotateByMouse(int dx, int dy) {
         if (m_ModeIndex == CAMERA_STRATEGY) {
@@ -230,19 +230,19 @@ public:
 
     void CalcSkyMatrix(D3DXMATRIX &m);
 
-    __forceinline void SetXYStrategy(const D3DXVECTOR2 &pos) {
+    inline void SetXYStrategy(const D3DXVECTOR2 &pos) {
         SETFLAG(m_Flags, CAM_XY_LERP_OFF);
         m_XY_Strategy = pos;
     }
-    __forceinline const D3DXVECTOR2 &GetXYStrategy(void) const { return m_XY_Strategy; }
+    inline const D3DXVECTOR2 &GetXYStrategy(void) const { return m_XY_Strategy; }
     // void    SetTarget(const D3DXVECTOR3 & pos)         { RESETFLAG(m_Flags, CAM_RESTOREXY); m_Target = pos;}
     const D3DXVECTOR3 &GetLinkPoint(void) const { return m_LinkPoint; }
     //   float GetZRel(void) const             { return m_LandRelativeZ; }
     //   void  SetZRel(float z)                { m_LandRelativeZ = z; }
 
-    __forceinline const D3DXVECTOR3 &GetDir(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._31; }
-    __forceinline const D3DXVECTOR3 &GetRight(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._11; }
-    __forceinline const D3DXVECTOR3 &GetUp(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._21; }
+    inline const D3DXVECTOR3 &GetDir(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._31; }
+    inline const D3DXVECTOR3 &GetRight(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._11; }
+    inline const D3DXVECTOR3 &GetUp(void) const { return *(D3DXVECTOR3 *)&m_MatViewInversed._21; }
 
     void RotLeft(void) { SETFLAG(m_Flags, CAM_ACTION_ROT_LEFT); }
     void RotRight(void) { SETFLAG(m_Flags, CAM_ACTION_ROT_RIGHT); }
@@ -325,12 +325,12 @@ public:
     const D3DXMATRIX &GetDrawNowIView(void) const { return m_DN_iview; }
     const D3DXVECTOR3 &GetDrawNowFC(void) const { return m_DN_fc; }
 
-    __forceinline D3DXVECTOR2 Project(const D3DXVECTOR3 &pos, const D3DXMATRIX &world) {
+    inline D3DXVECTOR2 Project(const D3DXVECTOR3 &pos, const D3DXMATRIX &world) {
         D3DXVECTOR3 out;
         D3DXVec3Project(&out, &pos, &m_ViewPort, &m_MatProj, &m_MatView, &world);
         return D3DXVECTOR2(out.x, out.y);
     }
-    __forceinline D3DXVECTOR3 ProjectNorm(const D3DXVECTOR3 &pos) {
+    inline D3DXVECTOR3 ProjectNorm(const D3DXVECTOR3 &pos) {
         D3DXVECTOR3 out;
         D3DXMATRIX m(GetViewMatrix() * GetProjMatrix());
         D3DXVec3TransformCoord(&out, &pos, &m);
@@ -353,7 +353,7 @@ public:
     void Takt(float ms);
 };
 
-__forceinline void CMatrixCamera::CalcPickVector(const CPoint &p, D3DXVECTOR3 &vdir) const {
+inline void CMatrixCamera::CalcPickVector(const CPoint &p, D3DXVECTOR3 &vdir) const {
     D3DXVECTOR3 v;
 
     v.x = (((float)(p.x << 1) * _res_x_inversed) - 1.0f) * _mp_11_inversed;
@@ -366,7 +366,7 @@ __forceinline void CMatrixCamera::CalcPickVector(const CPoint &p, D3DXVECTOR3 &v
     D3DXVec3Normalize(&vdir, &vdir);
 }
 
-__forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p) const {
+inline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p) const {
     /*
     D3DXVECTOR3 tp =  p - GetFrustumCenter();
     if ( (tp.x * GetFrustPlaneL().norm.x + tp.y * GetFrustPlaneL().norm.y + tp.z * GetFrustPlaneL().norm.z) < 0.0f)
@@ -386,7 +386,7 @@ __forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p) const {
     return true;
 }
 
-__forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p, float r) const {
+inline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p, float r) const {
     if (!GetFrustPlaneL().IsOnSide(p + GetFrustPlaneL().norm * r))
         return false;
     if (!GetFrustPlaneR().IsOnSide(p + GetFrustPlaneR().norm * r))
@@ -398,7 +398,7 @@ __forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &p, float r) con
     return true;
 }
 
-__forceinline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &mins, const D3DXVECTOR3 &maxs) const {
+inline bool CMatrixCamera::IsInFrustum(const D3DXVECTOR3 &mins, const D3DXVECTOR3 &maxs) const {
     if (GetFrustPlaneL().BoxSide(mins, maxs) == 2)
         return false;
     if (GetFrustPlaneR().BoxSide(mins, maxs) == 2)
