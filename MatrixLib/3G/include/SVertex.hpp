@@ -8,12 +8,10 @@
 
 #include "d3dx9.h"
 
-struct SVertex
-{
+struct SVertex {
     D3DXVECTOR3 v;
     D3DXVECTOR3 n;
-    float tu,tv;
+    float tu, tv;
 };
-
 
 #endif

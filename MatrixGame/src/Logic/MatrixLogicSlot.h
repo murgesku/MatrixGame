@@ -4,48 +4,50 @@
 // Refer to the LICENSE file included
 
 #pragma once
+
 #include "MatrixTactics.h"
 
 class CMatrixState;
 class CMatrixRobotAI;
 class CMatrixRule;
 
-typedef struct _c
-{
+typedef struct _c {
     int m_MinCells;
     int m_MaxCells;
-    _c()
-    {
+    _c() {
         m_MinCells = 0;
         m_MaxCells = 0;
     }
-}Cells;
+} Cells;
 
+class CLogicSlotRobot : public CMain {
+    CMatrixRobotAI *m_Robot;
+    CMatrixRule *m_Rule;
 
-class CLogicSlotRobot : public CMain
-{
-    CMatrixRobotAI*     m_Robot;
-    CMatrixRule*        m_Rule;
 public:
-    CLogicSlotRobot*    m_NextRobot;
-    CLogicSlotRobot*    m_PrevRobot;
-    
-    void SetLogicRobot(CMatrixRobotAI* robot)                                       { m_Robot = robot; }
-    CMatrixRobotAI* GetLogicRobot()                                                 { return m_Robot; }
+    CLogicSlotRobot *m_NextRobot;
+    CLogicSlotRobot *m_PrevRobot;
 
-    void SetRule(CMatrixRule* rule)                                                 { m_Rule = rule; }
-    CMatrixRule* GetRule()                                                          { return m_Rule; }
+    void SetLogicRobot(CMatrixRobotAI *robot) { m_Robot = robot; }
+    CMatrixRobotAI *GetLogicRobot() { return m_Robot; }
 
-    CLogicSlotRobot()                                                               { m_NextRobot = NULL;m_PrevRobot = NULL;m_Rule      = NULL; }
-    ~CLogicSlotRobot()                                                              {}
+    void SetRule(CMatrixRule *rule) { m_Rule = rule; }
+    CMatrixRule *GetRule() { return m_Rule; }
+
+    CLogicSlotRobot() {
+        m_NextRobot = NULL;
+        m_PrevRobot = NULL;
+        m_Rule = NULL;
+    }
+    ~CLogicSlotRobot() {}
 };
 
-//class CMatrixLogicSlot : public CBaseTactics
+// class CMatrixLogicSlot : public CBaseTactics
 //{
 //    CMatrixState*       m_ActiveState;
 //    Cells               m_Cells;
 //    int                 m_RobotsCnt;
-//public:
+// public:
 //    CLogicSlotRobot*    m_FirstRobot;
 //    CLogicSlotRobot*    m_LastRobot;
 //
@@ -57,12 +59,12 @@ public:
 //
 //    void Reset()                                                                    { m_RobotsCnt = 0; }
 //
-//    void SetActiveState(CMatrixState* state)                                        { if(state) m_ActiveState = state; }
-//    CMatrixState* GetActiveState()                                                  { return m_ActiveState; }
+//    void SetActiveState(CMatrixState* state)                                        { if(state) m_ActiveState = state;
+//    } CMatrixState* GetActiveState()                                                  { return m_ActiveState; }
 //
 //    Cells GetCellsCnt()                                                             { return m_Cells; }
 //    void Load(CBlockPar &bp);
-//    
+//
 //    int GetLogicRobotsCnt()                                                         { return m_RobotsCnt; }
 //
 //

@@ -13,89 +13,101 @@ namespace Window {
 typedef enum { wa_None, wa_Left, wa_Right, wa_Top, wa_Bottom, wa_Client } WindowAlign;
 
 class WINDOW_API CWindowCreateParams : public Base::CMain {
-	public:
-		Base::CHeap * m_Heap;
-		WNDCLASSEXW m_ClassWindow;
-		int m_Style;
-		int m_StyleEx;
-		Base::CPoint m_Pos;
-		Base::CPoint m_Size;
-	public:
-		CWindowCreateParams(Base::CHeap * heap):Base::CMain()									{ m_Heap=heap; ZeroMemory(&m_ClassWindow,sizeof(WNDCLASSEXW)); m_ClassWindow.cbSize = sizeof(WNDCLASSEXW); m_Style=0; m_StyleEx=0; m_Pos.x=0; m_Pos.y=0; m_Size.x=0; m_Size.y=0; }
-		~CWindowCreateParams()																	{}
+public:
+    Base::CHeap *m_Heap;
+    WNDCLASSEXW m_ClassWindow;
+    int m_Style;
+    int m_StyleEx;
+    Base::CPoint m_Pos;
+    Base::CPoint m_Size;
+
+public:
+    CWindowCreateParams(Base::CHeap *heap) : Base::CMain() {
+        m_Heap = heap;
+        ZeroMemory(&m_ClassWindow, sizeof(WNDCLASSEXW));
+        m_ClassWindow.cbSize = sizeof(WNDCLASSEXW);
+        m_Style = 0;
+        m_StyleEx = 0;
+        m_Pos.x = 0;
+        m_Pos.y = 0;
+        m_Size.x = 0;
+        m_Size.y = 0;
+    }
+    ~CWindowCreateParams() {}
 };
 
 class WINDOW_API CWindow : public Base::CMain {
-	friend LRESULT CALLBACK Window_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-	protected:
-		Base::CHeap * m_Heap;
+    friend LRESULT CALLBACK Window_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-		HWND m_Wnd;
-		HWND m_WndParent;
+protected:
+    Base::CHeap *m_Heap;
 
-		CWindowCreateParams m_CreateParams;
+    HWND m_Wnd;
+    HWND m_WndParent;
 
-		CWindow * m_Parent;
-		CWindow * m_First;
-		CWindow * m_Last;
-		CWindow * m_Next;
-		CWindow * m_Prev;
+    CWindowCreateParams m_CreateParams;
 
-		Base::CWStr m_Text;
-		Base::CPoint m_Pos;
-		Base::CPoint m_Size;
+    CWindow *m_Parent;
+    CWindow *m_First;
+    CWindow *m_Last;
+    CWindow *m_Next;
+    CWindow *m_Prev;
 
-		WindowAlign m_Align;
-		Base::CPoint m_SizeMin;
-		Base::CPoint m_SizeMax;
+    Base::CWStr m_Text;
+    Base::CPoint m_Pos;
+    Base::CPoint m_Size;
 
-	public:
-		CWindow(Base::CHeap * heap=NULL);
-		~CWindow();
+    WindowAlign m_Align;
+    Base::CPoint m_SizeMin;
+    Base::CPoint m_SizeMax;
 
-		HWND Wnd(void)									{ return m_Wnd; }
+public:
+    CWindow(Base::CHeap *heap = NULL);
+    ~CWindow();
 
-		virtual wchar * ClassName(void)					{ return L"CWindow"; }
-		virtual wchar * StdClassName(void)				{ return NULL; }
-		virtual void CreateParams(void);
+    HWND Wnd(void) { return m_Wnd; }
 
-		virtual CALLBACK WndProc(UINT message, WPARAM wParam, LPARAM lParam);
+    virtual wchar *ClassName(void) { return L"CWindow"; }
+    virtual wchar *StdClassName(void) { return NULL; }
+    virtual void CreateParams(void);
 
-		void WndParent(HWND wnd);
-		void WndCreate(void);
-		void WndDestroy(void);
+    virtual CALLBACK WndProc(UINT message, WPARAM wParam, LPARAM lParam);
 
-		void Add(CWindow * w);							// Сменить родительское окно
-		void Delete(CWindow * w);						// Удалить из родительского окна
-		CWindow * Parent(void)							{ return m_Parent; }
+    void WndParent(HWND wnd);
+    void WndCreate(void);
+    void WndDestroy(void);
 
-		virtual void CalcNewSize(Base::CPoint & newsize);
-		virtual void CalcClientRect(Base::CRect & rect)		{}
-		void AlignChild(Base::CRect re);
-		void AlignChild(void);
-		void Align(WindowAlign wa);
-		WindowAlign Align(void)								{ return m_Align; }
+    void Add(CWindow *w);     // Сменить родительское окно
+    void Delete(CWindow *w);  // Удалить из родительского окна
+    CWindow *Parent(void) { return m_Parent; }
 
-		void ShowWindow(void);
-		void Pos(Base::CPoint & newpos);
-		void Size(Base::CPoint & newsize);
+    virtual void CalcNewSize(Base::CPoint &newsize);
+    virtual void CalcClientRect(Base::CRect &rect) {}
+    void AlignChild(Base::CRect re);
+    void AlignChild(void);
+    void Align(WindowAlign wa);
+    WindowAlign Align(void) { return m_Align; }
 
-		void SizeMin(Base::CPoint & newsize);
-		void SizeMax(Base::CPoint & newsize);
-		void CalcMinMaxSize(Base::CPoint & minsize,Base::CPoint & maxsize);
+    void ShowWindow(void);
+    void Pos(Base::CPoint &newpos);
+    void Size(Base::CPoint &newsize);
+
+    void SizeMin(Base::CPoint &newsize);
+    void SizeMax(Base::CPoint &newsize);
+    void CalcMinMaxSize(Base::CPoint &minsize, Base::CPoint &maxsize);
 };
 
 class CPanel : public CWindow {
-	public:
-	public:
-		CPanel(void);
-		~CPanel();
+public:
+public:
+    CPanel(void);
+    ~CPanel();
 
-		virtual wchar * ClassName(void)					{ return L"CPanel"; }
+    virtual wchar *ClassName(void) { return L"CPanel"; }
 
-		virtual void CreateParams(void);
+    virtual void CreateParams(void);
 };
 
 WINDOW_API void Window_Init(HINSTANCE hInstance);
 
-}
+}  // namespace Window

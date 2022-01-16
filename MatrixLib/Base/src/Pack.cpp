@@ -4,30 +4,27 @@
 // Refer to the LICENSE file included
 
 #include "stdafx.h"
+
 #include "Pack.hpp"
 
 //#ifdef BLABLA
-
 
 #undef ZEXPORT
 #define ZEXPORT _cdecl
 
 #include "../../../ThirdParty/ZLib/include/zlib.h"
 
-
-
 //#define _MAKESTR1(x) #x
 //#define MAKESTR(n) _MAKESTR1(n)
 
-
-//char *sss2 = MAKESTR(5);
+// char *sss2 = MAKESTR(5);
 //
-//char *sss3 = MAKESTR(ZEXPORT)
-//char *sss4 = MAKESTR(ZEXTERN)
-//char *sss5 = MAKESTR(OF)
+// char *sss3 = MAKESTR(ZEXPORT)
+// char *sss4 = MAKESTR(ZEXTERN)
+// char *sss5 = MAKESTR(OF)
 
 // @rdesc - размер сжатых данных  0 - ошибка
-//static int OKGF_ZLib_Compress(BYTE * desbuf,BYTE * soubuf,int len_sou_and_des_buf,int fSpeed)
+// static int OKGF_ZLib_Compress(BYTE * desbuf,BYTE * soubuf,int len_sou_and_des_buf,int fSpeed)
 //{
 //
 //    DWORD deslen=len_sou_and_des_buf-8;
@@ -44,22 +41,26 @@
 // if desbuf==NULL then return размер выходного буфера
 // return размер выходного буфера
 // return 0 если ошибка
-static int OKGF_ZLib_UnCompress(BYTE * desbuf,int lendesbuf,BYTE * soubuf,int lensoubuf)
-{
-    DWORD deslen=lendesbuf;
+static int OKGF_ZLib_UnCompress(BYTE *desbuf, int lendesbuf, BYTE *soubuf, int lensoubuf) {
+    DWORD deslen = lendesbuf;
 
-    if(lensoubuf<8) return 0;
-    if(*(soubuf+0)!='Z' || *(soubuf+1)!='L' || *(soubuf+2)!='0' || *(soubuf+3)!='2') return 0;
-    if(desbuf==NULL) return *((DWORD *)(soubuf+4));
-    if(*((DWORD *)(soubuf+4))>DWORD(lendesbuf)) return 0;
+    if (lensoubuf < 8)
+        return 0;
+    if (*(soubuf + 0) != 'Z' || *(soubuf + 1) != 'L' || *(soubuf + 2) != '0' || *(soubuf + 3) != '2')
+        return 0;
+    if (desbuf == NULL)
+        return *((DWORD *)(soubuf + 4));
+    if (*((DWORD *)(soubuf + 4)) > DWORD(lendesbuf))
+        return 0;
 
-    if(uncompress(desbuf,&deslen,soubuf+8,lensoubuf-8)!=Z_OK) return 0;
-    if(deslen!=*((DWORD *)(soubuf+4))) return 0;
+    if (uncompress(desbuf, &deslen, soubuf + 8, lensoubuf - 8) != Z_OK)
+        return 0;
+    if (deslen != *((DWORD *)(soubuf + 4)))
+        return 0;
     return deslen;
 }
 
-
-//int OKGF_ZLib_Compress2(BYTE * desbuf,int len_des_buf, BYTE * soubuf,int len_sou_buf,int fSpeed)
+// int OKGF_ZLib_Compress2(BYTE * desbuf,int len_des_buf, BYTE * soubuf,int len_sou_buf,int fSpeed)
 //{
 //    DWORD deslen=len_des_buf-8;
 ////  if(len_sou_buf<16) return 0;
@@ -75,42 +76,31 @@ static int OKGF_ZLib_UnCompress(BYTE * desbuf,int lendesbuf,BYTE * soubuf,int le
 // if desbuf==NULL then return размер выходного буфера
 // return размер выходного буфера
 // return 0 если ошибка
-int OKGF_ZLib_UnCompress2(BYTE * desbuf,int len_des_buf,BYTE * soubuf,int len_sou_buf)
-{
-    DWORD deslen=len_des_buf;
+int OKGF_ZLib_UnCompress2(BYTE *desbuf, int len_des_buf, BYTE *soubuf, int len_sou_buf) {
+    DWORD deslen = len_des_buf;
 
-    if(len_sou_buf<8) return 0;
-    if(*(soubuf+0)!='Z' || *(soubuf+1)!='L' || *(soubuf+2)!='0' || *(soubuf+3)!='2') return 0;
-//  if(desbuf==NULL) return *((DWORD *)(soubuf+4));
-    if(*((DWORD *)(soubuf+4))>DWORD(len_des_buf)) return 0;
+    if (len_sou_buf < 8)
+        return 0;
+    if (*(soubuf + 0) != 'Z' || *(soubuf + 1) != 'L' || *(soubuf + 2) != '0' || *(soubuf + 3) != '2')
+        return 0;
+    //  if(desbuf==NULL) return *((DWORD *)(soubuf+4));
+    if (*((DWORD *)(soubuf + 4)) > DWORD(len_des_buf))
+        return 0;
 
-    if(uncompress(desbuf,&deslen,soubuf+8,len_sou_buf-8)!=Z_OK) return 0;
-    if(deslen!=*((DWORD *)(soubuf+4))) return 0;
+    if (uncompress(desbuf, &deslen, soubuf + 8, len_sou_buf - 8) != Z_OK)
+        return 0;
+    if (deslen != *((DWORD *)(soubuf + 4)))
+        return 0;
     return deslen;
 }
 
-
-
-
-
-
-
-
 namespace Base {
-
-
-
-
-
-
-
 
 //**********************************************************************
 //***************** КЛАСС - КАТАЛОГ ************************************
 //**********************************************************************
 
-CHsFolder::CHsFolder(const CStr &Name, CHeap *heap):m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap)
-{
+CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
@@ -119,8 +109,8 @@ CHsFolder::CHsFolder(const CStr &Name, CHeap *heap):m_Heap(heap), m_Name(Name, h
     m_Name.UpperCase();
 }
 
-CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap):m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap)
-{
+CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
+  : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
@@ -129,41 +119,35 @@ CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap):m_Heap(he
     m_Name.UpperCase();
 }
 
-
-SFileRec *  CHsFolder::GetFileRec(const CStr &name) const
-{
+SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     SFileRec *PFile;
 
     CStr n(name, m_Heap);
     n.UpperCase();
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
-        if (PFile->m_Free == 0)
-        {
-            if (n == PFile->m_Name) return PFile;
+        if (PFile->m_Free == 0) {
+            if (n == PFile->m_Name)
+                return PFile;
         }
     }
     return NULL;
 }
 
-SFileRec  *  CHsFolder::GetFreeRec(void) const
-{
+SFileRec *CHsFolder::GetFreeRec(void) const {
     SFileRec *PFile;
 
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
-        if (PFile->m_Free != 0)
-        {
+        if (PFile->m_Free != 0) {
             return PFile;
         }
     }
     return NULL;
 }
 
-//Procedure   CHsFolder.AllocEmptyFolder;
-//begin
+// Procedure   CHsFolder.AllocEmptyFolder;
+// begin
 //    m_FolderRec.m_Recnum:=0;
 //    m_FolderRec.m_RecSize:=sizeof(TFileRecEC);
 //    m_FolderRec.m_Size:=sizeof(TFolderRecEC)+m_FolderRec.m_RecSize*m_FolderRec.m_Recnum;
@@ -172,50 +156,46 @@ SFileRec  *  CHsFolder::GetFreeRec(void) const
 //    m_ToSave:=true;
 //    // А теперь необходимо обновить информацию в родительской папке о размере и положении
 //    UpdateFileRec;
-//end;
+// end;
 
-bool   CHsFolder::ReadFolder(DWORD Handle, DWORD Offset)
-{
+bool CHsFolder::ReadFolder(DWORD Handle, DWORD Offset) {
     DWORD temp;
 
-    if (m_Files) return false;
+    if (m_Files)
+        return false;
 
     // Читаем заголовок папки
-    SetFilePointer((HANDLE)Handle,Offset,NULL,FILE_BEGIN);
-    BOOL res = ::ReadFile((HANDLE)Handle,&m_FolderRec,sizeof(SFolderRec),&temp,NULL);
-    if (res == FALSE || temp != sizeof(SFolderRec)) return false;
-    if (sizeof(SFileRec) != m_FolderRec.m_RecSize) return false;
+    SetFilePointer((HANDLE)Handle, Offset, NULL, FILE_BEGIN);
+    BOOL res = ::ReadFile((HANDLE)Handle, &m_FolderRec, sizeof(SFolderRec), &temp, NULL);
+    if (res == FALSE || temp != sizeof(SFolderRec))
+        return false;
+    if (sizeof(SFileRec) != m_FolderRec.m_RecSize)
+        return false;
 
     // Теперь необходимо прочитать данные, связанные с хранимыми файлами в данной папке
-    int sz = m_FolderRec.m_Recnum*m_FolderRec.m_RecSize;
+    int sz = m_FolderRec.m_Recnum * m_FolderRec.m_RecSize;
     m_Files = (SFileRec *)HAllocClear(sz, m_Heap);
 
     res = ::ReadFile((HANDLE)Handle, m_Files, sz, &temp, NULL);
-    if (res == FALSE || temp!=sz)
-    {
-        for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-        {
+    if (res == FALSE || temp != sz) {
+        for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
             m_Files[i].m_Extra = 0;
         }
         Clear();
         return false;
     }
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         m_Files[i].m_Extra = 0;
         m_Files[i].m_NType = m_Files[i].m_Type;
     }
 
     // Вся информация о файлах в текущей директории прочитана
     // Теперь читаем информацию о вложенных папках
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
-        if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0)
-        {
-            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(CStr(m_Files[i].m_RealName, m_Heap),this, m_Heap);
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
+        if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0) {
+            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(CStr(m_Files[i].m_RealName, m_Heap), this, m_Heap);
             m_Files[i].m_Extra = DWORD(PFolder);
-            if (!PFolder->ReadFolder(Handle,m_Files[i].m_Offset))
-            {
+            if (!PFolder->ReadFolder(Handle, m_Files[i].m_Offset)) {
                 Clear();
                 return false;
             }
@@ -224,15 +204,14 @@ bool   CHsFolder::ReadFolder(DWORD Handle, DWORD Offset)
     return true;
 }
 
-void   CHsFolder::Clear(void)
-{
-    if (m_Files == NULL) return;
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
-        if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0)
-        {
+void CHsFolder::Clear(void) {
+    if (m_Files == NULL)
+        return;
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
+        if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0) {
             CHsFolder *PFolder = (CHsFolder *)m_Files[i].m_Extra;
-            if (PFolder) HDelete(CHsFolder, PFolder, m_Heap);
+            if (PFolder)
+                HDelete(CHsFolder, PFolder, m_Heap);
             m_Files[i].m_Extra = 0;
         }
     }
@@ -243,29 +222,29 @@ void   CHsFolder::Clear(void)
     UpdateFileRec();
 }
 
-bool    CHsFolder::FileExists(const CStr &name) const
-{
+bool CHsFolder::FileExists(const CStr &name) const {
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    name.Split(beg,rem, "/\\");
+    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return false;
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
-        if (rem.IsEmpty()) return false;
+    if (PFile == NULL)
+        return false;
+    if (PFile->m_Type == FILEEC_FOLDER) {
+        if (rem.IsEmpty())
+            return false;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->FileExists(rem);
     }
     return rem.IsEmpty();
 }
 
-//Procedure   CHsFolder.SetFileType(name:string; NType:DWORD);
-//Var
+// Procedure   CHsFolder.SetFileType(name:string; NType:DWORD);
+// Var
 //    beginning,remainder:string;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
-//begin
+// begin
 //    beginning:=GetBeginningStr(name,'/\');
 //    remainder:=GetRemainderStr(name,'/\');
 //    PFile:=GetFileRec(beginning);
@@ -308,15 +287,15 @@ bool    CHsFolder::FileExists(const CStr &name) const
 //        end;
 //    end;
 //    m_ToUpdate:=true;
-//end;
+// end;
 
-//Procedure   CHsFolder.SetFolderType(name:string; NType:DWORD);
-//Var
+// Procedure   CHsFolder.SetFolderType(name:string; NType:DWORD);
+// Var
 //    beginning,remainder:string;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
 //    i:integer;
-//begin
+// begin
 //    if name='' then
 //    begin
 //        for i:=0 to m_FolderRec.m_Recnum-1 do
@@ -346,49 +325,49 @@ bool    CHsFolder::FileExists(const CStr &name) const
 //        PFolder.SetFolderType(remainder,NType);
 //        exit;
 //    end;
-//end;
+// end;
 
-bool    CHsFolder::PathExists(const CStr &name) const
-{
+bool CHsFolder::PathExists(const CStr &name) const {
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    name.Split(beg,rem, "/\\");
+    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return false;
+    if (PFile == NULL)
+        return false;
 
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
-        if (rem.IsEmpty()) return true;
+    if (PFile->m_Type == FILEEC_FOLDER) {
+        if (rem.IsEmpty())
+            return true;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->PathExists(rem);
     }
     return rem.IsEmpty();
 }
 
-SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
-{
+SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    name.Split(beg,rem, "/\\");
+    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return false;
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
-        if (rem.IsEmpty()) return PFile;
+    if (PFile == NULL)
+        return false;
+    if (PFile->m_Type == FILEEC_FOLDER) {
+        if (rem.IsEmpty())
+            return PFile;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->GetFileRecEx(rem);
     }
-    return rem.IsEmpty()?PFile:NULL;
+    return rem.IsEmpty() ? PFile : NULL;
 }
 
-//Function    CHsFolder.ReAllocFileRecs(number:integer):boolean;
-//Var
+// Function    CHsFolder.ReAllocFileRecs(number:integer):boolean;
+// Var
 //    i:DWORD;
 //    last:DWORD;
 //    PFile:PFileRecEC;
-//begin
+// begin
 //    Result:=false;
 //    if m_FolderRec.m_Recnum>=DWORD(number) then exit;
 //    last:=m_FolderRec.m_Recnum;
@@ -405,19 +384,19 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    m_ToUpdate:=false;
 //    UpdateFileRec;
 //    Result:=true;
-//end;
+// end;
 
 //////////////////////////////////////////////////////////////////////////
 /////////////////  Функция добавления новой директории  //////////////////
 //////////////////////////////////////////////////////////////////////////
 
-//Function    CHsFolder.CreateFolder(name:string):boolean;
-//Var
+// Function    CHsFolder.CreateFolder(name:string):boolean;
+// Var
 //    remainder:string;
 //    beginning:string;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
-//begin
+// begin
 //    Result:=false;
 //    remainder:=GetRemainderStr(name,'/\');
 //    beginning:=GetBeginningStr(name,'/\');
@@ -459,20 +438,20 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    PFolder:=CHsFolder(PFile.m_Extra);
 //    if PFolder=nil then raise Exception.Create('Логическая директория физически не существует :'+beginning);
 //    Result:=PFolder.CreateFolder(remainder);
-//end;
+// end;
 
-//Function    CHsFolder.AddPath(name:string):boolean;
-//begin
+// Function    CHsFolder.AddPath(name:string):boolean;
+// begin
 //    Result:=AddPath(name,FILEEC_BINARY);
-//end;
+// end;
 //
-//Function    CHsFolder.AddFileEx(name:string;date,size:DWORD;ftype:DWORD):boolean;
-//Var
+// Function    CHsFolder.AddFileEx(name:string;date,size:DWORD;ftype:DWORD):boolean;
+// Var
 //    remainder:string;
 //    beginning:string;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
-//begin
+// begin
 //    Result:=false;
 //    remainder:=GetRemainderStr(name,'/\');
 //    beginning:=GetBeginningStr(name,'/\');
@@ -538,14 +517,14 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    PFolder:=CHsFolder(PFile.m_Extra);
 //    if PFolder=nil then raise Exception.Create('Логическая директория физически не существует :'+beginning);
 //    Result:=PFolder.AddFileEx(remainder,date,size,ftype);
-//end;
+// end;
 //
-//Function    CHsFolder.DeleteFile(name:string):boolean;
-//Var
+// Function    CHsFolder.DeleteFile(name:string):boolean;
+// Var
 //    beginning,remainder:string;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
-//begin
+// begin
 //    Result:=false;
 //    beginning:=GetBeginningStr(name,'/\');
 //    remainder:=GetRemainderStr(name,'/\');
@@ -570,18 +549,18 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    PFile.m_Free:=1;
 //    m_ToUpdate:=true;
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CHsFolder.AddFile(name:string):boolean;
-//begin
+// Function    CHsFolder.AddFile(name:string):boolean;
+// begin
 //    Result:=AddFile(name,FILEEC_BINARY);
-//end;
+// end;
 //
-//Function    CHsFolder.AddPath(name:string;ftype:DWORD):boolean;
-//Var
+// Function    CHsFolder.AddPath(name:string;ftype:DWORD):boolean;
+// Var
 //    S:TSearchRec;
 //    Err:Integer;
-//begin
+// begin
 //    if name<>'' then
 //    begin
 //        if (name[length(name)]<>'\') and (name[length(name)]<>'/') then
@@ -595,24 +574,26 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //        begin
 //            if ((S.Attr and faDirectory)=faDirectory) then
 //            begin
-//                if not AddPath(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления пути в пакетный файл: '+name+S.Name);
+//                if not AddPath(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления пути в пакетный файл:
+//                '+name+S.Name);
 //            end else
 //            begin
-//                if not AddFile(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления файла в пакетный файл: '+name+S.Name);
+//                if not AddFile(name+S.Name,ftype) then raise Exception.Create('Ошибка добавления файла в пакетный
+//                файл: '+name+S.Name);
 //            end;
 //        end;
 //        Err:=FindNext(S);
 //    end;
 //    FindClose(S);
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CHsFolder.AddFile(name:string;ftype:DWORD):boolean;
-//Var
+// Function    CHsFolder.AddFile(name:string;ftype:DWORD):boolean;
+// Var
 //    Handle:DWORD;
 //    date:DWORD;
 //    size:DWORD;
-//begin
+// begin
 //    // Проверяем размер файла и т.д.
 //    Result:=false;
 //    date:=0;
@@ -627,52 +608,50 @@ SFileRec *  CHsFolder::GetFileRecEx(const CStr &name) const
 //    CloseHandle(Handle);
 //    if size=$FFFFFFFF then exit;
 //    result:=AddFileEx(GetLocalPath(name),date,size,ftype);
-//end;
+// end;
 
-CStr    CHsFolder::GetFullPath(const CStr &name)
-{
-    if (m_Parent)
-    {
-        return m_Parent->GetFullPath(m_RealName+"\\"+name);
-    } else
-    {
+CStr CHsFolder::GetFullPath(const CStr &name) {
+    if (m_Parent) {
+        return m_Parent->GetFullPath(m_RealName + "\\" + name);
+    }
+    else {
         return name;
     }
 }
 
-DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
-{
+DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    filename.Split(beg,rem, "/\\");
+    filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return 0xFFFFFFFF;
+    if (PFile == NULL)
+        return 0xFFFFFFFF;
 
-    //DWORD size,temp;
-    //BYTE *soubuf,compbuf; // Иходный буфер и буфер для сжатых данных
-    //DWORD compsize;  // Размер сжатого блока данных <65536
-    //DWORD totalsize; // Общий размер сжатых данных + длина (4 байта)
+    // DWORD size,temp;
+    // BYTE *soubuf,compbuf; // Иходный буфер и буфер для сжатых данных
+    // DWORD compsize;  // Размер сжатого блока данных <65536
+    // DWORD totalsize; // Общий размер сжатых данных + длина (4 байта)
 
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
-        if (rem.IsEmpty()) return 0xFFFFFFFF;
+    if (PFile->m_Type == FILEEC_FOLDER) {
+        if (rem.IsEmpty())
+            return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->CompressedFileSize(Handle,rem);
+        return PFolder->CompressedFileSize(Handle, rem);
     }
-    if (!rem.IsEmpty()) return 0xFFFFFFFF;
+    if (!rem.IsEmpty())
+        return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
     // Случай 1 - файл уже упакован и сжат, а его свойства не были изменены внутри пакета
-    if (PFile->m_Offset != 0 && PFile->m_Type == FILEEC_COMPRESSED)
-    {
-        return PFile->m_Size-4;
+    if (PFile->m_Offset != 0 && PFile->m_Type == FILEEC_COMPRESSED) {
+        return PFile->m_Size - 4;
     }
 
     ERROR_S(L"Error getting compressed file size");
 
     //// В любом из двух следующих случаев файл следует пережать в памяти
-    //if (PFile->m_Offset == 0)
+    // if (PFile->m_Offset == 0)
     //{
     //    // Случай 2 - файл еще не был упакован в пакет, а потому лежит на диске
     //    Handle:=CreateFile(PChar(GetFullPath(filename)),
@@ -686,22 +665,23 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
     //    if size=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
     //    temp:=SetFilePointer(Handle,0,nil,FILE_BEGIN);
     //    if temp=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
-    //end else
-    //begin
+    // end else
+    // begin
     //    // Случай 3 - файл уже упакован, но его свойства были изменены
     //    temp:=SetFilePointer(Handle,PFile.m_Offset,nil,FILE_BEGIN);
     //    if temp=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
     //    if not Windows.ReadFile(Handle,size,4,temp,nil) then
     //        raise Exception.Create('Calc size error :'+GetFullPath(filename));
-    //end;
+    // end;
     //// Сжимаем файл
-    //soubuf:=AllocMem(65536);
-    //compbuf:=AllocMem(72112);
+    // soubuf:=AllocMem(65536);
+    // compbuf:=AllocMem(72112);
 
-    //totalsize:=0;
-    //while size>65536 do
-    //begin
-    //    if not ReadFile(Handle,soubuf^,65536,temp,nil) then raise Exception.Create('Calc error:'+GetFullPath(filename));
+    // totalsize:=0;
+    // while size>65536 do
+    // begin
+    //    if not ReadFile(Handle,soubuf^,65536,temp,nil) then raise Exception.Create('Calc
+    //    error:'+GetFullPath(filename));
     //    {$ifndef SUPPORT_COMPRESSION_OFF}
     //    compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,65536);
     //    {$else}
@@ -709,100 +689,97 @@ DWORD   CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename)
     //    if (compsize=0) then raise Exception.Create('Calc error:'+GetFullPath(filename));
     //    totalsize:=totalsize+compsize+4;
     //    size:=size-65536;
-    //end;
-    //if not ReadFile(Handle,soubuf^,size,temp,nil) then raise Exception.Create('Calc error:'+GetFullPath(filename));
+    // end;
+    // if not ReadFile(Handle,soubuf^,size,temp,nil) then raise Exception.Create('Calc error:'+GetFullPath(filename));
     //{$ifndef SUPPORT_COMPRESSION_OFF}
-    //compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,size);
+    // compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,size);
     //{$else}
     //{$endif}
-    //if (compsize=0) then raise Exception.Create('Calc error:'+GetFullPath(filename));
-    //totalsize:=totalsize+compsize+4;
-    //FreeMem(soubuf);
-    //FreeMem(compbuf);
-    //if PFile.m_Offset=0 then
-    //begin
+    // if (compsize=0) then raise Exception.Create('Calc error:'+GetFullPath(filename));
+    // totalsize:=totalsize+compsize+4;
+    // FreeMem(soubuf);
+    // FreeMem(compbuf);
+    // if PFile.m_Offset=0 then
+    // begin
     //    CloseHandle(Handle);
-    //end;
-    //Result:=totalsize;
+    // end;
+    // Result:=totalsize;
 }
 
-DWORD   CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename)
-{
+DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    filename.Split(beg,rem, "/\\");
+    filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return 0xFFFFFFFF;
+    if (PFile == NULL)
+        return 0xFFFFFFFF;
 
-    //size:DWORD;
+    // size:DWORD;
 
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
-        if (rem.IsEmpty()) return 0xFFFFFFFF;
+    if (PFile->m_Type == FILEEC_FOLDER) {
+        if (rem.IsEmpty())
+            return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->DecompressedFileSize(Handle,rem);
+        return PFolder->DecompressedFileSize(Handle, rem);
     }
-    if (!rem.IsEmpty()) return 0xFFFFFFFF;
+    if (!rem.IsEmpty())
+        return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
     // Случай 1 - файл уже упакован
 
-    if (PFile->m_Offset!=0)
-    {
+    if (PFile->m_Offset != 0) {
         return PFile->m_RealSize;
     }
 
     ERROR_S(L"Error getting decompressed file size");
 
-//    // Случай 2 - файл еще не упакован - ищем его на диске
-//    Handle:=CreateFile(PChar(GetFullPath(filename)),
-//                      GENERIC_READ,
-//                      FILE_SHARE_READ,nil,
-//                      OPEN_EXISTING,
-//                      FILE_ATTRIBUTE_NORMAL,
-//                      0);
-//    if Handle=INVALID_HANDLE_VALUE then exit;
-//    size:=SetFilePointer(Handle,0,nil,FILE_END);
-//    if size=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
-//    CloseHandle(Handle);
-//    Result:=size;
+    //    // Случай 2 - файл еще не упакован - ищем его на диске
+    //    Handle:=CreateFile(PChar(GetFullPath(filename)),
+    //                      GENERIC_READ,
+    //                      FILE_SHARE_READ,nil,
+    //                      OPEN_EXISTING,
+    //                      FILE_ATTRIBUTE_NORMAL,
+    //                      0);
+    //    if Handle=INVALID_HANDLE_VALUE then exit;
+    //    size:=SetFilePointer(Handle,0,nil,FILE_END);
+    //    if size=$FFFFFFFF then raise Exception.Create('Calc size error :'+GetFullPath(filename));
+    //    CloseHandle(Handle);
+    //    Result:=size;
 }
 
-int   CHsFolder::GetLocalSize(void)
-{
+int CHsFolder::GetLocalSize(void) {
     int size = 0;
 
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
-        if (m_Files[i].m_Free == 0)
-        {
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
+        if (m_Files[i].m_Free == 0) {
             size += m_Files[i].m_Size;
         }
     }
     return size;
 }
 
-void  CHsFolder::UpdateFileRec(void)
-{
-    if (m_Parent)
-    {
+void CHsFolder::UpdateFileRec(void) {
+    if (m_Parent) {
         SFileRec *PFile = m_Parent->GetFileRec(m_RealName);
-        if (PFile == NULL) ERROR_S(L"Packet file system error!");
-        if (PFile->m_Type != FILEEC_FOLDER) ERROR_S(L"Name file/folder conflict");
+        if (PFile == NULL)
+            ERROR_S(L"Packet file system error!");
+        if (PFile->m_Type != FILEEC_FOLDER)
+            ERROR_S(L"Name file/folder conflict");
         PFile->m_Size = m_FolderRec.m_Size;
         PFile->m_Offset = 0;
     }
 }
 
 //******** Функция возвращает новое смещение в файле **************//
-//Function    CHsFolder.PackFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
-//Var
+// Function    CHsFolder.PackFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
+// Var
 //    H:DWORD;
 //    size:DWORD;
 //    temp:DWORD;
 //    buf:Pointer;
-//begin
+// begin
 //    Result:=Offset;
 //    H:=CreateFile(PChar(name),
 //                  GENERIC_READ,
@@ -831,17 +808,17 @@ void  CHsFolder::UpdateFileRec(void)
 //    FreeMem(buf);
 //    size:=0;
 //    CloseHandle(H);
-//end;
+// end;
 //
-//Function    CHsFolder.PackAndCompressFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
-//Var
+// Function    CHsFolder.PackAndCompressFile(Handle:DWORD;name:string;Offset:DWORD):DWORD;
+// Var
 //    H:DWORD;
 //    size:DWORD;      // Размер сжимаемого блока данных
 //    temp:DWORD;
 //    soubuf,compbuf:Pointer; // Иходный буфер и буфер для сжатых данных
 //    compsize:DWORD;  // Размер сжатого блока данных <65536
 //    totalsize:DWORD; // Общий размер сжатых данных + длина (4 байта)
-//begin
+// begin
 //    {$ifdef SUPPORT_COMPRESSION_OFF}
 //    raise Exception.Create('Compression is not supported');
 //    {$endif}
@@ -864,11 +841,13 @@ void  CHsFolder::UpdateFileRec(void)
 //    compbuf:=AllocMem(72112);
 //
 //    totalsize:=4;
-//    if not WriteFile(Handle, totalsize, 4, temp, nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
+//    if not WriteFile(Handle, totalsize, 4, temp, nil) then raise Exception.Create('Ошибка записи в пакетный файл
+//    файла:'+name);
 //
 //    while size>65536 do
 //    begin
-//        if not ReadFile(H,soubuf^,65536,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия файла:'+name);
+//        if not ReadFile(H,soubuf^,65536,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия
+//        файла:'+name);
 //        {$ifndef SUPPORT_COMPRESSION_OFF}
 //        compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,65536);
 //        {$else}
@@ -876,11 +855,12 @@ void  CHsFolder::UpdateFileRec(void)
 //        if (compsize=0) then raise Exception.Create('Ошибка сжатия файла:'+name);
 //        temp:=0;
 //        totalsize:=totalsize+compsize+4;
-//        if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
-//        if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
-//        size:=size-65536;
+//        if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл
+//        файла:'+name); if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи
+//        в пакетный файл файла:'+name); size:=size-65536;
 //    end;
-//    if not ReadFile(H,soubuf^,size,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия файла:'+name);
+//    if not ReadFile(H,soubuf^,size,temp,nil) then raise Exception.Create('Ошибка чтения данных для сжатия
+//    файла:'+name);
 //    {$ifndef SUPPORT_COMPRESSION_OFF}
 //    compsize:=OKGF_ZLib_Compress2(compbuf,72112,soubuf,size);
 //    {$else}
@@ -888,28 +868,27 @@ void  CHsFolder::UpdateFileRec(void)
 //    if (compsize=0) then raise Exception.Create('Ошибка сжатия файла:'+name);
 //    temp:=0;
 //    totalsize:=totalsize+compsize+4;
-//    if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
-//    if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл файла:'+name);
+//    if not WriteFile(Handle,compsize,4,temp,nil) then raise Exception.Create('Ошибка записи в пакетный файл
+//    файла:'+name); if not WriteFile(Handle,compbuf^,compsize,temp,nil) then raise Exception.Create('Ошибка записи в
+//    пакетный файл файла:'+name);
 ////    size:=0;
 //
-//    if SetFilePointer(Handle,Offset,nil,FILE_BEGIN)<>Offset then raise Exception.Create('Ошибка позиционирования в пакетном файле');
-//    WriteFile(Handle,totalsize,4,temp,nil);
-//    Result:=Offset+totalsize;
-//    FreeMem(soubuf);
+//    if SetFilePointer(Handle,Offset,nil,FILE_BEGIN)<>Offset then raise Exception.Create('Ошибка позиционирования в
+//    пакетном файле'); WriteFile(Handle,totalsize,4,temp,nil); Result:=Offset+totalsize; FreeMem(soubuf);
 //    FreeMem(compbuf);
 //    CloseHandle(H);
 //
 //    // Сжатие файла
-//end;
+// end;
 //
-//Function    CHsFolder.DecodeFile(Handle:DWORD;PFile:PFileRecEC;Offset:DWORD):DWORD;
-//Var
+// Function    CHsFolder.DecodeFile(Handle:DWORD;PFile:PFileRecEC;Offset:DWORD):DWORD;
+// Var
 //    soubuf, ucompbuf:Pointer;
 //    soubufsize, ucompbufsize:DWORD;
 //    temp:DWORD;
 //    soupos, despos:DWORD;
 //    size:DWORD;
-//begin
+// begin
 //    {$ifdef SUPPORT_COMPRESSION_OFF}
 //    raise Exception.Create('Compression is not supported');
 //    {$endif}
@@ -925,17 +904,13 @@ void  CHsFolder::UpdateFileRec(void)
 //    { Запись размера файла }
 //    temp:=SetFilePointer(Handle,despos,nil,FILE_BEGIN);
 //    if temp=$FFFFFFFF then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//    if not WriteFile(Handle,PFile.m_RealSize,4,temp,nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//    despos:=despos+4;
-//    size:=size-4;
-//    { расжатие файла }
-//    while size>0 do
-//    begin
+//    if not WriteFile(Handle,PFile.m_RealSize,4,temp,nil) then raise Exception.Create('Decode file error
+//    :'+PFile.m_RealName); despos:=despos+4; size:=size-4; { расжатие файла } while size>0 do begin
 //        temp:=SetFilePointer(Handle,soupos,nil,FILE_BEGIN);
 //        if temp=$FFFFFFFF then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//        if not ReadFile(Handle, soubufsize, 4, temp, nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//        if not ReadFile(Handle,soubuf^,soubufsize, temp, nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//        size:=size-4-soubufsize;
+//        if not ReadFile(Handle, soubufsize, 4, temp, nil) then raise Exception.Create('Decode file error
+//        :'+PFile.m_RealName); if not ReadFile(Handle,soubuf^,soubufsize, temp, nil) then raise
+//        Exception.Create('Decode file error :'+PFile.m_RealName); size:=size-4-soubufsize;
 //        soupos:=soupos+4+soubufsize;
 //        {$ifndef SUPPORT_COMPRESSION_OFF}
 //        ucompbufsize:=OKGF_ZLib_uncompress2(ucompbuf,65536,soubuf,72112);
@@ -944,22 +919,22 @@ void  CHsFolder::UpdateFileRec(void)
 //        {$endif}
 //        if (soubufsize<>0) and (ucompbufsize=0) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
 //        temp:=SetFilePointer(Handle,despos,nil,FILE_BEGIN);
-//        if not WriteFile(Handle,ucompbuf^,ucompbufsize,temp,nil) then raise Exception.Create('Decode file error :'+PFile.m_RealName);
-//        despos:=despos+ucompbufsize;
+//        if not WriteFile(Handle,ucompbuf^,ucompbufsize,temp,nil) then raise Exception.Create('Decode file error
+//        :'+PFile.m_RealName); despos:=despos+ucompbufsize;
 //    end;
 //    FreeMem(soubuf);
 //    FreeMem(ucompbuf);
 //    Result:=despos;
-//end;
+// end;
 //
-//Function    CHsFolder.EncodeFile(Handle:DWORD;PFile:PFileRecEC;Offset:DWORD):DWORD;
-//Var
+// Function    CHsFolder.EncodeFile(Handle:DWORD;PFile:PFileRecEC;Offset:DWORD):DWORD;
+// Var
 //    soubuf, desbuf:Pointer;
 //    dessize: DWORD;
 //    temp:DWORD;
 //    soupos, despos:DWORD;
 //    size, total:DWORD;
-//begin
+// begin
 //    {$ifdef SUPPORT_COMPRESSION_OFF}
 //    raise Exception.Create('Compression is not supported');
 //    {$endif}
@@ -978,7 +953,8 @@ void  CHsFolder::UpdateFileRec(void)
 //    begin
 //        temp:=SetFilePointer(Handle,soupos,nil,FILE_BEGIN);
 //        if temp=$FFFFFFFF then raise Exception.Create('Encode file error :'+PFile.m_RealName);
-//        if not ReadFile(Handle,soubuf^,65536,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
+//        if not ReadFile(Handle,soubuf^,65536,temp,nil) then raise Exception.Create('Encode file error
+//        :'+PFile.m_RealName);
 //        {$ifndef SUPPORT_COMPRESSION_OFF}
 //        dessize:=OKGF_ZLib_Compress2(desbuf,72112,soubuf,65536);
 //        {$else}
@@ -986,11 +962,9 @@ void  CHsFolder::UpdateFileRec(void)
 //        {$endif}
 //        if dessize=0 then raise Exception.Create('Encode file error :'+PFile.m_RealName);
 //        SetFilePointer(Handle,despos,nil,FILE_BEGIN);
-//        if not WriteFile(Handle,dessize,4,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
-//        if not WriteFile(Handle,desbuf^,dessize,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
-//        soupos:=soupos+65536;
-//        despos:=despos+4+dessize;
-//        size:=size-65536;
+//        if not WriteFile(Handle,dessize,4,temp,nil) then raise Exception.Create('Encode file error
+//        :'+PFile.m_RealName); if not WriteFile(Handle,desbuf^,dessize,temp,nil) then raise Exception.Create('Encode
+//        file error :'+PFile.m_RealName); soupos:=soupos+65536; despos:=despos+4+dessize; size:=size-65536;
 //        total:=total+4+dessize;
 //    end;
 //    temp:=SetFilePointer(Handle,soupos,nil,FILE_BEGIN);
@@ -1004,9 +978,8 @@ void  CHsFolder::UpdateFileRec(void)
 //    if dessize=0 then raise Exception.Create('Encode file error :'+PFile.m_RealName);
 //    SetFilePointer(Handle,despos,nil,FILE_BEGIN);
 //    if not WriteFile(Handle,dessize,4,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
-//    if not WriteFile(Handle,desbuf^,dessize,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
-//    despos:=despos+4+dessize;
-//    total:=total+4+dessize;
+//    if not WriteFile(Handle,desbuf^,dessize,temp,nil) then raise Exception.Create('Encode file error
+//    :'+PFile.m_RealName); despos:=despos+4+dessize; total:=total+4+dessize;
 //    temp:=SetFilePointer(Handle,Offset,nil,FILE_BEGIN);
 //    if temp=$FFFFFFFF then raise Exception.Create('Encode file error :'+PFile.m_RealName);
 //    if not WriteFile(Handle,total,4,temp,nil) then raise Exception.Create('Encode file error :'+PFile.m_RealName);
@@ -1018,17 +991,17 @@ void  CHsFolder::UpdateFileRec(void)
 //    FreeMem(desbuf);
 //
 //    Result:=despos;
-//end;
+// end;
 ////******** Функция возвращает новое смещение в файле **************//
-//Function    CHsFolder.Pack(Handle:DWORD;Offset:DWORD;PInt:PInteger;PStr:PString):DWORD;
-//Var
+// Function    CHsFolder.Pack(Handle:DWORD;Offset:DWORD;PInt:PInteger;PStr:PString):DWORD;
+// Var
 //    Temp:DWORD;
 //    i:Integer;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
 //    nOffset:DWORD;
 //    FolderOffset:DWORD;
-//begin
+// begin
 //    // Определяем место положения директории в пакетном файле
 //    FolderOffset:=0;
 //    if (not m_ToSave) then
@@ -1137,16 +1110,16 @@ void  CHsFolder::UpdateFileRec(void)
 //    m_ToUpdate:=false;
 //    m_ToSave:=false;
 //    Result:=Offset;
-//end;
+// end;
 //
-//Procedure   CHsFolder.CompressFolder;
-//Var
+// Procedure   CHsFolder.CompressFolder;
+// Var
 //    i:Integer;
 //    count:integer;
 //    PFile:PFileRecEC;
 //    PDestFile:PFileRecEC;
 //    Files:Pointer;
-//begin
+// begin
 //    // ******** Ищем все используемые записи в директории ********
 //    count:=0;
 //    for i:=0 to m_FolderRec.m_Recnum-1 do
@@ -1174,16 +1147,16 @@ void  CHsFolder::UpdateFileRec(void)
 //    m_FolderRec.m_Size:=GetFolderSize;
 //    // Теперь обновляем информацию о файле директории в родительской папке
 //    UpdateFileRec;
-//end;
+// end;
 //
-//Function    CHsFolder.CompressFile(SouHandle,Handle:DWORD;name:string;Offset:DWORD):DWORD;
-//Var
+// Function    CHsFolder.CompressFile(SouHandle,Handle:DWORD;name:string;Offset:DWORD):DWORD;
+// Var
 //    size:DWORD;
 //    temp:DWORD;
 //    desptr, souptr:DWORD;
 //    buf:Pointer;
 //    PFile:PFileRecEC;
-//begin
+// begin
 //    PFile:=GetFileRec(name);
 //    if SouHandle=$FFFFFFFF then raise Exception.Create('Пакетный файл должен быть открыт при процессе сжатия');
 //    if PFile.m_Offset=0 then raise Exception.Create('Нельзя сжимать несобранный пакетный файл');
@@ -1209,17 +1182,17 @@ void  CHsFolder::UpdateFileRec(void)
 //    desptr:=desptr+size;
 //    FreeMem(buf);
 //    Result:=desptr;
-//end;
+// end;
 //
-//Function    CHsFolder.Compress(SouHandle,Handle:DWORD;Offset:DWORD;PInt:PInteger;PStr:PString):DWORD;
-//Var
+// Function    CHsFolder.Compress(SouHandle,Handle:DWORD;Offset:DWORD;PInt:PInteger;PStr:PString):DWORD;
+// Var
 //    Temp:DWORD;
 //    i:Integer;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
 //    nOffset:DWORD;
 //    StartOffset:DWORD;
-//begin
+// begin
 //    CompressFolder;
 //    StartOffset:=Offset;
 //    Temp:=SetFilePointer(Handle,StartOffset,nil,FILE_BEGIN);
@@ -1260,10 +1233,10 @@ void  CHsFolder::UpdateFileRec(void)
 //    WriteFile(Handle,m_Files^,m_FolderRec.m_RecSize*m_FolderRec.m_RecNum,
 //              temp,nil);
 //    Result:=Offset;
-//end;
+// end;
 //
-//Function    CHsFolder.UnpackFile(SouHandle:DWORD;name:string):boolean;
-//Var
+// Function    CHsFolder.UnpackFile(SouHandle:DWORD;name:string):boolean;
+// Var
 //    size:DWORD;
 //    temp:DWORD;
 //    desptr, souptr:DWORD;
@@ -1271,7 +1244,7 @@ void  CHsFolder::UpdateFileRec(void)
 //    PFile:PFileRecEC;
 //    Handle:DWORD;
 //    path:string;
-//begin
+// begin
 //    Result:=false;
 //    PFile:=GetFileRec(name);
 //    if SouHandle=$FFFFFFFF then raise Exception.Create('Пакетный файл должен быть открыт при процессе распаковки');
@@ -1306,10 +1279,10 @@ void  CHsFolder::UpdateFileRec(void)
 //    FreeMem(buf);
 //    CloseHandle(Handle);
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CHsFolder.UnpackCompressedFile(SouHandle:DWORD;name:string):boolean;
-//Var
+// Function    CHsFolder.UnpackCompressedFile(SouHandle:DWORD;name:string):boolean;
+// Var
 //    temp:DWORD;
 //
 //    soubuf,ucompbuf:pointer;
@@ -1318,7 +1291,7 @@ void  CHsFolder::UpdateFileRec(void)
 //    PFile:PFileRecEC;
 //    Handle:DWORD;
 //    path:string;
-//begin
+// begin
 ////    exit;
 //    {$ifdef SUPPORT_COMPRESSION_OFF}
 //    raise Exception.Create('Compression is not supported');
@@ -1379,23 +1352,23 @@ void  CHsFolder::UpdateFileRec(void)
 //    FreeMem(ucompbuf);
 //    CloseHandle(Handle);
 //    Result:=true;}
-//end;
+// end;
 //
-//Function    CHsFolder.UnpackFolder(name:string):boolean;
-//Var
+// Function    CHsFolder.UnpackFolder(name:string):boolean;
+// Var
 //    path:string;
-//begin
+// begin
 //    path:=GetFullPath(name);
 //    CreateDirectory(PChar(path),nil);
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CHsFolder.Unpack(SouHandle:DWORD;PInt:PInteger;PStr:PString):boolean;
-//Var
+// Function    CHsFolder.Unpack(SouHandle:DWORD;PInt:PInteger;PStr:PString):boolean;
+// Var
 //    i:Integer;
 //    PFile:PFileRecEC;
 //    PFolder:CHsFolder;
-//begin
+// begin
 //    Result:=false;
 //    for i:=0 to m_FolderRec.m_Recnum-1 do
 //    begin
@@ -1423,103 +1396,79 @@ void  CHsFolder::UpdateFileRec(void)
 //        end;
 //    end;
 //    Result:=true;
-//end;
+// end;
 
-void   CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func)
-{
-
-    if (!m_RealName.IsEmpty())
-    {
+void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
+    if (!m_RealName.IsEmpty()) {
         Func(true, false, m_RealName);
     }
-    for (DWORD i=0; i<m_FolderRec.m_Recnum; ++i)
-    {
+    for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         SFileRec *PFile = m_Files + i;
-        if (PFile->m_Free == 0)
-        {
-            if (PFile->m_Type == FILEEC_FOLDER)
-            {
+        if (PFile->m_Free == 0) {
+            if (PFile->m_Type == FILEEC_FOLDER) {
                 CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-                if (PFolder==NULL) ERROR_S(L"Pack file system error!");
+                if (PFolder == NULL)
+                    ERROR_S(L"Pack file system error!");
                 PFolder->ListFileNames(Func);
-            } else
-            {
-                if (PFile->m_NType == FILEEC_COMPRESSED)
-                {
-                    if (!Func(false,true,CStr(PFile->m_RealName, m_Heap))) return;
-                } else
-                {
-                    if (!Func(false,false,CStr(PFile->m_RealName, m_Heap))) return;
+            }
+            else {
+                if (PFile->m_NType == FILEEC_COMPRESSED) {
+                    if (!Func(false, true, CStr(PFile->m_RealName, m_Heap)))
+                        return;
+                }
+                else {
+                    if (!Func(false, false, CStr(PFile->m_RealName, m_Heap)))
+                        return;
                 }
             }
         }
     }
-    if (!m_RealName.IsEmpty())
-    {
+    if (!m_RealName.IsEmpty()) {
         Func(true, false, CStr("..", m_Heap));
     }
 }
 
-
-CHsFolder *  CHsFolder::GetFolderEx(const CStr &path)
-{
-    if (path.IsEmpty()) return this;
+CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
+    if (path.IsEmpty())
+        return this;
 
     CStr beg(m_Heap);
     CStr rem(m_Heap);
 
-    path.Split(beg,rem, "/\\");
+    path.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL) return NULL;
-    if (PFile->m_Type == FILEEC_FOLDER)
-    {
+    if (PFile == NULL)
+        return NULL;
+    if (PFile->m_Type == FILEEC_FOLDER) {
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        if (rem.IsEmpty()) return PFolder;
+        if (rem.IsEmpty())
+            return PFolder;
         return PFolder->GetFolderEx(rem);
     }
     return NULL;
 }
 
-int   CHsFolder::FindNext(SSearchRec &S)
-{
+int CHsFolder::FindNext(SSearchRec &S) {
     SFileRec *PFile;
 
-    do
-    {
+    do {
         PFile = GetFileRec(S.Ind);
-        if (PFile == NULL)
-        {
+        if (PFile == NULL) {
             return 1;
         }
-        S.Name  = PFile->m_RealName;
-        S.T     = PFile->m_Type;
+        S.Name = PFile->m_RealName;
+        S.T = PFile->m_Type;
         ++S.Ind;
-    } while (PFile->m_Free != 0);
+    }
+    while (PFile->m_Free != 0);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //**********************************************************************
 //***************** КЛАСС -ПАКЕТНЫЙ ФАЙЛ *******************************
 //**********************************************************************
 
-CPackFile::CPackFile(CHeap *heap, const wchar *name):m_Heap(heap),m_FileName(name,heap)
-{
+CPackFile::CPackFile(CHeap *heap, const wchar *name) : m_Heap(heap), m_FileName(name, heap) {
     m_Handle = 0xFFFFFFFF;
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     RESETFLAG(m_Flags, PFFLAG_EMPTY);
@@ -1527,39 +1476,32 @@ CPackFile::CPackFile(CHeap *heap, const wchar *name):m_Heap(heap),m_FileName(nam
 
     m_RootFolder = NULL;
     m_RootOffset = 0;
-    //m_ID = 0xFFFFFFFF;
-    for (int i=0;i<MAX_VIRTUAL_HANDLE_COUNT;++i)
-    {
+    // m_ID = 0xFFFFFFFF;
+    for (int i = 0; i < MAX_VIRTUAL_HANDLE_COUNT; ++i) {
         m_Handles[i].m_Free = true;
     }
 }
 
-CPackFile::~CPackFile()
-{
+CPackFile::~CPackFile() {
     Clear();
     ClosePacketFileEx();
 }
 
-void CPackFile::Clear(void)
-{
-    for (int i=0;i<MAX_VIRTUAL_HANDLE_COUNT;++i)
-    {
-        if (!m_Handles[i].m_Free)
-        {
+void CPackFile::Clear(void) {
+    for (int i = 0; i < MAX_VIRTUAL_HANDLE_COUNT; ++i) {
+        if (!m_Handles[i].m_Free) {
             Close(i);
             m_Handles[i].m_Free = true;
         }
     }
 }
 
-
-bool  CPackFile::OpenPacketFile(void)
-{
-    if (m_Handle!=0xFFFFFFFF || m_RootFolder!=NULL) ClosePacketFile();
+bool CPackFile::OpenPacketFile(void) {
+    if (m_Handle != 0xFFFFFFFF || m_RootFolder != NULL)
+        ClosePacketFile();
 
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
-    if (FLAG(m_Flags, PFFLAG_EMPTY))
-    {
+    if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
         m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
         m_RootFolder->AllocEmptyFolder();
@@ -1568,71 +1510,65 @@ bool  CPackFile::OpenPacketFile(void)
 #endif
 
     // Открываем файл для записи/чтения
-    if (IS_UNICODE())
-    {
-        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-    } else
-    {
-        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    if (IS_UNICODE()) {
+        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                                      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
-    
-    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE)
-    {
+    else {
+        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                      NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    }
+
+    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:"+m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
     }
     // Теперь читаем данные о местоположении корневого каталога
     DWORD temp = 0;
-    if (!::ReadFile((HANDLE)m_Handle,&m_RootOffset,4,&temp,NULL))
-    {
+    if (!::ReadFile((HANDLE)m_Handle, &m_RootOffset, 4, &temp, NULL)) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:"+m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
     }
     // Теперь читаем данные о корневой папке
     m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
-    if (!m_RootFolder->ReadFolder(m_Handle,m_RootOffset))
-    {
+    if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
         ClosePacketFile();
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error reading file system of the package file: "+ m_FileName).Get());
+        ERROR_S((L"Error reading file system of the package file: " + m_FileName).Get());
 #endif
         return false;
     }
     return true;
 }
 
-
-bool CPackFile::ClosePacketFile(void)
-{
-    if (m_Handle == 0xFFFFFFFF && m_RootFolder==NULL) return false;
+bool CPackFile::ClosePacketFile(void) {
+    if (m_Handle == 0xFFFFFFFF && m_RootFolder == NULL)
+        return false;
     Clear();
-    if (m_RootFolder)
-    {
-        HDelete (CHsFolder, m_RootFolder, m_Heap);
+    if (m_RootFolder) {
+        HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
     }
     bool res;
-    if (m_Handle != 0xFFFFFFFF)
-    {
+    if (m_Handle != 0xFFFFFFFF) {
         res = CloseHandle((HANDLE)m_Handle) != FALSE;
-    } else
-    {
+    }
+    else {
         res = true;
     }
     m_Handle = 0xFFFFFFFF;
     return res;
 }
 
-
-//bool    CPackFile::CreatePacketFileEx(void)
+// bool    CPackFile::CreatePacketFileEx(void)
 //{
 //    if (m_Handle != 0xFFFFFFFF || m_RootFolder) ClosePacketFileEx();
 //#ifdef SUPPORT_IN_MEMORY_STRUCTURES
@@ -1648,10 +1584,12 @@ bool CPackFile::ClosePacketFile(void)
 //    // Открываем файл для записи/чтения
 //    if (IS_UNICODE())
 //    {
-//        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+//        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL,
+//        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    } else
 //    {
-//        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+//        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
+//        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    }
 //
 //    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE)
@@ -1669,14 +1607,12 @@ bool CPackFile::ClosePacketFile(void)
 //    return true;
 //}
 
-bool    CPackFile::OpenPacketFileEx()
-{
-
-    if (m_Handle!=0xFFFFFFFF || m_RootFolder!=NULL) ClosePacketFileEx();
+bool CPackFile::OpenPacketFileEx() {
+    if (m_Handle != 0xFFFFFFFF || m_RootFolder != NULL)
+        ClosePacketFileEx();
 
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
-    if (FLAG(m_Flags, PFFLAG_EMPTY))
-    {
+    if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
         m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
         m_RootFolder->AllocEmptyFolder();
@@ -1685,103 +1621,94 @@ bool    CPackFile::OpenPacketFileEx()
 #endif
 
     // Открываем файл для записи/чтения
-    if (IS_UNICODE())
-    {
-        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-    } else
-    {
-        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    if (IS_UNICODE()) {
+        m_Handle =
+                (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                   NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
-    
-    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE)
-    {
+    else {
+        m_Handle =
+                (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ | GENERIC_WRITE,
+                                   FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    }
+
+    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ|WRITE]:"+m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ|WRITE]:" + m_FileName).Get());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
     }
     // Теперь читаем данные о местоположении корневого каталога
     DWORD temp = 0;
-    if (!::ReadFile((HANDLE)m_Handle,&m_RootOffset,4,&temp,NULL))
-    {
+    if (!::ReadFile((HANDLE)m_Handle, &m_RootOffset, 4, &temp, NULL)) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:"+m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
     }
     // Теперь читаем данные о корневой папке
     m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
-    if (!m_RootFolder->ReadFolder(m_Handle,m_RootOffset))
-    {
+    if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
         ClosePacketFile();
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error reading file system of the package file: "+ m_FileName).Get());
+        ERROR_S((L"Error reading file system of the package file: " + m_FileName).Get());
 #endif
         return false;
     }
     return true;
 }
 
-
-
-
-int    CPackFile::GetFreeHandle(void)
-{
-    for (int i=0;i<MAX_VIRTUAL_HANDLE_COUNT; ++i)
-    {
-        if (m_Handles[i].m_Free)
-        {
+int CPackFile::GetFreeHandle(void) {
+    for (int i = 0; i < MAX_VIRTUAL_HANDLE_COUNT; ++i) {
+        if (m_Handles[i].m_Free) {
             return i;
         }
     }
     return -1;
 }
 
-DWORD   CPackFile::Open(const CStr &filename,DWORD modeopen)
-{
-    
+DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     SFileRec *PFile;
 
     int H = GetFreeHandle();
-    if (H<0) return 0xFFFFFFFF;
-    if (m_RootFolder == NULL)
-    {
+    if (H < 0)
+        return 0xFFFFFFFF;
+    if (m_RootFolder == NULL) {
         ERROR_S((L"Package not opened: " + CWStr(filename)).Get());
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
-    if (PFile == NULL)
-    {
-
+    if (PFile == NULL) {
 #ifdef HANDLE_OUT_OF_PACK_FILES
         // *** Если файл не найден, то пытаемся найти его на диске *** //
         WIN32_FIND_DATAA fd;
         HANDLE h = FindFirstFileA(filename.Get(), &fd);
-        if (h = INVALID_HANDLE_VALUE) return 0xFFFFFFFF;
+        if (h = INVALID_HANDLE_VALUE)
+            return 0xFFFFFFFF;
         FindClose(h);
 
-        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.Get(), modeopen, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.Get(), modeopen, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                                                   OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-        if ((HANDLE)m_Handles[H].m_Handle == INVALID_HANDLE_VALUE) return 0xFFFFFFFF;
+        if ((HANDLE)m_Handles[H].m_Handle == INVALID_HANDLE_VALUE)
+            return 0xFFFFFFFF;
         m_Handles[H].m_StartOffset = 0;
         m_Handles[H].m_Offset = 0;
-        m_Handles[H].m_Size = ::GetFileSize((HANDLE)m_Handles[H].m_Handle,NULL);
+        m_Handles[H].m_Size = ::GetFileSize((HANDLE)m_Handles[H].m_Handle, NULL);
         m_Handles[H].m_SouBuf = NULL;
         m_Handles[H].m_DesBuf = NULL;
         m_Handles[H].m_Compressed = false;
         m_Handles[H].m_Blocknumber = -1;
-        if (m_Handles[H].m_Size == INVALID_FILE_SIZE)
-        {
+        if (m_Handles[H].m_Size == INVALID_FILE_SIZE) {
             ERROR_S((L"File system error:" + CWStr(filename)).Get());
         }
 
         DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
-        if (Error == 0xFFFFFFFF)
-        {
+        if (Error == 0xFFFFFFFF) {
             ERROR_S((L"File system error:" + CWStr(filename)).Get());
         }
 
@@ -1793,62 +1720,61 @@ DWORD   CPackFile::Open(const CStr &filename,DWORD modeopen)
     }
 
     // *** Файл был найден внутри пакетного файла - открываем его для чтения ***
-    if (m_Handle == 0xFFFFFFFF) return 0xFFFFFFFF;
-    
+    if (m_Handle == 0xFFFFFFFF)
+        return 0xFFFFFFFF;
+
     m_Handles[H].m_Handle = m_Handle;
-    m_Handles[H].m_StartOffset = PFile->m_Offset+4;
-    m_Handles[H].m_Offset = PFile->m_Offset+4;
+    m_Handles[H].m_StartOffset = PFile->m_Offset + 4;
+    m_Handles[H].m_Offset = PFile->m_Offset + 4;
     m_Handles[H].m_Size = PFile->m_RealSize;
     m_Handles[H].m_Free = false;
-    m_Handles[H].m_Compressed = PFile->m_Type==FILEEC_COMPRESSED;
+    m_Handles[H].m_Compressed = PFile->m_Type == FILEEC_COMPRESSED;
     m_Handles[H].m_Blocknumber = -1;
-    if (m_Handles[H].m_Compressed)
-    {
+    if (m_Handles[H].m_Compressed) {
         m_Handles[H].m_SouBuf = (BYTE *)HAlloc(72112, m_Heap);
         m_Handles[H].m_DesBuf = (BYTE *)HAlloc(65536, m_Heap);
-    } else
-    {
+    }
+    else {
         m_Handles[H].m_SouBuf = NULL;
         m_Handles[H].m_DesBuf = NULL;
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
-    if (Error == 0xFFFFFFFF)
-    {
+    if (Error == 0xFFFFFFFF) {
         ERROR_S((L"Packet file system error:" + CWStr(filename)).Get());
     }
     return H;
 }
 
-bool  CPackFile::Close(DWORD Handle)
-{
-    if (Handle == 0xFFFFFFFF) return false;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+bool CPackFile::Close(DWORD Handle) {
+    if (Handle == 0xFFFFFFFF)
+        return false;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return false;
+    if (m_Handles[Handle].m_Free)
+        return false;
 
-    if (m_Handles[Handle].m_Handle == m_Handle)
-    {
+    if (m_Handles[Handle].m_Handle == m_Handle) {
         // in pack file
-        if (m_Handles[Handle].m_Compressed)
-        {
-            HFree(m_Handles[Handle].m_SouBuf, m_Heap); m_Handles[Handle].m_SouBuf = NULL;
-            HFree(m_Handles[Handle].m_DesBuf, m_Heap); m_Handles[Handle].m_DesBuf = NULL;
+        if (m_Handles[Handle].m_Compressed) {
+            HFree(m_Handles[Handle].m_SouBuf, m_Heap);
+            m_Handles[Handle].m_SouBuf = NULL;
+            HFree(m_Handles[Handle].m_DesBuf, m_Heap);
+            m_Handles[Handle].m_DesBuf = NULL;
         }
         m_Handles[Handle].m_Free = true;
         return true;
     }
 #ifdef HANDLE_OUT_OF_PACK_FILES
 
-    if (0 == ::CloseHandle((HANDLE)m_Handles[Handle].m_Handle))
-    {
+    if (0 == ::CloseHandle((HANDLE)m_Handles[Handle].m_Handle)) {
         ERROR_S(L"Error closing file");
     }
-    if (m_Handles[Handle].m_Compressed)
-    {
-        HFree(m_Handles[Handle].m_SouBuf, m_Heap); m_Handles[Handle].m_SouBuf = NULL;
-        HFree(m_Handles[Handle].m_DesBuf, m_Heap); m_Handles[Handle].m_DesBuf = NULL;
+    if (m_Handles[Handle].m_Compressed) {
+        HFree(m_Handles[Handle].m_SouBuf, m_Heap);
+        m_Handles[Handle].m_SouBuf = NULL;
+        HFree(m_Handles[Handle].m_DesBuf, m_Heap);
+        m_Handles[Handle].m_DesBuf = NULL;
     }
     m_Handles[Handle].m_Free = true;
 #else
@@ -1856,27 +1782,24 @@ bool  CPackFile::Close(DWORD Handle)
 #endif
 }
 
-DWORD   CPackFile::SetCompressedBlockPointer(DWORD StartOffset,int nBlock)
-{
-    DWORD Temp,Size;
+DWORD CPackFile::SetCompressedBlockPointer(DWORD StartOffset, int nBlock) {
+    DWORD Temp, Size;
 
     DWORD Offset = StartOffset;
-    for(;;)
-    {
-        ::SetFilePointer((HANDLE)m_Handle,Offset,NULL,FILE_BEGIN);
-        ::ReadFile((HANDLE)m_Handle,&Size,4,&Temp,NULL);
-        if (nBlock)
-        {
+    for (;;) {
+        ::SetFilePointer((HANDLE)m_Handle, Offset, NULL, FILE_BEGIN);
+        ::ReadFile((HANDLE)m_Handle, &Size, 4, &Temp, NULL);
+        if (nBlock) {
             --nBlock;
-            Offset += Size+4;
-        } else
+            Offset += Size + 4;
+        }
+        else
             break;
     }
     return Size;
 }
 
-bool CPackFile::Read(DWORD Handle, void *buf,int Size)
-{
+bool CPackFile::Read(DWORD Handle, void *buf, int Size) {
     DWORD Temp;
     int Block;
     DWORD IntBlockOffset;
@@ -1887,43 +1810,40 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
     //#endif
 
     DWORD IntOffset;
-    
-    if (Handle == 0xFFFFFFFF) return false;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+
+    if (Handle == 0xFFFFFFFF)
+        return false;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-   
-    if (m_Handles[Handle].m_Free) return false;
+
+    if (m_Handles[Handle].m_Free)
+        return false;
 
     // *** Установка указателя на нужную позицию
-    if (m_Handles[Handle].m_Compressed)
-    {
+    if (m_Handles[Handle].m_Compressed) {
         //  Определение номера блока, с которого начинаются читаемые данные
         BYTE *SouPtr = m_Handles[Handle].m_DesBuf;
         BYTE *DesPtr = (BYTE *)buf;
-        while (Size)
-        {
+        while (Size) {
             // Определяем номер блока, чтение которого надо произвести с диска
 
-            IntOffset = m_Handles[Handle].m_Offset-m_Handles[Handle].m_StartOffset;
-            Block = IntOffset >> 16; // 65536
+            IntOffset = m_Handles[Handle].m_Offset - m_Handles[Handle].m_StartOffset;
+            Block = IntOffset >> 16;  // 65536
             IntBlockOffset = IntOffset - (DWORD(Block) << 16);
             IntBlockSize = Size;
-            if (IntBlockSize>(65536-IntBlockOffset))
-            {
-                IntBlockSize = 65536-IntBlockOffset;
+            if (IntBlockSize > (65536 - IntBlockOffset)) {
+                IntBlockSize = 65536 - IntBlockOffset;
             }
 
             // Если блок не был расжат заранее, то расжимаем его
-            if (m_Handles[Handle].m_Blocknumber != Block)
-            {
-                CompSize = SetCompressedBlockPointer(m_Handles[Handle].m_StartOffset,Block);
+            if (m_Handles[Handle].m_Blocknumber != Block) {
+                CompSize = SetCompressedBlockPointer(m_Handles[Handle].m_StartOffset, Block);
                 BOOL res = ::ReadFile((HANDLE)m_Handle, m_Handles[Handle].m_SouBuf, CompSize, &Temp, NULL);
-                if (res == FALSE) return false;
-                
-                OKGF_ZLib_UnCompress2(m_Handles[Handle].m_DesBuf,65536,
-                                                 m_Handles[Handle].m_SouBuf,CompSize);
+                if (res == FALSE)
+                    return false;
+
+                OKGF_ZLib_UnCompress2(m_Handles[Handle].m_DesBuf, 65536, m_Handles[Handle].m_SouBuf, CompSize);
 
                 m_Handles[Handle].m_Blocknumber = Block;
             }
@@ -1934,10 +1854,9 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
             m_Handles[Handle].m_Offset = m_Handles[Handle].m_Offset + IntBlockSize;
         }
         return true;
-    } else
-    {
-        ::SetFilePointer((HANDLE)m_Handles[Handle].m_Handle,
-                       m_Handles[Handle].m_Offset,NULL,FILE_BEGIN);
+    }
+    else {
+        ::SetFilePointer((HANDLE)m_Handles[Handle].m_Handle, m_Handles[Handle].m_Offset, NULL, FILE_BEGIN);
         BOOL res = ::ReadFile((HANDLE)m_Handles[Handle].m_Handle, buf, Size, &Temp, NULL);
         bool ret = (res != FALSE) && (Size == Temp);
         m_Handles[Handle].m_Offset = m_Handles[Handle].m_Offset + Temp;
@@ -1946,149 +1865,145 @@ bool CPackFile::Read(DWORD Handle, void *buf,int Size)
 }
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
-bool  CPackFile::Write(DWORD Handle, const void *buf,int Size)
-{
+bool CPackFile::Write(DWORD Handle, const void *buf, int Size) {
     DWORD Temp;
     DWORD LocalOffset;
 
-    if (Handle == 0xFFFFFFFF) return false;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+    if (Handle == 0xFFFFFFFF)
+        return false;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return false;
+    if (m_Handles[Handle].m_Free)
+        return false;
 
     // *** Установка указателя на нужную позицию
-    if (m_Handles[Handle].m_Compressed)
-    {
+    if (m_Handles[Handle].m_Compressed) {
         ERROR_S(L"Error writing compressed file");
     }
-    ::SetFilePointer((HANDLE)m_Handles[Handle].m_Handle, m_Handles[Handle].m_Offset,NULL,FILE_BEGIN);
-    
+    ::SetFilePointer((HANDLE)m_Handles[Handle].m_Handle, m_Handles[Handle].m_Offset, NULL, FILE_BEGIN);
+
     BOOL res = ::WriteFile((HANDLE)m_Handles[Handle].m_Handle, buf, Size, &Temp, NULL);
     bool ret = (res != FALSE) && (Size == Temp);
     m_Handles[Handle].m_Offset = m_Handles[Handle].m_Offset + Temp;
     LocalOffset = m_Handles[Handle].m_Offset - m_Handles[Handle].m_StartOffset;
-    if (m_Handles[Handle].m_Size < LocalOffset) 
-    {
+    if (m_Handles[Handle].m_Size < LocalOffset) {
         m_Handles[Handle].m_Size = LocalOffset;
     }
 }
 #endif
 
-bool  CPackFile::SetPos(DWORD Handle, DWORD Pos, int ftype)
-{
+bool CPackFile::SetPos(DWORD Handle, DWORD Pos, int ftype) {
     DWORD Error;
-    int   Block;
+    int Block;
 
-    if (Handle == 0xFFFFFFFF) return false;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+    if (Handle == 0xFFFFFFFF)
+        return false;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return false;
+    if (m_Handles[Handle].m_Free)
+        return false;
 
     // Пересчет позиции
-    if (ftype==FILE_CURRENT)
-    {
+    if (ftype == FILE_CURRENT) {
         Pos += m_Handles[Handle].m_Offset - m_Handles[Handle].m_StartOffset;
     }
-    else if (ftype==FILE_END)
-    {
-        Pos = m_Handles[Handle].m_Size-Pos;
+    else if (ftype == FILE_END) {
+        Pos = m_Handles[Handle].m_Size - Pos;
     }
     //{$ifdef SUPPORT_COMPRESSION_OFF}
-    //if m_Handles[Handle].m_Compressed then
+    // if m_Handles[Handle].m_Compressed then
     //    raise Exception.Create('Compression is not supported');
     //{$endif}
-    if (m_Handles[Handle].m_Compressed)
-    {
-        if (Pos>m_Handles[Handle].m_Size) return false;
+    if (m_Handles[Handle].m_Compressed) {
+        if (Pos > m_Handles[Handle].m_Size)
+            return false;
         Block = Pos >> 16;
-        if (Block!=m_Handles[Handle].m_Blocknumber)
-        {
+        if (Block != m_Handles[Handle].m_Blocknumber) {
             m_Handles[Handle].m_Blocknumber = -1;
         }
-        m_Handles[Handle].m_Offset = Pos+m_Handles[Handle].m_StartOffset;
-    } else
-    {
-        Error = SetFilePointer((HANDLE)m_Handles[Handle].m_Handle, m_Handles[Handle].m_StartOffset+Pos,NULL,FILE_BEGIN);
-        if (Error==0xFFFFFFFF)
-        {
+        m_Handles[Handle].m_Offset = Pos + m_Handles[Handle].m_StartOffset;
+    }
+    else {
+        Error = SetFilePointer((HANDLE)m_Handles[Handle].m_Handle, m_Handles[Handle].m_StartOffset + Pos, NULL,
+                               FILE_BEGIN);
+        if (Error == 0xFFFFFFFF) {
             ERROR_S(L"Unable to set file pointer.");
-            //then raise Exception.Create('Ошибка установки указателя в пакетном файле :'+m_filename);
+            // then raise Exception.Create('Ошибка установки указателя в пакетном файле :'+m_filename);
         }
         m_Handles[Handle].m_Offset = Error;
     }
     return true;
 }
 
-DWORD   CPackFile::GetPos(DWORD Handle)
-{
-    if (Handle == 0xFFFFFFFF) return 0xFFFFFFFF;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+DWORD CPackFile::GetPos(DWORD Handle) {
+    if (Handle == 0xFFFFFFFF)
+        return 0xFFFFFFFF;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return 0xFFFFFFFF;
+    if (m_Handles[Handle].m_Free)
+        return 0xFFFFFFFF;
 
     return m_Handles[Handle].m_Offset - m_Handles[Handle].m_StartOffset;
 }
 
-DWORD    CPackFile::GetSize(DWORD Handle)
-{
-    if (Handle == 0xFFFFFFFF) return 0xFFFFFFFF;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+DWORD CPackFile::GetSize(DWORD Handle) {
+    if (Handle == 0xFFFFFFFF)
+        return 0xFFFFFFFF;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return 0xFFFFFFFF;
+    if (m_Handles[Handle].m_Free)
+        return 0xFFFFFFFF;
     return m_Handles[Handle].m_Size;
 }
 
-DWORD   CPackFile::GetHandle(DWORD Handle)
-{
-    if (Handle == 0xFFFFFFFF) return 0xFFFFFFFF;
-    if (Handle>=MAX_VIRTUAL_HANDLE_COUNT)
-    {
+DWORD CPackFile::GetHandle(DWORD Handle) {
+    if (Handle == 0xFFFFFFFF)
+        return 0xFFFFFFFF;
+    if (Handle >= MAX_VIRTUAL_HANDLE_COUNT) {
         ERROR_S(L"Too big file handle number");
     }
-    if (m_Handles[Handle].m_Free) return 0xFFFFFFFF;
+    if (m_Handles[Handle].m_Free)
+        return 0xFFFFFFFF;
     return m_Handles[Handle].m_Handle;
 }
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
-bool    CPackFile::PathExists(const CStr &path)
-{
-    if (m_RootFolder->PathExists(path)) return true;
+bool CPackFile::PathExists(const CStr &path) {
+    if (m_RootFolder->PathExists(path))
+        return true;
 
     WIN32_FIND_DATAA fd;
     HANDLE h = FindFirstFileA(path.Get(), &fd);
-    if (h = INVALID_HANDLE_VALUE) return false;
+    if (h = INVALID_HANDLE_VALUE)
+        return false;
     FindClose(h);
     return (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-bool    CPackFile::FileExists(const CStr &path)
-{
-    if (m_RootFolder->FileExists(path)) return true;
+bool CPackFile::FileExists(const CStr &path) {
+    if (m_RootFolder->FileExists(path))
+        return true;
 
     WIN32_FIND_DATAA fd;
     HANDLE h = FindFirstFileA(path.Get(), &fd);
-    if (h = INVALID_HANDLE_VALUE) return false;
+    if (h = INVALID_HANDLE_VALUE)
+        return false;
     FindClose(h);
     return true;
 }
 #endif
 
-
-//Function    CPackFile.AddFiles(block:TBlockParEC;Var log:Text):boolean;
-//Var
+// Function    CPackFile.AddFiles(block:TBlockParEC;Var log:Text):boolean;
+// Var
 //    i:Integer;
 //    value,spec:WideString;
 //    svalue:string;
 //    inblock:TBlockParEC;
-//begin
+// begin
 //    Result:=true;
 //    // Добавление всех файлов, ссылки на которые есть в текущем блоке
 //    for i:=0 to block.Par_Count-1 do
@@ -2117,15 +2032,15 @@ bool    CPackFile::FileExists(const CStr &path)
 //        Result:=AddFiles(inblock,log);
 //        if not Result then exit;
 //    end;
-//end;
+// end;
 //
-//Function    CPackFile.AddFiles(block:TBlockParEC):boolean;
-//Var
+// Function    CPackFile.AddFiles(block:TBlockParEC):boolean;
+// Var
 //    i:Integer;
 //    value,spec:WideString;
 //    svalue:string;
 //    inblock:TBlockParEC;
-//begin
+// begin
 //    Result:=true;
 //    // Добавление всех файлов, ссылки на которые есть в текущем блоке
 //    for i:=0 to block.Par_Count-1 do
@@ -2153,52 +2068,52 @@ bool    CPackFile::FileExists(const CStr &path)
 //        Result:=AddFiles(inblock);
 //        if not Result then exit;
 //    end;
-//end;
+// end;
 //
-//Function    CPackFile.AddFile(name:string):boolean;
-//begin
+// Function    CPackFile.AddFile(name:string):boolean;
+// begin
 //    Result:=AddFile(name,FILEEC_BINARY);
-//end;
+// end;
 //
-//Function    CPackFile.AddPath(name:string):boolean;
-//begin
+// Function    CPackFile.AddPath(name:string):boolean;
+// begin
 //    Result:=AddPath(name,FILEEC_BINARY);
-//end;
+// end;
 //
-//Function    CPackFile.AddFile(name:string;ftype:DWORD):boolean;
-//begin
+// Function    CPackFile.AddFile(name:string;ftype:DWORD):boolean;
+// begin
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
 //    Result:=m_RootFolder.AddFile(name,ftype);
-//end;
+// end;
 //
-//Function    CPackFile.DeleteFile(name:string):boolean;
-//begin
+// Function    CPackFile.DeleteFile(name:string):boolean;
+// begin
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
 //    Result:=m_RootFolder.DeleteFile(name);
-//end;
+// end;
 //
-//Function    CPackFile.AddPath(name:string;ftype:DWORD):boolean;
-//begin
+// Function    CPackFile.AddPath(name:string;ftype:DWORD):boolean;
+// begin
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
 //    Result:=m_RootFolder.AddPath(name,ftype);
-//end;
+// end;
 //
-//Function    CPackFile.CreateFolder(name:string):boolean;
-//begin
+// Function    CPackFile.CreateFolder(name:string):boolean;
+// begin
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
 //    Result:=m_RootFolder.CreateFolder(GetLocalPath(name));
-//end;
+// end;
 //
-//Function    CPackFile.Compress(PInt:PInteger;PStr:PString):boolean;
-//Var
+// Function    CPackFile.Compress(PInt:PInteger;PStr:PString):boolean;
+// Var
 //    Handle:DWORD;
 //    RootOffset:DWORD;
 //    Temp:DWORD;
-//begin
+// begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
@@ -2219,14 +2134,14 @@ bool    CPackFile::FileExists(const CStr &path)
 //    RenameFile('00000000.tmp',m_Filename);
 //    OpenPacketFileEx;
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CPackFile.Compress(name:string;PInt:PInteger;PStr:PString):boolean;
-//Var
+// Function    CPackFile.Compress(name:string;PInt:PInteger;PStr:PString):boolean;
+// Var
 //    Handle:DWORD;
 //    RootOffset:DWORD;
 //    Temp:DWORD;
-//begin
+// begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
@@ -2245,13 +2160,13 @@ bool    CPackFile::FileExists(const CStr &path)
 //    ClosePacketFileEx; // Для обновления содержимого
 //    OpenPacketFileEx;
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CPackFile.Pack(PInt:PInteger;PStr:PString):boolean;
-//Var
+// Function    CPackFile.Pack(PInt:PInteger;PStr:PString):boolean;
+// Var
 //    Pos:DWORD;
 //    Temp:DWORD;
-//begin
+// begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
@@ -2268,51 +2183,51 @@ bool    CPackFile::FileExists(const CStr &path)
 //    ClosePacketFileEx; // Для обновления содержимого
 //    OpenPacketFileEx;
 //    Result:=true;
-//end;
+// end;
 //
-//Function    CPackFile.Unpack(PInt:PInteger;PStr:PString):boolean;
-//begin
+// Function    CPackFile.Unpack(PInt:PInteger;PStr:PString):boolean;
+// begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
 //    if m_RootFolder=nil then exit;
 //    if m_Handle=$FFFFFFFF then exit;
 //    Result:=m_RootFolder.Unpack(m_Handle,PInt,PStr);
-//end;
+// end;
 //
-//Function    CPackFile.Compress:boolean;
-//begin
+// Function    CPackFile.Compress:boolean;
+// begin
 //    Result:=Compress(nil,nil);
-//end;
+// end;
 //
-//Function    CPackFile.Compress(name:string):boolean;
-//begin
+// Function    CPackFile.Compress(name:string):boolean;
+// begin
 //    Result:=Compress(name,nil,nil);
-//end;
+// end;
 //
-//Function    CPackFile.Pack:boolean;
-//begin
+// Function    CPackFile.Pack:boolean;
+// begin
 //    Result:=Pack(nil,nil);
-//end;
+// end;
 //
-//Function    CPackFile.Unpack:boolean;
-//begin
+// Function    CPackFile.Unpack:boolean;
+// begin
 //    Result:=Unpack(nil,nil);
-//end;
+// end;
 //
-//Function    CPackFile.UnpackFile(souname:string):boolean;
-//begin
+// Function    CPackFile.UnpackFile(souname:string):boolean;
+// begin
 //    Result:=UnpackFile(souname,souname);
-//end;
+// end;
 //
-//Function    CPackFile.UnpackFile(souname,desname:string):boolean;
-//Var
+// Function    CPackFile.UnpackFile(souname,desname:string):boolean;
+// Var
 //    SouHandle,DesHandle:DWORD;
 //    Size,Temp:DWORD;
 //    Buf:Pointer;
 //    beginning:string;
 //    remainder:string;
 //    path:string;
-//begin
+// begin
 //    SetCurrentDir(ExtractFileDir(ParamStr(0)));
 //    Result:=false;
 //    // Создание структуры каталогов, если это необходимо
@@ -2358,88 +2273,66 @@ bool    CPackFile::FileExists(const CStr &path)
 //    CloseHandle(DesHandle);
 //    FreeMem(Buf);
 //    Result:=true;
-//end;
+// end;
 
-
-int     CPackFile::FindFirst(const CStr &path,DWORD Attr, SSearchRec &S)
-{
-    S.Path      = path;
-    S.Ind       = 0;
-    S.Name      = "";
-    S.Folder    = NULL;
-    if (m_RootFolder == NULL) return NULL;
+int CPackFile::FindFirst(const CStr &path, DWORD Attr, SSearchRec &S) {
+    S.Path = path;
+    S.Ind = 0;
+    S.Name = "";
+    S.Folder = NULL;
+    if (m_RootFolder == NULL)
+        return NULL;
     if (path.IsEmpty())
         S.Folder = m_RootFolder;
     else
         S.Folder = m_RootFolder->GetFolderEx(S.Path);
-    
+
     return S.Folder->FindNext(S);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 //**********************************************************************
 //***************** КЛАСС - КОЛЛЕКЦИЯ ПАКЕТНЫХ ФАЙЛОВ ******************
 //**********************************************************************
 
-void    CPackCollection::Clear(void)
-{
+void CPackCollection::Clear(void) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
+    for (; ff < fe; ++ff) {
         HDelete(CPackFile, *ff, m_Heap);
     }
     m_PackFiles.Clear();
 }
 
-void    CPackCollection::AddPacketFile(const wchar *name)
-{
+void CPackCollection::AddPacketFile(const wchar *name) {
     m_PackFiles.Expand(sizeof(PCPackFile));
     PCPackFile f = HNew(m_Heap) CPackFile(m_Heap, name);
-    *(m_PackFiles.BuffEnd<PCPackFile>()-1) = f;
+    *(m_PackFiles.BuffEnd<PCPackFile>() - 1) = f;
 }
 
-
-void    CPackCollection::DelPacketFile(const wchar *name)
-{
+void CPackCollection::DelPacketFile(const wchar *name) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        if ((*ff)->GetName() == name)
-        {
-            *ff = *(fe-1);
-            m_PackFiles.SetLenNoShrink(m_PackFiles.Len()- sizeof(PCPackFile));
+    for (; ff < fe; ++ff) {
+        if ((*ff)->GetName() == name) {
+            *ff = *(fe - 1);
+            m_PackFiles.SetLenNoShrink(m_PackFiles.Len() - sizeof(PCPackFile));
             return;
         }
     }
 }
 
-bool CPackCollection::OpenPacketFiles(void)
-{
+bool CPackCollection::OpenPacketFiles(void) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        if (!(*ff)->OpenPacketFile()) break;
+    for (; ff < fe; ++ff) {
+        if (!(*ff)->OpenPacketFile())
+            break;
     }
 
-    if (ff < fe)
-    {
+    if (ff < fe) {
         //*********** Ошибка открытия одного из пакетных файлов **********
         PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
-        for(;fff < ff; ++fff)
-        {
+        for (; fff < ff; ++fff) {
             (*fff)->ClosePacketFile();
         }
         return false;
@@ -2447,32 +2340,27 @@ bool CPackCollection::OpenPacketFiles(void)
     return true;
 }
 
-bool  CPackCollection::ClosePacketFiles(void)
-{
+bool CPackCollection::ClosePacketFiles(void) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
+    for (; ff < fe; ++ff) {
         (*ff)->ClosePacketFile();
     }
     return true;
 }
 
-bool CPackCollection::OpenPacketFilesEx(void)
-{
+bool CPackCollection::OpenPacketFilesEx(void) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        if (!(*ff)->OpenPacketFileEx()) break;
+    for (; ff < fe; ++ff) {
+        if (!(*ff)->OpenPacketFileEx())
+            break;
     }
 
-    if (ff < fe)
-    {
+    if (ff < fe) {
         //*********** Ошибка открытия одного из пакетных файлов **********
         PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
-        for(;fff < ff; ++fff)
-        {
+        for (; fff < ff; ++fff) {
             (*fff)->ClosePacketFileEx();
         }
         return false;
@@ -2480,80 +2368,75 @@ bool CPackCollection::OpenPacketFilesEx(void)
     return true;
 }
 
-bool  CPackCollection::ClosePacketFilesEx(void)
-{
+bool CPackCollection::ClosePacketFilesEx(void) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
+    for (; ff < fe; ++ff) {
         (*ff)->ClosePacketFileEx();
     }
     return true;
 }
 
-
 //******** Процедуры для работы файлами ***********//
 
-bool  CPackCollection::FileExists(const CStr &name)
-{
+bool CPackCollection::FileExists(const CStr &name) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        if ((*ff)->FileExists(name)) return true;
+    for (; ff < fe; ++ff) {
+        if ((*ff)->FileExists(name))
+            return true;
     }
     return false;
 }
 
-bool  CPackCollection::PathExists(const CStr &path)
-{
+bool CPackCollection::PathExists(const CStr &path) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        if ((*ff)->PathExists(path)) return true;
+    for (; ff < fe; ++ff) {
+        if ((*ff)->PathExists(path))
+            return true;
     }
     return false;
 }
 
 //******* работа с виртуальными номерами объектов CPackFile
-DWORD CPackCollection::Open(const CStr&name, DWORD modeopen)
-{
+DWORD CPackCollection::Open(const CStr &name, DWORD modeopen) {
     DWORD Handle;
     DWORD Counter = 0;
 
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for(;ff < fe; ++ff)
-    {
-        Handle = (*ff)->Open(name,modeopen);
-        if (Handle!=0xFFFFFFFF) break;
+    for (; ff < fe; ++ff) {
+        Handle = (*ff)->Open(name, modeopen);
+        if (Handle != 0xFFFFFFFF)
+            break;
         ++Counter;
     }
-    if (Handle==0xFFFFFFFF) return 0xFFFFFFFF;
+    if (Handle == 0xFFFFFFFF)
+        return 0xFFFFFFFF;
     return Handle + (Counter << MAX_VIRTUAL_HANDLE_COUNT_BITS);
 }
 
-bool  CPackCollection::Close(DWORD Handle)
-{
+bool CPackCollection::Close(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return false;
-    return P->Close(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1));
+    if (P == NULL)
+        return false;
+    return P->Close(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-bool  CPackCollection::Read(DWORD Handle, void *Buf, int Size)
-{
+bool CPackCollection::Read(DWORD Handle, void *Buf, int Size) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return false;
-    return P->Read(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1),Buf,Size);
+    if (P == NULL)
+        return false;
+    return P->Read(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1), Buf, Size);
 }
 
-//bool  CPackCollection::Write(DWORD Handle, const void *Buf, int Size)
+// bool  CPackCollection::Write(DWORD Handle, const void *Buf, int Size)
 //{
 //    ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 //
@@ -2563,48 +2446,47 @@ bool  CPackCollection::Read(DWORD Handle, void *Buf, int Size)
 //    return P->Write(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1),Buf,Size);
 //}
 
-bool  CPackCollection::SetPos(DWORD Handle, DWORD Pos, int ftype)
-{
+bool CPackCollection::SetPos(DWORD Handle, DWORD Pos, int ftype) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return false;
-    return P->SetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1),Pos,ftype);
+    if (P == NULL)
+        return false;
+    return P->SetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1), Pos, ftype);
 }
 
-DWORD  CPackCollection::GetPos(DWORD Handle)
-{
+DWORD CPackCollection::GetPos(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return 0xFFFFFFFF;
-    return P->GetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1));
+    if (P == NULL)
+        return 0xFFFFFFFF;
+    return P->GetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-DWORD  CPackCollection::GetSize(DWORD Handle)
-{
+DWORD CPackCollection::GetSize(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return 0xFFFFFFFF;
-    return P->GetSize(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1));
+    if (P == NULL)
+        return 0xFFFFFFFF;
+    return P->GetSize(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-DWORD  CPackCollection::GetHandle(DWORD Handle)
-{
+DWORD CPackCollection::GetHandle(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
     PCPackFile P = GetPacketFile(number);
-    if (P==NULL) return 0xFFFFFFFF;
-    return P->GetHandle(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1));
+    if (P == NULL)
+        return 0xFFFFFFFF;
+    return P->GetHandle(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-
-//bool  CPackCollection::UnpackFile(const CStr&souname,const CStr&desname)
+// bool  CPackCollection::UnpackFile(const CStr&souname,const CStr&desname)
 //{
 //    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
 //    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
@@ -2618,8 +2500,6 @@ DWORD  CPackCollection::GetHandle(DWORD Handle)
 //    return false;
 //}
 
-
-
-} // namespace
+}  // namespace Base
 
 //#endif

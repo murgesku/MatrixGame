@@ -4,12 +4,13 @@
 // Refer to the LICENSE file included
 
 #include "../stdafx.h"
+
 #include "MatrixState.h"
 #include "MatrixRule.h"
 #include "../MatrixMap.hpp"
 #include "MatrixLogicSlot.h"
 
-//CMatrixState::~CMatrixState()
+// CMatrixState::~CMatrixState()
 //{
 //	DTRACE();
 //	CMatrixRule *Rule = m_FirstRule;
@@ -30,7 +31,7 @@
 //	}
 //}
 //
-//void CMatrixState::Load(CBlockPar &bp)
+// void CMatrixState::Load(CBlockPar &bp)
 //{
 //    CWStr filename;
 //    //filename.Add(L"#ST_");

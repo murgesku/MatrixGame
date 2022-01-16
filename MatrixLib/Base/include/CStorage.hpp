@@ -8,12 +8,9 @@
 
 #include "base.hpp"
 
-
 namespace Base {
 
-
-enum EStorageType
-{
+enum EStorageType {
     ST_INT32,
     ST_DWORD,
     ST_BYTE,
@@ -24,68 +21,56 @@ enum EStorageType
     ST_COMPRESSED = SETBIT(31)
 };
 
-__forceinline int StorageTypeSize(EStorageType t)
-{
-    return  (t==ST_DOUBLE)?8:(
-            (t==ST_BYTE)?1:(
-            (t==ST_WCHAR)?2:(
-            4
-
-        )));
+__forceinline int StorageTypeSize(EStorageType t) {
+    return (t == ST_DOUBLE) ? 8 : ((t == ST_BYTE) ? 1 : ((t == ST_WCHAR) ? 2 : (4)));
 }
 
-class CDataBuf : public CBuf
-{
-    struct SDataBufHeader
-    {
-        DWORD           alloc_table_disp;
-        DWORD           arrays_count;
-        int             element_type_size;
+class CDataBuf : public CBuf {
+    struct SDataBufHeader {
+        DWORD alloc_table_disp;
+        DWORD arrays_count;
+        int element_type_size;
     };
 
-    struct SDataBufAllocTableEntry
-    {
+    struct SDataBufAllocTableEntry {
         DWORD disp;
         DWORD count;
         DWORD allocated_count;
     };
 
-    SDataBufAllocTableEntry * TableEntry(int i)
-    {
+    SDataBufAllocTableEntry *TableEntry(int i) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
-        return (SDataBufAllocTableEntry *)(Buff<BYTE>() + header->alloc_table_disp + i*sizeof(SDataBufAllocTableEntry)) ;
+        return (SDataBufAllocTableEntry *)(Buff<BYTE>() + header->alloc_table_disp +
+                                           i * sizeof(SDataBufAllocTableEntry));
     }
 
-    template <class D> D * GetFirstElement(SDataBufAllocTableEntry *te)
-    {
+    template <class D>
+    D *GetFirstElement(SDataBufAllocTableEntry *te) {
         return (D *)(Buff<BYTE>() + te->disp);
     }
-    template <class D> D * GetEndElement(SDataBufAllocTableEntry *te)
-    {
+    template <class D>
+    D *GetEndElement(SDataBufAllocTableEntry *te) {
         return ((D *)(Buff<BYTE>() + te->disp)) + te->count;
     }
 
-    void ExpandArray(DWORD i, DWORD sz)
-    {
+    void ExpandArray(DWORD i, DWORD sz) {
         Expand(sz);
         SDataBufHeader *header = Buff<SDataBufHeader>();
         ++i;
 
-        BYTE *data0 = (header->arrays_count <= i)?(Buff<BYTE>() + header->alloc_table_disp):GetFirstElement<BYTE>(TableEntry(i));
+        BYTE *data0 = (header->arrays_count <= i) ? (Buff<BYTE>() + header->alloc_table_disp)
+                                                  : GetFirstElement<BYTE>(TableEntry(i));
         BYTE *data1 = BuffEnd<BYTE>() - sz;
 
-        for (; i < header->arrays_count; ++i)
-        {
+        for (; i < header->arrays_count; ++i) {
             TableEntry(i)->disp += sz;
         }
         memmove(data0 + sz, data0, data1 - data0);
         header->alloc_table_disp += sz;
     }
 
-
 public:
-    CDataBuf(CHeap *heap, EStorageType st):CBuf(heap,1024)
-    {
+    CDataBuf(CHeap *heap, EStorageType st) : CBuf(heap, 1024) {
         int ets = StorageTypeSize(st);
         Expand(sizeof(SDataBufHeader));
         SDataBufHeader *header = Buff<SDataBufHeader>();
@@ -94,62 +79,57 @@ public:
         header->element_type_size = ets;
     }
 
-    template <class D> void AddToArray(DWORD i, D d)
-    {
+    template <class D>
+    void AddToArray(DWORD i, D d) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         ASSERT(sizeof(D) == header->element_type_size);
         ASSERT(i < header->arrays_count);
-        SDataBufAllocTableEntry * te = TableEntry(i);
-        if (te->count >= te->allocated_count)
-        {
+        SDataBufAllocTableEntry *te = TableEntry(i);
+        if (te->count >= te->allocated_count) {
             ExpandArray(i, sizeof(D) * 16);
             te = TableEntry(i);
             te->allocated_count += 16;
         }
         *GetEndElement<D>(te) = d;
         ++te->count;
-
     }
 
-    template <class D> void AddToArray(DWORD i, const D *d, int count)
-    {
+    template <class D>
+    void AddToArray(DWORD i, const D *d, int count) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         ASSERT(sizeof(D) == header->element_type_size);
         ASSERT(i < header->arrays_count);
-        SDataBufAllocTableEntry * te = TableEntry(i);
-        if ((te->count+count) > te->allocated_count)
-        {
-            ExpandArray(i, sizeof(D) * (count+16));
+        SDataBufAllocTableEntry *te = TableEntry(i);
+        if ((te->count + count) > te->allocated_count) {
+            ExpandArray(i, sizeof(D) * (count + 16));
             te = TableEntry(i);
-            te->allocated_count += (count+16);
+            te->allocated_count += (count + 16);
         }
         memcpy(GetEndElement<D>(te), d, sizeof(D) * count);
         te->count += count;
     }
 
-    template <class D> void SetArrayLength(DWORD i, int newlen)
-    {
+    template <class D>
+    void SetArrayLength(DWORD i, int newlen) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         ASSERT(sizeof(D) == header->element_type_size);
         ASSERT(i < header->arrays_count);
-        SDataBufAllocTableEntry * te = TableEntry(i);
-        if (newlen > (int)te->allocated_count)
-        {
-            ExpandArray(i, sizeof(D) * (newlen-te->allocated_count+16));
+        SDataBufAllocTableEntry *te = TableEntry(i);
+        if (newlen > (int)te->allocated_count) {
+            ExpandArray(i, sizeof(D) * (newlen - te->allocated_count + 16));
             te = TableEntry(i);
-            te->allocated_count += (newlen-te->allocated_count+16);
+            te->allocated_count += (newlen - te->allocated_count + 16);
         }
         te->count = newlen;
     }
 
-    template <class D> void SetArray(DWORD i, const D *d, int count)
-    {
-        SetArrayLength<D>(i,count);
+    template <class D>
+    void SetArray(DWORD i, const D *d, int count) {
+        SetArrayLength<D>(i, count);
         memcpy(GetFirst<D>(i), d, count * sizeof(D));
     }
 
-    int AddArray(void)
-    {
+    int AddArray(void) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         int sz = header->element_type_size * 16 + sizeof(SDataBufAllocTableEntry);
         Expand(sz);
@@ -161,78 +141,62 @@ public:
 
         header->alloc_table_disp += header->element_type_size * 16;
 
-        SDataBufAllocTableEntry * te = TableEntry(header->arrays_count);
+        SDataBufAllocTableEntry *te = TableEntry(header->arrays_count);
         te->allocated_count = 16;
         te->count = 0;
         te->disp = header->alloc_table_disp - header->element_type_size * 16;
         ++header->arrays_count;
-        return header->arrays_count-1;
+        return header->arrays_count - 1;
     }
 
-    DWORD GetArrayLength(int i)
-    {
-        return TableEntry(i)->count;
-    }
-    DWORD GetArraysCount(void)
-    {
-        return Buff<SDataBufHeader>()->arrays_count;
-    }
+    DWORD GetArrayLength(int i) { return TableEntry(i)->count; }
+    DWORD GetArraysCount(void) { return Buff<SDataBufHeader>()->arrays_count; }
 
-    template <class D> D * GetFirst(int i)
-    {
+    template <class D>
+    D *GetFirst(int i) {
         return GetFirstElement<D>(TableEntry(i));
     }
-    template <class D> D * GetEnd(int i)
-    {
+    template <class D>
+    D *GetEnd(int i) {
         return GetEndElement<D>(TableEntry(i));
     }
 
-    void SetWStr(DWORD idx, const CWStr &str)
-    {
-        SetArray<wchar>(idx, str.Get(), str.GetLen());
-    }
+    void SetWStr(DWORD idx, const CWStr &str) { SetArray<wchar>(idx, str.Get(), str.GetLen()); }
 
-    int AddWStr(const CWStr &str)
-    {
+    int AddWStr(const CWStr &str) {
         int r = AddArray();
         AddToArray<wchar>(r, str.Get(), str.GetLen());
         return r;
     }
 
-    CWStr GetAsWStr(int i)
-    {
+    CWStr GetAsWStr(int i) {
         DTRACE();
-        wchar * str = GetFirst<wchar>(i);
+        wchar *str = GetFirst<wchar>(i);
         int l = GetArrayLength(i);
 
         return CWStr(str, l, m_Heap);
     }
 
-    int FindAsWStr(const wchar *val, int len)
-    {
+    int FindAsWStr(const wchar *val, int len) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
-        for (DWORD i=0; i<header->arrays_count; ++i)
-        {
-            wchar * str = GetFirst<wchar>(i);
-            if (GetArrayLength(i) == len)
-            {
-                if (0==memcmp(val, str, len * sizeof(wchar))) return i;
+        for (DWORD i = 0; i < header->arrays_count; ++i) {
+            wchar *str = GetFirst<wchar>(i);
+            if (GetArrayLength(i) == len) {
+                if (0 == memcmp(val, str, len * sizeof(wchar)))
+                    return i;
             }
         }
         return -1;
     }
-    int FindAsWStr(const CWStr & val) {return FindAsWStr(val.Get(), val.GetLen());}
-    int FindAsWStr(const wchar * val) {return FindAsWStr(val, Base::WStrLen(val));}
+    int FindAsWStr(const CWStr &val) { return FindAsWStr(val.Get(), val.GetLen()); }
+    int FindAsWStr(const wchar *val) { return FindAsWStr(val, Base::WStrLen(val)); }
 
-    void Compact(void)
-    {
+    void Compact(void) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         DWORD saved = 0;
-        for (DWORD i=0; i<header->arrays_count; ++i)
-        {
-            SDataBufAllocTableEntry * te = TableEntry(i);
-            if (saved)
-            {
+        for (DWORD i = 0; i < header->arrays_count; ++i) {
+            SDataBufAllocTableEntry *te = TableEntry(i);
+            if (saved) {
                 // there are some bytes saved
                 // its need to move data
                 BYTE *data0 = GetFirstElement<BYTE>(te);
@@ -240,68 +204,62 @@ public:
                 memcpy(data0 - saved, data0, data1 - data0);
                 te->disp -= saved;
             }
-            if (te->count < te->allocated_count)
-            {
+            if (te->count < te->allocated_count) {
                 saved += (te->allocated_count - te->count) * header->element_type_size;
                 te->allocated_count = te->count;
             }
         }
-        if (saved)
-        {
+        if (saved) {
             // copy table
-            memcpy(Buff<BYTE>() + (header->alloc_table_disp - saved), Buff<BYTE>() + header->alloc_table_disp, sizeof(SDataBufAllocTableEntry) * header->arrays_count);
+            memcpy(Buff<BYTE>() + (header->alloc_table_disp - saved), Buff<BYTE>() + header->alloc_table_disp,
+                   sizeof(SDataBufAllocTableEntry) * header->arrays_count);
             SetLenNoShrink(Len() - saved);
             header->alloc_table_disp -= saved;
         }
     }
 };
 
+class CStorageRecordItem : public CMain {
+    CWStr m_Name;
+    EStorageType m_Type;
 
+    CDataBuf *m_Buf;
 
-
-class CStorageRecordItem : public CMain
-{
-    CWStr           m_Name;
-    EStorageType    m_Type;
-
-    CDataBuf       *m_Buf;
 public:
-    CStorageRecordItem(const CStorageRecordItem &item): m_Name(item.m_Name,item.m_Name.GetHeap()), m_Type(item.m_Type), m_Buf(NULL) {}
-    CStorageRecordItem(const CWStr &name, EStorageType type): m_Name(name,name.GetHeap()), m_Type(type), m_Buf(NULL) {}
-    CStorageRecordItem(CHeap *heap): m_Name(heap), m_Buf(NULL) {InitBuf(heap);}
+    CStorageRecordItem(const CStorageRecordItem &item)
+      : m_Name(item.m_Name, item.m_Name.GetHeap()), m_Type(item.m_Type), m_Buf(NULL) {}
+    CStorageRecordItem(const CWStr &name, EStorageType type)
+      : m_Name(name, name.GetHeap()), m_Type(type), m_Buf(NULL) {}
+    CStorageRecordItem(CHeap *heap) : m_Name(heap), m_Buf(NULL) { InitBuf(heap); }
     ~CStorageRecordItem();
-
 
     void InitBuf(CHeap *heap);
     void ReleaseBuf(CHeap *heap);
-    const CWStr& GetName(void) const {return m_Name;}
+    const CWStr &GetName(void) const { return m_Name; }
 
-    CDataBuf *GetBuf(EStorageType st) {return (st==m_Type)?m_Buf:NULL;}
+    CDataBuf *GetBuf(EStorageType st) { return (st == m_Type) ? m_Buf : NULL; }
 
     DWORD CalcUniqID(DWORD x);
 
     void Save(CBuf &buf, bool compression);
     bool Load(CBuf &buf);
-
 };
 
+class CStorageRecord : public CMain {
+    CHeap *m_Heap;
 
-class CStorageRecord : public CMain
-{
-    CHeap              *m_Heap;
-
-    CWStr               m_Name;         // record name (table name)
+    CWStr m_Name;  // record name (table name)
     CStorageRecordItem *m_Items;
-    int                 m_ItemsCount;
+    int m_ItemsCount;
 
 public:
-
     CStorageRecord(const CStorageRecord &rec);
-    CStorageRecord(CWStr &name, CHeap *heap = NULL):m_Heap(heap), m_Name(name,name.GetHeap()), m_Items(NULL), m_ItemsCount(0) {}
-    CStorageRecord(CHeap *heap):m_Heap(heap), m_Name(heap), m_Items(NULL),m_ItemsCount(0) {}
+    CStorageRecord(CWStr &name, CHeap *heap = NULL)
+      : m_Heap(heap), m_Name(name, name.GetHeap()), m_Items(NULL), m_ItemsCount(0) {}
+    CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name(heap), m_Items(NULL), m_ItemsCount(0) {}
     ~CStorageRecord();
 
-    const CWStr& GetName(void) const {return m_Name;}
+    const CWStr &GetName(void) const { return m_Name; }
 
     void AddItem(const CStorageRecordItem &item);
     CDataBuf *GetBuf(const wchar *column, EStorageType st);
@@ -310,16 +268,13 @@ public:
 
     void Save(CBuf &buf, bool compression);
     bool Load(CBuf &buf);
-
-
 };
 
-class CStorage : public CMain
-{
+class CStorage : public CMain {
     CHeap *m_Heap;
 
-    CStorageRecord  *m_Records;
-    int              m_RecordsCnt;
+    CStorageRecord *m_Records;
+    int m_RecordsCnt;
 
 public:
     CStorage(CHeap *heap = NULL);
@@ -327,11 +282,11 @@ public:
 
     void Clear(void);
 
-    void AddRecord(const CStorageRecord& sr);
+    void AddRecord(const CStorageRecord &sr);
     void DelRecord(const wchar *table);
 
     CDataBuf *GetBuf(const wchar *table, const wchar *column, EStorageType st);
-    bool      IsTablePresent(const wchar *table);
+    bool IsTablePresent(const wchar *table);
 
     DWORD CalcUniqID(void);
 
@@ -341,16 +296,10 @@ public:
     void Save(CBuf &buf, bool compression = false);
     bool Load(CBuf &buf);
 
-
     void StoreBlockPar(const wchar *root, const CBlockPar &bp);
     void RestoreBlockPar(const wchar *root, CBlockPar &bp);
-
-
 };
 
-
-}
-
-
+}  // namespace Base
 
 #endif

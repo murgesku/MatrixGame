@@ -14,108 +14,102 @@ typedef CMatrixMapGroup *PCMatrixMapGroup;
 #include "Effects/MatrixEffect.hpp"
 
 // Ресурс объекта
-#define MR_Graph                SETBIT(0)          // Графика
-#define MR_Matrix               SETBIT(1)               // Матрица
-#define MR_Pos                  SETBIT(2)              // Положение
-#define MR_Rotate               SETBIT(3)       // Ориентация
-#define MR_ShadowStencil        SETBIT(4)       // Стенсильные тени
+#define MR_Graph         SETBIT(0)  // Графика
+#define MR_Matrix        SETBIT(1)  // Матрица
+#define MR_Pos           SETBIT(2)  // Положение
+#define MR_Rotate        SETBIT(3)  // Ориентация
+#define MR_ShadowStencil SETBIT(4)  // Стенсильные тени
 //#define MR_ShadowProj           SETBIT(5)       // Проекционные тени
-#define MR_ShadowProjGeom       SETBIT(6)       // Проекционные тени: геометрия
-#define MR_ShadowProjTex        SETBIT(7)       // Проекционные тени: текстуры
-#define MR_MiniMap              SETBIT(8)       // Присутствие на миникарте
+#define MR_ShadowProjGeom SETBIT(6)  // Проекционные тени: геометрия
+#define MR_ShadowProjTex  SETBIT(7)  // Проекционные тени: текстуры
+#define MR_MiniMap        SETBIT(8)  // Присутствие на миникарте
 
 //#define MR_GraphSort          SETBIT(1)          // Сортировка графики
 
-typedef enum
-{
-    OBJECT_TYPE_EMPTY       = 0,
-    OBJECT_TYPE_MAPOBJECT   = 2,
-    OBJECT_TYPE_ROBOTAI     = 3,
-    OBJECT_TYPE_BUILDING    = 4,
-    OBJECT_TYPE_CANNON      = 5,
-    OBJECT_TYPE_FLYER       = 6,
+typedef enum {
+    OBJECT_TYPE_EMPTY = 0,
+    OBJECT_TYPE_MAPOBJECT = 2,
+    OBJECT_TYPE_ROBOTAI = 3,
+    OBJECT_TYPE_BUILDING = 4,
+    OBJECT_TYPE_CANNON = 5,
+    OBJECT_TYPE_FLYER = 6,
 
-    EObjectType_FORCE_DWORD = 0x7FFFFFFF 
+    EObjectType_FORCE_DWORD = 0x7FFFFFFF
 } EObjectType;
 
 #define MAX_OBJECTS_PER_SCREEN 2560
 
-#define UNDER_ATTACK_IDLE_TIME  120000
+#define UNDER_ATTACK_IDLE_TIME 120000
 
-#define OBJECT_STATE_ABLAZE    SETBIT(0)   // горит
-#define OBJECT_STATE_SHORTED   SETBIT(1)   // закорочен
-#define OBJECT_STATE_INVISIBLE SETBIT(2)   // невидимый
-#define OBJECT_STATE_INTERFACE SETBIT(3)   // рисуется в интерфейсе
+#define OBJECT_STATE_ABLAZE    SETBIT(0)  // горит
+#define OBJECT_STATE_SHORTED   SETBIT(1)  // закорочен
+#define OBJECT_STATE_INVISIBLE SETBIT(2)  // невидимый
+#define OBJECT_STATE_INTERFACE SETBIT(3)  // рисуется в интерфейсе
 
-#define OBJECT_STATE_INVULNERABLE       SETBIT(3)
-#define OBJECT_STATE_SHADOW_SPECIAL     SETBIT(4)   // параметры для русчета тени загружаются
-#define OBJECT_STATE_TRACE_INVISIBLE    SETBIT(5)   // объект невидим для TRACE_SKIP_INVISIBLE объектов
-#define OBJECT_STATE_DIP                SETBIT(6)  // используется в StaticDelete
+#define OBJECT_STATE_INVULNERABLE    SETBIT(3)
+#define OBJECT_STATE_SHADOW_SPECIAL  SETBIT(4)  // параметры для русчета тени загружаются
+#define OBJECT_STATE_TRACE_INVISIBLE SETBIT(5)  // объект невидим для TRACE_SKIP_INVISIBLE объектов
+#define OBJECT_STATE_DIP             SETBIT(6)  // используется в StaticDelete
 
 // comon flags
 
 // only mesh flags
-#define OBJECT_STATE_BURNED             SETBIT(10)   // сгоревший (для мешей)
-#define OBJECT_STATE_EXPLOSIVE          SETBIT(11)   // ломается со взрывом (для мешей)
-#define OBJECT_STATE_NORMALIZENORMALS   SETBIT(12)   // нормализовывать нормали (для мешей)
-#define OBJECT_STATE_SPECIAL            SETBIT(13)   // специальный объект: смерть требуется для победы
-#define OBJECT_STATE_TERRON_EXPL        SETBIT(14)   // террон взрывается
-#define OBJECT_STATE_TERRON_EXPL1       SETBIT(15)   // террон взрывается 1
-#define OBJECT_STATE_TERRON_EXPL2       SETBIT(16)   // террон взрывается 2
-
+#define OBJECT_STATE_BURNED           SETBIT(10)  // сгоревший (для мешей)
+#define OBJECT_STATE_EXPLOSIVE        SETBIT(11)  // ломается со взрывом (для мешей)
+#define OBJECT_STATE_NORMALIZENORMALS SETBIT(12)  // нормализовывать нормали (для мешей)
+#define OBJECT_STATE_SPECIAL          SETBIT(13)  // специальный объект: смерть требуется для победы
+#define OBJECT_STATE_TERRON_EXPL      SETBIT(14)  // террон взрывается
+#define OBJECT_STATE_TERRON_EXPL1     SETBIT(15)  // террон взрывается 1
+#define OBJECT_STATE_TERRON_EXPL2     SETBIT(16)  // террон взрывается 2
 
 // only cannon flags. use its values for other objects
-#define OBJECT_CANNON_REF_PROTECTION        SETBIT(10)
-#define OBJECT_CANNON_REF_PROTECTION_HIT    SETBIT(11)
+#define OBJECT_CANNON_REF_PROTECTION     SETBIT(10)
+#define OBJECT_CANNON_REF_PROTECTION_HIT SETBIT(11)
 
 // only robots flags. use its values for other objects
-#define ROBOT_FLAG_MOVING_BACK  SETBIT(10)
-#define ROBOT_FLAG_COLLISION    SETBIT(11) // if collision, pneumatic chassis does not steps well
-#define ROBOT_FLAG_SGROUP       SETBIT(12)
-#define ROBOT_FLAG_SARCADE      SETBIT(13)
-#define ROBOT_FLAG_ONWATER      SETBIT(14)
-#define ROBOT_FLAG_LINKED       SETBIT(15)
+#define ROBOT_FLAG_MOVING_BACK    SETBIT(10)
+#define ROBOT_FLAG_COLLISION      SETBIT(11)  // if collision, pneumatic chassis does not steps well
+#define ROBOT_FLAG_SGROUP         SETBIT(12)
+#define ROBOT_FLAG_SARCADE        SETBIT(13)
+#define ROBOT_FLAG_ONWATER        SETBIT(14)
+#define ROBOT_FLAG_LINKED         SETBIT(15)
 #define ROBOT_FLAG_DISABLE_MANUAL SETBIT(16)
 
-#define ROBOT_FLAG_ROT_LEFT     SETBIT(17)
-#define ROBOT_FLAG_ROT_RIGHT     SETBIT(18)
-#define ROBOT_CRAZY             SETBIT(19)  // easter egg :) crazy bot
-#define ROBOT_FLAG_INPOSITION   SETBIT(20)  // easter egg
-#define ROBOT_MUST_DIE_FLAG     SETBIT(21)
-#define ROBOT_CAPTURE_INFORMED  SETBIT(22)
+#define ROBOT_FLAG_ROT_LEFT    SETBIT(17)
+#define ROBOT_FLAG_ROT_RIGHT   SETBIT(18)
+#define ROBOT_CRAZY            SETBIT(19)  // easter egg :) crazy bot
+#define ROBOT_FLAG_INPOSITION  SETBIT(20)  // easter egg
+#define ROBOT_MUST_DIE_FLAG    SETBIT(21)
+#define ROBOT_CAPTURE_INFORMED SETBIT(22)
 
 // only buildings flags. use its values for other objects
-#define BUILDING_NEW_INCOME             SETBIT(10)
-#define BUILDING_SPAWNBOT               SETBIT(11) // opening for bot spawn
-#define BUILDING_CAPTURE_IN_PROGRESS    SETBIT(12)
+#define BUILDING_NEW_INCOME          SETBIT(10)
+#define BUILDING_SPAWNBOT            SETBIT(11)  // opening for bot spawn
+#define BUILDING_CAPTURE_IN_PROGRESS SETBIT(12)
 
+#define OBJECT_ABLAZE_PERIOD              90
+#define OBJECT_ROBOT_ABLAZE_PERIOD        10
+#define OBJECT_ROBOT_ABLAZE_PERIOD_EFFECT 90
+#define OBJECT_SHORTED_PERIOD             50
 
-#define OBJECT_ABLAZE_PERIOD            90
-#define OBJECT_ROBOT_ABLAZE_PERIOD          10
-#define OBJECT_ROBOT_ABLAZE_PERIOD_EFFECT   90
-#define OBJECT_SHORTED_PERIOD           50
+#define HITPOINT_SHOW_TIME 1000
 
-#define HITPOINT_SHOW_TIME  1000
-
-typedef enum
-{
-    SHADOW_OFF          = 0,
-    SHADOW_PROJ_STATIC  = 1,
+typedef enum {
+    SHADOW_OFF = 0,
+    SHADOW_PROJ_STATIC = 1,
     SHADOW_PROJ_DYNAMIC = 2,
-    SHADOW_STENCIL      = 3,
+    SHADOW_STENCIL = 3,
 
-    EShadowType_FORCE_DWORD = 0x7FFFFFFF 
+    EShadowType_FORCE_DWORD = 0x7FFFFFFF
 } EShadowType;
 
 enum EWeapon;
 
-#define MAX_GROUPS_PER_OBJECT   36
-
+#define MAX_GROUPS_PER_OBJECT 36
 
 class CTemporaryLoadData;
 
-enum 
-{
+enum {
     OBJ_RENDER_ORDINAL,
     OBJ_RENDER_ORDINAL_GLOSS,
     OBJ_RENDER_SIDE,
@@ -130,24 +124,22 @@ class CMatrixMapStatic;
 #include "stdio.h"
 #endif
 
-struct  SObjectCore
-{
+struct SObjectCore {
 #ifdef _DEBUG
-    SDebugCallInfo  m_dci;
+    SDebugCallInfo m_dci;
 #endif
 
-	D3DXMATRIX      m_Matrix;
-    D3DXMATRIX      m_IMatrix;   // inversed matrix
-    float           m_Radius;
-    D3DXVECTOR3     m_GeoCenter;
-    EObjectType     m_Type; // 0-empty 2-CMatrixMapObject 3-CMatrixRobotAI 4-CMatrixBuilding 5-CMatrixCannon
-    DWORD           m_TerainColor;
-    int             m_Ref;
+    D3DXMATRIX m_Matrix;
+    D3DXMATRIX m_IMatrix;  // inversed matrix
+    float m_Radius;
+    D3DXVECTOR3 m_GeoCenter;
+    EObjectType m_Type;  // 0-empty 2-CMatrixMapObject 3-CMatrixRobotAI 4-CMatrixBuilding 5-CMatrixCannon
+    DWORD m_TerainColor;
+    int m_Ref;
 
     CMatrixMapStatic *m_Object;
 
-    static SObjectCore * Create(CMatrixMapStatic *obj)
-    {
+    static SObjectCore *Create(CMatrixMapStatic *obj) {
         SObjectCore *c = (SObjectCore *)HAlloc(sizeof(SObjectCore), g_MatrixHeap);
 #ifdef _DEBUG
         c->m_dci._file = NULL;
@@ -157,51 +149,47 @@ struct  SObjectCore
         c->m_Ref = 1;
         D3DXMatrixIdentity(&c->m_Matrix);
 
-//#ifdef _DEBUG
-//
-//        FILE *f = fopen("Errors\\"+CStr(int(c))+".log","a");
-//        fwrite("create\n", strlen("create\n"), 1, f);
-//        fclose(f);
-//
-//#endif
+        //#ifdef _DEBUG
+        //
+        //        FILE *f = fopen("Errors\\"+CStr(int(c))+".log","a");
+        //        fwrite("create\n", strlen("create\n"), 1, f);
+        //        fclose(f);
+        //
+        //#endif
 
         return c;
     }
 
-    void RefInc(void) {++m_Ref;}
-    void RefDec(void)
-    {
-//#ifdef _DEBUG
-//
-//        FILE *f = fopen("Errors\\"+CStr(int(this))+".log","a");
-//        fwrite("release\n", strlen("release\n"), 1, f);
-//        fclose(f);
-//
-//#endif
+    void RefInc(void) { ++m_Ref; }
+    void RefDec(void) {
+        //#ifdef _DEBUG
+        //
+        //        FILE *f = fopen("Errors\\"+CStr(int(this))+".log","a");
+        //        fwrite("release\n", strlen("release\n"), 1, f);
+        //        fclose(f);
+        //
+        //#endif
         --m_Ref;
-        if (m_Ref <=0)
-        {
+        if (m_Ref <= 0) {
 #ifdef _DEBUG
-            if (m_Ref < 0) _asm int 3
+            if (m_Ref < 0)
+                _asm int 3
 #endif
 #ifdef _DEBUG
 
-        DeleteFile("Errors\\"+CStr(int(this))+".log");
+                        DeleteFile("Errors\\" + CStr(int(this)) + ".log");
 
 #endif
 
             HFree(this, g_MatrixHeap);
         }
-
     }
-    void Release(void) {RefDec();}
-
+    void Release(void) { RefDec(); }
 };
 
 bool FreeObjResources(DWORD user);
 
-struct SRenderTexture
-{
+struct SRenderTexture {
     ETexSize ts;
     CTextureManaged *tex;
 };
@@ -213,301 +201,304 @@ class CMatrixFlyer;
 
 class CMatrixMapStatic;
 typedef CMatrixMapStatic *PCMatrixMapStatic;
-class CMatrixMapStatic : public CMain
-{
+class CMatrixMapStatic : public CMain {
     SRemindCore m_RemindCore;
 
+    int m_ObjectStateTTLAblaze;
+    int m_ObjectStateTTLShorted;
 
-        int             m_ObjectStateTTLAblaze;
-        int             m_ObjectStateTTLShorted;
+    int m_Z;
 
-        int             m_Z;
+    static PCMatrixMapStatic objects[MAX_OBJECTS_PER_SCREEN];
+    static int objects_left;
+    static int objects_rite;
 
-        static PCMatrixMapStatic    objects[MAX_OBJECTS_PER_SCREEN];
-        static int                  objects_left;
-        static int                  objects_rite;
+    static CMatrixMapStatic *m_FirstVisNew;
+    static CMatrixMapStatic *m_LastVisNew;
 
+    static CMatrixMapStatic *m_FirstVisOld;
+    static CMatrixMapStatic *m_LastVisOld;
 
-        static CMatrixMapStatic* m_FirstVisNew;
-        static CMatrixMapStatic* m_LastVisNew;
-
-        static CMatrixMapStatic* m_FirstVisOld;
-        static CMatrixMapStatic* m_LastVisOld;
-
-        CMatrixMapStatic* m_NextVis;
-        CMatrixMapStatic* m_PrevVis;
+    CMatrixMapStatic *m_NextVis;
+    CMatrixMapStatic *m_PrevVis;
 
 protected:
+    struct SEVH_data {
+        D3DXMATRIX m;
+        const CRect *rect;
+        bool found;
+    };
 
-        struct SEVH_data
-        {
-            D3DXMATRIX m;
-            const CRect      *rect;
-            bool        found;
-        };
+    DWORD m_ObjectState;  // битовый набор.
+    DWORD m_RChange;  // Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
 
-        DWORD           m_ObjectState;      // битовый набор.
-        DWORD           m_RChange;          // Какой ресурс объекта изменился. При созданнии класса устанавливается в 0xffffffff
+    SObjectCore *m_Core;
 
-        SObjectCore    *m_Core;
+    void SetShortedTTL(int ttl) { m_ObjectStateTTLShorted = ttl; };
+    void SetAblazeTTL(int ttl) { m_ObjectStateTTLAblaze = ttl; };
+    int GetShortedTTL(void) { return m_ObjectStateTTLShorted; }
+    int GetAblazeTTL(void) { return m_ObjectStateTTLAblaze; }
+    bool IsAblaze(void) const { return FLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+    bool IsShorted(void) const { return FLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
+    void MarkAblaze(void) { SETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+    void MarkShorted(void) { SETFLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
+    void UnmarkAblaze(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_ABLAZE); }
+    void UnmarkShorted(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_SHORTED); }
 
-        void            SetShortedTTL(int ttl) {m_ObjectStateTTLShorted=ttl;};
-        void            SetAblazeTTL(int ttl) {m_ObjectStateTTLAblaze=ttl;};
-        int             GetShortedTTL(void) {return m_ObjectStateTTLShorted;}
-        int             GetAblazeTTL(void) {return m_ObjectStateTTLAblaze;}
-        bool            IsAblaze(void) const {return FLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        bool            IsShorted(void) const {return FLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
-        void            MarkAblaze(void) {SETFLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        void            MarkShorted(void) {SETFLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
-        void            UnmarkAblaze(void) {RESETFLAG(m_ObjectState,OBJECT_STATE_ABLAZE);}
-        void            UnmarkShorted(void) {RESETFLAG(m_ObjectState,OBJECT_STATE_SHORTED);}
+    static CMatrixMapStatic *m_FirstLogicTemp;
+    static CMatrixMapStatic *m_LastLogicTemp;
+    CMatrixMapStatic *m_PrevLogicTemp;
+    CMatrixMapStatic *m_NextLogicTemp;
 
-        static CMatrixMapStatic * m_FirstLogicTemp;
-        static CMatrixMapStatic * m_LastLogicTemp;
-        CMatrixMapStatic * m_PrevLogicTemp;
-        CMatrixMapStatic * m_NextLogicTemp;
+    PCMatrixMapGroup m_InGroups[MAX_GROUPS_PER_OBJECT];  // max size of object is MAX_GROUPS_PER_OBJECT groups
+    int m_InCnt;
 
-        PCMatrixMapGroup m_InGroups[MAX_GROUPS_PER_OBJECT];    // max size of object is MAX_GROUPS_PER_OBJECT groups
-        int              m_InCnt;
+    float m_CamDistSq;  // квадрат растояния до камеры. вычисляется только в графическом такте.
 
+    int m_NearBaseCnt;
 
-        float           m_CamDistSq;    // квадрат растояния до камеры. вычисляется только в графическом такте.
-
-        int             m_NearBaseCnt;
-
-        // for visibility
-        void            WillDraw(void)
-        {
-            // TODO : доделать!!!
-            return;
-            // remove from previous list of visibility
-            LIST_DEL(this, m_FirstVisOld, m_LastVisOld, m_PrevVis, m_NextVis);
-            // add to new list of visibility
-            LIST_ADD(this, m_FirstVisNew, m_LastVisNew, m_PrevVis, m_NextVis);
-
-        }
+    // for visibility
+    void WillDraw(void) {
+        // TODO : доделать!!!
+        return;
+        // remove from previous list of visibility
+        LIST_DEL(this, m_FirstVisOld, m_LastVisOld, m_PrevVis, m_NextVis);
+        // add to new list of visibility
+        LIST_ADD(this, m_FirstVisNew, m_LastVisNew, m_PrevVis, m_NextVis);
+    }
 
 public:
-        CMatrixMapStatic* m_NextStackItem;
-        CMatrixMapStatic* m_PrevStackItem;
-        
-        bool            IsNotOnMinimap(void) const {return FLAG(m_RChange,MR_MiniMap);}
-        void            SetInvulnerability(void) { SETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
-        void            ResetInvulnerability(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
-        bool            IsInvulnerable(void) const { return FLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
-        bool            IsTraceInvisible(void) const {return FLAG(m_ObjectState,OBJECT_STATE_TRACE_INVISIBLE);}
-        bool            IsSpecial(void) const { return FLAG(m_ObjectState,OBJECT_STATE_SPECIAL); }
+    CMatrixMapStatic *m_NextStackItem;
+    CMatrixMapStatic *m_PrevStackItem;
 
-        bool            IsDIP(void) const {return FLAG(m_ObjectState,OBJECT_STATE_DIP);}
-        void            SetDIP(void) { SETFLAG(m_ObjectState,OBJECT_STATE_DIP);}
+    bool IsNotOnMinimap(void) const { return FLAG(m_RChange, MR_MiniMap); }
+    void SetInvulnerability(void) { SETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
+    void ResetInvulnerability(void) { RESETFLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
+    bool IsInvulnerable(void) const { return FLAG(m_ObjectState, OBJECT_STATE_INVULNERABLE); }
+    bool IsTraceInvisible(void) const { return FLAG(m_ObjectState, OBJECT_STATE_TRACE_INVISIBLE); }
+    bool IsSpecial(void) const { return FLAG(m_ObjectState, OBJECT_STATE_SPECIAL); }
 
-        static void StaticInit(void)
-        {
-            m_FirstLogicTemp = NULL;
-            m_LastLogicTemp = NULL;
-            objects_left = MAX_OBJECTS_PER_SCREEN>>1;
-            objects_rite = MAX_OBJECTS_PER_SCREEN>>1;
+    bool IsDIP(void) const { return FLAG(m_ObjectState, OBJECT_STATE_DIP); }
+    void SetDIP(void) { SETFLAG(m_ObjectState, OBJECT_STATE_DIP); }
 
-            m_FirstVisNew = NULL;
-            m_LastVisNew = NULL;
+    static void StaticInit(void) {
+        m_FirstLogicTemp = NULL;
+        m_LastLogicTemp = NULL;
+        objects_left = MAX_OBJECTS_PER_SCREEN >> 1;
+        objects_rite = MAX_OBJECTS_PER_SCREEN >> 1;
 
-            m_FirstVisOld = NULL;
-            m_LastVisOld = NULL;
-        }
+        m_FirstVisNew = NULL;
+        m_LastVisNew = NULL;
+
+        m_FirstVisOld = NULL;
+        m_LastVisOld = NULL;
+    }
 #ifdef _DEBUG
-        static void ValidateAfterReset(void)
-        {
-            if (m_FirstLogicTemp || m_LastLogicTemp) _asm int 3
-            if (objects_left != objects_rite) _asm int 3
-            if (m_FirstVisNew || m_LastVisNew) _asm int 3
-            if (m_FirstVisOld || m_LastVisOld) _asm int 3
-        }
+    static void ValidateAfterReset(void) {
+        if (m_FirstLogicTemp || m_LastLogicTemp)
+            _asm int 3
+        if (objects_left != objects_rite)
+            _asm int 3
+        if (m_FirstVisNew || m_LastVisNew)
+            _asm int 3
+        if (m_FirstVisOld || m_LastVisOld)
+            _asm int 3
+    }
 #endif
-        
-        void SetTerainColor(DWORD color) {m_Core->m_TerainColor = color;}
 
-        void SetVisible(bool flag) {INITFLAG(m_ObjectState, OBJECT_STATE_INVISIBLE, !flag);}
-        bool IsVisible(void) const {return !FLAG(m_ObjectState, OBJECT_STATE_INVISIBLE);}
-        void SetInterfaceDraw(bool flag) {INITFLAG(m_ObjectState, OBJECT_STATE_INTERFACE, flag);}
-        bool IsInterfaceDraw(void) const {return FLAG(m_ObjectState, OBJECT_STATE_INTERFACE);}
-		
-        PCMatrixMapGroup GetGroup(int n)    { return m_InGroups[n]; }
-        int GetGroupCnt(void)               { return m_InCnt; }
+    void SetTerainColor(DWORD color) { m_Core->m_TerainColor = color; }
 
-        D3DXVECTOR3  m_AdditionalPoint; // to check visibility with shadows
+    void SetVisible(bool flag) { INITFLAG(m_ObjectState, OBJECT_STATE_INVISIBLE, !flag); }
+    bool IsVisible(void) const { return !FLAG(m_ObjectState, OBJECT_STATE_INVISIBLE); }
+    void SetInterfaceDraw(bool flag) { INITFLAG(m_ObjectState, OBJECT_STATE_INTERFACE, flag); }
+    bool IsInterfaceDraw(void) const { return FLAG(m_ObjectState, OBJECT_STATE_INTERFACE); }
 
-        DWORD   m_LastVisFrame;
-        int     m_IntersectFlagTracer;
-        int     m_IntersectFlagFindObjects;
+    PCMatrixMapGroup GetGroup(int n) { return m_InGroups[n]; }
+    int GetGroupCnt(void) { return m_InCnt; }
 
+    D3DXVECTOR3 m_AdditionalPoint;  // to check visibility with shadows
 
-#pragma warning (disable : 4355)
-        CMatrixMapStatic(void):
-            CMain(),m_RChange(0xffffffff),m_LastVisFrame(0xFFFFFFFF), m_NearBaseCnt(0), m_IntersectFlagTracer(0xFFFFFFFF),m_IntersectFlagFindObjects(0xFFFFFFFF),m_ObjectState(0), 
-            m_ObjectStateTTLAblaze(0), m_ObjectStateTTLShorted(0),m_InCnt(0), m_PrevLogicTemp(NULL),m_NextLogicTemp(NULL),m_RemindCore(FreeObjResources, (DWORD)this)
-        {
-            m_Core = SObjectCore::Create(this);
+    DWORD m_LastVisFrame;
+    int m_IntersectFlagTracer;
+    int m_IntersectFlagFindObjects;
 
-            m_Core->m_TerainColor = 0xFFFFFFFF;
-            m_Core->m_Type = OBJECT_TYPE_EMPTY;
+#pragma warning(disable : 4355)
+    CMatrixMapStatic(void)
+      : CMain(), m_RChange(0xffffffff), m_LastVisFrame(0xFFFFFFFF), m_NearBaseCnt(0), m_IntersectFlagTracer(0xFFFFFFFF),
+        m_IntersectFlagFindObjects(0xFFFFFFFF), m_ObjectState(0), m_ObjectStateTTLAblaze(0), m_ObjectStateTTLShorted(0),
+        m_InCnt(0), m_PrevLogicTemp(NULL), m_NextLogicTemp(NULL), m_RemindCore(FreeObjResources, (DWORD)this) {
+        m_Core = SObjectCore::Create(this);
 
-            memset(m_InGroups, 0, sizeof(m_InGroups));
-            
-            m_NextStackItem = NULL;
-            m_PrevStackItem = NULL;
-            
-            m_NextVis = NULL;
-            m_PrevVis = NULL;
+        m_Core->m_TerainColor = 0xFFFFFFFF;
+        m_Core->m_Type = OBJECT_TYPE_EMPTY;
 
-            m_CamDistSq = 10000.0f;
-        }
-#pragma warning (default : 4355)
+        memset(m_InGroups, 0, sizeof(m_InGroups));
 
-        ~CMatrixMapStatic();
+        m_NextStackItem = NULL;
+        m_PrevStackItem = NULL;
 
-        static CMatrixMapStatic * GetFirstLogic(void) {return m_FirstLogicTemp;}
-        static CMatrixMapStatic * GetLastLogic(void) {return m_LastLogicTemp;}
-        CMatrixMapStatic * GetNextLogic(void) {return m_NextLogicTemp;}
-        CMatrixMapStatic * GetPrevLogic(void) {return m_PrevLogicTemp;}
+        m_NextVis = NULL;
+        m_PrevVis = NULL;
 
-        bool IsBase(void) const ;
-        __forceinline bool IsRobot(void) const {return GetObjectType() == OBJECT_TYPE_ROBOTAI;};
-        bool IsLiveRobot(void) const;
-        __forceinline bool IsBuilding(void) const {return GetObjectType() == OBJECT_TYPE_BUILDING;};
-        bool IsLiveBuilding(void) const;
-        __forceinline bool IsCannon(void) const {return GetObjectType() == OBJECT_TYPE_CANNON;};
-        bool IsLiveCannon(void) const;
-        bool IsLiveActiveCannon(void) const;
-        
-        __forceinline bool IsFlyer(void) const {return GetObjectType() == OBJECT_TYPE_FLYER;};
-        __forceinline bool IsUnit(void) const {return IsRobot() || IsCannon();}
+        m_CamDistSq = 10000.0f;
+    }
+#pragma warning(default : 4355)
 
-        __forceinline bool IsLive(void) const {return IsLiveRobot() || IsLiveCannon() || IsLiveBuilding();}
-        //{ 
-        //    if(obj->GetObjectType()==OBJECT_TYPE_ROBOTAI) return obj->AsRobot()->m_CurrState!=ROBOT_DIP;// && (obj->AsRobot()->GetSide()!=PLAYER_SIDE || !obj->AsRobot()->IsSelected()) && (g_MatrixMap->GetPlayerSide()->GetArcadedObject() != obj);
-        //    else if(obj->GetObjectType()==OBJECT_TYPE_CANNON) return obj->AsCannon()->m_CurrState!=CANNON_DIP && obj->AsCannon()->m_CurrState!=CANNON_UNDER_CONSTRUCTION; 
-        //    else if(obj->GetObjectType()==OBJECT_TYPE_BUILDING) return (obj->AsBuilding()->m_State!=BUILDING_DIP) && (obj->AsBuilding()->m_State!=BUILDING_DIP_EXPLODED);
-        //    else return false;
-        //}
+    ~CMatrixMapStatic();
 
-        bool FitToMask(DWORD mask);
+    static CMatrixMapStatic *GetFirstLogic(void) { return m_FirstLogicTemp; }
+    static CMatrixMapStatic *GetLastLogic(void) { return m_LastLogicTemp; }
+    CMatrixMapStatic *GetNextLogic(void) { return m_NextLogicTemp; }
+    CMatrixMapStatic *GetPrevLogic(void) { return m_PrevLogicTemp; }
 
-        __forceinline CMatrixRobotAI * AsRobot(void) { return (CMatrixRobotAI *)this;}
-        __forceinline CMatrixCannon * AsCannon(void) { return (CMatrixCannon *)this;}
-        __forceinline CMatrixBuilding * AsBuilding(void) { return (CMatrixBuilding *)this;}
-        __forceinline CMatrixFlyer * AsFlyer(void) { return (CMatrixFlyer *)this;}
+    bool IsBase(void) const;
+    __forceinline bool IsRobot(void) const { return GetObjectType() == OBJECT_TYPE_ROBOTAI; };
+    bool IsLiveRobot(void) const;
+    __forceinline bool IsBuilding(void) const { return GetObjectType() == OBJECT_TYPE_BUILDING; };
+    bool IsLiveBuilding(void) const;
+    __forceinline bool IsCannon(void) const { return GetObjectType() == OBJECT_TYPE_CANNON; };
+    bool IsLiveCannon(void) const;
+    bool IsLiveActiveCannon(void) const;
 
-        __forceinline bool IsNearBase(void) const {return m_NearBaseCnt != 0;}
+    __forceinline bool IsFlyer(void) const { return GetObjectType() == OBJECT_TYPE_FLYER; };
+    __forceinline bool IsUnit(void) const { return IsRobot() || IsCannon(); }
 
-        void  RecalcTerainColor(void);
-        __forceinline DWORD   GetTerrainColor(void) const {return m_Core->m_TerainColor;}
+    __forceinline bool IsLive(void) const { return IsLiveRobot() || IsLiveCannon() || IsLiveBuilding(); }
+    //{
+    //    if(obj->GetObjectType()==OBJECT_TYPE_ROBOTAI) return obj->AsRobot()->m_CurrState!=ROBOT_DIP;// &&
+    //    (obj->AsRobot()->GetSide()!=PLAYER_SIDE || !obj->AsRobot()->IsSelected()) &&
+    //    (g_MatrixMap->GetPlayerSide()->GetArcadedObject() != obj); else if(obj->GetObjectType()==OBJECT_TYPE_CANNON)
+    //    return obj->AsCannon()->m_CurrState!=CANNON_DIP && obj->AsCannon()->m_CurrState!=CANNON_UNDER_CONSTRUCTION;
+    //    else if(obj->GetObjectType()==OBJECT_TYPE_BUILDING) return (obj->AsBuilding()->m_State!=BUILDING_DIP) &&
+    //    (obj->AsBuilding()->m_State!=BUILDING_DIP_EXPLODED); else return false;
+    //}
 
-        void Sort(const D3DXMATRIX &sort);
-        static void SortBegin(void);
-        static  void        OnEndOfDraw(void); // this must be called before any sorting stuf
+    bool FitToMask(DWORD mask);
 
-        static void SortEndRecalcTerainColor(void);
-        static void SortEndDraw(void);
-        static void SortEndBeforeDraw(void);
-        static void SortEndDrawShadowProj(void);
-        static void SortEndDrawShadowStencil(void);
-        static void SortEndGraphicTakt(int step);
+    __forceinline CMatrixRobotAI *AsRobot(void) { return (CMatrixRobotAI *)this; }
+    __forceinline CMatrixCannon *AsCannon(void) { return (CMatrixCannon *)this; }
+    __forceinline CMatrixBuilding *AsBuilding(void) { return (CMatrixBuilding *)this; }
+    __forceinline CMatrixFlyer *AsFlyer(void) { return (CMatrixFlyer *)this; }
 
-        static void CalcDistances(void);
+    __forceinline bool IsNearBase(void) const { return m_NearBaseCnt != 0; }
 
-        static void RemoveFromSorted(CMatrixMapStatic *ms);
+    void RecalcTerainColor(void);
+    __forceinline DWORD GetTerrainColor(void) const { return m_Core->m_TerainColor; }
 
-        static int GetVisObjCnt(void);
-        static CMatrixMapStatic * GetVisObj(int i);
+    void Sort(const D3DXMATRIX &sort);
+    static void SortBegin(void);
+    static void OnEndOfDraw(void);  // this must be called before any sorting stuf
 
+    static void SortEndRecalcTerainColor(void);
+    static void SortEndDraw(void);
+    static void SortEndBeforeDraw(void);
+    static void SortEndDrawShadowProj(void);
+    static void SortEndDrawShadowStencil(void);
+    static void SortEndGraphicTakt(int step);
 
-        __forceinline EObjectType GetObjectType(void) const {return m_Core->m_Type;}
-        __forceinline const D3DXVECTOR3 &GetGeoCenter(void) const {return m_Core->m_GeoCenter;}
-        __forceinline const D3DXMATRIX &GetMatrix(void) const {return m_Core->m_Matrix;}
-        __forceinline float GetRadius(void) const {return m_Core->m_Radius;}
+    static void CalcDistances(void);
+
+    static void RemoveFromSorted(CMatrixMapStatic *ms);
+
+    static int GetVisObjCnt(void);
+    static CMatrixMapStatic *GetVisObj(int i);
+
+    __forceinline EObjectType GetObjectType(void) const { return m_Core->m_Type; }
+    __forceinline const D3DXVECTOR3 &GetGeoCenter(void) const { return m_Core->m_GeoCenter; }
+    __forceinline const D3DXMATRIX &GetMatrix(void) const { return m_Core->m_Matrix; }
+    __forceinline float GetRadius(void) const { return m_Core->m_Radius; }
 
 #ifdef _DEBUG
-        SObjectCore *GetCore(SDebugCallInfo &dci);
+    SObjectCore *GetCore(SDebugCallInfo &dci);
 #else
 #ifdef _TRACE
-        __forceinline SObjectCore *GetCore(SDebugCallInfo &) {m_Core->RefInc(); return m_Core;}
+    __forceinline SObjectCore *GetCore(SDebugCallInfo &) {
+        m_Core->RefInc();
+        return m_Core;
+    }
 #else
-        __forceinline SObjectCore *GetCore(void) {m_Core->RefInc(); return m_Core;}
+    __forceinline SObjectCore *GetCore(void) {
+        m_Core->RefInc();
+        return m_Core;
+    }
 #endif
 #endif
 
-        // logic temp: list of static objects, у которых временно вызывается логический такт
-        __forceinline bool    InLT(void) { return (m_PrevLogicTemp!=NULL) || (m_NextLogicTemp!=NULL) || (this==m_FirstLogicTemp); }
-        __forceinline void    AddLT(void) {if (!InLT()) {LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
-        __forceinline void    DelLT(void) {if (InLT()) {LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);}}
-
-        static void ProceedLogic(int ms);
-
-        __forceinline void RChange(dword zn)
-        {
-            m_RChange|=zn;
+    // logic temp: list of static objects, у которых временно вызывается логический такт
+    __forceinline bool InLT(void) {
+        return (m_PrevLogicTemp != NULL) || (m_NextLogicTemp != NULL) || (this == m_FirstLogicTemp);
+    }
+    __forceinline void AddLT(void) {
+        if (!InLT()) {
+            LIST_ADD(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
         }
-        __forceinline void RNoNeed(dword zn)
-        {
-            m_RChange &= (~zn);
+    }
+    __forceinline void DelLT(void) {
+        if (InLT()) {
+            LIST_DEL_CLEAR(this, m_FirstLogicTemp, m_LastLogicTemp, m_PrevLogicTemp, m_NextLogicTemp);
         }
+    }
 
-        void    StaticTakt(int ms);
+    static void ProceedLogic(int ms);
 
-        virtual void RNeed(dword need)=0;                       // Запрашиваем нужные ресурсы объекта
+    __forceinline void RChange(dword zn) { m_RChange |= zn; }
+    __forceinline void RNoNeed(dword zn) { m_RChange &= (~zn); }
 
-        virtual void Takt(int cms) = 0;
-        virtual void LogicTakt(int cms) = 0;
+    void StaticTakt(int ms);
 
-        virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt) const = 0;
+    virtual void RNeed(dword need) = 0;  // Запрашиваем нужные ресурсы объекта
 
-        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker) = 0;
+    virtual void Takt(int cms) = 0;
+    virtual void LogicTakt(int cms) = 0;
 
-        virtual void BeforeDraw(void) = 0;
-        virtual void Draw(void)  = 0;
-        virtual void DrawShadowStencil(void) = 0;
-        virtual void DrawShadowProj(void) = 0;
-        virtual void FreeDynamicResources(void) = 0;
+    virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const = 0;
 
-        void OnLoad(void);
-        void Init(int ids);
+    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
+                        CMatrixMapStatic *attaker) = 0;
 
-        virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax) = 0;
-        
-        virtual int  GetSide(void) const = 0;
-        virtual bool  NeedRepair(void) const = 0;
+    virtual void BeforeDraw(void) = 0;
+    virtual void Draw(void) = 0;
+    virtual void DrawShadowStencil(void) = 0;
+    virtual void DrawShadowProj(void) = 0;
+    virtual void FreeDynamicResources(void) = 0;
 
+    void OnLoad(void);
+    void Init(int ids);
 
-        static bool  EnumVertsHandler(const SVOVertex &v, DWORD data);
-        virtual bool InRect(const CRect &rect) const = 0;
+    virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax) = 0;
 
-        void JoinToGroup(void);
-        void UnjoinGroup(void);
+    virtual int GetSide(void) const = 0;
+    virtual bool NeedRepair(void) const = 0;
 
+    static bool EnumVertsHandler(const SVOVertex &v, DWORD data);
+    virtual bool InRect(const CRect &rect) const = 0;
 
-        bool RenderToTexture(SRenderTexture *rt, int n, /*float *fff=NULL,*/ float anglez = GRAD2RAD(30), float anglex = GRAD2RAD(30), float fov = GRAD2RAD(60));
+    void JoinToGroup(void);
+    void UnjoinGroup(void);
 
+    bool RenderToTexture(SRenderTexture *rt, int n, /*float *fff=NULL,*/ float anglez = GRAD2RAD(30),
+                         float anglex = GRAD2RAD(30), float fov = GRAD2RAD(60));
 
 #ifdef SHOW_ASSIGNED_GROUPS
-        void ShowGroups(void);
+    void ShowGroups(void);
 #endif
 };
 
-__forceinline  CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void)
-{
-    if (m_Target) return m_Target->m_Object;
+__forceinline CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void) {
+    if (m_Target)
+        return m_Target->m_Object;
     return NULL;
 }
 
-__forceinline void   CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {m_Owner = ms->GetCore(DEBUG_CALL_INFO); m_SideStorage = ms->GetSide();}
-__forceinline       CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void)
-{
-    if (m_Owner) return m_Owner->m_Object;
+__forceinline void CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {
+    m_Owner = ms->GetCore(DEBUG_CALL_INFO);
+    m_SideStorage = ms->GetSide();
+}
+__forceinline CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void) {
+    if (m_Owner)
+        return m_Owner->m_Object;
     return NULL;
 }
 
-
-CVectorObjectAnim* LoadObject(const wchar *name, CHeap * heap, bool side = false, const wchar *texname = NULL);
-void UnloadObject(CVectorObjectAnim *o, CHeap * heap);
-
-
+CVectorObjectAnim *LoadObject(const wchar *name, CHeap *heap, bool side = false, const wchar *texname = NULL);
+void UnloadObject(CVectorObjectAnim *o, CHeap *heap);

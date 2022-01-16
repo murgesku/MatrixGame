@@ -10,12 +10,11 @@
 
 #include "../stdafx.h"
 
-#define MAX_EFFECT_DISTANCE_SQ  ((3000)*(3000))
+#define MAX_EFFECT_DISTANCE_SQ ((3000) * (3000))
 
 // billboards
 
-enum EBillboardTextureSort
-{
+enum EBillboardTextureSort {
     BBT_SMOKE,
     BBT_SMOKE_INTENSE,
     BBT_FIRE,
@@ -77,37 +76,31 @@ enum EBillboardTextureSort
     EBillboardTextureSort_FORCE_DWORD = 0x7FFFFFFF
 };
 
-struct SBillboardID2Texname
-{
+struct SBillboardID2Texname {
     EBillboardTextureSort id;
-    const wchar          *name;
+    const wchar *name;
 };
 
-#define BBT_FLAG_INTENSE    SETBIT(0)
+#define BBT_FLAG_INTENSE SETBIT(0)
 
-struct SBillboardTextureArrayElement
-{
-    DWORD               flags;
-    union
-    {
-        SBillboardTexture   bbt;    // for sorted
-        CTextureManaged    *tex;    // for intense
+struct SBillboardTextureArrayElement {
+    DWORD flags;
+    union {
+        SBillboardTexture bbt;  // for sorted
+        CTextureManaged *tex;   // for intense
     };
 
-    bool IsIntense(void) const {return FLAG(flags,BBT_FLAG_INTENSE);};
+    bool IsIntense(void) const { return FLAG(flags, BBT_FLAG_INTENSE); };
 };
-
 
 // classes
 
-class CDebris : public CVectorObjectAnim
-{
+class CDebris : public CVectorObjectAnim {
     int m_DebrisType;
 
-    public:
-        void SetDebType(int type) {m_DebrisType = type;};
-        int  GetDebType(void) {return m_DebrisType;}
-
+public:
+    void SetDebType(int type) { m_DebrisType = type; };
+    int GetDebType(void) { return m_DebrisType; }
 };
 
 class CMatrixEffectExplosion;
@@ -126,23 +119,21 @@ struct SExplosionProperties;
 struct SMOProps;
 enum EWeapon;
 
-
 typedef void (*ADD_TAKT)(CMatrixEffectBillboard *bb, float ms);
 
-#define FEHF_LASTHIT        SETBIT(0)
-#define FEHF_DAMAGE_ROBOT   SETBIT(1)
+#define FEHF_LASTHIT      SETBIT(0)
+#define FEHF_DAMAGE_ROBOT SETBIT(1)
 
 typedef void (*FIRE_END_HANDLER)(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user, DWORD flags);
 
-#define SMOKE_SPEED        (1.0f/25.0f)
+#define SMOKE_SPEED (1.0f / 25.0f)
 // fire
-#define FIRE_SPEED        (0.5f/25.0f)
+#define FIRE_SPEED (0.5f / 25.0f)
 
 // selection
-#define SEL_COLOR_DEFAULT       0xFF00FF00
-#define SEL_COLOR_TMP           0xFF305010
-enum EBuoyType
-{
+#define SEL_COLOR_DEFAULT 0xFF00FF00
+#define SEL_COLOR_TMP     0xFF305010
+enum EBuoyType {
     BUOY_RED,
     BUOY_GREEN,
     BUOY_BLUE,
@@ -150,17 +141,16 @@ enum EBuoyType
     EBuoyType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum ESpotType
-{
+enum ESpotType {
     SPOT_CONSTANT = 0,
-	SPOT_SELECTION = 1,
+    SPOT_SELECTION = 1,
     SPOT_PLASMA_HIT = 2,
-	//SPOT_MOVE_TO = 3,
+    // SPOT_MOVE_TO = 3,
     SPOT_POINTLIGHT = 4,
     SPOT_VORONKA = 5,
     SPOT_TURRET = 6,
-    SPOT_SOLE_TRACK = 7,  // следы гусениц
-    SPOT_SOLE_WHEEL = 8,  // следы колес
+    SPOT_SOLE_TRACK = 7,      // следы гусениц
+    SPOT_SOLE_WHEEL = 8,      // следы колес
     SPOT_SOLE_PNEUMATIC = 9,  // следы ног
 
     SPOT_TYPES_CNT,
@@ -169,29 +159,26 @@ enum ESpotType
 
 typedef void (*SPOT_TAKT_FUNC)(CMatrixEffectLandscapeSpot *spot, float ms);
 
-#define LSFLAG_INTENSE          SETBIT(0)
-#define LSFLAG_SCALE_BY_NORMAL  SETBIT(1)
+#define LSFLAG_INTENSE         SETBIT(0)
+#define LSFLAG_SCALE_BY_NORMAL SETBIT(1)
 
-typedef struct
-{
-    SPOT_TAKT_FUNC  func;
+typedef struct {
+    SPOT_TAKT_FUNC func;
     CTextureManaged *texture;
-    DWORD           color;
-    float           ttl;
-    DWORD           flags;
+    DWORD color;
+    float ttl;
+    DWORD flags;
 
 } SSpotProperties;
 
-
-#define MAX_EFFECTS_EXPLOSIONS      50
-#define MAX_EFFECTS_POINT_LIGHTS    50
-#define MAX_EFFECTS_SMOKEFIRES      100
-#define MAX_EFFECTS_LANDSPOTS       100
-#define MAX_EFFECTS_FIREANIM        50
+#define MAX_EFFECTS_EXPLOSIONS   50
+#define MAX_EFFECTS_POINT_LIGHTS 50
+#define MAX_EFFECTS_SMOKEFIRES   100
+#define MAX_EFFECTS_LANDSPOTS    100
+#define MAX_EFFECTS_FIREANIM     50
 
 // common
-enum EEffectType
-{
+enum EEffectType {
     /* 0  */ EFFECT_UNDEFINED,
     /* 1  */ EFFECT_EXPLOSION,
     /* 2  */ EFFECT_SMOKE,
@@ -232,132 +219,166 @@ enum EEffectType
 };
 
 // before draw done flags
-#define BDDF_EXPLOSION  SETBIT(0)
-#define BDDF_DUST       SETBIT(1)
+#define BDDF_EXPLOSION SETBIT(0)
+#define BDDF_DUST      SETBIT(1)
 //#define BDDF_FIRE       SETBIT(2)
 //#define BDDF_SMOKE      SETBIT(3)
 //#define BDDF_PLASMA     SETBIT(4)
 //#define BDDF_FLAME      SETBIT(5)
 //#define BDDF_LIGHTENING SETBIT(6)
-#define BDDF_PLIGHT     SETBIT(7)
+#define BDDF_PLIGHT SETBIT(7)
 //#define BDDF_FIRESTREAM SETBIT(8)
-
-
 
 // m_Flags
 
-#define EFFF_DIP            SETBIT(0)    // effect is under destruction
+#define EFFF_DIP SETBIT(0)  // effect is under destruction
 
 // only weapon flags
-#define WEAPFLAGS_FIRE      SETBIT(1)
-#define WEAPFLAGS_FIREWAS   SETBIT(2)
-#define WEAPFLAGS_HITWAS    SETBIT(3)   // only for instant weapons (LASER, VOLCANO, LIGHTENING)
-#define WEAPFLAGS_SND_OFF   SETBIT(4)   // выключать при FireEnd (использовать на зацикленных звуках (Laser, lightening))
-#define WEAPFLAGS_SND_SKIP  SETBIT(5)   // если звук уже звучит, пропускать (volcano)
+#define WEAPFLAGS_FIRE     SETBIT(1)
+#define WEAPFLAGS_FIREWAS  SETBIT(2)
+#define WEAPFLAGS_HITWAS   SETBIT(3)  // only for instant weapons (LASER, VOLCANO, LIGHTENING)
+#define WEAPFLAGS_SND_OFF  SETBIT(4)  // выключать при FireEnd (использовать на зацикленных звуках (Laser, lightening))
+#define WEAPFLAGS_SND_SKIP SETBIT(5)  // если звук уже звучит, пропускать (volcano)
 
 // only repair flags
-#define ERF_LOST_TARGET     SETBIT(1)
-#define ERF_OFF_TARGET      SETBIT(2)
-#define ERF_FOUND_TARGET    SETBIT(3)
-#define ERF_WITH_TARGET     SETBIT(4)
-#define ERF_MAX_AMP         SETBIT(5)
+#define ERF_LOST_TARGET  SETBIT(1)
+#define ERF_OFF_TARGET   SETBIT(2)
+#define ERF_FOUND_TARGET SETBIT(3)
+#define ERF_WITH_TARGET  SETBIT(4)
+#define ERF_MAX_AMP      SETBIT(5)
 
 // only PointLight flags
-#define PLF_KIP             SETBIT(1)
+#define PLF_KIP SETBIT(1)
 
 // only Selection flags
-#define SELF_KIP            SETBIT(1)
+#define SELF_KIP SETBIT(1)
 
 // only BigBoom flags
-#define BIGBOOMF_PREPARED   SETBIT(1)
+#define BIGBOOMF_PREPARED SETBIT(1)
 
 // only MoveTo flags
-#define MOVETOF_PREPARED    SETBIT(1)
+#define MOVETOF_PREPARED SETBIT(1)
 
-
-typedef struct
-{
+typedef struct {
     float c;
     float t;
 } SGradient;
 
-__forceinline  float CalcGradient(float t, const SGradient *grad)
-{
+__forceinline float CalcGradient(float t, const SGradient *grad) {
     int i = 1;
-    for(;;++i)
-    {
-        if (t >= grad[i].t)
-        {
+    for (;; ++i) {
+        if (t >= grad[i].t) {
             continue;
         }
-        return (grad[i].c-grad[i-1].c) * (t - grad[i-1].t) / (grad[i].t - grad[i-1].t) + grad[i-1].c;
+        return (grad[i].c - grad[i - 1].c) * (t - grad[i - 1].t) / (grad[i].t - grad[i - 1].t) + grad[i - 1].c;
     }
 }
 
 class CMatrixEffect;
 
-struct SEffectHandler
-{
+struct SEffectHandler {
 #ifdef _DEBUG
     SDebugCallInfo from;
 #endif
     CMatrixEffect *effect;
 
-
 #ifdef _DEBUG
-    SEffectHandler(SDebugCallInfo &f):from(f),effect(NULL) {}
-    ~SEffectHandler() {Release(from);}
+    SEffectHandler(SDebugCallInfo &f) : from(f), effect(NULL) {}
+    ~SEffectHandler() { Release(from); }
     void Release(SDebugCallInfo &from);
 #else
-    SEffectHandler(void):effect(NULL) {}
-    ~SEffectHandler() {Release();}
+    SEffectHandler(void) : effect(NULL) {}
+    ~SEffectHandler() { Release(); }
     void Release(void);
 #endif
     void Unconnect(void);
     void Rebase(void);
 
 #ifdef _DEBUG
-    SEffectHandler & operator =(const SEffectHandler &h) { _asm int 3 }
+    SEffectHandler &operator=(const SEffectHandler &h) { _asm int 3 }
 #endif
-
 };
 
-#define ELIST_NAME(n,x)             m_EffectsList##n##x
-#define ELIST_FIRST(n)              ELIST_NAME(n,_First)
-#define ELIST_LAST(n)               ELIST_NAME(n,_Last)
-#define ELIST_CNT(n)                ELIST_NAME(n,_Count)
-#define ELIST_DECLARE_INCLASS(n)    static CMatrixEffect * ELIST_FIRST(n); static CMatrixEffect * ELIST_LAST(n); static int ELIST_CNT(n)
-#define ELIST_DECLARE_OUTCLASS(n)   CMatrixEffect * CMatrixEffect::ELIST_FIRST(n); CMatrixEffect * CMatrixEffect::ELIST_LAST(n); int CMatrixEffect::ELIST_CNT(n)
-#define ELIST_INIT(n)               CMatrixEffect::ELIST_FIRST(n) = NULL; CMatrixEffect::ELIST_LAST(n) = NULL; CMatrixEffect::ELIST_CNT(n) = 0
-#define ELIST_ADD(n)                LIST_ADD(this, ELIST_FIRST(n), ELIST_LAST(n),m_TypePrev,m_TypeNext); ++ELIST_CNT(n)
-#define ELIST_DEL(n)                LIST_DEL(this, ELIST_FIRST(n), ELIST_LAST(n),m_TypePrev,m_TypeNext); --ELIST_CNT(n)
+#define ELIST_NAME(n, x) m_EffectsList##n##x
+#define ELIST_FIRST(n)   ELIST_NAME(n, _First)
+#define ELIST_LAST(n)    ELIST_NAME(n, _Last)
+#define ELIST_CNT(n)     ELIST_NAME(n, _Count)
+#define ELIST_DECLARE_INCLASS(n)          \
+    static CMatrixEffect *ELIST_FIRST(n); \
+    static CMatrixEffect *ELIST_LAST(n);  \
+    static int ELIST_CNT(n)
+#define ELIST_DECLARE_OUTCLASS(n)                 \
+    CMatrixEffect *CMatrixEffect::ELIST_FIRST(n); \
+    CMatrixEffect *CMatrixEffect::ELIST_LAST(n);  \
+    int CMatrixEffect::ELIST_CNT(n)
+#define ELIST_INIT(n)                     \
+    CMatrixEffect::ELIST_FIRST(n) = NULL; \
+    CMatrixEffect::ELIST_LAST(n) = NULL;  \
+    CMatrixEffect::ELIST_CNT(n) = 0
+#define ELIST_ADD(n)                                                       \
+    LIST_ADD(this, ELIST_FIRST(n), ELIST_LAST(n), m_TypePrev, m_TypeNext); \
+    ++ELIST_CNT(n)
+#define ELIST_DEL(n)                                                       \
+    LIST_DEL(this, ELIST_FIRST(n), ELIST_LAST(n), m_TypePrev, m_TypeNext); \
+    --ELIST_CNT(n)
 
 #ifdef _DEBUG
-#define ELSIT_REMOVE_OLDEST(n)      { g_MatrixMap->SubEffect(DEBUG_CALL_INFO, ELIST_FIRST(n)); }
-#define ELSIT_REMOVE_OLDEST_PRIORITY(n,p) { CMatrixEffect *ef = ELIST_FIRST(n); CMatrixEffect *ef2d = ef; for (;ef;ef=ef->m_TypeNext) { if (ef->Priority() < (p)) {ef2d = ef; break;} } {if (ef2d==ELIST_LAST(n)) {ef2d = ELIST_FIRST(n);}} g_MatrixMap->SubEffect(DEBUG_CALL_INFO, ef2d);}
+#define ELSIT_REMOVE_OLDEST(n) \
+    { g_MatrixMap->SubEffect(DEBUG_CALL_INFO, ELIST_FIRST(n)); }
+#define ELSIT_REMOVE_OLDEST_PRIORITY(n, p)             \
+    {                                                  \
+        CMatrixEffect *ef = ELIST_FIRST(n);            \
+        CMatrixEffect *ef2d = ef;                      \
+        for (; ef; ef = ef->m_TypeNext) {              \
+            if (ef->Priority() < (p)) {                \
+                ef2d = ef;                             \
+                break;                                 \
+            }                                          \
+        }                                              \
+        {                                              \
+            if (ef2d == ELIST_LAST(n)) {               \
+                ef2d = ELIST_FIRST(n);                 \
+            }                                          \
+        }                                              \
+        g_MatrixMap->SubEffect(DEBUG_CALL_INFO, ef2d); \
+    }
 #else
-#define ELSIT_REMOVE_OLDEST(n)      { g_MatrixMap->SubEffect(ELIST_FIRST(n)); }
-#define ELSIT_REMOVE_OLDEST_PRIORITY(n,p) { CMatrixEffect *ef = ELIST_FIRST(n); CMatrixEffect *ef2d = ef; for (;ef;ef=ef->m_TypeNext) { if (ef->Priority() < (p)) {ef2d = ef; break;} } {if (ef2d==ELIST_LAST(n)) {ef2d = ELIST_FIRST(n);}} g_MatrixMap->SubEffect(ef2d);}
+#define ELSIT_REMOVE_OLDEST(n) \
+    { g_MatrixMap->SubEffect(ELIST_FIRST(n)); }
+#define ELSIT_REMOVE_OLDEST_PRIORITY(n, p)  \
+    {                                       \
+        CMatrixEffect *ef = ELIST_FIRST(n); \
+        CMatrixEffect *ef2d = ef;           \
+        for (; ef; ef = ef->m_TypeNext) {   \
+            if (ef->Priority() < (p)) {     \
+                ef2d = ef;                  \
+                break;                      \
+            }                               \
+        }                                   \
+        {                                   \
+            if (ef2d == ELIST_LAST(n)) {    \
+                ef2d = ELIST_FIRST(n);      \
+            }                               \
+        }                                   \
+        g_MatrixMap->SubEffect(ef2d);       \
+    }
 #endif
 
-class CMatrixEffect : public CMain
-{
+class CMatrixEffect : public CMain {
 protected:
-    //DPTR_MEM_SIGNATURE_DECLARE();
+    // DPTR_MEM_SIGNATURE_DECLARE();
 
     EEffectType m_EffectType;
     SEffectHandler *m_EffectHandler;
-    DWORD       m_Flags;
+    DWORD m_Flags;
 
+    CMatrixEffect *m_TypePrev;
+    CMatrixEffect *m_TypeNext;
 
-    CMatrixEffect   *m_TypePrev;
-    CMatrixEffect   *m_TypeNext;
-
-
-    static DWORD              m_before_draw_done;
-    static CDebris           *m_Debris;
-    static int                m_DebrisCnt;
-    static SSpotProperties    m_SpotProperties[SPOT_TYPES_CNT];
+    static DWORD m_before_draw_done;
+    static CDebris *m_Debris;
+    static int m_DebrisCnt;
+    static SSpotProperties m_SpotProperties[SPOT_TYPES_CNT];
     static SBillboardTextureArrayElement m_BBTextures[BBT_LAST];
 
     ELIST_DECLARE_INCLASS(EFFECT_EXPLOSION);
@@ -367,26 +388,29 @@ protected:
     ELIST_DECLARE_INCLASS(EFFECT_MOVETO);
     ELIST_DECLARE_INCLASS(EFFECT_FIREANIM);
 
-    void    SetDIP(void) {SETFLAG(m_Flags, EFFF_DIP);}
+    void SetDIP(void) { SETFLAG(m_Flags, EFFF_DIP); }
 
-    CMatrixEffect(void):CMain() ,m_EffectHandler(NULL), m_TypePrev(NULL), m_TypeNext(NULL), m_Prev(NULL), m_Next(NULL),m_Flags(0)
+    CMatrixEffect(void)
+      : CMain(), m_EffectHandler(NULL), m_TypePrev(NULL), m_TypeNext(NULL), m_Prev(NULL), m_Next(NULL), m_Flags(0)
 #ifdef _DEBUG
-    , m_EffectType(EFFECT_UNDEFINED)
+        ,
+        m_EffectType(EFFECT_UNDEFINED)
 #endif
     {
-        //DPTR_MEM_SIGNATURE_INIT(sizeof(CMatrixEffect));
+        // DPTR_MEM_SIGNATURE_INIT(sizeof(CMatrixEffect));
         DCS_INCONSTRUCTOR();
     };
-    ~CMatrixEffect()
-    {
+    ~CMatrixEffect() {
         DTRACE();
-        if (m_EffectHandler) m_EffectHandler->effect = NULL;
+        if (m_EffectHandler)
+            m_EffectHandler->effect = NULL;
     };
+
 public:
-    static Base::CHeap  *m_Heap;
-    CMatrixEffect   *m_Prev;
-    CMatrixEffect   *m_Next;
-    static float     m_Dist2;    // used by movin objects (missiles cannons)
+    static Base::CHeap *m_Heap;
+    CMatrixEffect *m_Prev;
+    CMatrixEffect *m_Next;
+    static float m_Dist2;  // used by movin objects (missiles cannons)
 
     friend class CMatrixEffectExplosion;
     friend class CMatrixEffectSmoke;
@@ -397,104 +421,126 @@ public:
     friend class CMatrixEffectMoveto;
     friend class CMatrixEffectFireAnim;
 
-    void            SetHandler(SEffectHandler *eh) {m_EffectHandler = eh;}
-    SEffectHandler* GetHandler(void) {return m_EffectHandler;}
-    void            Unconnect(void) {if (m_EffectHandler) m_EffectHandler->effect = NULL;}
-    EEffectType GetType(void) {return m_EffectType;}
+    void SetHandler(SEffectHandler *eh) { m_EffectHandler = eh; }
+    SEffectHandler *GetHandler(void) { return m_EffectHandler; }
+    void Unconnect(void) {
+        if (m_EffectHandler)
+            m_EffectHandler->effect = NULL;
+    }
+    EEffectType GetType(void) { return m_EffectType; }
 
-    static void     CreatePoolDefaultResources(void);
-    static void     ReleasePoolDefaultResources(void);
+    static void CreatePoolDefaultResources(void);
+    static void ReleasePoolDefaultResources(void);
 
-    static void     InitEffects(CBlockPar & bp);
-    static void     ClearEffects(void);
+    static void InitEffects(CBlockPar &bp);
+    static void ClearEffects(void);
 
-    static const SBillboardTexture* GetBBTex(EBillboardTextureSort t) {return &m_BBTextures[t].bbt;};
-    static CTextureManaged* GetBBTexI(EBillboardTextureSort t) {return m_BBTextures[t].tex;};
+    static const SBillboardTexture *GetBBTex(EBillboardTextureSort t) { return &m_BBTextures[t].bbt; };
+    static CTextureManaged *GetBBTexI(EBillboardTextureSort t) { return m_BBTextures[t].tex; };
 
-    static void            CreateExplosion(const D3DXVECTOR3 &pos, const SExplosionProperties &props, bool fire = false); // automaticaly adds to Effects list; can return NULL
-    static void            CreateSmoke(SEffectHandler *eh, const D3DXVECTOR3 &pos, float ttl, float puffttl, float spawntime, DWORD color, bool intense = false, float speed = SMOKE_SPEED);   // automaticaly adds to Effects list; can return NULL
-    static void            CreateFire(SEffectHandler *eh, const D3DXVECTOR3 &pos, float ttl, float puffttl, float spawntime, float dispfactor,  bool intense = true, float speed = FIRE_SPEED);   // automaticaly adds to Effects list; can return NULL
-    static void            CreateFireAnim(SEffectHandler *eh, const D3DXVECTOR3 &pos, float w, float h, int ttl);   // automaticaly adds to Effects list; can return NULL
-    static void            CreateFirePlasma(const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, float speed, DWORD hitmask,  CMatrixMapStatic * skip, FIRE_END_HANDLER handler, DWORD user); // automaticaly adds to Effects list; can return NULL
-    static void            CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &pos, float angle, float scale, ESpotType  type = SPOT_CONSTANT);  // automaticaly adds to Effects list; can return NULL
-    static void            CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask,  CMatrixMapStatic * skip, FIRE_END_HANDLER = NULL, DWORD user = 0); // automaticaly adds to Effects list; can return NULL
-    static void            CreateBuoy(SEffectHandler *eh, const D3DXVECTOR3 &pos, EBuoyType bt);
-    static void            CreateMoveto(void);
-    static void            CreateMoveto(const D3DXVECTOR3 &pos);
-    static void            DeleteAllMoveto(void);
-    static CMatrixEffect * CreateSelection(const D3DXVECTOR3 &pos, float r, DWORD color = SEL_COLOR_DEFAULT);
-    static CMatrixEffect * CreatePath(const D3DXVECTOR3 *pos, int cnt);
-    static void            CreatePointLight(SEffectHandler *eh, const D3DXVECTOR3 &pos, float r, DWORD color, bool drawbill = false);  // automaticaly adds to Effects list; can return NULL
-    static void            CreateKonus(SEffectHandler *eh, const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float radius, float height, float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
-    static void            CreateKonusSplash(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float radius, float height, float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
-    static CMatrixEffect * CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, DWORD user, FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0);
-    static void            CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic * skip, DWORD user, FIRE_END_HANDLER handler);
-    static void            CreateBigBoom(const D3DXVECTOR3 &pos, float radius, float ttl,DWORD hitmask, CMatrixMapStatic * skip, DWORD user, FIRE_END_HANDLER handler, DWORD light = 0);   // automaticaly adds to Effects list; can return NULL
-    static void            CreateLightening(SEffectHandler *eh, const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1,float ttl,float dispers, float width, DWORD color = 0xFFFFFFFF); // automaticaly adds to Effects list; can return NULL
-    static void            CreateShorted(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float ttl, DWORD color = 0xFFFFFFFF); // automaticaly adds to Effects list; can return NULL
-    static void            CreateBillboard(SEffectHandler *eh, const D3DXVECTOR3 &pos, float radius1,float radius2, DWORD c1, DWORD c2, float ttl, float delay, const wchar *tex, const D3DXVECTOR3 &dir, ADD_TAKT addtakt = NULL); // automaticaly adds to Effects list; can return NULL
-    static void            CreateBillboardScore(const wchar *n, const D3DXVECTOR3 &pos, DWORD color);
-    static void            CreateBillboardLine(SEffectHandler *eh, const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1,float width, DWORD c1, DWORD c2, float ttl, CTextureManaged *tex); // automaticaly adds to Effects list; can return NULL
-    static CMatrixEffect * CreateZahvat(const D3DXVECTOR3 &pos, float radius, float angle, int cnt);
-    static CMatrixEffect * CreateElevatorField(const D3DXVECTOR3 &pos0,const D3DXVECTOR3 &pos1, float radius, const D3DXVECTOR3 & fwd);
-    static void            CreateDust(SEffectHandler *eh, const D3DXVECTOR2 &pos,const D3DXVECTOR2 &adddir, float ttl); // automaticaly adds to Effects list; can return NULL
-    static CMatrixEffectFireStream * CreateFireStream(const D3DXVECTOR3 &pos0,const D3DXVECTOR3 &pos1);
-    static void            CreateShleif(SEffectHandler *eh);
-    static CMatrixEffect * CreateRepair(const D3DXVECTOR3 &pos,const D3DXVECTOR3 &dir, float seekradius, CMatrixMapStatic * skip);
-
+    static void CreateExplosion(const D3DXVECTOR3 &pos, const SExplosionProperties &props,
+                                bool fire = false);  // automaticaly adds to Effects list; can return NULL
+    static void CreateSmoke(SEffectHandler *eh, const D3DXVECTOR3 &pos, float ttl, float puffttl, float spawntime,
+                            DWORD color, bool intense = false,
+                            float speed = SMOKE_SPEED);  // automaticaly adds to Effects list; can return NULL
+    static void CreateFire(SEffectHandler *eh, const D3DXVECTOR3 &pos, float ttl, float puffttl, float spawntime,
+                           float dispfactor, bool intense = true,
+                           float speed = FIRE_SPEED);  // automaticaly adds to Effects list; can return NULL
+    static void CreateFireAnim(SEffectHandler *eh, const D3DXVECTOR3 &pos, float w, float h,
+                               int ttl);  // automaticaly adds to Effects list; can return NULL
+    static void CreateFirePlasma(const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, float speed, DWORD hitmask,
+                                 CMatrixMapStatic *skip, FIRE_END_HANDLER handler,
+                                 DWORD user);  // automaticaly adds to Effects list; can return NULL
+    static void CreateLandscapeSpot(
+            SEffectHandler *eh, const D3DXVECTOR2 &pos, float angle, float scale,
+            ESpotType type = SPOT_CONSTANT);  // automaticaly adds to Effects list; can return NULL
+    static void CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask, CMatrixMapStatic *skip,
+                                   FIRE_END_HANDLER = NULL,
+                                   DWORD user = 0);  // automaticaly adds to Effects list; can return NULL
+    static void CreateBuoy(SEffectHandler *eh, const D3DXVECTOR3 &pos, EBuoyType bt);
+    static void CreateMoveto(void);
+    static void CreateMoveto(const D3DXVECTOR3 &pos);
+    static void DeleteAllMoveto(void);
+    static CMatrixEffect *CreateSelection(const D3DXVECTOR3 &pos, float r, DWORD color = SEL_COLOR_DEFAULT);
+    static CMatrixEffect *CreatePath(const D3DXVECTOR3 *pos, int cnt);
+    static void CreatePointLight(SEffectHandler *eh, const D3DXVECTOR3 &pos, float r, DWORD color,
+                                 bool drawbill = false);  // automaticaly adds to Effects list; can return NULL
+    static void CreateKonus(SEffectHandler *eh, const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float radius,
+                            float height, float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
+    static void CreateKonusSplash(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float radius, float height,
+                                  float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
+    static CMatrixEffect *CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, DWORD user,
+                                       FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0);
+    static void CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic *skip, DWORD user,
+                            FIRE_END_HANDLER handler);
+    static void CreateBigBoom(const D3DXVECTOR3 &pos, float radius, float ttl, DWORD hitmask, CMatrixMapStatic *skip,
+                              DWORD user, FIRE_END_HANDLER handler,
+                              DWORD light = 0);  // automaticaly adds to Effects list; can return NULL
+    static void CreateLightening(SEffectHandler *eh, const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float ttl,
+                                 float dispers, float width,
+                                 DWORD color = 0xFFFFFFFF);  // automaticaly adds to Effects list; can return NULL
+    static void CreateShorted(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float ttl,
+                              DWORD color = 0xFFFFFFFF);  // automaticaly adds to Effects list; can return NULL
+    static void CreateBillboard(SEffectHandler *eh, const D3DXVECTOR3 &pos, float radius1, float radius2, DWORD c1,
+                                DWORD c2, float ttl, float delay, const wchar *tex, const D3DXVECTOR3 &dir,
+                                ADD_TAKT addtakt = NULL);  // automaticaly adds to Effects list; can return NULL
+    static void CreateBillboardScore(const wchar *n, const D3DXVECTOR3 &pos, DWORD color);
+    static void CreateBillboardLine(SEffectHandler *eh, const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float width,
+                                    DWORD c1, DWORD c2, float ttl,
+                                    CTextureManaged *tex);  // automaticaly adds to Effects list; can return NULL
+    static CMatrixEffect *CreateZahvat(const D3DXVECTOR3 &pos, float radius, float angle, int cnt);
+    static CMatrixEffect *CreateElevatorField(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float radius,
+                                              const D3DXVECTOR3 &fwd);
+    static void CreateDust(SEffectHandler *eh, const D3DXVECTOR2 &pos, const D3DXVECTOR2 &adddir,
+                           float ttl);  // automaticaly adds to Effects list; can return NULL
+    static CMatrixEffectFireStream *CreateFireStream(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1);
+    static void CreateShleif(SEffectHandler *eh);
+    static CMatrixEffect *CreateRepair(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, float seekradius,
+                                       CMatrixMapStatic *skip);
 
     static void DrawBegin(void);
     static void DrawEnd(void);
-
 
     virtual void BeforeDraw(void) = 0;
     virtual void Draw(void) = 0;
     virtual void Takt(float step) = 0;
     virtual void Release(void) = 0;
 
-    virtual int  Priority(void) = 0;    // priority of effect
+    virtual int Priority(void) = 0;  // priority of effect
 
-    bool    IsDIP(void) const {return FLAG(m_Flags, EFFF_DIP);}
-
+    bool IsDIP(void) const { return FLAG(m_Flags, EFFF_DIP); }
 };
 typedef CMatrixEffect *PCMatrixEffect;
 
-__forceinline  void SEffectHandler::Rebase(void)
-{
-    if (effect) effect->SetHandler(this);
+__forceinline void SEffectHandler::Rebase(void) {
+    if (effect)
+        effect->SetHandler(this);
 }
 
-
-__forceinline  void SEffectHandler::Unconnect(void)
-{
+__forceinline void SEffectHandler::Unconnect(void) {
     DTRACE();
 #ifdef _DEBUG
     ASSERT(effect);
-    if (effect->GetHandler() == this)
-    {
+    if (effect->GetHandler() == this) {
         effect->SetHandler(NULL);
-    } else
-    {
+    }
+    else {
         _asm int 3
     }
     effect = NULL;
 #else
-    if (effect) 
-    {
+    if (effect) {
         effect->SetHandler(NULL);
         effect = NULL;
     }
 #endif
-    
 }
 
-
-enum EEffectSpawnerType
-{
-    EST_SMOKE   = 1,
-    EST_FIRE    = 2,
-    EST_SOUND   = 3,
-    EST_LIGHTENING   = 4,
+enum EEffectSpawnerType {
+    EST_SMOKE = 1,
+    EST_FIRE = 2,
+    EST_SOUND = 3,
+    EST_LIGHTENING = 4,
 
     EEffectSpawnerType_FORCE_DWORD = 0x7FFFFFFF
 };
@@ -508,125 +554,109 @@ void EffectSpawnerLightening(SpawnEffectProps *props);
 
 void SpawnEffectLighteningDestructor(SpawnEffectProps *props);
 
-
-struct SpawnEffectProps
-{
+struct SpawnEffectProps {
     typedef void (*SEP_DESTRUCTOR)(SpawnEffectProps *props);
     typedef void (*EFFECT_SPAWNER)(SpawnEffectProps *props);
 
-    int         m_Size;     // structure size
-    EEffectType m_Type;     // effect type
+    int m_Size;          // structure size
+    EEffectType m_Type;  // effect type
     D3DXVECTOR3 m_Pos;
     SEP_DESTRUCTOR m_Destructor;
     EFFECT_SPAWNER m_Spawner;
-
-
 };
 
-struct SpawnEffectSmoke : public SpawnEffectProps
-{
-    SpawnEffectSmoke(void)
-    {
-        memset(this,0,sizeof(SpawnEffectSmoke));
-        m_Size=sizeof(SpawnEffectSmoke);
+struct SpawnEffectSmoke : public SpawnEffectProps {
+    SpawnEffectSmoke(void) {
+        memset(this, 0, sizeof(SpawnEffectSmoke));
+        m_Size = sizeof(SpawnEffectSmoke);
         m_Spawner = EffectSpawnerSmoke;
     }
-    float       m_ttl;
-    float       m_puffttl;
-    float       m_spawntime;
-    DWORD       m_color;
-    float       m_speed; 
-    bool        m_intense;
+    float m_ttl;
+    float m_puffttl;
+    float m_spawntime;
+    DWORD m_color;
+    float m_speed;
+    bool m_intense;
 };
 
-struct SpawnEffectFire : public SpawnEffectProps
-{
-    SpawnEffectFire(void)
-    {
-        memset(this,0,sizeof(SpawnEffectFire)); m_Size=sizeof(SpawnEffectFire);
+struct SpawnEffectFire : public SpawnEffectProps {
+    SpawnEffectFire(void) {
+        memset(this, 0, sizeof(SpawnEffectFire));
+        m_Size = sizeof(SpawnEffectFire);
         m_Spawner = EffectSpawnerFire;
-
     }
-    float       m_ttl;
-    float       m_puffttl;
-    float       m_spawntime;
-    float       m_dispfactor;
-    float       m_speed; 
-    bool        m_intense;
+    float m_ttl;
+    float m_puffttl;
+    float m_spawntime;
+    float m_dispfactor;
+    float m_speed;
+    bool m_intense;
 };
 
-struct SpawnEffectSound : public SpawnEffectProps
-{
-    SpawnEffectSound(void) 
-    {
-        memset(this,0,sizeof(SpawnEffectSound)); m_Size=sizeof(SpawnEffectSound);
+struct SpawnEffectSound : public SpawnEffectProps {
+    SpawnEffectSound(void) {
+        memset(this, 0, sizeof(SpawnEffectSound));
+        m_Size = sizeof(SpawnEffectSound);
         m_Spawner = EffectSpawnerSound;
     }
-    float       m_pan0,m_pan1;
-    float       m_vol0,m_vol1;
-    float       m_attn;
-    wchar       m_name[32];
-    //bool        m_looped;
+    float m_pan0, m_pan1;
+    float m_vol0, m_vol1;
+    float m_attn;
+    wchar m_name[32];
+    // bool        m_looped;
 };
 
-struct SpawnEffectLightening : public SpawnEffectProps
-{
+struct SpawnEffectLightening : public SpawnEffectProps {
 #ifdef _DEBUG
-    SpawnEffectLightening():m_Effect(DEBUG_CALL_INFO)
+    SpawnEffectLightening()
+      : m_Effect(DEBUG_CALL_INFO)
 #else
     SpawnEffectLightening(void)
 #endif
 
     {
-        memset(this,0,sizeof(SpawnEffectLightening));
-        m_Size=sizeof(SpawnEffectLightening);
+        memset(this, 0, sizeof(SpawnEffectLightening));
+        m_Size = sizeof(SpawnEffectLightening);
         m_Spawner = EffectSpawnerLightening;
         m_Destructor = SpawnEffectLighteningDestructor;
     }
 
-    union
-    {
+    union {
         SpawnEffectLightening *m_Pair;
-        CWStr                 *m_Tag;
+        CWStr *m_Tag;
     };
 
-    float                  m_ttl;
-    float                  m_Width;
-    float                  m_Dispers;   // if < 0 then non host effect. not produced
-    DWORD                  m_Color;
+    float m_ttl;
+    float m_Width;
+    float m_Dispers;  // if < 0 then non host effect. not produced
+    DWORD m_Color;
 
-    SEffectHandler         m_Effect;
+    SEffectHandler m_Effect;
 };
 
+class CEffectSpawner : public CMain {
+    SpawnEffectProps *m_Props;
+    int m_NextTime;
+    int m_TTL;
+    int m_MIN_period;
+    int m_MAX_period;
 
-class CEffectSpawner : public CMain
-{
-    SpawnEffectProps    *m_Props;
-    int                  m_NextTime;
-    int                  m_TTL;
-    int                  m_MIN_period;
-    int                  m_MAX_period;
-
-    CMatrixMapStatic    *m_Under;
-
+    CMatrixMapStatic *m_Under;
 
 public:
-    CEffectSpawner  (int minperiod, int maxperiod, int ttl, SpawnEffectProps* props);
+    CEffectSpawner(int minperiod, int maxperiod, int ttl, SpawnEffectProps *props);
     ~CEffectSpawner();
 
-    SpawnEffectProps * Props(void) {return m_Props;}
+    SpawnEffectProps *Props(void) { return m_Props; }
 
-    CMatrixMapStatic  * GetUnder(void) {return m_Under;};
+    CMatrixMapStatic *GetUnder(void) { return m_Under; };
 
-    bool    OutOfTime(void) const;
+    bool OutOfTime(void) const;
 
-    void    Takt(float ms);
+    void Takt(float ms);
 };
 
 typedef CEffectSpawner *PCEffectSpawner;
-
-
-
 
 #include "MatrixEffectExplosion.hpp"
 #include "MatrixEffectSmokeAndFire.hpp"

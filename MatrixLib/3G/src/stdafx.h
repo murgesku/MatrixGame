@@ -14,7 +14,6 @@
 #include <tchar.h>
 #include <Mmsystem.h>
 
-// TODO: reference additional headers your program requires here
 #include "d3d9.h"
 #include "d3dx9tex.h"
 //#include "dxerr9.h"
@@ -25,7 +24,6 @@
 
 #include "../../Bitmap/include/CBitmap.hpp"
 #include "../../DebugMsg/include/DebugMsg.h"
-
 
 using namespace Base;
 

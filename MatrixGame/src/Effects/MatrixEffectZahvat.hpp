@@ -5,19 +5,17 @@
 
 #pragma once
 
+#define ZAHVAT_SPOT_SIZE    6
+#define ZAHVAT_SPOT_GRAY1   0x00ffffff
+#define ZAHVAT_SPOT_GRAY2   0xf0808080
+#define ZAHVAT_FLASH_PERIOD 3000
 
-#define ZAHVAT_SPOT_SIZE        6
-#define ZAHVAT_SPOT_GRAY1       0x00ffffff
-#define ZAHVAT_SPOT_GRAY2       0xf0808080
-#define ZAHVAT_FLASH_PERIOD     3000
-
-class CMatrixEffectZahvat : public CMatrixEffect
-{
-    int         m_Count;
+class CMatrixEffectZahvat : public CMatrixEffect {
+    int m_Count;
     CMatrixEffectBillboard *m_BBoards;
 
     CMatrixEffectZahvat(const D3DXVECTOR3 &pos, float radius, float angle, int cnt);
-	virtual ~CMatrixEffectZahvat();
+    virtual ~CMatrixEffectZahvat();
 
 public:
     friend class CMatrixEffect;
@@ -29,8 +27,5 @@ public:
     virtual void Takt(float step);
     virtual void Release(void);
 
-    virtual int  Priority(void) {return MAX_EFFECT_PRIORITY;};
+    virtual int Priority(void) { return MAX_EFFECT_PRIORITY; };
 };
-
-
-

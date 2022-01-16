@@ -5,8 +5,7 @@
 
 #pragma once
 
-enum ButtonStatus
-{
+enum ButtonStatus {
     B_DOWN,
     B_UP,
     B_DOUBLE,
@@ -14,43 +13,41 @@ enum ButtonStatus
     B_WHEEL
 };
 
-enum ESysEvent
-{
+enum ESysEvent {
     SYSEV_DEACTIVATING,
     SYSEV_ACTIVATED,
 };
 
 class CForm : public CMain {
-	private:
-		CForm * m_FormPrev;
-		CForm * m_FormNext;
+private:
+    CForm *m_FormPrev;
+    CForm *m_FormNext;
 
-	protected:
-		CWStr m_Name;		// Нужно всегда задавать имя для дочерних классов
+protected:
+    CWStr m_Name;  // Нужно всегда задавать имя для дочерних классов
 
-	public:
+public:
+    static void StaticInit(void);
 
-        static void StaticInit(void);
+    CForm(void);
+    ~CForm();
 
-		CForm(void);
-		~CForm();
+    virtual void Enter(void) = 0;
+    virtual void Leave(void) = 0;
+    virtual void Draw(void) = 0;
 
-		virtual void Enter(void)=0;
-		virtual void Leave(void)=0;
-		virtual void Draw(void)=0;
+    virtual void Takt(int) = 0;
 
-		virtual void Takt(int)=0;
+    virtual void MouseMove(int, int) = 0;
+    virtual void MouseKey(ButtonStatus, int, int, int) = 0;
 
-		virtual void MouseMove(int,int)=0;
-		virtual void MouseKey(ButtonStatus,int,int,int) = 0;
+    virtual void Keyboard(bool, int) = 0;
 
-        virtual void Keyboard(bool, int) = 0;
-
-        virtual void SystemEvent(ESysEvent se)=0;
+    virtual void SystemEvent(ESysEvent se) = 0;
 };
 
-extern CForm * g_FormFirst;
-extern CForm * g_FormLast;
-extern CForm * g_FormCur;
+extern CForm *g_FormFirst;
+extern CForm *g_FormLast;
+extern CForm *g_FormCur;
 
-void FormChange(CForm * form);
+void FormChange(CForm *form);

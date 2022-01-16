@@ -26,4 +26,4 @@
 
 #include "Tracer.hpp"
 
-#define IS_UNICODE() (GetVersion()<0x80000000)
+#define IS_UNICODE() (GetVersion() < 0x80000000)

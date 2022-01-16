@@ -5,32 +5,29 @@
 
 #include "stdafx.h"
 
-CForm * g_FormFirst;
-CForm * g_FormLast;
-CForm * g_FormCur;
+CForm *g_FormFirst;
+CForm *g_FormLast;
+CForm *g_FormCur;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CForm::CForm() : CMain(),m_Name()
-{
+CForm::CForm() : CMain(), m_Name() {
     DTRACE();
 
-	m_FormPrev=NULL;
-	m_FormNext=NULL;
+    m_FormPrev = NULL;
+    m_FormNext = NULL;
 
-	LIST_ADD(this,g_FormFirst,g_FormLast,m_FormPrev,m_FormNext);
+    LIST_ADD(this, g_FormFirst, g_FormLast, m_FormPrev, m_FormNext);
 }
 
-CForm::~CForm()
-{
+CForm::~CForm() {
     DTRACE();
 
-	LIST_DEL(this,g_FormFirst,g_FormLast,m_FormPrev,m_FormNext);
+    LIST_DEL(this, g_FormFirst, g_FormLast, m_FormPrev, m_FormNext);
 }
 
-void CForm::StaticInit(void)
-{
+void CForm::StaticInit(void) {
     g_FormFirst = NULL;
     g_FormLast = NULL;
     g_FormCur = NULL;
@@ -40,13 +37,13 @@ void CForm::StaticInit(void)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void FormChange(CForm * form)
-{
+void FormChange(CForm *form) {
     DTRACE();
 
-	if(g_FormCur) {
-		g_FormCur->Leave();
-	}
-	g_FormCur=form;
-    if(g_FormCur) g_FormCur->Enter();
+    if (g_FormCur) {
+        g_FormCur->Leave();
+    }
+    g_FormCur = form;
+    if (g_FormCur)
+        g_FormCur->Enter();
 }

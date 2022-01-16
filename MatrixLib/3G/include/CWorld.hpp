@@ -13,38 +13,21 @@
 #include "CVertexBuffer.hpp"
 
 // world
-class CWorld : public CWorldObject
-{
+class CWorld : public CWorldObject {
     CCamera *_ccamera;  // current camera
 
     CWorldObject *_list;
 
 public:
+    CWorld(CCoordSystem *cs) : CWorldObject(cs) {}
 
-    CWorld(CCoordSystem * cs):
-    CWorldObject(cs)
-    {
+    virtual void Render(void) {
+        // SetTransform
     }
 
-    virtual void Render(void)
-    {
-    //SetTransform
+    void Add(CWorldObject *wo) { _list->ListAdd(wo); }
 
-    }
-    
-    void Add(CWorldObject *wo)
-    {
-        _list->ListAdd(wo);
-
-    }
-
-    void SetCam(CCamera *cam)
-    {
-        _ccamera = cam;
-
-    }
-
+    void SetCam(CCamera *cam) { _ccamera = cam; }
 };
-
 
 #endif

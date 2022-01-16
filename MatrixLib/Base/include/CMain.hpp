@@ -13,24 +13,26 @@
 
 namespace Base {
 
-class BASE_API CMain
-{
+class BASE_API CMain {
 public:
-    CMain()
-    {
-    }
-    ~CMain()
-    {
-    }
+    CMain() {}
+    ~CMain() {}
 
 #ifdef DEAD_CLASS_SPY_ENABLE
-    //virtual int DCS_UnderSpy(void) const {return 0;}
-    void        DCS_ClassDead(int sz) const;
-    CMain *     DCS_GetDeadBody(void) const;
-    void        DCS_Reincarnation(void) const;
+    // virtual int DCS_UnderSpy(void) const {return 0;}
+    void DCS_ClassDead(int sz) const;
+    CMain *DCS_GetDeadBody(void) const;
+    void DCS_Reincarnation(void) const;
 
-#define DCS_INCONSTRUCTOR() {DCS_Reincarnation();}
-#define DCS_INDESTRUCTOR() {int sz = DCS_UnderSpy(); if (sz > 0) { DCS_ClassDead(sz); }}
+#define DCS_INCONSTRUCTOR() \
+    { DCS_Reincarnation(); }
+#define DCS_INDESTRUCTOR()       \
+    {                            \
+        int sz = DCS_UnderSpy(); \
+        if (sz > 0) {            \
+            DCS_ClassDead(sz);   \
+        }                        \
+    }
 
 #else
 #define DCS_INCONSTRUCTOR()
@@ -41,4 +43,4 @@ public:
     static void BaseDeInit(void);
 };
 
-}
+}  // namespace Base

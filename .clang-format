@@ -1,0 +1,31 @@
+﻿---
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: 'false'
+BasedOnStyle: Chromium
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: 'false'
+  BeforeCatch: 'true'
+  BeforeElse: 'true'
+  BeforeWhile: 'true'
+AccessModifierOffset: '-4'
+AlignConsecutiveMacros: 'true'
+AlignEscapedNewlines: Left
+BreakInheritanceList: BeforeColon
+ColumnLimit: '120'
+CompactNamespaces: 'false'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+ConstructorInitializerIndentWidth: '2'
+ContinuationIndentWidth: '8'
+FixNamespaceComments: 'true'
+IncludeBlocks: Preserve
+IndentWidth: '4'
+PointerAlignment: Right
+ReflowComments: 'true'
+SortIncludes: 'false'
+SpacesBeforeTrailingComments: '2'
+TabWidth: '4'
+
+...

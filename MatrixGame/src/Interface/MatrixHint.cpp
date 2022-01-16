@@ -4,37 +4,33 @@
 // Refer to the LICENSE file included
 
 #include "../stdafx.h"
+
 #include "MatrixHint.hpp"
 #include "../MatrixGameDLL.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
 
-
-CMatrixHint * CMatrixHint::m_First;
-CMatrixHint * CMatrixHint::m_Last;
+CMatrixHint *CMatrixHint::m_First;
+CMatrixHint *CMatrixHint::m_Last;
 
 SHintBitmap *CMatrixHint::m_Bitmaps;
-int          CMatrixHint::m_BitmapsCnt;
+int CMatrixHint::m_BitmapsCnt;
 
-
-CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr & soundout, SHintElement *elems, CRect *otstup)
-{
+CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &soundout, SHintElement *elems,
+                                CRect *otstup) {
     CBitmap bmps(g_CacheHeap);
     CBlockPar *bph = NULL;
-    if (border >= 0)
-    {
-        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border,g_CacheHeap));
+    if (border >= 0) {
+        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border, g_CacheHeap));
 
-        if (bph)
-        {
-            CWStr   src(g_CacheHeap);
-            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE), L"png"))
-            {
-                //return NULL;
-            } else
-            {
+        if (bph) {
+            CWStr src(g_CacheHeap);
+            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE), L"png")) {
+                // return NULL;
+            }
+            else {
                 bmps.LoadFromPNG(src);
-                bmps.SwapByte(CPoint(0,0), bmps.Size(), 0, 2);
+                bmps.SwapByte(CPoint(0, 0), bmps.Size(), 0, 2);
             }
         }
     }
@@ -50,112 +46,122 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
     CPoint new_coord;
 
     SHintElement *els = elems;
-    for(;;++els)
-    {
+    for (;; ++els) {
         int bx = 0;
         int by = 0;
-        if (els->bmp && els->hem != HEM_COORD && els->hem != HEM_DOWN && els->hem != HEM_RIGHT)
-        {
+        if (els->bmp && els->hem != HEM_COORD && els->hem != HEM_DOWN && els->hem != HEM_RIGHT) {
             bx = els->bmp->SizeX();
             by = els->bmp->SizeY();
         }
 
-        if (els->hem == HEM_BITMAP)
-        {
-            if (new_coord_f)
-            {
+        if (els->hem == HEM_BITMAP) {
+            if (new_coord_f) {
                 pos.Any<CPoint>(new_coord);
                 new_coord_f = false;
-            } else
-            {
-                pos.Any<CPoint>(CPoint(cx,cy));
-                cx += bx;
-                if (cx > cw) cw = cx;
-                if ((cy+by) > ch) ch = by+cy;
             }
-        } else if (els->hem == HEM_LAST_ON_LINE)
-        {
-            pos.Any<CPoint>(CPoint(cx,cy));
+            else {
+                pos.Any<CPoint>(CPoint(cx, cy));
+                cx += bx;
+                if (cx > cw)
+                    cw = cx;
+                if ((cy + by) > ch)
+                    ch = by + cy;
+            }
+        }
+        else if (els->hem == HEM_LAST_ON_LINE) {
+            pos.Any<CPoint>(CPoint(cx, cy));
             cx += bx;
-            if (cx > cw) cw = cx;
-            if ((cy+by) > ch) ch = by+cy;
+            if (cx > cw)
+                cw = cx;
+            if ((cy + by) > ch)
+                ch = by + cy;
             cx = 0;
             cy = ch;
-        } else if (els->hem == HEM_LAST)
-        {
-            pos.Any<CPoint>(CPoint(cx,cy));
+        }
+        else if (els->hem == HEM_LAST) {
+            pos.Any<CPoint>(CPoint(cx, cy));
             cx += bx;
-            if (cx > cw) cw = cx;
-            if ((cy+by) > ch) ch = by+cy;
+            if (cx > cw)
+                cw = cx;
+            if ((cy + by) > ch)
+                ch = by + cy;
             break;
-        } else if (els->hem == HEM_CENTER)
-        {
-            pos.Any<CPoint>(CPoint(-1000,cy));
-            if (bx > cw) cw = bx;
-            if ((cy+by) > ch) ch = by+cy;
+        }
+        else if (els->hem == HEM_CENTER) {
+            pos.Any<CPoint>(CPoint(-1000, cy));
+            if (bx > cw)
+                cw = bx;
+            if ((cy + by) > ch)
+                ch = by + cy;
             cx = 0;
             cy = ch;
-        } else if (els->hem <= HEM_TAB_LARGEST)
-        {
-            pos.Any<CPoint>(CPoint(els->hem,cy));
+        }
+        else if (els->hem <= HEM_TAB_LARGEST) {
+            pos.Any<CPoint>(CPoint(els->hem, cy));
             cx = els->hem + bx;
-            if (cx > cw) cw = cx;
-            if ((cy+by) > ch) ch = by+cy;
-        } else if (els->hem <= HEM_CENTER_RIGHT_LARGEST)
-        {
-            pos.Any<CPoint>(CPoint(-1001,cy));
+            if (cx > cw)
+                cw = cx;
+            if ((cy + by) > ch)
+                ch = by + cy;
+        }
+        else if (els->hem <= HEM_CENTER_RIGHT_LARGEST) {
+            pos.Any<CPoint>(CPoint(-1001, cy));
 
             int tv = els->hem - HEM_TAB_LARGEST;
-            if ( (tv + bx) > (cw/2) ) cw = (tv + bx) * 2;
+            if ((tv + bx) > (cw / 2))
+                cw = (tv + bx) * 2;
             cx = cw / 2 + tv + bx;
-            if ((cy+by) > ch) ch = by+cy;
-        } else if (els->hem <= HEM_CENTER_LEFT_LARGEST)
-        {
-            pos.Any<CPoint>(CPoint(-1002,cy));
+            if ((cy + by) > ch)
+                ch = by + cy;
+        }
+        else if (els->hem <= HEM_CENTER_LEFT_LARGEST) {
+            pos.Any<CPoint>(CPoint(-1002, cy));
 
             int tv = els->hem - HEM_CENTER_RIGHT_LARGEST;
-            if ( (tv + bx) > (cw/2) ) cw = (tv + bx) * 2;
+            if ((tv + bx) > (cw / 2))
+                cw = (tv + bx) * 2;
             cx = cw / 2 - tv;
-            if ((cy+by) > ch) ch = by+cy;
-        } else if (els->hem == HEM_COPY)
-        {
-            pos.Any<CPoint>(CPoint(0,0));
+            if ((cy + by) > ch)
+                ch = by + cy;
+        }
+        else if (els->hem == HEM_COPY) {
+            pos.Any<CPoint>(CPoint(0, 0));
             // do nothing
-        } else if (els->hem == HEM_DOWN)
-        {
-            pos.Any<CPoint>(CPoint(0,0));
+        }
+        else if (els->hem == HEM_DOWN) {
+            pos.Any<CPoint>(CPoint(0, 0));
             cy += els->y;
-            if (cy > ch) ch = cy;
+            if (cy > ch)
+                ch = cy;
             els->bmp = NULL;
-        } else if (els->hem == HEM_RIGHT)
-        {
-            pos.Any<CPoint>(CPoint(0,0));
+        }
+        else if (els->hem == HEM_RIGHT) {
+            pos.Any<CPoint>(CPoint(0, 0));
             cx += els->x;
-            if (cx > cw) cw = cx;
+            if (cx > cw)
+                cw = cx;
             els->bmp = NULL;
-
-        } else if (els->hem == HEM_COORD)
-        {
+        }
+        else if (els->hem == HEM_COORD) {
             new_coord_f = true;
             new_coord.x = els->x;
             new_coord.y = els->y;
-            pos.Any<CPoint>(CPoint(0,0));
+            pos.Any<CPoint>(CPoint(0, 0));
             els->bmp = NULL;
             // do nothing
-        } else
-        {
+        }
+        else {
             ERROR_E;
         }
     }
 
-    struct SBordPart
-    {
-        CPoint pos; // in texture
+    struct SBordPart {
+        CPoint pos;  // in texture
         CPoint size;
         CPoint size_down;
         DWORD present;
         wchar *name;
-        
+
     } parts[9];
 
     memset(parts, 0, sizeof(parts));
@@ -169,135 +175,117 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
     parts[7].name = PAR_SOURCE_HINTS_B;
     parts[8].name = PAR_SOURCE_HINTS_RB;
 
-    for (int i=0;i<9;++i)
-    {
+    for (int i = 0; i < 9; ++i) {
         parts[i].present = bph && bph->ParCount(parts[i].name) > 0;
-        if (parts[i].present)
-        {
-            parts[i].pos.x = bph->ParGet(parts[i].name).GetStrPar(0,L",").GetInt();
-            parts[i].pos.y = bph->ParGet(parts[i].name).GetStrPar(1,L",").GetInt();
-            parts[i].size.x = bph->ParGet(parts[i].name).GetStrPar(2,L",").GetInt();
-            parts[i].size.y = bph->ParGet(parts[i].name).GetStrPar(3,L",").GetInt();
-
-        } else
-        {
-            parts[i].pos.x = 0; parts[i].pos.y = 0;
-            parts[i].size.x = 0; parts[i].pos.y = 0;
+        if (parts[i].present) {
+            parts[i].pos.x = bph->ParGet(parts[i].name).GetStrPar(0, L",").GetInt();
+            parts[i].pos.y = bph->ParGet(parts[i].name).GetStrPar(1, L",").GetInt();
+            parts[i].size.x = bph->ParGet(parts[i].name).GetStrPar(2, L",").GetInt();
+            parts[i].size.y = bph->ParGet(parts[i].name).GetStrPar(3, L",").GetInt();
+        }
+        else {
+            parts[i].pos.x = 0;
+            parts[i].pos.y = 0;
+            parts[i].size.x = 0;
+            parts[i].pos.y = 0;
         }
 
         parts[i].size_down = parts[i].size;
-
     }
 
-    if (bph)
-    {
+    if (bph) {
         int top_down = bph->ParGetNE(L"TopDown").GetInt();
         int bottom_down = bph->ParGetNE(L"BottomDown").GetInt();
         int left_down = bph->ParGetNE(L"LeftDown").GetInt();
         int right_down = bph->ParGetNE(L"RightDown").GetInt();
 
-        parts[0].size_down.x -= left_down;      //PAR_SOURCE_HINTS_LT;
-        parts[0].size_down.y -= top_down;       //PAR_SOURCE_HINTS_LT;
+        parts[0].size_down.x -= left_down;  // PAR_SOURCE_HINTS_LT;
+        parts[0].size_down.y -= top_down;   // PAR_SOURCE_HINTS_LT;
 
-        parts[1].size_down.y -= top_down;       //PAR_SOURCE_HINTS_T;
+        parts[1].size_down.y -= top_down;  // PAR_SOURCE_HINTS_T;
 
-        parts[2].size_down.x -= right_down;     //PAR_SOURCE_HINTS_RT;
-        parts[2].size_down.y -= top_down;       //PAR_SOURCE_HINTS_RT;
+        parts[2].size_down.x -= right_down;  // PAR_SOURCE_HINTS_RT;
+        parts[2].size_down.y -= top_down;    // PAR_SOURCE_HINTS_RT;
 
-        parts[3].size_down.x -= left_down;      //PAR_SOURCE_HINTS_L;
+        parts[3].size_down.x -= left_down;  // PAR_SOURCE_HINTS_L;
 
-        parts[5].size_down.x -= right_down;     //PAR_SOURCE_HINTS_R;
-        
-        parts[6].size_down.x -= left_down;      //PAR_SOURCE_HINTS_LB;
-        parts[6].size_down.y -= bottom_down;    //PAR_SOURCE_HINTS_LB;
+        parts[5].size_down.x -= right_down;  // PAR_SOURCE_HINTS_R;
 
-        parts[7].size_down.y -= bottom_down;    //PAR_SOURCE_HINTS_B;
+        parts[6].size_down.x -= left_down;    // PAR_SOURCE_HINTS_LB;
+        parts[6].size_down.y -= bottom_down;  // PAR_SOURCE_HINTS_LB;
 
-        parts[8].size_down.x -= right_down;     //PAR_SOURCE_HINTS_RB;
-        parts[8].size_down.y -= bottom_down;    //PAR_SOURCE_HINTS_RB;
+        parts[7].size_down.y -= bottom_down;  // PAR_SOURCE_HINTS_B;
+
+        parts[8].size_down.x -= right_down;   // PAR_SOURCE_HINTS_RB;
+        parts[8].size_down.y -= bottom_down;  // PAR_SOURCE_HINTS_RB;
     }
 
     int h_delta = 1;
 
-    CRect ots(0,0,0,0);
-    if (otstup) ots = *otstup;
-    else
-    {
-        if (parts[0].present)
-        {
+    CRect ots(0, 0, 0, 0);
+    if (otstup)
+        ots = *otstup;
+    else {
+        if (parts[0].present) {
             ots.left = parts[0].size_down.x;
             ots.top = parts[0].size_down.y;
         }
-        if (parts[2].present)
-        {
+        if (parts[2].present) {
             ots.right = parts[2].size_down.x;
             ots.top = parts[2].size_down.y;
         }
-        if (parts[6].present)
-        {
+        if (parts[6].present) {
             ots.left = parts[6].size_down.x;
             ots.bottom = parts[6].size_down.y;
         }
-        if (parts[8].present)
-        {
+        if (parts[8].present) {
             ots.right = parts[8].size_down.x;
             ots.bottom = parts[8].size_down.y;
         }
 
-        if (parts[1].present)
-        {
+        if (parts[1].present) {
             ots.top = parts[1].size_down.y;
         }
-        if (parts[3].present)
-        {
+        if (parts[3].present) {
             ots.left = parts[3].size_down.x;
         }
-        if (parts[5].present)
-        {
+        if (parts[5].present) {
             ots.right = parts[5].size_down.x;
         }
-        if (parts[7].present)
-        {
+        if (parts[7].present) {
             ots.bottom = parts[7].size_down.y;
         }
-
     }
-    if (parts[4].present)
-    {
+    if (parts[4].present) {
         h_delta = parts[4].size.y;
     }
 
     CPoint *pb = pos.Buff<CPoint>();
     CPoint *pe = pos.BuffEnd<CPoint>();
     int idx = 0;
-    for (;pb < pe;++pb,++idx)
-    {
-        if (pb->x == -1000)
-        {
+    for (; pb < pe; ++pb, ++idx) {
+        if (pb->x == -1000) {
             pb->x = (cw - elems[idx].bmp->SizeX()) / 2;
-        } else if (pb->x == -1001)
-        {
+        }
+        else if (pb->x == -1001) {
             int tv = elems[idx].hem - HEM_TAB_LARGEST;
             pb->x = cw / 2 + tv;
-        } else if (pb->x == -1002)
-        {
+        }
+        else if (pb->x == -1002) {
             int tv = elems[idx].hem - HEM_CENTER_RIGHT_LARGEST;
             pb->x = cw / 2 - tv - elems[idx].bmp->SizeX();
         }
-
 
         pb->x += ots.left;
         pb->y += ots.top;
     }
 
-    if (ch < (parts[1].size.y + parts[7].size.y - ots.top - ots.bottom))
-    {
+    if (ch < (parts[1].size.y + parts[7].size.y - ots.top - ots.bottom)) {
         ch = (parts[1].size.y + parts[7].size.y - ots.top - ots.bottom);
     }
 
     int clw = cw;
     int clh = ch;
-
 
     cw += ots.left + ots.right;
     ch += ots.top + ots.bottom;
@@ -306,110 +294,96 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
     int fh = ch;
 
     int delta = fh - parts[7].size.y - parts[1].size.y;
-    int delta2 = ((delta + (h_delta-1)) / h_delta) * h_delta;
-    int delta3 = delta2-delta;
+    int delta2 = ((delta + (h_delta - 1)) / h_delta) * h_delta;
+    int delta3 = delta2 - delta;
     fh += delta3;
     ch += delta3;
     clh += delta3;
-
-
 
     cw = DetermineGreaterPowerOfTwo(cw);
     ch = DetermineGreaterPowerOfTwo(ch);
 
     CBitmap bmpf(g_CacheHeap);
-    bmpf.CreateRGBA(cw,ch);
-    bmpf.Fill(CPoint(0,0),CPoint(cw,ch), 0);
+    bmpf.CreateRGBA(cw, ch);
+    bmpf.Fill(CPoint(0, 0), CPoint(cw, ch), 0);
 
     // filling
 
     // lt
-    if (parts[0].present)
-    {
-        bmpf.Copy(CPoint(0,0), parts[0].size, bmps, parts[0].pos);
+    if (parts[0].present) {
+        bmpf.Copy(CPoint(0, 0), parts[0].size, bmps, parts[0].pos);
     }
 
     // rt
-    if (parts[2].present)
-    {
-        bmpf.Copy(CPoint(fw-parts[2].size.x,0), parts[2].size, bmps, parts[2].pos);
+    if (parts[2].present) {
+        bmpf.Copy(CPoint(fw - parts[2].size.x, 0), parts[2].size, bmps, parts[2].pos);
     }
 
     // lb
-    if (parts[6].present)
-    {
-        bmpf.Copy(CPoint(0,fh-parts[6].size.y), parts[6].size, bmps, parts[6].pos);
+    if (parts[6].present) {
+        bmpf.Copy(CPoint(0, fh - parts[6].size.y), parts[6].size, bmps, parts[6].pos);
     }
 
     // rb
-    if (parts[8].present)
-    {
-        bmpf.Copy(CPoint(fw-parts[8].size.x,fh-parts[8].size.y), parts[8].size, bmps, parts[8].pos);
+    if (parts[8].present) {
+        bmpf.Copy(CPoint(fw - parts[8].size.x, fh - parts[8].size.y), parts[8].size, bmps, parts[8].pos);
     }
 
     // top
-    if (parts[1].present)
-    {
-        bmpf.Tile(CPoint(parts[0].size.x,0),CPoint(fw-parts[0].size.x-parts[2].size.x,parts[1].size.y),bmps, parts[1].pos, parts[1].size);
+    if (parts[1].present) {
+        bmpf.Tile(CPoint(parts[0].size.x, 0), CPoint(fw - parts[0].size.x - parts[2].size.x, parts[1].size.y), bmps,
+                  parts[1].pos, parts[1].size);
     }
 
     // bottom
-    if (parts[7].present)
-    {
-        bmpf.Tile(CPoint(parts[0].size.x,fh-parts[7].size.y),CPoint(fw-parts[0].size.x-parts[2].size.x,parts[7].size.y),bmps, parts[7].pos, parts[7].size);
+    if (parts[7].present) {
+        bmpf.Tile(CPoint(parts[0].size.x, fh - parts[7].size.y),
+                  CPoint(fw - parts[0].size.x - parts[2].size.x, parts[7].size.y), bmps, parts[7].pos, parts[7].size);
     }
 
     delta = fh - parts[7].size.y - parts[1].size.y;
 
-    if (delta)
-    {
+    if (delta) {
         // left
-        if (parts[3].present)
-        {
-            bmpf.Tile(CPoint(0,parts[0].size.y),CPoint(parts[3].size.x,delta),bmps, parts[3].pos, parts[3].size);
+        if (parts[3].present) {
+            bmpf.Tile(CPoint(0, parts[0].size.y), CPoint(parts[3].size.x, delta), bmps, parts[3].pos, parts[3].size);
         }
         // rite
-        if (parts[5].present)
-        {
-            bmpf.Tile(CPoint(fw-parts[5].size.x,parts[2].size.y),CPoint(parts[5].size.x,delta),bmps, parts[5].pos, parts[5].size);
+        if (parts[5].present) {
+            bmpf.Tile(CPoint(fw - parts[5].size.x, parts[2].size.y), CPoint(parts[5].size.x, delta), bmps, parts[5].pos,
+                      parts[5].size);
         }
-        //center
-        if (parts[4].present)
-        {
-            bmpf.Tile(CPoint(parts[3].size.x,parts[1].size.y),CPoint(fw-parts[3].size.x-parts[5].size.x,delta),bmps, parts[4].pos, parts[4].size);
+        // center
+        if (parts[4].present) {
+            bmpf.Tile(CPoint(parts[3].size.x, parts[1].size.y), CPoint(fw - parts[3].size.x - parts[5].size.x, delta),
+                      bmps, parts[4].pos, parts[4].size);
         }
-
     }
 
     CPoint *copypos = NULL;
-    int     copyposcnt = 0;
+    int copyposcnt = 0;
 
     pb = pos.Buff<CPoint>();
     pe = pos.BuffEnd<CPoint>();
     idx = 0;
     bool copy = false;
-    for (;pb < pe;++pb,++idx)
-    {
+    for (; pb < pe; ++pb, ++idx) {
         bool new_copy = elems[idx].hem == HEM_COPY;
 
-        if (elems[idx].bmp)
-        {
-            if (copy)
-            {
-                bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0,0));
+        if (elems[idx].bmp) {
+            if (copy) {
+                bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
 
                 ++copyposcnt;
-                copypos = (CPoint *)HAllocEx(copypos, sizeof(CPoint) * copyposcnt,g_MatrixHeap);
+                copypos = (CPoint *)HAllocEx(copypos, sizeof(CPoint) * copyposcnt, g_MatrixHeap);
                 copypos[copyposcnt - 1] = *pb;
-
-            } else
-            {
-                if (elems[idx].bmp->BytePP() == 3)
-                {
-                    bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0,0));
-                } else
-                {
-                    bmpf.MergeWithAlpha(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0,0));
+            }
+            else {
+                if (elems[idx].bmp->BytePP() == 3) {
+                    bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
+                }
+                else {
+                    bmpf.MergeWithAlpha(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
                 }
             }
         }
@@ -417,7 +391,7 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
         copy = new_copy;
     }
 
-    //bmpf.SaveInPNG(L"bla.png");
+    // bmpf.SaveInPNG(L"bla.png");
 
     CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
     tex->MipmapOff();
@@ -425,12 +399,13 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
     D3DLOCKED_RECT lr;
     tex->CreateLock(D3DFMT_A8R8G8B8, bmpf.SizeX(), bmpf.SizeY(), 1, lr);
     CBitmap bmdes(g_CacheHeap);
-    bmdes.CreateRGBA(bmpf.SizeX(), bmpf.SizeY(), lr.Pitch,lr.pBits);
-    bmdes.Copy(CPoint(0,0),bmpf.Size(),bmpf,CPoint(0,0));
+    bmdes.CreateRGBA(bmpf.SizeX(), bmpf.SizeY(), lr.Pitch, lr.pBits);
+    bmdes.Copy(CPoint(0, 0), bmpf.Size(), bmpf, CPoint(0, 0));
     tex->UnlockRect();
-    //tex->LoadFromBitmap(bmpf, D3DFMT_A8R8G8B8, 1);
+    // tex->LoadFromBitmap(bmpf, D3DFMT_A8R8G8B8, 1);
 
-    CMatrixHint *hint = HNew(g_MatrixHeap) CMatrixHint(tex, clw + ots.left + ots.right, clh + ots.top + ots.bottom, soundin, soundout);
+    CMatrixHint *hint = HNew(g_MatrixHeap)
+            CMatrixHint(tex, clw + ots.left + ots.right, clh + ots.top + ots.bottom, soundin, soundout);
 
     hint->m_CopyPos = copypos;
     hint->m_CopyPosCnt = copyposcnt;
@@ -438,86 +413,76 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr & soundin, const CWStr &
     return hint;
 }
 
-void CMatrixHint::PreloadBitmaps(void)
-{
-
+void CMatrixHint::PreloadBitmaps(void) {
     CBlockPar *bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGet(PAR_SOURCE_HINTS_BITMAPS);
     m_BitmapsCnt = bph->ParCount();
     m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
-    CWStr   src(g_CacheHeap);
-    for (int i=0;i<m_BitmapsCnt;++i)
-    {
-        if (!CFile::FileExist(src, bph->ParGet(i), L"png"))
-        {
+    CWStr src(g_CacheHeap);
+    for (int i = 0; i < m_BitmapsCnt; ++i) {
+        if (!CFile::FileExist(src, bph->ParGet(i), L"png")) {
             ERROR_S(L"Hint bitmap not found:" + *m_Bitmaps[i].name);
         }
         m_Bitmaps[i].name = &bph->ParGetName(i);
         m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
         m_Bitmaps[i].bmp->LoadFromPNG(src);
-        m_Bitmaps[i].bmp->SwapByte(CPoint(0,0),m_Bitmaps[i].bmp->Size(),0,2); // store format should be [A]RGB, not [A]BGR
+        m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
+                                   2);  // store format should be [A]RGB, not [A]BGR
     }
-
 }
 
-static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index)
-{
+static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index) {
     bmph = temp.GetStrPar(index, L":");
-    if (bmph == L"C") return HEM_CENTER;
-    else if (bmph == L"L") return HEM_LAST_ON_LINE;
-    else if (bmph == L"CR")
-    {
-        return (EHintElementModificator)(HEM_TAB_LARGEST + temp.GetIntPar(index+1, L":"));
-    } else if (bmph == L"CL")
-    {
-        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + temp.GetIntPar(index+1, L":"));
-    } else if (bmph == L"T")
-    {
-        return (EHintElementModificator)(temp.GetIntPar(index+1, L":"));
-    } else if (bmph == L"COPY")
-    {
+    if (bmph == L"C")
+        return HEM_CENTER;
+    else if (bmph == L"L")
+        return HEM_LAST_ON_LINE;
+    else if (bmph == L"CR") {
+        return (EHintElementModificator)(HEM_TAB_LARGEST + temp.GetIntPar(index + 1, L":"));
+    }
+    else if (bmph == L"CL") {
+        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + temp.GetIntPar(index + 1, L":"));
+    }
+    else if (bmph == L"T") {
+        return (EHintElementModificator)(temp.GetIntPar(index + 1, L":"));
+    }
+    else if (bmph == L"COPY") {
         return HEM_COPY;
-    } else
-    {
+    }
+    else {
         return HEM_BITMAP;
     }
-   
 }
 
-static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl)
-{
+static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
     CWStr text2(g_CacheHeap);
-    int ii = 0; 
-    for (;;)
-    {
+    int ii = 0;
+    for (;;) {
         int i1 = text.Find(L"[", 1, ii);
-        if (i1 >= ii)
-        {
-            int i2 = text.Find(L"]", 1, i1+1);
-            if (i2 < 0) ERROR_S(L"] not found");
-            text2.Set(text.Get() + i1 + 1, i2-i1-1);
-            if (text2.IsEmpty())
-            {
-                text.Replace(CWStr(L"[]",text2.GetHeap()), CWStr(baserepl, text2.GetHeap()));
+        if (i1 >= ii) {
+            int i2 = text.Find(L"]", 1, i1 + 1);
+            if (i2 < 0)
+                ERROR_S(L"] not found");
+            text2.Set(text.Get() + i1 + 1, i2 - i1 - 1);
+            if (text2.IsEmpty()) {
+                text.Replace(CWStr(L"[]", text2.GetHeap()), CWStr(baserepl, text2.GetHeap()));
             }
-            else
-            {
-                //int cnt = repl->ParCount(text2);
-                //repl->Par
-                //CWStr text3(g_CacheHeap);
-                //for (int k=0;k<cnt;++k)
-                text.Replace(L"["+text2+L"]", repl->ParGetNE(text2));
+            else {
+                // int cnt = repl->ParCount(text2);
+                // repl->Par
+                // CWStr text3(g_CacheHeap);
+                // for (int k=0;k<cnt;++k)
+                text.Replace(L"[" + text2 + L"]", repl->ParGetNE(text2));
             }
-            ii = i1;                                            \
-        } else
-        break;
+            ii = i1;
+        }
+        else
+            break;
     }
 }
 
 //#define BGR2RGB(c) (((c & 255) << 16) | (c & 0x0000FF00) | ((c >> 16) & 255) | c&0xFF000000)
 
-
-CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl)
-{
+CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl) {
     DTRACE();
 
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
@@ -530,29 +495,28 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
     int ii = -1;
     DCP();
 
-    for (int i=0;i<cnt;++i)
-    {
-    DCP();
-        if (bp->ParGetName(i) == templatename)
-        {
-    DCP();
-            if (ii<0) ii = i;
+    for (int i = 0; i < cnt; ++i) {
+        DCP();
+        if (bp->ParGetName(i) == templatename) {
+            DCP();
+            if (ii < 0)
+                ii = i;
             str = bp->ParGet(i);
-            if (str[0] == '|') continue;
-    DCP();
+            if (str[0] == '|')
+                continue;
+            DCP();
 
             CWStr templ(g_CacheHeap);
 
-            for (;ii<cnt;++ii)
-            {
-    DCP();
+            for (; ii < cnt; ++ii) {
+                DCP();
 
-                if (bp->ParGetName(ii) == templatename)
-                {
-    DCP();
+                if (bp->ParGetName(ii) == templatename) {
+                    DCP();
 
                     templ = bp->ParGet(ii);
-                    if (templ[0] == '|') str += templ;
+                    if (templ[0] == '|')
+                        str += templ;
                 }
             }
             break;
@@ -562,15 +526,14 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
     return Build(str, repl, baserepl);
 }
 
-CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar * repl, const wchar *baserepl)
-{
+CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl) {
     CWStr soundin(g_MatrixHeap);
     CWStr soundout(g_MatrixHeap);
 
-    SHintElement                elems[256];
+    SHintElement elems[256];
 
-    CBuf  its(g_CacheHeap,256);
-    CBuf  bmps(g_CacheHeap,256);
+    CBuf its(g_CacheHeap, 256);
+    CBuf bmps(g_CacheHeap, 256);
     int ssz = 0;
 
     bool otstup = false;
@@ -592,95 +555,91 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar * repl, const wchar 
 
     bool skip = false;
 
-    for (;idx < cnt;++idx)
-    {
-        if (nelem >= 255) break;
-        temp = str.GetStrPar(idx,L"|");
+    for (; idx < cnt; ++idx) {
+        if (nelem >= 255)
+            break;
+        temp = str.GetStrPar(idx, L"|");
 
-        if (temp.CompareFirst(L"_ENDIF"))
-        {
+        if (temp.CompareFirst(L"_ENDIF")) {
             skip = false;
             continue;
-        } else if (temp.CompareFirst(L"_IF:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_IF:")) {
             CWStr text(temp.Get() + 4, g_CacheHeap);
-            if (repl) Replace(text, baserepl, repl);
+            if (repl)
+                Replace(text, baserepl, repl);
             skip = text.IsEmpty();
             continue;
         }
 
-        if (skip) continue;
+        if (skip)
+            continue;
 
-        if (temp.CompareFirst(L"_FONT:"))
-        {
+        if (temp.CompareFirst(L"_FONT:")) {
             font.Set(temp.Get() + 6);
-        } else if (temp.CompareFirst(L"_COLOR:"))
-        {
-            //DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
-            //color = BGR2RGB(c);
-            color = temp.GetStrPar(1,L":").GetHexUnsigned();
-        } else if (temp.CompareFirst(L"_SOUNDIN:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_COLOR:")) {
+            // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
+            // color = BGR2RGB(c);
+            color = temp.GetStrPar(1, L":").GetHexUnsigned();
+        }
+        else if (temp.CompareFirst(L"_SOUNDIN:")) {
             soundin.Set(temp.Get() + 9);
-        } else if (temp.CompareFirst(L"_SOUNDOUT:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_SOUNDOUT:")) {
             soundout.Set(temp.Get() + 10);
-        } else if (temp.CompareFirst(L"_BORDER:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_BORDER:")) {
             otstup = true;
-            otstup_r.left = temp.GetStrPar(1,L":").GetInt();
-            otstup_r.top = temp.GetStrPar(2,L":").GetInt();
-            otstup_r.right = temp.GetStrPar(3,L":").GetInt();
-            otstup_r.bottom = temp.GetStrPar(4,L":").GetInt();
-
-        } else if (temp.CompareFirst(L"_POS:"))
-        {
-            elems[nelem].x = temp.GetStrPar(1,L":").GetInt();
-            elems[nelem].y = temp.GetStrPar(2,L":").GetInt();
+            otstup_r.left = temp.GetStrPar(1, L":").GetInt();
+            otstup_r.top = temp.GetStrPar(2, L":").GetInt();
+            otstup_r.right = temp.GetStrPar(3, L":").GetInt();
+            otstup_r.bottom = temp.GetStrPar(4, L":").GetInt();
+        }
+        else if (temp.CompareFirst(L"_POS:")) {
+            elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
+            elems[nelem].y = temp.GetStrPar(2, L":").GetInt();
             elems[nelem].hem = HEM_COORD;
             ++nelem;
-        } else if (temp.CompareFirst(L"_DOWN:"))
-        {
-            elems[nelem].y = temp.GetStrPar(1,L":").GetInt();
+        }
+        else if (temp.CompareFirst(L"_DOWN:")) {
+            elems[nelem].y = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_DOWN;
             ++nelem;
-        } else if (temp.CompareFirst(L"_RIGHT:"))
-        {
-            elems[nelem].x = temp.GetStrPar(1,L":").GetInt();
+        }
+        else if (temp.CompareFirst(L"_RIGHT:")) {
+            elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_RIGHT;
             ++nelem;
-        } else if (temp.CompareFirst(L"_ALIGN:"))
-        {
-            alignx = temp.GetStrPar(1,L":").GetInt();
-            aligny = temp.GetStrPar(2,L":").GetInt();
-        } else if (temp.CompareFirst(L"_WIDTH:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_ALIGN:")) {
+            alignx = temp.GetStrPar(1, L":").GetInt();
+            aligny = temp.GetStrPar(2, L":").GetInt();
+        }
+        else if (temp.CompareFirst(L"_WIDTH:")) {
             w = temp.GetInt();
-        } else if (temp.CompareFirst(L"_HEIGHT:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_HEIGHT:")) {
             h = temp.GetInt();
-        } else if (temp.CompareFirst(L"_MOD:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_MOD:")) {
             elems[nelem].bmp = NULL;
             elems[nelem].hem = Convert(bmpn, temp, 1);
             ++nelem;
-        } else if (temp.CompareFirst(L"_TEXTP:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_TEXTP:")) {
             modif = Convert(bmpn, temp, 1);
-
-        } else if (temp.CompareFirst(L"_BITMAP:"))
-        {
+        }
+        else if (temp.CompareFirst(L"_BITMAP:")) {
             bmpn = temp.GetStrPar(1, L":");
 
-            if (repl) Replace(bmpn, baserepl, repl);
+            if (repl)
+                Replace(bmpn, baserepl, repl);
 
             elems[nelem].bmp = NULL;
-            if (!bmpn.IsEmpty())
-            {
-                for (int i=0;i<m_BitmapsCnt;++i)
-                {
-                    if (*m_Bitmaps[i].name == bmpn)
-                    {
+            if (!bmpn.IsEmpty()) {
+                for (int i = 0; i < m_BitmapsCnt; ++i) {
+                    if (*m_Bitmaps[i].name == bmpn) {
                         elems[nelem].bmp = m_Bitmaps[i].bmp;
                         break;
                     }
@@ -689,37 +648,30 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar * repl, const wchar 
 
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
-
-        } else if (temp.CompareFirst(L"_TEXT:"))
-        {
-            if (g_RangersInterface)
-            {
-                CRect cr(0,0,w,h);
-                //if (w == 0) w = g_ScreenX;
-                //if (h == 0) h = 200;
+        }
+        else if (temp.CompareFirst(L"_TEXT:")) {
+            if (g_RangersInterface) {
+                CRect cr(0, 0, w, h);
+                // if (w == 0) w = g_ScreenX;
+                // if (h == 0) h = 200;
 
                 CWStr text(temp.Get() + 6, g_CacheHeap);
 
-                if (repl) Replace(text, baserepl, repl);
+                if (repl)
+                    Replace(text, baserepl, repl);
 
-                //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap, int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
+                //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
+                //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
 
-                text.Replace(CWStr(L"<br>",g_CacheHeap), CWStr(L"\r\n",g_CacheHeap));
+                text.Replace(CWStr(L"<br>", g_CacheHeap), CWStr(L"\r\n", g_CacheHeap));
 
-                SMGDRangersInterfaceText *it = (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
-                g_RangersInterface->m_RangersText(
-                    (wchar *)text.Get(),
-                    (wchar *)font.Get(),
-                    color,
-                    w, h,
-                    alignx, aligny,
-                    (w==0)?0:1,
-                    0, 0,
-                    &cr,
-                    it);
+                SMGDRangersInterfaceText *it =
+                        (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+                g_RangersInterface->m_RangersText((wchar *)text.Get(), (wchar *)font.Get(), color, w, h, alignx, aligny,
+                                                  (w == 0) ? 0 : 1, 0, 0, &cr, it);
 
                 CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
-                bmsrc->CreateRGBA(it->m_SizeX,it->m_SizeY,it->m_Pitch,it->m_Buf);
+                bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
 
                 its.Dword((DWORD)it);
                 bmps.Dword((DWORD)bmsrc);
@@ -735,107 +687,105 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar * repl, const wchar 
     elems[nelem].bmp = NULL;
     elems[nelem].hem = HEM_LAST;
 
-    CMatrixHint *hint = Build(border, soundin, soundout, elems, otstup?(&otstup_r):NULL);
+    CMatrixHint *hint = Build(border, soundin, soundout, elems, otstup ? (&otstup_r) : NULL);
 
-    for (int i=0;i<ssz;++i)
-    {
+    for (int i = 0; i < ssz; ++i) {
         g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i]);
         HFree((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i], g_CacheHeap);
         HDelete(CBitmap, (CBitmap *)bmps.Buff<DWORD>()[i], g_CacheHeap);
     }
 
-
     return hint;
 }
 
-static void bdh(void)
-{
-    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE,		TRUE);
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHATESTENABLE,   TRUE ));
+static void bdh(void) {
+    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHAREF, 0));
 
-	g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,FALSE);
-    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZENABLE,				D3DZB_FALSE));
+    g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE));
 
-	ASSERT_DX(g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSU,			D3DTADDRESS_CLAMP));
-	ASSERT_DX(g_D3DD->SetSamplerState(0,D3DSAMP_ADDRESSV,			D3DTADDRESS_CLAMP));
+    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP));
+    ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP));
 
-    //SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
+    // SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
     SetColorOpSelect(0, D3DTA_TEXTURE);
     SetAlphaOpSelect(0, D3DTA_TEXTURE);
     SetColorOpDisable(1);
 
-    ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MAGFILTER,			D3DTEXF_POINT));
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MINFILTER,			D3DTEXF_POINT));
-	ASSERT_DX(g_Sampler.SetState(0,D3DSAMP_MIPFILTER,			D3DTEXF_NONE));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT));
+    ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE));
 
-    ASSERT_DX(g_D3DD->SetTextureStageState(0,D3DTSS_TEXCOORDINDEX,	0 ));
+    ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 }
 
-static void adh(void)
-{
-    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE,		FALSE);
-    ASSERT_DX(g_D3DD->SetRenderState( D3DRS_ALPHATESTENABLE,   FALSE ));
+static void adh(void) {
+    g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHAREF, 0x08));
 
-	g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE,TRUE);
-    g_D3DD->SetRenderState(D3DRS_ZENABLE,TRUE);
+    g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+    g_D3DD->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
-void    CMatrixHint::DrawNow(void)
-{
+void CMatrixHint::DrawNow(void) {
     bdh();
 
-    SVert_V4_UV  v[4];
-    v[0].tu = 0; v[0].tv = 1.0f;
-    v[1].tu = 0; v[1].tv = 0.0f;
-    v[2].tu = 1.0f; v[2].tv = 1.0f;
-    v[3].tu = 1.0f; v[3].tv = 0.0f;
+    SVert_V4_UV v[4];
+    v[0].tu = 0;
+    v[0].tv = 1.0f;
+    v[1].tu = 0;
+    v[1].tv = 0.0f;
+    v[2].tu = 1.0f;
+    v[2].tv = 1.0f;
+    v[3].tu = 1.0f;
+    v[3].tv = 0.0f;
 
     CInstDraw::BeginDraw(IDFVF_V4_UV);
-
 
     int szx = m_Texture->GetSizeX();
     int szy = m_Texture->GetSizeY();
 
-    v[0].p = D3DXVECTOR4( float(m_PosX)-0.5f, float(m_PosY + szy)-0.5f, HINT_Z, 1.0f );
-    v[1].p = D3DXVECTOR4( float(m_PosX)-0.5f, float(m_PosY)-0.5f, HINT_Z, 1.0f );
-    v[2].p = D3DXVECTOR4( float(m_PosX + szx)-0.5f, float(m_PosY + szy)-0.5f, HINT_Z, 1.0f );
-    v[3].p = D3DXVECTOR4( float(m_PosX + szx)-0.5f, float(m_PosY)-0.5f, HINT_Z, 1.0f );
+    v[0].p = D3DXVECTOR4(float(m_PosX) - 0.5f, float(m_PosY + szy) - 0.5f, HINT_Z, 1.0f);
+    v[1].p = D3DXVECTOR4(float(m_PosX) - 0.5f, float(m_PosY) - 0.5f, HINT_Z, 1.0f);
+    v[2].p = D3DXVECTOR4(float(m_PosX + szx) - 0.5f, float(m_PosY + szy) - 0.5f, HINT_Z, 1.0f);
+    v[3].p = D3DXVECTOR4(float(m_PosX + szx) - 0.5f, float(m_PosY) - 0.5f, HINT_Z, 1.0f);
 
     CInstDraw::AddVerts(v, m_Texture);
     CInstDraw::ActualDraw();
 
     adh();
-
 }
 
-void    CMatrixHint::DrawAll(void)
-{
+void CMatrixHint::DrawAll(void) {
     bdh();
 
-
-    SVert_V4_UV  v[4];
-    v[0].tu = 0; v[0].tv = 1.0f;
-    v[1].tu = 0; v[1].tv = 0.0f;
-    v[2].tu = 1.0f; v[2].tv = 1.0f;
-    v[3].tu = 1.0f; v[3].tv = 0.0f;
+    SVert_V4_UV v[4];
+    v[0].tu = 0;
+    v[0].tv = 1.0f;
+    v[1].tu = 0;
+    v[1].tv = 0.0f;
+    v[2].tu = 1.0f;
+    v[2].tv = 1.0f;
+    v[3].tu = 1.0f;
+    v[3].tv = 0.0f;
 
     CInstDraw::BeginDraw(IDFVF_V4_UV);
 
-
     CMatrixHint *h = m_First;
-    for (;h;h = h->m_Next)
-    {
-        if (!h->IsVisible()) continue;
+    for (; h; h = h->m_Next) {
+        if (!h->IsVisible())
+            continue;
 
         int szx = h->m_Texture->GetSizeX();
         int szy = h->m_Texture->GetSizeY();
 
-        v[0].p = D3DXVECTOR4( float(h->m_PosX)-0.5f, float(h->m_PosY + szy)-0.5f, HINT_Z, 1.0f );
-        v[1].p = D3DXVECTOR4( float(h->m_PosX)-0.5f, float(h->m_PosY)-0.5f, HINT_Z, 1.0f );
-        v[2].p = D3DXVECTOR4( float(h->m_PosX + szx)-0.5f, float(h->m_PosY + szy)-0.5f, HINT_Z, 1.0f );
-        v[3].p = D3DXVECTOR4( float(h->m_PosX + szx)-0.5f, float(h->m_PosY)-0.5f, HINT_Z, 1.0f );
+        v[0].p = D3DXVECTOR4(float(h->m_PosX) - 0.5f, float(h->m_PosY + szy) - 0.5f, HINT_Z, 1.0f);
+        v[1].p = D3DXVECTOR4(float(h->m_PosX) - 0.5f, float(h->m_PosY) - 0.5f, HINT_Z, 1.0f);
+        v[2].p = D3DXVECTOR4(float(h->m_PosX + szx) - 0.5f, float(h->m_PosY + szy) - 0.5f, HINT_Z, 1.0f);
+        v[3].p = D3DXVECTOR4(float(h->m_PosX + szx) - 0.5f, float(h->m_PosY) - 0.5f, HINT_Z, 1.0f);
 
         CInstDraw::AddVerts(v, h->m_Texture);
     }
@@ -843,18 +793,13 @@ void    CMatrixHint::DrawAll(void)
     CInstDraw::ActualDraw();
 
     adh();
-
 }
 
-
-void    CMatrixHint::ClearAll(void)
-{
-    if (m_Bitmaps)
-    {
-        for (int i=0;i<m_BitmapsCnt;++i)
-        {
+void CMatrixHint::ClearAll(void) {
+    if (m_Bitmaps) {
+        for (int i = 0; i < m_BitmapsCnt; ++i) {
             HDelete(CBitmap, m_Bitmaps[i].bmp, g_MatrixHeap);
-            //HDelete(CWStr, m_Bitmaps[i].name, g_MatrixHeap);
+            // HDelete(CWStr, m_Bitmaps[i].name, g_MatrixHeap);
         }
         HFree(m_Bitmaps, g_MatrixHeap);
         m_Bitmaps = NULL;
