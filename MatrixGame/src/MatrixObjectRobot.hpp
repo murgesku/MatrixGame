@@ -10,15 +10,12 @@
 #include "MatrixProgressBar.hpp"
 #include "Effects/MatrixEffect.hpp"
 
-
-
 class CMatrixFlyer;
 
-enum ERobotState
-{
-	ROBOT_IN_SPAWN,
-	ROBOT_BASE_MOVEOUT,
-	ROBOT_SUCCESSFULLY_BUILD,
+enum ERobotState {
+    ROBOT_IN_SPAWN,
+    ROBOT_BASE_MOVEOUT,
+    ROBOT_SUCCESSFULLY_BUILD,
     ROBOT_CARRYING,
     ROBOT_FALLING,
     ROBOT_DIP,  // death in progress
@@ -28,8 +25,7 @@ enum ERobotState
     ERobotState_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum EAnimation
-{
+enum EAnimation {
     ANIMATION_OFF,
     ANIMATION_STAY,
     ANIMATION_MOVE,
@@ -43,41 +39,37 @@ enum EAnimation
     EAnimation_FORCE_DWORD = 0x7FFFFFFF
 };
 
-
-enum ERobotUnitType
-{
-    MRT_EMPTY   = 0,
-    MRT_CHASSIS	= 1,
-    MRT_WEAPON	= 2,
-    MRT_ARMOR   = 3,
-    MRT_HEAD    = 4,
+enum ERobotUnitType {
+    MRT_EMPTY = 0,
+    MRT_CHASSIS = 1,
+    MRT_WEAPON = 2,
+    MRT_ARMOR = 3,
+    MRT_HEAD = 4,
 
     ERobotUnitType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-
-#define ANIMSPEED_CHAISIS_TRACK 0.20f
-#define ANIMSPEED_CHAISIS_WHEEL 0.36f
+#define ANIMSPEED_CHAISIS_TRACK     0.20f
+#define ANIMSPEED_CHAISIS_WHEEL     0.36f
 #define ANIMSPEED_CHAISIS_PNEUMATIC 0.155f
 
-#define CARRYING_DISTANCE   20.0f
-#define CARRYING_SPEED      0.996
+#define CARRYING_DISTANCE 20.0f
+#define CARRYING_SPEED    0.996
 
-#define KEELWATER_SPAWN_FACTOR  0.01f
-#define DUST_SPAWN_FACTOR  0.007f
+#define KEELWATER_SPAWN_FACTOR 0.01f
+#define DUST_SPAWN_FACTOR      0.007f
 
-#define MR_MAXUNIT		9
+#define MR_MAXUNIT 9
 
 struct SMatrixRobotUnit;
 
-struct SWeaponRepairData
-{
+struct SWeaponRepairData {
     CBillboard m_b0;
     CBillboard m_b1;
     CBillboardLine m_bl;
-    D3DXVECTOR3 m_pos0,m_pos1;
+    D3DXVECTOR3 m_pos0, m_pos1;
 
-    DWORD   m_Flags;
+    DWORD m_Flags;
     static const DWORD CAN_BE_DRAWN = SETBIT(0);
 
     void Release(void);
@@ -87,249 +79,228 @@ struct SWeaponRepairData
     static SWeaponRepairData *Allocate(void);
 };
 
-
-
-struct SChassisData
-{
-    union
-    {
-        struct
-        {
+struct SChassisData {
+    union {
+        struct {
             // for antigrav
 
             CMatrixEffectFireStream *m_LStream;
             CMatrixEffectFireStream *m_RStream;
-            float                    m_StreamLen;
-        }; 
-        struct
-        {
-            float       m_DustCount;    // for aircraft
+            float m_StreamLen;
         };
-        struct
-        {
+        struct {
+            float m_DustCount;  // for aircraft
+        };
+        struct {
             D3DXVECTOR3 m_LastSolePos;  // for track
         };
-        struct
-        {
+        struct {
             D3DXVECTOR2 m_LinkPos;  // for pneumatic
-            int         m_LinkPrevFrame;
+            int m_LinkPrevFrame;
         };
     };
 
-    SChassisData() {};
+    SChassisData(){};
 };
 
-struct SMatrixRobotUnit
-{
-	ERobotUnitType m_Type;		// 0-empty 1-Шасси 2-Оружие 3-Броня 4-голова
+struct SMatrixRobotUnit {
+    ERobotUnitType m_Type;  // 0-empty 1-Шасси 2-Оружие 3-Броня 4-голова
 
-	CVectorObjectAnim * m_Graph;
-	D3DXMATRIX m_Matrix;
+    CVectorObjectAnim *m_Graph;
+    D3DXMATRIX m_Matrix;
 
-    union
-    {
-        struct
-        {
-            SWeaponRepairData * m_WeaponRepairData;
-	        CVOShadowStencil  * m_ShadowStencil;
-	        ERobotUnitKind      m_Kind;
-            float               m_NextAnimTime;
-	        float   m_Angle;
-            int     m_LinkMatrix;
+    union {
+        struct {
+            SWeaponRepairData *m_WeaponRepairData;
+            CVOShadowStencil *m_ShadowStencil;
+            ERobotUnitKind m_Kind;
+            float m_NextAnimTime;
+            float m_Angle;
+            int m_LinkMatrix;
             D3DXMATRIX m_IMatrix;
-	        DWORD  m_Invert;
+            DWORD m_Invert;
         };
-        struct
-        {
+        struct {
             D3DXVECTOR3 m_Pos;
             D3DXVECTOR3 m_Velocity;
-            float       m_TTL;
-            float       m_dp, m_dr, m_dy;
-            
-            BYTE        m_SmokeEffect[sizeof(SEffectHandler)];
+            float m_TTL;
+            float m_dp, m_dr, m_dy;
+
+            BYTE m_SmokeEffect[sizeof(SEffectHandler)];
         };
     };
-    
-    SMatrixRobotUnit() {};
 
-    SEffectHandler & Smoke(void) {return *(SEffectHandler *)&m_SmokeEffect;}
+    SMatrixRobotUnit(){};
+
+    SEffectHandler &Smoke(void) { return *(SEffectHandler *)&m_SmokeEffect; }
 
     void PrepareForDIP(void);
 };
 
-
-struct SPneumaticData
-{
+struct SPneumaticData {
     D3DXVECTOR2 foot;
-    D3DXVECTOR2 other_foot; // if relink occurs, this contained new foot (relink coord)
-    DWORD       newlink;
+    D3DXVECTOR2 other_foot;  // if relink occurs, this contained new foot (relink coord)
+    DWORD newlink;
 };
 
 class CMatrixRobot : public CMatrixMapStatic {
-        EAnimation  m_Animation;
-		CMatrixBuilding *m_Base; //база из который вышел робот
+    EAnimation m_Animation;
+    CMatrixBuilding *m_Base;  //база из который вышел робот
 
 protected:
-        // hitpoint
-        CMatrixProgressBar m_PB;
-        int         m_ShowHitpointTime;
-        float       m_HitPoint;
-	    float       m_HitPointMax;  // Максимальное кол-во здоровья
-        float       m_MaxHitPointInversed; // for normalized calcs
+    // hitpoint
+    CMatrixProgressBar m_PB;
+    int m_ShowHitpointTime;
+    float m_HitPoint;
+    float m_HitPointMax;          // Максимальное кол-во здоровья
+    float m_MaxHitPointInversed;  // for normalized calcs
 
+    static SPneumaticData *m_Pneumaic;
 
-        static      SPneumaticData * m_Pneumaic;
-
-        //DWORD       m_RobotFlags; // m_ObjectState used instead. do not uncomment!
+    // DWORD       m_RobotFlags; // m_ObjectState used instead. do not uncomment!
 public:
-		
-	    EShadowType     m_ShadowType; // 0-off 1-proj 2-proj with anim 3-stencil
-        int             m_ShadowSize; // texture size for proj
+    EShadowType m_ShadowType;  // 0-off 1-proj 2-proj with anim 3-stencil
+    int m_ShadowSize;          // texture size for proj
 
-        CWStr m_Name;
-        int m_defHitPoint;
+    CWStr m_Name;
+    int m_defHitPoint;
 
-        float m_Speed;
-        float m_RotSpeed;
-        float m_PosX,m_PosY;
+    float m_Speed;
+    float m_RotSpeed;
+    float m_PosX, m_PosY;
 
-		int m_Side;		// 1-8
+    int m_Side;  // 1-8
 
-        int m_CalcBoundsLastTime;   // need for calculation of bound only 10 times per second
-        D3DXVECTOR3 m_CalcBoundMin;
-        D3DXVECTOR3 m_CalcBoundMax;
+    int m_CalcBoundsLastTime;  // need for calculation of bound only 10 times per second
+    D3DXVECTOR3 m_CalcBoundMin;
+    D3DXVECTOR3 m_CalcBoundMax;
 
+    int m_UnitCnt;
+    SMatrixRobotUnit m_Unit[MR_MAXUNIT];
 
-		int m_UnitCnt;
-		SMatrixRobotUnit m_Unit[MR_MAXUNIT];
+    SChassisData m_ChassisData;
 
-        SChassisData    m_ChassisData;
+    // temporary
+    int m_TimeWithBase;
+    float m_HullRotAngle;
+    float m_BotRotAngle;
+    D3DXVECTOR3 m_Forward;
+    D3DXVECTOR3 m_HullForward;
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Steering behavior's try
+    D3DXVECTOR3 m_Velocity;  //вектор скорости, длина равна скорости, направление движения
 
-//temporary
-        int              m_TimeWithBase;
-		float m_HullRotAngle;
-		float m_BotRotAngle;
-		D3DXVECTOR3 m_Forward;
-		D3DXVECTOR3 m_HullForward;
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-//Steering behavior's try
-		D3DXVECTOR3 m_Velocity;//вектор скорости, длина равна скорости, направление движения
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
+    CVOShadowProj *m_ShadowProj;
 
-		CVOShadowProj * m_ShadowProj;
+    ERobotState m_CurrState;
 
-		ERobotState m_CurrState;
+    float m_FallingSpeed;
+    union {
+        CMatrixFlyer *m_CargoFlyer;
+        float m_KeelWaterCount;
+    };
 
-        float       m_FallingSpeed;
-        union
-        {
-            CMatrixFlyer   *m_CargoFlyer;
-            float           m_KeelWaterCount;
-        };
+    int m_MiniMapFlashTime;
 
-        int m_MiniMapFlashTime;
+public:
+    CMatrixRobot(void);
+    ~CMatrixRobot();
 
-	public:
-		CMatrixRobot(void);
-		~CMatrixRobot();
+    void ShowHitpoint(void) { m_ShowHitpointTime = HITPOINT_SHOW_TIME; }
+    float GetHitPoint(void) const { return m_HitPoint / 10; }
+    float GetMaxHitPoint() { return m_HitPointMax / 10; }
+    void InitMaxHitpoint(float hp) {
+        m_HitPoint = hp;
+        m_HitPointMax = hp;
+        m_MaxHitPointInversed = 1.0f / hp;
+    }
 
+    void MarkCrazy(void) { SETFLAG(m_ObjectState, ROBOT_CRAZY); }
+    void UnMarkCrazy(void) { RESETFLAG(m_ObjectState, ROBOT_CRAZY); }
+    bool IsCrazy(void) const { return FLAG(m_ObjectState, ROBOT_CRAZY); }
 
-        void    ShowHitpoint(void) {m_ShowHitpointTime = HITPOINT_SHOW_TIME;}
-        float   GetHitPoint(void) const {return m_HitPoint/10;}
-        float   GetMaxHitPoint() { return m_HitPointMax/10; }
-        void    InitMaxHitpoint(float hp) {m_HitPoint = hp; m_HitPointMax = hp; m_MaxHitPointInversed = 1.0f / hp;}
+    void MarkInPosition(void) { SETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
+    void UnMarkInPosition(void) { RESETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
+    bool IsInPosition(void) const { return FLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
 
+    bool IsMustDie(void) const { return FLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG); }
+    void MustDie(void) { SETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG); }
+    void ResetMustDie(void) { RESETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG); }
 
-        void    MarkCrazy(void) {SETFLAG(m_ObjectState, ROBOT_CRAZY);}
-        void    UnMarkCrazy(void) {RESETFLAG(m_ObjectState, ROBOT_CRAZY);}
-        bool    IsCrazy(void) const {return FLAG(m_ObjectState, ROBOT_CRAZY);}
+    void MarkCaptureInformed(void) { SETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
+    void UnMarkCaptureInformed(void) { RESETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
+    bool IsCaptureInformed(void) const { return FLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
 
-        void    MarkInPosition(void) {SETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
-        void    UnMarkInPosition(void) {RESETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
-        bool    IsInPosition(void) const {return FLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
+    void SetBase(CMatrixBuilding *b) {
+        m_Base = b;
+        m_TimeWithBase = 0;
+    }
+    CMatrixBuilding *GetBase(void) const { return m_Base; }
 
-        bool    IsMustDie(void) const {return FLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);}
-        void    MustDie(void)
-        {
-            SETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);
-        }
-        void    ResetMustDie(void) { RESETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);}
+    void SwitchAnimation(EAnimation a);
 
-        void    MarkCaptureInformed(void) {SETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
-        void    UnMarkCaptureInformed(void) {RESETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
-        bool    IsCaptureInformed(void) const {return FLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
-        
-
-
-        void    SetBase(CMatrixBuilding *b) {m_Base = b; m_TimeWithBase = 0;}
-        CMatrixBuilding *GetBase(void) const {return m_Base;}
-
-
-        void SwitchAnimation(EAnimation a);
-
-#ifdef _DEBUG        
-        EAnimation GetAnimation(){ return m_Animation;}
+#ifdef _DEBUG
+    EAnimation GetAnimation() { return m_Animation; }
 #endif
 
-        bool Carry(CMatrixFlyer *cargo, bool quick_connect = false); // NULL to off
-        void ClearSelection(void);
-	
+    bool Carry(CMatrixFlyer *cargo, bool quick_connect = false);  // NULL to off
+    void ClearSelection(void);
 
-        static void BuildPneumaticData(CVectorObject *vo);
-        static void DestroyPneumaticData(void);
-        void LinkPneumatic(void);
-        void FirstLinkPneumatic(void);
+    static void BuildPneumaticData(CVectorObject *vo);
+    static void DestroyPneumaticData(void);
+    void LinkPneumatic(void);
+    void FirstLinkPneumatic(void);
 
-        float GetChassisHeight(void) const;
+    float GetChassisHeight(void) const;
 
-        float Z_From_Pos(void);
+    float Z_From_Pos(void);
 
-        void    ApplyNaklon(const D3DXVECTOR3 &dir);
+    void ApplyNaklon(const D3DXVECTOR3 &dir);
 
-		void UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind);
-		void WeaponInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind, int hullno, int pilon);
-        void UnitDelete(int nounit);
-		void UnitClear(void);
+    void UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind);
+    void WeaponInsert(int beforeunit, ERobotUnitType type, ERobotUnitKind kind, int hullno, int pilon);
+    void UnitDelete(int nounit);
+    void UnitClear(void);
 
-		void BoundGet(D3DXVECTOR3 & bmin,D3DXVECTOR3 & bmax);
+    void BoundGet(D3DXVECTOR3 &bmin, D3DXVECTOR3 &bmax);
 
-        void WeaponSelectMatrix(void);
+    void WeaponSelectMatrix(void);
 
-        void DoAnimation(int cms);
+    void DoAnimation(int cms);
 
-        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker) = 0;
-		virtual void RNeed(dword need);
+    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
+                        CMatrixMapStatic *attaker) = 0;
+    virtual void RNeed(dword need);
 
-		virtual void Takt(int cms);
-        virtual void LogicTakt(int cms) = 0;
+    virtual void Takt(int cms);
+    virtual void LogicTakt(int cms) = 0;
 
-		virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
-        bool PickFull(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
+    virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const;
+    bool PickFull(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const;
 
-		virtual void BeforeDraw(void);
-		virtual void Draw(void);
-		virtual void DrawShadowStencil(void);
-		virtual void DrawShadowProj(void);
+    virtual void BeforeDraw(void);
+    virtual void Draw(void);
+    virtual void DrawShadowStencil(void);
+    virtual void DrawShadowProj(void);
 
-        virtual void FreeDynamicResources(void);
+    virtual void FreeDynamicResources(void);
 
-        void OnLoad(void) {};
+    void OnLoad(void){};
 
-        virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
-        virtual int  GetSide(void) const {return m_Side;};
-        virtual bool  NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
-        virtual bool InRect(const CRect &rect)const;
+    virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
+    virtual int GetSide(void) const { return m_Side; };
+    virtual bool NeedRepair(void) const { return m_HitPoint < m_HitPointMax; }
+    virtual bool InRect(const CRect &rect) const;
 
-        void    OnOutScreen(void) {};
+    void OnOutScreen(void){};
 };
 
-__forceinline bool CMatrixMapStatic::IsLiveRobot(void) const
-{
-    return IsRobot() && ((CMatrixRobot*)this)->m_CurrState!=ROBOT_DIP;
+__forceinline bool CMatrixMapStatic::IsLiveRobot(void) const {
+    return IsRobot() && ((CMatrixRobot *)this)->m_CurrState != ROBOT_DIP;
 }
-

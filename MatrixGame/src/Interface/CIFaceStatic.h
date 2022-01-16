@@ -7,16 +7,15 @@
 #include "CIFaceElement.h"
 
 ////////////////////////////////////////////////////////
-//Static Image Class
+// Static Image Class
 
 class CIFaceStatic : public CIFaceElement {
 public:
-
-	bool OnMouseLBDown();
+    bool OnMouseLBDown();
     void OnMouseLBUp();
-	bool OnMouseMove(CPoint);
+    bool OnMouseMove(CPoint);
     bool OnMouseRBDown();
 
     CIFaceStatic();
-	~CIFaceStatic();
+    ~CIFaceStatic();
 };

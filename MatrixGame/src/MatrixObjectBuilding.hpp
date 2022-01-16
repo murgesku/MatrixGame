@@ -9,27 +9,27 @@
 #include "MatrixProgressBar.hpp"
 #include "MatrixSoundManager.hpp"
 
-#define BASE_FLOOR_Z    (-63.0f)
-#define BASE_FLOOR_SPEED    0.0008f
+#define BASE_FLOOR_Z      (-63.0f)
+#define BASE_FLOOR_SPEED  0.0008f
 #define MAX_ZAHVAT_POINTS 14
 
-#define BUILDING_EXPLOSION_PERIOD_SND_1    100
-#define BUILDING_EXPLOSION_PERIOD_SND_2    500
-#define BUILDING_EXPLOSION_PERIOD    10
+#define BUILDING_EXPLOSION_PERIOD_SND_1 100
+#define BUILDING_EXPLOSION_PERIOD_SND_2 500
+#define BUILDING_EXPLOSION_PERIOD       10
 #define BUILDING_EXPLOSION_TIME         1000
 #define BUILDING_BASE_EXPLOSION_TIME    2000
 
-#define RESOURCES_INCOME        10
-#define RESOURCES_INCOME_BASE   3
+#define RESOURCES_INCOME      10
+#define RESOURCES_INCOME_BASE 3
 
-#define BUILDING_SELECTION_SIZE    50
+#define BUILDING_SELECTION_SIZE 50
 
-#define CAPTURE_RADIUS              50
-#define CAPTURE_SEEK_ROBOT_PERIOD       500
+#define CAPTURE_RADIUS            50
+#define CAPTURE_SEEK_ROBOT_PERIOD 500
 
-#define DISTANCE_CAPTURE_ME         300
+#define DISTANCE_CAPTURE_ME 300
 
-#define MAX_PLACES  4
+#define MAX_PLACES 4
 
 //#define RES_TITAN_PERIOD       10000
 //#define RES_PLASMA_PERIOD      5000
@@ -40,12 +40,11 @@
 //#define FLYER_BUILD_TIME        5000
 //#define TURRET_BUILD_TIME       5000
 
-#define MAX_STACK_UNITS         6
+#define MAX_STACK_UNITS 6
 
 enum EFlyerKind;
 
-enum EBuildingTurrets
-{
+enum EBuildingTurrets {
     BASE_TURRETS = 4,
     TITAN_TURRETS = 4,
     PLASMA_TURRETS = 4,
@@ -53,11 +52,10 @@ enum EBuildingTurrets
     ENERGY_TURRETS = 4,
     REPAIR_TURRETS = 4,
 
-    EBuildingTurrets_FORCE_DWORD = 0x7FFFFFFF 
+    EBuildingTurrets_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum EBuildingType
-{
+enum EBuildingType {
     BUILDING_BASE = 0,
     BUILDING_TITAN = 1,
     BUILDING_PLASMA = 2,
@@ -65,138 +63,131 @@ enum EBuildingType
     BUILDING_ENERGY = 4,
     BUILDING_REPAIR = 5,
 
-    EBuildingType_FORCE_DWORD = 0x7FFFFFFF 
+    EBuildingType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum EBaseState
-{
-	BASE_CLOSED,
-	BASE_OPENING,
+enum EBaseState {
+    BASE_CLOSED,
+    BASE_OPENING,
     BASE_OPENED,
-	BASE_CLOSING,
+    BASE_CLOSING,
 
     BUILDING_DIP,
     BUILDING_DIP_EXPLODED,
 
-    EBaseState_FORCE_DWORD = 0x7FFFFFFF 
+    EBaseState_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum ECaptureStatus
-{
-    CAPTURE_DONE,       // захват данным цветом завершен
-    CAPTURE_INPROGRESS, // в процессе
-    CAPTURE_TOOFAR,     // робот далеко. подъедь ближе
-    CAPTURE_BUSY,       // база занята делами. обратитесь позже
+enum ECaptureStatus {
+    CAPTURE_DONE,        // захват данным цветом завершен
+    CAPTURE_INPROGRESS,  // в процессе
+    CAPTURE_TOOFAR,      // робот далеко. подъедь ближе
+    CAPTURE_BUSY,        // база занята делами. обратитесь позже
 
 };
 
-struct STrueColor
-{
+struct STrueColor {
     int m_ColoredCnt;
     DWORD m_Color;
-    STrueColor()
-    {
+    STrueColor() {
         m_ColoredCnt = 0;
         m_Color = 0;
     }
-
 };
 
-struct SResource
-{
-    EBuildingType   m_Type;
-    int             m_Amount;
-    //int             m_BaseRCycle;
+struct SResource {
+    EBuildingType m_Type;
+    int m_Amount;
+    // int             m_BaseRCycle;
 };
 
-class CBuildStack : public CMain
-{
-    int                 m_Items;
-    int                 m_Timer;
-    CMatrixMapStatic*   m_Top;
-    CMatrixMapStatic*   m_Bottom;
-    CMatrixBuilding*    m_ParentBase;
-    CMatrixProgressBar  m_PB;
+class CBuildStack : public CMain {
+    int m_Items;
+    int m_Timer;
+    CMatrixMapStatic *m_Top;
+    CMatrixMapStatic *m_Bottom;
+    CMatrixBuilding *m_ParentBase;
+    CMatrixProgressBar m_PB;
+
 public:
-    void AddItem(CMatrixMapStatic* item);
+    void AddItem(CMatrixMapStatic *item);
     int DeleteItem(int no);
-    void DeleteItem(CMatrixMapStatic* item);
+    void DeleteItem(CMatrixMapStatic *item);
     void ClearStack();
-    CMatrixMapStatic* GetTopItem()                                  { return m_Top; }
-    void TickTimer(int ms);                                          
-    int GetItemsCnt(void) const                                     { return m_Items; }
+    CMatrixMapStatic *GetTopItem() { return m_Top; }
+    void TickTimer(int ms);
+    int GetItemsCnt(void) const { return m_Items; }
 
-    //void SetParentBase(CMatrixBuilding* base)                       { m_ParentBase = base; }
-    CMatrixBuilding* GetParentBase()                                { return m_ParentBase; }
-    bool IsMaxItems()                                               { return m_Items >= MAX_STACK_UNITS; }
+    // void SetParentBase(CMatrixBuilding* base)                       { m_ParentBase = base; }
+    CMatrixBuilding *GetParentBase() { return m_ParentBase; }
+    bool IsMaxItems() { return m_Items >= MAX_STACK_UNITS; }
 
-    void ReturnRobotResources(CMatrixRobotAI* robot);
-    void ReturnTurretResources(CMatrixCannon* turret);
+    void ReturnRobotResources(CMatrixRobotAI *robot);
+    void ReturnTurretResources(CMatrixCannon *turret);
 
     int GetRobotsCnt(void) const;
     void KillBar(void);
-    
-    CBuildStack(CMatrixBuilding *base):m_ParentBase(base)           { m_Top = NULL; m_Bottom = NULL; m_Items = 0; m_Timer = 0;}
+
+    CBuildStack(CMatrixBuilding *base) : m_ParentBase(base) {
+        m_Top = NULL;
+        m_Bottom = NULL;
+        m_Items = 0;
+        m_Timer = 0;
+    }
     ~CBuildStack();
 };
 
-struct STurretPlace
-{
-    CPoint  m_Coord;
-    float   m_Angle;
-    ///float   m_AddH; // no need this
+struct STurretPlace {
+    CPoint m_Coord;
+    float m_Angle;
+    /// float   m_AddH; // no need this
 
     // dynamic members
-    int     m_CannonType;
+    int m_CannonType;
 };
 
-class CMatrixBuilding : public CMatrixMapStatic 
-{
-    union
-    {
-        struct // dip
+class CMatrixBuilding : public CMatrixMapStatic {
+    union {
+        struct  // dip
         {
             int m_NextExplosionTime;
             int m_NextExplosionTimeSound;
-
         };
-        struct 
-        {
+        struct {
             int m_ResourcePeriod;
-            SEffectHandler* m_PlacesShow;
+            SEffectHandler *m_PlacesShow;
         };
     };
 
     CMatrixEffectSelection *m_Selection;
     int m_UnderAttackTime;
     int m_CaptureMeNextTime;
+
 public:
-    D3DXVECTOR3     m_TopPoint;
-    CWStr           m_Name;
-    int             m_defHitPoint;
-    CBuildStack     m_BS;
-    
+    D3DXVECTOR3 m_TopPoint;
+    CWStr m_Name;
+    int m_defHitPoint;
+    CBuildStack m_BS;
+
     D3DXVECTOR2 m_Pos;
-	int m_Angle;
+    int m_Angle;
 
-	int m_Side;		// 1-8
-	EBuildingType m_Kind;
-    EBuildingTurrets    m_TurretsMax;
-    int                 m_TurretsHave;
-    STurretPlace        m_TurretsPlaces[MAX_PLACES];
-    int                 m_TurretsPlacesCnt;
+    int m_Side;  // 1-8
+    EBuildingType m_Kind;
+    EBuildingTurrets m_TurretsMax;
+    int m_TurretsHave;
+    STurretPlace m_TurretsPlaces[MAX_PLACES];
+    int m_TurretsPlacesCnt;
 
-    bool HaveMaxTurrets(void)  const          { return m_TurretsHave >= (int)m_TurretsMax; }
+    bool HaveMaxTurrets(void) const { return m_TurretsHave >= (int)m_TurretsMax; }
 
-    bool CanBeCaptured(void) const {return !FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);}
-    bool IsCaptured(void) const {return FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);}
-    void SetCapturedBy(CMatrixMapStatic *ms)
-    {
+    bool CanBeCaptured(void) const { return !FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS); }
+    bool IsCaptured(void) const { return FLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS); }
+    void SetCapturedBy(CMatrixMapStatic *ms) {
         SETFLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);
         m_Capturer = ms;
     }
-    void ResetCaptured(void)
-    {
+    void ResetCaptured(void) {
         RESETFLAG(m_ObjectState, BUILDING_CAPTURE_IN_PROGRESS);
         m_Capturer = NULL;
     }
@@ -204,86 +195,89 @@ public:
     float m_BaseFloor;
     float m_BuildZ;
 
-	CVectorObjectGroup * m_GGraph;
-	CMatrixShadowProj * m_ShadowProj;
+    CVectorObjectGroup *m_GGraph;
+    CMatrixShadowProj *m_ShadowProj;
 
-    EBaseState m_State; 
+    EBaseState m_State;
 
     CMatrixEffectZahvat *m_capture;
     STrueColor m_TrueColor;
     ECaptureStatus Capture(CMatrixRobotAI *by);
-    int     m_InCaptureTime;
-    union
-    {
-        int     m_InCaptureNextTimeErase;
-        int     m_CaptureNextTimeRollback;
+    int m_InCaptureTime;
+    union {
+        int m_InCaptureNextTimeErase;
+        int m_CaptureNextTimeRollback;
     };
-    int                 m_InCaptureNextTimePaint;
-    int                 m_CaptureSeekRobotNextTime;
-    CMatrixMapStatic   *m_Capturer; // used only for check
+    int m_InCaptureNextTimePaint;
+    int m_CaptureSeekRobotNextTime;
+    CMatrixMapStatic *m_Capturer;  // used only for check
 
     // hitpoint
     CMatrixProgressBar m_PB;
-    int         m_ShowHitpointTime;
-    float       m_HitPoint;
-    float       m_HitPointMax;
-    float       m_MaxHitPointInversed; // for normalized calcs
+    int m_ShowHitpointTime;
+    float m_HitPoint;
+    float m_HitPointMax;
+    float m_MaxHitPointInversed;  // for normalized calcs
 
-
-    //void SetResourceAmount(int amount)
+    // void SetResourceAmount(int amount)
     //{
     //    m_ResourceAmount = amount;
     //}
 
-    int GetStackRobots(void) const        { return m_BS.GetRobotsCnt();}
+    int GetStackRobots(void) const { return m_BS.GetRobotsCnt(); }
+
 public:
-	EShadowType     m_ShadowType; // 0-off 1-proj 2-proj with anim 3-stencil
-    int             m_ShadowSize; // texture size for proj
+    EShadowType m_ShadowType;  // 0-off 1-proj 2-proj with anim 3-stencil
+    int m_ShadowSize;          // texture size for proj
 
+    CMatrixBuilding(void);
+    ~CMatrixBuilding();
 
-	CMatrixBuilding(void);
-	~CMatrixBuilding();
-    
     void Maintenance(void);
 
     bool BuildFlyer(EFlyerKind kind);
-    
-    void Open(void)
-    {
-        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
+
+    void Open(void) {
+        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED)
+            return;
         m_State = BASE_OPENING;
         CSound::AddSound(S_DOORS_OPEN, GetGeoCenter());
         CSound::AddSound(S_PLATFORM_UP, GetGeoCenter());
     }
-    void Close(void)
-    {
-        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED) return;
-        if (FLAG(m_ObjectState, BUILDING_SPAWNBOT)) return; // cannot close while spawn
+    void Close(void) {
+        if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED)
+            return;
+        if (FLAG(m_ObjectState, BUILDING_SPAWNBOT))
+            return;  // cannot close while spawn
         m_State = BASE_CLOSING;
         CSound::AddSound(S_DOORS_CLOSE, GetGeoCenter());
         CSound::AddSound(S_PLATFORM_DOWN, GetGeoCenter());
     }
-    EBaseState  State(void) const {return m_State;}
+    EBaseState State(void) const { return m_State; }
 
-    bool IsSpawningBot(void) const {return FLAG(m_ObjectState, BUILDING_SPAWNBOT);};
-    void ResetSpawningBot(void) { RESETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
-    void SetSpawningBot(void) { SETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
+    bool IsSpawningBot(void) const { return FLAG(m_ObjectState, BUILDING_SPAWNBOT); };
+    void ResetSpawningBot(void) { RESETFLAG(m_ObjectState, BUILDING_SPAWNBOT); };
+    void SetSpawningBot(void) { SETFLAG(m_ObjectState, BUILDING_SPAWNBOT); };
 
-    void    ShowHitpoint(void) {m_ShowHitpointTime = HITPOINT_SHOW_TIME;}
-    void    InitMaxHitpoint(float hp) {m_HitPoint = hp; m_HitPointMax = hp; m_MaxHitPointInversed = 1.0f / hp;}
-    float    GetMaxHitPoint() { return m_HitPointMax / 10; }
-    float   GetHitPoint() { return m_HitPoint / 10; }
-    void    ReleaseMe();
+    void ShowHitpoint(void) { m_ShowHitpointTime = HITPOINT_SHOW_TIME; }
+    void InitMaxHitpoint(float hp) {
+        m_HitPoint = hp;
+        m_HitPointMax = hp;
+        m_MaxHitPointInversed = 1.0f / hp;
+    }
+    float GetMaxHitPoint() { return m_HitPointMax / 10; }
+    float GetHitPoint() { return m_HitPoint / 10; }
+    void ReleaseMe();
 
     void SetNeutral(void);
 
-    D3DXVECTOR3 GetPlacePos(void) const { return m_GGraph->GetPosByName(MATRIX_BASE_PLACE);}
+    D3DXVECTOR3 GetPlacePos(void) const { return m_GGraph->GetPosByName(MATRIX_BASE_PLACE); }
 
-	virtual void RNeed(dword need);
+    virtual void RNeed(dword need);
 
-	virtual void Takt(int cms);
+    virtual void Takt(int cms);
 
-	virtual void LogicTakt(int cms);
+    virtual void LogicTakt(int cms);
     void PauseTakt(int cms);
 
     float GetFloorZ(void);
@@ -294,45 +288,42 @@ public:
     bool Select(void);
     void UnSelect(void);
 
-	virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt) const;
+    virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const;
 
-    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
-	virtual void BeforeDraw(void);
-	virtual void Draw(void);
-	virtual void DrawShadowStencil(void);
-	virtual void DrawShadowProj(void);
+    virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
+                        CMatrixMapStatic *attaker);
+    virtual void BeforeDraw(void);
+    virtual void Draw(void);
+    virtual void DrawShadowStencil(void);
+    virtual void DrawShadowProj(void);
 
     virtual void FreeDynamicResources(void);
 
-	void OnLoad(void);
+    void OnLoad(void);
 
     virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
 
-    virtual int  GetSide(void) const {return m_Side;};
-    virtual bool  NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
+    virtual int GetSide(void) const { return m_Side; };
+    virtual bool NeedRepair(void) const { return m_HitPoint < m_HitPointMax; }
     virtual bool InRect(const CRect &rect) const;
 
-    void    OnOutScreen(void);
+    void OnOutScreen(void);
 
     // STUB:
-    int GetPlacesForTurrets(CPoint * places);
+    int GetPlacesForTurrets(CPoint *places);
     void CreatePlacesShow();
     void DeletePlacesShow();
-
 };
 
-__forceinline bool CMatrixMapStatic::IsBase(void) const
-{
-    if (GetObjectType() == OBJECT_TYPE_BUILDING)
-    {
-        if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE) return true;
+__forceinline bool CMatrixMapStatic::IsBase(void) const {
+    if (GetObjectType() == OBJECT_TYPE_BUILDING) {
+        if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE)
+            return true;
     }
     return false;
 }
 
-__forceinline bool CMatrixMapStatic::IsLiveBuilding(void) const
-{
-    return IsBuilding() && ((CMatrixBuilding *)this)->m_State!=BUILDING_DIP && ((CMatrixBuilding *)this)->m_State!=BUILDING_DIP_EXPLODED;
+__forceinline bool CMatrixMapStatic::IsLiveBuilding(void) const {
+    return IsBuilding() && ((CMatrixBuilding *)this)->m_State != BUILDING_DIP &&
+           ((CMatrixBuilding *)this)->m_State != BUILDING_DIP_EXPLODED;
 }
-
-

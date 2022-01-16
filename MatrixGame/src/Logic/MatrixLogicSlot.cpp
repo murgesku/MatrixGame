@@ -4,12 +4,13 @@
 // Refer to the LICENSE file included
 
 #include "../stdafx.h"
+
 #include "MatrixLogicSlot.h"
 #include "MatrixState.h"
 #include "../MatrixMap.hpp"
 #include "../MatrixRobot.hpp"
 
-//CMatrixLogicSlot::~CMatrixLogicSlot()
+// CMatrixLogicSlot::~CMatrixLogicSlot()
 //{
 //	DTRACE();
 //
@@ -48,7 +49,7 @@
 //
 //}
 //
-//void CMatrixLogicSlot::Load(CBlockPar &bp)
+// void CMatrixLogicSlot::Load(CBlockPar &bp)
 //{
 //    CWStr filename;
 //    //filename.Add(L"#LO_");
@@ -79,7 +80,7 @@
 //    }
 //}
 //
-//void CMatrixLogicSlot::RemoveLogicRobotFromList(CMatrixRobotAI* robot)
+// void CMatrixLogicSlot::RemoveLogicRobotFromList(CMatrixRobotAI* robot)
 //{
 //    CLogicSlotRobot* ls_robot = m_FirstRobot;
 //    while(ls_robot){
@@ -94,7 +95,7 @@
 //    }
 //}
 //
-//void CMatrixLogicSlot::AddLogicRobotToList(CMatrixRobotAI* robot)
+// void CMatrixLogicSlot::AddLogicRobotToList(CMatrixRobotAI* robot)
 //{
 //    CLogicSlotRobot* ls_robot = HNew(g_MatrixHeap) CLogicSlotRobot;
 //    ls_robot->SetLogicRobot(robot);
@@ -102,7 +103,7 @@
 //    m_RobotsCnt++;
 //}
 //
-//bool CMatrixLogicSlot::FindRobot(CMatrixRobotAI* robot)
+// bool CMatrixLogicSlot::FindRobot(CMatrixRobotAI* robot)
 //{
 //   	CLogicSlotRobot *bots = m_FirstRobot;
 //
@@ -111,7 +112,7 @@
 //            return true;
 //        bots = bots->m_NextRobot;
 //    }
-//        
+//
 //    return false;
 //}
 //

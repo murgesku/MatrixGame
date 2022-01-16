@@ -4,64 +4,47 @@
 // Refer to the LICENSE file included
 
 #include "stdafx.h"
+
 #include "CReminder.hpp"
 
 namespace Base {
 
-
 SRemindCore *SRemindCore::first;
 SRemindCore *SRemindCore::last;
 SRemindCore *SRemindCore::current;
-int  SRemindCore::gtime;
-int  SRemindCore::ctime;
+int SRemindCore::gtime;
+int SRemindCore::ctime;
 
-
-void SRemindCore::Takt(int ms)
-{
-    if (first == NULL) return;
-    if (current == NULL) current = first;
+void SRemindCore::Takt(int ms) {
+    if (first == NULL)
+        return;
+    if (current == NULL)
+        current = first;
 
     gtime += ms;
-    while (gtime > ctime)
-    {
+    while (gtime > ctime) {
         int checks = ms / CHECK_TIME;
-        if (checks == 0) checks = 1;
+        if (checks == 0)
+            checks = 1;
         ctime += checks * CHECK_TIME;
 
-        while (checks-- > 0)
-        {
+        while (checks-- > 0) {
             current = current->next;
-            if (current == NULL) current = first;
-            if (gtime > current->time)
-            {
-                if (!current->handler(current->param))
-                {
+            if (current == NULL)
+                current = first;
+            if (gtime > current->time) {
+                if (!current->handler(current->param)) {
                     current->Down();
                 }
-                if (current == NULL) current = first;
-				if (current == NULL) return;
+                if (current == NULL)
+                    current = first;
+                if (current == NULL)
+                    return;
             }
         }
     }
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //
 //
 //
@@ -70,7 +53,7 @@ void SRemindCore::Takt(int ms)
 //
 //
 //
-//CReminder::CReminder(CHeap *heap):CMain(),m_Items(heap, sizeof(SReminderItem) * 1000), m_Heap(heap)
+// CReminder::CReminder(CHeap *heap):CMain(),m_Items(heap, sizeof(SReminderItem) * 1000), m_Heap(heap)
 //{
 //    DTRACE();
 //
@@ -92,7 +75,7 @@ void SRemindCore::Takt(int ms)
 //}
 //
 //
-//CReminder::~CReminder()
+// CReminder::~CReminder()
 //{
 //    DTRACE();
 //    for (int i=0; i<REMINDER_MAX_TIME; ++i)
@@ -105,7 +88,7 @@ void SRemindCore::Takt(int ms)
 //#endif
 //}
 //
-//void CReminder::Clear(void)
+// void CReminder::Clear(void)
 //{
 //    DTRACE();
 //
@@ -125,7 +108,7 @@ void SRemindCore::Takt(int ms)
 //    //Validate();
 //}
 //
-//SReminderItem*  CReminder::NewItem(void)
+// SReminderItem*  CReminder::NewItem(void)
 //{
 //    DTRACE();
 //    if (m_FirstFree)
@@ -163,7 +146,7 @@ void SRemindCore::Takt(int ms)
 //    return (SReminderItem*)(((BYTE *)m_Items.Get()) + m_Items.Len() - sizeof(SReminderItem));
 //}
 //
-//void    CReminder::ReleaseItem(SReminderItem *item)
+// void    CReminder::ReleaseItem(SReminderItem *item)
 //{
 //    DTRACE();
 //    LIST_ADD(item, m_FirstFree, m_LastFree, prev_free, next_free);
@@ -171,7 +154,7 @@ void SRemindCore::Takt(int ms)
 //}
 //
 ///*
-//void CReminder::Validate(void)
+// void CReminder::Validate(void)
 //{
 //#ifdef _DEBUG
 //    for (int i = 0; i<REMINDER_MAX_TIME; ++i)
@@ -209,7 +192,7 @@ void SRemindCore::Takt(int ms)
 //}
 //*/
 //
-//bool  CReminder::RemindOldest(void)
+// bool  CReminder::RemindOldest(void)
 //{
 //    DTRACE();
 //
@@ -226,7 +209,7 @@ void SRemindCore::Takt(int ms)
 //        if (id < idend)
 //        {
 //            --idend;
-//            
+//
 //            SReminderItem * item = (SReminderItem *)m_Items.Get() + (*idend);
 //            item->handler(*id, item->user);
 //
@@ -247,13 +230,13 @@ void SRemindCore::Takt(int ms)
 //            }
 //        }
 //
-//        
+//
 //    } while(!ok);
 //    return false;
 //
 //}
 //
-//void CReminder::Takt(int ms)
+// void CReminder::Takt(int ms)
 //{
 //    DTRACE();
 //
@@ -263,7 +246,7 @@ void SRemindCore::Takt(int ms)
 //    while (m_Time >= m_NextTime)
 //    {
 //        m_NextTime += REMINDER_TAKT;
-//        
+//
 //
 //        CBuf *b = m_TimeArray[m_Pointer];
 //
@@ -285,7 +268,7 @@ void SRemindCore::Takt(int ms)
 //    //Validate();
 //}
 //
-//DWORD CReminder::Create(DWORD id, int in_time, REMINDER_HANDLER handler, DWORD user)
+// DWORD CReminder::Create(DWORD id, int in_time, REMINDER_HANDLER handler, DWORD user)
 //{
 //    DTRACE();
 //
@@ -380,7 +363,7 @@ void SRemindCore::Takt(int ms)
 //    return id;
 //
 //}
-//void  CReminder::Delete(DWORD id)
+// void  CReminder::Delete(DWORD id)
 //{
 //    DTRACE();
 //
@@ -426,4 +409,4 @@ void SRemindCore::Takt(int ms)
 //    //Validate();
 //}
 
-}
+}  // namespace Base

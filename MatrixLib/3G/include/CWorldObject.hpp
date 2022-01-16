@@ -12,19 +12,13 @@
 
 class CCoordSystem;
 
-class CWorldObject : public CMain , public CListInterface<CWorldObject>
-{
-    CCoordSystem *_owner;   // координатная система - владелец
+class CWorldObject : public CMain, public CListInterface<CWorldObject> {
+    CCoordSystem *_owner;  // координатная система - владелец
 
 public:
-    CWorldObject(CCoordSystem * cs):
-    _owner(cs)
-    {
-    }
+    CWorldObject(CCoordSystem *cs) : _owner(cs) {}
 
     virtual void Render(void) = 0;
-
 };
-
 
 #endif

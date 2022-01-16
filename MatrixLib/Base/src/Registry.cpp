@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include "stdafx.h"
+
 #include "CWStr.hpp"
 #include "CException.hpp"
 #include "CStr.hpp"
@@ -11,98 +12,130 @@
 
 namespace Base {
 
-HKEY Reg_OpenKey(HKEY key, const wchar * path, dword access)
-{
-	int len=WStrLen(path);
-	if(len>5 && MemCmp(path,L"HKCR\\",5)) { key=HKEY_CLASSES_ROOT; path+=5; }
-	else if(len>5 && MemCmp(path,L"HKCU\\",5)) { key=HKEY_CURRENT_USER; path+=5; }
-	else if(len>5 && MemCmp(path,L"HKLM\\",5)) { key=HKEY_LOCAL_MACHINE; path+=5; }
+HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
+    int len = WStrLen(path);
+    if (len > 5 && MemCmp(path, L"HKCR\\", 5)) {
+        key = HKEY_CLASSES_ROOT;
+        path += 5;
+    }
+    else if (len > 5 && MemCmp(path, L"HKCU\\", 5)) {
+        key = HKEY_CURRENT_USER;
+        path += 5;
+    }
+    else if (len > 5 && MemCmp(path, L"HKLM\\", 5)) {
+        key = HKEY_LOCAL_MACHINE;
+        path += 5;
+    }
 
-	HKEY kkey;
-	dword rz;
+    HKEY kkey;
+    dword rz;
 
-	if(GetVersion()<0x80000000) rz=RegOpenKeyExW(key,path,0,access,&kkey);
-	else rz=RegOpenKeyExA(key,CStr(CWStr(path)).Get(),0,access,&kkey);
+    if (GetVersion() < 0x80000000)
+        rz = RegOpenKeyExW(key, path, 0, access, &kkey);
+    else
+        rz = RegOpenKeyExA(key, CStr(CWStr(path)).Get(), 0, access, &kkey);
 
-	if(rz!=ERROR_SUCCESS) return 0;
-	return kkey;
+    if (rz != ERROR_SUCCESS)
+        return 0;
+    return kkey;
 }
 
-HKEY Reg_CreateKey(HKEY key, const wchar * path, dword access)
-{
-	int len=WStrLen(path);
-	if(len>5 && MemCmp(path,L"HKCR\\",5)) { key=HKEY_CLASSES_ROOT; path+=5; }
-	else if(len>5 && MemCmp(path,L"HKCU\\",5)) { key=HKEY_CURRENT_USER; path+=5; }
-	else if(len>5 && MemCmp(path,L"HKLM\\",5)) { key=HKEY_LOCAL_MACHINE; path+=5; }
+HKEY Reg_CreateKey(HKEY key, const wchar *path, dword access) {
+    int len = WStrLen(path);
+    if (len > 5 && MemCmp(path, L"HKCR\\", 5)) {
+        key = HKEY_CLASSES_ROOT;
+        path += 5;
+    }
+    else if (len > 5 && MemCmp(path, L"HKCU\\", 5)) {
+        key = HKEY_CURRENT_USER;
+        path += 5;
+    }
+    else if (len > 5 && MemCmp(path, L"HKLM\\", 5)) {
+        key = HKEY_LOCAL_MACHINE;
+        path += 5;
+    }
 
-	HKEY kkey;
-	dword rz;
+    HKEY kkey;
+    dword rz;
     dword dv;
 
-	if(GetVersion()<0x80000000) rz=RegCreateKeyExW(key,path,0,NULL,0,access,NULL,&kkey,&dv);
-	else rz=RegCreateKeyExA(key,CStr(CWStr(path)).Get(),0,NULL,0,access,NULL,&kkey,&dv);
+    if (GetVersion() < 0x80000000)
+        rz = RegCreateKeyExW(key, path, 0, NULL, 0, access, NULL, &kkey, &dv);
+    else
+        rz = RegCreateKeyExA(key, CStr(CWStr(path)).Get(), 0, NULL, 0, access, NULL, &kkey, &dv);
 
-	if(rz!=ERROR_SUCCESS) return 0;
-	return kkey;
+    if (rz != ERROR_SUCCESS)
+        return 0;
+    return kkey;
 }
 
-bool Reg_GetData(HKEY key,const wchar * name,dword * ltype,CBuf * buf)
-{
-	dword size;
-	dword rz;
+bool Reg_GetData(HKEY key, const wchar *name, dword *ltype, CBuf *buf) {
+    dword size;
+    dword rz;
 
-	if(GetVersion()<0x80000000) rz=RegQueryValueExW(key,name,0,ltype,NULL,&size);
-	else rz=RegQueryValueExA(key,CStr(CWStr(name)).Get(),0,ltype,NULL,&size);
-	if(rz!=ERROR_SUCCESS) return false;
-	if(size==0) return false;
+    if (GetVersion() < 0x80000000)
+        rz = RegQueryValueExW(key, name, 0, ltype, NULL, &size);
+    else
+        rz = RegQueryValueExA(key, CStr(CWStr(name)).Get(), 0, ltype, NULL, &size);
+    if (rz != ERROR_SUCCESS)
+        return false;
+    if (size == 0)
+        return false;
 
-	buf->Len(size);
-	if(GetVersion()<0x80000000) rz=RegQueryValueExW(key,name,0,ltype,(byte *)buf->Get(),&size);
-	else rz=RegQueryValueExA(key,CStr(CWStr(name)).Get(),0,ltype,(byte *)buf->Get(),&size);
-	if(rz!=ERROR_SUCCESS) return false;
+    buf->Len(size);
+    if (GetVersion() < 0x80000000)
+        rz = RegQueryValueExW(key, name, 0, ltype, (byte *)buf->Get(), &size);
+    else
+        rz = RegQueryValueExA(key, CStr(CWStr(name)).Get(), 0, ltype, (byte *)buf->Get(), &size);
+    if (rz != ERROR_SUCCESS)
+        return false;
 
-	return true;
+    return true;
 }
 
-BASE_API void Reg_GetString(HKEY pkey, const wchar * path, const wchar * name, CWStr & str)
-{
-	HKEY kkey;
-	dword type;
+BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWStr &str) {
+    HKEY kkey;
+    dword type;
 
-	if((kkey=Reg_OpenKey(pkey,path,KEY_READ))==0) return;
+    if ((kkey = Reg_OpenKey(pkey, path, KEY_READ)) == 0)
+        return;
 
-	CBuf buf;
-	if(Reg_GetData(kkey,name,&type,&buf)) {
-		if(type==REG_SZ || type==REG_MULTI_SZ) {
-			if(GetVersion()<0x80000000) str.Set((wchar *)buf.Get(),buf.Len()/2-1);
-			else str.Set(CStr((char *)buf.Get()));
-		} else if(type==REG_DWORD && buf.Len()==4) {
-			str.Set(*((dword *)buf.Get()));
-		}
-	}
+    CBuf buf;
+    if (Reg_GetData(kkey, name, &type, &buf)) {
+        if (type == REG_SZ || type == REG_MULTI_SZ) {
+            if (GetVersion() < 0x80000000)
+                str.Set((wchar *)buf.Get(), buf.Len() / 2 - 1);
+            else
+                str.Set(CStr((char *)buf.Get()));
+        }
+        else if (type == REG_DWORD && buf.Len() == 4) {
+            str.Set(*((dword *)buf.Get()));
+        }
+    }
 
-	RegCloseKey(kkey);
+    RegCloseKey(kkey);
 }
 
-BASE_API CWStr Reg_GetString(HKEY pkey, const wchar * path, const wchar * name, const wchar *)
-{
-	CWStr str;
+BASE_API CWStr Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *) {
+    CWStr str;
 
-	Reg_GetString(pkey,path,name,str);
+    Reg_GetString(pkey, path, name, str);
 
-	return str;
+    return str;
 }
 
-BASE_API void Reg_SetString(HKEY pkey, const wchar * path, const wchar * name, const wchar * str)
-{
-	HKEY kkey;
+BASE_API void Reg_SetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *str) {
+    HKEY kkey;
 
-	if((kkey=Reg_CreateKey(pkey,path,KEY_WRITE))==0) return;
+    if ((kkey = Reg_CreateKey(pkey, path, KEY_WRITE)) == 0)
+        return;
 
-	if(GetVersion()<0x80000000) RegSetValueExW(kkey,name,0,REG_SZ,(byte *)str,WStrLen(str)*2+2);
-	else RegSetValueExA(kkey,CStr(CWStr(name)).Get(),0,REG_SZ,(byte *)CStr(CWStr(str)).Get(),WStrLen(str)+1);
+    if (GetVersion() < 0x80000000)
+        RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, WStrLen(str) * 2 + 2);
+    else
+        RegSetValueExA(kkey, CStr(CWStr(name)).Get(), 0, REG_SZ, (byte *)CStr(CWStr(str)).Get(), WStrLen(str) + 1);
 
-	RegCloseKey(kkey);
+    RegCloseKey(kkey);
 }
 
-}
+}  // namespace Base

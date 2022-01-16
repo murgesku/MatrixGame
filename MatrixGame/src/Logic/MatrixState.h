@@ -4,14 +4,15 @@
 // Refer to the LICENSE file included
 
 #pragma once
+
 #include "MatrixTactics.h"
 
-//class CMatrixRule;
+// class CMatrixRule;
 //
-//class CMatrixState : public CBaseTactics
+// class CMatrixState : public CBaseTactics
 //{
 //    CMatrixLogicSlot*   m_ParentSlot;
-//public:
+// public:
 //    //список правил
 //    CMatrixRule*        m_FirstRule;
 //    CMatrixRule*        m_LastRule;

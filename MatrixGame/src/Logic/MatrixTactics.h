@@ -4,16 +4,17 @@
 // Refer to the LICENSE file included
 
 #pragma once
-//Tactic's engine
-//class CMatrixLogicSlot;
-//class CMatrixTactics;
+
+// Tactic's engine
+// class CMatrixLogicSlot;
+// class CMatrixTactics;
 class CMatrixSideUnit;
 class CMatrixMapStatic;
 class CMatrixRobotAI;
 class CMatrixGroup;
-//class CLogicSlotRobot;
+// class CLogicSlotRobot;
 
-//typedef enum 
+// typedef enum
 //{
 //    EMPTY_TACTICS,
 //    ATTACK_TACTICS,
@@ -26,16 +27,16 @@ class CMatrixGroup;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//class CBaseTactics : public CMain
+// class CBaseTactics : public CMain
 //{
-//protected:
+// protected:
 //    CWStr m_Name;
 //    void* m_Parent;
-//public:
+// public:
 //
 //    void SetName(const CWStr &name)                                             { m_Name = name; }
 //    CWStr GetName()                                                             { return m_Name; }
-//    
+//
 //    void SetParent(const void *parent)                                          { m_Parent = (void *)parent; }
 //    void* GetParent()                                                           { return m_Parent; }
 //
@@ -52,7 +53,7 @@ class CMatrixGroup;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//class CMatrixTactics: public CBaseTactics
+// class CMatrixTactics: public CBaseTactics
 //{
 //    //Тип тактики
 //    TacticsType         m_Type;
@@ -60,8 +61,8 @@ class CMatrixGroup;
 //    int                 m_Region;
 //    CLogicSlotRobot*    m_NearestToTarget;
 //
-//public:
-//    
+// public:
+//
 //    //список слотов с логикой
 //    CMatrixLogicSlot *m_FirstSlot;
 //    CMatrixLogicSlot *m_LastSlot;
@@ -79,7 +80,7 @@ class CMatrixGroup;
 //    bool TryTactics(CMatrixGroup* group);
 //    void Load(CBlockPar &bp);
 //    CWStr GetTacticsName()                      { return m_Name; }
-//    
+//
 //    void InitialiseTactics(CMatrixGroup* group, CMatrixMapStatic* target, int region);
 //    void RemoveRobotFromT(CMatrixRobotAI* robot);
 //
@@ -99,7 +100,7 @@ class CMatrixGroup;
 //        m_LastSlot          = NULL;
 //        m_PrevTactics       = NULL;
 //        m_NextTactics       = NULL;
-//        
+//
 //        m_Type              = EMPTY_TACTICS;
 //        m_Target            = NULL;
 //        m_NearestToTarget   = NULL;
@@ -111,9 +112,9 @@ class CMatrixGroup;
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//class CMatrixTacticsList : public CMain
+// class CMatrixTacticsList : public CMain
 //{
-//public:
+// public:
 //    CMatrixTactics *m_FirstTactics;
 //    CMatrixTactics *m_LastTactics;
 //

@@ -11,20 +11,20 @@
 
 //#define DRAW_LANDSCAPE_SETKA 1
 
-#define FREE_TIME_PERIOD    (5000) // in ms
+#define FREE_TIME_PERIOD (5000)  // in ms
 
-#define GLOBAL_SCALE        (20.0f)
-#define MOVE_CNT            (2)
-#define GLOBAL_SCALE_MOVE   (GLOBAL_SCALE/MOVE_CNT)
+#define GLOBAL_SCALE      (20.0f)
+#define MOVE_CNT          (2)
+#define GLOBAL_SCALE_MOVE (GLOBAL_SCALE / MOVE_CNT)
 
 #define MAX_ALWAYS_DRAW_OBJ 16
 
 #define MatrixPathMoveMax 256
 
-#define ROBOT_WEAPONS_PER_ROBOT_CNT     10
-#define ROBOT_MOVECELLS_PER_SIZE    4   // размер стороны квадрата робота в ячейках сетки проходимости
+#define ROBOT_WEAPONS_PER_ROBOT_CNT 10
+#define ROBOT_MOVECELLS_PER_SIZE    4  // размер стороны квадрата робота в ячейках сетки проходимости
 
-#define DRAW_SHADOWS_DISTANCE_SQ    ((1024)*(1024))
+#define DRAW_SHADOWS_DISTANCE_SQ ((1024) * (1024))
 
 #define TRACE_LANDSCAPE SETBIT(0)
 #define TRACE_WATER     SETBIT(1)
@@ -33,23 +33,23 @@
 #define TRACE_OBJECT    SETBIT(4)
 #define TRACE_CANNON    SETBIT(5)
 #define TRACE_FLYER     SETBIT(6)
-#define TRACE_ANYOBJECT (TRACE_OBJECT|TRACE_BUILDING|TRACE_ROBOT|TRACE_CANNON|TRACE_FLYER)
+#define TRACE_ANYOBJECT (TRACE_OBJECT | TRACE_BUILDING | TRACE_ROBOT | TRACE_CANNON | TRACE_FLYER)
 
-#define TRACE_OBJECTSPHERE          SETBIT(10) //trace object as speres
-#define TRACE_SKIP_INVISIBLE        SETBIT(11) //skip objects with flag OBJECT_STATE_TRACE_INVISIBLE while tracing 
+#define TRACE_OBJECTSPHERE   SETBIT(10)  // trace object as speres
+#define TRACE_SKIP_INVISIBLE SETBIT(11)  // skip objects with flag OBJECT_STATE_TRACE_INVISIBLE while tracing
 
 #define TRACE_ALL       (((DWORD)(-1)) & (~TRACE_OBJECTSPHERE))
-#define TRACE_NONOBJECT (TRACE_LANDSCAPE|TRACE_WATER)
+#define TRACE_NONOBJECT (TRACE_LANDSCAPE | TRACE_WATER)
 
 #define TRACE_STOP_NONE      ((CMatrixMapStatic *)0)
 #define TRACE_STOP_LANDSCAPE ((CMatrixMapStatic *)1)
 #define TRACE_STOP_WATER     ((CMatrixMapStatic *)2)
 
 #define IS_TRACE_STOP_OBJECT(o) (((int)o > 100))
-#define IS_TRACE_UNIT(o) ((o->GetObjectType() == OBJECT_TYPE_ROBOTAI)||(o->GetObjectType() == OBJECT_TYPE_FLYER))
+#define IS_TRACE_UNIT(o)        ((o->GetObjectType() == OBJECT_TYPE_ROBOTAI) || (o->GetObjectType() == OBJECT_TYPE_FLYER))
 
-#define SHADER_PERC     20
-#define SHADER_TIME     500
+#define SHADER_PERC 20
+#define SHADER_TIME 500
 
 #include "MatrixCamera.hpp"
 #include "VectorObject.hpp"
@@ -70,176 +70,181 @@
 #include "MatrixFlyer.hpp"
 #include "MatrixTransition.hpp"
 
-__forceinline bool CMatrixMapStatic::FitToMask(DWORD mask)
-{
-    if (IsLiveRobot()) return (mask & TRACE_ROBOT) != 0;
-    if (IsLiveCannon()) return (mask & TRACE_CANNON) != 0;
-    if (IsLiveBuilding()) return (mask & TRACE_BUILDING) != 0;
-    if (GetObjectType() == OBJECT_TYPE_MAPOBJECT) return (mask & TRACE_OBJECT) != 0;
-    if (IsFlyer()) return (mask & TRACE_FLYER) != 0;
+__forceinline bool CMatrixMapStatic::FitToMask(DWORD mask) {
+    if (IsLiveRobot())
+        return (mask & TRACE_ROBOT) != 0;
+    if (IsLiveCannon())
+        return (mask & TRACE_CANNON) != 0;
+    if (IsLiveBuilding())
+        return (mask & TRACE_BUILDING) != 0;
+    if (GetObjectType() == OBJECT_TYPE_MAPOBJECT)
+        return (mask & TRACE_OBJECT) != 0;
+    if (IsFlyer())
+        return (mask & TRACE_FLYER) != 0;
     return false;
 }
 
-typedef bool (*ENUM_OBJECTS)(const D3DXVECTOR3 & center, CMatrixMapStatic *o, DWORD user);
-typedef bool (*ENUM_OBJECTS2D)(const D3DXVECTOR2 & center, CMatrixMapStatic *o, DWORD user);
+typedef bool (*ENUM_OBJECTS)(const D3DXVECTOR3 &center, CMatrixMapStatic *o, DWORD user);
+typedef bool (*ENUM_OBJECTS2D)(const D3DXVECTOR2 &center, CMatrixMapStatic *o, DWORD user);
 
 class CMatrixBuilding;
 
 struct SMatrixMapPoint {
-	float z;
+    float z;
     float z_land;
-	D3DXVECTOR3 n;
-    DWORD       color;
-    int         lum_r, lum_g, lum_b;
+    D3DXVECTOR3 n;
+    DWORD color;
+    int lum_r, lum_g, lum_b;
 };
 
 /*struct SMatrixMapZone {
-	int m_BeginX,m_BeginY;			// Начало роста
-	int m_CenterX,m_CenterY;		// Центр масс
-	bool m_Building;				// В зоне есть здание
-	int m_Size;						// Cnt in unit
-	int m_Perim;					// Периметр
-	CRect m_Rect;					// Bound zone
+    int m_BeginX,m_BeginY;			// Начало роста
+    int m_CenterX,m_CenterY;		// Центр масс
+    bool m_Building;				// В зоне есть здание
+    int m_Size;						// Cnt in unit
+    int m_Perim;					// Периметр
+    CRect m_Rect;					// Bound zone
 
-	int m_NearZoneCnt;				// Кол-во ближайших зон
-	int m_NearZone[8];				// Ближайшие зоны
-	int m_NearZoneConnectSize[8];	// Длина соединения с ближайшими зонами
+    int m_NearZoneCnt;				// Кол-во ближайших зон
+    int m_NearZone[8];				// Ближайшие зоны
+    int m_NearZoneConnectSize[8];	// Длина соединения с ближайшими зонами
 
-	int m_FPLevel;
-	int m_FPWt;
-	int m_FPWtp;
+    int m_FPLevel;
+    int m_FPWt;
+    int m_FPWtp;
 };*/
 
-struct SMatrixMapUnit
-{ 
+struct SMatrixMapUnit {
 private:
     DWORD m_TypeBits;
+
 public:
+    bool IsWater(void) const { return FLAG(m_TypeBits, CELLFLAG_WATER); }
+    bool IsLand(void) const { return FLAG(m_TypeBits, CELLFLAG_LAND); }
+    void SetType(DWORD t) { m_TypeBits = t; }
+    bool IsFlat(void) const { return FLAG(m_TypeBits, CELLFLAG_FLAT); }
+    bool IsBridge(void) const { return FLAG(m_TypeBits, CELLFLAG_BRIDGE); }
+    bool IsInshore(void) const { return FLAG(m_TypeBits, CELLFLAG_INSHORE); }
+    void ResetInshore(void) { RESETFLAG(m_TypeBits, CELLFLAG_INSHORE); }
+    void ResetFlat(void) { RESETFLAG(m_TypeBits, CELLFLAG_FLAT); }
+    void SetFlat(void) { SETFLAG(m_TypeBits, CELLFLAG_FLAT); }
+    void SetBridge(void) { SETFLAG(m_TypeBits, CELLFLAG_BRIDGE); }
 
-    bool IsWater(void) const {return FLAG(m_TypeBits, CELLFLAG_WATER);}
-    bool IsLand(void) const {return FLAG(m_TypeBits, CELLFLAG_LAND);}
-    void SetType(DWORD t) {m_TypeBits = t;}
-    bool IsFlat(void) const {return FLAG(m_TypeBits, CELLFLAG_FLAT);}
-    bool IsBridge(void) const {return FLAG(m_TypeBits, CELLFLAG_BRIDGE);}
-    bool IsInshore(void) const {return FLAG(m_TypeBits, CELLFLAG_INSHORE);}
-    void ResetInshore(void) {RESETFLAG(m_TypeBits, CELLFLAG_INSHORE);}
-    void ResetFlat(void)  { RESETFLAG(m_TypeBits, CELLFLAG_FLAT);}
-    void SetFlat(void)  { SETFLAG(m_TypeBits, CELLFLAG_FLAT);}
-    void SetBridge(void)  { SETFLAG(m_TypeBits, CELLFLAG_BRIDGE);}
-
-    bool IsDown(void) const {return FLAG(m_TypeBits, CELLFLAG_DOWN);}
+    bool IsDown(void) const { return FLAG(m_TypeBits, CELLFLAG_DOWN); }
 
     CMatrixBuilding *m_Base;
 
     // koefs for z calc (with bridge bridge)
-    float   a1,b1,c1;
-    float   a2,b2,c2;
+    float a1, b1, c1;
+    float a2, b2, c2;
 };
 
 struct SMatrixMapMove {
-	int m_Zone;
+    int m_Zone;
     DWORD m_Sphere;
     DWORD m_Zubchik;
 
     int m_Find;
     int m_Weight;
-	DWORD m_Stop;	// (1-нельзя пройти) 1-Shasi1(Пневматика) 2-Shasi2(Колеса) 4-Shasi3(Гусеницы) 8-Shasi4(Подушка) 16-Shasi5(Крылья)
-                    // <<0-size 1       <<6-size 2       <<12-size 3       <<18-size 4        <<24-size 5
+    DWORD m_Stop;  // (1-нельзя пройти) 1-Shasi1(Пневматика) 2-Shasi2(Колеса) 4-Shasi3(Гусеницы) 8-Shasi4(Подушка)
+                   // 16-Shasi5(Крылья)
+                   // <<0-size 1       <<6-size 2       <<12-size 3       <<18-size 4        <<24-size 5
 
-    BYTE GetType(int nsh) const
-    {
-        byte rv=0;
+    BYTE GetType(int nsh) const {
+        byte rv = 0;
 
-        if(!(this->m_Stop & (1<<nsh))) return 0xff;
+        if (!(this->m_Stop & (1 << nsh)))
+            return 0xff;
 
-        if(this->m_Sphere & ((1<<nsh)<<0)) rv|=1;
-        if(this->m_Sphere & ((1<<nsh)<<8)) rv|=2;
-        if(this->m_Sphere & ((1<<nsh)<<16)) rv|=4;
-        if(this->m_Sphere & ((1<<nsh)<<24)) rv|=8;
+        if (this->m_Sphere & ((1 << nsh) << 0))
+            rv |= 1;
+        if (this->m_Sphere & ((1 << nsh) << 8))
+            rv |= 2;
+        if (this->m_Sphere & ((1 << nsh) << 16))
+            rv |= 4;
+        if (this->m_Sphere & ((1 << nsh) << 24))
+            rv |= 8;
 
-        if(this->m_Zubchik & ((1<<nsh)<<0)) rv|=16;
-        if(this->m_Zubchik & ((1<<nsh)<<8)) rv|=32;
-        if(this->m_Zubchik & ((1<<nsh)<<16)) rv|=64;
-        if(this->m_Zubchik & ((1<<nsh)<<24)) rv|=128;
+        if (this->m_Zubchik & ((1 << nsh) << 0))
+            rv |= 16;
+        if (this->m_Zubchik & ((1 << nsh) << 8))
+            rv |= 32;
+        if (this->m_Zubchik & ((1 << nsh) << 16))
+            rv |= 64;
+        if (this->m_Zubchik & ((1 << nsh) << 24))
+            rv |= 128;
 
         return rv;
     }
-
 };
 
-struct SRobotWeaponMatrix
-{
+struct SRobotWeaponMatrix {
     int cnt;
     int common;
     int extra;
-    struct SW
-    {
-        int     id;
-        DWORD   access_invert; // high bit is invert flag
+    struct SW {
+        int id;
+        DWORD access_invert;  // high bit is invert flag
     } list[ROBOT_WEAPONS_PER_ROBOT_CNT];
 };
 
-struct SDifficulty
-{
-    float   k_damage_enemy_to_player;
-    float   k_time_before_maintenance;
-	float   k_friendly_fire;
+struct SDifficulty {
+    float k_damage_enemy_to_player;
+    float k_time_before_maintenance;
+    float k_friendly_fire;
 };
 
-struct SGroupVisibility
-{
-    PCMatrixMapGroup * vis;
-    int                vis_cnt;
-    float              z_from;
-    int               *levels;
-    int                levels_cnt;
+struct SGroupVisibility {
+    PCMatrixMapGroup *vis;
+    int vis_cnt;
+    float z_from;
+    int *levels;
+    int levels_cnt;
 
-    void                Release(void);
+    void Release(void);
 };
 
-#define MMFLAG_OBJECTS_DRAWN    SETBIT(0)
-#define MMFLAG_FOG_ON           SETBIT(1)
-#define MMFLAG_SKY_ON           SETBIT(2)
-//#define MMFLAG_EFF_TAKT         SETBIT(3)   // effect takts loop is active. it causes SubEffect to do not delete effect immediately
-#define MMFLAG_PAUSE            SETBIT(4)
-#define MMFLAG_DIALOG_MODE      SETBIT(5)
-#define MMFLAG_MOUSECAM         SETBIT(6)
-#define MMFLAG_NEEDRECALCTER    SETBIT(7)
-#define MMFLAG_STAT_DIALOG      SETBIT(8)
-#define MMFLAG_STAT_DIALOG_D    SETBIT(9)
-#define MMFLAG_ENABLE_CAPTURE_FUCKOFF_SOUND     SETBIT(10)
-#define MMFLAG_SOUND_BASE_SEL_ENABLED           SETBIT(11)
-#define MMFLAG_SOUND_ORDER_ATTACK_DISABLE       SETBIT(12)
-#define MMFLAG_SOUND_ORDER_CAPTURE_ENABLED      SETBIT(13)
-#define MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS       SETBIT(14)
-#define MMFLAG_WIN                              SETBIT(15)
-#define MMFLAG_MUSIC_VOL_CHANGING               SETBIT(16)
-#define MMFLAG_TRANSITION                       SETBIT(17)
-#define MMFLAG_VIDEO_RESOURCES_READY            SETBIT(18)  // VB's, IB's and Non managed textures
+#define MMFLAG_OBJECTS_DRAWN SETBIT(0)
+#define MMFLAG_FOG_ON        SETBIT(1)
+#define MMFLAG_SKY_ON        SETBIT(2)
+//#define MMFLAG_EFF_TAKT         SETBIT(3)   // effect takts loop is active. it causes SubEffect to do not delete
+//effect immediately
+#define MMFLAG_PAUSE                        SETBIT(4)
+#define MMFLAG_DIALOG_MODE                  SETBIT(5)
+#define MMFLAG_MOUSECAM                     SETBIT(6)
+#define MMFLAG_NEEDRECALCTER                SETBIT(7)
+#define MMFLAG_STAT_DIALOG                  SETBIT(8)
+#define MMFLAG_STAT_DIALOG_D                SETBIT(9)
+#define MMFLAG_ENABLE_CAPTURE_FUCKOFF_SOUND SETBIT(10)
+#define MMFLAG_SOUND_BASE_SEL_ENABLED       SETBIT(11)
+#define MMFLAG_SOUND_ORDER_ATTACK_DISABLE   SETBIT(12)
+#define MMFLAG_SOUND_ORDER_CAPTURE_ENABLED  SETBIT(13)
+#define MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS   SETBIT(14)
+#define MMFLAG_WIN                          SETBIT(15)
+#define MMFLAG_MUSIC_VOL_CHANGING           SETBIT(16)
+#define MMFLAG_TRANSITION                   SETBIT(17)
+#define MMFLAG_VIDEO_RESOURCES_READY        SETBIT(18)  // VB's, IB's and Non managed textures
 
-#define MMFLAG_MEGABUSTALREADY                  SETBIT(19)  // easter egg
-#define MMFLAG_ROBOT_IN_POSITION                SETBIT(20)  // easter egg
-#define MMFLAG_SHOWPORTRETS                     SETBIT(21)  // easter egg
+#define MMFLAG_MEGABUSTALREADY   SETBIT(19)  // easter egg
+#define MMFLAG_ROBOT_IN_POSITION SETBIT(20)  // easter egg
+#define MMFLAG_SHOWPORTRETS      SETBIT(21)  // easter egg
 
-#define MMFLAG_DISABLEINSHORE_BUILD             SETBIT(22)  // inshores can be enabled, but cannot be build in WaterBuild function
-#define MMFLAG_AUTOMATIC_MODE                   SETBIT(23)
-#define MMFLAG_FLYCAM                           SETBIT(24)
-#define MMFLAG_FULLAUTO                         SETBIT(25)
+#define MMFLAG_DISABLEINSHORE_BUILD SETBIT(22)  // inshores can be enabled, but cannot be build in WaterBuild function
+#define MMFLAG_AUTOMATIC_MODE       SETBIT(23)
+#define MMFLAG_FLYCAM               SETBIT(24)
+#define MMFLAG_FULLAUTO             SETBIT(25)
 
-#define MMFLAG_TERRON_DEAD                      SETBIT(26)
-#define MMFLAG_TERRON_ONMAP                     SETBIT(27)
+#define MMFLAG_TERRON_DEAD  SETBIT(26)
+#define MMFLAG_TERRON_ONMAP SETBIT(27)
 
-#define MMFLAG_SPECIAL_BROKEN                   SETBIT(28)
+#define MMFLAG_SPECIAL_BROKEN SETBIT(28)
 
-
-struct SSkyTex
-{
+struct SSkyTex {
     CTextureManaged *tex;
-    float u0,v0, u1,v1;
+    float u0, v0, u1, v1;
 };
 
-enum
-{
+enum {
     SKY_FORE,
     SKY_BACK,
     SKY_LEFT,
@@ -248,21 +253,19 @@ enum
 
 class CMatrixHint;
 
-class CMatrixMap : public CMain
-{
-    CBuf        m_AllObjects;
-    protected:
-	~CMatrixMap();
+class CMatrixMap : public CMain {
+    CBuf m_AllObjects;
 
-    private:
-    struct SShadowRectVertex
-    {
+protected:
+    ~CMatrixMap();
+
+private:
+    struct SShadowRectVertex {
         D3DXVECTOR4 p;
-        DWORD       color;
+        DWORD color;
     };
 
-    enum EReloadStep
-    {
+    enum EReloadStep {
         RS_SIDEAI,
         RS_RESOURCES,
         RS_MAPOBJECTS,
@@ -274,438 +277,436 @@ class CMatrixMap : public CMain
 
     };
 
+public:
+    DWORD m_Flags;
 
-	public:
+    CMatrixHint *m_PauseHint;
 
-        DWORD  m_Flags;
+    CBuf m_DialogModeHints;
+    const wchar *m_DialogModeName;
 
-        CMatrixHint *m_PauseHint;
+    int m_TexUnionDim;
+    int m_TexUnionSize;
 
-        CBuf         m_DialogModeHints;
-        const  wchar *m_DialogModeName;
+    float m_SkyHeight;
 
-        int m_TexUnionDim;
-        int m_TexUnionSize;
+    CPoint m_Size;
+    CPoint m_SizeMove;
+    SMatrixMapUnit *m_Unit;
+    SMatrixMapPoint *m_Point;
+    SMatrixMapMove *m_Move;
 
-        float m_SkyHeight;
+    CMatrixRoadNetwork m_RN;
 
-		CPoint m_Size;
-		CPoint m_SizeMove;
-		SMatrixMapUnit * m_Unit;
-		SMatrixMapPoint * m_Point;
-		SMatrixMapMove * m_Move;
+    CPoint m_GroupSize;
+    CMatrixMapGroup **m_Group;
+    SGroupVisibility *m_GroupVis;
 
-        CMatrixRoadNetwork m_RN;
+    CDevConsole m_Console;
+    CMatrixDebugInfo m_DI;
 
-		CPoint              m_GroupSize;
-		CMatrixMapGroup * * m_Group;
-        SGroupVisibility  * m_GroupVis;
+    SRobotWeaponMatrix m_RobotWeaponMatrix[ROBOT_ARMOR_CNT];
 
-        CDevConsole         m_Console;
-        CMatrixDebugInfo    m_DI;
+    int m_BeforeWinCount;
 
-        SRobotWeaponMatrix m_RobotWeaponMatrix[ROBOT_ARMOR_CNT];
+    float m_GroundZ;
+    float m_GroundZBase;
+    float m_GroundZBaseMiddle;
+    float m_GroundZBaseMax;
+    // D3DXPLANE m_ShadowPlaneCut;
+    // D3DXPLANE m_ShadowPlaneCutBase;
+    D3DXVECTOR3 m_LightMain;
 
-        int       m_BeforeWinCount;
+    CMatrixWater *m_Water;
 
-        float     m_GroundZ;
-        float     m_GroundZBase;
-        float     m_GroundZBaseMiddle;
-        float     m_GroundZBaseMax;
-		//D3DXPLANE m_ShadowPlaneCut;
-        //D3DXPLANE m_ShadowPlaneCutBase;
-		D3DXVECTOR3 m_LightMain;
+    int m_IdsCnt;
+    CWStr *m_Ids;
 
-        CMatrixWater *m_Water;
+    CMatrixSideUnit *m_PlayerSide;
+    CMatrixSideUnit *m_Side;
+    int m_SideCnt;
 
-		int m_IdsCnt;
-		CWStr * m_Ids;
+    PCMatrixEffect m_EffectsFirst;
+    PCMatrixEffect m_EffectsLast;
+    PCMatrixEffect m_EffectsNextTakt;
+    int m_EffectsCnt;
+    // CDWORDMap         m_Effects;
 
-        CMatrixSideUnit * m_PlayerSide;
-		CMatrixSideUnit * m_Side;
-		int m_SideCnt;
+    CEffectSpawner *m_EffectSpawners;
+    int m_EffectSpawnersCnt;
 
-        PCMatrixEffect  m_EffectsFirst;
-        PCMatrixEffect  m_EffectsLast;
-        PCMatrixEffect  m_EffectsNextTakt;
-        int             m_EffectsCnt;
-        //CDWORDMap         m_Effects;
+    CMatrixMapStatic *m_NextLogicObject;
 
-        CEffectSpawner *m_EffectSpawners;
-        int             m_EffectSpawnersCnt;
+    CWStr m_WaterName;
 
-        CMatrixMapStatic * m_NextLogicObject;
+    float m_BiasCannons;
+    float m_BiasRobots;
+    float m_BiasBuildings;
+    float m_BiasTer;
+    float m_BiasWater;
 
-        CWStr           m_WaterName;
+    float m_CameraAngle;
+    float m_WaterNormalLen;
 
-        float m_BiasCannons;
-        float m_BiasRobots;
-        float m_BiasBuildings;
-        float m_BiasTer;
-        float m_BiasWater;
+    float m_Terrain2ObjectInfluence;
+    DWORD m_Terrain2ObjectTargetColor;
+    DWORD m_WaterColor;
+    DWORD m_SkyColor;
+    DWORD m_InshorewaveColor;
+    DWORD m_AmbientColor;
+    DWORD m_AmbientColorObj;
+    DWORD m_LightMainColor;
+    DWORD m_LightMainColorObj;
+    DWORD m_ShadowColor;
+    float m_LightMainAngleZ, m_LightMainAngleX;
 
-        float m_CameraAngle;
-        float m_WaterNormalLen;
+    int m_MacrotextureSize;
+    CTextureManaged *m_Macrotexture;
 
-        float m_Terrain2ObjectInfluence;
-        DWORD m_Terrain2ObjectTargetColor;
-		DWORD m_WaterColor;
-        DWORD m_SkyColor;
-		DWORD m_InshorewaveColor;
-		DWORD m_AmbientColor;
-		DWORD m_AmbientColorObj;
-		DWORD m_LightMainColor;
-		DWORD m_LightMainColorObj;
-		DWORD m_ShadowColor;
-		float m_LightMainAngleZ,m_LightMainAngleX;
+    CTextureManaged *m_Reflection;
 
-		int         m_MacrotextureSize;
-		CTextureManaged *  m_Macrotexture;
+    SSkyTex m_SkyTex[4];
+    float m_SkyAngle;
+    float m_SkyDeltaAngle;
 
-        CTextureManaged *  m_Reflection;
+    CTransition m_Transition;
 
-        SSkyTex            m_SkyTex[4];
-        float              m_SkyAngle;
-        float              m_SkyDeltaAngle;
+    CMinimap m_Minimap;
 
-        CTransition     m_Transition;
+    int m_KeyDown;
+    int m_KeyScan;
 
-        CMinimap   m_Minimap;
+    CMatrixCursor m_Cursor;
 
-        int  m_KeyDown;
-        int  m_KeyScan;
+    int m_IntersectFlagTracer;
+    int m_IntersectFlagFindObjects;
 
-        CMatrixCursor  m_Cursor;
+    D3DXVECTOR3 m_MouseDir;  // world direction to mouse cursor
+    // trace stop!
+    D3DXVECTOR3 m_TraceStopPos;
+    CMatrixMapStatic *m_TraceStopObj;
 
-        int     m_IntersectFlagTracer;
-        int     m_IntersectFlagFindObjects;
+    bool IsTraceNonPlayerObj();
+    PCMatrixMapStatic m_AD_Obj[MAX_ALWAYS_DRAW_OBJ];  // out of land object // flyer
+    int m_AD_Obj_cnt;
 
-        D3DXVECTOR3         m_MouseDir; // world direction to mouse cursor
-        // trace stop!
-        D3DXVECTOR3         m_TraceStopPos;
-        CMatrixMapStatic   *m_TraceStopObj;
+    CMatrixCamera m_Camera;
 
-        bool IsTraceNonPlayerObj();
-        PCMatrixMapStatic   m_AD_Obj[MAX_ALWAYS_DRAW_OBJ];  // out of land object // flyer
-        int                 m_AD_Obj_cnt;
-        
-        CMatrixCamera       m_Camera;
+    CDeviceState *m_DeviceState;
 
-        CDeviceState       *m_DeviceState;
-
-        SDifficulty m_Difficulty;
+    SDifficulty m_Difficulty;
 
 protected:
+    D3D_VB m_ShadowVB;
 
-        D3D_VB  m_ShadowVB;
+    DWORD m_NeutralSideColor;
+    DWORD m_NeutralSideColorMM;
+    CTexture *m_NeutralSideColorTexture;
 
-        DWORD     m_NeutralSideColor;
-        DWORD     m_NeutralSideColorMM;
-        CTexture *m_NeutralSideColorTexture;
+    D3DXMATRIX m_Identity;
 
-        D3DXMATRIX  m_Identity;
+    float m_minz;
+    float m_maxz;
 
-        float   m_minz;
-        float   m_maxz;
+    CBuf *m_VisWater;
 
-        CBuf   *m_VisWater;
+    CMatrixMapGroup **m_VisibleGroups;
+    int m_VisibleGroupsCount;
 
+    DWORD m_CurFrame;
 
-        CMatrixMapGroup * * m_VisibleGroups;
-        int                 m_VisibleGroupsCount;
+    int m_Time;
+    int m_PrevTimeCheckStatus;
+    int m_BeforeWinLooseDialogCount;
+    DWORD m_StartTime;
 
-        DWORD       m_CurFrame;
+    // helicopter explosion
+    int m_ShadeTime;
+    int m_ShadeTimeCurrent;
+    bool m_ShadeOn;
+    D3DXVECTOR3 m_ShadePosFrom;
+    D3DXVECTOR3 m_ShadePosTo;
+    DWORD m_ShadeInterfaceColor;
 
+    int m_MaintenanceTime;
+    int m_MaintenancePRC;
 
-        int         m_Time;
-        int         m_PrevTimeCheckStatus;
-        int         m_BeforeWinLooseDialogCount;
-        DWORD       m_StartTime;
+    float m_StoreCurrentMusicVolume;
+    float m_TargetMusicVolume;
 
+public:
+    CMatrixMap(void);
+    void Clear(void);
 
-        // helicopter explosion
-        int         m_ShadeTime;
-        int         m_ShadeTimeCurrent;
-        bool        m_ShadeOn;
-        D3DXVECTOR3 m_ShadePosFrom;
-        D3DXVECTOR3 m_ShadePosTo;
-        DWORD       m_ShadeInterfaceColor;
-        
-        int m_MaintenanceTime;
-        int m_MaintenancePRC;
+    void IdsClear(void);
+    __forceinline const CWStr &MapName(void) { return m_Ids[m_IdsCnt - 1]; }
+    __forceinline const CWStr &IdsGet(int no) { return m_Ids[no]; }
+    __forceinline int IdsGetCount(void) const { return m_IdsCnt; }
 
-        float   m_StoreCurrentMusicVolume;
-        float   m_TargetMusicVolume;
-	public:
+    void UnitClear(void);
 
+    void UnitInit(int sx, int sy);
+    void PointCalcNormals(int x, int y);
 
-        CMatrixMap(void);
-		void Clear(void);
+    void CalcVis(void);  // non realtime function! its updates map data
+    // void CalcVisTemp(int from, int to, const D3DXVECTOR3 &ptfrom); // non realtime function! its updates map data
 
-		void IdsClear(void);
-        __forceinline const CWStr & MapName(void) {return m_Ids[m_IdsCnt-1];}
-        __forceinline const CWStr & IdsGet(int no) {return m_Ids[no];}
-        __forceinline int IdsGetCount(void) const {return m_IdsCnt;}
+    __forceinline SMatrixMapUnit *UnitGet(int x, int y) { return m_Unit + y * m_Size.x + x; }
+    __forceinline SMatrixMapUnit *UnitGetTest(int x, int y) {
+        return (x >= 0 && x < m_Size.x && y >= 0 && y < m_Size.y) ? (m_Unit + y * m_Size.x + x) : NULL;
+    }
 
-		void UnitClear(void);
-		
-        void UnitInit(int sx,int sy);
-        void PointCalcNormals(int x,int y);
+    __forceinline SMatrixMapMove *MoveGet(int x, int y) { return m_Move + y * m_SizeMove.x + x; }
+    __forceinline SMatrixMapMove *MoveGetTest(int x, int y) {
+        return (x >= 0 && x < m_SizeMove.x && y >= 0 && y < m_SizeMove.y) ? (m_Move + y * m_SizeMove.x + x) : NULL;
+    }
 
-        void CalcVis(void); // non realtime function! its updates map data
-        //void CalcVisTemp(int from, int to, const D3DXVECTOR3 &ptfrom); // non realtime function! its updates map data
-
-		__forceinline SMatrixMapUnit * UnitGet(int x,int y) { return m_Unit+y*m_Size.x+x; }
-		__forceinline SMatrixMapUnit * UnitGetTest(int x,int y) { return (x>=0 && x<m_Size.x && y>=0 && y<m_Size.y)?(m_Unit+y*m_Size.x+x):NULL; }
-
-        __forceinline SMatrixMapMove * MoveGet(int x,int y) { return m_Move+y*m_SizeMove.x+x; }
-		__forceinline SMatrixMapMove * MoveGetTest(int x,int y) { return (x>=0 && x<m_SizeMove.x && y>=0 && y<m_SizeMove.y)?(m_Move+y*m_SizeMove.x+x):NULL; }
-
-		__forceinline SMatrixMapPoint * PointGet(int x,int y) { return m_Point+x+y*(m_Size.x+1); }
-		__forceinline SMatrixMapPoint * PointGetTest(int x,int y) { return (x>=0 && x<=m_Size.x && y>=0 && y<=m_Size.y)?(m_Point+x+y*(m_Size.x+1)):NULL; }
+    __forceinline SMatrixMapPoint *PointGet(int x, int y) { return m_Point + x + y * (m_Size.x + 1); }
+    __forceinline SMatrixMapPoint *PointGetTest(int x, int y) {
+        return (x >= 0 && x <= m_Size.x && y >= 0 && y <= m_Size.y) ? (m_Point + x + y * (m_Size.x + 1)) : NULL;
+    }
 
 #if defined _TRACE || defined _DEBUG
-        void ResetMaintenanceTime(void) {m_MaintenanceTime = 0;};
+    void ResetMaintenanceTime(void) { m_MaintenanceTime = 0; };
 #endif
-        int BeforeMaintenanceTime(void) const {return m_MaintenanceTime;};
-        float BeforMaintenanceTimeT(void) const {return 1.0f - float(m_MaintenanceTime) / ( m_Difficulty.k_time_before_maintenance * float(g_Config.m_MaintenanceTime * m_MaintenancePRC / 100));};
-        void InitMaintenanceTime(void) { m_MaintenanceTime = Float2Int(m_Difficulty.k_time_before_maintenance * float(g_Config.m_MaintenanceTime) * float(m_MaintenancePRC) / 100.0f);};
-        bool MaintenanceDisabled(void) const {return m_MaintenancePRC == 0;}
-        //int     GetMaintenancePrc()                             { return m_MaintenancePRC; }
-        void    SetMaintenanceTime(int time)                    { m_MaintenanceTime = time; }
+    int BeforeMaintenanceTime(void) const { return m_MaintenanceTime; };
+    float BeforMaintenanceTimeT(void) const {
+        return 1.0f - float(m_MaintenanceTime) / (m_Difficulty.k_time_before_maintenance *
+                                                  float(g_Config.m_MaintenanceTime * m_MaintenancePRC / 100));
+    };
+    void InitMaintenanceTime(void) {
+        m_MaintenanceTime = Float2Int(m_Difficulty.k_time_before_maintenance * float(g_Config.m_MaintenanceTime) *
+                                      float(m_MaintenancePRC) / 100.0f);
+    };
+    bool MaintenanceDisabled(void) const { return m_MaintenancePRC == 0; }
+    // int     GetMaintenancePrc()                             { return m_MaintenancePRC; }
+    void SetMaintenanceTime(int time) { m_MaintenanceTime = time; }
 
-        float GetZLand(double wx,double wy);
-		float GetZ(float wx,float wy);
-        float GetZInterpolatedLand(float wx,float wy);
-        float GetZInterpolatedObj(float wx,float wy);
-        float GetZInterpolatedObjRobots(float wx,float wy);
-        void GetNormal(D3DXVECTOR3 *out, float wx,float wy, bool check_water = false);
-        DWORD GetColor(float wx,float wy);
+    float GetZLand(double wx, double wy);
+    float GetZ(float wx, float wy);
+    float GetZInterpolatedLand(float wx, float wy);
+    float GetZInterpolatedObj(float wx, float wy);
+    float GetZInterpolatedObjRobots(float wx, float wy);
+    void GetNormal(D3DXVECTOR3 *out, float wx, float wy, bool check_water = false);
+    DWORD GetColor(float wx, float wy);
 
-        void CalcMoveSpherePlace(void);
+    void CalcMoveSpherePlace(void);
 
-        void ClearGroupVis(void);
-		void GroupClear(void);
-		void GroupBuild(CStorage &stor);
+    void ClearGroupVis(void);
+    void GroupClear(void);
+    void GroupBuild(CStorage &stor);
 
-        void RobotPreload(void);
+    void RobotPreload(void);
 
-        const D3DXMATRIX  & GetIdentityMatrix(void) const               { return m_Identity; }
-        
-        bool  CalcVectorToLandscape(const D3DXVECTOR2 &pos, D3DXVECTOR2 &dir);
+    const D3DXMATRIX &GetIdentityMatrix(void) const { return m_Identity; }
 
-        __forceinline void  RemoveFromAD(CMatrixMapStatic *ms)
-        {
-            for (int i=0; i<m_AD_Obj_cnt; ++i)
-            {
-                if (m_AD_Obj[i] == ms)
-                {
-                    m_AD_Obj[i] = m_AD_Obj[--m_AD_Obj_cnt];
-                    return;
-                }
+    bool CalcVectorToLandscape(const D3DXVECTOR2 &pos, D3DXVECTOR2 &dir);
+
+    __forceinline void RemoveFromAD(CMatrixMapStatic *ms) {
+        for (int i = 0; i < m_AD_Obj_cnt; ++i) {
+            if (m_AD_Obj[i] == ms) {
+                m_AD_Obj[i] = m_AD_Obj[--m_AD_Obj_cnt];
+                return;
             }
         }
+    }
 
-		bool UnitPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, int * ox, int * oy, float * ot=NULL)					 { return UnitPick(orig,dir,CRect(0,0,m_Size.x,m_Size.y),ox,oy,ot); }
-		bool UnitPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, const CRect & ar, int * ox, int * oy, float * ot=NULL);
-		bool PointPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, int * ox, int * oy)									{ return PointPick(orig,dir,CRect(0,0,m_Size.x,m_Size.y),ox,oy); }
-		bool PointPick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, const CRect & ar, int * ox, int * oy);
-		bool UnitPickGrid(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, int * ox, int * oy);
-		bool UnitPickWorld(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, float * ox, float * oy);
+    bool UnitPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, int *ox, int *oy, float *ot = NULL) {
+        return UnitPick(orig, dir, CRect(0, 0, m_Size.x, m_Size.y), ox, oy, ot);
+    }
+    bool UnitPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, const CRect &ar, int *ox, int *oy, float *ot = NULL);
+    bool PointPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, int *ox, int *oy) {
+        return PointPick(orig, dir, CRect(0, 0, m_Size.x, m_Size.y), ox, oy);
+    }
+    bool PointPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, const CRect &ar, int *ox, int *oy);
+    bool UnitPickGrid(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, int *ox, int *oy);
+    bool UnitPickWorld(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *ox, float *oy);
 
-        void RestoreMusicVolume(void);
-        void SetMusicVolume(float vol);
+    void RestoreMusicVolume(void);
+    void SetMusicVolume(float vol);
 
+    void StaticClear(void);
+    void StaticDelete(CMatrixMapStatic *ms);
 
-		void StaticClear(void);
-		void StaticDelete(CMatrixMapStatic * ms);
-		
-        //CMatrixMapStatic * StaticAdd(EObjectType type, bool add_to_logic = true);
-        
-        __forceinline void AddObject(CMatrixMapStatic * ms,bool add_to_logic)
-        {
-            m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
-            CMatrixMapStatic ** e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-            *(e-1) = ms;
-            if (add_to_logic) ms->AddLT();
-        }
-        template <class O> __forceinline O* StaticAdd(bool add_to_logic = true)
-        {
-            O * o = HNew(g_MatrixHeap) O();
-            AddObject(o,add_to_logic && o->GetObjectType()!=OBJECT_TYPE_MAPOBJECT);
-            return o;
-        }
+    // CMatrixMapStatic * StaticAdd(EObjectType type, bool add_to_logic = true);
 
-        void AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &type);
-        void RemoveEffectSpawnerByObject(CMatrixMapStatic *ms);
-        void RemoveEffectSpawnerByTime(void);
+    __forceinline void AddObject(CMatrixMapStatic *ms, bool add_to_logic) {
+        m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
+        CMatrixMapStatic **e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
+        *(e - 1) = ms;
+        if (add_to_logic)
+            ms->AddLT();
+    }
+    template <class O>
+    __forceinline O *StaticAdd(bool add_to_logic = true) {
+        O *o = HNew(g_MatrixHeap) O();
+        AddObject(o, add_to_logic && o->GetObjectType() != OBJECT_TYPE_MAPOBJECT);
+        return o;
+    }
 
-		void MacrotextureClear(void);
-		void MacrotextureInit(const CWStr &path);
+    void AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &type);
+    void RemoveEffectSpawnerByObject(CMatrixMapStatic *ms);
+    void RemoveEffectSpawnerByTime(void);
 
-        // side funcs
-		DWORD GetSideColor(int id);
-        DWORD GetSideColorMM(int id);
-        CTexture * GetSideColorTexture(int id);
-        __forceinline CTexture * GetPlayerSideColorTexture(void) {return m_PlayerSide->m_ColorTexture;};
-		void ClearSide(void);
-		
-        void LoadSide(CBlockPar & bp);
-        //void LoadTactics(CBlockPar & bp);
+    void MacrotextureClear(void);
+    void MacrotextureInit(const CWStr &path);
 
-        CMatrixSideUnit * GetSideById(int id);
-        CMatrixSideUnit * GetPlayerSide(void) {return m_PlayerSide;};
+    // side funcs
+    DWORD GetSideColor(int id);
+    DWORD GetSideColorMM(int id);
+    CTexture *GetSideColorTexture(int id);
+    __forceinline CTexture *GetPlayerSideColorTexture(void) { return m_PlayerSide->m_ColorTexture; };
+    void ClearSide(void);
 
+    void LoadSide(CBlockPar &bp);
+    // void LoadTactics(CBlockPar & bp);
 
-		void WaterClear(void);
-		void WaterInit(void);
+    CMatrixSideUnit *GetSideById(int id);
+    CMatrixSideUnit *GetPlayerSide(void) { return m_PlayerSide; };
 
-		void BeforeDraw(void);
-		void Draw(void);
+    void WaterClear(void);
+    void WaterInit(void);
 
-        void MarkNeedRecalcTerainColor(void) { SETFLAG(m_Flags, MMFLAG_NEEDRECALCTER); }
+    void BeforeDraw(void);
+    void Draw(void);
 
-        bool AddEffect(CMatrixEffect *ef);
+    void MarkNeedRecalcTerainColor(void) { SETFLAG(m_Flags, MMFLAG_NEEDRECALCTER); }
+
+    bool AddEffect(CMatrixEffect *ef);
 #ifdef _DEBUG
-        void SubEffect(SDebugCallInfo &from, PCMatrixEffect e);
+    void SubEffect(SDebugCallInfo &from, PCMatrixEffect e);
 #else
-        void SubEffect(PCMatrixEffect e);
+    void SubEffect(PCMatrixEffect e);
 #endif
-        //bool IsEffect(PCMatrixEffect e);
-        int GetEffectCount(void) {return m_EffectsCnt;}
-        //void SubLowestEffect(void);
+    // bool IsEffect(PCMatrixEffect e);
+    int GetEffectCount(void) { return m_EffectsCnt; }
+    // void SubLowestEffect(void);
 
-		void Takt(int step);
+    void Takt(int step);
 
-		//DWORD Load(CBuf & b, CBlockPar & bp, bool &surface_macro);
-        void Restart(void); // boo!
+    // DWORD Load(CBuf & b, CBlockPar & bp, bool &surface_macro);
+    void Restart(void);  // boo!
 
-        int  ReloadDynamics(CStorage &stor, EReloadStep step, CBuf *robots = NULL);
+    int ReloadDynamics(CStorage &stor, EReloadStep step, CBuf *robots = NULL);
 
-        int  PrepareMap(CStorage &stor, const CWStr &mapname);
-		void StaticPrepare(int n, bool skip_progress = false);
-        void StaticPrepare2(CBuf *robots);
+    int PrepareMap(CStorage &stor, const CWStr &mapname);
+    void StaticPrepare(int n, bool skip_progress = false);
+    void StaticPrepare2(CBuf *robots);
 
-        void    InitObjectsLights(void);            // must be called only after CreatePoolDefaultResources
-        void    ReleasePoolDefaultResources(void);
-        void    CreatePoolDefaultResources(bool loading); // false - restoring resources
-        bool    CheckLostDevice(void);  // if true, device is lost
+    void InitObjectsLights(void);  // must be called only after CreatePoolDefaultResources
+    void ReleasePoolDefaultResources(void);
+    void CreatePoolDefaultResources(bool loading);  // false - restoring resources
+    bool CheckLostDevice(void);                     // if true, device is lost
 
-// zakker
-        void    ShowPortrets(void);
+    // zakker
+    void ShowPortrets(void);
 
-        void    EnterDialogMode(const wchar *hint);
-        void    LeaveDialogMode(void);
+    void EnterDialogMode(const wchar *hint);
+    void LeaveDialogMode(void);
 
-        void    BeginDieSequence(void);
-        bool    DieSequenceInProgress(void) {return m_ShadeOn;}
+    void BeginDieSequence(void);
+    bool DieSequenceInProgress(void) { return m_ShadeOn; }
 
+    CTextureManaged *GetReflectionTexture(void) { return m_Reflection; };
+    int GetTime(void) const { return m_Time; }
+    DWORD GetStartTime(void) const { return m_StartTime; }
 
-        CTextureManaged *GetReflectionTexture(void) { return m_Reflection; };
-        int GetTime(void) const {return m_Time;}
-        DWORD GetStartTime(void) const {return m_StartTime;}
+    bool CatchPoint(const D3DXVECTOR3 &from, const D3DXVECTOR3 &to);
+    bool TraceLand(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir);
+    CMatrixMapStatic *Trace(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, DWORD mask,
+                            CMatrixMapStatic *skip = NULL);
+    bool FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
+                     ENUM_OBJECTS callback, DWORD user);
+    bool FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
+                     ENUM_OBJECTS2D callback, DWORD user);
 
+    // CMatrixMapGroup * GetGroupByCell(int x, int y) { return m_Group[(x/MATRIX_MAP_GROUP_SIZE) +
+    // (y/MATRIX_MAP_GROUP_SIZE) * m_GroupSize.x ];  }
+    __forceinline CMatrixMapGroup *GetGroupByIndex(int x, int y) { return m_Group[x + y * m_GroupSize.x]; }
+    __forceinline CMatrixMapGroup *GetGroupByIndex(int i) { return m_Group[i]; }
+    __forceinline CMatrixMapGroup *GetGroupByIndexTest(int x, int y) {
+        return (x < 0 || y < 0 || x >= m_GroupSize.x || y >= m_GroupSize.x) ? NULL : m_Group[x + y * m_GroupSize.x];
+    }
 
-        bool    CatchPoint(const D3DXVECTOR3 &from, const D3DXVECTOR3 &to);
-        bool    TraceLand(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir);
-        CMatrixMapStatic * Trace(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, DWORD mask, CMatrixMapStatic *skip = NULL);
-        bool    FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip, ENUM_OBJECTS callback, DWORD user);
-        bool    FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip, ENUM_OBJECTS2D callback, DWORD user);
+    float GetGroupMaxZLand(int x, int y);
+    float GetGroupMaxZObj(int x, int y);
+    float GetGroupMaxZObjRobots(int x, int y);
 
-        //CMatrixMapGroup * GetGroupByCell(int x, int y) { return m_Group[(x/MATRIX_MAP_GROUP_SIZE) + (y/MATRIX_MAP_GROUP_SIZE) * m_GroupSize.x ];  }
-        __forceinline CMatrixMapGroup * GetGroupByIndex(int x, int y) { return m_Group[x + y * m_GroupSize.x ]; }
-        __forceinline CMatrixMapGroup * GetGroupByIndex(int i) { return m_Group[i]; }
-        __forceinline CMatrixMapGroup * GetGroupByIndexTest(int x, int y) { return (x<0||y<0||x>=m_GroupSize.x||y>=m_GroupSize.x)?NULL:m_Group[x + y * m_GroupSize.x ]; }
+    void CalcMapGroupVisibility(void);
 
-        float GetGroupMaxZLand(int x, int y);
-        float GetGroupMaxZObj(int x, int y);
-        float GetGroupMaxZObjRobots(int x, int y);
+    struct SCalcVisRuntime;
 
+    void CheckCandidate(SCalcVisRuntime &cvr, CMatrixMapGroup *g);
 
-        void CalcMapGroupVisibility(void);
+    DWORD GetCurrentFrame(void) { return m_CurFrame; }
 
-        struct SCalcVisRuntime;
+    __forceinline void Pause(bool p) {
+        if (FLAG(m_Flags, MMFLAG_DIALOG_MODE))
+            return;  // disable pasue/unpause in dialog mode
+        INITFLAG(m_Flags, MMFLAG_PAUSE, p);
+        if (p)
+            CSound::StopPlayAllSounds();
+    }
+    __forceinline bool IsPaused(void) { return FLAG(m_Flags, MMFLAG_PAUSE); }
 
-        void CheckCandidate(SCalcVisRuntime &cvr, CMatrixMapGroup *g);
+    __forceinline void MouseCam(bool p) { INITFLAG(m_Flags, MMFLAG_MOUSECAM, p); }
+    __forceinline bool IsMouseCam(void) { return FLAG(m_Flags, MMFLAG_MOUSECAM); }
 
+    // draw functions
 
-        DWORD GetCurrentFrame(void) {return m_CurFrame;}
-        
-        __forceinline void  Pause(bool p)
-        {
-            if (FLAG(m_Flags,MMFLAG_DIALOG_MODE)) return; // disable pasue/unpause in dialog mode
-            INITFLAG(m_Flags,MMFLAG_PAUSE,p);
-            if (p) CSound::StopPlayAllSounds();
-        }
-        __forceinline bool  IsPaused(void) {return FLAG(m_Flags,MMFLAG_PAUSE);}
-
-        __forceinline void  MouseCam(bool p) {INITFLAG(m_Flags,MMFLAG_MOUSECAM,p);}
-        __forceinline bool  IsMouseCam(void) {return FLAG(m_Flags,MMFLAG_MOUSECAM);}
-
-        // draw functions
-
-        void BeforeDrawLandscape(bool all = false);
-        void BeforeDrawLandscapeSurfaces(bool all = false);
-        void DrawLandscape(bool all = false);
-        void DrawLandscapeSurfaces(bool all = false);
-        void DrawObjects(void);
-        void DrawWater(void);
-        void DrawShadowsProjFast(void);
-        void DrawShadows(void);
-        void DrawEffects(void);
-        void DrawSky(void);
-
+    void BeforeDrawLandscape(bool all = false);
+    void BeforeDrawLandscapeSurfaces(bool all = false);
+    void DrawLandscape(bool all = false);
+    void DrawLandscapeSurfaces(bool all = false);
+    void DrawObjects(void);
+    void DrawWater(void);
+    void DrawShadowsProjFast(void);
+    void DrawShadows(void);
+    void DrawEffects(void);
+    void DrawSky(void);
 
 private:
-        enum EScanResult
-        {
-            SR_NONE,
-            SR_BREAK,
-            SR_FOUND
+    enum EScanResult {
+        SR_NONE,
+        SR_BREAK,
+        SR_FOUND
 
-        };
-        EScanResult ScanLandscapeGroup(void * data, int gx, int gy, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end);
-        EScanResult ScanLandscapeGroupForLand(void * data, int gx, int gy, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end);
+    };
+    EScanResult ScanLandscapeGroup(void *data, int gx, int gy, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end);
+    EScanResult ScanLandscapeGroupForLand(void *data, int gx, int gy, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end);
 };
 
 class CMatrixMapLogic;
-class CMatrixTacticsList; 
+class CMatrixTacticsList;
 
 #include "MatrixLogic.hpp"
 
-
-
-__forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
-{
+__forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef) {
     DTRACE();
 #ifdef _DEBUG
-    if (ef->GetType() == EFFECT_UNDEFINED)
-    {
-        //int a = 1;
+    if (ef->GetType() == EFFECT_UNDEFINED) {
+        // int a = 1;
         ERROR_S(L"Undefined effect!");
     }
 #endif
 
-    if (m_EffectsCnt >= MAX_EFFECTS_COUNT)
-    {
+    if (m_EffectsCnt >= MAX_EFFECTS_COUNT) {
         PCMatrixEffect ef2del = NULL;
         int pri = ef->Priority();
-        for (PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next)
-        {
-            if (e->IsDIP()) continue;
+        for (PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next) {
+            if (e->IsDIP())
+                continue;
             int p = e->Priority();
-            if (p < MAX_EFFECT_PRIORITY)
-            {
+            if (p < MAX_EFFECT_PRIORITY) {
                 ef2del = e;
                 pri = p;
             }
         }
-        if (ef2del == NULL)
-        {
+        if (ef2del == NULL) {
             ef->Release();
             return false;
-        } else
-        {
+        }
+        else {
             if (m_EffectsNextTakt == ef2del)
                 m_EffectsNextTakt = ef2del->m_Next;
             LIST_DEL(ef2del, m_EffectsFirst, m_EffectsLast, m_Prev, m_Next);
@@ -721,68 +722,71 @@ __forceinline bool CMatrixMap::AddEffect(CMatrixEffect *ef)
     return true;
 }
 
-
-__forceinline  CMatrixSideUnit * CMatrixMap::GetSideById(int id)
-{
+__forceinline CMatrixSideUnit *CMatrixMap::GetSideById(int id) {
     DTRACE();
-	for(int i=0;i<m_SideCnt;i++)
-    {
-		if(m_Side[i].m_Id==id) return &m_Side[i];
-	}
+    for (int i = 0; i < m_SideCnt; i++) {
+        if (m_Side[i].m_Id == id)
+            return &m_Side[i];
+    }
 #ifdef _DEBUG
     _asm int 3
 #endif
-	ERROR_E;
+            ERROR_E;
 }
 
-__forceinline  DWORD CMatrixMap::GetSideColor(int id)
-{
+__forceinline DWORD CMatrixMap::GetSideColor(int id) {
     DTRACE();
-    if (id == 0) return m_NeutralSideColor;
+    if (id == 0)
+        return m_NeutralSideColor;
     return GetSideById(id)->m_Color;
 }
 
-__forceinline  DWORD CMatrixMap::GetSideColorMM(int id)
-{
+__forceinline DWORD CMatrixMap::GetSideColorMM(int id) {
     DTRACE();
-    if (id == 0) return m_NeutralSideColorMM;
+    if (id == 0)
+        return m_NeutralSideColorMM;
     return GetSideById(id)->m_ColorMM;
 }
 
-__forceinline  CTexture * CMatrixMap::GetSideColorTexture(int id)
-{
+__forceinline CTexture *CMatrixMap::GetSideColorTexture(int id) {
     DTRACE();
-    if (id == 0) return m_NeutralSideColorTexture;
+    if (id == 0)
+        return m_NeutralSideColorTexture;
     return GetSideById(id)->m_ColorTexture;
 }
 
-__forceinline  float CMatrixMap::GetGroupMaxZLand(int x, int y)
-{
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
-    if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZLand();
-    if (z < 0) return 0;
+__forceinline float CMatrixMap::GetGroupMaxZLand(int x, int y) {
+    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y)
+        return 0;
+    CMatrixMapGroup *g = GetGroupByIndex(x, y);
+    if (g == NULL)
+        return 0;
+    float z = GetGroupByIndex(x, y)->GetMaxZLand();
+    if (z < 0)
+        return 0;
     return z;
 }
-__forceinline  float CMatrixMap::GetGroupMaxZObj(int x, int y)
-{
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
-    if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZObj();
-    if (z < 0) return 0;
+__forceinline float CMatrixMap::GetGroupMaxZObj(int x, int y) {
+    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y)
+        return 0;
+    CMatrixMapGroup *g = GetGroupByIndex(x, y);
+    if (g == NULL)
+        return 0;
+    float z = GetGroupByIndex(x, y)->GetMaxZObj();
+    if (z < 0)
+        return 0;
     return z;
 }
-__forceinline float CMatrixMap::GetGroupMaxZObjRobots(int x, int y)
-{
-    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y) return 0;
-    CMatrixMapGroup *g = GetGroupByIndex(x,y);
-    if (g == NULL) return 0;
-    float z = GetGroupByIndex(x,y)->GetMaxZObjRobots();
-    if (z < 0) return 0;
+__forceinline float CMatrixMap::GetGroupMaxZObjRobots(int x, int y) {
+    if (x < 0 || x >= m_GroupSize.x || y < 0 || y >= m_GroupSize.y)
+        return 0;
+    CMatrixMapGroup *g = GetGroupByIndex(x, y);
+    if (g == NULL)
+        return 0;
+    float z = GetGroupByIndex(x, y)->GetMaxZObjRobots();
+    if (z < 0)
+        return 0;
     return z;
 }
-
 
 #endif

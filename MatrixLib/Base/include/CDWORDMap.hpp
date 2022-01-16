@@ -7,74 +7,61 @@
 
 namespace Base {
 
-
 #define HASH_TABLE_SIZE 1024
 
 typedef bool (*ENUM_DWORD)(DWORD key, DWORD val, DWORD user);
 
-#define PTR2KEY(p) (((DWORD)p)>>3)
+#define PTR2KEY(p) (((DWORD)p) >> 3)
 
-class CDWORDMap : public CMain
-{
-    typedef struct SPair
-    {
-        union
-        {
-            DWORD   key;
-            DWORD   allocated;
+class CDWORDMap : public CMain {
+    typedef struct SPair {
+        union {
+            DWORD key;
+            DWORD allocated;
         };
-        union
-        {
-            DWORD   value;
-            DWORD   contained;
+        union {
+            DWORD value;
+            DWORD contained;
         };
-    } *PSPair;
-    
+    } * PSPair;
 
-    CHeap       *m_Heap;
-    PSPair       m_Table[HASH_TABLE_SIZE];
+    CHeap *m_Heap;
+    PSPair m_Table[HASH_TABLE_SIZE];
 
-    int          m_Cnt;
+    int m_Cnt;
+
 public:
-
-    CDWORDMap(CHeap *heap = NULL):m_Heap(heap) 
-    {
-        memset(&m_Table, 0, sizeof(m_Table)); 
+    CDWORDMap(CHeap *heap = NULL) : m_Heap(heap) {
+        memset(&m_Table, 0, sizeof(m_Table));
         m_Cnt = 0;
     }
     ~CDWORDMap();
 
-    int  GetCount(void) const {return m_Cnt;};
+    int GetCount(void) const { return m_Cnt; };
     void Set(DWORD key, DWORD v);
     bool Get(DWORD key, DWORD *v);
     bool Del(DWORD key);
     void Enum(ENUM_DWORD, DWORD user);
     void Clear(void);
-
-
 };
 
-__forceinline CDWORDMap::~CDWORDMap()
-{
+__forceinline CDWORDMap::~CDWORDMap() {
     Clear();
 }
 
-__forceinline void CDWORDMap::Clear(void)
-{
-    for (int i=0; i<HASH_TABLE_SIZE; ++i)
-    {
-        if (m_Table[i]) HFree(m_Table[i], m_Heap);
+__forceinline void CDWORDMap::Clear(void) {
+    for (int i = 0; i < HASH_TABLE_SIZE; ++i) {
+        if (m_Table[i])
+            HFree(m_Table[i], m_Heap);
         m_Table[i] = NULL;
     }
 }
 
-__forceinline void CDWORDMap::Set(DWORD key, DWORD v)
-{
-    DWORD index = key & (HASH_TABLE_SIZE-1);
+__forceinline void CDWORDMap::Set(DWORD key, DWORD v) {
+    DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
-    if (vv == NULL)
-    {
-        //not present
+    if (vv == NULL) {
+        // not present
         vv = m_Table[index] = (PSPair)HAlloc(16 * sizeof(SPair), m_Heap);
 
         vv->allocated = 15;
@@ -88,14 +75,11 @@ __forceinline void CDWORDMap::Set(DWORD key, DWORD v)
 #ifdef _DEBUG
         ++m_Cnt;
 #endif
-
-    } else
-    {
+    }
+    else {
         PSPair vvseek = vv + vv->contained;
-        while (vvseek > vv)
-        {
-            if (vvseek->key == key)
-            {
+        while (vvseek > vv) {
+            if (vvseek->key == key) {
                 vvseek->value = v;
                 return;
             }
@@ -104,14 +88,12 @@ __forceinline void CDWORDMap::Set(DWORD key, DWORD v)
 
         ++m_Cnt;
 
-        if ( vv->contained < vv->allocated)
-        {
+        if (vv->contained < vv->allocated) {
             ++vv->contained;
             (vv + vv->contained)->key = key;
             (vv + vv->contained)->value = v;
-
-        } else
-        {
+        }
+        else {
             int newsize = vv->allocated + 16 + 1;
             vv = m_Table[index] = (PSPair)HAllocEx(vv, newsize * sizeof(SPair), m_Heap);
 
@@ -120,29 +102,23 @@ __forceinline void CDWORDMap::Set(DWORD key, DWORD v)
             (vv + vv->contained)->key = key;
             (vv + vv->contained)->value = v;
         }
-
     }
- 
 }
 
-__forceinline bool CDWORDMap::Get(DWORD key, DWORD *v)
-{
-    DWORD index = key & (HASH_TABLE_SIZE-1);
+__forceinline bool CDWORDMap::Get(DWORD key, DWORD *v) {
+    DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
-    if (vv == NULL)
-    {
-        //not present
+    if (vv == NULL) {
+        // not present
 
         return false;
-
-    } else
-    {
+    }
+    else {
         PSPair vvseek = vv + vv->contained;
-        while (vvseek > vv)
-        {
-            if (vvseek->key == key)
-            {
-                if (v) *v = vvseek->value;
+        while (vvseek > vv) {
+            if (vvseek->key == key) {
+                if (v)
+                    *v = vvseek->value;
                 return true;
             }
             --vvseek;
@@ -151,23 +127,18 @@ __forceinline bool CDWORDMap::Get(DWORD key, DWORD *v)
     }
 }
 
-__forceinline bool CDWORDMap::Del(DWORD key)
-{
-    DWORD index = key & (HASH_TABLE_SIZE-1);
+__forceinline bool CDWORDMap::Del(DWORD key) {
+    DWORD index = key & (HASH_TABLE_SIZE - 1);
     PSPair vv = m_Table[index];
-    if (vv == NULL)
-    {
-        //not present
+    if (vv == NULL) {
+        // not present
 
         return false;
-
-    } else
-    {
+    }
+    else {
         PSPair vvseek = vv + vv->contained;
-        while (vvseek > vv)
-        {
-            if (vvseek->key == key)
-            {
+        while (vvseek > vv) {
+            if (vvseek->key == key) {
                 *vvseek = *(vv + vv->contained);
                 --vv->contained;
                 --m_Cnt;
@@ -179,4 +150,4 @@ __forceinline bool CDWORDMap::Del(DWORD key)
     }
 }
 
-}
+}  // namespace Base

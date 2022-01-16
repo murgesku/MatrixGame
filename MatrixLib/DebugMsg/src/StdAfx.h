@@ -8,15 +8,11 @@
 
 #if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
+#endif  // _MSC_VER > 1000
 
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
 #include "main.h"
 
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_STDAFX_H__BC195CC9_B69B_48C3_9D5E_0EC3E624FB82__INCLUDED_)
+#endif 

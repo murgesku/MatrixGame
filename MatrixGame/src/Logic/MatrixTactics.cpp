@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include "../stdafx.h"
+
 #include "../MatrixMap.hpp"
 #include "MatrixTactics.h"
 #include "MatrixLogicSlot.h"
@@ -14,7 +15,7 @@
 #include "MatrixAIGroup.h"
 #include "../MatrixObjectCannon.hpp"
 
-//CMatrixTactics::~CMatrixTactics()
+// CMatrixTactics::~CMatrixTactics()
 //{
 //	DTRACE();
 //	CMatrixLogicSlot *Slot = m_FirstSlot;
@@ -36,7 +37,7 @@
 //}
 //
 //
-//void CMatrixTactics::Load(CBlockPar &bp)
+// void CMatrixTactics::Load(CBlockPar &bp)
 //{
 //    DTRACE();
 //    //CWStr filename;
@@ -70,7 +71,7 @@
 //    }
 //}
 //
-//bool CMatrixTactics::TryTactics(CMatrixGroup* group)
+// bool CMatrixTactics::TryTactics(CMatrixGroup* group)
 //{
 //    DTRACE();
 //    CMatrixLogicSlot* tmpsl = m_FirstSlot;
@@ -78,19 +79,19 @@
 //    int max_cells  = 0;
 //
 //    while(tmpsl){
-//        min_cells += tmpsl->GetCellsCnt().m_MinCells; 
-//        max_cells += tmpsl->GetCellsCnt().m_MaxCells; 
+//        min_cells += tmpsl->GetCellsCnt().m_MinCells;
+//        max_cells += tmpsl->GetCellsCnt().m_MaxCells;
 //
 //        tmpsl = tmpsl->m_NextSlot;
 //    }
-//    
+//
 //    if(group->GetRobotsCnt() < min_cells || group->GetRobotsCnt() > max_cells)
 //        return false;
 //
 //    return true;
 //}
 //
-//void CMatrixTactics::InitialiseTactics(CMatrixGroup* group, CMatrixMapStatic* target, int region)
+// void CMatrixTactics::InitialiseTactics(CMatrixGroup* group, CMatrixMapStatic* target, int region)
 //{
 //    DTRACE();
 //
@@ -99,7 +100,7 @@
 //    CMatrixLogicSlot*   tmpsl = m_FirstSlot;
 //    CMatrixGroupObject*  group_objects = group->m_FirstObject;
 //
-//    
+//
 //    int Robots  = group->GetRobotsCnt();
 //    int cnt     = 0;
 //
@@ -129,7 +130,7 @@
 //    }
 //}
 //
-//void CMatrixTactics::RemoveRobotFromT(CMatrixRobotAI* robot)
+// void CMatrixTactics::RemoveRobotFromT(CMatrixRobotAI* robot)
 //{
 //    DTRACE();
 //    CMatrixLogicSlot* tmpsl = m_FirstSlot;
@@ -140,7 +141,7 @@
 //    }
 //}
 //
-//void CMatrixTactics::RemoveObjectFromT(CMatrixMapStatic* object){
+// void CMatrixTactics::RemoveObjectFromT(CMatrixMapStatic* object){
 //    DTRACE();
 //    if(object->GetObjectType() != OBJECT_TYPE_ROBOTAI)
 //        return;
@@ -154,32 +155,36 @@
 //
 //}
 //
-//void CMatrixTactics::LogicTakt(CMatrixSideUnit* side, CMatrixGroup* group)
+// void CMatrixTactics::LogicTakt(CMatrixSideUnit* side, CMatrixGroup* group)
 //{
 //    DTRACE();
-//    
+//
 //    if(m_Type == CAPTURE_TACTICS){
 //        if(!m_Target){
 //            group->DeInstallTactics();
 //        }else{
-//            if(m_Target->GetObjectType() == OBJECT_TYPE_BUILDING && (((CMatrixBuilding*)m_Target)->m_State == BUILDING_DIP || ((CMatrixBuilding*)m_Target)->m_State == BUILDING_DIP_EXPLODED)){
-//                group->DeInstallTactics();            
+//            if(m_Target->GetObjectType() == OBJECT_TYPE_BUILDING && (((CMatrixBuilding*)m_Target)->m_State ==
+//            BUILDING_DIP || ((CMatrixBuilding*)m_Target)->m_State == BUILDING_DIP_EXPLODED)){
+//                group->DeInstallTactics();
 //            }
 //        }
 //    }else if(m_Type == ATTACK_TARGET_TACTICS){
 //        if(!m_Target){
 //            group->DeInstallTactics();
 //        }else{
-//            if(m_Target->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)m_Target)->m_CurrState == ROBOT_DIP){
+//            if(m_Target->GetObjectType() == OBJECT_TYPE_ROBOTAI && ((CMatrixRobotAI*)m_Target)->m_CurrState ==
+//            ROBOT_DIP){
 //                group->DeInstallTactics();
-//            }else if(m_Target->GetObjectType() == OBJECT_TYPE_CANNON && ((CMatrixCannon*)m_Target)->m_CurrState == CANNON_DIP){
-//                group->DeInstallTactics();        
+//            }else if(m_Target->GetObjectType() == OBJECT_TYPE_CANNON && ((CMatrixCannon*)m_Target)->m_CurrState ==
+//            CANNON_DIP){
+//                group->DeInstallTactics();
 //            }
 //        }
 //    }
 //    CalcNearestToTargetBot();
 //
-//    if(m_Type == CAPTURE_TACTICS && m_Target && m_Target->GetObjectType() == OBJECT_TYPE_BUILDING && ((CMatrixBuilding*)m_Target)->m_Side == side->m_Id && ((CMatrixBuilding*)m_Target)->IsBase()){
+//    if(m_Type == CAPTURE_TACTICS && m_Target && m_Target->GetObjectType() == OBJECT_TYPE_BUILDING &&
+//    ((CMatrixBuilding*)m_Target)->m_Side == side->m_Id && ((CMatrixBuilding*)m_Target)->IsBase()){
 //        CMatrixGroupObject*  gr_objects = group->m_FirstObject;
 //
 //        while(gr_objects){
@@ -191,9 +196,9 @@
 //            }
 //            gr_objects = gr_objects->m_NextObject;
 //        }
-//        group->DeInstallTactics();                
+//        group->DeInstallTactics();
 //        return;
-//    
+//
 //    }
 //
 //    CMatrixLogicSlot* tmpsl = m_FirstSlot;
@@ -215,11 +220,12 @@
 //            tmpsl = tmpsl->m_NextSlot;
 //            continue;
 //        }
-//        
+//
 //        CLogicSlotRobot* logic_bot = tmpsl->m_FirstRobot;
 //        while(logic_bot){
 //            CMatrixRule*  rule = tmpsl->GetActiveState()->m_FirstRule;
-//            while(rule && !(g_MatrixMap->GetPlayerSide()->GetArcadedObject() == (CMatrixMapStatic*)(logic_bot->GetLogicRobot()))){
+//            while(rule && !(g_MatrixMap->GetPlayerSide()->GetArcadedObject() ==
+//            (CMatrixMapStatic*)(logic_bot->GetLogicRobot()))){
 //                rule->LogicTakt();
 //                if(rule->If(logic_bot->GetLogicRobot(), group)){
 //                    if(logic_bot->GetRule() != rule){
@@ -242,7 +248,7 @@
 //    }
 //}
 //
-//void CMatrixTactics::Reset()
+// void CMatrixTactics::Reset()
 //{
 //    DTRACE();
 //    CMatrixLogicSlot* tmpsl = m_FirstSlot;
@@ -266,13 +272,13 @@
 //			    HDelete(CLogicSlotRobot, bot->m_PrevRobot, g_MatrixHeap);
 //	    }
 //
-//        tmpsl->Reset();    
+//        tmpsl->Reset();
 //        tmpsl = tmpsl->m_NextSlot;
 //    }
 //
 //}
 //
-//bool CMatrixTactics::FindRobot(CMatrixRobotAI* robot)
+// bool CMatrixTactics::FindRobot(CMatrixRobotAI* robot)
 //{
 //    CMatrixLogicSlot*    slots = m_FirstSlot;
 //    while(slots){
@@ -287,7 +293,7 @@
 //    return false;
 //}
 //
-//void CMatrixTactics::CalcNearestToTargetBot()
+// void CMatrixTactics::CalcNearestToTargetBot()
 //{
 //    if(!m_Target)
 //        return;
@@ -296,13 +302,13 @@
 //    CLogicSlotRobot*    nearestBot = NULL;
 //    float               nearestDist = 0;
 //    D3DXVECTOR3         targ_pos(0,0,0);
-//    
+//
 //    if(m_Target->GetObjectType() == OBJECT_TYPE_BUILDING){
-//        targ_pos = D3DXVECTOR3(((CMatrixBuilding*)m_Target)->m_Pos.x, ((CMatrixBuilding*)m_Target)->m_Pos.y, 0);    
+//        targ_pos = D3DXVECTOR3(((CMatrixBuilding*)m_Target)->m_Pos.x, ((CMatrixBuilding*)m_Target)->m_Pos.y, 0);
 //    }else if(m_Target->GetObjectType() == OBJECT_TYPE_ROBOTAI){
-//        targ_pos = D3DXVECTOR3(((CMatrixRobotAI*)m_Target)->m_PosX, ((CMatrixRobotAI*)m_Target)->m_PosY, 0);    
+//        targ_pos = D3DXVECTOR3(((CMatrixRobotAI*)m_Target)->m_PosX, ((CMatrixRobotAI*)m_Target)->m_PosY, 0);
 //    }else if(m_Target->GetObjectType() == OBJECT_TYPE_CANNON){
-//        targ_pos = D3DXVECTOR3(((CMatrixCannon*)m_Target)->m_Pos.x, ((CMatrixCannon*)m_Target)->m_Pos.x, 0);    
+//        targ_pos = D3DXVECTOR3(((CMatrixCannon*)m_Target)->m_Pos.x, ((CMatrixCannon*)m_Target)->m_Pos.x, 0);
 //    }
 //
 //    while(slots){
@@ -321,13 +327,13 @@
 //    m_NearestToTarget = nearestBot;
 //}
 //
-//CMatrixRobotAI* CMatrixTactics::GetNearestRobotAI()
+// CMatrixRobotAI* CMatrixTactics::GetNearestRobotAI()
 //{
 //        return m_NearestToTarget->GetLogicRobot();
 //}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//CMatrixTacticsList::~CMatrixTacticsList()
+// CMatrixTacticsList::~CMatrixTacticsList()
 //{
 //    DTRACE();
 //    CMatrixTactics *Tactics = m_FirstTactics;
@@ -348,7 +354,7 @@
 //	}
 //}
 //
-//CMatrixTactics* CMatrixTacticsList::FindTactics(CMatrixGroup *group, TacticsType tt)
+// CMatrixTactics* CMatrixTacticsList::FindTactics(CMatrixGroup *group, TacticsType tt)
 //{
 //    CMatrixTactics* tmpt = m_FirstTactics;
 //    while(tmpt){

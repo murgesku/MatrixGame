@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include "../stdafx.h"
+
 #include "MatrixRule.h"
 #include "MatrixLogicSlot.h"
 #include "MatrixState.h"
@@ -11,12 +12,11 @@
 #include "../MatrixMap.hpp"
 #include "../MatrixRobot.hpp"
 
-
-//CMatrixRule::~CMatrixRule()
+// CMatrixRule::~CMatrixRule()
 //{
 //}
 //
-//void CMatrixRule::Load(CBlockPar &bp)
+// void CMatrixRule::Load(CBlockPar &bp)
 //{
 //    CWStr filename;
 //    //filename.Add(L"#RU_");
@@ -33,7 +33,8 @@
 //    CBlockPar *bp_if = bp.BlockGetNE(L"If");
 //    CBlockPar *bp_do = bp.BlockGetNE(L"Do");
 //
-//    CMatrixTactics* parent_tactics = ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent());
+//    CMatrixTactics* parent_tactics =
+//    ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent());
 //
 ////If
 //    if(bp_if){
@@ -56,11 +57,11 @@
 //        if(bp_if->ParNE(L"EnemySpoted").Find(L"None") >= 0){
 //            m_Condition.m_EnemySpoted |= ENEMY_NONE;
 //        }
-//       
+//
 //        if(bp_if->ParNE(L"EnemySpoted").Find(L"Any") >= 0){
 //            m_Condition.m_EnemySpoted = ENEMY_ANY;
 //        }
-//        
+//
 //        //Destroyed
 //        CWStr IfDestroyedSlot(bp_if->ParNE(L"Destroyed"));
 //
@@ -196,7 +197,7 @@
 //    }
 //}
 //
-//bool CMatrixRule::If(CMatrixRobotAI *robot, CMatrixGroup* group)
+// bool CMatrixRule::If(CMatrixRobotAI *robot, CMatrixGroup* group)
 //{
 //    DTRACE();
 //    m_ContextEnemy = NULL;
@@ -204,10 +205,11 @@
 //        return false;
 //    if(robot == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject())
 //        return false;
-//    
-//    CMatrixTactics* parent_tactics = ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent());    
-//    CMatrixLogicSlot* parent_slot = ((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent());
-//    if(m_Condition.m_DestroyedSlot != NULL){
+//
+//    CMatrixTactics* parent_tactics =
+//    ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent()); CMatrixLogicSlot*
+//    parent_slot = ((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent()); if(m_Condition.m_DestroyedSlot !=
+//    NULL){
 //        return false;
 //    }
 //
@@ -244,13 +246,14 @@
 //    return true;
 //}
 //
-//void CMatrixRule::Do(CMatrixRobotAI *robot, CMatrixGroup* group)
+// void CMatrixRule::Do(CMatrixRobotAI *robot, CMatrixGroup* group)
 //{
 //    DTRACE();
 //    if(robot->m_CurrState != ROBOT_SUCCESSFULLY_BUILD)
 //        return;
-//    CMatrixTactics* parent_tactics = ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent());    
-//    
+//    CMatrixTactics* parent_tactics =
+//    ((CMatrixTactics*)((CMatrixLogicSlot*)((CMatrixState*)GetParent())->GetParent())->GetParent());
+//
 //    if(m_Action.m_AttackEnemy == ATTACK){
 //        if(parent_tactics->GetType() == ATTACK_TARGET_TACTICS){
 //            robot->SetEnvTarget(parent_tactics->GetTarget());
@@ -258,13 +261,13 @@
 //            robot->SetEnvTarget(m_ContextEnemy);
 //        }
 //
-//        //if((m_Condition.m_EnemySpoted & ENEMY_ANY) == ENEMY_ANY)       
+//        //if((m_Condition.m_EnemySpoted & ENEMY_ANY) == ENEMY_ANY)
 //        //    robot->m_Environment.KillEnemyByKind(ENEMY_ANY);
 //        //else
 //        //    robot->m_Environment.KillEnemyByKind(ENEMY_UNDEF);
 //
 //    }else if(m_Action.m_AttackEnemy == NOT_ATTACK){
-//        robot->SetEnvTarget(NULL);    
+//        robot->SetEnvTarget(NULL);
 //    }
 //    if(m_Action.m_ChangeEnemy == CHANGE){
 //    }
@@ -277,17 +280,21 @@
 //    if(m_Action.m_MoveTo != MOVETO_UNDEF){
 //        if((m_Action.m_MoveTo & MOVETO_TARGETZONE) == MOVETO_TARGETZONE && parent_tactics->GetTarget() != NULL){
 //            D3DXVECTOR3 mypos = D3DXVECTOR3(robot->m_PosX, robot->m_PosY, 0);
-//            D3DXVECTOR3 tpos = D3DXVECTOR3(((CMatrixBuilding*)parent_tactics->GetTarget())->m_Pos.x, ((CMatrixBuilding*)parent_tactics->GetTarget())->m_Pos.y, 0);
+//            D3DXVECTOR3 tpos = D3DXVECTOR3(((CMatrixBuilding*)parent_tactics->GetTarget())->m_Pos.x,
+//            ((CMatrixBuilding*)parent_tactics->GetTarget())->m_Pos.y, 0);
 //
-//            if(!robot->FindOrderLikeThat(ROT_MOVE_TO) && D3DXVec3LengthSq(&(mypos - tpos)) > (TARGETZONE_R*TARGETZONE_R)){
-// 
+//            if(!robot->FindOrderLikeThat(ROT_MOVE_TO) && D3DXVec3LengthSq(&(mypos - tpos)) >
+//            (TARGETZONE_R*TARGETZONE_R)){
+//
 //                int mx = 0, my = 0;
 //                do{
-//                    mx = int(g_MatrixMap->Rnd((int)tpos.x - TARGETZONE_R, (int)tpos.x + TARGETZONE_R) / GLOBAL_SCALE_MOVE);
+//                    mx = int(g_MatrixMap->Rnd((int)tpos.x - TARGETZONE_R, (int)tpos.x + TARGETZONE_R) /
+//                    GLOBAL_SCALE_MOVE);
 //                }while(fabs(mx * GLOBAL_SCALE_MOVE - tpos.x) < TARGETZONE_MINR);
 //
 //                do{
-//                    my = int(g_MatrixMap->Rnd((int)tpos.y - TARGETZONE_R, (int)tpos.y + TARGETZONE_R) / GLOBAL_SCALE_MOVE);
+//                    my = int(g_MatrixMap->Rnd((int)tpos.y - TARGETZONE_R, (int)tpos.y + TARGETZONE_R) /
+//                    GLOBAL_SCALE_MOVE);
 //                }while(fabs(my * GLOBAL_SCALE_MOVE - tpos.y) < TARGETZONE_MINR);
 //
 //                g_MatrixMap->PlaceFindNear(robot->m_Unit[0].m_Kind, 4, mx, my, robot);
@@ -300,16 +307,16 @@
 //                if(groups->GetTeam() == robot->GetTeam() && groups->GetGroupId() == 1){
 //                    if(!robot->FindOrderLikeThat(ROT_MOVE_TO)){
 //                        D3DXVECTOR3 gpos = groups->GetGroupPos();
-//                        int mx = int(g_MatrixMap->Rnd((int)gpos.x - GROUPZONE_R, (int)gpos.x + GROUPZONE_R) / GLOBAL_SCALE_MOVE);
-//                        int my = int(g_MatrixMap->Rnd((int)gpos.y - GROUPZONE_R, (int)gpos.y + GROUPZONE_R) / GLOBAL_SCALE_MOVE);
-//                        g_MatrixMap->PlaceFindNear(robot->m_Unit[0].m_Kind, 4, mx, my, robot);
-//                        robot->MoveTo(mx, my);
+//                        int mx = int(g_MatrixMap->Rnd((int)gpos.x - GROUPZONE_R, (int)gpos.x + GROUPZONE_R) /
+//                        GLOBAL_SCALE_MOVE); int my = int(g_MatrixMap->Rnd((int)gpos.y - GROUPZONE_R, (int)gpos.y +
+//                        GROUPZONE_R) / GLOBAL_SCALE_MOVE); g_MatrixMap->PlaceFindNear(robot->m_Unit[0].m_Kind, 4, mx,
+//                        my, robot); robot->MoveTo(mx, my);
 //                    }else{
 //                        D3DXVECTOR3 gpos = groups->GetGroupPos();
-//                        int mx = int(g_MatrixMap->Rnd((int)gpos.x - GROUPZONE_R, (int)gpos.x + GROUPZONE_R) / GLOBAL_SCALE_MOVE);
-//                        int my = int(g_MatrixMap->Rnd((int)gpos.y - GROUPZONE_R, (int)gpos.y + GROUPZONE_R) / GLOBAL_SCALE_MOVE);
-//                        g_MatrixMap->PlaceFindNear(robot->m_Unit[0].m_Kind, 4, mx, my, robot);
-//                        robot->UpdateOrder_MoveTo(mx, my);
+//                        int mx = int(g_MatrixMap->Rnd((int)gpos.x - GROUPZONE_R, (int)gpos.x + GROUPZONE_R) /
+//                        GLOBAL_SCALE_MOVE); int my = int(g_MatrixMap->Rnd((int)gpos.y - GROUPZONE_R, (int)gpos.y +
+//                        GROUPZONE_R) / GLOBAL_SCALE_MOVE); g_MatrixMap->PlaceFindNear(robot->m_Unit[0].m_Kind, 4, mx,
+//                        my, robot); robot->UpdateOrder_MoveTo(mx, my);
 //                    }
 //                    break;
 //                }
@@ -317,7 +324,9 @@
 //            }
 //
 //        }else if((m_Action.m_MoveTo & MOVETO_AROUNDENEMY) == MOVETO_AROUNDENEMY){
-//            if((m_AroundPeriod >= AROUNDENEMY_PERIOD || m_AroundPeriod == 0) && robot->GetEnv()->m_Target && robot->GetEnv()->m_Target->GetObjectType() == OBJECT_TYPE_ROBOTAI && !robot->FindOrderLikeThat(ROT_MOVE_TO)){
+//            if((m_AroundPeriod >= AROUNDENEMY_PERIOD || m_AroundPeriod == 0) && robot->GetEnv()->m_Target &&
+//            robot->GetEnv()->m_Target->GetObjectType() == OBJECT_TYPE_ROBOTAI &&
+//            !robot->FindOrderLikeThat(ROT_MOVE_TO)){
 //                m_AroundPeriod = 0;
 //
 //                float ex = 0, ey = 0;
@@ -349,7 +358,7 @@
 //                if(m_ContextEnemy){
 //                    robot->NearManeuver(m_ContextEnemy);
 //                }else if(parent_tactics->GetType() == ATTACK_TARGET_TACTICS){
-//                    robot->NearManeuver(parent_tactics->GetTarget());        
+//                    robot->NearManeuver(parent_tactics->GetTarget());
 //                }
 //            }
 //        }else if((m_Action.m_MoveTo & MOVETO_REGION) == MOVETO_REGION){
@@ -366,15 +375,16 @@
 //    if(m_Action.m_PursueEnemy == PURSUE){
 //    }
 //    if(m_Action.m_Capture == CAPTURE){
-//        if(!robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){        
-//            if(parent_tactics->GetTarget() != NULL) robot->CaptureFactory((CMatrixBuilding*)parent_tactics->GetTarget());
+//        if(!robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
+//            if(parent_tactics->GetTarget() != NULL)
+//            robot->CaptureFactory((CMatrixBuilding*)parent_tactics->GetTarget());
 //        }
 //    }
 //    if(m_Action.m_Exit == EXIT){
 //    }
 //}
 //
-//void CMatrixRule::LogicTakt()
+// void CMatrixRule::LogicTakt()
 //{
 //
 //}

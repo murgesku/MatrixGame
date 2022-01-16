@@ -9,31 +9,28 @@
 
 namespace Base {
 
+typedef bool (*REMIND_HANDLER)(DWORD param);  // returns true, if core is dead
 
-typedef bool (*REMIND_HANDLER)(DWORD param);    // returns true, if core is dead
+#define CHECK_TIME 10
 
-#define CHECK_TIME      10
-
-struct SRemindCore
-{
+struct SRemindCore {
     static SRemindCore *first;
     static SRemindCore *last;
     static SRemindCore *current;
 
-    static int  gtime;
-    static int  ctime;
+    static int gtime;
+    static int ctime;
 
     SRemindCore *next;
     SRemindCore *prev;
-    int          time;
+    int time;
     REMIND_HANDLER handler;
-    DWORD        param;
+    DWORD param;
 
-    SRemindCore(REMIND_HANDLER hand, DWORD par):next(NULL),prev(NULL),time(gtime),handler(hand),param(par) {}
-    ~SRemindCore(void) {Down();}
+    SRemindCore(REMIND_HANDLER hand, DWORD par) : next(NULL), prev(NULL), time(gtime), handler(hand), param(par) {}
+    ~SRemindCore(void) { Down(); }
 
-    static void StaticInit(void)
-    {
+    static void StaticInit(void) {
         first = NULL;
         last = NULL;
         current = NULL;
@@ -41,22 +38,19 @@ struct SRemindCore
         ctime = 0;
     }
 
-    void Down(void)
-    {
-        if (current == this) current = this->next;
+    void Down(void) {
+        if (current == this)
+            current = this->next;
         LIST_DEL_CLEAR(this, first, last, prev, next);
     }
 
-    void Use(int nexttime)
-    {
-        if (first != NULL)
-        {
-            if ((((DWORD)next)|((DWORD)prev)) == 0 && (this != first))
-            {
+    void Use(int nexttime) {
+        if (first != NULL) {
+            if ((((DWORD)next) | ((DWORD)prev)) == 0 && (this != first)) {
                 LIST_ADD(this, first, last, prev, next);
             }
-        } else
-        {
+        }
+        else {
             first = this;
             last = this;
             next = NULL;
@@ -66,16 +60,7 @@ struct SRemindCore
     }
 
     static void Takt(int ms);
-
 };
-
-
-
-
-
-
-
-
 
 //
 //#define REMINDER_TAKT       1000 // one second
@@ -83,11 +68,11 @@ struct SRemindCore
 //
 //#define REMINDER_EMPTY      ((DWORD)(-1))
 //
-//typedef void (*REMINDER_HANDLER)(DWORD uid, DWORD user);
+// typedef void (*REMINDER_HANDLER)(DWORD uid, DWORD user);
 //
-//typedef CBuf* PCBuf;
+// typedef CBuf* PCBuf;
 //
-//struct SReminderItem
+// struct SReminderItem
 //{
 //    SReminderItem *next_free;
 //    SReminderItem *prev_free;
@@ -100,7 +85,7 @@ struct SRemindCore
 //    int              time;
 //};
 //
-//class CReminder : public CMain
+// class CReminder : public CMain
 //{
 //    CHeap  *m_Heap;
 //    CBuf    m_Items;
@@ -122,7 +107,7 @@ struct SRemindCore
 //    CReminder(CHeap *heap);
 //
 //    //void Validate(void);
-//public:
+// public:
 //
 //    void Clear(void);
 //    void Takt(int ms);
@@ -151,4 +136,4 @@ struct SRemindCore
 //
 //};
 //
-}
+}  // namespace Base
