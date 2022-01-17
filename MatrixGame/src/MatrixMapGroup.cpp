@@ -484,7 +484,7 @@ void CMatrixMapGroup::InitInshoreWaves(int n, const float *xx, const float *yy, 
 void CMatrixMapGroup::BeforeDraw(void) {
 #ifdef _DEBUG
     if (this == NULL) {
-        _asm int 3
+        debugbreak();
     }
 #endif
 

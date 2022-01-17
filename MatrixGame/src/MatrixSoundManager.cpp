@@ -237,7 +237,7 @@ void CSound::Init(void) {
         if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED)) {
             // ERROR_S((CWStr(L"Sound ") + i + L" not initialized!").Get());
             MessageBoxW(NULL, (CWStr(L"Sound ") + i + L" not initialized!").Get(), L"Error", MB_ICONERROR);
-            _asm int 3
+            debugbreak();
         }
     }
 #endif
@@ -904,9 +904,9 @@ void CSoundArray::UpdateTimings(float ms) {
                 if (sb->ttl < 0) {
                     if (sb->fade < 0) {
                         if (sb->id == 1)
-                            _asm int 3
+                            debugbreak();
 
-                                    CSound::StopPlayInternal(idx);
+                        CSound::StopPlayInternal(idx);
                         goto del;
                     }
 
@@ -921,7 +921,6 @@ void CSoundArray::UpdateTimings(float ms) {
             }
             else {
             del:
-
                 *sb = *(--se);
                 SetLenNoShrink(Len() - sizeof(SSndData));
                 continue;

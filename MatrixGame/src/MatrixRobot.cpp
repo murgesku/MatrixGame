@@ -1834,7 +1834,7 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECT
             ms = ms->GetNextLogic();
         }
         if (!ms)
-            __asm int 3;
+            debugbreak();
     }
 
 #endif
@@ -4712,9 +4712,9 @@ void CMatrixRobotAI::MoveTo(int mx, int my) {
 
 #if (defined _DEBUG) && !(defined _RELDEBUG)
     if (m_DesX < 0 || m_DesX >= g_MatrixMap->m_SizeMove.x)
-        __asm int 3;
+        debugbreak();
     if (m_DesY < 0 || m_DesY >= g_MatrixMap->m_SizeMove.y)
-        __asm int 3;
+        debugbreak();
 #endif
 }
 
@@ -4741,9 +4741,9 @@ void CMatrixRobotAI::MoveToBack(int mx, int my) {
 
 #if (defined _DEBUG) && !(defined _RELDEBUG)
     if (m_DesX < 0 || m_DesX >= g_MatrixMap->m_SizeMove.x)
-        __asm int 3;
+        debugbreak();
     if (m_DesY < 0 || m_DesY >= g_MatrixMap->m_SizeMove.y)
-        __asm int 3;
+        debugbreak();
 #endif
 }
 

@@ -95,7 +95,7 @@ public:
 #ifdef _DEBUG
     static void ValidateAfterReset(void) {
         if (m_ShadowTextures || m_ShadowTexturesCount)
-            _asm int 3
+            debugbreak();
     }
 #endif
 

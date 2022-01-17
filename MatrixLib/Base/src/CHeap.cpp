@@ -156,7 +156,7 @@ void SMemHeader::Release(void) {
 
             MessageBox(NULL, buf, "Memory corruption!", MB_OK | MB_ICONERROR);
 
-            _asm int 3
+            debugbreak();
 #endif
         }
     }
@@ -257,9 +257,9 @@ void CHeap::Create(int initsize, int maxsize, dword flags) {
 }
 
 void CHeap::AllocationError(int zn) {
-    __debugbreak();
+    debugbreak();
 #ifdef _DEBUG
-    __debugbreak();
+    debugbreak();
 #else
 
     wchar buf[256];

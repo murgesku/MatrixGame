@@ -27,10 +27,10 @@ class CWStr;
             ERROR_E;   \
     }
 #else
-#define ASSERT(zn)          \
-    {                       \
-        if ((zn) == 0)      \
-            __debugbreak(); \
+#define ASSERT(zn)        \
+    {                     \
+        if ((zn) == 0)    \
+            debugbreak(); \
     }
 #endif
 #endif

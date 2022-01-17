@@ -295,7 +295,7 @@ struct SEffectHandler {
     void Rebase(void);
 
 #ifdef _DEBUG
-    SEffectHandler &operator=(const SEffectHandler &h) { _asm int 3 }
+    SEffectHandler &operator=(const SEffectHandler &h) { debugbreak(); }
 #endif
 };
 
@@ -525,7 +525,7 @@ inline void SEffectHandler::Unconnect(void) {
         effect->SetHandler(NULL);
     }
     else {
-        _asm int 3
+        debugbreak();
     }
     effect = NULL;
 #else

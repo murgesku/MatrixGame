@@ -292,16 +292,14 @@ void S3D_Default(void);
 
 #pragma warning(disable : 4035)
 inline byte __fastcall lp2key(dword lp) {
-    _asm
-            {
+    _asm {
         mov eax,lp
         shr eax,15
         shr ah,1
         shr ah,1
         rcr al,1
-                    // and eax,255
-            }
-    ;
+        // and eax,255
+    };
 }
 #pragma warning(default : 4035)
 

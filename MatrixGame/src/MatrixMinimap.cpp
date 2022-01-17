@@ -403,14 +403,14 @@ void CMinimap::DrawRadar(float x, float y, float radius) {
     }
     else
 #ifdef _DEBUG
-            if (arcaded->IsFlyer())
+    if (arcaded->IsFlyer())
 #endif
     {
         mapradius = g_Config.m_FlyerRadarR;
     }
 #ifdef _DEBUG
     else
-        _asm int 3
+        debugbreak();
 #endif
                 ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT));
     ASSERT_DX(g_Sampler.SetState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT));

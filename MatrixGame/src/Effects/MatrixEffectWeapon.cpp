@@ -184,12 +184,12 @@ void CMatrixEffectWeapon::Release(void) {
     --m_Ref;
 #ifdef _DEBUG
     if (m_Ref < 0)
-        _asm int 3
+        debugbreak();
 #endif
-                if (m_Ref <= 0) {
-            SetDIP();
-            HDelete(CMatrixEffectWeapon, this, m_Heap);
-        }
+    if (m_Ref <= 0) {
+        SetDIP();
+        HDelete(CMatrixEffectWeapon, this, m_Heap);
+    }
 }
 
 void CMatrixEffectWeapon::Takt(float step) {

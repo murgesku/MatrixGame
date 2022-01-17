@@ -69,7 +69,7 @@ static void ZL03_Compression(CBuf &out, BYTE *in, int inlen) {
         DWORD len = out.Len() - ptro + 4;
         int res = compress2(out.Buff<BYTE>() + ptro + 4, &len, in + ptri, 65000, Z_BEST_COMPRESSION);
         if (res != Z_OK) {
-            _asm int 3
+            debugbreak();
         }
         ptri += 65000;
 

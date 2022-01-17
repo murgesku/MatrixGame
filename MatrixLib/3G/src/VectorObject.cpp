@@ -1617,7 +1617,7 @@ void CVectorObject::Draw(int noframe, DWORD user_param, const SSkin *ds) {
                 }
 
                 if (D3D_OK != res) {
-                    _asm int 3
+                    debugbreak();
                 }
 
 #else

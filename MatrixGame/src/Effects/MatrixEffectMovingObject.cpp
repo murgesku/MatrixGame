@@ -77,19 +77,19 @@ CMatrixEffectMovingObject::~CMatrixEffectMovingObject() {
 void CMatrixEffectMovingObject::BeforeDraw(void) {
 #ifdef _DEBUG
     if (m_Props.object == NULL)
-        _asm int 3
+        debugbreak();
 #endif
-                m_Props.object->BeforeDraw();
+    m_Props.object->BeforeDraw();
 }
 void CMatrixEffectMovingObject::Draw(void) {
     DTRACE();
 
 #ifdef _DEBUG
     if (m_Props.object == NULL)
-        _asm int 3
+        debugbreak();
 #endif
 
-                CVectorObject::DrawBegin();
+    CVectorObject::DrawBegin();
     g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFFFFFFFF);
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_AMBIENT, g_MatrixMap->m_AmbientColorObj));
 

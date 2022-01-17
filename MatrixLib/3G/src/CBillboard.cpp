@@ -75,12 +75,11 @@ void CBillboard::SortEndDraw(const D3DXMATRIX &iview, const D3DXVECTOR3 &campos)
 
 #ifdef _DEBUG
                 if ((DWORD)groups[groupscnt].tex == 0xACACACAC)
-                    _asm int 3
+                    debugbreak();
 #endif
 
-                            // groups[groupscnt].vbase = base;
-                            groups[groupscnt]
-                                    .ibase = ibt_;
+                // groups[groupscnt].vbase = base;
+                groups[groupscnt].ibase = ibt_;
             }
 
             ++n;
@@ -120,11 +119,10 @@ void CBillboard::SortEndDraw(const D3DXMATRIX &iview, const D3DXVECTOR3 &campos)
                     groups[groupscnt].min_idx = minvi;
 #ifdef _DEBUG
                     if ((DWORD)groups[groupscnt].tex == 0xACACACAC)
-                        _asm int 3
+                        debugbreak();
 #endif
-                                // groups[groupscnt].vbase = base;
-                                groups[groupscnt]
-                                        .ibase = ibt_;
+                    // groups[groupscnt].vbase = base;
+                    groups[groupscnt].ibase = ibt_;
                 }
 
                 ++n;
