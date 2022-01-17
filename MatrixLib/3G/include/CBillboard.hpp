@@ -102,12 +102,12 @@ public:
         // if (m_FirstIntense != NULL || m_Root != NULL)
         // if (m_FirstIntense != NULL || m_First != NULL)
         {
-            __asm int 3
+            debugbreak();
         }
 #endif
 #ifdef _DEBUG
         if (!release_called) {
-            __asm int 3
+            debugbreak();
         }
 #endif
     }
@@ -117,7 +117,7 @@ public:
 
 #ifdef _DEBUG
         if (m_FirstIntense != NULL) {
-            __asm int 3
+            debugbreak();
         }
         release_called = true;
 #endif
@@ -193,10 +193,10 @@ public:
         // do nothing
 #ifdef _DEBUG
         if (m_First != NULL) {
-            __asm int 3
+            debugbreak();
         }
         if (!release_called) {
-            __asm int 3
+            debugbreak();
         }
 #endif
     }

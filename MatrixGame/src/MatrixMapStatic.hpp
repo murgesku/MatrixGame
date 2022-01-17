@@ -173,14 +173,9 @@ struct SObjectCore {
         if (m_Ref <= 0) {
 #ifdef _DEBUG
             if (m_Ref < 0)
-                _asm int 3
+                debugbreak();
+            DeleteFile("Errors\\" + CStr(int(this)) + ".log");
 #endif
-#ifdef _DEBUG
-
-                        DeleteFile("Errors\\" + CStr(int(this)) + ".log");
-
-#endif
-
             HFree(this, g_MatrixHeap);
         }
     }
@@ -296,13 +291,13 @@ public:
 #ifdef _DEBUG
     static void ValidateAfterReset(void) {
         if (m_FirstLogicTemp || m_LastLogicTemp)
-            _asm int 3
+            debugbreak();
         if (objects_left != objects_rite)
-            _asm int 3
+            debugbreak();
         if (m_FirstVisNew || m_LastVisNew)
-            _asm int 3
+            debugbreak();
         if (m_FirstVisOld || m_LastVisOld)
-            _asm int 3
+            debugbreak();
     }
 #endif
 

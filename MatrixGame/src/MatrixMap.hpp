@@ -729,9 +729,9 @@ inline CMatrixSideUnit *CMatrixMap::GetSideById(int id) {
             return &m_Side[i];
     }
 #ifdef _DEBUG
-    _asm int 3
+    debugbreak();
 #endif
-            ERROR_E;
+    ERROR_E;
 }
 
 inline DWORD CMatrixMap::GetSideColor(int id) {

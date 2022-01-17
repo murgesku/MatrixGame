@@ -564,7 +564,7 @@ void CTrajectory::Move(float dist) {
 
 #ifdef _DEBUG
     if (_isnan(m_CurSegT))
-        _asm int 3
+        debugbreak();
 #endif
 }
 

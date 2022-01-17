@@ -411,13 +411,13 @@ CMatrixEffectFireAnim::CMatrixEffectFireAnim(const D3DXVECTOR3 &pos, float w, fl
 
 #ifdef _DEBUG
     if (m_Frame == 8)
-        _asm int 3
+        debugbreak();
 #endif
 
-                for (int i = 0; i < 8; ++i) {
-            m_bl[i].CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos, pos + D3DXVECTOR3(0, 0, 0), 0, 0xFFFFFFFF,
-                                                   m_BBTextures[BBT_FLAMEFRAME0 + i].tex);
-        }
+    for (int i = 0; i < 8; ++i) {
+        m_bl[i].CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos, pos + D3DXVECTOR3(0, 0, 0), 0, 0xFFFFFFFF,
+                                               m_BBTextures[BBT_FLAMEFRAME0 + i].tex);
+    }
 }
 
 void CMatrixEffectFireAnim::BeforeDraw(void) {}

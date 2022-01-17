@@ -2445,13 +2445,13 @@ void CMatrixMap::Takt(int step) {
 #ifdef DEAD_PTR_SPY_ENABLE
         CMatrixEffect *deade = (CMatrixEffect *)DeadPtr::get_dead_mem(e);
         if (deade) {
-            _asm int 3
+            debugbreak();
         }
 #endif
 #ifdef DEAD_CLASS_SPY_ENABLE
         CMatrixEffectLandscapeSpot *spot = (CMatrixEffectLandscapeSpot *)e->DCS_GetDeadBody();
         if (spot) {
-            _asm int 3
+            debugbreak();
         }
 
 #endif

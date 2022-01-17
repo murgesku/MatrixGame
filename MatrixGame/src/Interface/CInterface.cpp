@@ -908,7 +908,7 @@ CIFaceElement *CInterface::DelElement(CIFaceElement *pElement) {
             break;
     }
     if (first == NULL) {
-        _asm int 3
+        debugbreak();
     }
 
 #endif
@@ -984,7 +984,7 @@ void CInterface::BeforeRender(void) {
 #ifdef _DEBUG
     }
     catch (...) {
-        _asm int 3
+        debugbreak();
     }
 #endif
 }

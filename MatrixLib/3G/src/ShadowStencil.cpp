@@ -229,23 +229,23 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
             vi1 = keb->v01 / sizeof(SVOVertex) - frr->m_EdgeVertexIndexMin;
 #ifdef _DEBUG
         if (vi0 >= frr->m_EdgeVertexIndexCount)
-            _asm int 3
+            debugbreak();
         if (vi1 >= frr->m_EdgeVertexIndexCount)
-            _asm int 3
+            debugbreak();
 #endif
-                    if (verts[vi0] < 0) {
-                verts[vi0] = verts_c;
-                vi0 = verts_c++;
+        if (verts[vi0] < 0) {
+            verts[vi0] = verts_c;
+            vi0 = verts_c++;
 
-                const D3DXVECTOR3 *vv = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v00))->v);
-                D3DXVECTOR3 vv_(*vv + lenv);
+            const D3DXVECTOR3 *vv = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v00))->v);
+            D3DXVECTOR3 vv_(*vv + lenv);
 
-                ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = *vv;
-                fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
+            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = *vv;
+            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
 
-                ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = vv_;
-                fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-            }
+            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = vv_;
+            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
+        }
         else {
             vi0 = verts[vi0];
         }

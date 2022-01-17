@@ -1327,9 +1327,9 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
 
     if (!MoveGetTest(mx, my)) {
 #ifdef _DEBUG
-        _asm int 3
+        debugbreak();
 #endif
-                ERROR_E;
+        ERROR_E;
     }
 
     if (!m_MapPoint)
@@ -2410,7 +2410,7 @@ int CMatrixMapLogic::PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bo
     if (toplace >= 0 && ((m_RN.GetPlace(toplace)->m_Move & (1 + 2 + 4 + 8 + 16)) == (1 + 2 + 4 + 8 + 16) ||
                          !(m_RN.GetPlace(toplace)->m_Move & mm))) {
         if (*listcnt >= m_RN.m_PlaceCnt)
-            __asm int 3;
+            debugbreak();
 
         cnt = 0;
         sme = 0;
@@ -2435,7 +2435,7 @@ int CMatrixMapLogic::PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bo
                     continue;
 
                 if (*listcnt >= m_RN.m_PlaceCnt)
-                    __asm int 3;
+                    debugbreak();
 
                 if (fromplace == np)
                     findend = 0;
@@ -2517,7 +2517,7 @@ int CMatrixMapLogic::PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bo
                     continue;
 
                 if (*listcnt >= m_RN.m_PlaceCnt)
-                    __asm int 3;
+                    debugbreak();
 
                 m_ZoneIndex[cnt] = plist->m_Sme + u;
                 cnt++;
@@ -2643,7 +2643,7 @@ int CMatrixMapLogic::PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bo
     for (i = 0; i < oldcnt; i++) {
         if ((m_ZoneDataZero[m_ZoneIndex[i]] & 0x7fff0000) == u) {
             if (*listcnt >= m_RN.m_PlaceCnt)
-                __asm int 3;
+                debugbreak();
 
             list[*listcnt] = m_ZoneIndex[i];
             (*listcnt)++;
@@ -2680,7 +2680,7 @@ int CMatrixMapLogic::PlaceListGrow(byte mm, int *list, int *listcnt, int growcnt
                 continue;
 
             if (*listcnt >= m_RN.m_PlaceCnt)
-                __asm int 3;
+                debugbreak();
 
             m_ZoneIndex[cnt] = np;
             cnt++;

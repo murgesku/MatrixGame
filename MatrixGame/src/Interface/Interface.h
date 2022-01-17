@@ -109,21 +109,36 @@ void* g_asm_iface_tmp;
     dest.m_function = g_asm_iface_tmp;
 */
 
-#define FSET(act, pBut, cl, fn, pObj, src)                  \
-    cl = (void *)pObj;                                      \
-    __asm {mov eax,offset src}                             \
-    __asm {mov[fn], eax} pBut->m_Actions[act].m_class = cl; \
+#define FSET(act, pBut, cl, fn, pObj, src) \
+    cl = (void *)pObj; \
+    __asm {mov eax,offset src} \
+    __asm {mov[fn], eax} \
+    pBut->m_Actions[act].m_class = cl; \
     pBut->m_Actions[act].m_function = fn;
 
 #define FCALL(a, from) \
-    __asm push from __asm mov eax, (a)->m_class __asm push eax __asm mov eax, (a)->m_function __asm call eax
+    __asm push from    \
+    __asm mov eax, (a)->m_class \
+    __asm push eax \
+    __asm mov eax, (a)->m_function \
+    __asm call eax
 
 #define FCALLFROMCLASS(a)                                                                                   \
-    __asm push this __asm mov eax, dword ptr a __asm add eax, dword ptr this __asm push[eax] __asm add eax, \
-            4 __asm mov eax, [eax] __asm call eax
+    __asm push this \
+    __asm mov eax, dword ptr a \
+    __asm add eax, dword ptr this \
+    __asm push [eax] \
+    __asm add eax, 4 \
+    __asm mov eax, [eax] \
+    __asm call eax
 
 #define FCALLFROMCLASS2(a) \
-    __asm push this __asm mov eax, dword ptr a __asm push[eax] __asm add eax, 4 __asm mov eax, [eax] __asm call eax
+    __asm push this \
+    __asm mov eax, dword ptr a \
+    __asm push [eax] \
+    __asm add eax, 4 \
+    __asm mov eax, [eax] \
+    __asm call eax
 
 /////////////////////////////////////////////////
 extern IDirect3DDevice9 *g_D3DD;

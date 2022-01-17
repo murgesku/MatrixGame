@@ -133,9 +133,9 @@ public:
 #ifdef _DEBUG
             // ASSERT(!FLAG(g_Flags, GFLAG_RENDERINPROGRESS));
             if (FLAG(g_Flags, GFLAG_RENDERINPROGRESS))
-                _asm int 3
+                debugbreak();
 #endif
-                        Load();
+            Load();
         }
         return m_Tex;
     }
@@ -277,7 +277,7 @@ public:
     void LockRect(D3DLOCKED_RECT &lr, DWORD Flags) {
 #ifdef _DEBUG
         if (FLAG(g_Flags, GFLAG_RENDERINPROGRESS))
-            _asm int 3
+            debugbreak();
             // ASSERT(!FLAG(g_Flags, GFLAG_RENDERINPROGRESS));
 #endif
 #ifndef USE_DX_MANAGED_TEXTURES

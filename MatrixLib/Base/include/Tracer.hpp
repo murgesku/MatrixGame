@@ -75,7 +75,7 @@ extern int g_CheckPointNumber;
             g_CheckPointNumber = x;            \
         }                                      \
         else if ((x) != g_CheckPointNumber) {  \
-            __asm int 3                        \
+            debugbreak();                      \
         };                                     \
     }
 

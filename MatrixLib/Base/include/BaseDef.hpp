@@ -167,3 +167,12 @@ typedef unsigned int uint;
     else {                     \
         RESETFLAG(f, mask);    \
     }
+
+// portable debugbreak definition
+#ifdef _MSC_VER
+#define debugbreak __debugbreak
+#else
+static inline void debugbreak(void) {
+    asm volatile("int $0x03");
+}
+#endif // _MSC_VER

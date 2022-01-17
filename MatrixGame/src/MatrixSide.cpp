@@ -1729,7 +1729,7 @@ void CMatrixSideUnit::PLDropAllActions() {
 void CMatrixSideUnit::SetCurGroup(CMatrixGroup *group) {
     m_CurrentGroup = group;
     if (group == NULL) {
-        //         _asm int 3
+        //         debugbreak();
         g_IFaceList->ResetOrderingMode();
     }
 }

@@ -1090,9 +1090,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                 if (m_LastScans[MAX_SCANS - 3].scan == KEY_A)
                     if (m_LastScans[MAX_SCANS - 2].scan == KEY_S)
                         if (m_LastScans[MAX_SCANS - 1].scan == KEY_H) {
-                            _asm xor eax, eax
-                            _asm mov[eax], eax
-                            return;
+                            abort();
                         }
 #endif
     }

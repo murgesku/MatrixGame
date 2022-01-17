@@ -213,18 +213,18 @@ void CIFaceElement::Render(BYTE alpha) {
 #if defined _TRACE || defined _DEBUG
         int st = GetState();
         if (st < 0 || st >= 5)
-            _asm int 3
+            debugbreak();
 #endif
 
 #if defined _TRACE || defined _DEBUG
-                    try {
+        try {
 #endif
-                m_StateImages[GetState()].pImage->Prepare();
+            m_StateImages[GetState()].pImage->Prepare();
 #if defined _TRACE || defined _DEBUG
-            }
-            catch (...) {
-                ERROR_S(L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">");
-            }
+        }
+        catch (...) {
+            ERROR_S(L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">");
+        }
 #endif
 
         CInstDraw::AddVerts(m_StateImages[GetState()].m_Geom, m_StateImages[GetState()].pImage);

@@ -356,9 +356,9 @@ void CMatrixRobot::RNeed(dword need) {
             if (TruncFloat(m_PosX * INVERT(GLOBAL_SCALE)) >= (g_MatrixMap->m_Size.x) ||
                 TruncFloat(m_PosY * INVERT(GLOBAL_SCALE)) >= g_MatrixMap->m_Size.y || m_PosX < 0 || m_PosY < 0) {
 #ifdef _DEBUG
-                _asm int 3
+                debugbreak();
 #endif
-                        ERROR_S(L"Crash!");
+                ERROR_S(L"Crash!");
             }
 #endif
             DCP();

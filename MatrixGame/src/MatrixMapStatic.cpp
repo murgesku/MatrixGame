@@ -254,7 +254,7 @@ void CMatrixMapStatic::JoinToGroup(void) {
             InGroups[newig++] = g;
 #ifdef _DEBUG
             if (newig > MAX_GROUPS_PER_OBJECT) {
-                _asm int 3
+                debugbreak();
             }
 #endif
             if (!already) {
