@@ -496,7 +496,7 @@ void CFormMatrixGame::MouseMove(int x, int y) {
         g_MatrixMap->m_Camera.RotateByMouse(x - g_MatrixMap->m_Cursor.GetPosX(), y - g_MatrixMap->m_Cursor.GetPosY());
 
         CPoint p = g_MatrixMap->m_Cursor.GetPos();
-        ClientToScreen(g_Wnd, &p);
+        ClientToScreen(g_Wnd, (LPPOINT)&p);
 
         // SetCursorPos(p.x, p.y);
 
@@ -1090,7 +1090,9 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                 if (m_LastScans[MAX_SCANS - 3].scan == KEY_A)
                     if (m_LastScans[MAX_SCANS - 2].scan == KEY_S)
                         if (m_LastScans[MAX_SCANS - 1].scan == KEY_H) {
-                            _asm xor eax, eax _asm mov[eax], eax return;
+                            _asm xor eax, eax
+                            _asm mov[eax], eax
+                            return;
                         }
 #endif
     }

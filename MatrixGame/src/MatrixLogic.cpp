@@ -1339,7 +1339,7 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
 
     CRect re = m_RN.m_Zone[zonepath[zoneskipcnt]].m_Rect;
     for (i = 0; i < zoneskipcnt; i++) {
-        UnionRect(&re, &re, &(m_RN.m_Zone[zonepath[i]].m_Rect));
+        UnionRect((LPRECT)&re, (LPRECT)&re, (LPRECT)&(m_RN.m_Zone[zonepath[i]].m_Rect));
     }
     re.left = min(mx, re.left);
     re.top = min(my, re.top);
