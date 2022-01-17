@@ -258,8 +258,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                          CConstructor::RemoteBuild);
                 }
                 else if (pButton->m_strName == IF_BASE_CONST_CANCEL) {
-                    FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor,
-                         CIFaceList::PlayerAction);
+                    FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
                 }
             }
 
@@ -337,7 +336,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_SHOWROBOTS_BUTT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CMinimap::ShowPlayerBots);
+                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ShowPlayerBots);
             }
             else if (pButton->m_strName == IF_BUILD_TUR1) {
                 g_IFaceList->m_Turrets[0] = pButton;
