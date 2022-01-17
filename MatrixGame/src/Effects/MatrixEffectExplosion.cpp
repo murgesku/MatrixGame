@@ -450,7 +450,8 @@ void CMatrixEffectExplosion::RemoveDebris(int debi) {
 #if defined _DEBUG || defined _TRACE
     DCP();
     if (deb->type == DEB_DEAD)
-        _asm int 3 DCP();
+        _asm int 3
+    DCP();
 #endif
 
     if (deb->type == DEB_INTENSE) {
@@ -555,7 +556,8 @@ void CMatrixEffectExplosion::Draw(void) {
 #if defined _DEBUG || defined _TRACE
         DCP();
         if (m_Deb[i].type == DEB_DEAD)
-            _asm int 3 DCP();
+            _asm int 3
+        DCP();
 #endif
 
         float k = float(m_Deb[i].ttl) / 3500.0f;
@@ -663,7 +665,8 @@ void CMatrixEffectExplosion::Takt(float step) {
 #if defined _DEBUG || defined _TRACE
         DCP();
         if (deb->type == DEB_DEAD)
-            _asm int 3 DCP();
+            _asm int 3
+        DCP();
 #endif
 
         if (deb->type == DEB_INTENSE) {

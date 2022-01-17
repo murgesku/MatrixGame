@@ -229,7 +229,9 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
             vi1 = keb->v01 / sizeof(SVOVertex) - frr->m_EdgeVertexIndexMin;
 #ifdef _DEBUG
         if (vi0 >= frr->m_EdgeVertexIndexCount)
-            _asm int 3 if (vi1 >= frr->m_EdgeVertexIndexCount) _asm int 3
+            _asm int 3
+        if (vi1 >= frr->m_EdgeVertexIndexCount)
+            _asm int 3
 #endif
                     if (verts[vi0] < 0) {
                 verts[vi0] = verts_c;
