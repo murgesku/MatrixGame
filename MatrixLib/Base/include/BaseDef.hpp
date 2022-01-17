@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <windows.h>
-
 #ifdef BASE_DLL
 #ifdef BASE_EXPORTS
 #define BASE_API __declspec(dllexport)
@@ -21,10 +19,11 @@ namespace Base {
 
 // lint -e1401
 
-class CPoint : public tagPOINT {
+class CPoint {
 public:
+    int x, y;
+
     CPoint() {}
-    // CPoint(int zn) {x = zn; y = zn;}
     CPoint(int ax, int ay) {
         x = ax;
         y = ay;
@@ -49,10 +48,11 @@ public:
     int Dist2(const CPoint &p) const { return (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y); }
 };
 
-class CRect : public tagRECT {
+class CRect {
 public:
+    int left, top, right, bottom;
+
     CRect() {}
-    // CRect(int zn) { left=top=right=bottom=zn; }
     CRect(int _left, int _top, int _right, int _bottom) {
         left = _left;
         top = _top;
@@ -81,47 +81,45 @@ public:
 }  // namespace Base
 
 typedef wchar_t wchar;
-//#ifndef byte
-// typedef unsigned char byte;
-//#endif
+typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned long dword;
-typedef __int64 int64;
+typedef unsigned long long int64;
 typedef unsigned int uint;
 
 #define LIST_ADD(el, first, last, prev, next) \
     {                                         \
-        if (last != NULL) {                   \
+        if (last != nullptr) {                   \
             last->next = el;                  \
         }                                     \
         el->prev = last;                      \
-        el->next = NULL;                      \
+        el->next = nullptr;                      \
         last = el;                            \
-        if (first == NULL) {                  \
+        if (first == nullptr) {                  \
             first = el;                       \
         }                                     \
     }
 #define LIST_ADD_FIRST(el, first, last, prev, next) \
     {                                               \
-        if (first != NULL) {                        \
+        if (first != nullptr) {                        \
             first->prev = el;                       \
         }                                           \
         el->next = first;                           \
-        el->prev = NULL;                            \
+        el->prev = nullptr;                            \
         first = el;                                 \
-        if (last == NULL) {                         \
+        if (last == nullptr) {                         \
             last = el;                              \
         }                                           \
     }
 #define LIST_INSERT(perel, el, first, last, prev, next) \
     {                                                   \
-        if (perel == NULL) {                            \
+        if (perel == nullptr) {                            \
             LIST_ADD(el, first, last, prev, next);      \
         }                                               \
         else {                                          \
             el->prev = perel->prev;                     \
             el->next = perel;                           \
-            if (perel->prev != NULL) {                  \
+            if (perel->prev != nullptr) {                  \
                 perel->prev->next = el;                 \
             }                                           \
             perel->prev = el;                           \
@@ -133,9 +131,9 @@ typedef unsigned int uint;
 
 #define LIST_DEL(el, first, last, prev, next) \
     {                                         \
-        if (el->prev != NULL)                 \
+        if (el->prev != nullptr)                 \
             el->prev->next = el->next;        \
-        if (el->next != NULL)                 \
+        if (el->next != nullptr)                 \
             el->next->prev = el->prev;        \
         if (last == el)                       \
             last = el->prev;                  \
@@ -145,19 +143,19 @@ typedef unsigned int uint;
 
 #define LIST_DEL_CLEAR(el, first, last, prev, next) \
     {                                               \
-        if (el->prev != NULL)                       \
+        if (el->prev != nullptr)                       \
             el->prev->next = el->next;              \
-        if (el->next != NULL)                       \
+        if (el->next != nullptr)                       \
             el->next->prev = el->prev;              \
         if (last == el)                             \
             last = el->prev;                        \
         if (first == el)                            \
             first = el->next;                       \
-        el->prev = NULL;                            \
-        el->next = NULL;                            \
+        el->prev = nullptr;                            \
+        el->next = nullptr;                            \
     }
 
-#define SETBIT(x)           (((DWORD)1) << x)
+#define SETBIT(x)           (((dword)1) << x)
 #define SETFLAG(f, mask)    f |= (mask)
 #define RESETFLAG(f, mask)  f &= ~(mask)
 #define INVERTFLAG(f, mask) f ^= (mask)
