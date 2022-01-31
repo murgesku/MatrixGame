@@ -814,7 +814,7 @@ void  CMatrixMapGroup::RecalcMaxZ(void)
         D3DXVECTOR3 mins, maxs;
         ms->CalcBounds(mins,maxs);
 
-        if (ms->IsLiveRobot())
+        if (ms->IsRobotAlive())
         {
             if (maxs.z > m_maxz_obj_robots) m_maxz_obj_robots = maxs.z;
         } else

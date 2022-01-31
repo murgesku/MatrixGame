@@ -366,8 +366,8 @@
 //    if(m_Action.m_PursueEnemy == PURSUE){
 //    }
 //    if(m_Action.m_Capture == CAPTURE){
-//        if(!robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){        
-//            if(parent_tactics->GetTarget() != NULL) robot->CaptureFactory((CMatrixBuilding*)parent_tactics->GetTarget());
+//        if(!robot->FindOrderLikeThat(ROT_CAPTURE_BUILDING)){        
+//            if(parent_tactics->GetTarget() != NULL) robot->CaptureBuilding((CMatrixBuilding*)parent_tactics->GetTarget());
 //        }
 //    }
 //    if(m_Action.m_Exit == EXIT){
@@ -378,4 +378,3 @@
 //{
 //
 //}
-//

@@ -1603,11 +1603,11 @@ void CMatrixCannon::ReleaseMe(void)
     
     while(objects)
     {
-        if(objects->IsLiveRobot())
+        if(objects->IsRobotAlive())
         {
             objects->AsRobot()->GetEnv()->RemoveFromList(this);
         }
-        else if(objects->IsLiveBuilding())
+        else if(objects->IsBuildingAlive())
         {
             objects->AsBuilding()->m_BS.DeleteItem(this);
         }

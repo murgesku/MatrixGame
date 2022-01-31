@@ -15,6 +15,7 @@ public:
 	bool OnMouseMove(CPoint);
 	void OnMouseLBUp();
 	bool OnMouseLBDown();
+	void OnMouseRBUp();
     bool OnMouseRBDown();
 
 	CIFaceButton();

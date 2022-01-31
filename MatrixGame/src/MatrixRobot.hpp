@@ -128,7 +128,7 @@ enum OrderType
     ROT_STOP_MOVE,
 	ROT_FIRE,
 	ROT_STOP_FIRE,
-    ROT_CAPTURE_FACTORY,
+    ROT_CAPTURE_BUILDING,
     ROT_STOP_CAPTURE,
 
     OrderType_FORCE_DWORD = 0x7FFFFFFF
@@ -183,7 +183,7 @@ public:
             *p4 = m_Param4;
     }
 
-    CMatrixMapStatic * GetStatic(void)
+    CMatrixMapStatic *GetStatic(void)
     {
         if(m_ObjCore)
         {
@@ -203,7 +203,7 @@ public:
         m_Param3 = p3;
         m_Param4 = p4;
     }
-    void SetOrder(const OrderType &orderType, CMatrixMapStatic* obj)
+    void SetOrder(const OrderType &orderType, CMatrixMapStatic *obj)
     {
         Reset();
         m_OrderType = orderType;
@@ -318,8 +318,8 @@ public:
     float               m_ColSpeed;                         // скорость робота если впереди другой робот
 
     void                CreateTextures();
-    CTextureManaged*    GetBigTexture()                            { return m_BigTexture; }
-    CTextureManaged*    GetMedTexture()                            { return m_MedTexture; }
+    CTextureManaged    *GetBigTexture()                            { return m_BigTexture; }
+    CTextureManaged    *GetMedTexture()                            { return m_MedTexture; }
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
     CTextureManaged*    GetSmallTexture()                          { return m_SmallTexture; }
 #endif
@@ -334,18 +334,18 @@ public:
     void        SetColsWeight2(int w)                               { m_ColsWeight2 = w; }
     int         GetMapPosX(void) const                              { return m_MapX; }
     int         GetMapPosY(void) const                              { return m_MapY; }
-    CInfo*      GetEnv()                                            { return &m_Environment; }
-    void        SetEnvTarget(CMatrixMapStatic* t)                   { m_Environment.m_Target = t; }
+    CInfo      *GetEnv()                                            { return &m_Environment; }
+    void        SetEnvTarget(CMatrixMapStatic *t)                   { m_Environment.m_Target = t; }
     int         GetTeam()                                           { return m_Team; }
     void        SetTeam(int t)                                      { m_Team = t; }
     int         GetGroup()                                          { return m_Group; }
     void        SetGroup(int g)                                     { m_Group = g; }
-    int*        GetGroupP()                                         { return &m_Group; }
+    int        *GetGroupP()                                         { return &m_Group; }
     float       GetMaxSpeed()                                       { return m_maxSpeed; }
     void        SetMaxSpeed(float s)                                { m_maxSpeed = s; }
     int         GetOrdersInPool()                                   { return m_OrdersInPool; }
-    SOrder*     GetOrder(int no)                                    { return m_OrdersList + no; }
-    CMatrixEffectSelection* GetSelection()                          { return m_Selection; }
+    SOrder     *GetOrder(int no)                                    { return m_OrdersList + no; }
+    CMatrixEffectSelection *GetSelection()                          { return m_Selection; }
     //CWStr      &GetName()                                           { return m_Name; }
     const SBotWeapon &GetWeapon(int i) const                        { return m_Weapons[i]; }
     float       GetMaxFireDist()                                    { return m_MaxFireDist; }
@@ -395,7 +395,7 @@ public:
     {
         if(m_Side != PLAYER_SIDE || FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
         {
-            CMatrixBuilding *cf = GetCaptureFactory();
+            CMatrixBuilding *cf = GetCaptureBuilding();
             if(cf) 
             {
                 return false; //DO NOT BREAK CAPTURING!!!!!!!!!!!!!!!!!!!!!!!! NEVER!!!!!!!!!!
@@ -471,8 +471,8 @@ public:
     void StopFire(void);
     void BigBoom(int nc = -1);
 
-    void CaptureFactory(CMatrixBuilding* factory);
-    CMatrixBuilding *GetCaptureFactory(void);
+    void CaptureBuilding(CMatrixBuilding *building);
+    CMatrixBuilding *GetCaptureBuilding(void);
     void StopCapture();
 
     void TaktCaptureCandidate(int ms);
@@ -549,4 +549,3 @@ __forceinline bool CMatrixRobotAI::PLIsInPlace(void) const
 
     return (GetMapPosX() == ptp.x) && (GetMapPosY() == ptp.y);
 }
-

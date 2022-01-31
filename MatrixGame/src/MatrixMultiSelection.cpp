@@ -218,21 +218,21 @@ void CMultiSelection::Update(const Base::CPoint& pos, DWORD mask, SELECT_ENUM ca
 
         if(o->GetSide() != PLAYER_SIDE) continue;
 
-        if ((o->GetObjectType() == OBJECT_TYPE_MAPOBJECT) && ((mask & TRACE_OBJECT)==0) )  continue;
+        if ((o->GetObjectType() == OBJECT_TYPE_MAPOBJECT) && ((mask & TRACE_OBJECT) == 0) )  continue;
         if (o->IsRobot())
         {
-            if (!o->IsLiveRobot()) continue;
+            if (!o->IsRobotAlive()) continue;
             if ((mask & TRACE_ROBOT)==0)  continue;
             if (o->AsRobot()->IsCrazy()) continue;
         }
         if (o->IsBuilding())
         {
-            if (!o->IsLiveBuilding()) continue;
+            if (!o->IsBuildingAlive()) continue;
             if ((mask & TRACE_BUILDING)==0) continue;
         }
         if (o->IsCannon())
         {
-            if (!o->IsLiveCannon()) continue;
+            if (!o->IsCannonAlive()) continue;
             if ((mask & TRACE_CANNON)==0) continue;
         }
         if ((o->GetObjectType() == OBJECT_TYPE_FLYER) && ((mask & TRACE_FLYER)==0) )  continue;

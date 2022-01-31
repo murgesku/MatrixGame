@@ -103,11 +103,11 @@ void CIFaceElement::CheckGroupReset(CIFaceElement* pFirstElement, CIFaceElement*
     }
 }
 
-bool CIFaceElement::SetStateImage(IFaceElementState State, CTextureManaged *pImage, float x, float y, float width, float height)
+bool CIFaceElement::SetStateImage(IFaceElementState State, CTextureManaged* pImage, float x, float y, float width, float height)
 {
     pImage->MipmapOff();
 	m_StateImages[State].pImage = pImage;
-    if (!m_StateImages[State].pImage->IsLoaded())
+    if(!m_StateImages[State].pImage->IsLoaded())
     {
         m_StateImages[State].pImage->Load();
     }
@@ -325,16 +325,23 @@ bool CIFaceElement::ElementAlpha(CPoint mouse)
     return false;
 }
 
+//Срабатывает при нажатиях/отжатиях кнопок мыши
 void CIFaceElement::Action(EActions action)
 { 
     if(m_Actions[action].m_function)
     {
-        if(m_strName == IF_HINTS_OK || m_strName == IF_HINTS_CANCEL || m_strName == IF_HINTS_CANCEL_MENU || m_strName == IF_HINTS_CONTINUE || m_strName == IF_HINTS_EXIT || m_strName == IF_HINTS_RESET || m_strName == IF_HINTS_SURRENDER || m_strName == IF_HINTS_HELP)
+        if(m_strName == IF_HINTS_OK ||
+           m_strName == IF_HINTS_CANCEL ||
+           m_strName == IF_HINTS_CANCEL_MENU ||
+           m_strName == IF_HINTS_CONTINUE ||
+           m_strName == IF_HINTS_EXIT ||
+           m_strName == IF_HINTS_RESET ||
+           m_strName == IF_HINTS_SURRENDER ||
+           m_strName == IF_HINTS_HELP)
         {
             DialogButtonHandler(m_Actions[action].m_function)();
             //SetVisibility(false);
         }
-        //Срабатывает при нажатиях/отжатиях кнопок
         else
         {
             void* a = (void*)(&m_Actions[action]);
@@ -374,12 +381,11 @@ void CIFaceElement::LogicTakt(int ms)
 }
 
 void CIFaceElement::RecalcPos(
-    const float &x,
-    const float &y,
+    const float& x,
+    const float& y,
     bool ichanged
 )
 {
-    
     if(m_Animation && ichanged)
     {
         m_Animation->RecalcPos(x, y);
@@ -394,6 +400,7 @@ void CIFaceElement::RecalcPos(
         m_xPos = x;
         m_yPos = y;
     }
+
     int nC;
     for(nC = 0; nC < MAX_STATES; ++nC)
     {
@@ -404,7 +411,6 @@ void CIFaceElement::RecalcPos(
             m_StateImages[nC].m_Geom[2].p = D3DXVECTOR4(m_xSize - 0.5f, m_ySize - 0.5f, 0, 1);
             m_StateImages[nC].m_Geom[3].p = D3DXVECTOR4(m_xSize - 0.5f, 0 - 0.5f, 0, 1);
         }
-
     }
 
     D3DXVECTOR3 dp(m_xPos + i_x, m_yPos + i_y, m_zPos);
@@ -436,7 +442,7 @@ void CIFaceElement::RecalcPos(
 //    int szx = Float2Int(this->m_xSize);
 //    int szy = Float2Int(this->m_ySize);
 //
-//    //if (desc.Format != D3DFMT_A8R8G8B8)
+//    //if(desc.Format != D3DFMT_A8R8G8B8)
 //    {
 //        m_ClearRect.left = 0;
 //        m_ClearRect.top = 0;
@@ -455,9 +461,9 @@ void CIFaceElement::RecalcPos(
 //
 //    DWORD *src = (DWORD *)((BYTE *)lr.pBits + y * lr.Pitch + x * sizeof(DWORD));
 //    BYTE  *dst = (BYTE *)bmp.Data();
-//    for (int j = 0; j<szy; ++j, src = (DWORD *)(((BYTE *)src) + lr.Pitch), dst += bmp.Pitch() )
+//    for(int j = 0; j<szy; ++j, src = (DWORD *)(((BYTE *)src) + lr.Pitch), dst += bmp.Pitch() )
 //    {
-//        for (int i = 0; i<szx; ++i)
+//        for(int i = 0; i<szx; ++i)
 //        {
 //            dst[i] = ((src[i] & 0xFF000000) == 0xFF000000) ? 255 : 0;
 //        }
@@ -479,8 +485,9 @@ void CIFaceElement::RecalcPos(
 
 void CIFaceElement::SetVisibility(bool visible)
 {
-    INITFLAG(m_Flags,IFEF_VISIBLE,visible); 
-    //if(!visible && g_IFaceList && g_IFaceList->m_CurrentHintControlName == m_strName){
+    INITFLAG(m_Flags, IFEF_VISIBLE, visible);
+    //if(!visible && g_IFaceList && g_IFaceList->m_CurrentHintControlName == m_strName)
+    //{
     //    g_IFaceList->m_CurrentHint->Release(); 
     //    g_IFaceList->m_CurrentHint = NULL; 
     //    g_IFaceList->m_CurrentHintControlName = L"";

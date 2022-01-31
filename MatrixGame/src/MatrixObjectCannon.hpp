@@ -190,16 +190,16 @@ public:
 
 		void UnitClear(void);
 
-        void BoundGet(D3DXVECTOR3 & bmin,D3DXVECTOR3 & bmax);
+        void BoundGet(D3DXVECTOR3 &bmin, D3DXVECTOR3 &bmax);
 
-        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
+        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic *attaker);
 		virtual void RNeed(dword need);
 
 		virtual void Takt(int cms);
         virtual void LogicTakt(int cms);
         void PauseTakt(int cms);
 
-		virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
+		virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt)  const;
 
 		virtual void BeforeDraw(void);
 		virtual void Draw(void);
@@ -211,8 +211,8 @@ public:
 		void OnLoad(void);
 
         virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
-        virtual int  GetSide(void) const {return m_Side;};
-        virtual bool  NeedRepair(void) const {return m_CurrState != CANNON_UNDER_CONSTRUCTION && (m_HitPoint < m_HitPointMax);}
+        virtual int GetSide(void) const {return m_Side;};
+        virtual bool NeedRepair(void) const { return m_CurrState != CANNON_UNDER_CONSTRUCTION && (m_HitPoint < m_HitPointMax); }
         
         virtual bool InRect(const CRect &rect)const;
 
@@ -221,12 +221,12 @@ public:
         float GetStrength(void);
 };
 
-__forceinline bool CMatrixMapStatic::IsLiveCannon(void) const
+__forceinline bool CMatrixMapStatic::IsCannonAlive(void) const
 {
-    return IsCannon() && ((CMatrixCannon*)this)->m_CurrState!=CANNON_DIP; 
+    return IsCannon() && ((CMatrixCannon*)this)->m_CurrState != CANNON_DIP; 
 }
 
-__forceinline bool CMatrixMapStatic::IsLiveActiveCannon(void) const
+__forceinline bool CMatrixMapStatic::IsActiveCannonAlive(void) const
 {
-    return IsCannon() && ((CMatrixCannon*)this)->m_CurrState!=CANNON_DIP && ((CMatrixCannon*)this)->m_CurrState!=CANNON_UNDER_CONSTRUCTION; 
+    return IsCannon() && ((CMatrixCannon*)this)->m_CurrState != CANNON_DIP && ((CMatrixCannon*)this)->m_CurrState != CANNON_UNDER_CONSTRUCTION; 
 }

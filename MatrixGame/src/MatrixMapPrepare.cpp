@@ -822,7 +822,7 @@ skip_this_cannon:
                 // Dab!!! 
                 int prop = pr[i];
                 // 0 - single cannon
-                // 1 - factory cannon. must present on map
+                // 1 - building cannon. must present on map
                 // 2 - just place for cannon
 
                 //if(prop==0) c->SetSide(0);
@@ -1694,7 +1694,7 @@ void CMatrixMap::StaticPrepare2(CBuf *robots)
         {
             (*sb)->RNeed(MR_ShadowProjTex);
 
-            if ((*sb)->IsBase() && (*sb)->IsLiveBuilding())
+            if ((*sb)->IsBase() && (*sb)->IsBuildingAlive())
             {
                 int side = (*sb)->GetSide();
                 if (side != 0)
@@ -1842,8 +1842,8 @@ void CMatrixMap::Restart(void)
 
     CDWORDMap dm(g_CacheHeap);
 
-    CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
-    CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
+    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
     for(; sb < se; ++sb)
     {
         if((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
@@ -1861,7 +1861,7 @@ void CMatrixMap::Restart(void)
 
     if(m_EffectSpawners)
     {
-        for(int i = 0; i<m_EffectSpawnersCnt; ++i)
+        for(int i = 0; i < m_EffectSpawnersCnt; ++i)
         {
             m_EffectSpawners[i].~CEffectSpawner();
         }
@@ -1887,6 +1887,7 @@ void CMatrixMap::Restart(void)
     {
         m_Side[i].SetStatus(SS_NONE);
         m_Side[i].ClearStatistics();
+        m_Side[i].ClearLogicGroupsOrderLists();
     }
 
 #ifdef _DEBUG
@@ -1915,8 +1916,8 @@ void CMatrixMap::Restart(void)
 
     //Minimap rendering
     {
-        CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
-        CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
+        CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+        CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
 
         DWORD flags = 0;
 
@@ -1941,13 +1942,13 @@ void CMatrixMap::Restart(void)
         }
     }
 
-    CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
+    CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
     while(ms != NULL)
     {
         if(ms->GetObjectType() == OBJECT_TYPE_BUILDING)
         {
             if(ms->AsBuilding()->GatheringPointIsSet()) ms->AsBuilding()->ClearGatheringPoint();
-            if(ms->IsLiveBuilding())
+            if(ms->IsBuildingAlive())
             {
                 ms->AsBuilding()->LogicTakt(100000);
                 ms->RNeed(MR_Matrix | MR_Graph | MR_MiniMap);
@@ -1967,8 +1968,8 @@ void CMatrixMap::Restart(void)
 void CMatrixMap::InitObjectsLights(void)
 {
     // init lights
-	CMatrixMapStatic** sb = m_AllObjects.Buff<CMatrixMapStatic*>();
-    CMatrixMapStatic** se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
+	CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic*>();
+    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic*>();
 	for(; sb < se; ++sb)
     {
         if((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
@@ -1976,7 +1977,6 @@ void CMatrixMap::InitObjectsLights(void)
             ((CMatrixMapObject *)(*sb))->m_Graph->InitLights(CMatrixEffect::GetBBTexI(BBT_POINTLIGHT));
         }
     }
-
 }
 
 void CMatrixMap::CreatePoolDefaultResources(bool loading)
@@ -2065,7 +2065,7 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading)
         CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
         while(ms!=NULL)
         {
-            if (ms->IsLiveBuilding())
+            if(ms->IsBuildingAlive())
             {
                 ((CMatrixBuilding *)ms)->LogicTakt(100000);
                 ms->RNeed(MR_Matrix|MR_Graph|MR_MiniMap);
@@ -2073,7 +2073,8 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading)
             }
             ms = ms->GetNextLogic();
         }
-    } else
+    }
+    else
     {
         m_Minimap.RestoreTexture();
         m_DI.OnResetDevice();

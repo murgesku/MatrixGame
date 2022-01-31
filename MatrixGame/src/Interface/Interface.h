@@ -53,6 +53,8 @@ enum EActions
     ON_UN_PRESS = 1,
     ON_FOCUS = 2,
     ON_UN_FOCUS = 3,
+	ON_PRESS_RIGHT = 4,
+	ON_UN_PRESS_RIGHT = 5,
 
     EActions_FORCE_DWORD = 0x7FFFFFFF
 };

@@ -26,6 +26,8 @@
 #define ROBOTS_BY_MAIN          4
 #define ROBOTS_BY_FACTORY       1
 
+#define MAIN_ENEMY_RECALC_PERIOD 60000 //Как часто (в тактах) компьютер будет переопределять своего текущего наиболее приоритетного врага (сторону)
+
 //Использовалось в качестве аркадного коэффициента-бонуса к скорости
 //Было заменено на переменную g_UnitSpeedArcadeCoef, которую можно выставлять из конфига
 //#define SPEED_BOOST             1.1f
@@ -173,7 +175,8 @@ enum EMatrixLogicActionType
 
 #define REGION_PATH_MAX_CNT 32
 
-struct SMatrixLogicAction {
+struct SMatrixLogicAction
+{
     EMatrixLogicActionType m_Type;
     int m_Region;
     int m_RegionPathCnt;                          // Кол-во регионов в пути
@@ -187,12 +190,12 @@ private:
     //int m_RobotCnt;
     //bool m_War;                             // Группа вступила в бой
 public:
-    int RobotsCnt(void) const {return m_Bits & 0xFFFF;}
-    void RobotsCnt(int a) { m_Bits = (m_Bits & 0xFFFF0000) | a;}
-    __forceinline void IncRobotsCnt(int cc=1) { m_Bits += cc;}
+    int RobotsCnt(void) const {return m_Bits & 0xFFFF; }
+    void RobotsCnt(int a) { m_Bits = (m_Bits & 0xFFFF0000) | a; }
+    __forceinline void IncRobotsCnt(int cc=1) { m_Bits += cc; }
 
-    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31));}
-    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w);}
+    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31)); }
+    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w); }
     
 
     SMatrixLogicAction m_Action;
@@ -227,18 +230,18 @@ private:
 public:
 
     //Какой тип приказа задан
-    EMatrixPlayerOrder Order(void) const {return EMatrixPlayerOrder(m_Bits & 0xFF);}
+    EMatrixPlayerOrder Order(void) const { return EMatrixPlayerOrder(m_Bits & 0xFF); }
     //Задать тип приказа
-    void Order(EMatrixPlayerOrder o) { m_Bits = (m_Bits & 0xFFFFFF00) | o;}
+    void Order(EMatrixPlayerOrder o) { m_Bits = (m_Bits & 0xFFFFFF00) | o; }
 
-    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31));}
-    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w);}
+    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31)); }
+    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w); }
 
-    bool IsShowPlace(void) const { return FLAG(m_Bits, SETBIT(30));}
-    void SetShowPlace(bool w) { INITFLAG(m_Bits, SETBIT(30), w);}
+    bool IsShowPlace(void) const { return FLAG(m_Bits, SETBIT(30)); }
+    void SetShowPlace(bool w) { INITFLAG(m_Bits, SETBIT(30), w); }
 
-    bool IsPatrolReturn(void) const { return FLAG(m_Bits, SETBIT(29));}
-    void SetPatrolReturn(bool w) { INITFLAG(m_Bits, SETBIT(29), w);}
+    bool IsPatrolReturn(void) const { return FLAG(m_Bits, SETBIT(29)); }
+    void SetPatrolReturn(bool w) { INITFLAG(m_Bits, SETBIT(29), w); }
 
     int m_RobotCnt;
     CPoint m_From;
@@ -247,7 +250,7 @@ public:
     int m_Region;
     int m_RegionPathCnt;                          //Кол-во регионов в пути
     int m_RegionPath[REGION_PATH_MAX_CNT];        //Путь по регионам
-    CMatrixRoadRoute* m_RoadPath;
+    CMatrixRoadRoute *m_RoadPath;
 };
 
 struct SMatrixTeam
@@ -265,27 +268,27 @@ private:
     //bool m_lOk;
 public:
 
-    BYTE Move(void) const {return BYTE(m_Bits & 0xFF);}
-    void Move(BYTE m) { m_Bits = (m_Bits & 0xFFFFFF00) | m;}
-    void OrMove(BYTE m) { m_Bits |= m;}
+    BYTE Move(void) const { return BYTE(m_Bits & 0xFF); }
+    void Move(BYTE m) { m_Bits = (m_Bits & 0xFFFFFF00) | m; }
+    void OrMove(BYTE m) { m_Bits |= m; }
 
-    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31));}
-    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w);}
+    bool IsWar(void) const { return FLAG(m_Bits, SETBIT(31)); }
+    void SetWar(bool w) { INITFLAG(m_Bits, SETBIT(31), w); }
 
-    bool IsStay(void) const { return FLAG(m_Bits, SETBIT(30));}
-    void SetStay(bool w) { INITFLAG(m_Bits, SETBIT(30), w);}
+    bool IsStay(void) const { return FLAG(m_Bits, SETBIT(30)); }
+    void SetStay(bool w) { INITFLAG(m_Bits, SETBIT(30), w); }
 
-    bool IsWaitUnion(void) const { return FLAG(m_Bits, SETBIT(29));}
-    void SetWaitUnion(bool w) { INITFLAG(m_Bits, SETBIT(29), w);}
+    bool IsWaitUnion(void) const { return FLAG(m_Bits, SETBIT(29)); }
+    void SetWaitUnion(bool w) { INITFLAG(m_Bits, SETBIT(29), w); }
 
-    bool IsRobotInDesRegion(void) const { return FLAG(m_Bits, SETBIT(28));}
-    void SetRobotInDesRegion(bool w) { INITFLAG(m_Bits, SETBIT(28), w);}
+    bool IsRobotInDesRegion(void) const { return FLAG(m_Bits, SETBIT(28)); }
+    void SetRobotInDesRegion(bool w) { INITFLAG(m_Bits, SETBIT(28), w); }
 
-    bool IsRegroupOnlyAfterWar(void) const { return FLAG(m_Bits, SETBIT(27));}
-    void SetRegroupOnlyAfterWar(bool w) { INITFLAG(m_Bits, SETBIT(27), w);}
+    bool IsRegroupOnlyAfterWar(void) const { return FLAG(m_Bits, SETBIT(27)); }
+    void SetRegroupOnlyAfterWar(bool w) { INITFLAG(m_Bits, SETBIT(27), w); }
 
-    bool IslOk(void) const { return FLAG(m_Bits, SETBIT(26));}
-    void SetlOk(bool w) { INITFLAG(m_Bits, SETBIT(26), w);}
+    bool IslOk(void) const { return FLAG(m_Bits, SETBIT(26)); }
+    void SetlOk(bool w) { INITFLAG(m_Bits, SETBIT(26), w); }
 
     int m_RobotCnt;                         // Кол-во роботов в команде
     int m_GroupCnt;
@@ -327,10 +330,10 @@ public:
     int m_RegionListCnt;                    // Список регионов, в которых находятся роботы 
     int m_RegionList[MAX_ROBOTS];           // Регионы
     int m_RegionListRobots[MAX_ROBOTS];     // Кол-во роботов
-
 };
 
-struct SMatrixLogicRegion {
+struct SMatrixLogicRegion
+{
     int m_WarEnemyRobotCnt;
     int m_WarEnemyCannonCnt;
     int m_WarEnemyBuildingCnt;
@@ -381,8 +384,8 @@ private:
     int m_WarSide;                          // На какую сторону стараемся напасть
     //float m_WarSideStrangeCancel;           // Перерассчитываем сторону с которой воюем когда сила стороны упадет ниже критической
 
-    SMatrixLogicRegion * m_Region;
-    int * m_RegionIndex;
+    SMatrixLogicRegion *m_Region;
+    int *m_RegionIndex;
     int m_LastTaktHL;
     int m_LastTaktTL;
     int m_LastTeamChange;
@@ -390,10 +393,10 @@ private:
 
     int m_NextWarSideCalcTime;
 
-//    int m_TitanCnt;
-//    int m_ElectronicCnt;
-//    int m_EnergyCnt;
-//    int m_PlasmaCnt;
+    //int m_TitanCnt;
+    //int m_ElectronicCnt;
+    //int m_EnergyCnt;
+    //int m_PlasmaCnt;
 
     int m_BaseResForce;
     int m_Resources[MAX_RESOURCES];
@@ -417,23 +420,28 @@ private:
 public:
     int *m_PlaceList;
 
+    //Отдельные логические группы роботов для доминаторов и игрока
+    //Логические группы разбиваются по исполняемым приказам,
+    //то есть N роботов с одинаковым приказом будут добавлены в одну логическую группу
+    //"Группа игрока" - это группа, которую выделяет сам игрок. Вероятно, она может не совпадать с логической группой,
+    //которая была задана автоматически. Но может я не прав и группа игрока всего лишь дублирует отображение логической группы
     SMatrixLogicGroup m_LogicGroup[MAX_LOGIC_GROUP];
     SMatrixPlayerGroup m_PlayerGroup[MAX_LOGIC_GROUP];
     int m_WaitResForBuildRobot;
 
     SMatrixTeam m_Team[MAX_TEAM_CNT];
 
-public:
-
     void BufPrepare(void);
 
-    void SetStatus(ESideStatus s) {m_SideStatus = s;}
-    ESideStatus GetStatus(void) const {return m_SideStatus;}
+    void ClearLogicGroupsOrderLists(void);
 
-    void ClearStatistics(void) {memset(m_Statistic, 0, sizeof(m_Statistic));}
-    int  GetStatValue(EStat stat) const {return m_Statistic[stat];}
-    void SetStatValue(EStat stat, int v) {m_Statistic[stat] = v;}
-    void IncStatValue(EStat stat, int v=1) {m_Statistic[stat] += v;}
+    void SetStatus(ESideStatus s) { m_SideStatus = s; }
+    ESideStatus GetStatus(void) const { return m_SideStatus; }
+
+    void ClearStatistics(void) { memset(m_Statistic, 0, sizeof(m_Statistic)); }
+    int  GetStatValue(EStat stat) const { return m_Statistic[stat]; }
+    void SetStatValue(EStat stat, int v) { m_Statistic[stat] = v; }
+    void IncStatValue(EStat stat, int v = 1) { m_Statistic[stat] += v; }
 
     int GetRobotsInStack();
     int GetAlphaCnt()                               { return m_Team[0].m_RobotCnt; }
@@ -612,10 +620,10 @@ public:
     void PGOrderStop(int no);
     void PGOrderMoveTo(int no, CPoint &tp);
     void PGOrderCapture(int no, CMatrixBuilding *building);
-    void PGOrderAttack(int no, const CPoint &tp, CMatrixMapStatic *terget_obj);
+    void PGOrderAttack(int no, const CPoint &tp, CMatrixMapStatic *target_obj);
     void PGOrderPatrol(int no, CPoint &tp);
-    void PGOrderRepair(int no, CMatrixMapStatic *terget_obj);
-    void PGOrderBomb(int no, CPoint &tp, CMatrixMapStatic *terget_obj);
+    void PGOrderRepair(int no, CMatrixMapStatic *target_obj);
+    void PGOrderBomb(int no, CPoint &tp, CMatrixMapStatic *target_obj);
     void PGOrderAutoCapture(int no);
     void PGOrderAutoAttack(int no);
     void PGOrderAutoDefence(int no);
@@ -628,10 +636,11 @@ public:
     CPoint PGCalcPlaceCenter(int no);
     void PGShowPlace(int no);
     void PGCalcStat(void);
-    void PGFindCaptureFactory(int no);
+    void PGFindCaptureBuilding(int no);
     void PGFindAttackTarget(int no);
     void PGFindDefenceTarget(int no);
     void PGCalcRegionPath(SMatrixPlayerGroup *pg, int rend, byte mm);
+    void PGAutoBoomSet(int no, bool set);
 
     void BuildCrazyBot(void);
 

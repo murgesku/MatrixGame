@@ -83,8 +83,9 @@ public:
     virtual void CheckGroupReset(CIFaceElement*, CIFaceElement*);
 	virtual void ElementGeomInit(void *pObj, bool full_size = false);
 	virtual bool OnMouseMove(CPoint)                                                { return false; }
-	virtual void OnMouseLBUp()                                                      { }       
+	virtual void OnMouseLBUp()                                                      { }
     virtual bool OnMouseLBDown()                                                    { return false; }
+    virtual void OnMouseRBUp()                                                      { }
     virtual bool OnMouseRBDown()                                                    { return false; }
     virtual void BeforeRender(void);
 	virtual void Render(BYTE m_VisibleAlpha);

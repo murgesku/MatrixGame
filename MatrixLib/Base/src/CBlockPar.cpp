@@ -23,6 +23,7 @@ void SFT_fun(CStr out)
 
 	FILE* file;
 	errno_t err = fopen_s(&file, strcat(system_folder, "\\SpaceRangersHD\\########.log"), "a");
+	//FILE* file = fopen(strcat(system_folder, "\\SpaceRangersHD\\########.log"), "a");
 	fwrite(out, strlen(out), 1, file);
 	fwrite("\r", 1, 1, file);
 	fclose(file);

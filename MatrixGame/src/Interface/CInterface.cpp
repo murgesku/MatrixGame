@@ -146,11 +146,10 @@ CInterface::~CInterface()
 		}
 		if(images) HDelete(CIFaceImage, images->m_PrevImage, g_MatrixHeap);
 	}
-
 }
 
 //Main routines
-bool CInterface::Load(CBlockPar &bp, const wchar* name)
+bool CInterface::Load(CBlockPar& bp, const wchar* name)
 {
 	DTRACE();
     bool need2save = false;
@@ -253,6 +252,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar* name)
 
 			//FSET(pButton->m_Action, m_Constructor, CConstructor::OperateUnit);
 
+            //Задаются действия кнопкам в конструкторе роботов
 			if(Const)
             {
                 if((pButton->m_Param1 !=0 && pButton->m_Param2 != 0)  || 
@@ -283,90 +283,100 @@ bool CInterface::Load(CBlockPar &bp, const wchar* name)
                 }
 			}
 
+            //Задаются действия кнопкам масштабирования миникарты
             if(pButton->m_strName == IF_MAP_ZOOM_IN)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
+                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
             }
             else if(pButton->m_strName == IF_MAP_ZOOM_OUT)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
+                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
             }
+            //Задаются действия кнопкам в панели управления базой/юнитом
             else if(pButton->m_strName == IF_BUILD_RO)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_MatrixMap->GetPlayerSide(), CMatrixSideUnit::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide(), CMatrixSideUnit::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_FROBOT_ON)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_FROBOT_OFF)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_PROTECT_ON)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_PROTECT_OFF)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_CAPTURE_ON)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_AORDER_CAPTURE_OFF)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_FIRE)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_CAPTURE)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_PATROL)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_MOVE)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_REPAIR)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_AUTO_ORDER_BOMB_ON)
+            {
+                FSET(ON_UN_PRESS_RIGHT, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+            }
+            else if(pButton->m_strName == IF_AUTO_ORDER_BOMB_OFF)
+            {
+                FSET(ON_UN_PRESS_RIGHT, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_BOMB)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_CANCEL)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ORDER_STOP)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_ENTER_ROBOT)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_LEAVE_ROBOT)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_MAIN_SELFBOMB)
             {
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if(pButton->m_strName == IF_BUILD_CA)
             {
                 g_IFaceList->m_BuildCa = pButton;
-                FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_HE)
             {
@@ -385,7 +395,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar* name)
             {
                 FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CMinimap::ShowPlayerBots);
             }
-            //Создаются кнопки постройки конкретных турелей
+            //Задаются действия кнопкам постройки конкретных турелей
             else if(pButton->m_strName == IF_BUILD_TUR1)
             {
                 g_IFaceList->m_Turrets[0] = pButton;
@@ -406,7 +416,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar* name)
                 g_IFaceList->m_Turrets[3] = pButton;
                 FSET(ON_UN_PRESS,pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
             }
-            //Создаются кнопки постройки конкретных вертолётов
+            //Задаются действия кнопкам постройки конкретных вертолётов
             else if (pButton->m_strName == IF_FLYER_BIG1)
             {
                 FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
@@ -1479,6 +1489,7 @@ void CInterface::OnMouseLBUp()
 {
 	DTRACE();
 
+    //Если включён режим паузы, игнорим все отклики мыши, кроме откликов по миникарте и прочим некоторым штукам (не вполне уверен каким именно)
     if(g_MatrixMap->IsPaused())
     {
         if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
@@ -1487,16 +1498,20 @@ void CInterface::OnMouseLBUp()
         }
     }
 
+    //Если ранее игрок зажал LMB на миникарте, то сейчас у него включён режим перетягивания камеры по ней
     if(FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN))
     {
+        //Отключаем этот режим
         RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN);
     }
+
+    //Ищем, по какому именно видимому (активному) элементу интерфейса на экране был сделан отклик мыши и запускаем его обработчик
 	if(m_VisibleAlpha)
     {
         CIFaceElement* pObjectsList = m_LastElement;
 		while(pObjectsList != NULL)
         {
-            if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) &&  pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()))
+            if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) && pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()))
             {
                 pObjectsList->OnMouseLBUp();
 				if(pObjectsList->m_Type == IFACE_CHECK_PUSH_BUTTON)
@@ -1509,6 +1524,35 @@ void CInterface::OnMouseLBUp()
 			pObjectsList = pObjectsList->m_PrevElement;
 		}
 	}
+}
+
+void CInterface::OnMouseRBUp()
+{
+    DTRACE();
+
+    //Если включён режим паузы, игнорим все отклики мыши, кроме откликов по миникарте и прочим некоторым штукам (не вполне уверен каким именно)
+    if(g_MatrixMap->IsPaused())
+    {
+        if(m_strName != IF_MINI_MAP && m_strName != IF_BASE && m_strName != IF_HINTS && m_strName != IF_POPUP_MENU)
+        {
+            return;
+        }
+    }
+
+    //Ищем, по какому именно видимому (активному) элементу интерфейса на экране был сделан отклик мыши и запускаем его обработчик
+    if(m_VisibleAlpha)
+    {
+        CIFaceElement* pObjectsList = m_LastElement;
+        while(pObjectsList != NULL)
+        {
+            if(pObjectsList->GetVisibility() && pObjectsList->ElementCatch(g_MatrixMap->m_Cursor.GetPos()) && pObjectsList->ElementAlpha(g_MatrixMap->m_Cursor.GetPos()))
+            {
+                pObjectsList->OnMouseRBUp();
+                return;
+            }
+            pObjectsList = pObjectsList->m_PrevElement;
+        }
+    }
 }
 
 void CInterface::Init(void)
@@ -1595,7 +1639,7 @@ void CInterface::Init(void)
                 objects_cnt = player_side->GetCurGroup()->GetObjectsCnt();
                 robots = player_side->GetCurGroup()->GetRobotsCnt();
                 gsel = true;
-                rsel = ((objects_cnt == 1) && (player_side->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot()));
+                rsel = ((objects_cnt == 1) && (player_side->GetCurGroup()->m_FirstObject->GetObject()->IsRobotAlive()));
                 sel_bot = (CMatrixRobotAI*)player_side->GetCurGroup()->m_FirstObject->GetObject();
                 work_group = player_side->GetCurGroup();
             }
@@ -1707,7 +1751,7 @@ void CInterface::Init(void)
                                 move = true;
                             }
                             if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Capture)
-                            {//if(robot->FindOrderLikeThat(ROT_CAPTURE_FACTORY)){
+                            {//if(robot->FindOrderLikeThat(ROT_CAPTURE_BUILDING)){
                                 capt = true;
                             }
                             if(robot->GetGroupLogic() >= 0 && bot_order == mpo_Attack)
@@ -2178,6 +2222,7 @@ void CInterface::Init(void)
                     }
                 }
 
+                //Делаем видимой панель приказов робота
                 if(!ordering && !bld_tu && !bld_he)
                 {
                     if(gsel)
@@ -2247,13 +2292,29 @@ void CInterface::Init(void)
                             pElement->SetVisibility(true);
                         }
                         
-                        if(/*bombers*/bomber_sel && pElement->m_strName == IF_ORDER_BOMB)
+                        //Только для роботов с бомбой
+                        if(bomber_sel)
                         {
-                            pElement->SetVisibility(true);
+                            if(pElement->m_strName == IF_ORDER_BOMB)
+                            {
+                                pElement->SetVisibility(true);
+                            }
+                            else if(FLAG(g_IFaceList->m_IfListFlags, AUTO_BOOM_ON) && pElement->m_strName == IF_AUTO_ORDER_BOMB_ON)
+                            {
+                                pElement->SetVisibility(true);
+                            }
+                            else if(!FLAG(g_IFaceList->m_IfListFlags, AUTO_BOOM_ON) && pElement->m_strName == IF_AUTO_ORDER_BOMB_OFF)
+                            {
+                                pElement->SetVisibility(true);
+                            }
                         }
-                        if(/*repairers*/repairer_sel && pElement->m_strName == IF_ORDER_REPAIR)
+                        //Только для роботов с ремонтником
+                        if(repairer_sel)
                         {
-                            pElement->SetVisibility(true);
+                            if(pElement->m_strName == IF_ORDER_REPAIR)
+                            {
+                                pElement->SetVisibility(true);
+                            }
                         }
                     }
                 }
@@ -3853,7 +3914,7 @@ void CIFaceList::LogicTakt(int ms)
     CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
     //Cursor logic
-    if(/*если мы в аркадном режиме*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot())
+    if(/*если мы в аркадном режиме*/ps->IsArcadeMode() && ps->GetArcadedObject()->IsRobotAlive())
     {
         if(/*если курсор на интерфейсе*/g_IFaceList->m_InFocus == INTERFACE)
         {
@@ -4407,12 +4468,12 @@ void CIFaceList::EnterRobot(bool pos)
 
 
 
-void __stdcall CIFaceList::PlayerAction(void *object)
+void __stdcall CIFaceList::PlayerAction(void* object)
 {
     if(!object) return;
     
-    CIFaceElement *element = (CIFaceElement*)object;
-    CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
+    CIFaceElement* element = (CIFaceElement*)object;
+    CMatrixSideUnit* ps = g_MatrixMap->GetPlayerSide();
 
     if(element->m_strName == IF_MAIN_MENU_BUTTON)
     {
@@ -4431,9 +4492,21 @@ void __stdcall CIFaceList::PlayerAction(void *object)
 
         ps->PGOrderAutoAttack(ps->SelGroupToLogicGroup());
     }
+    //Вкл/выкл режим автоподрыва бомбы робота при нулевом HP
+    else if(element->m_strName == IF_AUTO_ORDER_BOMB_ON)
+    {
+        SETFLAG(m_IfListFlags, AUTO_BOOM_ON);
+        ps->PGAutoBoomSet(ps->SelGroupToLogicGroup(), true);
+    }
+    else if(element->m_strName == IF_AUTO_ORDER_BOMB_OFF)
+    {
+        RESETFLAG(m_IfListFlags, AUTO_BOOM_ON);
+        ps->PGAutoBoomSet(ps->SelGroupToLogicGroup(), false);
+    }
+    //Моментальный подрыв робота с бомбой
     else if(element->m_strName == IF_MAIN_SELFBOMB)
     {
-        if(ps->IsArcadeMode() && ps->GetArcadedObject()->IsLiveRobot())
+        if(ps->IsArcadeMode() && ps->GetArcadedObject()->IsRobotAlive())
         {
             ps->GetArcadedObject()->AsRobot()->BigBoom();
         }
@@ -4825,7 +4898,7 @@ void CIFaceList::CreateGroupIcons()
 
                 if(so)
                 {
-                    if(so->GetObject()->IsLiveRobot())
+                    if(so->GetObject()->IsRobotAlive())
                     {
                         tex = so->GetObject()->AsRobot()->GetMedTexture();
                         robot = true;
@@ -5527,6 +5600,7 @@ void CIFaceList::EnableMainMenuButton(EHintButton butt)
         els = els->m_NextElement;
     }
 }
+
 void CIFaceList::PressHintButton(EHintButton butt)
 {
     CWStr sname;
@@ -5579,11 +5653,11 @@ void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname)
 bool CIFaceList::CorrectCoordinates(
     int screen_width,
     int screen_height,
-    int &posx,
-    int &posy,
+    int& posx,
+    int& posy,
     int width,
     int height,
-    const CWStr &element_name
+    const CWStr& element_name
 )
 {
     if(
@@ -5606,6 +5680,8 @@ bool CIFaceList::CorrectCoordinates(
         element_name == IF_AORDER_PROTECT_ON ||
         element_name == IF_AORDER_FROBOT_OFF ||
         element_name == IF_AORDER_FROBOT_ON ||
+        element_name == IF_AUTO_ORDER_BOMB_OFF ||
+        element_name == IF_AUTO_ORDER_BOMB_ON ||
         element_name == IF_BUILD_TUR1 ||
         element_name == IF_BUILD_TUR2 ||
         element_name == IF_BUILD_TUR3 ||
@@ -5625,15 +5701,15 @@ bool CIFaceList::CorrectCoordinates(
         }
         else
         {
-            needx = Float2Int(m_MainX)+554-width;
+            needx = Float2Int(m_MainX) + 554 - width;
         }
-        
-        int needy = Float2Int(m_MainY)+28-height;
 
-        if(posx > needx) posx -= (posx-needx);
-        if(posx < needx) posx += (needx-posx);
-        if(posy > needy) posy -= (posy-needy);
-        if(posy < needy) posy += (needy-posy);
+        int needy = Float2Int(m_MainY) + 28 - height;
+
+        if(posx > needx) posx -= (posx - needx);
+        if(posx < needx) posx += (needx - posx);
+        if(posy > needy) posy -= (posy - needy);
+        if(posy < needy) posy += (needy - posy);
         
     }
     else if(element_name == IF_BASE_HISTORY_RIGHT || element_name == IF_BASE_HISTORY_LEFT || element_name == IF_BASE_COUNTHZ)
@@ -5642,15 +5718,15 @@ bool CIFaceList::CorrectCoordinates(
         posy -= height;
     }
 
-    bool corx=false;
+    bool corx = false;
     if(posx + width + HINT_OTSTUP > screen_width)
     {
-        corx=true;
-        int val = posx+width+HINT_OTSTUP-screen_width;
+        corx = true;
+        int val = posx + width + HINT_OTSTUP - screen_width;
         posx -= val;
     }
     
-    if(corx==false)
+    if(corx == false)
     {
         if(posx < 0)
         {
@@ -5659,15 +5735,15 @@ bool CIFaceList::CorrectCoordinates(
     }
     else
     {
-        //eto znachit - chto hint nel'zya pokazyvat' - on vylazit so vseh shelei
+        //Это значит, что hint нельзя показывать, т.к. он вылазит со всех щелей
         return false;
     }
 
-    bool cory=false;
+    bool cory = false;
     if(posy + height + HINT_OTSTUP > screen_height)
     {
-        cory=true;
-        int val = posy+height+HINT_OTSTUP-screen_height;
+        cory = true;
+        int val = posy + height + HINT_OTSTUP - screen_height;
         posy -= val;
     }
     
@@ -5680,7 +5756,7 @@ bool CIFaceList::CorrectCoordinates(
     }
     else
     {
-        //eto znachit - chto hint nel'zya pokazyvat' - on vylazit so vseh shelei
+        //Это значит, что hint нельзя показывать, т.к. он вылазит со всех щелей
         return false;
     }
 

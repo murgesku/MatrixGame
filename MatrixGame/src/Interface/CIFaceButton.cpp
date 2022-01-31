@@ -157,6 +157,14 @@ void CIFaceButton::OnMouseLBUp()
     }
 }
 
+//Обработчик отжатия правой кнопки мыши, проверяет фокус элемента и вызывает действие, если возможно
+void CIFaceButton::OnMouseRBUp()
+{
+    //Нихера не работает, надо разбираться
+    CSound::Play(S_BUILD_CLICK, SL_INTERFACE);
+    Action(ON_UN_PRESS_RIGHT);
+}
+
 bool CIFaceButton::OnMouseMove(CPoint mouse)
 {
 	if(GetVisibility() && ElementCatch(mouse) && ElementAlpha(mouse))

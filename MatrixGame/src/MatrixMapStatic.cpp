@@ -21,7 +21,7 @@ bool FreeObjResources(DWORD user)
     return false; // not dead
 }
 
-CVectorObjectAnim* LoadObject(const wchar *name, CHeap * heap, bool side, const wchar *tex)
+CVectorObjectAnim* LoadObject(const wchar *name, CHeap *heap, bool side, const wchar *tex)
 {
     DTRACE();
 	
@@ -29,20 +29,21 @@ CVectorObjectAnim* LoadObject(const wchar *name, CHeap * heap, bool side, const 
     CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, name);
 
     GSParam gsp = side?GSP_SIDE:GSP_ORDINAL;
-    
 
-    if (tex)
+    if(tex)
     {
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, gsp);
-        if (vo->IsNoSkin(0))
+        if(vo->IsNoSkin(0))
         {
             voa->Init(vo, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin(tex, gsp));
-        } else
+        }
+        else
         {
             voa->Init(vo, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT));
         }
 
-    } else
+    }
+    else
     {
         vo->PrepareSpecial(OLF_AUTO, CSkinManager::GetSkin, gsp);
         voa->Init(vo, NULL);
@@ -52,13 +53,13 @@ CVectorObjectAnim* LoadObject(const wchar *name, CHeap * heap, bool side, const 
     return voa;
 }
 
-void UnloadObject(CVectorObjectAnim *o, CHeap * heap)
+void UnloadObject(CVectorObjectAnim *o, CHeap *heap)
 {
     HDelete(CVectorObjectAnim, o, heap);
 }
 
-CMatrixMapStatic * CMatrixMapStatic::m_FirstLogicTemp;
-CMatrixMapStatic * CMatrixMapStatic::m_LastLogicTemp;
+CMatrixMapStatic *CMatrixMapStatic::m_FirstLogicTemp;
+CMatrixMapStatic *CMatrixMapStatic::m_LastLogicTemp;
 
 
 #ifdef _DEBUG

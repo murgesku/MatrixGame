@@ -150,7 +150,7 @@ static SKeyCodes key_codes[] =
 
 struct SKeyActions
 {
-    const wchar* name;
+    const wchar *name;
     int code;
     int base_key;
 };

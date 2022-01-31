@@ -781,19 +781,20 @@ void CMatrixMapObject::FreeDynamicResources(void)
 
     if(m_ShadowProj)
     {
-        if (m_Graph->VO()->GetFramesCnt() > 1 && m_ShadowType==SHADOW_PROJ_DYNAMIC)
+        if(m_Graph->VO()->GetFramesCnt() > 1 && m_ShadowType==SHADOW_PROJ_DYNAMIC)
         {
             m_ShadowProj->DestroyTexture();
             RChange(MR_ShadowProjTex);
-        } else
+        }
+        else
         {
             m_ShadowProj->DX_Free();
         }
-    } else if (m_ShadowStencil)
+    }
+    else if (m_ShadowStencil)
     {
         m_ShadowStencil->DX_Free();
     }
-
 }
 
 
@@ -811,10 +812,9 @@ void CMatrixMapObject::BeforeDraw(void)
     if (m_ShadowStencil && g_Config.m_ShowStencilShadows) m_ShadowStencil->BeforeRender();
     if (m_ShadowProj && g_Config.m_ShowProjShadows) m_ShadowProj->BeforeRender();
 
-    if ((m_BehFlag == BEHF_BURN) && (m_BurnSkinVis != 0))
+    if((m_BehFlag == BEHF_BURN) && (m_BurnSkinVis != 0))
     {
         m_BurnSkin->m_Preload(m_BurnSkin);
-
     }
 
     if (m_BehFlag == BEHF_TERRON && m_PB > 0 && m_BreakHitPoint > 0)
@@ -1391,10 +1391,10 @@ void CMatrixMapObject::LogicTakt(int ms)
             }
         }
         //Происходит автоспавн роботов из "сортиров" Террона в случае, если рядом с "сортирами" обнаружены роботы игрока
-        else if (m_PrevStateRobotsInRadius == 1)
+        else if(m_PrevStateRobotsInRadius == 1)
         {
-            // waiting before spawn
-            if (m_Graph->IsAnimEnd())
+            //waiting before spawn
+            if(m_Graph->IsAnimEnd())
             {
                 // spawn robot!
                 CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
@@ -1414,7 +1414,7 @@ void CMatrixMapObject::LogicTakt(int ms)
                     ERROR_S2(L"Spawner bot_no=", CWStr(robot).Get());
                 }
 
-                CMatrixRobotAI* r = bot.GetRobot(*(D3DXVECTOR3*)&m_Core->m_Matrix._41, 4 /* Terron? */);
+                CMatrixRobotAI *r = bot.GetRobot(*(D3DXVECTOR3*)&m_Core->m_Matrix._41, 4 /* Terron? */);
                 g_MatrixMap->AddObject(r, true);
                 r->CreateTextures();
 

@@ -80,13 +80,15 @@ CMatrixBuilding::~CMatrixBuilding()
     int x = Float2Int(m_Pos.x * INVERT(GLOBAL_SCALE));
     int y = Float2Int(m_Pos.x * INVERT(GLOBAL_SCALE));
 
-    for (int i=x-4; i<(x+4); ++i)
-        for (int j=x-4; j<(x+4); ++j)
+    for(int i = x - 4; i < (x + 4); ++i)
+    {
+        for(int j = x - 4; j < (x + 4); ++j)
         {
-            SMatrixMapUnit *mu = g_MatrixMap->UnitGetTest(i,j);
-            if (mu == NULL) continue;
-            if (mu->m_Base == this) mu->m_Base = NULL;
+            SMatrixMapUnit *mu = g_MatrixMap->UnitGetTest(i, j);
+            if(mu == NULL) continue;
+            if(mu->m_Base == this) mu->m_Base = NULL;
         }
+    }
 
 
     ReleaseMe();
@@ -147,22 +149,22 @@ void CMatrixBuilding::RNeed(dword need)
 		m_GGraph->RChange(VOUF_MATRIX);
 		m_GGraph->RNeed(VOUF_MATRIX);
 	}
-	if(need & m_RChange & (MR_Graph)) {
+	if(need & m_RChange & (MR_Graph))
+    {
 		m_RChange&=~MR_Graph;
 
-        if (!m_GGraph->IsAlreadyLoaded())
+        if(!m_GGraph->IsAlreadyLoaded())
         {
             float hp = (float)g_Config.m_BuildingHitPoints[m_Kind];
             InitMaxHitpoint(hp);
 
-            if(m_Kind==BUILDING_BASE) m_GGraph->Load(OBJECT_PATH_BASE_00, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
-		    else if(m_Kind==BUILDING_TITAN) m_GGraph->Load(OBJECT_PATH_BASE_01, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
-		    else if(m_Kind==BUILDING_PLASMA) m_GGraph->Load(OBJECT_PATH_BASE_02, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
-		    else if(m_Kind==BUILDING_ELECTRONIC) m_GGraph->Load(OBJECT_PATH_BASE_03, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
-		    else if(m_Kind==BUILDING_ENERGY) m_GGraph->Load(OBJECT_PATH_BASE_04, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
-		    else if(m_Kind==BUILDING_REPAIR) m_GGraph->Load(OBJECT_PATH_BASE_05, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            if(m_Kind == BUILDING_BASE) m_GGraph->Load(OBJECT_PATH_BASE_00, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            else if(m_Kind == BUILDING_TITAN) m_GGraph->Load(OBJECT_PATH_BASE_01, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            else if(m_Kind == BUILDING_PLASMA) m_GGraph->Load(OBJECT_PATH_BASE_02, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            else if(m_Kind == BUILDING_ELECTRONIC) m_GGraph->Load(OBJECT_PATH_BASE_03, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            else if(m_Kind == BUILDING_ENERGY) m_GGraph->Load(OBJECT_PATH_BASE_04, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
+            else if(m_Kind == BUILDING_REPAIR) m_GGraph->Load(OBJECT_PATH_BASE_05, CMatrixEffect::GetBBTexI(BBT_POINTLIGHT), CSkinManager::GetSkin, GSP_SIDE);
         }
-
 	}
 	if((need & m_RChange & MR_ShadowStencil) && m_GGraph)
     {
@@ -288,7 +290,6 @@ bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVEC
     int idx = Weap2Index(weap);
     if(weap == WEAPON_REPAIR)
     {
-
         m_HitPoint += friendly_fire?g_Config.m_BuildingDamages[idx].friend_damage:g_Config.m_BuildingDamages[idx].damage;
         if(m_HitPoint > m_HitPointMax)
         {
@@ -560,13 +561,14 @@ void CMatrixBuilding::PauseTakt(int cms)
     }
 }
 
-//Если база не находится в состоянии смерти (death in progress) и не взрывается
 void CMatrixBuilding::LogicTakt(int cms)
 {
     DTRACE();
 
     m_PB.Modify(100000.0f, 0);
+    CMatrixMapStatic *obj;
 
+    //Если база не находится в состоянии смерти (death in progress) и не взрывается
     if(m_State != BUILDING_DIP && m_State != BUILDING_DIP_EXPLODED)
     {
         if(m_CaptureMeNextTime < g_MatrixMap->GetTime() && m_Capturer == NULL && !(IsBase() && m_TurretsHave > 0))
@@ -615,25 +617,23 @@ void CMatrixBuilding::LogicTakt(int cms)
 
                 if(data.found && m_Side != data.found->GetSide())
                 {
-
                     Capture(data.found);
 
                     int nt = 100;
-                    if (nt > g_Config.m_CaptureTimeErase) nt = g_Config.m_CaptureTimeErase;
-                    if (nt > g_Config.m_CaptureTimePaint) nt = g_Config.m_CaptureTimePaint;
-
+                    if(nt > g_Config.m_CaptureTimeErase) nt = g_Config.m_CaptureTimeErase;
+                    if(nt > g_Config.m_CaptureTimePaint) nt = g_Config.m_CaptureTimePaint;
 
                     m_CaptureSeekRobotNextTime = g_MatrixMap->GetTime() + nt;
-                } else
+                }
+                else
                 {
                     m_CaptureSeekRobotNextTime = g_MatrixMap->GetTime() + CAPTURE_SEEK_ROBOT_PERIOD;
-
                 }
             }
-            if (m_InCaptureTime > 0)
+            if(m_InCaptureTime > 0)
             {
                 m_InCaptureTime -= cms;
-                if (m_InCaptureTime <= 0)
+                if(m_InCaptureTime <= 0)
                 {
                     m_InCaptureTime = 0;
                     m_CaptureNextTimeRollback = g_MatrixMap->GetTime();
@@ -642,30 +642,29 @@ void CMatrixBuilding::LogicTakt(int cms)
             else
             {
                 // rollback
-                if (m_Side == 0 && m_TrueColor.m_ColoredCnt > 0)
+                if(m_Side == 0 && m_TrueColor.m_ColoredCnt > 0)
                 {
-                    while (m_CaptureNextTimeRollback < g_MatrixMap->GetTime() && m_TrueColor.m_ColoredCnt > 0)
+                    while(m_CaptureNextTimeRollback < g_MatrixMap->GetTime() && m_TrueColor.m_ColoredCnt > 0)
                     {
                         m_CaptureNextTimeRollback += g_Config.m_CaptureTimeRolback;
                         --m_TrueColor.m_ColoredCnt;
                     }
                 }
-                else if (m_Side != 0 && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
+                else if(m_Side != 0 && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
                 {
-                    while (m_CaptureNextTimeRollback < g_MatrixMap->GetTime() && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
+                    while(m_CaptureNextTimeRollback < g_MatrixMap->GetTime() && m_TrueColor.m_ColoredCnt < MAX_ZAHVAT_POINTS)
                     {
                         m_CaptureNextTimeRollback += g_Config.m_CaptureTimeRolback;
                         ++m_TrueColor.m_ColoredCnt;
                     }
                 }
-
-
             }
         }
 
-        CMatrixSideUnit* su = NULL;
+        CMatrixSideUnit *su = NULL;
         if(m_Side) su = g_MatrixMap->GetSideById(m_Side);
 
+        //Если строение не нейтрально
         if(su)
         {
             m_BS.TickTimer(cms);
@@ -673,73 +672,98 @@ void CMatrixBuilding::LogicTakt(int cms)
 
             switch(m_Kind)
             {
-                case BUILDING_TITAN:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_TITAN])
+            case BUILDING_TITAN:
+                if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_TITAN])
+                {
+                    //m_ResourceAmount += RESOURCES_INCOME;
+                    SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+                    m_ResourcePeriod = 0;
+                    su->AddResourceAmount(TITAN, RESOURCES_INCOME);
+                }
+                break;
+            case BUILDING_PLASMA:
+                if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_PLASMA])
+                {
+                    //m_ResourceAmount += RESOURCES_INCOME;
+                    SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+                    m_ResourcePeriod = 0;
+                    su->AddResourceAmount(PLASMA, RESOURCES_INCOME);
+                }
+                break;
+            case BUILDING_ELECTRONIC:
+                if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ELECTRONICS])
+                {
+                    //m_ResourceAmount += RESOURCES_INCOME;
+                    SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+                    m_ResourcePeriod = 0;
+                    su->AddResourceAmount(ELECTRONICS, RESOURCES_INCOME);
+                }
+                break;
+            case BUILDING_ENERGY:
+                if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ENERGY])
+                {
+                    //m_ResourceAmount += RESOURCES_INCOME;
+                    SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+                    m_ResourcePeriod = 0;
+                    su->AddResourceAmount(ENERGY, RESOURCES_INCOME);
+                }
+                break;
+            case BUILDING_REPAIR:
+                //Чиним союзных роботов, находящихся в радиусе 600 от центра точки захвата рембазы
+                obj = CMatrixMapStatic::GetFirstLogic();
+                while(obj)
+                {
+                    if(obj->IsRobotAlive() && obj->GetSide() == GetSide() && obj->NeedRepair())
                     {
-                        //m_ResourceAmount += RESOURCES_INCOME;
-                        SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-                        m_ResourcePeriod = 0;
-                        su->AddResourceAmount(TITAN, RESOURCES_INCOME);
+                        CMatrixRobotAI *robot = (CMatrixRobotAI*)obj;
+                        //D3DXVECTOR3 dist = this->m_Pos - D3DXVECTOR2(robot->m_PosX, robot->m_PosY);
+                        D3DXVECTOR3 dist = (this->m_Pos + (*(D3DXVECTOR2*)&this->GetMatrix()._21) * 8.0f) - D3DXVECTOR2(robot->m_PosX, robot->m_PosY);
+                        dist.z = 0;
+                        if(D3DXVec3LengthSq(&dist) <= 600)
+                        {
+                            robot->ModifyHitpoints(5);
+                        }
                     }
-                    break;
-                case BUILDING_PLASMA:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_PLASMA])
-                    {
-                        //m_ResourceAmount += RESOURCES_INCOME;
-                        SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-                        m_ResourcePeriod = 0;
-                        su->AddResourceAmount(PLASMA,RESOURCES_INCOME);
-                    }
-                    break;
-                case BUILDING_ELECTRONIC:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ELECTRONICS])
-                    {
-                        //m_ResourceAmount += RESOURCES_INCOME;
-                        SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-                        m_ResourcePeriod = 0;
-                        su->AddResourceAmount(ELECTRONICS, RESOURCES_INCOME);
-                    }
-                    break;
-                case BUILDING_ENERGY:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_ENERGY])
-                    {
-                        //m_ResourceAmount += RESOURCES_INCOME;
-                        SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-                        m_ResourcePeriod = 0;
-                        su->AddResourceAmount(ENERGY, RESOURCES_INCOME);
-                    }
-                    break;
-                case BUILDING_BASE:
-                    if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_BASE])
-                    {
-                        //m_BaseRCycle++;
-                        //if(m_BaseRCycle > 3) m_BaseRCycle = 0;
-                        int fu = su->GetResourceForceUp();
-                        int ra = RESOURCES_INCOME_BASE * fu / 100;
-                        SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
-                        m_ResourcePeriod = 0;
+                    obj = obj->GetNextLogic();
+                }
+                break;
+            case BUILDING_BASE:
+                if(m_ResourcePeriod >= g_Config.m_Timings[RESOURCE_BASE])
+                {
+                    //m_BaseRCycle++;
+                    //if(m_BaseRCycle > 3) m_BaseRCycle = 0;
+                    int fu = su->GetResourceForceUp();
+                    int ra = RESOURCES_INCOME_BASE * fu / 100;
+                    SETFLAG(m_ObjectState, BUILDING_NEW_INCOME);
+                    m_ResourcePeriod = 0;
 
-                        su->AddResourceAmount(TITAN, ra);
-                        su->AddResourceAmount(ELECTRONICS, ra);
-                        su->AddResourceAmount(ENERGY, ra);
-                        su->AddResourceAmount(PLASMA, ra);
+                    su->AddResourceAmount(TITAN, ra);
+                    su->AddResourceAmount(ELECTRONICS, ra);
+                    su->AddResourceAmount(ENERGY, ra);
+                    su->AddResourceAmount(PLASMA, ra);
                         
-                        //if(m_BaseRCycle == 0){
-                        //    su->AddTitan(RESOURCES_INCOME * fu / 100);
-                        //}else if(m_BaseRCycle == 1){
-                        //    su->AddElectronics(RESOURCES_INCOME * fu / 100);
-                        //}else if(m_BaseRCycle == 2){
-                        //    su->AddEnergy(RESOURCES_INCOME * fu / 100);
-                        //}else if(m_BaseRCycle == 3){
-                        //    su->AddPlasma(RESOURCES_INCOME * fu / 100);
-                        //}
-
-                    }
-                    break;
+                    //if(m_BaseRCycle == 0)
+                    //{
+                    //    su->AddTitan(RESOURCES_INCOME * fu / 100);
+                    //}
+                    //else if(m_BaseRCycle == 1)
+                    //{
+                    //    su->AddElectronics(RESOURCES_INCOME * fu / 100);
+                    //}
+                    //else if(m_BaseRCycle == 2)
+                    //{
+                    //    su->AddEnergy(RESOURCES_INCOME * fu / 100);
+                    //}
+                    //else if(m_BaseRCycle == 3)
+                    //{
+                    //    su->AddPlasma(RESOURCES_INCOME * fu / 100);
+                    //}
+                }
+                break;
             }
         }
-    }    
-    //if (m_Kind==BUILDING_BASE) CDText::T("hp",CStr((float)m_HitPoint));
+    }
+    //if(m_Kind==BUILDING_BASE) CDText::T("hp",CStr((float)m_HitPoint));
 
     int downtime = -BUILDING_EXPLOSION_TIME;
     if(m_Kind == BUILDING_BASE)
@@ -750,7 +774,7 @@ void CMatrixBuilding::LogicTakt(int cms)
         {
             CSound::AddSound(S_EXPLOSION_BUILDING_BOOM4, GetGeoCenter());
             //DCNT("boom");
-            CMatrixEffectWeapon* e = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(GetGeoCenter(), D3DXVECTOR3(0, 0, 1), 0, NULL, WEAPON_BIGBOOM);
+            CMatrixEffectWeapon *e = (CMatrixEffectWeapon*)CMatrixEffect::CreateWeapon(GetGeoCenter(), D3DXVECTOR3(0, 0, 1), 0, NULL, WEAPON_BIGBOOM);
             e->SetOwner(this);
             e->FireBegin(D3DXVECTOR3(0, 0, 0), this);
             e->Takt(1);
@@ -785,14 +809,14 @@ void CMatrixBuilding::LogicTakt(int cms)
             namev += L".vo";
 
             CMatrixMapObject* mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
-            mo->InitAsBaseRuins(m_Pos, m_Angle,namev, namet, true);
+            mo->InitAsBaseRuins(m_Pos, m_Angle, namev, namet, true);
 
             if(n != 0)
             {
                 namev = namet + L"p.vo";
                 namet += L"?Trans";
                 CMatrixMapObject *momo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
-                momo->InitAsBaseRuins(m_Pos, m_Angle,namev, namet, false);
+                momo->InitAsBaseRuins(m_Pos, m_Angle, namev, namet, false);
             }
 
             n = IRND(30) + 20;
@@ -856,7 +880,6 @@ void CMatrixBuilding::LogicTakt(int cms)
                     pos = pos0 + D3DXVECTOR3(FSRND(GetRadius()),FSRND(GetRadius()),FRND(2 * GetRadius()));
 
                     D3DXVec3Normalize(&dir, &(pos0-pos));
-                    
                 }
                 while(!Pick(pos, dir, &t) && (--cnt > 0));
                 if(cnt > 0)
@@ -1000,7 +1023,7 @@ void CMatrixBuilding::BeforeDraw(void)
     {
         D3DXVECTOR3 pos;
         float r = GetRadius();
-        if (m_Kind == BUILDING_BASE)
+        if(m_Kind == BUILDING_BASE)
         {
             pos = GetGeoCenter() - *(D3DXVECTOR3 *)&m_Core->m_Matrix._21 * 20;
             r *= 0.7f;
@@ -1012,14 +1035,14 @@ void CMatrixBuilding::BeforeDraw(void)
             pos.z = g_MatrixMap->GetZ(pos.x, pos.y) + 80;
         }
 
-        if (TRACE_STOP_NONE == g_MatrixMap->Trace(NULL, g_MatrixMap->m_Camera.GetFrustumCenter(), pos, TRACE_LANDSCAPE, NULL))
+        if(TRACE_STOP_NONE == g_MatrixMap->Trace(NULL, g_MatrixMap->m_Camera.GetFrustumCenter(), pos, TRACE_LANDSCAPE, NULL))
         {
             D3DXVECTOR2 p = g_MatrixMap->m_Camera.Project(pos, g_MatrixMap->GetIdentityMatrix());
             m_PB.Modify(p.x-r, p.y, m_HitPoint * m_MaxHitPointInversed);
         }
     }
 
-    if (m_GGraph) m_GGraph->BeforeDraw(g_Config.m_ShowStencilShadows);
+    if(m_GGraph) m_GGraph->BeforeDraw(g_Config.m_ShowStencilShadows);
 }
 
 
@@ -1027,11 +1050,11 @@ void CMatrixBuilding::Draw(void)
 {
     DTRACE();
 
-    if (!m_GGraph) return;
+    if(!m_GGraph) return;
 
     for(int i = 0; i < 4; ++i)
     {
-        ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS,		*((LPDWORD) (&g_MatrixMap->m_BiasBuildings))));
+        ASSERT_DX(g_D3DD->SetSamplerState(i,D3DSAMP_MIPMAPLODBIAS, *((LPDWORD) (&g_MatrixMap->m_BiasBuildings))));
     }
 
 //	ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m_Matrix));
@@ -1041,7 +1064,7 @@ void CMatrixBuilding::Draw(void)
 //	m_Graph->Draw(flags);
 	m_GGraph->Draw(coltex);
 
-    if (!FLAG(g_MatrixMap->m_Flags,MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS))
+    if(!FLAG(g_MatrixMap->m_Flags,MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS))
     {
         m_GGraph->DrawLights();
     }
@@ -1066,21 +1089,21 @@ void CMatrixBuilding::DrawShadowProj()
  //   m._41 = m_ShadowProj->GetDX();
  //   m._42 = m_ShadowProj->GetDY();
 	//ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m));
-
 }
 
 
 float CMatrixBuilding::GetFloorZ(void)
 {
-    return m_BuildZ + (1.0f-m_BaseFloor)*BASE_FLOOR_Z-3.0f+2.7f;
+    return m_BuildZ + (1.0f - m_BaseFloor) * BASE_FLOOR_Z - 3.0f + 2.7f;
 }
 
 void CMatrixBuilding::OnLoad(void)
 {
     DTRACE();
-    m_PB.Modify(1000000,0,PB_BUILDING_WIDTH, 1);
+    m_PB.Modify(1000000, 0, PB_BUILDING_WIDTH, 1);
 
-/*    int* tmp = m_Places;
+    /*
+    int* tmp = m_Places;
     
     int b_x = (int)(m_Pos.x / GLOBAL_SCALE_MOVE);
     int b_y = (int)(m_Pos.y / GLOBAL_SCALE_MOVE);
@@ -1095,18 +1118,20 @@ void CMatrixBuilding::OnLoad(void)
     *(++tmp) = b_y + 10;
 
     *(++tmp) = b_x + 10;
-    *(++tmp) = b_y - 10;*/
+    *(++tmp) = b_y - 10;
+    */
 
     m_BuildZ = g_MatrixMap->GetZ(m_Pos.x,m_Pos.y);
-    if (m_BuildZ < WATER_LEVEL)
+    if(m_BuildZ < WATER_LEVEL)
     {
         
-        D3DXVECTOR3 pos(0,0,WATER_LEVEL);
+        D3DXVECTOR3 pos(0, 0, WATER_LEVEL);
         g_MatrixMap->Trace(&pos, D3DXVECTOR3(m_Pos.x,m_Pos.y, 1000), D3DXVECTOR3(m_Pos.x,m_Pos.y, -1000), TRACE_ALL, this);
         m_BuildZ = pos.z;
     }
 
-    switch(m_Kind){
+    switch(m_Kind)
+    {
         case BUILDING_BASE:
             m_TurretsMax = BASE_TURRETS;
             m_Name = L"BASE";
@@ -1133,16 +1158,16 @@ void CMatrixBuilding::OnLoad(void)
             break;
     }
 
-    if (m_Kind == BUILDING_BASE)
+    if(m_Kind == BUILDING_BASE)
     {
         int px = Float2Int((m_Pos.x-(GLOBAL_SCALE/2)) * INVERT(GLOBAL_SCALE)) - 1;
         int py = Float2Int((m_Pos.y-(GLOBAL_SCALE/2)) * INVERT(GLOBAL_SCALE)) - 1;
 
-        for (int x = 0; x < 3; ++x)
+        for(int x = 0; x < 3; ++x)
         {
-            for (int y = 0; y < 3; ++y)
+            for(int y = 0; y < 3; ++y)
             {
-                SMatrixMapUnit* mu = g_MatrixMap->UnitGet(x + px, y + py);
+                SMatrixMapUnit *mu = g_MatrixMap->UnitGet(x + px, y + py);
                 mu->m_Base = this;
             }
         }
@@ -1150,14 +1175,12 @@ void CMatrixBuilding::OnLoad(void)
 
     m_ShowHitpointTime = 0;
     m_defHitPoint = Float2Int(m_HitPoint);
-
 }
 
 
 bool CMatrixBuilding::CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax)
 {
     DTRACE();
-
     
     if(!(m_GGraph) || !(m_GGraph->m_First)) return true;
 
@@ -1165,14 +1188,15 @@ bool CMatrixBuilding::CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax)
 
 	return false;
 
-/*    SVOFrame *f = m_GGraph->m_First->m_Obj->VO()->FrameGet(0);
+    /*
+    SVOFrame *f = m_GGraph->m_First->m_Obj->VO()->FrameGet(0);
     min.x = f->m_MinX;
     min.y = f->m_MinY;
     max.x = f->m_MaxX;
     max.y = f->m_MaxY;
 
     int cnt = m_GGraph->m_First->m_Obj->VO()->Header()->m_FrameCnt;
-    for (int i = 1; i<cnt; ++i)
+    for(int i = 1; i < cnt; ++i)
     {
         SVOFrame *f = m_GGraph->m_First->m_Obj->VO()->FrameGet(i);
 
@@ -1182,7 +1206,8 @@ bool CMatrixBuilding::CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax)
         max.y = max(max.y,f->m_MaxY);
     }
 
-    return false;*/
+    return false;
+    */
 }
 
 struct SFindRobotForCapture
@@ -1194,14 +1219,14 @@ struct SFindRobotForCapture
 };
 
 
-static bool FindRobotForCapture(const D3DXVECTOR2 & center, CMatrixMapStatic *ms, DWORD user)
+static bool FindRobotForCapture(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user)
 {
     SFindRobotForCapture *data = (SFindRobotForCapture *)user;
 
     float dist2 = D3DXVec2LengthSq(&(center- *(D3DXVECTOR2 *)&ms->GetGeoCenter()));
-    if (dist2 < data->dist2)
+    if(dist2 < data->dist2)
     {
-        if (data->by == data->found)
+        if(data->by == data->found)
         {
             data->by = NULL;
             return false;
@@ -1228,7 +1253,7 @@ void CMatrixBuilding::SetNeutral(void)
 
 ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
 {
-    if(m_InCaptureTime <=0)
+    if(m_InCaptureTime <= 0)
     {
         m_InCaptureTime = g_Config.m_CaptureTimeErase + g_Config.m_CaptureTimePaint;
         m_InCaptureNextTimeErase = g_MatrixMap->GetTime();
@@ -1240,11 +1265,11 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
     SFindRobotForCapture data;
     data.by = by;
     data.found = NULL;
-    data.dist2 = CAPTURE_RADIUS*CAPTURE_RADIUS;
+    data.dist2 = CAPTURE_RADIUS * CAPTURE_RADIUS;
     
     g_MatrixMap->FindObjects(m_Pos, CAPTURE_RADIUS, 1, TRACE_ROBOT, NULL, FindRobotForCapture, (DWORD)&data);
  
-    if (data.by == NULL || data.by != data.found) return CAPTURE_TOOFAR;
+    if(data.by == NULL || data.by != data.found) return CAPTURE_TOO_FAR;
 
     DWORD captureer_color = 0xFF000000 | g_MatrixMap->GetSideColor(by->GetSide());
     
@@ -1264,8 +1289,7 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                 if(m_TrueColor.m_ColoredCnt == MAX_ZAHVAT_POINTS)
                 {
                     int side = by->GetSide();
-                    if (side == PLAYER_SIDE)
-                        CSound::Play(S_ENEMY_FACTORY_CAPTURED);
+                    if(side == PLAYER_SIDE) CSound::Play(S_ENEMY_FACTORY_CAPTURED);
                     m_Side = side;
                     m_BS.ClearStack();
                     RChange(MR_MiniMap);
@@ -1284,7 +1308,7 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                 if(m_TrueColor.m_ColoredCnt == 0)
                 {
                     m_TrueColor.m_Color = 0;
-                    return CAPTURE_INPROGRESS;
+                    return CAPTURE_IN_PROGRESS;
                 }
                 --m_TrueColor.m_ColoredCnt;
             }
@@ -1294,17 +1318,16 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
     {
         if(m_TrueColor.m_Color == captureer_color)
         {
-            while (m_InCaptureNextTimePaint < g_MatrixMap->GetTime())
+            while(m_InCaptureNextTimePaint < g_MatrixMap->GetTime())
             {
                 m_InCaptureNextTimePaint += g_Config.m_CaptureTimePaint;
                 m_InCaptureNextTimeErase = g_MatrixMap->GetTime();
 
                 if(m_TrueColor.m_ColoredCnt == MAX_ZAHVAT_POINTS)
                 {
-                    // дозахват
+                    //дозахват
                     int side = by->GetSide();
-                    //if (side == PLAYER_SIDE)
-                    //    CSound::Play(S_ENEMY_FACTORY_CAPTURED);
+                    //if(side == PLAYER_SIDE) CSound::Play(S_ENEMY_FACTORY_CAPTURED);
                     m_Side = side;
                     RChange(MR_MiniMap);
                     
@@ -1332,14 +1355,14 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by)
                     m_Side = 0;
                     RChange(MR_MiniMap);
                     m_BS.ClearStack();
-                    return CAPTURE_INPROGRESS;
+                    return CAPTURE_IN_PROGRESS;
                 }
                 --m_TrueColor.m_ColoredCnt;
             }
         }
     }
 
-    return CAPTURE_INPROGRESS;
+    return CAPTURE_IN_PROGRESS;
 }
 
 //Функция вызова подкрепления к указанной базе
@@ -1387,11 +1410,11 @@ void CMatrixBuilding::Maintenance(void)
     CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
     while(obj)
     {
-        if(obj->IsLiveCannon())
+        if(obj->IsCannonAlive())
         {
             g_MatrixMap->m_RN.m_Place[obj->AsCannon()->m_Place].m_Data=1;
         }
-        else if(obj->IsLiveRobot() && obj->AsRobot()->GetEnv()->m_Place>=0)
+        else if(obj->IsRobotAlive() && obj->AsRobot()->GetEnv()->m_Place>=0)
         {
             g_MatrixMap->m_RN.m_Place[obj->AsRobot()->GetEnv()->m_Place].m_Data=1;
         }
@@ -1501,10 +1524,10 @@ void CMatrixBuilding::ReleaseMe(void)
     //}
     
     //Уничтожаем всех ещё не покинувших базу роботов, а все связанные турели переводим на нейтральную сторону
-    CMatrixMapStatic* objects = CMatrixMapStatic::GetFirstLogic();   
+    CMatrixMapStatic *objects = CMatrixMapStatic::GetFirstLogic();   
     while(objects)
     {
-        if(objects->IsLiveRobot())
+        if(objects->IsRobotAlive())
         {
             if(objects->AsRobot()->GetBase() == this)
             {
@@ -1514,7 +1537,7 @@ void CMatrixBuilding::ReleaseMe(void)
 
             objects->AsRobot()->RemoveCaptureCandidate(this);
             objects->AsRobot()->GetEnv()->RemoveFromList(this);
-            if(objects->AsRobot()->GetCaptureFactory()==this)
+            if(objects->AsRobot()->GetCaptureBuilding() == this)
             {
                 objects->AsRobot()->StopCapture();
             }
@@ -1647,17 +1670,23 @@ int CMatrixBuilding::GetPlacesForTurrets(CPoint * places)
     for(int i=0;i<g_MatrixMap->m_RN.m_PlaceCnt;i++,place++) place->m_Data=0;
 
     CMatrixMapStatic * obj = CMatrixMapStatic::GetFirstLogic();
-    while(obj) {
-        if(obj->IsLiveCannon()) {
-            if(obj->AsCannon()->m_Place>=0) {
+    while(obj)
+    {
+        if(obj->IsCannonAlive())
+        {
+            if(obj->AsCannon()->m_Place>=0)
+            {
                 place=g_MatrixMap->m_RN.GetPlace(obj->AsCannon()->m_Place);
                 place->m_Data=1;
             }
         }
-        if(obj->IsLiveBuilding()) {
+        if(obj->IsBuildingAlive())
+        {
             CMatrixMapStatic * bi= obj->AsBuilding()->m_BS.GetTopItem();
-            while(bi) {
-                if(bi->IsCannon()) {
+            while(bi)
+            {
+                if(bi->IsCannon())
+                {
                     place=g_MatrixMap->m_RN.GetPlace(bi->AsCannon()->m_Place);
                     place->m_Data=1;
                 }
@@ -1725,7 +1754,7 @@ void CMatrixBuilding::CreatePlacesShow(void)
     int cnt=GetPlacesForTurrets(pl);
 
     m_PlacesShow = (SEffectHandler*)HAlloc(sizeof(SEffectHandler)*MAX_PLACES, g_MatrixHeap);
-    for(int i = 0;i<MAX_PLACES;++i)
+    for(int i = 0; i < MAX_PLACES; ++i)
     {
 #ifdef _DEBUG
         m_PlacesShow[i].SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);
@@ -1745,9 +1774,9 @@ void CMatrixBuilding::CreatePlacesShow(void)
 void CMatrixBuilding::DeletePlacesShow()
 {
     DTRACE();
-    if(IsLiveBuilding() && m_PlacesShow)
+    if(IsBuildingAlive() && m_PlacesShow)
     {
-        for(int i = 0; i<MAX_PLACES; ++i)
+        for(int i = 0; i < MAX_PLACES; ++i)
         {
 #ifdef _DEBUG
             m_PlacesShow[i].Release(DEBUG_CALL_INFO);
@@ -1824,7 +1853,7 @@ void CBuildStack::TickTimer(int ms)
             g_MatrixMap->AddObject(m_Top, true);
 
             LIST_DEL(m_Top, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem);
-            m_Items--;
+            --m_Items;
             
         }
     }
@@ -1877,7 +1906,7 @@ void CBuildStack::TickTimer(int ms)
             ((CMatrixFlyer*)m_Top)->Begin(m_ParentBase);
 
             LIST_DEL(m_Top, m_Top, m_Bottom, m_PrevStackItem, m_NextStackItem);
-            m_Items--;
+            --m_Items;
         }
     }
     else if(m_Items && m_Top->IsCannon())
@@ -2053,7 +2082,7 @@ CBuildStack::~CBuildStack()
                 }
                 else if(items->IsCannon())
                 {
-                    items->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0,0,0), D3DXVECTOR3(0,0,0),0,NULL);
+                    items->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), 0, NULL);
                 }
 			    items = NULL;
 			    m_Top = NULL;
@@ -2073,7 +2102,7 @@ CBuildStack::~CBuildStack()
                 }
                 else if(items->m_PrevStackItem->IsCannon())
                 {
-                    items->m_PrevStackItem->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0,0,0), D3DXVECTOR3(0,0,0),0,NULL);
+                    items->m_PrevStackItem->Damage(WEAPON_INSTANT_DEATH, D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 0), 0, NULL);
                 }
             }
         }

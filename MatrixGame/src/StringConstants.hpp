@@ -777,15 +777,19 @@
 
 #define IF_LEAVE_ROBOT                          L"lero"
 #define IF_ENTER_ROBOT                          L"inro"
-    
+
+//–ежимы автоматического поведени€ дл€ робота игрока
 #define IF_AORDER_CAPTURE_OFF                   L"oacapf"
 #define IF_AORDER_CAPTURE_ON                    L"oacapn"
 #define IF_AORDER_PROTECT_OFF                   L"oafcf"
 #define IF_AORDER_PROTECT_ON                    L"oafcn"
 #define IF_AORDER_FROBOT_OFF                    L"oafrf"
 #define IF_AORDER_FROBOT_ON                     L"oafrn"
+//ћаркер активации режима автоподрыва бомбы при нулевом здоровье
+#define IF_AUTO_ORDER_BOMB_OFF                  L"oabombf"
+#define IF_AUTO_ORDER_BOMB_ON                   L"oabombn"
 
-#define IF_ZAGLUSHKA1                            L"zagl1"
+#define IF_ZAGLUSHKA1                           L"zagl1"
 
 #define IF_TITAN_PLANT                          L"titpl"
 #define IF_PLASMA_PLANT                         L"plaspl"

@@ -1439,7 +1439,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
 
                 while(o)
                 {
-                    if(o->GetSide() == PLAYER_SIDE && o->IsLiveRobot() && !o->AsRobot()->IsCrazy())
+                    if(o->GetSide() == PLAYER_SIDE && o->IsRobotAlive() && !o->AsRobot()->IsCrazy())
                     {
                         ps->GetCurSelGroup()->AddObject(o, -4);
                     }
@@ -1479,7 +1479,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     }
                     else if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_ATTACK]) & 0x8000) == 0x8000))
                     {
-                        //a"U"to attack - Программа атаки.
+                        //a"U"to attack - Автоматическая программа атаки
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON))
                         {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
@@ -1494,7 +1494,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     }
                     else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_CAPTURE]) & 0x8000) == 0x8000)
                     {
-                        //"C"apture - Программа захвата.
+                        //"C"apture - Автоматическая программа захвата
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_CAPTURE_ON))
                         {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
@@ -1509,7 +1509,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     }
                     else if((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTOORDER_DEFEND]) & 0x8000) == 0x8000)
                     {
-                        //"D"efender - Программа Охранять Protect
+                        //"D"efender - Автоматическая программа защиты
                         if(FLAG(g_IFaceList->m_IfListFlags, AUTO_PROTECT_ON))
                         {
                             RESETFLAG(g_IFaceList->m_IfListFlags, AUTO_FROBOT_ON|AUTO_CAPTURE_ON|AUTO_PROTECT_ON);
@@ -1592,7 +1592,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                                 CMatrixMapStatic* ms = CMatrixMapStatic::GetFirstLogic();
                                 for(; ms; ms = ms->GetNextLogic())
                                 {
-                                    if(ms == ps->m_ActiveObject && ms->IsLiveBuilding() && ms->AsBuilding()->m_Side == PLAYER_SIDE)
+                                    if(ms == ps->m_ActiveObject && ms->IsBuildingAlive() && ms->AsBuilding()->m_Side == PLAYER_SIDE)
                                     {
                                         ms->AsBuilding()->CreatePlacesShow();
                                         break;
@@ -1830,7 +1830,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             {
                 //","
                 CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
-                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot())
+                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsRobotAlive())
                 {
                     obj = ps->GetCurGroup()->m_FirstObject->GetObject()->GetPrevLogic();
                 }
@@ -1839,7 +1839,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 {
                     if(obj)
                     {
-                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE)
+                        if(obj->IsRobotAlive() && obj->GetSide() == PLAYER_SIDE)
                         {
                             ps->GetCurSelGroup()->RemoveAll();
                             ps->CreateGroupFromCurrent(obj);
@@ -1864,7 +1864,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
             {
                 //"." 
                 CMatrixMapStatic* obj = CMatrixMapStatic::GetFirstLogic();
-                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot())
+                if(ps->GetCurGroup() && ps->GetCurGroup()->GetObjectsCnt() == 1 && ps->GetCurGroup()->m_FirstObject->GetObject()->IsRobotAlive())
                 {
                     obj = ps->GetCurGroup()->m_FirstObject->GetObject()->GetNextLogic();
                 }
@@ -1874,7 +1874,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                 {
                     if(obj)
                     {
-                        if(obj->IsLiveRobot() && obj->GetSide() == PLAYER_SIDE)
+                        if(obj->IsRobotAlive() && obj->GetSide() == PLAYER_SIDE)
                         {
                             ps->GetCurSelGroup()->RemoveAll();
                             ps->CreateGroupFromCurrent(obj);
@@ -2025,7 +2025,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan)
                     if(o->GetSide() == PLAYER_SIDE)
                     {
                         //Возвращаем (выбираем) группу с роботом-ами
-                        if(o->IsLiveRobot() && o->AsRobot()->GetCtrlGroup() == scan)
+                        if(o->IsRobotAlive() && o->AsRobot()->GetCtrlGroup() == scan)
                         {
                             if(!prev_unselected)
                             {

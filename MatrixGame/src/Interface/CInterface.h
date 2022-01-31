@@ -23,8 +23,8 @@ class CMatrixHint;
 #define NORMAL_RAMKA    0xFFB6E68B
 
 //Interface flags
-#define INTERFACE_SLIDE_LEFT SETBIT(0)
-#define INTERFACE_SLIDE_RIGHT SETBIT(1)
+#define INTERFACE_SLIDE_LEFT        SETBIT(0)
+#define INTERFACE_SLIDE_RIGHT       SETBIT(1)
 //#define INTERFACE_SLIDE_UP SETBIT(2)
 //#define INTERFACE_SLIDE_DOWN SETBIT(3)
 #define SLIDE_MAX_SPEED     1
@@ -33,21 +33,19 @@ class CMatrixHint;
 
 //Interface-list flags
 #define FACTORY_PANEL2_ACTIVE       SETBIT(0)
-#define AUTO_FROBOT_ON              SETBIT(1)
-#define AUTO_PROTECT_ON             SETBIT(2)
-#define AUTO_CAPTURE_ON             SETBIT(3)
-#define FLYER_TRACK_DOWN            SETBIT(4)
-#define ORDERING_MODE               SETBIT(5)
-#define SINGLE_MODE                 SETBIT(6)
-#define MINIMAP_BUTTON_DOWN         SETBIT(7)
-#define MINIMAP_ENABLE_DRAG         SETBIT(8)
-#define POPUP_MENU_ACTIVE           SETBIT(9)
-//#define TURRET_BUILD_MODE           SETBIT(10)
-//#define FLYER_BUILD_MODE            SETBIT(11)
-//Оригинальные номера пересекались с уже существующими
-//#define TURRET_BUILD_MODE           SETBIT(7)
-//#define FLYER_BUILD_MODE            SETBIT(8)
-//
+#define AUTO_FROBOT_ON              SETBIT(1) //Активирован режим автоматической атаки
+#define AUTO_PROTECT_ON             SETBIT(2) //Активирован режим автоматической защиты
+#define AUTO_CAPTURE_ON             SETBIT(3) //Активирован режим автоматического захвата
+#define AUTO_BOOM_ON                SETBIT(4) //Активирован режим автоматического подрыва бомбы при нулевом здоровье
+#define FLYER_TRACK_DOWN            SETBIT(5)
+#define ORDERING_MODE               SETBIT(6)
+#define SINGLE_MODE                 SETBIT(7)
+#define MINIMAP_BUTTON_DOWN         SETBIT(8)
+#define MINIMAP_ENABLE_DRAG         SETBIT(9)
+#define POPUP_MENU_ACTIVE           SETBIT(10)
+//#define TURRET_BUILD_MODE           SETBIT(11)
+//#define FLYER_BUILD_MODE            SETBIT(12)
+
 #define PREORDER_FIRE               SETBIT(16)
 #define PREORDER_MOVE               SETBIT(17)
 #define PREORDER_PATROL             SETBIT(18)
@@ -236,6 +234,7 @@ public:
     bool OnMouseMove(CPoint);
 	void OnMouseLBUp();
 	bool OnMouseLBDown();
+    void OnMouseRBUp();
     bool OnMouseRBDown();
 
     void MoveUp();

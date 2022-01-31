@@ -371,19 +371,19 @@ public:
         CMatrixMapStatic *GetNextLogic(void) {return m_NextLogicTemp;}
         CMatrixMapStatic *GetPrevLogic(void) {return m_PrevLogicTemp;}
 
-        bool IsBase(void) const ;
+        bool IsBase(void) const;
         __forceinline bool IsRobot(void) const {return GetObjectType() == OBJECT_TYPE_ROBOTAI;};
-        bool IsLiveRobot(void) const;
+        bool IsRobotAlive(void) const;
         __forceinline bool IsBuilding(void) const {return GetObjectType() == OBJECT_TYPE_BUILDING;};
-        bool IsLiveBuilding(void) const;
+        bool IsBuildingAlive(void) const;
         __forceinline bool IsCannon(void) const {return GetObjectType() == OBJECT_TYPE_CANNON;};
-        bool IsLiveCannon(void) const;
-        bool IsLiveActiveCannon(void) const;
+        bool IsCannonAlive(void) const;
+        bool IsActiveCannonAlive(void) const;
         
         __forceinline bool IsFlyer(void) const {return GetObjectType() == OBJECT_TYPE_FLYER;};
         __forceinline bool IsUnit(void) const {return IsRobot() || IsCannon();}
 
-        __forceinline bool IsLive(void) const {return IsLiveRobot() || IsLiveCannon() || IsLiveBuilding();}
+        __forceinline bool IsLive(void) const {return IsRobotAlive() || IsCannonAlive() || IsBuildingAlive();}
         //{ 
         //    if(obj->GetObjectType()==OBJECT_TYPE_ROBOTAI) return obj->AsRobot()->m_CurrState!=ROBOT_DIP;// && (obj->AsRobot()->GetSide()!=PLAYER_SIDE || !obj->AsRobot()->IsSelected()) && (g_MatrixMap->GetPlayerSide()->GetArcadedObject() != obj);
         //    else if(obj->GetObjectType()==OBJECT_TYPE_CANNON) return obj->AsCannon()->m_CurrState!=CANNON_DIP && obj->AsCannon()->m_CurrState!=CANNON_UNDER_CONSTRUCTION; 

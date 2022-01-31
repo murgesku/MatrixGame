@@ -10,8 +10,6 @@
 #include "MatrixProgressBar.hpp"
 #include "Effects/MatrixEffect.hpp"
 
-
-
 class CMatrixFlyer;
 
 enum ERobotState
@@ -123,15 +121,15 @@ struct SMatrixRobotUnit
 {
 	ERobotUnitType m_Type;		// 0-empty 1-Шасси 2-Оружие 3-Броня 4-голова
 
-	CVectorObjectAnim * m_Graph;
+	CVectorObjectAnim *m_Graph;
 	D3DXMATRIX m_Matrix;
 
     union
     {
         struct
         {
-            SWeaponRepairData * m_WeaponRepairData;
-	        CVOShadowStencil  * m_ShadowStencil;
+            SWeaponRepairData *m_WeaponRepairData;
+	        CVOShadowStencil  *m_ShadowStencil;
 	        ERobotUnitKind      m_Kind;
             float               m_NextAnimTime;
 	        float   m_Angle;
@@ -171,19 +169,20 @@ class CMatrixRobot : public CMatrixMapStatic
 		CMatrixBuilding *m_Base; //база из который вышел робот
 
 protected:
-        // hitpoint
+        //hitpoint
         CMatrixProgressBar m_PB;
         int         m_ShowHitpointTime;
         float       m_HitPoint;
-	    float       m_HitPointMax;  // Максимальное кол-во здоровья
+        float       m_HitPointMax;  // Максимальное кол-во здоровья
         float       m_MaxHitPointInversed; // for normalized calcs
 
+        static      SPneumaticData *m_Pneumaic;
 
-        static      SPneumaticData* m_Pneumaic;
+        bool        m_AutoBoom;
 
         //DWORD       m_RobotFlags; // m_ObjectState used instead. do not uncomment!
 public:
-		
+
 	    EShadowType     m_ShadowType; // 0-off 1-proj 2-proj with anim 3-stencil
         int             m_ShadowSize; // texture size for proj
 
@@ -192,7 +191,7 @@ public:
 
         float m_Speed;
         float m_RotSpeed;
-        float m_PosX,m_PosY;
+        float m_PosX, m_PosY;
 
 		int m_Side;		// 1-8
 
@@ -222,7 +221,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-		CVOShadowProj * m_ShadowProj;
+		CVOShadowProj *m_ShadowProj;
 
 		ERobotState m_CurrState;
 
@@ -235,14 +234,24 @@ public:
 
         int m_MiniMapFlashTime;
 
-	public:
 		CMatrixRobot(void);
 		~CMatrixRobot();
 
 
-        void    ShowHitpoint(void) {m_ShowHitpointTime = HITPOINT_SHOW_TIME;}
-        float   GetHitPoint(void) const {return m_HitPoint/10;}
-        float   GetMaxHitPoint() { return m_HitPointMax/10; }
+        void ShowHitpoint(void) { m_ShowHitpointTime = HITPOINT_SHOW_TIME; }
+        //Добавил функцию, чтобы иметь возможность чинить роботов напрямую из логики зданий, Klaxons
+        void ModifyHitpoints(int num)
+        {
+            m_HitPoint += num;
+            if(m_HitPoint > m_HitPointMax)
+            {
+                m_HitPoint = m_HitPointMax;
+            }
+            m_PB.Modify(m_HitPoint * m_MaxHitPointInversed);
+        }
+
+        float   GetHitPoint(void) const {return m_HitPoint / 10;}
+        float   GetMaxHitPoint() { return m_HitPointMax / 10; }
         void    InitMaxHitpoint(float hp) {m_HitPoint = hp; m_HitPointMax = hp; m_MaxHitPointInversed = 1.0f / hp;}
 
 
@@ -250,29 +259,29 @@ public:
         void    UnMarkCrazy(void) {RESETFLAG(m_ObjectState, ROBOT_CRAZY);}
         bool    IsCrazy(void) const {return FLAG(m_ObjectState, ROBOT_CRAZY);}
 
-        void    MarkInPosition(void) {SETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
-        void    UnMarkInPosition(void) {RESETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
-        bool    IsInPosition(void) const {return FLAG(m_ObjectState, ROBOT_FLAG_INPOSITION);}
+        void    MarkInPosition(void) { SETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
+        void    UnMarkInPosition(void) { RESETFLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
+        bool    IsInPosition(void) const { return FLAG(m_ObjectState, ROBOT_FLAG_INPOSITION); }
 
-        bool    IsMustDie(void) const {return FLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);}
+        bool    IsMustDie(void) const { return FLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG); }
         void    MustDie(void)
         {
             SETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);
         }
-        void    ResetMustDie(void) { RESETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG);}
+        void    ResetMustDie(void) { RESETFLAG(m_ObjectState, ROBOT_MUST_DIE_FLAG); }
 
-        void    MarkCaptureInformed(void) {SETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
-        void    UnMarkCaptureInformed(void) {RESETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
-        bool    IsCaptureInformed(void) const {return FLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED);}
+        void    MarkCaptureInformed(void) { SETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
+        void    UnMarkCaptureInformed(void) { RESETFLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
+        bool    IsCaptureInformed(void) const { return FLAG(m_ObjectState, ROBOT_CAPTURE_INFORMED); }
         
 
 
-        void SetBase(CMatrixBuilding* b)
+        void SetBase(CMatrixBuilding *b)
         {
             m_Base = b;
             m_TimeWithBase = 0;
         }
-        CMatrixBuilding* GetBase(void) const
+        CMatrixBuilding *GetBase(void) const
         {
             return m_Base;
         }
@@ -286,7 +295,6 @@ public:
 
         bool Carry(CMatrixFlyer *cargo, bool quick_connect = false); // NULL to off
         void ClearSelection(void);
-	
 
         static void BuildPneumaticData(CVectorObject *vo);
         static void DestroyPneumaticData(void);
@@ -305,20 +313,20 @@ public:
         void UnitDelete(int nounit);
 		void UnitClear(void);
 
-		void BoundGet(D3DXVECTOR3 & bmin,D3DXVECTOR3 & bmax);
+        void BoundGet(D3DXVECTOR3& bmin, D3DXVECTOR3& bmax);
 
         void WeaponSelectMatrix(void);
 
         void DoAnimation(int cms);
 
-        virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker) = 0;
-		virtual void RNeed(dword need);
+        virtual bool Damage(EWeapon weap, const D3DXVECTOR3& pos, const D3DXVECTOR3& dir, int attacker_side, CMatrixMapStatic* attaker) = 0;
+        virtual void RNeed(dword need);
 
 		virtual void Takt(int cms);
         virtual void LogicTakt(int cms) = 0;
 
-		virtual bool Pick(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
-        bool         PickFull(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,float * outt)  const;
+        virtual bool Pick(const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, float* outt)  const;
+        bool         PickFull(const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, float* outt)  const;
 
 		virtual void BeforeDraw(void);
 		virtual void Draw(void);
@@ -329,15 +337,18 @@ public:
 
         void OnLoad(void) {};
 
-        virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
-        virtual int  GetSide(void) const {return m_Side;};
-        virtual bool NeedRepair(void) const {return m_HitPoint < m_HitPointMax;}
-        virtual bool InRect(const CRect &rect)const;
+        virtual bool CalcBounds(D3DXVECTOR3& omin, D3DXVECTOR3& omax);
+        virtual int  GetSide(void) const { return m_Side; };
+        virtual bool NeedRepair(void) const { return m_HitPoint < m_HitPointMax; }
+        virtual bool InRect(const CRect& rect)const;
 
         void    OnOutScreen(void) {};
+
+        bool AutoBoomSet() { return m_AutoBoom; }
+        void AutoBoomSet(bool set) { m_AutoBoom = set; }
 };
 
-__forceinline bool CMatrixMapStatic::IsLiveRobot(void) const
+__forceinline bool CMatrixMapStatic::IsRobotAlive(void) const
 {
     return IsRobot() && ((CMatrixRobot*)this)->m_CurrState != ROBOT_DIP;
 }

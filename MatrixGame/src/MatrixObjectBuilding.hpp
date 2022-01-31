@@ -86,8 +86,8 @@ enum EBaseState
 enum ECaptureStatus
 {
     CAPTURE_DONE,       // захват данным цветом завершен
-    CAPTURE_INPROGRESS, // в процессе
-    CAPTURE_TOOFAR,     // робот далеко. подъедь ближе
+    CAPTURE_IN_PROGRESS,// в процессе
+    CAPTURE_TOO_FAR,    // робот далеко. подъедь ближе
     CAPTURE_BUSY,       // база занята делами. обратитесь позже
 };
 
@@ -113,16 +113,16 @@ class CBuildStack : public CMain
 {
     int                 m_Items;
     int                 m_Timer;
-    CMatrixMapStatic*   m_Top;
-    CMatrixMapStatic*   m_Bottom;
-    CMatrixBuilding*    m_ParentBase;
+    CMatrixMapStatic   *m_Top;
+    CMatrixMapStatic   *m_Bottom;
+    CMatrixBuilding    *m_ParentBase;
     CMatrixProgressBar  m_PB;
 public:
-    void AddItem(CMatrixMapStatic* item);
+    void AddItem(CMatrixMapStatic *item);
     int DeleteItem(int no);
-    void DeleteItem(CMatrixMapStatic* item);
+    void DeleteItem(CMatrixMapStatic *item);
     void ClearStack();
-    CMatrixMapStatic* GetTopItem()                                  { return m_Top; }
+    CMatrixMapStatic *GetTopItem()                                  { return m_Top; }
     void TickTimer(int ms);                                          
     int GetItemsCnt(void) const                                     { return m_Items; }
 
@@ -166,7 +166,7 @@ class CMatrixBuilding : public CMatrixMapStatic
 {
     union
     {
-        struct // dip
+        struct //dip
         {
             int m_NextExplosionTime;
             int m_NextExplosionTimeSound;
@@ -174,11 +174,11 @@ class CMatrixBuilding : public CMatrixMapStatic
         struct 
         {
             int m_ResourcePeriod;
-            SEffectHandler* m_PlacesShow;
+            SEffectHandler *m_PlacesShow;
         };
     };
 
-    CMatrixEffectSelection* m_Selection;
+    CMatrixEffectSelection *m_Selection;
     int m_UnderAttackTime;
     int m_CaptureMeNextTime;
     int m_CtrlGroup;
@@ -259,14 +259,14 @@ public:
     float m_BaseFloor;
     float m_BuildZ;
 
-	CVectorObjectGroup* m_GGraph;
-	CMatrixShadowProj* m_ShadowProj;
+	CVectorObjectGroup *m_GGraph;
+	CMatrixShadowProj *m_ShadowProj;
 
     EBaseState m_State; 
 
-    CMatrixEffectZahvat* m_capture;
+    CMatrixEffectZahvat *m_capture;
     STrueColor m_TrueColor;
-    ECaptureStatus Capture(CMatrixRobotAI* by);
+    ECaptureStatus Capture(CMatrixRobotAI *by);
 
     int m_InCaptureTime;
     union
@@ -276,7 +276,7 @@ public:
     };
     int                 m_InCaptureNextTimePaint;
     int                 m_CaptureSeekRobotNextTime;
-    CMatrixMapStatic*   m_Capturer; // used only for check
+    CMatrixMapStatic   *m_Capturer; // used only for check
 
     // hitpoint
     CMatrixProgressBar m_PB;
@@ -292,7 +292,7 @@ public:
     //}
 
     int GetStackRobots(void) const        { return m_BS.GetRobotsCnt();}
-public:
+
 	EShadowType     m_ShadowType; // 0-off 1-proj 2-proj with anim 3-stencil
     int             m_ShadowSize; // texture size for proj
 
@@ -328,9 +328,9 @@ public:
         return m_State;
     }
 
-    bool IsSpawningBot(void) const {return FLAG(m_ObjectState, BUILDING_SPAWNBOT);};
-    void ResetSpawningBot(void) { RESETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
-    void SetSpawningBot(void) { SETFLAG(m_ObjectState, BUILDING_SPAWNBOT);};
+    bool IsSpawningBot(void) const { return FLAG(m_ObjectState, BUILDING_SPAWNBOT); };
+    void ResetSpawningBot(void) { RESETFLAG(m_ObjectState, BUILDING_SPAWNBOT); };
+    void SetSpawningBot(void) { SETFLAG(m_ObjectState, BUILDING_SPAWNBOT); };
 
     void ShowHitpoint(void)
     {
@@ -354,7 +354,7 @@ public:
 
     void SetNeutral(void);
 
-    D3DXVECTOR3 GetPlacePos(void) const { return m_GGraph->GetPosByName(MATRIX_BASE_PLACE);}
+    D3DXVECTOR3 GetPlacePos(void) const { return m_GGraph->GetPosByName(MATRIX_BASE_PLACE); }
 
 	virtual void RNeed(dword need); // Запрашиваем нужные ресурсы объекта
 
@@ -371,7 +371,7 @@ public:
     bool Select(void);
     void UnSelect(void);
 
-	virtual bool Pick(const D3DXVECTOR3& orig, const D3DXVECTOR3& dir, float* outt) const;
+	virtual bool Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *outt) const;
 
     virtual bool Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side, CMatrixMapStatic* attaker);
 	virtual void BeforeDraw(void);
@@ -392,7 +392,7 @@ public:
     void    OnOutScreen(void);
 
     // STUB:
-    int  GetPlacesForTurrets(CPoint* places);
+    int  GetPlacesForTurrets(CPoint *places);
     void CreatePlacesShow();
     void DeletePlacesShow();
 };
@@ -406,9 +406,7 @@ __forceinline bool CMatrixMapStatic::IsBase(void) const
     return false;
 }
 
-__forceinline bool CMatrixMapStatic::IsLiveBuilding(void) const
+__forceinline bool CMatrixMapStatic::IsBuildingAlive(void) const
 {
     return IsBuilding() && ((CMatrixBuilding*)this)->m_State!=BUILDING_DIP && ((CMatrixBuilding*)this)->m_State != BUILDING_DIP_EXPLODED;
 }
-
-

@@ -73,9 +73,9 @@
 
 __forceinline bool CMatrixMapStatic::FitToMask(DWORD mask)
 {
-    if (IsLiveRobot()) return (mask & TRACE_ROBOT) != 0;
-    if (IsLiveCannon()) return (mask & TRACE_CANNON) != 0;
-    if (IsLiveBuilding()) return (mask & TRACE_BUILDING) != 0;
+    if (IsRobotAlive()) return (mask & TRACE_ROBOT) != 0;
+    if (IsCannonAlive()) return (mask & TRACE_CANNON) != 0;
+    if (IsBuildingAlive()) return (mask & TRACE_BUILDING) != 0;
     if (GetObjectType() == OBJECT_TYPE_MAPOBJECT) return (mask & TRACE_OBJECT) != 0;
     if (IsFlyer()) return (mask & TRACE_FLYER) != 0;
     return false;

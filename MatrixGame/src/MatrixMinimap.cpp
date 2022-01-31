@@ -493,7 +493,7 @@ void CMinimap::DrawRadar(float x, float y, float radius)
         switch (ms->GetObjectType())
         {
             case OBJECT_TYPE_ROBOTAI:
-                if (!ms->IsLiveRobot()) continue;
+                if (!ms->IsRobotAlive()) continue;
                 if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == ms) continue;
                 if (r2 < D3DXVec2LengthSq(&(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter())))
                 {
@@ -513,7 +513,7 @@ void CMinimap::DrawRadar(float x, float y, float radius)
                 r = MINIMAP_FLYER_R;
                 break;
             case OBJECT_TYPE_BUILDING:
-                if (!ms->IsLiveBuilding()) continue;
+                if (!ms->IsBuildingAlive()) continue;
                 if (r2 < D3DXVec2LengthSq(&(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter())))
                 {
                     continue;
@@ -529,7 +529,7 @@ void CMinimap::DrawRadar(float x, float y, float radius)
                 }
                 break;
             case OBJECT_TYPE_CANNON:
-                if (!ms->IsLiveCannon())
+                if (!ms->IsCannonAlive())
                 {
                     continue;
                 }
@@ -683,7 +683,7 @@ void CMinimap::Draw(void)
         switch (ms->GetObjectType())
         {
             case OBJECT_TYPE_ROBOTAI:
-                if (!ms->IsLiveRobot()) continue;
+                if (!ms->IsRobotAlive()) continue;
                 tex = MMT_ROBOT;
                 r = MINIMAP_ROBOT_R;
                 if (ms->AsRobot()->m_MiniMapFlashTime > 0)
@@ -695,7 +695,7 @@ void CMinimap::Draw(void)
                 r = MINIMAP_FLYER_R;
                 break;
             case OBJECT_TYPE_BUILDING:
-                if (!ms->IsLiveBuilding()) continue;
+                if (!ms->IsBuildingAlive()) continue;
                 if (ms->IsBase())
                 {
                     tex = MMT_BASE;
@@ -707,7 +707,7 @@ void CMinimap::Draw(void)
                 }
                 break;
             case OBJECT_TYPE_CANNON:
-                if (!ms->IsLiveCannon()) continue;
+                if (!ms->IsCannonAlive()) continue;
                 tex = MMT_TURRET;
                 r = MINIMAP_CANNON_R;
 
@@ -1152,7 +1152,7 @@ render:
     CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
     while(ms!=NULL)
     {
-        if (ms->IsLiveBuilding())
+        if (ms->IsBuildingAlive())
         {
             ((CMatrixBuilding *)ms)->LogicTakt(100000);
             ms->RNeed(MR_Matrix|MR_Graph|MR_MiniMap);

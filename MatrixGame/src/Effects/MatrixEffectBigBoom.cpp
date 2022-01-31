@@ -281,7 +281,7 @@ static bool BoomEnumNaklon(const D3DXVECTOR3 & center, CMatrixMapStatic *ms, DWO
 {
 
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
-    if (ms->IsLiveRobot())
+    if (ms->IsRobotAlive())
     {
         D3DXVECTOR3 anorm;
         D3DXVec3Normalize(&anorm, &(ms->GetGeoCenter()-center));

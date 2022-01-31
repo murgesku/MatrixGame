@@ -802,64 +802,63 @@ bool CMatrixMap::UnitPickGrid(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir,
 	return true;
 }
 
-bool CMatrixMap::UnitPickWorld(const D3DXVECTOR3 & orig, const D3DXVECTOR3 & dir, float * ox, float * oy)
+bool CMatrixMap::UnitPickWorld(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *ox, float *oy)
 {
-	D3DXPLANE pl;
-	D3DXPlaneFromPoints(&pl,&D3DXVECTOR3(0,0,0),&D3DXVECTOR3(1.0f,0,0),&D3DXVECTOR3(0,1.0f,0));
-//	D3DXPlaneNormalize(&pl,&pl);
+    D3DXPLANE pl;
+    D3DXPlaneFromPoints(&pl, &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(1.0f, 0, 0), &D3DXVECTOR3(0, 1.0f, 0));
+    //D3DXPlaneNormalize(&pl,&pl);
 
-	D3DXVECTOR3 v;
-	if(D3DXPlaneIntersectLine(&v,&pl,&orig,&(orig+dir*1000000.0f))==NULL) return false;
+    D3DXVECTOR3 v;
+    if(D3DXPlaneIntersectLine(&v, &pl, &orig, &(orig + dir * 1000000.0f)) == NULL) return false;
 
-	if(ox!=NULL) *ox=v.x;
-	if(oy!=NULL) *oy=v.y;
+    if(ox != NULL) *ox = v.x;
+    if(oy != NULL) *oy = v.y;
 
-	return true;
+    return true;
 }
 
 void CMatrixMap::StaticClear(void)
 {
     DTRACE();
 
-    for(;m_AllObjects.Len() > 0;)
+    for(; m_AllObjects.Len() > 0; )
     {
         StaticDelete(*m_AllObjects.Buff<CMatrixMapStatic *>());
     }
 
     CMatrixMapObject::ClearTextures();
-    
 }
 
 #ifdef _DEBUG
 #include "stdio.h"
 #endif
 
-void CMatrixMap::StaticDelete(CMatrixMapStatic * ms)
+void CMatrixMap::StaticDelete(CMatrixMapStatic *ms)
 {
     DTRACE();
 
-    if (ms->IsDIP()) return; // already deleted
+    if(ms->IsDIP()) return; // already deleted
     ms->SetDIP();
 
-    if (m_NextLogicObject == ms) 
+    if(m_NextLogicObject == ms) 
     {
         m_NextLogicObject = ms->GetNextLogic();
     }
 
     CMatrixMapStatic::RemoveFromSorted(ms);
 
-    CMatrixMapStatic ** sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic ** se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    CMatrixMapStatic ** ses = se - 1;
+    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
+    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
+    CMatrixMapStatic **ses = se - 1;
 
 	if(ms->InLT())
     {
         ms->DelLT();
-        // remove this object from end of array
-        while (sb < se)
+        //remove this object from end of array
+        while(sb < se)
         {
             --se;
-            if (*se == ms && ses != se)
+            if(*se == ms && ses != se)
             {
                 *se = *ses;
             }
@@ -868,16 +867,16 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic * ms)
     else
     {
         // remove this object from begin of array
-        while (sb < se)
+        while(sb < se)
         {
-            if (*sb == ms && ses != sb)
+            if(*sb == ms && ses != sb)
             {
                 *sb = *ses;
             }
             ++sb;
         }
     }
-    m_AllObjects.SetLenNoShrink(m_AllObjects.Len() - sizeof(CMatrixMapStatic *));
+    m_AllObjects.SetLenNoShrink(m_AllObjects.Len() - sizeof(CMatrixMapStatic*));
 
 //#ifdef _DEBUG
 //    CWStr c(L"Del obj ");
@@ -2639,7 +2638,7 @@ bool    CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float osca
 
 
     ++intercount;
-    if (intercount != 1)
+    if(intercount != 1)
     {
         ERROR_S(L"CMatrixMap::FindObjects cannot be called recursively");
     }
@@ -2693,7 +2692,7 @@ bool    CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float osca
         for(int y = miny1; y<=maxy1; ++y)
         {
             PCMatrixMapGroup g = GetGroupByIndex(x,y);
-            if (g == NULL) continue;
+            if(g == NULL) continue;
             int i = 0;
             CMatrixMapStatic *ms;
             CMatrixMapStatic *ms2 = NULL;
@@ -2731,7 +2730,7 @@ bool    CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float osca
                 hit = true;
                 if(callback)
                 {
-                    if (!callback(pos, ms, user))
+                    if(!callback(pos, ms, user))
                     {
 #ifdef _DEBUG
     --intercount;

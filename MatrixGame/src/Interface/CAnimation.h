@@ -6,7 +6,8 @@
 class CIFaceStatic;
 class CIFaceElement;
 
-struct SFrame{
+struct SFrame
+{
     float pos_x;
     float pos_y;
     float pos_z;
@@ -20,21 +21,21 @@ struct SFrame{
     float tex_pos_y;
     
     //CWStr name;
-    CTextureManaged* tex;
+    CTextureManaged *tex;
     float ipos_x;
     float ipos_y;
-
 };
 
 
-class CAnimation : public CMain {
+class CAnimation : public CMain
+{
     int m_Period;
     int m_Frames;
     int m_CurrentFrame;
     int m_FramesLoaded;
     int m_TimePass;
 
-    CIFaceStatic* m_FramesBuffer;
+    CIFaceStatic *m_FramesBuffer;
 public:
     int GetFramesTotal()                                        { return m_Frames; }
     int GetFramesLoaded()                                       { return m_FramesLoaded; }
@@ -42,7 +43,7 @@ public:
     CIFaceElement* GetCurrentFrame();                            
 
     void LogicTakt(int ms);
-    bool LoadNextFrame(SFrame * frame);
+    bool LoadNextFrame(SFrame *frame);
 
     void RecalcPos(const float &ix, const float &y);
 
