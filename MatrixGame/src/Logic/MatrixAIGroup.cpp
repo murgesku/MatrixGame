@@ -202,8 +202,7 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object)
             FindNearObjects(gr_objects);
         }
         gr_objects = gr_objects->m_NextObject;
-    }
-        
+    } 
 }
 
 /*
@@ -238,7 +237,7 @@ void CMatrixGroup::InstallTactics(TacticsType type, CBlockPar *par)
     }
 
     int tactics_cnt = par->BlockCount();
-    if (tactics_cnt <= 0) return;
+    if(tactics_cnt <= 0) return;
 
     //Tactics loading
     for(int cnt = 0; cnt < tactics_cnt; ++cnt)
@@ -415,7 +414,7 @@ bool CMatrixGroup::RemoveObject(int num)
     return false;
 }
 
-bool CMatrixGroup::FindObject(CMatrixMapStatic* object)
+bool CMatrixGroup::FindObject(CMatrixMapStatic *object)
 {
     DTRACE();
     CMatrixGroupObject *objects = m_FirstObject;

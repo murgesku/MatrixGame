@@ -1731,10 +1731,10 @@ void CInterface::Init(void)
                     int bombers_cnt = 0;
                     int repairers_cnt = 0;  
 
-                    CMatrixGroupObject* objs = work_group->m_FirstObject;
+                    CMatrixGroupObject *objs = work_group->m_FirstObject;
                     while(objs)
                     {
-                        CMatrixRobotAI* robot = objs->GetObject()->AsRobot();
+                        CMatrixRobotAI *robot = objs->GetObject()->AsRobot();
                         if(objs->GetObject()->IsRobot())
                         {
                             if(robot->FindWeapon(WEAPON_BIGBOOM))
