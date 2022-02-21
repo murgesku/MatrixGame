@@ -2,7 +2,7 @@ add_library(3G STATIC)
 
 set(3G_SOURCES
     src/stdafx.h
-    src/3G.cpp
+    src/3g.cpp
     src/BigIB.cpp
     src/BigVB.cpp
     src/Cache.cpp
@@ -17,7 +17,7 @@ set(3G_SOURCES
     src/VectorObject.cpp
 )
 set(3G_HEADERS
-    include/3G.hpp
+    include/3g.hpp
     include/BigIB.hpp
     include/BigVB.hpp
     include/Cache.hpp
