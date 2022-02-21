@@ -23,10 +23,10 @@ endif()
 
 add_subdirectory(MatrixGame)
 
-if(MSVC)
-    target_link_libraries(MatrixGame winmm.lib)
-    target_link_libraries(MatrixGame ${DIRECTX9_LIBRARIES})
+target_link_libraries(MatrixGame winmm)
+target_link_libraries(MatrixGame ${DIRECTX9_LIBRARIES})
 
+if(MSVC)
     set(COMPILE_OPTIONS
         $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /MT /Zp1 /GS- /Gy- /Gr>
         $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /MTd /Zp1 /Gr>
@@ -43,21 +43,17 @@ if(MSVC)
     if(NOT MATRIXGAME_BUILD_DLL)
         target_compile_definitions(MatrixGame PUBLIC $<$<CONFIG:Release>:EXE_VERSION>)
     endif()
-
-    if(MATRIXGAME_CHEATS)
-        target_compile_definitions(MatrixGame PRIVATE CHEATS_ON)
-    endif()
 endif()
 
-# add_subdirectory(MatrixLib/3G)
-# add_subdirectory(MatrixLib/Base)
-# add_subdirectory(MatrixLib/Bitmap)
+if(MATRIXGAME_CHEATS)
+    target_compile_definitions(MatrixGame PRIVATE CHEATS_ON)
+endif()
+
 add_subdirectory(MatrixLib)
 add_subdirectory(MatrixLib/DebugMsg)
 add_subdirectory(MatrixLib/FilePNG)
 add_subdirectory(ThirdParty/ZLib)
 
-# target_link_libraries(MatrixGame 3G Base Bitmap)
 target_link_libraries(MatrixGame MatrixLib)
 target_link_libraries(MatrixGame DebugMsg)
 target_link_libraries(MatrixGame FilePNG)
@@ -79,8 +75,11 @@ install(
     RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
     LIBRARY DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
 )
-install(
-    FILES $<TARGET_PDB_FILE:MatrixGame>
-    CONFIGURATIONS Debug
-    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
-)
+
+if(MSVC)
+    install(
+        FILES $<TARGET_PDB_FILE:MatrixGame>
+        CONFIGURATIONS Debug
+        DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
+    )
+endif()

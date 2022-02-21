@@ -6,7 +6,7 @@ endif()
 
 set(3G_SOURCES
     3G/src/stdafx.h
-    3G/src/3G.cpp
+    3G/src/3g.cpp
     3G/src/BigIB.cpp
     3G/src/BigVB.cpp
     3G/src/Cache.cpp
@@ -21,7 +21,7 @@ set(3G_SOURCES
     3G/src/VectorObject.cpp
 )
 set(3G_HEADERS
-    3G/include/3G.hpp
+    3G/include/3g.hpp
     3G/include/BigIB.hpp
     3G/include/BigVB.hpp
     3G/include/Cache.hpp
