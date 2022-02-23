@@ -1,20 +1,19 @@
 add_library(DebugMsg STATIC)
 
 set(DEBUGMSG_SOURCES
-    src/StdAfx.h
-    src/StdAfx.cpp
-    src/main.cpp
-    src/DebugMsg.cpp
-    src/FastBuf.cpp
-    src/SynBuf.cpp
+    Main.cpp
+    DebugMsg.cpp
+    FastBuf.cpp
+    SynBuf.cpp
 )
 set(DEBUGMSG_HEADERS
-    include/DebugMsg.h
-    include/Main.h
+    DebugMsg.pch
+    DebugMsg.h
+    Main.h
 )
 
 target_sources(DebugMsg PRIVATE ${DEBUGMSG_SOURCES} ${DEBUGMSG_HEADERS})
-target_include_directories(DebugMsg PUBLIC include)
+target_include_directories(DebugMsg PUBLIC .)
 
 if(MSVC)
     set(DEBUGMSG_COMPILE_OPTIONS

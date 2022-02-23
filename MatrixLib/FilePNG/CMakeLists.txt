@@ -1,12 +1,12 @@
 add_library(FilePNG STATIC)
 
-set(FILEPNG_SOURCES src/FilePNG.cpp)
-set(FILEPNG_HEADERS include/FilePNG.hpp)
+set(FILEPNG_SOURCES FilePNG.cpp)
+set(FILEPNG_HEADERS FilePNG.hpp)
 
 file(GLOB LIBPNG_SOURCES ../../ThirdParty/LibPNG/src/*.c)
 
 target_sources(FilePNG PRIVATE ${FILEPNG_SOURCES} ${FILEPNG_HEADERS})
-target_include_directories(FilePNG PUBLIC include)
+target_include_directories(FilePNG PUBLIC .)
 
 target_sources(FilePNG PRIVATE ${LIBPNG_SOURCES})
 target_include_directories(FilePNG PUBLIC ../../ThirdParty/LibPNG/include)

@@ -1,0 +1,18 @@
+// MatrixGame - SR2 Planetary battles engine
+// Copyright (C) 2012, Elemental Games, Katauri Interactive, CHK-Games
+// Licensed under GPLv2 or any later version
+// Refer to the LICENSE file included
+
+#if !defined(DEBUGMSG_PCH)
+#define DEBUGMSG_PCH
+
+#if _MSC_VER > 1000
+#pragma once
+#endif  // _MSC_VER > 1000
+
+#define WIN32_LEAN_AND_MEAN
+
+#include <windows.h>
+#include "Main.h"
+
+#endif 

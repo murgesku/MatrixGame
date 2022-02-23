@@ -5,87 +5,87 @@ if(MSVC)
 endif()
 
 set(3G_SOURCES
-    3G/src/stdafx.h
-    3G/src/3g.cpp
-    3G/src/BigIB.cpp
-    3G/src/BigVB.cpp
-    3G/src/Cache.cpp
-    3G/src/CBillboard.cpp
-    3G/src/DeviceState.cpp
-    3G/src/Form.cpp
-    3G/src/Helper.cpp
-    3G/src/Math3D.cpp
-    3G/src/ShadowProj.cpp
-    3G/src/ShadowStencil.cpp
-    3G/src/Texture.cpp
-    3G/src/VectorObject.cpp
+    3G/3g.cpp
+    3G/BigIB.cpp
+    3G/BigVB.cpp
+    3G/Cache.cpp
+    3G/CBillboard.cpp
+    3G/DeviceState.cpp
+    3G/Form.cpp
+    3G/Helper.cpp
+    3G/Math3D.cpp
+    3G/ShadowProj.cpp
+    3G/ShadowStencil.cpp
+    3G/Texture.cpp
+    3G/VectorObject.cpp
 )
 set(3G_HEADERS
-    3G/include/3g.hpp
-    3G/include/BigIB.hpp
-    3G/include/BigVB.hpp
-    3G/include/Cache.hpp
-    3G/include/CBillboard.hpp
-    3G/include/D3DControl.hpp
-    3G/include/DeviceState.hpp
-    3G/include/Form.hpp
-    3G/include/Helper.hpp
-    3G/include/Math3D.hpp
-    3G/include/ShadowProj.hpp
-    3G/include/ShadowStencil.hpp
-    3G/include/Texture.hpp
-    3G/include/VectorObject.hpp
+    3G/3g.pch
+    3G/3g.hpp
+    3G/BigIB.hpp
+    3G/BigVB.hpp
+    3G/Cache.hpp
+    3G/CBillboard.hpp
+    3G/D3DControl.hpp
+    3G/DeviceState.hpp
+    3G/Form.hpp
+    3G/Helper.hpp
+    3G/Math3D.hpp
+    3G/ShadowProj.hpp
+    3G/ShadowStencil.hpp
+    3G/Texture.hpp
+    3G/VectorObject.hpp
 )
 set(BASE_SOURCES
-    Base/src/stdafx.h
-    Base/src/CBlockPar.cpp
-    Base/src/CBuf.cpp
-    Base/src/CDWORDMap.cpp
-    Base/src/CException.cpp
-    Base/src/CFile.cpp
-    Base/src/CHeap.cpp
-    Base/src/CMain.cpp
-    Base/src/CRC32.cpp
-    Base/src/CReminder.cpp
-    Base/src/CStorage.cpp
-    Base/src/CStr.cpp
-    Base/src/CWStr.cpp
-    Base/src/CWStrFormat.cpp
-    Base/src/Mem.cpp
-    Base/src/Pack.cpp
-    Base/src/Registry.cpp
-    Base/src/Tracer.cpp
+    Base/CBlockPar.cpp
+    Base/CBuf.cpp
+    Base/CDWORDMap.cpp
+    Base/CException.cpp
+    Base/CFile.cpp
+    Base/CHeap.cpp
+    Base/CMain.cpp
+    Base/CRC32.cpp
+    Base/CReminder.cpp
+    Base/CStorage.cpp
+    Base/CStr.cpp
+    Base/CWStr.cpp
+    Base/CWStrFormat.cpp
+    Base/Mem.cpp
+    Base/Pack.cpp
+    Base/Registry.cpp
+    Base/Tracer.cpp
 )
 set(BASE_HEADERS
-    Base/include/Base.hpp
-    Base/include/BaseDef.hpp
-    Base/include/CBlockPar.hpp
-    Base/include/CBuf.hpp
-    Base/include/CDWORDMap.hpp
-    Base/include/CException.hpp
-    Base/include/CFile.hpp
-    Base/include/CHeap.hpp
-    Base/include/CMain.hpp
-    Base/include/CRC32.hpp
-    Base/include/CReminder.hpp
-    Base/include/CStorage.hpp
-    Base/include/CStr.hpp
-    Base/include/CWStr.hpp
-    Base/include/Mem.hpp
-    Base/include/Pack.hpp
-    Base/include/Registry.hpp
-    Base/include/Tracer.hpp
+    Base/Base.pch
+    Base/Base.hpp
+    Base/BaseDef.hpp
+    Base/CBlockPar.hpp
+    Base/CBuf.hpp
+    Base/CDWORDMap.hpp
+    Base/CException.hpp
+    Base/CFile.hpp
+    Base/CHeap.hpp
+    Base/CMain.hpp
+    Base/CRC32.hpp
+    Base/CReminder.hpp
+    Base/CStorage.hpp
+    Base/CStr.hpp
+    Base/CWStr.hpp
+    Base/Mem.hpp
+    Base/Pack.hpp
+    Base/Registry.hpp
+    Base/Tracer.hpp
 )
 set(BITMAP_SOURCES
-    Bitmap/src/stdafx.h
-    Bitmap/src/asharpen.asm
-    Bitmap/src/CBitmap.cpp
-    Bitmap/src/sharpen.cpp
+    Bitmap/asharpen.asm
+    Bitmap/CBitmap.cpp
+    Bitmap/sharpen.cpp
 )
 set(BITMAP_HEADERS
-    Bitmap/include/Bitmap.hpp
-    Bitmap/include/BitmapDef.hpp
-    Bitmap/include/CBitmap.hpp
+    Bitmap/Bitmap.pch
+    Bitmap/Bitmap.hpp
+    Bitmap/BitmapDef.hpp
+    Bitmap/CBitmap.hpp
 )
 
 target_sources(MatrixLib PRIVATE ${3G_SOURCES} ${3G_HEADERS})
