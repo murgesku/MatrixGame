@@ -1,9 +1,11 @@
 add_library(ZLIB STATIC)
 
-file(GLOB ZLIB_SOURCES src/*.c)
+set_target_properties(ZLIB PROPERTIES LANGUAGE C)
+
+file(GLOB ZLIB_SOURCES *.c)
 
 target_sources(ZLIB PRIVATE ${ZLIB_SOURCES})
-target_include_directories(ZLIB PUBLIC include)
+target_include_directories(ZLIB PUBLIC .)
 
 if(MSVC)
     set(ZLIB_COMPILE_OPTIONS
