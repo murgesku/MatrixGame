@@ -10,9 +10,9 @@
 //#ifdef BLABLA
 
 #undef ZEXPORT
-#define ZEXPORT _cdecl
+#define ZEXPORT __cdecl
 
-#include "../../ThirdParty/ZLib/include/zlib.h"
+#include "../../ThirdParty/ZLib/zlib.h"
 
 //#define _MAKESTR1(x) #x
 //#define MAKESTR(n) _MAKESTR1(n)
