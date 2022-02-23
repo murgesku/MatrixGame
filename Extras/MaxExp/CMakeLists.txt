@@ -40,7 +40,6 @@ set(MAXEXP_RESOURCES
 )
 
 set(MAXEXP_BASE_SOURCES
-    ../../MatrixLib/Base/src/stdafx.h
     ../../MatrixLib/Base/src/CBlockPar.cpp
     ../../MatrixLib/Base/src/CBuf.cpp
     ../../MatrixLib/Base/src/CException.cpp
@@ -55,19 +54,20 @@ set(MAXEXP_BASE_SOURCES
     ../../MatrixLib/Base/src/Tracer.cpp
 )
 set(MAXEXP_BASE_HEADERS
-    ../../MatrixLib/Base/include/Base.hpp
-    ../../MatrixLib/Base/include/BaseDef.hpp
-    ../../MatrixLib/Base/include/CBlockPar.hpp
-    ../../MatrixLib/Base/include/CBuf.hpp
-    ../../MatrixLib/Base/include/CException.hpp
-    ../../MatrixLib/Base/include/CFile.hpp
-    ../../MatrixLib/Base/include/CHeap.hpp
-    ../../MatrixLib/Base/include/CMain.hpp
-    ../../MatrixLib/Base/include/CStr.hpp
-    ../../MatrixLib/Base/include/CWStr.hpp
-    ../../MatrixLib/Base/include/Mem.hpp
-    ../../MatrixLib/Base/include/Registry.hpp
-    ../../MatrixLib/Base/include/Tracer.hpp
+    ../../MatrixLib/Base/Base.pch
+    ../../MatrixLib/Base/Base.hpp
+    ../../MatrixLib/Base/BaseDef.hpp
+    ../../MatrixLib/Base/CBlockPar.hpp
+    ../../MatrixLib/Base/CBuf.hpp
+    ../../MatrixLib/Base/CException.hpp
+    ../../MatrixLib/Base/CFile.hpp
+    ../../MatrixLib/Base/CHeap.hpp
+    ../../MatrixLib/Base/CMain.hpp
+    ../../MatrixLib/Base/CStr.hpp
+    ../../MatrixLib/Base/CWStr.hpp
+    ../../MatrixLib/Base/Mem.hpp
+    ../../MatrixLib/Base/Registry.hpp
+    ../../MatrixLib/Base/Tracer.hpp
 )
 
 target_sources(EG_Exp PRIVATE
@@ -78,7 +78,7 @@ target_sources(EG_Exp PRIVATE
     ${MAXEXP_BASE_HEADERS}
 )
 
-target_include_directories(EG_Exp PRIVATE ../../MatrixLib/Base/include)
+target_include_directories(EG_Exp PRIVATE ../../MatrixLib/Base)
 
 source_group("Resources" FILES ${MAXEXP_RESOURCES})
 
@@ -112,8 +112,8 @@ target_precompile_headers(EG_Exp PRIVATE
     <windows.h>
     <Richedit.h>
 
-    ../../MatrixLib/Base/src/stdafx.h
-    ../../MatrixLib/Base/include/Base.hpp
+    ../../MatrixLib/Base/Base.pch
+    ../../MatrixLib/Base/Base.hpp
 
     <Max.h>
     <istdplug.h>

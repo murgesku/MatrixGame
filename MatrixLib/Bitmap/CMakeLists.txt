@@ -5,15 +5,15 @@ if(MSVC)
 endif()
 
 set(BITMAP_SOURCES
-    src/stdafx.h
-    src/asharpen.asm
-    src/CBitmap.cpp
-    src/sharpen.cpp
+    asharpen.asm
+    CBitmap.cpp
+    sharpen.cpp
 )
 set(BITMAP_HEADERS
-    include/Bitmap.hpp
-    include/BitmapDef.hpp
-    include/CBitmap.hpp
+    Bitmap.pch
+    Bitmap.hpp
+    BitmapDef.hpp
+    CBitmap.hpp
 )
 
 target_sources(Bitmap PRIVATE ${BITMAP_SOURCES} ${BITMAP_HEADERS})

@@ -20,14 +20,14 @@
 #include <tchar.h>
 
 // TODO: reference additional headers your program requires here
-#include "../../MatrixLib/3G/src/stdafx.h"
+#include "../../MatrixLib/3G/3g.pch"
 
-#include "../../MatrixLib/3G/include/3g.hpp"
-#include "../../MatrixLib/3G/include/VectorObject.hpp"
-#include "../../MatrixLib/3G/include/CBillboard.hpp"
-#include "../../MatrixLib/3G/include/BigVB.hpp"
-#include "../../MatrixLib/3G/include/BigIB.hpp"
-#include "../../MatrixLib/DebugMsg/include/DebugMsg.h"
+#include "../../MatrixLib/3G/3g.hpp"
+#include "../../MatrixLib/3G/VectorObject.hpp"
+#include "../../MatrixLib/3G/CBillboard.hpp"
+#include "../../MatrixLib/3G/BigVB.hpp"
+#include "../../MatrixLib/3G/BigIB.hpp"
+#include "../../MatrixLib/DebugMsg/DebugMsg.h"
 
 #include "MatrixMultiSelection.hpp"
 
