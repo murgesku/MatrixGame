@@ -91,9 +91,9 @@ set(BITMAP_HEADERS
 target_sources(MatrixLib PRIVATE ${3G_SOURCES} ${3G_HEADERS})
 target_sources(MatrixLib PRIVATE ${BASE_SOURCES} ${BASE_HEADERS})
 target_sources(MatrixLib PRIVATE ${BITMAP_SOURCES} ${BITMAP_HEADERS})
-target_include_directories(MatrixLib PUBLIC 3G/include)
-target_include_directories(MatrixLib PUBLIC Base/include)
-target_include_directories(MatrixLib PUBLIC Bitmap/include)
+target_include_directories(MatrixLib PUBLIC 3G)
+target_include_directories(MatrixLib PUBLIC Base)
+target_include_directories(MatrixLib PUBLIC Bitmap)
 
 if(MSVC)
     source_group("3G\\Source Files" FILES ${3G_SOURCES})
