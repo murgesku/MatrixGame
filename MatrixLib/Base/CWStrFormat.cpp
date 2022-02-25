@@ -5,7 +5,7 @@
 
 #include "Base.pch"
 
-#include <cstdlib>
+#include <stdlib.h>
 #include "CWStr.hpp"
 #include "CStr.hpp"
 #include "CException.hpp"
