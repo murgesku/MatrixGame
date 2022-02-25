@@ -1,10 +1,10 @@
 add_library(LibPNG STATIC)
 
-file(GLOB LIBPNG_SOURCES src/*.c)
+file(GLOB LIBPNG_SOURCES *.c)
 
 target_sources(LibPNG PRIVATE ${LIBPNG_SOURCES})
-target_include_directories(LibPNG PUBLIC include)
-target_include_directories(LibPNG PUBLIC ../ZLib/include)
+target_include_directories(LibPNG PUBLIC .)
+target_include_directories(LibPNG PRIVATE ../ZLib)
 
 if(MSVC)
     set(PNG_COMPILE_OPTIONS

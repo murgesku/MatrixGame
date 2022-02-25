@@ -28,7 +28,7 @@ static void FilePNG_png_default_error(png_structp png_ptr, png_const_charp messa
 static void FilePNG_png_default_warning(png_structp png_ptr, png_const_charp message) {}
 
 static void FilePNG_png_default_read_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-    SPNGData *sdata = (SPNGData *)(png_ptr->io_ptr);
+    SPNGData *sdata = (SPNGData *)(png_get_io_ptr(png_ptr));
 
     if (sdata->LenSouBuf - sdata->SmeBuf < int(length))
         throw "Read Error";
@@ -39,7 +39,7 @@ static void FilePNG_png_default_read_data(png_structp png_ptr, png_bytep data, p
 }
 
 static void FilePNG_png_default_write_data(png_structp png_ptr, png_bytep data, png_size_t length) {
-    SPNGData *sdata = (SPNGData *)(png_ptr->io_ptr);
+    SPNGData *sdata = (SPNGData *)(png_get_io_ptr(png_ptr));
 
     if ((sdata->SmeBuf + int(length)) < sdata->LenSouBuf) {
         CopyMemory(((BYTE *)sdata->SouBuf) + sdata->SmeBuf, data, length);
@@ -76,8 +76,7 @@ DWORD FilePNG_ReadStart_Buf(void *soubuf, DWORD soubuflen, DWORD *lenx, DWORD *l
 
         png_read_update_info(data->png_ptr, data->info_ptr);
 
-        //		DWORD coltype=png_get_color_type(data->png_ptr, data->info_ptr);
-        DWORD coltype = data->info_ptr->color_type;
+        DWORD coltype = png_get_color_type(data->png_ptr, data->info_ptr);
         *countcolor = 0;
         if (coltype == PNG_COLOR_TYPE_GRAY)
             *format = 1;
@@ -93,10 +92,8 @@ DWORD FilePNG_ReadStart_Buf(void *soubuf, DWORD soubuflen, DWORD *lenx, DWORD *l
         else
             throw "Error";
 
-        //		data->LenX=*lenx=png_get_image_width(data->png_ptr,data->info_ptr);
-        data->LenX = *lenx = data->info_ptr->width;
-        //		data->LenY=*leny=png_get_image_height(data->png_ptr,data->info_ptr);
-        data->LenY = *leny = data->info_ptr->height;
+        data->LenX = *lenx = png_get_image_width(data->png_ptr,data->info_ptr);
+        data->LenY = *leny = png_get_image_height(data->png_ptr,data->info_ptr);
     }
     catch (...) {
         if (data->png_ptr != NULL)
