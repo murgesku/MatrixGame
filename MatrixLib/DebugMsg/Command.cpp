@@ -5,7 +5,7 @@
 
 #include "DebugMsg.pch"
 
-#include <cstdio>
+#include <stdio.h>
 
 CRITICAL_SECTION Command_CS;
 HANDLE Command_DMSP = NULL;

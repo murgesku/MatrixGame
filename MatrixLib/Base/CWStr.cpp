@@ -16,7 +16,7 @@ CWStr::CWStr(const CStr &s) : CMain() {
     Set(s);
 }
 
-#include <cstdio>
+#include <stdio.h>
 
 int CWStr::call_num;
 

@@ -7,7 +7,7 @@
 
 #include "Tracer.hpp"
 #include <windows.h>
-#include <cstdio>
+#include <stdio.h>
 #include <eh.h>
 #include <exception>
 
