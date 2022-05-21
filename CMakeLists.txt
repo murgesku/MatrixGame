@@ -10,8 +10,8 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-option(MATRIXGAME_BUILD_DLL ON)
-option(MATRIXGAME_CHEATS OFF)
+option(MATRIXGAME_BUILD_DLL "Build dll instead of exe" TRUE)
+option(MATRIXGAME_CHEATS "Enable cheats" TRUE)
 
 if(MSVC)
     find_package(DIRECTX9 REQUIRED)
@@ -26,23 +26,27 @@ add_subdirectory(MatrixGame)
 target_link_libraries(MatrixGame winmm)
 target_link_libraries(MatrixGame ${DIRECTX9_LIBRARIES})
 
+list(APPEND COMPILE_DEFINITIONS MATRIXGAME_EXPORTS USE_PNGLIB $<$<CONFIG:Release>:ASSERT_OFF>)
+
 if(MSVC)
     set(COMPILE_OPTIONS
         $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /MT /Zp1 /GS- /Gy- /Gr>
         $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /MTd /Zp1 /Gr>
-    )
-    set(COMPILE_DEFINITIONS
-        $<$<CONFIG:Release>:MATRIXGAME_EXPORTS USE_PNGLIB ASSERT_OFF _CRT_SECURE_NO_WARNINGS>
-        $<$<CONFIG:Debug>:MATRIXGAME_EXPORTS USE_PNGLIB>
     )
     set(LINK_OPTIONS
         $<$<CONFIG:Release>:/INCREMENTAL:NO /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /DYNAMICBASE:NO /MACHINE:X86>
         $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86>
     )
 
-    if(NOT MATRIXGAME_BUILD_DLL)
-        target_compile_definitions(MatrixGame PUBLIC $<$<CONFIG:Release>:EXE_VERSION>)
-    endif()
+    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS>)
+else()
+    set(COMPILE_OPTIONS
+        -std=c++11 -fpermissive
+    )
+endif()
+
+if(NOT MATRIXGAME_BUILD_DLL)
+    target_compile_definitions(MatrixGame PUBLIC $<$<CONFIG:Release>:EXE_VERSION>)
 endif()
 
 if(MATRIXGAME_CHEATS)

@@ -15,13 +15,12 @@ set(DEBUGMSG_HEADERS
 target_sources(DebugMsg PRIVATE ${DEBUGMSG_SOURCES} ${DEBUGMSG_HEADERS})
 target_include_directories(DebugMsg PUBLIC .)
 
+set(DEBUGMSG_COMPILE_DEFINITIONS _USRDLL DEBUGMSG_EXPORTS)
+
 if(MSVC)
     set(DEBUGMSG_COMPILE_OPTIONS
         $<$<CONFIG:Release>:/Ob1 /GF /MT /Gy>
         $<$<CONFIG:Debug>:/ZI /nologo /W3 /Od /RTC1 /MTd>
-    )
-    set(DEBUGMSG_COMPILE_DEFINITIONS
-        _USRDLL DEBUGMSG_EXPORTS
     )
 endif()
 
