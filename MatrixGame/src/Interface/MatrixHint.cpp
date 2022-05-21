@@ -6,7 +6,7 @@
 #include "../stdafx.h"
 
 #include "MatrixHint.hpp"
-#include "../MatrixGameDLL.hpp"
+#include "../MatrixGameDll.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
 

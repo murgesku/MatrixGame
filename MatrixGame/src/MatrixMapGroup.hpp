@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "matrixwater.hpp"
+#include "MatrixWater.hpp"
 
 //#define TEXTURES_OFF
 

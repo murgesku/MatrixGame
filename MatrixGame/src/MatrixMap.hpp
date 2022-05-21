@@ -6,7 +6,7 @@
 #ifndef MATRIX_MAP_HPP
 #define MATRIX_MAP_HPP
 
-#include "common.hpp"
+#include "Common.hpp"
 #include "MatrixConfig.hpp"
 
 //#define DRAW_LANDSCAPE_SETKA 1

@@ -17,7 +17,7 @@
 
 #include <windows.h>
 #include <excpt.h>
-#include <DbgHelp.h>
+#include <dbghelp.h>
 #pragma comment(lib, "dbghelp.lib")
 
 SMGDRobotInterface g_RobotInterface;

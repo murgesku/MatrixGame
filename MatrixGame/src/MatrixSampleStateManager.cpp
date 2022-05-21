@@ -3,7 +3,7 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include "d3d9types.h"
 #include "MatrixSampleStateManager.hpp"

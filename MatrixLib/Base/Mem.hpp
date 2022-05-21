@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "basedef.hpp"
+#include "BaseDef.hpp"
 
 inline void memcopy_back_dword(void *tgt, const void *src,
                                       DWORD size)  // same as blk_copy, but copying by sizeof(uint) bytes

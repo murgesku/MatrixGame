@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "common.hpp"
+#include "Common.hpp"
 
 #define INSHORE_FVF (D3DFVF_XYZ | D3DFVF_TEX1)
 struct SInshoreVertex {

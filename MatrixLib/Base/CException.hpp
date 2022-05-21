@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "basedef.hpp"
+#include "BaseDef.hpp"
 
 namespace Base {
 

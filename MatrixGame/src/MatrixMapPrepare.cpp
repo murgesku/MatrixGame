@@ -7,7 +7,7 @@
 
 #include "MatrixMap.hpp"
 #include "MatrixLoadProgress.hpp"
-#include "common.hpp"
+#include "Common.hpp"
 #include "MatrixObjectBuilding.hpp"
 #include "MatrixTerSurface.hpp"
 #include "MatrixObjectCannon.hpp"

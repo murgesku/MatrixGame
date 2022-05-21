@@ -8,9 +8,9 @@
 
 #include "stdafx.h"
 
-#include "matrixmaptexture.hpp"
-#include "matrixmapgroup.hpp"
-#include "matrixmapstatic.hpp"
+#include "MatrixMapTexture.hpp"
+#include "MatrixMapGroup.hpp"
+#include "MatrixMapStatic.hpp"
 #include "MatrixTerSurface.hpp"
 
 typedef void (*WATER_SETUP)(CTextureManaged *tex, CTextureManaged *refl, int pass);

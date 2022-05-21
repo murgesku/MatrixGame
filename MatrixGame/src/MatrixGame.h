@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "resource.h"
+#include "Resource.h"
 #include <shlobj.h>
 //#include "windows.h"
 

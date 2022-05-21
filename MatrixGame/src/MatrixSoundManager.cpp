@@ -7,7 +7,7 @@
 
 #include "MatrixSoundManager.hpp"
 #include "MatrixGameDll.hpp"
-#include "Matrixmap.hpp"
+#include "MatrixMap.hpp"
 
 CSound::SSoundItem CSound::m_Sounds[S_COUNT];
 CSound::SLID CSound::m_LayersI[SL_COUNT];

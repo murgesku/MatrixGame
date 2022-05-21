@@ -6,7 +6,7 @@
 #ifndef MATRIX_CAMERA_INCLUDE
 #define MATRIX_CAMERA_INCLUDE
 
-#include "math3d.hpp"
+#include "Math3D.hpp"
 #include "MatrixConfig.hpp"
 
 enum EFrustumPlane { FPLANE_LEFT, FPLANE_RIGHT, FPLANE_BOTTOM, FPLANE_TOP };

@@ -3,7 +3,7 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../StdAfx.h"
+#include "../stdafx.h"
 
 #include "CIFaceButton.h"
 #include "CConstructor.h"

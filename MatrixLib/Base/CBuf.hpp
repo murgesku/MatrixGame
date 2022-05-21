@@ -10,8 +10,8 @@
 #include "CMain.hpp"
 #include "CStr.hpp"
 #include "CWStr.hpp"
-#include "mem.hpp"
-#include "tracer.hpp"
+#include "Mem.hpp"
+#include "Tracer.hpp"
 
 namespace Base {
 
