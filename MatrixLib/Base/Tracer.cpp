@@ -120,7 +120,7 @@ void DbgShowDword(const char *n, DWORD sz) {
 
 #endif
 
-#include "../../DebugMsg/include/DebugMsg.h"
+#include "../DebugMsg/DebugMsg.h"
 
 int g_CheckPointNumber;
 
