@@ -264,7 +264,7 @@ void CMatrixEffectBigBoom::Draw(void) {
     g_D3DD->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
-static bool BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+bool CMatrixEffectBigBoom::BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     D3DXVECTOR3 anorm;
     auto tmp = center - ms->GetGeoCenter();
@@ -273,7 +273,7 @@ static bool BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user
     return true;
 }
 
-static bool BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+bool CMatrixEffectBigBoom::BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     if (ms->IsLiveRobot()) {
         D3DXVECTOR3 anorm;

@@ -886,3 +886,25 @@ void CMatrixMapStatic::OnEndOfDraw(void) {
     m_FirstVisNew = NULL;
     m_LastVisNew = NULL;
 }
+
+bool CMatrixMapStatic::IsLiveCannon(void) const {
+    return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP;
+}
+
+bool CMatrixMapStatic::IsLiveActiveCannon(void) const {
+    return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP &&
+           ((CMatrixCannon *)this)->m_CurrState != CANNON_UNDER_CONSTRUCTION;
+}
+
+bool CMatrixMapStatic::IsBase(void) const {
+    if (GetObjectType() == OBJECT_TYPE_BUILDING) {
+        if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE)
+            return true;
+    }
+    return false;
+}
+
+bool CMatrixMapStatic::IsLiveBuilding(void) const {
+    return IsBuilding() && ((CMatrixBuilding *)this)->m_State != BUILDING_DIP &&
+           ((CMatrixBuilding *)this)->m_State != BUILDING_DIP_EXPLODED;
+}

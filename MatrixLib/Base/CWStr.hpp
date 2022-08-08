@@ -68,7 +68,7 @@ class BASE_API CWStr : public CMain {
     }
 
 public:
-    static int CWStr::call_num;
+    static int call_num;
 
     explicit CWStr(CHeap *heap = NULL) : CMain() {
         NewDataLen(heap, 0);
@@ -126,7 +126,7 @@ public:
         m_Data->Data()[len] = 0;
     };
 
-    void CWStr::Set(const CWStr &s) {
+    void Set(const CWStr &s) {
         if (m_Data != s.m_Data) {
             m_Data->RefDecAndDelete();
             m_Data = s.m_Data;

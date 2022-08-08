@@ -208,12 +208,3 @@ public:
 
     float GetStrength(void);
 };
-
-inline bool CMatrixMapStatic::IsLiveCannon(void) const {
-    return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP;
-}
-
-inline bool CMatrixMapStatic::IsLiveActiveCannon(void) const {
-    return IsCannon() && ((CMatrixCannon *)this)->m_CurrState != CANNON_DIP &&
-           ((CMatrixCannon *)this)->m_CurrState != CANNON_UNDER_CONSTRUCTION;
-}

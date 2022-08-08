@@ -478,21 +478,5 @@ public:
 #endif
 };
 
-inline CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void) {
-    if (m_Target)
-        return m_Target->m_Object;
-    return NULL;
-}
-
-inline void CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {
-    m_Owner = ms->GetCore(DEBUG_CALL_INFO);
-    m_SideStorage = ms->GetSide();
-}
-inline CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void) {
-    if (m_Owner)
-        return m_Owner->m_Object;
-    return NULL;
-}
-
 CVectorObjectAnim *LoadObject(const wchar *name, CHeap *heap, bool side = false, const wchar *texname = NULL);
 void UnloadObject(CVectorObjectAnim *o, CHeap *heap);

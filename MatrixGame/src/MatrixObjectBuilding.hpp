@@ -314,16 +314,3 @@ public:
     void CreatePlacesShow();
     void DeletePlacesShow();
 };
-
-inline bool CMatrixMapStatic::IsBase(void) const {
-    if (GetObjectType() == OBJECT_TYPE_BUILDING) {
-        if (((CMatrixBuilding *)this)->m_Kind == BUILDING_BASE)
-            return true;
-    }
-    return false;
-}
-
-inline bool CMatrixMapStatic::IsLiveBuilding(void) const {
-    return IsBuilding() && ((CMatrixBuilding *)this)->m_State != BUILDING_DIP &&
-           ((CMatrixBuilding *)this)->m_State != BUILDING_DIP_EXPLODED;
-}
