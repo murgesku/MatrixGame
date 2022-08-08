@@ -866,7 +866,7 @@ void CConstructor::BuildSpecialBot(const SSpecialBot &bot) {
     // ARMOR
     OperateUnit(MRT_ARMOR, bot.m_Armor.m_Unit.m_nKind);
     // WEAPON
-    for (int i = 0; i <= MAX_WEAPON_CNT; i++) {
+    for (int i = 0; i < MAX_WEAPON_CNT; i++) {
         OperateUnit(MRT_WEAPON, bot.m_Weapon[i].m_Unit.m_nKind);
     }
     // HEAD

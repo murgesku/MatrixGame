@@ -508,7 +508,7 @@ void CMatrixCannon::BeforeDraw(void) {
             m_Unit[i].m_ShadowStencil->BeforeRender();
     }
 
-    if (m_CurrState != ROBOT_DIP && m_ShadowProj)
+    if (m_CurrState != CANNON_DIP && m_ShadowProj)
         m_ShadowProj->BeforeRender();
 }
 
