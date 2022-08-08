@@ -29,7 +29,7 @@
 
 #define WEAPON_MAX_HEAT 1000
 
-enum EWeapon {
+enum EWeapon : unsigned int {
     WEAPON_NONE,
 
     WEAPON_PLASMA = 200,

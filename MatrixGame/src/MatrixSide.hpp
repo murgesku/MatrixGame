@@ -46,10 +46,6 @@ class CMatrixEffectLandscapeSpot;
 class CMatrixFlyer;
 class CConstructorPanel;
 
-enum EWeapon;
-enum Team;
-enum EFlyerOrder;
-
 #define MAX_STATISTICS 6
 enum EStat {
     STAT_ROBOT_BUILD,
@@ -150,6 +146,8 @@ enum EMatrixLogicActionType {
 
     EMatrixLogicActionType_FORCE_DWORD = 0x7FFFFFFF
 };
+
+enum EFlyerOrder : unsigned int;
 
 #define MLRG_CAPTURE 1
 #define MLRG_DEFENCE 2

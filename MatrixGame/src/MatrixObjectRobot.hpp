@@ -39,7 +39,7 @@ enum EAnimation {
     EAnimation_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum ERobotUnitType {
+enum ERobotUnitType : unsigned int {
     MRT_EMPTY = 0,
     MRT_CHASSIS = 1,
     MRT_WEAPON = 2,

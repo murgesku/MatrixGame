@@ -10,6 +10,9 @@
 
 #include "../stdafx.h"
 
+// #include "MatrixEffectWeapon.hpp"
+enum EWeapon : unsigned int;
+
 #define MAX_EFFECT_DISTANCE_SQ ((3000) * (3000))
 
 // billboards
@@ -117,7 +120,6 @@ class CMatrixEffectFireAnim;
 
 struct SExplosionProperties;
 struct SMOProps;
-enum EWeapon;
 
 typedef void (*ADD_TAKT)(CMatrixEffectBillboard *bb, float ms);
 

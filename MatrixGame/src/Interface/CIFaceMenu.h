@@ -10,8 +10,8 @@ class CIFaceStatic;
 class CIFaceElement;
 class CIFaceImage;
 struct SRobotConfig;
-enum ERobotUnitType;
-enum ERobotUnitKind;
+enum ERobotUnitType : unsigned int;
+enum ERobotUnitKind : unsigned int;
 
 #define UNIT_HEIGHT        19
 #define TOPLEFT_HEIGHT     18
