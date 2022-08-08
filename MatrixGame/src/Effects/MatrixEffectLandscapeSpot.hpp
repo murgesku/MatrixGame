@@ -5,8 +5,14 @@
 
 #pragma once
 
-// landscape spot
 class CMatrixEffectLandscapeSpot;
+
+void SpotTaktConstant(CMatrixEffectLandscapeSpot *spot, float takt);
+void SpotTaktAlways(CMatrixEffectLandscapeSpot *spot, float takt);
+void SpotTaktPlasmaHit(CMatrixEffectLandscapeSpot *spot, float takt);
+void SpotTaktMoveTo(CMatrixEffectLandscapeSpot *spot, float takt);
+void SpotTaktPointlight(CMatrixEffectLandscapeSpot *spot, float takt);
+void SpotTaktVoronka(CMatrixEffectLandscapeSpot *spot, float takt);
 
 #define LANDSCAPESPOT_FVF (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 typedef struct {

@@ -820,3 +820,13 @@ void CVolcano::Draw(void) {
     else if (idx == 2)
         m_bl3.AddToDrawQueue();
 }
+
+void CMatrixEffectWeapon::SetOwner(CMatrixMapStatic *ms) {
+    m_Owner = ms->GetCore(DEBUG_CALL_INFO);
+    m_SideStorage = ms->GetSide();
+}
+CMatrixMapStatic *CMatrixEffectWeapon::GetOwner(void) {
+    if (m_Owner)
+        return m_Owner->m_Object;
+    return NULL;
+}

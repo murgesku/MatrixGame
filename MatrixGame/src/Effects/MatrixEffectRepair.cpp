@@ -382,3 +382,9 @@ void CMatrixEffectRepair::Release(void) {
     SetDIP();
     HDelete(CMatrixEffectRepair, this, m_Heap);
 }
+
+CMatrixMapStatic *CMatrixEffectRepair::GetTarget(void) {
+    if (m_Target)
+        return m_Target->m_Object;
+    return NULL;
+}

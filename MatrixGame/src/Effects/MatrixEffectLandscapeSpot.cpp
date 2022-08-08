@@ -11,14 +11,6 @@
 
 static SSpotProperties m_SpotProperties[SPOT_TYPES_CNT];
 
-// spot takts
-void SpotTaktConstant(CMatrixEffectLandscapeSpot *spot, float takt);
-void SpotTaktAlways(CMatrixEffectLandscapeSpot *spot, float takt);
-void SpotTaktPlasmaHit(CMatrixEffectLandscapeSpot *spot, float takt);
-void SpotTaktMoveTo(CMatrixEffectLandscapeSpot *spot, float takt);
-void SpotTaktPointlight(CMatrixEffectLandscapeSpot *spot, float takt);
-void SpotTaktVoronka(CMatrixEffectLandscapeSpot *spot, float takt);
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
