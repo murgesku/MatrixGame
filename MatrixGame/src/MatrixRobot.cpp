@@ -1804,17 +1804,20 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECT
     DCP();
 
     bool friendly_fire = false;
+    float damagek = 0.0;
+    int idx = 0;
+
     if (weap == WEAPON_INSTANT_DEATH)
         goto inst_death;
 
     friendly_fire = (attacker_side != 0) && (attacker_side == m_Side);
 
-    float damagek =
+    damagek =
             (friendly_fire || m_Side != PLAYER_SIDE) ? 1.0f : g_MatrixMap->m_Difficulty.k_damage_enemy_to_player;
     if (friendly_fire && m_Side == PLAYER_SIDE)
         damagek = damagek * g_MatrixMap->m_Difficulty.k_friendly_fire;
 
-    int idx = Weap2Index(weap);
+    idx = Weap2Index(weap);
     if (weap == WEAPON_REPAIR) {
         m_HitPoint += friendly_fire ? g_Config.m_RobotDamages[idx].friend_damage : g_Config.m_RobotDamages[idx].damage;
         if (m_HitPoint > m_HitPointMax) {

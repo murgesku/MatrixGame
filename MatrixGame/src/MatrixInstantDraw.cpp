@@ -153,6 +153,7 @@ void CInstDraw::ActualDraw(void) {
     if (m_Current == IDFVF_CNT)
         ERROR_S(L"Error #0 in instant draw");
 #endif
+    int disp = 0;
 
     SFVF_VB *cvb = m_FVFs + m_Current;
 
@@ -224,7 +225,6 @@ void CInstDraw::ActualDraw(void) {
     ASSERT_DX(g_D3DD->SetIndices(GET_IB(m_IB)));
     g_D3DD->SetFVF(cvb->fvf);
 
-    int disp = 0;
     for (int i = 0; i < cvb->sets_cnt; ++i) {
         CBaseTexture *tex = cvb->sets[i].tex;
 
