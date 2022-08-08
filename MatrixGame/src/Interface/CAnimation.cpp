@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "CAnimation.h"
@@ -14,7 +16,7 @@ CAnimation::CAnimation(int frames, int period) {
     DTRACE();
     m_FramesBuffer = (CIFaceStatic *)HAlloc(sizeof(CIFaceStatic) * frames, g_MatrixHeap);
     for (int i = 0; i < frames; i++) {
-        m_FramesBuffer[i].CIFaceStatic::CIFaceStatic();
+        new(&m_FramesBuffer[i]) CIFaceStatic();
     }
     m_Frames = frames;
     m_Period = period;

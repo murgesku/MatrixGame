@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixObjectBuilding.hpp"
@@ -1549,9 +1551,9 @@ void CMatrixBuilding::CreatePlacesShow(void) {
     m_PlacesShow = (SEffectHandler *)HAlloc(sizeof(SEffectHandler) * MAX_PLACES, g_MatrixHeap);
     for (int i = 0; i < MAX_PLACES; ++i) {
 #ifdef _DEBUG
-        m_PlacesShow[i].SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);
+        new(&m_PlacesShow[i]) SEffectHandler(DEBUG_CALL_INFO);
 #else
-        m_PlacesShow[i].SEffectHandler::SEffectHandler();
+        new(&m_PlacesShow[i]) SEffectHandler();
 #endif
     }
 

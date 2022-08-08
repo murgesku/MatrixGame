@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -21,7 +23,7 @@ CMatrixEffectZahvat::CMatrixEffectZahvat(const D3DXVECTOR3 &pos, float radius, f
 
     for (int i = 0; i < m_Count; ++i) {
         SinCos(angle, &s, &c);
-        m_BBoards[i].CMatrixEffectBillboard::CMatrixEffectBillboard(
+        new(&m_BBoards[i]) CMatrixEffectBillboard(
                 pos + D3DXVECTOR3(c * radius, s * radius, 0), ZAHVAT_SPOT_SIZE, ZAHVAT_SPOT_SIZE, ZAHVAT_SPOT_GRAY1,
                 ZAHVAT_SPOT_GRAY2, ZAHVAT_FLASH_PERIOD, 0, TEXTURE_PATH_ZAHVAT, D3DXVECTOR3(1, 0, 0));
         m_BBoards[i].m_Intense = false;

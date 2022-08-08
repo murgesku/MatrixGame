@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixTerSurface.hpp"
@@ -64,7 +66,7 @@ void CTerSurface::AllocSurfaces(int n) {
     }
 
     for (int i = 0; i < n; i++) {
-        m_Surfaces[i].CTerSurface::CTerSurface();
+        new(&m_Surfaces[i]) CTerSurface();
     }
 }
 

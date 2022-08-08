@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -184,11 +186,11 @@ void CMatrixEffectPath::Takt(float step) {
             LIST_INSERT(m_First, (m_Dots + m_DotsCnt), m_First, m_Last, prev, next);
             m_Dots[m_DotsCnt].pos = 0;
             if (m_BBTextures[BBT_PATHDOT].IsIntense()) {
-                m_Dots[m_DotsCnt].dot.CBillboard::CBillboard(TRACE_PARAM_CALL * (D3DXVECTOR3 *)m_Points.Get(),
+                new(&m_Dots[m_DotsCnt].dot) CBillboard(TRACE_PARAM_CALL * (D3DXVECTOR3 *)m_Points.Get(),
                                                              PATH_SIZE, 0, PATH_COLOR, m_BBTextures[BBT_PATHDOT].tex);
             }
             else {
-                m_Dots[m_DotsCnt].dot.CBillboard::CBillboard(TRACE_PARAM_CALL * (D3DXVECTOR3 *)m_Points.Get(),
+                new(&m_Dots[m_DotsCnt].dot) CBillboard(TRACE_PARAM_CALL * (D3DXVECTOR3 *)m_Points.Get(),
                                                              PATH_SIZE, 0, PATH_COLOR, &m_BBTextures[BBT_PATHDOT].bbt);
             }
             ++m_DotsCnt;

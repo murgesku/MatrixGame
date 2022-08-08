@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "3g.pch"
 
 #include "VectorObject.hpp"
@@ -371,7 +373,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             m_Geometry.m_SurfacesCnt = c->GetArraysCount();
             m_Geometry.m_Surfaces = (SVOSurface *)HAlloc(sizeof(SVOSurface) * m_Geometry.m_SurfacesCnt, g_CacheHeap);
             for (int i = 0; i < m_Geometry.m_SurfacesCnt; ++i) {
-                m_Geometry.m_Surfaces[i].texname.CWStr::CWStr(c->GetAsWStr(i));
+                new(&m_Geometry.m_Surfaces[i].texname) CWStr(c->GetAsWStr(i));
                 m_Geometry.m_Surfaces[i].skin = NULL;
             }
         }
@@ -1782,7 +1784,7 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
                 }
 
                 m_Lights[l].matid = m_VO->GetMatrixId(m);
-                m_Lights[l].BB().CBillboard::CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(0, 0, 0), ra, 0,
+                new(&m_Lights[l].BB()) CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(0, 0, 0), ra, 0,
                                                         m_Lights[l].intervals[0].c1, tex_light);
                 ++l;
             }

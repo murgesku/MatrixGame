@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -20,11 +22,11 @@ CMatrixEffectLightening::CMatrixEffectLightening(const D3DXVECTOR3 &pos0, const 
     if (bp) {
         m_End0 = (CBillboard *)HAlloc(sizeof(CBillboard), m_Heap);
         if (m_BBTextures[BBT_GLOWBEAMEND].IsIntense()) {
-            m_End0->CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos0, width / 2, 0, color,
+            new(m_End0) CBillboard(TRACE_PARAM_CALL m_Pos0, width / 2, 0, color,
                                            m_BBTextures[BBT_GLOWBEAMEND].tex);
         }
         else {
-            m_End0->CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos0, width / 2, 0, color,
+            new(m_End0) CBillboard(TRACE_PARAM_CALL m_Pos0, width / 2, 0, color,
                                            &m_BBTextures[BBT_GLOWBEAMEND].bbt);
         }
     }
@@ -74,7 +76,7 @@ void CMatrixEffectLightening::SetPos(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 
     else {
         m_BL = (CBillboardLine *)HAllocEx(m_BL, sizeof(CBillboardLine) * cnt, m_Heap);
         while (m_BL_cnt < cnt) {
-            m_BL[m_BL_cnt].CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos0, pos1, m_Width, m_Color,
+            new(&m_BL[m_BL_cnt]) CBillboardLine(TRACE_PARAM_CALL pos0, pos1, m_Width, m_Color,
                                                           GetBBTexI(BBT_GLOWBEAM));
             ++m_BL_cnt;
         }
@@ -245,7 +247,7 @@ void CMatrixEffectShorted::SetPos(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &po
     else {
         m_BL = (CBillboardLine *)HAllocEx(m_BL, sizeof(CBillboardLine) * cnt, m_Heap);
         while (m_BL_cnt < cnt) {
-            m_BL[m_BL_cnt].CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos0, pos1, SHORTED_WIDTH, m_Color,
+            new(&m_BL[m_BL_cnt]) CBillboardLine(TRACE_PARAM_CALL pos0, pos1, SHORTED_WIDTH, m_Color,
                                                           GetBBTexI(BBT_GLOWBEAM));
             ++m_BL_cnt;
         }

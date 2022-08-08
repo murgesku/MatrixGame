@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixObject.hpp"
@@ -860,7 +862,7 @@ void SMatrixRobotUnit::PrepareForDIP(void) {
         m_WeaponRepairData = nullptr;
     }
 #ifdef _DEBUG
-    Smoke().SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);
+    new(&Smoke()) SEffectHandler(DEBUG_CALL_INFO);
 #endif
     Smoke().effect = NULL;
 }

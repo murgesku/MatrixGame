@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixSoundManager.hpp"
@@ -42,7 +44,7 @@ inline void snd_play(DWORD s) {
 }
 
 CSound::SSoundItem::SSoundItem(const wchar *sndname) : vol0(1), vol1(1), pan0(0), pan1(0), flags(0) {
-    Path().CWStr::CWStr(sndname, g_MatrixHeap);
+    new(&Path()) CWStr(sndname, g_MatrixHeap);
 }
 
 void CSound::Init(void) {
@@ -66,21 +68,21 @@ void CSound::Init(void) {
 
     // sound initializatation
 
-    m_Sounds[S_BCLICK].SSoundItem::SSoundItem(L"bclick");
-    m_Sounds[S_BENTER].SSoundItem::SSoundItem(L"benter");
-    m_Sounds[S_BLEAVE].SSoundItem::SSoundItem(L"bleave");
-    m_Sounds[S_MAP_PLUS].SSoundItem::SSoundItem(L"map_plus");
-    m_Sounds[S_MAP_MINUS].SSoundItem::SSoundItem(L"map_minus");
-    m_Sounds[S_PRESET_CLICK].SSoundItem::SSoundItem(L"preset_click");
-    m_Sounds[S_BUILD_CLICK].SSoundItem::SSoundItem(L"build_click");
-    m_Sounds[S_CANCEL_CLICK].SSoundItem::SSoundItem(L"cancel_click");
+    new(&m_Sounds[S_BCLICK])       SSoundItem(L"bclick");
+    new(&m_Sounds[S_BENTER])       SSoundItem(L"benter");
+    new(&m_Sounds[S_BLEAVE])       SSoundItem(L"bleave");
+    new(&m_Sounds[S_MAP_PLUS])     SSoundItem(L"map_plus");
+    new(&m_Sounds[S_MAP_MINUS])    SSoundItem(L"map_minus");
+    new(&m_Sounds[S_PRESET_CLICK]) SSoundItem(L"preset_click");
+    new(&m_Sounds[S_BUILD_CLICK])  SSoundItem(L"build_click");
+    new(&m_Sounds[S_CANCEL_CLICK]) SSoundItem(L"cancel_click");
 
-    m_Sounds[S_DOORS_OPEN].SSoundItem::SSoundItem(L"base_doors_open");
-    m_Sounds[S_DOORS_CLOSE].SSoundItem::SSoundItem(L"base_doors_close");
-    m_Sounds[S_DOORS_CLOSE_STOP].SSoundItem::SSoundItem(L"base_doors_close_stop");
-    m_Sounds[S_PLATFORM_UP].SSoundItem::SSoundItem(L"base_platform_up");
-    m_Sounds[S_PLATFORM_DOWN].SSoundItem::SSoundItem(L"base_platform_down");
-    m_Sounds[S_PLATFORM_UP_STOP].SSoundItem::SSoundItem(L"base_platform_up_stop");
+    new(&m_Sounds[S_DOORS_OPEN])       SSoundItem(L"base_doors_open");
+    new(&m_Sounds[S_DOORS_CLOSE])      SSoundItem(L"base_doors_close");
+    new(&m_Sounds[S_DOORS_CLOSE_STOP]) SSoundItem(L"base_doors_close_stop");
+    new(&m_Sounds[S_PLATFORM_UP])      SSoundItem(L"base_platform_up");
+    new(&m_Sounds[S_PLATFORM_DOWN])    SSoundItem(L"base_platform_down");
+    new(&m_Sounds[S_PLATFORM_UP_STOP]) SSoundItem(L"base_platform_up_stop");
     //    m_Sounds[S_BASE_AMBIENT     ].SSoundItem::SSoundItem(L"base_amb");
 
     // m_Sounds[S_TITAN_AMBIENT    ].SSoundItem::SSoundItem(L"titan_amb");
@@ -89,148 +91,148 @@ void CSound::Init(void) {
     // m_Sounds[S_PLASMA_AMBIENT].SSoundItem::SSoundItem(L"plasma_amb");
     // m_Sounds[S_REPAIR_AMBIENT].SSoundItem::SSoundItem(L"repair_amb");
 
-    m_Sounds[S_EXPLOSION_NORMAL].SSoundItem::SSoundItem(L"expl_norm");
-    m_Sounds[S_EXPLOSION_MISSILE].SSoundItem::SSoundItem(L"expl_missile");
-    m_Sounds[S_EXPLOSION_ROBOT_HIT].SSoundItem::SSoundItem(L"expl_rh");
-    m_Sounds[S_EXPLOSION_LASER_HIT].SSoundItem::SSoundItem(L"expl_lh");
-    m_Sounds[S_EXPLOSION_BUILDING_BOOM].SSoundItem::SSoundItem(L"expl_bb");
-    m_Sounds[S_EXPLOSION_BUILDING_BOOM2].SSoundItem::SSoundItem(L"expl_bb2");
-    m_Sounds[S_EXPLOSION_BUILDING_BOOM3].SSoundItem::SSoundItem(L"expl_bb3");
-    m_Sounds[S_EXPLOSION_BUILDING_BOOM4].SSoundItem::SSoundItem(L"expl_bb4");
-    m_Sounds[S_EXPLOSION_ROBOT_BOOM].SSoundItem::SSoundItem(L"expl_rb");
-    m_Sounds[S_EXPLOSION_ROBOT_BOOM_SMALL].SSoundItem::SSoundItem(L"expl_rbs");
-    m_Sounds[S_EXPLOSION_BIGBOOM].SSoundItem::SSoundItem(L"expl_bigboom");
-    m_Sounds[S_EXPLOSION_OBJECT].SSoundItem::SSoundItem(L"expl_obj");
+    new(&m_Sounds[S_EXPLOSION_NORMAL]) SSoundItem(L"expl_norm");
+    new(&m_Sounds[S_EXPLOSION_MISSILE]) SSoundItem(L"expl_missile");
+    new(&m_Sounds[S_EXPLOSION_ROBOT_HIT]) SSoundItem(L"expl_rh");
+    new(&m_Sounds[S_EXPLOSION_LASER_HIT]) SSoundItem(L"expl_lh");
+    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM]) SSoundItem(L"expl_bb");
+    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM2]) SSoundItem(L"expl_bb2");
+    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM3]) SSoundItem(L"expl_bb3");
+    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM4]) SSoundItem(L"expl_bb4");
+    new(&m_Sounds[S_EXPLOSION_ROBOT_BOOM]) SSoundItem(L"expl_rb");
+    new(&m_Sounds[S_EXPLOSION_ROBOT_BOOM_SMALL]) SSoundItem(L"expl_rbs");
+    new(&m_Sounds[S_EXPLOSION_BIGBOOM]) SSoundItem(L"expl_bigboom");
+    new(&m_Sounds[S_EXPLOSION_OBJECT]) SSoundItem(L"expl_obj");
 
-    m_Sounds[S_SPLASH].SSoundItem::SSoundItem(L"splash");
+    new(&m_Sounds[S_SPLASH]) SSoundItem(L"splash");
 
-    m_Sounds[S_EF_START].SSoundItem::SSoundItem(L"ef_start");  // elevator fields
-    m_Sounds[S_EF_CONTINUE].SSoundItem::SSoundItem(L"ef_cont");
-    m_Sounds[S_EF_END].SSoundItem::SSoundItem(L"ef_end");
+    new(&m_Sounds[S_EF_START]) SSoundItem(L"ef_start");  // elevator fields
+    new(&m_Sounds[S_EF_CONTINUE]) SSoundItem(L"ef_cont");
+    new(&m_Sounds[S_EF_END]) SSoundItem(L"ef_end");
 
-    m_Sounds[S_FLYER_VINT_START].SSoundItem::SSoundItem(L"fl_start");
-    m_Sounds[S_FLYER_VINT_CONTINUE].SSoundItem::SSoundItem(L"fl_cont");
+    new(&m_Sounds[S_FLYER_VINT_START]) SSoundItem(L"fl_start");
+    new(&m_Sounds[S_FLYER_VINT_CONTINUE]) SSoundItem(L"fl_cont");
 
-    m_Sounds[S_WEAPON_PLASMA].SSoundItem::SSoundItem(L"wplasma");
-    m_Sounds[S_WEAPON_VOLCANO].SSoundItem::SSoundItem(L"wvolcano");
-    m_Sounds[S_WEAPON_HOMING_MISSILE].SSoundItem::SSoundItem(L"wmissile");
-    m_Sounds[S_WEAPON_BOMB].SSoundItem::SSoundItem(L"wbomb");
-    m_Sounds[S_WEAPON_FLAMETHROWER].SSoundItem::SSoundItem(L"wflame");
-    m_Sounds[S_WEAPON_BIGBOOM].SSoundItem::SSoundItem(L"wbigboom");
-    m_Sounds[S_WEAPON_LIGHTENING].SSoundItem::SSoundItem(L"wlightening");
-    m_Sounds[S_WEAPON_LASER].SSoundItem::SSoundItem(L"wlaser");
-    m_Sounds[S_WEAPON_GUN].SSoundItem::SSoundItem(L"wgun");
-    m_Sounds[S_WEAPON_REPAIR].SSoundItem::SSoundItem(L"wrepair");
+    new(&m_Sounds[S_WEAPON_PLASMA]) SSoundItem(L"wplasma");
+    new(&m_Sounds[S_WEAPON_VOLCANO]) SSoundItem(L"wvolcano");
+    new(&m_Sounds[S_WEAPON_HOMING_MISSILE]) SSoundItem(L"wmissile");
+    new(&m_Sounds[S_WEAPON_BOMB]) SSoundItem(L"wbomb");
+    new(&m_Sounds[S_WEAPON_FLAMETHROWER]) SSoundItem(L"wflame");
+    new(&m_Sounds[S_WEAPON_BIGBOOM]) SSoundItem(L"wbigboom");
+    new(&m_Sounds[S_WEAPON_LIGHTENING]) SSoundItem(L"wlightening");
+    new(&m_Sounds[S_WEAPON_LASER]) SSoundItem(L"wlaser");
+    new(&m_Sounds[S_WEAPON_GUN]) SSoundItem(L"wgun");
+    new(&m_Sounds[S_WEAPON_REPAIR]) SSoundItem(L"wrepair");
 
-    m_Sounds[S_WEAPON_CANNON0].SSoundItem::SSoundItem(L"wcannon0");
-    m_Sounds[S_WEAPON_CANNON1].SSoundItem::SSoundItem(L"wcannon1");
-    m_Sounds[S_WEAPON_CANNON2].SSoundItem::SSoundItem(L"wcannon2");
-    m_Sounds[S_WEAPON_CANNON3].SSoundItem::SSoundItem(L"wcannon3");
+    new(&m_Sounds[S_WEAPON_CANNON0]) SSoundItem(L"wcannon0");
+    new(&m_Sounds[S_WEAPON_CANNON1]) SSoundItem(L"wcannon1");
+    new(&m_Sounds[S_WEAPON_CANNON2]) SSoundItem(L"wcannon2");
+    new(&m_Sounds[S_WEAPON_CANNON3]) SSoundItem(L"wcannon3");
 
-    m_Sounds[S_WEAPON_HIT_PLASMA].SSoundItem::SSoundItem(L"whplasma");
-    m_Sounds[S_WEAPON_HIT_VOLCANO].SSoundItem::SSoundItem(L"whvolcano");
-    m_Sounds[S_WEAPON_HIT_HOMING_MISSILE].SSoundItem::SSoundItem(L"whmissile");
-    m_Sounds[S_WEAPON_HIT_BOMB].SSoundItem::SSoundItem(L"whbomb");
-    m_Sounds[S_WEAPON_HIT_FLAMETHROWER].SSoundItem::SSoundItem(L"whflame");
-    m_Sounds[S_WEAPON_HIT_BIGBOOM].SSoundItem::SSoundItem(L"whbigboom");
-    m_Sounds[S_WEAPON_HIT_LIGHTENING].SSoundItem::SSoundItem(L"whlightening");
-    m_Sounds[S_WEAPON_HIT_LASER].SSoundItem::SSoundItem(L"whlaser");
-    m_Sounds[S_WEAPON_HIT_GUN].SSoundItem::SSoundItem(L"whgun");
-    m_Sounds[S_WEAPON_HIT_REPAIR].SSoundItem::SSoundItem(L"whrepair");
-    m_Sounds[S_WEAPON_HIT_ABLAZE].SSoundItem::SSoundItem(L"whablaze");
-    m_Sounds[S_WEAPON_HIT_SHORTED].SSoundItem::SSoundItem(L"whshorted");
-    m_Sounds[S_WEAPON_HIT_DEBRIS].SSoundItem::SSoundItem(L"whdebris");
+    new(&m_Sounds[S_WEAPON_HIT_PLASMA]) SSoundItem(L"whplasma");
+    new(&m_Sounds[S_WEAPON_HIT_VOLCANO]) SSoundItem(L"whvolcano");
+    new(&m_Sounds[S_WEAPON_HIT_HOMING_MISSILE]) SSoundItem(L"whmissile");
+    new(&m_Sounds[S_WEAPON_HIT_BOMB]) SSoundItem(L"whbomb");
+    new(&m_Sounds[S_WEAPON_HIT_FLAMETHROWER]) SSoundItem(L"whflame");
+    new(&m_Sounds[S_WEAPON_HIT_BIGBOOM]) SSoundItem(L"whbigboom");
+    new(&m_Sounds[S_WEAPON_HIT_LIGHTENING]) SSoundItem(L"whlightening");
+    new(&m_Sounds[S_WEAPON_HIT_LASER]) SSoundItem(L"whlaser");
+    new(&m_Sounds[S_WEAPON_HIT_GUN]) SSoundItem(L"whgun");
+    new(&m_Sounds[S_WEAPON_HIT_REPAIR]) SSoundItem(L"whrepair");
+    new(&m_Sounds[S_WEAPON_HIT_ABLAZE]) SSoundItem(L"whablaze");
+    new(&m_Sounds[S_WEAPON_HIT_SHORTED]) SSoundItem(L"whshorted");
+    new(&m_Sounds[S_WEAPON_HIT_DEBRIS]) SSoundItem(L"whdebris");
 
-    m_Sounds[S_WEAPON_HIT_CANNON0].SSoundItem::SSoundItem(L"whcannon0");
-    m_Sounds[S_WEAPON_HIT_CANNON1].SSoundItem::SSoundItem(L"whcannon1");
-    m_Sounds[S_WEAPON_HIT_CANNON2].SSoundItem::SSoundItem(L"whcannon2");
-    m_Sounds[S_WEAPON_HIT_CANNON3].SSoundItem::SSoundItem(L"whcannon3");
+    new(&m_Sounds[S_WEAPON_HIT_CANNON0]) SSoundItem(L"whcannon0");
+    new(&m_Sounds[S_WEAPON_HIT_CANNON1]) SSoundItem(L"whcannon1");
+    new(&m_Sounds[S_WEAPON_HIT_CANNON2]) SSoundItem(L"whcannon2");
+    new(&m_Sounds[S_WEAPON_HIT_CANNON3]) SSoundItem(L"whcannon3");
 
-    m_Sounds[S_ROBOT_BUILD_END].SSoundItem::SSoundItem(L"r_build_e");
-    m_Sounds[S_ROBOT_BUILD_END_ALT].SSoundItem::SSoundItem(L"r_build_ea");
+    new(&m_Sounds[S_ROBOT_BUILD_END]) SSoundItem(L"r_build_e");
+    new(&m_Sounds[S_ROBOT_BUILD_END_ALT]) SSoundItem(L"r_build_ea");
 
-    m_Sounds[S_TURRET_BUILD_START].SSoundItem::SSoundItem(L"t_build_s");
-    m_Sounds[S_TURRET_BUILD_0].SSoundItem::SSoundItem(L"t_build_0");
-    m_Sounds[S_TURRET_BUILD_1].SSoundItem::SSoundItem(L"t_build_1");
-    m_Sounds[S_TURRET_BUILD_2].SSoundItem::SSoundItem(L"t_build_2");
-    m_Sounds[S_TURRET_BUILD_3].SSoundItem::SSoundItem(L"t_build_3");
+    new(&m_Sounds[S_TURRET_BUILD_START]) SSoundItem(L"t_build_s");
+    new(&m_Sounds[S_TURRET_BUILD_0]) SSoundItem(L"t_build_0");
+    new(&m_Sounds[S_TURRET_BUILD_1]) SSoundItem(L"t_build_1");
+    new(&m_Sounds[S_TURRET_BUILD_2]) SSoundItem(L"t_build_2");
+    new(&m_Sounds[S_TURRET_BUILD_3]) SSoundItem(L"t_build_3");
 
-    m_Sounds[S_FLYER_BUILD_END].SSoundItem::SSoundItem(L"f_build_e");
-    m_Sounds[S_FLYER_BUILD_END_ALT].SSoundItem::SSoundItem(L"f_build_ea");
+    new(&m_Sounds[S_FLYER_BUILD_END]) SSoundItem(L"f_build_e");
+    new(&m_Sounds[S_FLYER_BUILD_END_ALT]) SSoundItem(L"f_build_ea");
 
-    m_Sounds[S_YES_SIR_1].SSoundItem::SSoundItem(L"s_yes_1");
-    m_Sounds[S_YES_SIR_2].SSoundItem::SSoundItem(L"s_yes_2");
-    m_Sounds[S_YES_SIR_3].SSoundItem::SSoundItem(L"s_yes_3");
-    m_Sounds[S_YES_SIR_4].SSoundItem::SSoundItem(L"s_yes_4");
-    m_Sounds[S_YES_SIR_5].SSoundItem::SSoundItem(L"s_yes_5");
+    new(&m_Sounds[S_YES_SIR_1]) SSoundItem(L"s_yes_1");
+    new(&m_Sounds[S_YES_SIR_2]) SSoundItem(L"s_yes_2");
+    new(&m_Sounds[S_YES_SIR_3]) SSoundItem(L"s_yes_3");
+    new(&m_Sounds[S_YES_SIR_4]) SSoundItem(L"s_yes_4");
+    new(&m_Sounds[S_YES_SIR_5]) SSoundItem(L"s_yes_5");
 
-    m_Sounds[S_SELECTION_1].SSoundItem::SSoundItem(L"s_selection_1");
-    m_Sounds[S_SELECTION_2].SSoundItem::SSoundItem(L"s_selection_2");
-    m_Sounds[S_SELECTION_3].SSoundItem::SSoundItem(L"s_selection_3");
-    m_Sounds[S_SELECTION_4].SSoundItem::SSoundItem(L"s_selection_4");
-    m_Sounds[S_SELECTION_5].SSoundItem::SSoundItem(L"s_selection_5");
-    m_Sounds[S_SELECTION_6].SSoundItem::SSoundItem(L"s_selection_6");
-    m_Sounds[S_SELECTION_7].SSoundItem::SSoundItem(L"s_selection_7");
+    new(&m_Sounds[S_SELECTION_1]) SSoundItem(L"s_selection_1");
+    new(&m_Sounds[S_SELECTION_2]) SSoundItem(L"s_selection_2");
+    new(&m_Sounds[S_SELECTION_3]) SSoundItem(L"s_selection_3");
+    new(&m_Sounds[S_SELECTION_4]) SSoundItem(L"s_selection_4");
+    new(&m_Sounds[S_SELECTION_5]) SSoundItem(L"s_selection_5");
+    new(&m_Sounds[S_SELECTION_6]) SSoundItem(L"s_selection_6");
+    new(&m_Sounds[S_SELECTION_7]) SSoundItem(L"s_selection_7");
 
-    m_Sounds[S_BUILDING_SEL].SSoundItem::SSoundItem(L"s_building_sel");
-    m_Sounds[S_BASE_SEL].SSoundItem::SSoundItem(L"s_base_sel");
+    new(&m_Sounds[S_BUILDING_SEL]) SSoundItem(L"s_building_sel");
+    new(&m_Sounds[S_BASE_SEL]) SSoundItem(L"s_base_sel");
 
-    m_Sounds[S_CHASSIS_PNEUMATIC_LOOP].SSoundItem::SSoundItem(L"s_chassis_pneumatic_l");
-    m_Sounds[S_CHASSIS_WHEEL_LOOP].SSoundItem::SSoundItem(L"s_chassis_wheel_l");
-    m_Sounds[S_CHASSIS_TRACK_LOOP].SSoundItem::SSoundItem(L"s_chassis_track_l");
-    m_Sounds[S_CHASSIS_HOVERCRAFT_LOOP].SSoundItem::SSoundItem(L"s_chassis_hovercraft_l");
-    m_Sounds[S_CHASSIS_ANTIGRAVITY_LOOP].SSoundItem::SSoundItem(L"s_chassis_antigravity_l");
+    new(&m_Sounds[S_CHASSIS_PNEUMATIC_LOOP]) SSoundItem(L"s_chassis_pneumatic_l");
+    new(&m_Sounds[S_CHASSIS_WHEEL_LOOP]) SSoundItem(L"s_chassis_wheel_l");
+    new(&m_Sounds[S_CHASSIS_TRACK_LOOP]) SSoundItem(L"s_chassis_track_l");
+    new(&m_Sounds[S_CHASSIS_HOVERCRAFT_LOOP]) SSoundItem(L"s_chassis_hovercraft_l");
+    new(&m_Sounds[S_CHASSIS_ANTIGRAVITY_LOOP]) SSoundItem(L"s_chassis_antigravity_l");
 
-    m_Sounds[S_HULL_PASSIVE].SSoundItem::SSoundItem(L"s_hull_passive");
-    m_Sounds[S_HULL_ACTIVE].SSoundItem::SSoundItem(L"s_hull_active");
-    m_Sounds[S_HULL_FIREPROOF].SSoundItem::SSoundItem(L"s_hull_fireproof");
-    m_Sounds[S_HULL_PLASMIC].SSoundItem::SSoundItem(L"s_hull_plasmic");
-    m_Sounds[S_HULL_NUCLEAR].SSoundItem::SSoundItem(L"s_hull_nuclear");
-    m_Sounds[S_HULL_6].SSoundItem::SSoundItem(L"s_hull_6");
+    new(&m_Sounds[S_HULL_PASSIVE]) SSoundItem(L"s_hull_passive");
+    new(&m_Sounds[S_HULL_ACTIVE]) SSoundItem(L"s_hull_active");
+    new(&m_Sounds[S_HULL_FIREPROOF]) SSoundItem(L"s_hull_fireproof");
+    new(&m_Sounds[S_HULL_PLASMIC]) SSoundItem(L"s_hull_plasmic");
+    new(&m_Sounds[S_HULL_NUCLEAR]) SSoundItem(L"s_hull_nuclear");
+    new(&m_Sounds[S_HULL_6]) SSoundItem(L"s_hull_6");
 
-    m_Sounds[S_MAINTENANCE].SSoundItem::SSoundItem(L"s_maintenance");
-    m_Sounds[S_MAINTENANCE_ON].SSoundItem::SSoundItem(L"s_maintenance_on");
-    m_Sounds[S_RESINCOME].SSoundItem::SSoundItem(L"s_resincome");
+    new(&m_Sounds[S_MAINTENANCE]) SSoundItem(L"s_maintenance");
+    new(&m_Sounds[S_MAINTENANCE_ON]) SSoundItem(L"s_maintenance_on");
+    new(&m_Sounds[S_RESINCOME]) SSoundItem(L"s_resincome");
 
-    m_Sounds[S_SIDE_UNDER_ATTACK_1].SSoundItem::SSoundItem(L"s_side_attacked_1");
-    m_Sounds[S_SIDE_UNDER_ATTACK_2].SSoundItem::SSoundItem(L"s_side_attacked_2");
-    m_Sounds[S_SIDE_UNDER_ATTACK_3].SSoundItem::SSoundItem(L"s_side_attacked_3");
+    new(&m_Sounds[S_SIDE_UNDER_ATTACK_1]) SSoundItem(L"s_side_attacked_1");
+    new(&m_Sounds[S_SIDE_UNDER_ATTACK_2]) SSoundItem(L"s_side_attacked_2");
+    new(&m_Sounds[S_SIDE_UNDER_ATTACK_3]) SSoundItem(L"s_side_attacked_3");
 
-    m_Sounds[S_ENEMY_BASE_CAPTURED].SSoundItem::SSoundItem(L"s_eb_cap");
-    m_Sounds[S_ENEMY_FACTORY_CAPTURED].SSoundItem::SSoundItem(L"s_ef_cap");
-    m_Sounds[S_PLAYER_BASE_CAPTURED].SSoundItem::SSoundItem(L"s_pb_cap");
-    m_Sounds[S_PLAYER_FACTORY_CAPTURED].SSoundItem::SSoundItem(L"s_pf_cap");
+    new(&m_Sounds[S_ENEMY_BASE_CAPTURED]) SSoundItem(L"s_eb_cap");
+    new(&m_Sounds[S_ENEMY_FACTORY_CAPTURED]) SSoundItem(L"s_ef_cap");
+    new(&m_Sounds[S_PLAYER_BASE_CAPTURED]) SSoundItem(L"s_pb_cap");
+    new(&m_Sounds[S_PLAYER_FACTORY_CAPTURED]) SSoundItem(L"s_pf_cap");
 
-    m_Sounds[S_BASE_KILLED].SSoundItem::SSoundItem(L"s_base_dead");
-    m_Sounds[S_FACTORY_KILLED].SSoundItem::SSoundItem(L"s_fa_dead");
-    m_Sounds[S_BUILDING_KILLED].SSoundItem::SSoundItem(L"s_building_dead");
+    new(&m_Sounds[S_BASE_KILLED]) SSoundItem(L"s_base_dead");
+    new(&m_Sounds[S_FACTORY_KILLED]) SSoundItem(L"s_fa_dead");
+    new(&m_Sounds[S_BUILDING_KILLED]) SSoundItem(L"s_building_dead");
 
-    m_Sounds[S_ORDER_INPROGRESS1].SSoundItem::SSoundItem(L"s_ord_inprogress1");
-    m_Sounds[S_ORDER_INPROGRESS2].SSoundItem::SSoundItem(L"s_ord_inprogress2");
+    new(&m_Sounds[S_ORDER_INPROGRESS1]) SSoundItem(L"s_ord_inprogress1");
+    new(&m_Sounds[S_ORDER_INPROGRESS2]) SSoundItem(L"s_ord_inprogress2");
 
-    m_Sounds[S_ORDER_ACCEPT].SSoundItem::SSoundItem(L"s_ord_accept");
-    m_Sounds[S_ORDER_ATTACK].SSoundItem::SSoundItem(L"s_ord_attack");
-    m_Sounds[S_ORDER_CAPTURE].SSoundItem::SSoundItem(L"s_ord_capture");
-    m_Sounds[S_ORDER_CAPTURE_PUSH].SSoundItem::SSoundItem(L"s_ord_capture_push");
-    m_Sounds[S_ORDER_REPAIR].SSoundItem::SSoundItem(L"s_ord_repair");
+    new(&m_Sounds[S_ORDER_ACCEPT]) SSoundItem(L"s_ord_accept");
+    new(&m_Sounds[S_ORDER_ATTACK]) SSoundItem(L"s_ord_attack");
+    new(&m_Sounds[S_ORDER_CAPTURE]) SSoundItem(L"s_ord_capture");
+    new(&m_Sounds[S_ORDER_CAPTURE_PUSH]) SSoundItem(L"s_ord_capture_push");
+    new(&m_Sounds[S_ORDER_REPAIR]) SSoundItem(L"s_ord_repair");
 
-    m_Sounds[S_ORDER_AUTO_ATTACK].SSoundItem::SSoundItem(L"s_orda_attack");
-    m_Sounds[S_ORDER_AUTO_CAPTURE].SSoundItem::SSoundItem(L"s_orda_capture");
-    m_Sounds[S_ORDER_AUTO_DEFENCE].SSoundItem::SSoundItem(L"s_orda_defence");
+    new(&m_Sounds[S_ORDER_AUTO_ATTACK]) SSoundItem(L"s_orda_attack");
+    new(&m_Sounds[S_ORDER_AUTO_CAPTURE]) SSoundItem(L"s_orda_capture");
+    new(&m_Sounds[S_ORDER_AUTO_DEFENCE]) SSoundItem(L"s_orda_defence");
 
-    m_Sounds[S_TERRON_PAIN1].SSoundItem::SSoundItem(L"s_terron_pain1");
-    m_Sounds[S_TERRON_PAIN2].SSoundItem::SSoundItem(L"s_terron_pain2");
-    m_Sounds[S_TERRON_PAIN3].SSoundItem::SSoundItem(L"s_terron_pain3");
-    m_Sounds[S_TERRON_PAIN4].SSoundItem::SSoundItem(L"s_terron_pain4");
-    m_Sounds[S_TERRON_KILLED].SSoundItem::SSoundItem(L"s_terron_killed");
+    new(&m_Sounds[S_TERRON_PAIN1]) SSoundItem(L"s_terron_pain1");
+    new(&m_Sounds[S_TERRON_PAIN2]) SSoundItem(L"s_terron_pain2");
+    new(&m_Sounds[S_TERRON_PAIN3]) SSoundItem(L"s_terron_pain3");
+    new(&m_Sounds[S_TERRON_PAIN4]) SSoundItem(L"s_terron_pain4");
+    new(&m_Sounds[S_TERRON_KILLED]) SSoundItem(L"s_terron_killed");
 
-    m_Sounds[S_ORDER_CAPTURE_FUCK_OFF].SSoundItem::SSoundItem(L"s_ord_capoff");
+    new(&m_Sounds[S_ORDER_CAPTURE_FUCK_OFF]) SSoundItem(L"s_ord_capoff");
 
-    m_Sounds[S_ROBOT_UPAL].SSoundItem::SSoundItem(L"s_upal");
+    new(&m_Sounds[S_ROBOT_UPAL]) SSoundItem(L"s_upal");
 
-    m_Sounds[S_CANTBE].SSoundItem::SSoundItem(L"s_cantbe");
+    new(&m_Sounds[S_CANTBE]) SSoundItem(L"s_cantbe");
 
-    m_Sounds[S_SPECIAL_SLOT].SSoundItem::SSoundItem(L"");
+    new(&m_Sounds[S_SPECIAL_SLOT]) SSoundItem(L"");
 
 #ifdef _DEBUG
     for (int i = 0; i < S_COUNT; ++i) {
