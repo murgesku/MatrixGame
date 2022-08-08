@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(MatrixGame)
-
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CONFIGURATION_TYPES Release Debug)
+
+project(MatrixGame)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -13,8 +14,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 option(MATRIXGAME_BUILD_DLL "Build dll instead of exe" TRUE)
 option(MATRIXGAME_CHEATS "Enable cheats" TRUE)
 
+find_package(DIRECTX9 REQUIRED)
 if(MSVC)
-    find_package(DIRECTX9 REQUIRED)
     if(NOT DIRECTX9_FOUND)
         message(FATAL_ERROR "Could not find DirectX SDK")
     endif()
@@ -35,19 +36,15 @@ if(MSVC)
         $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86>
     )
 
-    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS>)
+    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
 else()
     set(COMPILE_OPTIONS
-        -std=c++11 -fpermissive
+        -std=c++11
+        -fpermissive # TODO: remove and fix
+        -Wno-write-strings # TODO: remove and fix
     )
-endif()
 
-if(NOT MATRIXGAME_BUILD_DLL)
-    target_compile_definitions(MatrixGame PUBLIC $<$<CONFIG:Release>:EXE_VERSION>)
-endif()
-
-if(MATRIXGAME_CHEATS)
-    target_compile_definitions(MatrixGame PRIVATE CHEATS_ON)
+    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 endif()
 
 add_subdirectory(MatrixLib)
@@ -57,7 +54,6 @@ add_subdirectory(ThirdParty/ZLib)
 
 target_link_libraries(
     MatrixGame
-    legacy_stdio_definitions
     winmm
     ${DIRECTX9_LIBRARIES}
     DebugMsg
@@ -65,6 +61,13 @@ target_link_libraries(
     ZLIB
     MatrixLib
 )
+
+if(MSVC)
+    target_link_libraries(
+        MatrixGame
+        legacy_stdio_definitions
+    )
+endif()
 
 target_link_options(MatrixGame PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
 

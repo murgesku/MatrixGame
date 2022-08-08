@@ -20,7 +20,7 @@ endmacro()
 file(GLOB MATRIX_SOURCES src/*.cpp src/*.c)
 file(GLOB MATRIX_HEADERS src/*.hpp src/*.h)
 
-set(MATRIX_RESOURCES 
+set(MATRIX_RESOURCES
     MatrixGame.ico
     MatrixGame.rc
     Resource.h
@@ -31,7 +31,24 @@ target_sources(MatrixGame PRIVATE
     ${MATRIX_HEADERS}
     ${MATRIX_RESOURCES}
 )
-target_include_directories(MatrixGame PRIVATE ./)
+target_include_directories(MatrixGame PRIVATE . src)
+
+if(NOT MATRIXGAME_BUILD_DLL)
+    set_source_files_properties(
+        src/MatrixFormGame.cpp
+        PROPERTIES
+            COMPILE_DEFINITIONS $<$<CONFIG:Release>:EXE_VERSION>)
+else()
+    # remove lib prefix from the DLL name (for GCC build)
+    set_target_properties(MatrixGame PROPERTIES PREFIX "")
+endif()
+
+if(MATRIXGAME_CHEATS)
+    set_source_files_properties(
+        src/MatrixFormGame.cpp
+        PROPERTIES
+            COMPILE_DEFINITIONS CHEATS_ON)
+endif()
 
 add_matrix_directory(src/Effects)
 add_matrix_directory(src/Interface)

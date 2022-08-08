@@ -83,14 +83,29 @@ set(BITMAP_HEADERS
     Bitmap/CBitmap.hpp
 )
 
-target_sources(MatrixLib PRIVATE ${3G_SOURCES} ${3G_HEADERS})
-target_sources(MatrixLib PRIVATE ${BASE_SOURCES} ${BASE_HEADERS})
-target_sources(MatrixLib PRIVATE ${BITMAP_SOURCES} ${BITMAP_HEADERS})
-target_include_directories(MatrixLib PUBLIC 3G)
-target_include_directories(MatrixLib PUBLIC Base)
-target_include_directories(MatrixLib PUBLIC Bitmap)
+target_sources(
+    MatrixLib
+    PRIVATE
+        ${3G_SOURCES} ${3G_HEADERS}
+        ${BASE_SOURCES} ${BASE_HEADERS}
+        ${BITMAP_SOURCES} ${BITMAP_HEADERS}
+)
 
-target_link_options(MatrixLib PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
+target_include_directories(
+    MatrixLib
+    PUBLIC
+        3G
+        Base
+        Bitmap
+)
+
+target_link_libraries(
+    MatrixLib
+    PUBLIC
+        FilePNG
+        ${DIRECTX9_LIBRARIES}
+        ZLIB
+)
 
 if(MSVC)
     source_group("3G\\Source Files" FILES ${3G_SOURCES})
@@ -99,7 +114,10 @@ if(MSVC)
     source_group("Base\\Header Files" FILES ${BASE_HEADERS})
     source_group("Bitmap\\Source Files" FILES ${BITMAP_SOURCES})
     source_group("Bitmap\\Header Files" FILES ${BITMAP_HEADERS})
+else()
+    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 endif()
 
 target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})
-target_compile_definitions(MatrixLib PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL WINDOWS_IGNORE_PACKING_MISMATCH)
+target_compile_definitions(MatrixLib PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL)
+target_link_options(MatrixLib PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
