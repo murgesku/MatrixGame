@@ -22,6 +22,9 @@ if(MSVC)
         $<$<CONFIG:Debug>:_LIB _CRT_SECURE_NO_WARNINGS>
     )
     source_group("LibPNG" FILES ${LIBPNG_SOURCES})
+else()
+    set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -std=c++11 -fpermissive")
 endif()
 
 target_compile_options(FilePNG PRIVATE ${PNG_COMPILE_OPTIONS})

@@ -22,6 +22,12 @@ if(MSVC)
         $<$<CONFIG:Release>:/Ob1 /GF /MT /Gy>
         $<$<CONFIG:Debug>:/ZI /nologo /W3 /Od /RTC1 /MTd>
     )
+else()
+    set(DEBUGMSG_COMPILE_OPTIONS
+        -std=c++11
+        -fpermissive # TODO: remove and fix
+        -Wno-write-strings # TODO: remove and fix
+    )
 endif()
 
 target_compile_options(DebugMsg PRIVATE ${DEBUGMSG_COMPILE_OPTIONS})
