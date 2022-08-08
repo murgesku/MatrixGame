@@ -95,6 +95,8 @@ target_include_directories(MatrixLib PUBLIC 3G)
 target_include_directories(MatrixLib PUBLIC Base)
 target_include_directories(MatrixLib PUBLIC Bitmap)
 
+target_link_options(MatrixLib PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
+
 if(MSVC)
     source_group("3G\\Source Files" FILES ${3G_SOURCES})
     source_group("3G\\Header Files" FILES ${3G_HEADERS})
@@ -105,4 +107,4 @@ if(MSVC)
 endif()
 
 target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})
-target_compile_definitions(MatrixLib PRIVATE ${COMPILE_DEFINITIONS})
+target_compile_definitions(MatrixLib PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL)

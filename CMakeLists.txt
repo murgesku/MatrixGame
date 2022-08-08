@@ -23,9 +23,6 @@ endif()
 
 add_subdirectory(MatrixGame)
 
-target_link_libraries(MatrixGame winmm)
-target_link_libraries(MatrixGame ${DIRECTX9_LIBRARIES})
-
 list(APPEND COMPILE_DEFINITIONS MATRIXGAME_EXPORTS USE_PNGLIB $<$<CONFIG:Release>:ASSERT_OFF>)
 
 if(MSVC)
@@ -58,10 +55,18 @@ add_subdirectory(MatrixLib/DebugMsg)
 add_subdirectory(MatrixLib/FilePNG)
 add_subdirectory(ThirdParty/ZLib)
 
-target_link_libraries(MatrixGame MatrixLib)
-target_link_libraries(MatrixGame DebugMsg)
-target_link_libraries(MatrixGame FilePNG)
-target_link_libraries(MatrixGame ZLIB)
+target_link_libraries(
+    MatrixGame
+    legacy_stdio_definitions
+    winmm
+    ${DIRECTX9_LIBRARIES}
+    DebugMsg
+    FilePNG
+    ZLIB
+    MatrixLib
+)
+
+target_link_options(MatrixGame PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
 
 target_compile_options(MatrixGame PRIVATE ${COMPILE_OPTIONS})
 target_compile_definitions(MatrixGame PRIVATE ${COMPILE_DEFINITIONS})
