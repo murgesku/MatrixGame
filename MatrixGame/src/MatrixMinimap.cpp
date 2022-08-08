@@ -469,33 +469,38 @@ void CMinimap::DrawRadar(float x, float y, float radius) {
         float r;
         switch (ms->GetObjectType()) {
             case OBJECT_TYPE_ROBOTAI:
+            {
                 if (!ms->IsLiveRobot())
                     continue;
                 if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == ms)
                     continue;
-                if (r2 < D3DXVec2LengthSq(
-                                 &(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter()))) {
+                auto tmp = *(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter();
+                if (r2 < D3DXVec2LengthSq(&tmp)) {
                     continue;
                 }
 
                 tex = MMT_ROBOT_R;
                 r = MINIMAP_ROBOT_R;
                 break;
+            }
             case OBJECT_TYPE_FLYER:
+            {
                 if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == ms)
                     continue;
-                if (r2 < D3DXVec2LengthSq(
-                                 &(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter()))) {
+                auto tmp = *(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter();
+                if (r2 < D3DXVec2LengthSq(&tmp)) {
                     continue;
                 }
                 tex = MMT_FLYER_R;
                 r = MINIMAP_FLYER_R;
                 break;
+            }
             case OBJECT_TYPE_BUILDING:
+            {
                 if (!ms->IsLiveBuilding())
                     continue;
-                if (r2 < D3DXVec2LengthSq(
-                                 &(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter()))) {
+                auto tmp = *(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter();
+                if (r2 < D3DXVec2LengthSq(&tmp)) {
                     continue;
                 }
                 if (ms->IsBase()) {
@@ -507,18 +512,22 @@ void CMinimap::DrawRadar(float x, float y, float radius) {
                     r = MINIMAP_BUILDING_R;
                 }
                 break;
+            }
             case OBJECT_TYPE_CANNON:
+            {
                 if (!ms->IsLiveCannon()) {
                     continue;
                 }
-                if (r2 < D3DXVec2LengthSq(
-                                 &(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter()))) {
+                auto tmp = *(D3DXVECTOR2 *)&ms->GetGeoCenter() - *(D3DXVECTOR2 *)&arcaded->GetGeoCenter();
+                if (r2 < D3DXVec2LengthSq(&tmp)) {
                     continue;
                 }
                 tex = MMT_TURRET_R;
                 r = MINIMAP_CANNON_R;
                 break;
-            default: {
+            }
+            default:
+            {
                 continue;
             }
         }
@@ -974,7 +983,9 @@ render:
     D3DXMATRIX mView;
     D3DXVECTOR3 campos(float(g_MatrixMap->m_Size.x) * (GLOBAL_SCALE / 2),
                        float(g_MatrixMap->m_Size.y) * (GLOBAL_SCALE / 2), 1300);
-    D3DXMatrixLookAtLH(&mView, &campos, &(campos - D3DXVECTOR3(0, 0, 1)), &D3DXVECTOR3(0, -1, 0));
+    auto tmp1 = campos - D3DXVECTOR3(0, 0, 1);
+    auto tmp2 = D3DXVECTOR3(0, -1, 0);
+    D3DXMatrixLookAtLH(&mView, &campos, &tmp1, &tmp2);
 
     int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(sz) * GLOBAL_SCALE);
@@ -1269,7 +1280,9 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s) {
     D3DXMATRIX mView;
     D3DXVECTOR3 campos(float(g_MatrixMap->m_Size.x) * (GLOBAL_SCALE / 2),
                        float(g_MatrixMap->m_Size.y) * (GLOBAL_SCALE / 2), 1300);
-    D3DXMatrixLookAtLH(&mView, &campos, &(campos - D3DXVECTOR3(0, 0, 1)), &D3DXVECTOR3(0, -1, 0));
+    auto tmp1 = campos - D3DXVECTOR3(0, 0, 1);
+    auto tmp2 = D3DXVECTOR3(0, -1, 0);
+    D3DXMatrixLookAtLH(&mView, &campos, &tmp1, &tmp2);
 
     int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(sz) * GLOBAL_SCALE);

@@ -533,7 +533,8 @@ void CMatrixMap::CalcMapGroupVisibility(void) {
         visRuntime.pos[1].y = m_Camera.GetFrustumCenter().y + m_Camera.GetFrustumRT().y * k;
 
         D3DXVECTOR2 ex;
-        D3DXVec2Normalize(&ex, &(visRuntime.pos[1] - visRuntime.pos[0]));
+        auto tmp = visRuntime.pos[1] - visRuntime.pos[0];
+        D3DXVec2Normalize(&ex, &tmp);
         ex *= GLOBAL_SCALE * MAP_GROUP_SIZE;
         visRuntime.pos[0] -= ex;
         visRuntime.pos[1] += ex;

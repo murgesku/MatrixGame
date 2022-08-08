@@ -613,8 +613,9 @@ CMatrixMapStatic *CMatrixMapGroup::FindObjectAny(DWORD mask, const D3DXVECTOR2 &
         if (!(*ms)->FitToMask(mask))
             continue;
 
+        auto tmp = *(D3DXVECTOR2 *)&(*ms)->GetGeoCenter() - pos;
         float dist =
-                D3DXVec2Length(&(*(D3DXVECTOR2 *)&(*ms)->GetGeoCenter() - pos)) - (*ms)->GetRadius() * scale_radius;
+                D3DXVec2Length(&tmp) - (*ms)->GetRadius() * scale_radius;
         // if (dist< 0) dist = 0;
         if (dist < maxdist) {
             i = ms - m_Objects + 1;
@@ -635,7 +636,8 @@ CMatrixMapStatic *CMatrixMapGroup::FindObjectAny(DWORD mask, const D3DXVECTOR3 &
         if (!(*ms)->FitToMask(mask))
             continue;
 
-        float dist = D3DXVec3Length(&((*ms)->GetGeoCenter() - pos)) - (*ms)->GetRadius() * scale_radius;
+        auto tmp = (*ms)->GetGeoCenter() - pos;
+        float dist = D3DXVec3Length(&tmp) - (*ms)->GetRadius() * scale_radius;
         // if (dist< 0) dist = 0;
         if (dist < maxdist) {
             i = ms - m_Objects + 1;
@@ -664,17 +666,17 @@ void CMatrixMapGroup::SortObjects(const D3DXMATRIX &sort) {
 }
 
 void CMatrixMapGroup::PauseTakt(int step) {
-    m_CamDistSq =
-            D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() -
-                               D3DXVECTOR3(0.5f * (p0.x + p1.x), 0.5f * (p0.y + p1.y), 0.5f * (m_minz + m_maxz))));
+    auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() -
+                               D3DXVECTOR3(0.5f * (p0.x + p1.x), 0.5f * (p0.y + p1.y), 0.5f * (m_minz + m_maxz));
+    m_CamDistSq = D3DXVec3LengthSq(&tmp);
 }
 
 void CMatrixMapGroup::GraphicTakt(int step) {
     // inshore waves...
+    auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() -
+                               D3DXVECTOR3(0.5f * (p0.x + p1.x), 0.5f * (p0.y + p1.y), 0.5f * (m_minz + m_maxz));
 
-    m_CamDistSq =
-            D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() -
-                               D3DXVECTOR3(0.5f * (p0.x + p1.x), 0.5f * (p0.y + p1.y), 0.5f * (m_minz + m_maxz))));
+    m_CamDistSq = D3DXVec3LengthSq(&tmp);
 
     if (!HasWater())
         return;

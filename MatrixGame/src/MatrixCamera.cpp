@@ -442,7 +442,8 @@ void SAutoFlyData::FindAutoFlyTarget(void) {
             }
         }
 
-        if (POW2(100) > D3DXVec3LengthSq(&(m_Cur - m_New)))
+        auto tmp = m_Cur - m_New;
+        if (POW2(100) > D3DXVec3LengthSq(&tmp))
             g_MatrixMap->LeaveDialogMode();
         else
             return;
@@ -483,7 +484,8 @@ void SAutoFlyData::FindAutoFlyTarget(void) {
             // m_NewFROM = m_NewTO + D3DXVECTOR3(TableSin(a) * 100, TableCos(a) * 100, FSRND(100) + 100);
         }
         else {
-            if (POW2(10) > D3DXVec3LengthSq(&(m_Cur - m_New))) {
+            auto tmp = m_Cur - m_New;
+            if (POW2(10) > D3DXVec3LengthSq(&tmp)) {
                 RESETFLAG(cam->m_Flags, CAM_SELECTED_TARGET);
             }
         }
@@ -543,7 +545,8 @@ void SAutoFlyData::FindAutoFlyTarget(void) {
         for (int i = 0; i < m_WarPairsCnt; ++i) {
             CMatrixMapStatic *ms = m_WarPairs[i].target->m_Object;
 
-            float d2 = D3DXVec3LengthSq(&(ms->GetGeoCenter() - m_Cur));
+            auto tmp = ms->GetGeoCenter() - m_Cur;
+            float d2 = D3DXVec3LengthSq(&tmp);
 
             if (d2 < dist) {
                 dist = d2;
@@ -714,31 +717,35 @@ void CMatrixCamera::BeforeDraw(void) {
     m_FrustumCenter.y = m_MatViewInversed._42;
     m_FrustumCenter.z = m_MatViewInversed._43;
 
-    D3DXVec3Normalize(&m_FrustPlaneB.norm,
-                      &D3DXVECTOR3(GetFrustumLB().y * GetFrustumRB().z - GetFrustumLB().z * GetFrustumRB().y,
-                                   GetFrustumLB().z * GetFrustumRB().x - GetFrustumLB().x * GetFrustumRB().z,
-                                   GetFrustumLB().x * GetFrustumRB().y - GetFrustumLB().y * GetFrustumRB().x));
+    auto tmp = D3DXVECTOR3(GetFrustumLB().y * GetFrustumRB().z - GetFrustumLB().z * GetFrustumRB().y,
+                           GetFrustumLB().z * GetFrustumRB().x - GetFrustumLB().x * GetFrustumRB().z,
+                           GetFrustumLB().x * GetFrustumRB().y - GetFrustumLB().y * GetFrustumRB().x);
+
+    D3DXVec3Normalize(&m_FrustPlaneB.norm, &tmp);
     m_FrustPlaneB.dist = -D3DXVec3Dot(&m_FrustPlaneB.norm, &m_FrustumCenter);
     m_FrustPlaneB.UpdateSignBits();
 
-    D3DXVec3Normalize(&m_FrustPlaneT.norm,
-                      &D3DXVECTOR3(GetFrustumLT().z * GetFrustumRT().y - GetFrustumLT().y * GetFrustumRT().z,
-                                   GetFrustumLT().x * GetFrustumRT().z - GetFrustumLT().z * GetFrustumRT().x,
-                                   GetFrustumLT().y * GetFrustumRT().x - GetFrustumLT().x * GetFrustumRT().y));
+    tmp = D3DXVECTOR3(GetFrustumLT().z * GetFrustumRT().y - GetFrustumLT().y * GetFrustumRT().z,
+                      GetFrustumLT().x * GetFrustumRT().z - GetFrustumLT().z * GetFrustumRT().x,
+                      GetFrustumLT().y * GetFrustumRT().x - GetFrustumLT().x * GetFrustumRT().y);
+
+    D3DXVec3Normalize(&m_FrustPlaneT.norm, &tmp);
     m_FrustPlaneT.dist = -D3DXVec3Dot(&m_FrustPlaneT.norm, &m_FrustumCenter);
     m_FrustPlaneT.UpdateSignBits();
 
-    D3DXVec3Normalize(&m_FrustPlaneL.norm,
-                      &D3DXVECTOR3(GetFrustumLB().z * GetFrustumLT().y - GetFrustumLB().y * GetFrustumLT().z,
-                                   GetFrustumLB().x * GetFrustumLT().z - GetFrustumLB().z * GetFrustumLT().x,
-                                   GetFrustumLB().y * GetFrustumLT().x - GetFrustumLB().x * GetFrustumLT().y));
+    tmp = D3DXVECTOR3(GetFrustumLB().z * GetFrustumLT().y - GetFrustumLB().y * GetFrustumLT().z,
+                      GetFrustumLB().x * GetFrustumLT().z - GetFrustumLB().z * GetFrustumLT().x,
+                      GetFrustumLB().y * GetFrustumLT().x - GetFrustumLB().x * GetFrustumLT().y);
+
+    D3DXVec3Normalize(&m_FrustPlaneL.norm, &tmp);
     m_FrustPlaneL.dist = -D3DXVec3Dot(&m_FrustPlaneL.norm, &m_FrustumCenter);
     m_FrustPlaneL.UpdateSignBits();
 
-    D3DXVec3Normalize(&m_FrustPlaneR.norm,
-                      &D3DXVECTOR3(GetFrustumRT().z * GetFrustumRB().y - GetFrustumRT().y * GetFrustumRB().z,
-                                   GetFrustumRT().x * GetFrustumRB().z - GetFrustumRT().z * GetFrustumRB().x,
-                                   GetFrustumRT().y * GetFrustumRB().x - GetFrustumRT().x * GetFrustumRB().y));
+    tmp = D3DXVECTOR3(GetFrustumRT().z * GetFrustumRB().y - GetFrustumRT().y * GetFrustumRB().z,
+                      GetFrustumRT().x * GetFrustumRB().z - GetFrustumRT().z * GetFrustumRB().x,
+                      GetFrustumRT().y * GetFrustumRB().x - GetFrustumRT().x * GetFrustumRB().y);
+
+    D3DXVec3Normalize(&m_FrustPlaneR.norm, &tmp);
     m_FrustPlaneR.dist = -D3DXVec3Dot(&m_FrustPlaneR.norm, &m_FrustumCenter);
     m_FrustPlaneR.UpdateSignBits();
 

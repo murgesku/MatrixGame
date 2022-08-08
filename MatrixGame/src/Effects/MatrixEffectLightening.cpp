@@ -47,10 +47,12 @@ void CMatrixEffectLightening::SetPos(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 
     float _len = 1.0f / len;
     m_Dir *= _len;
     if (m_Dir.x == 0 && m_Dir.y == 0) {
-        D3DXVec3Cross(&m_Perp, &m_Dir, &D3DXVECTOR3(0, 1, 0));
+        auto tmp = D3DXVECTOR3(0, 1, 0);
+        D3DXVec3Cross(&m_Perp, &m_Dir, &tmp);
     }
     else {
-        D3DXVec3Cross(&m_Perp, &m_Dir, &D3DXVECTOR3(0, 0, 1));
+        auto tmp = D3DXVECTOR3(0, 0, 1);
+        D3DXVec3Cross(&m_Perp, &m_Dir, &tmp);
     }
 
     int cnt = TruncFloat(len * INVERT(LIGHTENING_SEGMENT_LENGTH)) + 1;
@@ -215,10 +217,12 @@ void CMatrixEffectShorted::SetPos(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &po
     float _len = 1.0f / m_Len;
     m_Dir *= _len;
     if (m_Dir.x == 0 && m_Dir.y == 0) {
-        D3DXVec3Cross(&m_Perp, &m_Dir, &D3DXVECTOR3(0, 1, 0));
+        auto tmp = D3DXVECTOR3(0, 1, 0);
+        D3DXVec3Cross(&m_Perp, &m_Dir, &tmp);
     }
     else {
-        D3DXVec3Cross(&m_Perp, &m_Dir, &D3DXVECTOR3(0, 0, 1));
+        auto tmp = D3DXVECTOR3(0, 0, 1);
+        D3DXVec3Cross(&m_Perp, &m_Dir, &tmp);
     }
 
     int cnt = TruncFloat(m_Len * INVERT(SHORTED_SEGMENT_LENGTH)) + 1;

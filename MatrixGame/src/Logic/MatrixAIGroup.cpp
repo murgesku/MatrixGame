@@ -167,7 +167,8 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object) {
             ar = D3DXVECTOR2(((CMatrixFlyer *)ai_object)->GetPos().x, ((CMatrixFlyer *)ai_object)->GetPos().y);
         }
 
-        if (D3DXVec2LengthSq(&(ar - fr)) > 0 && D3DXVec2LengthSq(&(ar - fr)) <= DIF_GROUP_R * DIF_GROUP_R) {
+        const auto tmp = ar - fr;
+        if (D3DXVec2LengthSq(&tmp) > 0 && D3DXVec2LengthSq(&tmp) <= DIF_GROUP_R * DIF_GROUP_R) {
             *ai_gr = *fn_gr;
             // ai_object->m_Group = fn_object->GetObject()->m_Group;
 

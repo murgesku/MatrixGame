@@ -26,7 +26,8 @@ CMatrixEffectMovingObject::CMatrixEffectMovingObject(const SMOProps &props, DWOR
 
     m_Props.time = 0;
     m_Props.endoflife = false;
-    m_Props.distance = D3DXVec3Length(&(m_Props.target - m_Props.startpos));
+    auto tmp = m_Props.target - m_Props.startpos;
+    m_Props.distance = D3DXVec3Length(&tmp);
     // m_Props.curpos = m_Props.startpos;
     m_Props.endhandler = handler;
     m_Props.uservalue = user;
@@ -50,7 +51,8 @@ CMatrixEffectMovingObject::~CMatrixEffectMovingObject() {
     if (m_Props.object)
         UnloadObject(m_Props.object, m_Heap);
     if (m_Props.endhandler) {
-        m_Dist2 = D3DXVec3LengthSq(&(m_Props.curpos - m_Props.startpos));
+        auto tmp = m_Props.curpos - m_Props.startpos;
+        m_Dist2 = D3DXVec3LengthSq(&tmp);
         m_Props.endhandler(TRACE_STOP_NONE, m_Props.curpos, m_Props.uservalue, FEHF_LASTHIT);
     }
 
@@ -158,7 +160,8 @@ static bool HMEnum(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
 
     p = &ms->GetGeoCenter();
 
-    float cc = D3DXVec3Dot(&hmd->dir, D3DXVec3Normalize(&to_dir, &(*p - hmd->props->curpos)));
+    auto tmp = *p - hmd->props->curpos;
+    float cc = D3DXVec3Dot(&hmd->dir, D3DXVec3Normalize(&to_dir, &tmp));
 
     SObjectCore *oc = ms->GetCore(DEBUG_CALL_INFO);
 
@@ -183,7 +186,8 @@ static bool HMEnum(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
 static bool MOEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
     SMOProps *props = (SMOProps *)user;
     if (props->endhandler) {
-        CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(center - props->startpos));
+        auto tmp = center - props->startpos;
+        CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
         props->endhandler(ms, center, props->uservalue, 0);
     }
     return true;
@@ -201,7 +205,8 @@ void MO_Homing_Missile_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     D3DXVec3Normalize(&data.dir, &props.velocity);
     D3DXVECTOR3 seekcenter;
     if (props.common.hm.target) {
-        data.maxcos = D3DXVec3Dot(&data.dir, D3DXVec3Normalize(&seekcenter, &(props.target - props.curpos)));
+        auto tmp = props.target - props.curpos;
+        data.maxcos = D3DXVec3Dot(&data.dir, D3DXVec3Normalize(&seekcenter, &tmp));
         // seekcenter = props.target;
     }
     else {
@@ -294,7 +299,8 @@ skip_obj_seek:
 
     VecToMatrixY(m, props.curpos, props.velocity * k);
 
-    float distance = D3DXVec3LengthSq(&(props.curpos - props.target));
+    auto tmp = props.curpos - props.target;
+    float distance = D3DXVec3LengthSq(&tmp);
     if (hit || distance < MISSILE_IMPACT_RADIUS_SQ) {
         if (hito == TRACE_STOP_NONE && props.common.hm.target != NULL && props.common.hm.target->m_Object != NULL) {
             hito = props.common.hm.target->m_Object;
@@ -319,7 +325,8 @@ skip_obj_seek:
         // impact
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(props.curpos - props.startpos));
+            auto tmp = props.curpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(TRACE_STOP_NONE, props.curpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -332,7 +339,8 @@ skip_obj_seek:
         // time to die...
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(props.curpos - props.startpos));
+            auto tmp = props.curpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(hito, hit ? hitpos : props.curpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -361,7 +369,8 @@ void MO_Bomb_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     D3DXVECTOR3 newpos, dir;
     props.common.bomb.trajectory->CalcPoint(newpos, props.common.bomb.pos);
 
-    D3DXVec3Normalize(&dir, &(newpos - props.curpos));
+    auto tmp = newpos - props.curpos;
+    D3DXVec3Normalize(&dir, &tmp);
 
     float t, dt;
     if (props.time > props.common.bomb.next_fire_time) {
@@ -439,7 +448,8 @@ void MO_Bomb_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
         // impact
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(hitpos - props.startpos));
+            auto tmp = hitpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(hito, hitpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -506,7 +516,8 @@ void MO_Gun_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
         // impact
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(hitpos - props.startpos));
+            auto tmp = hitpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(hito, hitpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -514,7 +525,8 @@ void MO_Gun_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     else if (props.common.gun.dist > props.common.gun.maxdist) {
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(hitpos - props.startpos));
+            auto tmp = hitpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(TRACE_STOP_NONE, hitpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -581,7 +593,8 @@ void MO_Gun_cannon_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
         // impact
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(hitpos - props.startpos));
+            auto tmp = hitpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(hito, hitpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }
@@ -589,7 +602,8 @@ void MO_Gun_cannon_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     else if (props.common.gun.dist > props.common.gun.maxdist) {
         props.endoflife = true;
         if (props.endhandler) {
-            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&(hitpos - props.startpos));
+            auto tmp = hitpos - props.startpos;
+            CMatrixEffect::m_Dist2 = D3DXVec3LengthSq(&tmp);
             props.endhandler(TRACE_STOP_NONE, hitpos, props.uservalue, FEHF_LASTHIT);
             props.endhandler = NULL;
         }

@@ -478,7 +478,8 @@ static bool FindRobotForCaptureAny(const D3DXVECTOR2 &center, CMatrixMapStatic *
 
     SFindRobotForCaptureAny *data = (SFindRobotForCaptureAny *)user;
 
-    float dist2 = D3DXVec2LengthSq(&(center - *(D3DXVECTOR2 *)&ms->GetGeoCenter()));
+    auto tmp = center - *(D3DXVECTOR2 *)&ms->GetGeoCenter();
+    float dist2 = D3DXVec2LengthSq(&tmp);
     if (dist2 < data->dist2) {
         data->found = (CMatrixRobotAI *)ms;
         data->dist2 = dist2;
@@ -722,8 +723,10 @@ void CMatrixBuilding::LogicTakt(int cms) {
                     pos.x = mo->GetGeoCenter().x + FSRND(mo->GetRadius());
                     pos.y = mo->GetGeoCenter().y + FSRND(mo->GetRadius());
                     pos.z = mo->GetMatrix()._43 + FRND(mo->GetRadius() * 2);
-                    D3DXVec3Normalize(&dir, &D3DXVECTOR3(mo->GetMatrix()._41 - pos.x, mo->GetMatrix()._42 - pos.y,
-                                                         mo->GetMatrix()._43 - pos.z));
+                    auto tmp = D3DXVECTOR3(mo->GetMatrix()._41 - pos.x,
+                                           mo->GetMatrix()._42 - pos.y,
+                                           mo->GetMatrix()._43 - pos.z);
+                    D3DXVec3Normalize(&dir, &tmp);
                 }
                 while (!mo->PickFull(pos, dir, &t) && (--cnt > 0));
 
@@ -762,7 +765,8 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
                     pos = pos0 + D3DXVECTOR3(FSRND(GetRadius()), FSRND(GetRadius()), FRND(2 * GetRadius()));
 
-                    D3DXVec3Normalize(&dir, &(pos0 - pos));
+                    auto tmp = pos0 - pos;
+                    D3DXVec3Normalize(&dir, &tmp);
                 }
                 while (!Pick(pos, dir, &t) && (--cnt > 0));
                 if (cnt > 0) {
@@ -1064,7 +1068,8 @@ struct SFindRobotForCapture {
 static bool FindRobotForCapture(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
     SFindRobotForCapture *data = (SFindRobotForCapture *)user;
 
-    float dist2 = D3DXVec2LengthSq(&(center - *(D3DXVECTOR2 *)&ms->GetGeoCenter()));
+    auto tmp = center - *(D3DXVECTOR2 *)&ms->GetGeoCenter();
+    float dist2 = D3DXVec2LengthSq(&tmp);
     if (dist2 < data->dist2) {
         if (data->by == data->found) {
             data->by = NULL;

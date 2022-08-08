@@ -98,14 +98,16 @@ void CMatrixEffectSelection::Takt(float step) {
             if (i == j)
                 continue;
             D3DXVECTOR3 dir0;
-            D3DXVec3Normalize(&dir0, &(m_Points[i].m_Pos[0] - m_Points[j].m_Pos[0]));
+            auto tmp = m_Points[i].m_Pos[0] - m_Points[j].m_Pos[0];
+            D3DXVec3Normalize(&dir0, &tmp);
             dir += dir0;
         }
 
         D3DXVec3Normalize(&dir, &dir);
 
         D3DXVECTOR3 move;
-        D3DXVec3Cross(&move, &m_Points[i].m_Pos[0], &D3DXVECTOR3(0, 0, 1));
+        auto tmp = D3DXVECTOR3(0, 0, 1);
+        D3DXVec3Cross(&move, &m_Points[i].m_Pos[0], &tmp);
         D3DXVec3Normalize(&move, &move);
 
         // if (i & 1)
