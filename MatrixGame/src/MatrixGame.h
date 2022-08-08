@@ -12,9 +12,9 @@
 class CMatrixMapLogic;
 class CIFaceList;
 class CRenderPipeline;
-class Base::CBlockPar;
-class Base::CHeap;
-class Base::CPoint;
+// class Base::CBlockPar;
+// class Base::CHeap;
+// class Base::CPoint;
 class CLoadProgress;
 class CHistory;
 struct SMenuItemText;

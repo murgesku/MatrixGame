@@ -291,7 +291,7 @@ public:
     static DWORD Play(ESound snd, float vol, float pan, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT) {
         SureLoaded(snd);
-        PlayInternal(snd, vol, pan, sl, interrupt);
+        return PlayInternal(snd, vol, pan, sl, interrupt);
     }
 
     static DWORD Play(const wchar *name, ESoundLayer sl = SL_ALL,

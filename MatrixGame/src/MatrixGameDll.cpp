@@ -170,7 +170,7 @@ int __stdcall Support() {
 // 3-win
 
 void protectedBlock1(CFormMatrixGame *formgame) {
-    __try {
+    try {
         g_ExitState = 0;
         FormChange(formgame);
 
@@ -181,14 +181,14 @@ void protectedBlock1(CFormMatrixGame *formgame) {
 
         L3GRun();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER /*ExceptionHandler(GetExceptionInformation())*/) {
+    catch (... /*ExceptionHandler(GetExceptionInformation())*/) {
         SETFLAG(g_Flags, GFLAG_EXITLOOP);
         g_ExitState += 100;
     }
 }
 
 void protectedBlock2(CFormMatrixGame *formgame, SRobotGameState *rgs) {
-    __try {
+    try {
         rgs->m_Time = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_TIME);
         rgs->m_BuildRobot = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_ROBOT_BUILD);
         rgs->m_KillRobot = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_ROBOT_KILL);
@@ -196,47 +196,47 @@ void protectedBlock2(CFormMatrixGame *formgame, SRobotGameState *rgs) {
         rgs->m_KillTurret = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_TURRET_KILL);
         rgs->m_KillBuilding = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_BUILDING_KILL);
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
-    __try {
+    try {
         timeEndPeriod(1);
 
         MatrixGameDeinit();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
-    __try {
+    try {
         FormChange(NULL);
         HDelete(CFormMatrixGame, formgame, NULL);
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
-    __try {
+    try {
         g_Cache->Clear();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
-    __try {
+    try {
         L3GDeinit();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
-    __try {
+    try {
         CacheDeinit();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 
 #ifdef MEM_SPY_ENABLE
-    __try {
+    try {
         CMain::BaseDeInit();
     }
-    __except (EXCEPTION_EXECUTE_HANDLER) {
+    catch (...) {
     }
 #endif
 }
@@ -325,7 +325,7 @@ int __stdcall Run(HINSTANCE hinst, HWND hwnd, wchar *map, SRobotsSettings *set, 
             ,"Game crashed :(",MB_OK);
 #endif
     }*/
-    //__except(EXCEPTION_CONTINUE_EXECUTION){}
+    //catch(EXCEPTION_CONTINUE_EXECUTION){}
 
     ClipCursor(NULL);
 
