@@ -21,7 +21,7 @@
 #pragma comment(lib, "dbghelp.lib")
 
 SMGDRobotInterface g_RobotInterface;
-SMGDRangersInterface *g_RangersInterface = NULL;
+SMGDRangersInterface *g_RangersInterface = nullptr;
 int g_ExitState = 0;
 
 int GetFilePathB(OUT char *path, IN int len, IN const char *filename) {

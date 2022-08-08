@@ -351,15 +351,15 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 
     name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
-    if (PFile == NULL)
-        return false;
+    if (PFile == nullptr)
+        return nullptr;
     if (PFile->m_Type == FILEEC_FOLDER) {
         if (rem.IsEmpty())
             return PFile;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->GetFileRecEx(rem);
     }
-    return rem.IsEmpty() ? PFile : NULL;
+    return rem.IsEmpty() ? PFile : nullptr;
 }
 
 // Function    CHsFolder.ReAllocFileRecs(number:integer):boolean;
@@ -2281,7 +2281,7 @@ int CPackFile::FindFirst(const CStr &path, DWORD Attr, SSearchRec &S) {
     S.Name = "";
     S.Folder = NULL;
     if (m_RootFolder == NULL)
-        return NULL;
+        return 0;
     if (path.IsEmpty())
         S.Folder = m_RootFolder;
     else

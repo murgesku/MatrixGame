@@ -853,11 +853,11 @@ void SMatrixRobotUnit::PrepareForDIP(void) {
     DTRACE();
     if (m_ShadowStencil) {
         HDelete(CVOShadowStencil, m_ShadowStencil, g_MatrixHeap);
-        m_ShadowStencil = NULL;
+        m_ShadowStencil = nullptr;
     }
     if (m_WeaponRepairData) {
         m_WeaponRepairData->Release();
-        m_WeaponRepairData = NULL;
+        m_WeaponRepairData = nullptr;
     }
 #ifdef _DEBUG
     Smoke().SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);

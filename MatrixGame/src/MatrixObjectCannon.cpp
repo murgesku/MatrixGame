@@ -1379,7 +1379,7 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
                 m_Weapons[i] = NULL;
             }
         }
-        m_WeaponCnt = NULL;
+        m_WeaponCnt = 0;
 
         /// bool cstay = FRND(1) < 0.5f;
 
