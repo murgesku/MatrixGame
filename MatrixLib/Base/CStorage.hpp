@@ -254,7 +254,7 @@ class CStorageRecord : public CMain {
 
 public:
     CStorageRecord(const CStorageRecord &rec);
-    CStorageRecord(CWStr &name, CHeap *heap = NULL)
+    CStorageRecord(CWStr name, CHeap *heap = NULL)
       : m_Heap(heap), m_Name(name, name.GetHeap()), m_Items(NULL), m_ItemsCount(0) {}
     CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name(heap), m_Items(NULL), m_ItemsCount(0) {}
     ~CStorageRecord();

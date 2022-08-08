@@ -846,7 +846,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
         while (ms) {
             if (ms->GetObjectType() == OBJECT_TYPE_BUILDING) {
                 CMatrixBuilding *cb = (CMatrixBuilding *)ms;
-                cb->m_TurretsMax = EBuildingTurrets(min(cb->m_TurretsMax, cb->m_TurretsPlacesCnt));
+                cb->m_TurretsMax = EBuildingTurrets(min(static_cast<int>(cb->m_TurretsMax), cb->m_TurretsPlacesCnt));
                 // if(cb->GetSide() == PLAYER_SIDE && g_MatrixMap->GetPlayerSide()->m_ActiveObject == cb){
                 //    g_IFaceList->CreateDynamicTurrets(cb);
                 //}
@@ -1196,7 +1196,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
         for (int x = 0; x < (m_Size.x + 1); ++x, ++mp, ++cp) {
             mp->color = (cp->r << 16) | (cp->g << 8) | (cp->b << 0);
             mp->z = cp->z;
-            mp->z_land = max(0, cp->z);
+            mp->z_land = max(0.0f, cp->z);
 
             if (mp->z < m_minz)
                 m_minz = mp->z;

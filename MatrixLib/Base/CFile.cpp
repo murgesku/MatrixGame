@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <cstdint>
+
 #include "Base.pch"
 
 #include "CFile.hpp"
@@ -229,7 +231,7 @@ DWORD CFile::Size(void) const {
     return lo;
 }
 
-__int64 CFile::SizeFull(void) const {
+int64_t CFile::SizeFull(void) const {
     DWORD lo = 0xFFFFFFFF, hi;
 
 #ifndef MAXEXP_EXPORTS
@@ -246,10 +248,10 @@ __int64 CFile::SizeFull(void) const {
     if (lo == 0xFFFFFFFF) {
         ERROR_S(L"Error getting file size");
     }
-    return __int64(DWORD(lo)) | (__int64(hi) << 32);
+    return int64_t(DWORD(lo)) | (int64_t(hi) << 32);
 }
 
-__int64 CFile::PointerFull(void) const {
+int64_t CFile::PointerFull(void) const {
     DWORD lo = 0xFFFFFFFF;
     LONG hi;
 
@@ -268,10 +270,10 @@ __int64 CFile::PointerFull(void) const {
         ERROR_S(L"Error getting file pointer");
     }
 
-    return __int64(DWORD(lo)) | (__int64(hi) << 32);
+    return int64_t(DWORD(lo)) | (int64_t(hi) << 32);
 }
 
-void CFile::PointerFull(__int64 zn, int from) const {
+void CFile::PointerFull(int64_t zn, int from) const {
     LONG lo = LONG(zn & 0xffffffff), hi = DWORD(zn >> 32);
 
 #ifndef MAXEXP_EXPORTS
@@ -633,7 +635,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
     else {
         CStr fn(folderfrom, folderfrom.GetHeap());
         if (fn.GetLen() > 0 && !(*(fn.Get() + fn.GetLen() - 1) == '\\' || (*(fn.Get() + fn.GetLen() - 1) == '/'))) {
-            fn.Add(L"\\");
+            fn.Add("\\");
         }
         CStr fnf(fn, folderfrom.GetHeap());
 

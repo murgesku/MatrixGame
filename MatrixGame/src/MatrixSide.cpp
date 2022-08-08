@@ -3368,7 +3368,7 @@ void CMatrixSideUnit::TaktHL() {
         for (u = 0; u < g_MatrixMap->m_RN.m_Region[m_Team[i].m_RegionMass].m_NearCnt; u++) {
             t = g_MatrixMap->m_RN.m_Region[m_Team[i].m_RegionMass].m_Near[u];
 
-            if (max(1, m_Team[i].m_Strength * 0.4) >= m_Region[t].m_Danger) {
+            if (max(1.0, m_Team[i].m_Strength * 0.4) >= m_Region[t].m_Danger) {
                 if (m_Region[t].m_Danger < md) {
                     md = m_Region[t].m_Danger;
                     m_Team[i].m_RegionNearRetreat = t;

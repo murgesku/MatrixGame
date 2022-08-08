@@ -1040,7 +1040,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                                     modev = L"R5G6B5";
                                 }
                                 else {
-                                    modev.Set(d3ddm.Format);
+                                    modev.Set(static_cast<int>(d3ddm.Format));
                                 }
                                 g_MatrixMap->m_DI.T(modet.Get(), modev.Get(), 10000);
                             }
