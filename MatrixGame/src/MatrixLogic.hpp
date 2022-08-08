@@ -141,7 +141,7 @@ public:
     int FindNearPlace(byte mm, const CPoint &mappos);
     int FindPlace(const CPoint &mappos);
 
-    int PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bool farpath, int *list, int *listcnt,
+    int PlaceList(byte mm, const CPoint &from, const CPoint &to, int radius, bool farpath, int *list, int *listcnt,
                   int *outdist = NULL);  // Return 0-not found 1-can move to 2-barrier
     int PlaceListGrow(byte mm, int *list, int *listcnt, int growcnt);
 

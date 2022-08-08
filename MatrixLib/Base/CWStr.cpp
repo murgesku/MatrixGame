@@ -515,7 +515,7 @@ CWStr &CWStr::Insert(int sme, const wchar *str, int len) {
     return *this;
 }
 
-CWStr &CWStr::Replace(CWStr &substr, const CWStr &strreplace) {
+CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
     int tlen = GetLen();
     if (tlen < 1 || tlen < substr.GetLen())
         return *this;

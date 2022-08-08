@@ -234,7 +234,7 @@ public:
     {
         return Insert(sme, str, WStrLen(str));
     }
-    CWStr &Replace(CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
+    CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     int Find(const wchar *substr, int slen,
              int sme = 0) const;  // Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
