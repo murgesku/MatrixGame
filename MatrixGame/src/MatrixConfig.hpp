@@ -7,6 +7,7 @@
 #define MATRIX_CONFIG_INCLUDE
 
 #include "Effects/MatrixEffect.hpp"
+#include "Effects/MatrixEffectWeapon.hpp"
 #include "MatrixMapStatic.hpp"
 
 #define BUILDING_TYPE_CNT 6

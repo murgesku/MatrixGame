@@ -12,6 +12,7 @@
 #include "Logic/MatrixEnvironment.h"
 #include "Logic/MatrixTactics.h"
 #include "Logic/MatrixAIGroup.h"
+#include "Effects/MatrixEffectWeapon.hpp"
 
 #if defined _DEBUG || defined _TRACE
 #define CHECK_ROBOT_POS()                                                                                           \

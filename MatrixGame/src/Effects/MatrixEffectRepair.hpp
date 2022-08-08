@@ -6,6 +6,8 @@
 #ifndef MATRIX_EFFECT_REPAIR_INCLUDE
 #define MATRIX_EFFECT_REPAIR_INCLUDE
 
+#include "MatrixEffect.hpp"
+
 #define REPAIR_BB_CNT 50
 
 struct SRepairBBoard {

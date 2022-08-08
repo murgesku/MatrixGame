@@ -13,6 +13,7 @@
 #include "MatrixRenderPipeline.hpp"
 #include "MatrixSkinManager.hpp"
 #include "MatrixFlyer.hpp"
+#include "MatrixObjectCannon.hpp"
 
 bool FreeObjResources(DWORD user) {
     DTRACE();
