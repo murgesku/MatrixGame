@@ -428,6 +428,9 @@ struct CMatrixMap::SCalcVisRuntime {
 };
 
 void CMatrixMap::CheckCandidate(SCalcVisRuntime &visRuntime, CMatrixMapGroup *mapGroup) {
+    int i0 = NPOS - 1;
+    int i1 = 0;
+
     if (mapGroup->IsPointIn(visRuntime.pos[0]))
         goto visible;
     if (mapGroup->IsPointIn(visRuntime.pos[1]))
@@ -439,8 +442,6 @@ void CMatrixMap::CheckCandidate(SCalcVisRuntime &visRuntime, CMatrixMapGroup *ma
         goto visible;
 #endif
 
-    int i0 = NPOS - 1;
-    int i1 = 0;
     while (i1 < NPOS) {
         if (PointLineCatch(visRuntime.pos[i0], visRuntime.pos[i1], mapGroup->GetPos0())) {
             goto checknext;
