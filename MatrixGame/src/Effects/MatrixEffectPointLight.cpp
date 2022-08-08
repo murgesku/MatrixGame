@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -98,7 +100,7 @@ SPL_VBIB *SPL_VBIB::GetCreate(int vbsize, int ibsize, DWORD fvf) {
     else {
     create:
         r = (SPL_VBIB *)HAllocClear(sizeof(SPL_VBIB), CMatrixEffect::m_Heap);
-        r->m_RemindCore.SRemindCore::SRemindCore(UnloadDX, (DWORD)r);
+        new(&r->m_RemindCore) SRemindCore(UnloadDX, (DWORD)r);
         r->m_FVF = fvf;
         LIST_ADD(r, m_FirstAll, m_LastAll, m_PrevAll, m_NextAll);
     }
@@ -130,11 +132,11 @@ CMatrixEffectPointLight::CMatrixEffectPointLight(const D3DXVECTOR3 &pos, float r
     if (drawbill) {
         m_Bill = (CBillboard *)HAlloc(sizeof(CBillboard), m_Heap);
         if (m_BBTextures[BBT_POINTLIGHT].IsIntense()) {
-            m_Bill->CBillboard::CBillboard(TRACE_PARAM_CALL pos, r * POINTLIGHT_BILLSCALE, 0, color,
+            new(m_Bill) CBillboard(TRACE_PARAM_CALL pos, r * POINTLIGHT_BILLSCALE, 0, color,
                                            m_BBTextures[BBT_POINTLIGHT].tex);
         }
         else {
-            m_Bill->CBillboard::CBillboard(TRACE_PARAM_CALL pos, r * POINTLIGHT_BILLSCALE, 0, color,
+            new(m_Bill) CBillboard(TRACE_PARAM_CALL pos, r * POINTLIGHT_BILLSCALE, 0, color,
                                            &m_BBTextures[BBT_POINTLIGHT].bbt);
         }
     }

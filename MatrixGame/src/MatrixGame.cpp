@@ -5,6 +5,8 @@
 
 // MatrixGame.cpp : Defines the entry point for the application.
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixGame.h"
@@ -388,27 +390,27 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     g_PopupHead = (SMenuItemText *)HAlloc(sizeof(SMenuItemText) * MENU_HEAD_ITEMS, g_MatrixHeap);
     for (int i = 0; i < MENU_HEAD_ITEMS; i++) {
-        g_PopupHead[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
+        new(&g_PopupHead[i]) SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupHull = (SMenuItemText *)HAlloc(sizeof(SMenuItemText) * MENU_HULL_ITEMS, g_MatrixHeap);
     for (int i = 0; i < MENU_HULL_ITEMS; i++) {
-        g_PopupHull[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
+        new(&g_PopupHull[i]) SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupWeaponNormal = (SMenuItemText *)HAlloc(sizeof(SMenuItemText) * MENU_WEAPONNORM_ITEMS, g_MatrixHeap);
     for (int i = 0; i < MENU_WEAPONNORM_ITEMS; i++) {
-        g_PopupWeaponNormal[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
+        new(&g_PopupWeaponNormal[i]) SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupWeaponExtern = (SMenuItemText *)HAlloc(sizeof(SMenuItemText) * MENU_WEAPONEXTERN_ITEMS, g_MatrixHeap);
     for (int i = 0; i < MENU_WEAPONEXTERN_ITEMS; i++) {
-        g_PopupWeaponExtern[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
+        new(&g_PopupWeaponExtern[i]) SMenuItemText(g_MatrixHeap);
     }
 
     g_PopupChassis = (SMenuItemText *)HAlloc(sizeof(SMenuItemText) * MENU_CHASSIS_ITEMS, g_MatrixHeap);
     for (int i = 0; i < MENU_CHASSIS_ITEMS; i++) {
-        g_PopupChassis[i].SMenuItemText::SMenuItemText(g_MatrixHeap);
+        new(&g_PopupChassis[i]) SMenuItemText(g_MatrixHeap);
     }
 
     CIFaceMenu::m_MenuGraphics = HNew(g_MatrixHeap) CInterface;

@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include <windows.h>
@@ -989,7 +991,7 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
     m_SideCnt = cnt - 1;
     m_Side = (CMatrixSideUnit *)HAllocClear(m_SideCnt * sizeof(CMatrixSideUnit), g_MatrixHeap);
     for (int i = 0; i < m_SideCnt; i++)
-        m_Side[i].CMatrixSideUnit::CMatrixSideUnit();
+        new(&m_Side[i]) CMatrixSideUnit();
 
     int idx = 0;
     for (int i = 0; i < cnt; i++) {
@@ -3130,7 +3132,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
     props->m_Pos.y = y;
     props->m_Pos.z = z;
 
-    m_EffectSpawners[m_EffectSpawnersCnt].CEffectSpawner::CEffectSpawner(minper, maxper, ttl, props);
+    new(&m_EffectSpawners[m_EffectSpawnersCnt]) CEffectSpawner(minper, maxper, ttl, props);
 
     if (light_need_action) {
         SpawnEffectLightening *l = (SpawnEffectLightening *)m_EffectSpawners[m_EffectSpawnersCnt].Props();

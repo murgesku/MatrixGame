@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -18,7 +20,7 @@ CMatrixEffectElevatorField::CMatrixEffectElevatorField(const D3DXVECTOR3 &pos0, 
     memset(&m_BBCnt, 0, sizeof(m_BBCnt));
 
     for (int i = 0; i < ELEVATORFIELD_CNT; ++i) {
-        m_Kords[i].CTrajectory::CTrajectory(m_Heap);
+        new(&m_Kords[i]) CTrajectory(m_Heap);
     }
 
     UpdateData(pos0, pos1, radius, fwd);
@@ -181,7 +183,7 @@ void CMatrixEffectElevatorField::Takt(float t) {
             D3DXVECTOR3 p;
             m_Kords[idx].CalcPoint(p, 0);
 
-            m_BBoards[m_AllBBCnt].bb.CBillboardLine::CBillboardLine(TRACE_PARAM_CALL p, p, ELEVATORFIELD_BB_SIZE,
+            new(&m_BBoards[m_AllBBCnt].bb) CBillboardLine(TRACE_PARAM_CALL p, p, ELEVATORFIELD_BB_SIZE,
                                                                     0x00FFFFFF, GetBBTexI(BBT_EFIELD));
             m_BBoards[m_AllBBCnt].dt = FRND(0.01f) + 0.001f;
             m_BBoards[m_AllBBCnt].t = 0;

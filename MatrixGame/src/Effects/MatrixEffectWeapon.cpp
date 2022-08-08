@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -770,11 +772,11 @@ CLaser::CLaser(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1)
     m_EffectType = EFFECT_LASER;
 
     if (m_BBTextures[BBT_LASEREND].IsIntense()) {
-        m_end.CBillboard::CBillboard(TRACE_PARAM_CALL pos0, LASER_WIDTH * 0.5f, 0, 0xFFFFFFFF,
+        new(&m_end) CBillboard(TRACE_PARAM_CALL pos0, LASER_WIDTH * 0.5f, 0, 0xFFFFFFFF,
                                      m_BBTextures[BBT_LASEREND].tex);
     }
     else {
-        m_end.CBillboard::CBillboard(TRACE_PARAM_CALL pos0, LASER_WIDTH * 0.5f, 0, 0xFFFFFFFF,
+        new(&m_end) CBillboard(TRACE_PARAM_CALL pos0, LASER_WIDTH * 0.5f, 0, 0xFFFFFFFF,
                                      &m_BBTextures[BBT_LASEREND].bbt);
     }
 }

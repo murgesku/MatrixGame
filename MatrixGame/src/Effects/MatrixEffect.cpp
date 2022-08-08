@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -283,7 +285,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     m_Debris = (CDebris *)HAlloc(sizeof(CDebris) * m_DebrisCnt, m_Heap);
 
     for (int i = 0; i < m_DebrisCnt; ++i) {
-        m_Debris[i].CDebris::CDebris();
+        new(&m_Debris[i]) CDebris();
 
         CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).Get());
         vo->PrepareSpecial(OLF_AUTO, CSkinManager::GetSkin, GSP_ORDINAL);

@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -399,7 +401,7 @@ CMatrixEffectBillboardScore::CMatrixEffectBillboardScore(const wchar *n, const D
             addw = 10;
         }
 
-        m_bbs[i].bb.CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos, scale, 0, m_Color, tex);
+        new(&m_bbs[i].bb) CBillboard(TRACE_PARAM_CALL m_Pos, scale, 0, m_Color, tex);
         m_bbs[i].bb.DisplaceTo(disp);
 
         m_bbs[i].disp = disp.x;

@@ -297,7 +297,11 @@ struct SEffectHandler {
     void Rebase(void);
 
 #ifdef _DEBUG
-    SEffectHandler &operator=(const SEffectHandler &h) { debugbreak(); }
+    SEffectHandler &operator=(const SEffectHandler &h)
+    {
+        debugbreak();
+        return *this;
+    }
 #endif
 };
 

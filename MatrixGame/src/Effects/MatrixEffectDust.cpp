@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -25,9 +27,19 @@ CMatrixEffectDust::CMatrixEffectDust(const D3DXVECTOR2 &pos, const D3DXVECTOR2 &
     for (int i = 0; i < DUST_BILLS_CNT; ++i) {
         D3DXVECTOR2 dir(FSRND(1), FSRND(1));
         D3DXVec2Normalize(m_Dirs + i, &dir);
-        m_BBoards[i].CMatrixEffectBillboard::CMatrixEffectBillboard(
-                D3DXVECTOR3(pos.x, pos.y, 0), DUST_R1 + FSRND(DUST_R1_VAR), DUST_R2 + FSRND(DUST_R2_VAR), DUST_C1,
-                DUST_C2, ttl, 0.0f, TEXTURE_PATH_DUST, D3DXVECTOR3(m_Dirs[i].x, m_Dirs[i].y, 0), NULL);
+        new(&m_BBoards[i])
+            CMatrixEffectBillboard(
+                D3DXVECTOR3(pos.x, pos.y, 0),
+                DUST_R1 + FSRND(DUST_R1_VAR),
+                DUST_R2 + FSRND(DUST_R2_VAR),
+                DUST_C1,
+                DUST_C2,
+                ttl,
+                0.0f,
+                TEXTURE_PATH_DUST,
+                D3DXVECTOR3(m_Dirs[i].x, m_Dirs[i].y, 0),
+                NULL);
+
         m_BBoards[i].m_Intense = false;
         m_Dirs[i] *= DUST_SPEED_K;
     }

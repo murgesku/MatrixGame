@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -379,7 +381,7 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
         --intense_cnt;
         m_Deb[i].type = DEB_INTENSE;
         m_Deb[i].billboard = (CBillboard *)HAlloc(sizeof(CBillboard), m_Heap);
-        m_Deb[i].billboard->CBillboard::CBillboard(TRACE_PARAM_CALL pos, INTENSE_INIT_SIZE, FSRND(M_PI), 0x1F807E1B,
+        new(m_Deb[i].billboard) CBillboard(TRACE_PARAM_CALL pos, INTENSE_INIT_SIZE, FSRND(M_PI), 0x1F807E1B,
                                                    m_BBTextures[BBT_INTENSE].tex);
         m_Deb[i].ttm = FRND(200);
 
@@ -408,7 +410,7 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
         m_Deb[i].v.z = (float)RND(m_Props->min_speed_z, m_Props->max_speed_z);
 
         m_Deb[i].bline = (CBillboardLine *)HAlloc(sizeof(CBillboardLine), m_Heap);
-        m_Deb[i].bline->CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos, pos + m_Deb[i].v * (1.0f / 20.0f),
+        new(m_Deb[i].bline) CBillboardLine(TRACE_PARAM_CALL pos, pos + m_Deb[i].v * (1.0f / 20.0f),
                                                        EXPLOSION_SPARK_WIDTH, 0xFFFFFFFF, GetBBTexI(BBT_SPARK));
         m_Deb[i].ttl = (float)RND(m_Props->deb_min_ttl, m_Props->deb_max_ttl);
         m_Deb[i].unttl = 1.0f / m_Deb[i].ttl;

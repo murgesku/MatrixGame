@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -39,11 +41,11 @@ CMatrixEffectSelection::CMatrixEffectSelection(const D3DXVECTOR3 &pos, float r, 
         float sz = 1;
         for (int j = 0; j < SEL_BLUR_CNT; ++j) {
             if (m_BBTextures[BBT_SELDOT].IsIntense()) {
-                m_Points[i].m_Blur[j].CBillboard::CBillboard(TRACE_PARAM_CALL cpos, SEL_SIZE * sz, 0, color,
+                new(&m_Points[i].m_Blur[j]) CBillboard(TRACE_PARAM_CALL cpos, SEL_SIZE * sz, 0, color,
                                                              m_BBTextures[BBT_SELDOT].tex);
             }
             else {
-                m_Points[i].m_Blur[j].CBillboard::CBillboard(TRACE_PARAM_CALL cpos, SEL_SIZE * sz, 0, color,
+                new(&m_Points[i].m_Blur[j]) CBillboard(TRACE_PARAM_CALL cpos, SEL_SIZE * sz, 0, color,
                                                              &m_BBTextures[BBT_SELDOT].bbt);
             }
             // m_Points[i].m_Blur[j].SetIntense(true);

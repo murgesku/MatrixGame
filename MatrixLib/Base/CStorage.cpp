@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "Base.pch"
 
 #include "CStorage.hpp"
@@ -171,7 +173,7 @@ CStorageRecord::~CStorageRecord() {
 void CStorageRecord::AddItem(const CStorageRecordItem &item) {
     ++m_ItemsCount;
     m_Items = (CStorageRecordItem *)HAllocEx(m_Items, sizeof(CStorageRecordItem) * m_ItemsCount, m_Heap);
-    m_Items[m_ItemsCount - 1].CStorageRecordItem::CStorageRecordItem(item);
+    new(&m_Items[m_ItemsCount - 1]) CStorageRecordItem(item);
     // m_Items[m_ItemsCount-1].InitBuf(m_Heap);
 }
 
@@ -179,7 +181,7 @@ CStorageRecord::CStorageRecord(const CStorageRecord &rec) : m_Heap(rec.m_Heap), 
     m_ItemsCount = rec.m_ItemsCount;
     m_Items = (CStorageRecordItem *)HAlloc(sizeof(CStorageRecordItem) * m_ItemsCount, m_Heap);
     for (int i = 0; i < m_ItemsCount; ++i) {
-        m_Items[i].CStorageRecordItem::CStorageRecordItem(rec.m_Items[i]);
+        new(&m_Items[i]) CStorageRecordItem(rec.m_Items[i]);
         m_Items[i].InitBuf(m_Heap);
     }
 }
@@ -225,7 +227,7 @@ bool CStorageRecord::Load(CBuf &buf) {
 
     m_Items = (CStorageRecordItem *)HAlloc(sizeof(CStorageRecordItem) * m_ItemsCount, m_Heap);
     for (int i = 0; i < m_ItemsCount; ++i) {
-        m_Items[i].CStorageRecordItem::CStorageRecordItem(m_Heap);
+        new(&m_Items[i]) CStorageRecordItem(m_Heap);
         if (!m_Items[i].Load(buf)) {
             for (int j = 0; j <= i; ++j) {
                 m_Items[j].ReleaseBuf(m_Heap);
@@ -261,7 +263,7 @@ void CStorage::Clear(void) {
 void CStorage::AddRecord(const CStorageRecord &sr) {
     ++m_RecordsCnt;
     m_Records = (CStorageRecord *)HAllocEx(m_Records, sizeof(CStorageRecord) * m_RecordsCnt, m_Heap);
-    m_Records[m_RecordsCnt - 1].CStorageRecord::CStorageRecord(sr);
+    new(&m_Records[m_RecordsCnt - 1]) CStorageRecord(sr);
 }
 
 void CStorage::DelRecord(const wchar *table) {
@@ -378,7 +380,7 @@ bool CStorage::Load(CBuf &buf_in) {
 
     m_Records = (CStorageRecord *)HAlloc(sizeof(CStorageRecord) * m_RecordsCnt, m_Heap);
     for (int i = 0; i < m_RecordsCnt; ++i) {
-        m_Records[i].CStorageRecord::CStorageRecord(m_Heap);
+        new(&m_Records[i]) CStorageRecord(m_Heap);
         if (!m_Records[i].Load(*buf)) {
             for (int j = 0; j <= i; ++j) {
                 m_Records[j].~CStorageRecord();

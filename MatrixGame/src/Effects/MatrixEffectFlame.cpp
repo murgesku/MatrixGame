@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -43,11 +45,11 @@ CFlamePuff::CFlamePuff(CMatrixEffectFlame *owner, const D3DXVECTOR3 &pos, const 
 
     for (int i = 0; i < FLAME_NUM_BILLS; ++i) {
         if (m_Owner->m_BBTextures[BBT_FLAME].IsIntense()) {
-            m_Flames[i].m_Flame.CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos, 1, 0, 0xFFFFFFFF,
+            new(&m_Flames[i].m_Flame) CBillboard(TRACE_PARAM_CALL m_Pos, 1, 0, 0xFFFFFFFF,
                                                        m_Owner->m_BBTextures[BBT_FLAME].tex);
         }
         else {
-            m_Flames[i].m_Flame.CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos, 1, 0, 0xFFFFFFFF,
+            new(&m_Flames[i].m_Flame) CBillboard(TRACE_PARAM_CALL m_Pos, 1, 0, 0xFFFFFFFF,
                                                        &m_Owner->m_BBTextures[BBT_FLAME].bbt);
         }
         m_Flames[i].m_Sign = (FRND(1) > 0.5f) ? 1.0f : -1.0f;
@@ -253,7 +255,7 @@ void CFlamePuff::Takt(float step) {
                 a = BYTE(float(m_CurAlpha) * (l * 0.5f / m_Scale));
             }
             m_Shleif = (CBillboardLine *)HAlloc(sizeof(CBillboardLine), m_Owner->m_Heap);
-            m_Shleif->CBillboardLine::CBillboardLine(TRACE_PARAM_CALL m_Prev->m_Pos, m_Pos, m_Scale * 2.0f,
+            new(m_Shleif) CBillboardLine(TRACE_PARAM_CALL m_Prev->m_Pos, m_Pos, m_Scale * 2.0f,
                                                      (a << 24) | 0xFFFFFF, m_Owner->GetBBTexI(BBT_FLAMELINE));
         }
     }

@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixRobot.hpp"
@@ -70,11 +72,11 @@ void SWeaponRepairData::Update(SMatrixRobotUnit *unit) {
 SWeaponRepairData *SWeaponRepairData::Allocate(void) {
     SWeaponRepairData *r = (SWeaponRepairData *)HAlloc(sizeof(SWeaponRepairData), g_MatrixHeap);
 
-    r->m_b0.CBillboard::CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000), 5, 0, 0xFFFFFFFF,
+    new(&r->m_b0) CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000), 5, 0, 0xFFFFFFFF,
                                    CMatrixEffect::GetBBTexI(BBT_REPGLOWEND));
-    r->m_b1.CBillboard::CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000), 10, 0, 0xFFFFFFFF,
+    new(&r->m_b1) CBillboard(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000), 10, 0, 0xFFFFFFFF,
                                    CMatrixEffect::GetBBTexI(BBT_REPGLOWEND));
-    r->m_bl.CBillboardLine::CBillboardLine(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000),
+    new(&r->m_bl) CBillboardLine(TRACE_PARAM_CALL D3DXVECTOR3(-1000, -1000, -1000),
                                            D3DXVECTOR3(-1000, -1000, -1000), 10, 0xFFFFFFFF,
                                            CMatrixEffect::GetBBTexI(BBT_REPGLOW));
     RESETFLAG(r->m_Flags, SWeaponRepairData::CAN_BE_DRAWN);

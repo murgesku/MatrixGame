@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "stdafx.h"
 
 #include "MatrixMapTexture.hpp"
@@ -37,7 +39,7 @@ void CBottomTextureUnion::Init(int n) {
     m_TexturesCount = n;
     m_Textures = (CBottomTextureUnion *)HAlloc(sizeof(CBottomTextureUnion) * n, g_MatrixHeap);
     for (int i = 0; i < n; ++i) {
-        m_Textures[i].CBottomTextureUnion::CBottomTextureUnion();
+        new(&m_Textures[i]) CBottomTextureUnion();
     }
 }
 

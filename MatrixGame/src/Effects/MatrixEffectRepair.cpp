@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -364,7 +366,7 @@ void CMatrixEffectRepair::Takt(float t) {
             D3DXVECTOR3 p;
             m_Kord.CalcPoint(p, 0);
 
-            m_BBoards[m_BBCnt].bb.CBillboardLine::CBillboardLine(TRACE_PARAM_CALL p, p, 4, 0x00FFFFFF,
+            new(&m_BBoards[m_BBCnt].bb) CBillboardLine(TRACE_PARAM_CALL p, p, 4, 0x00FFFFFF,
                                                                  GetBBTexI(BBT_REPGLOWEND));
             m_BBoards[m_BBCnt].dt = FRND(0.03f) + 0.006f;
             m_BBoards[m_BBCnt].t = 0;

@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <new>
+
 #include "../stdafx.h"
 
 #include "MatrixEffect.hpp"
@@ -152,11 +154,11 @@ void CMatrixEffectSmoke::SpawnPuff(void) {
                                                                                    : BBT_SMOKE_INTENSE);
 
     if (m_BBTextures[tex].IsIntense()) {
-        m_Puffs[m_PuffCnt].m_Puff.CBillboard::CBillboard(
+        new(&m_Puffs[m_PuffCnt].m_Puff) CBillboard(
                 TRACE_PARAM_CALL m_Pos, 5 - FRND(2), m_Puffs[m_PuffCnt].m_PuffAngle, m_Color, m_BBTextures[tex].tex);
     }
     else {
-        m_Puffs[m_PuffCnt].m_Puff.CBillboard::CBillboard(
+        new(&m_Puffs[m_PuffCnt].m_Puff) CBillboard(
                 TRACE_PARAM_CALL m_Pos, 5 - FRND(2), m_Puffs[m_PuffCnt].m_PuffAngle, m_Color, &m_BBTextures[tex].bbt);
     }
 
@@ -241,11 +243,11 @@ void CMatrixEffectFire::SpawnPuff(void) {
                                                                                    : BBT_SMOKE_INTENSE);
 
     if (m_BBTextures[tex].IsIntense()) {
-        m_Puffs[m_PuffCnt].m_Puff.CBillboard::CBillboard(
+        new(&m_Puffs[m_PuffCnt].m_Puff) CBillboard(
                 TRACE_PARAM_CALL m_Pos, 5 - FRND(2), m_Puffs[m_PuffCnt].m_PuffAngle, 0xFFFFFFFF, m_BBTextures[tex].tex);
     }
     else {
-        m_Puffs[m_PuffCnt].m_Puff.CBillboard::CBillboard(TRACE_PARAM_CALL m_Pos, 5 - FRND(2),
+        new(&m_Puffs[m_PuffCnt].m_Puff) CBillboard(TRACE_PARAM_CALL m_Pos, 5 - FRND(2),
                                                          m_Puffs[m_PuffCnt].m_PuffAngle, 0xFFFFFFFF,
                                                          &m_BBTextures[tex].bbt);
     }
@@ -415,7 +417,7 @@ CMatrixEffectFireAnim::CMatrixEffectFireAnim(const D3DXVECTOR3 &pos, float w, fl
 #endif
 
     for (int i = 0; i < 8; ++i) {
-        m_bl[i].CBillboardLine::CBillboardLine(TRACE_PARAM_CALL pos, pos + D3DXVECTOR3(0, 0, 0), 0, 0xFFFFFFFF,
+        new(&m_bl[i]) CBillboardLine(TRACE_PARAM_CALL pos, pos + D3DXVECTOR3(0, 0, 0), 0, 0xFFFFFFFF,
                                                m_BBTextures[BBT_FLAMEFRAME0 + i].tex);
     }
 }
