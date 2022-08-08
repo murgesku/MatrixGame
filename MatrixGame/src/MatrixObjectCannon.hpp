@@ -41,7 +41,7 @@ struct SMatrixCannonUnit {
 #ifdef _DEBUG
     SMatrixCannonUnit(void) : m_Smoke(DEBUG_CALL_INFO) {}
 #else
-    SMatrixCannonUnit(){};
+    SMatrixCannonUnit() = default;
 #endif
 
     ECannonUnitType m_Type;
@@ -50,21 +50,27 @@ struct SMatrixCannonUnit {
     D3DXMATRIX m_Matrix;
     SEffectHandler m_Smoke;
 
-    union {
-        struct {
+    union _u1 {
+        _u1() {};
+
+        struct _s1 {
+            _s1() {};
+
             CVOShadowStencil *m_ShadowStencil;
             float m_Angle;
             int m_LinkMatrix;
-            D3DXMATRIX m_IMatrix;
+            D3DXMATRIX m_IMatrix{};
             DWORD m_Invert;
-        };
-        struct {
-            D3DXVECTOR3 m_Pos;
-            D3DXVECTOR3 m_Velocity;
+        } s1;
+        struct _s2 {
+            _s2() {};
+
+            D3DXVECTOR3 m_Pos{};
+            D3DXVECTOR3 m_Velocity{};
             float m_TTL;
             float m_dp, m_dr, m_dy;
-        };
-    };
+        } s2;
+    } u1;
 };
 
 class CMatrixCannon : public CMatrixMapStatic {

@@ -58,14 +58,10 @@ class CTerSurface : public Base::CMain {
     static CBigVB<STerSurfVertex> *m_BigVB;
     static CBigVB<STerSurfVertexM> *m_BigVBM;
 
-    union {
-        struct {
-            SBigVBSource<STerSurfVertex> m_VertsSource;
-        };
-        struct {
-            SBigVBSource<STerSurfVertexM> m_VertsSourceM;
-        };
-    };
+    // union {
+        SBigVBSource<STerSurfVertex> m_VertsSource;
+        SBigVBSource<STerSurfVertexM> m_VertsSourceM;
+    // };
     SBigIBSource m_IdxsSource;
 
     static CTerSurface *m_Surfaces;

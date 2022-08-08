@@ -72,47 +72,63 @@ enum EDebType {
     EDebType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-typedef struct _SDebris {
+struct SDebris
+{
+    SDebris() = default;
+    ~SDebris() = default;
+
     D3DXVECTOR3 v;
     union {
         int index;  // if < 0 then fire
         EDebType type;
     };
     float ttl;  // time to live
-    union {
-        struct  // debris
+    union _u1 {
+        _u1() {}
+
+        struct _s1 // debris
         {
+            _s1() {}
+
             D3DXVECTOR3 pos;
-            union {
-                struct {
+            union _u2 {
+                _u2() {}
+
+                struct _s4 {
+                    _s4() {}
+
                     float alpha;  // 1.0 - visible
                     float scale;
                     float angley;
                     float anglep;
                     float angler;
-                };
-                struct  // sparks
+                } s4;
+                struct _s5 // sparks
                 {
+                    _s5() {}
+
                     D3DXVECTOR3 prepos;  // distance between prepos and pos cannot be larger then len
                     CBillboardLine *bline;
                     // float                  len;
                     float unttl;
-                };
-            };
-        };
-        struct  // intense
+                } s5;
+            } u2;
+        } s1;
+        struct _s2 // intense
         {
+            _s2() {}
             float ttm;
             CBillboard *billboard;
-        };
-        struct  // fire
+        } s2;
+        struct _s3 // fire
         {
+            _s3() {}
+
             SEffectHandler fire;
             SEffectHandler light;
-        };
-    };
-
-} SDebris;
+        } s3;
+    } u1;
+};
 
 class CMatrixEffectExplosion : public CMatrixEffect {
     SDebris *m_Deb;

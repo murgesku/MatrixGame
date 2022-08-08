@@ -178,10 +178,7 @@ class CMatrixFlyer : public CMatrixMapStatic {
 
     DWORD m_Sound;
 
-    union {
-        // float       m_TargetAlt;
-        CMatrixBuilding *m_Base;
-    };
+    CMatrixBuilding *m_Base;
 
     D3DXVECTOR3 m_Pos;  // origin
 
@@ -204,17 +201,11 @@ class CMatrixFlyer : public CMatrixMapStatic {
     // float          m_BaseLandAngle;
     // D3DXVECTOR3    m_BaseLandPos;
     CTrajectory *m_Trajectory;
-    union {
-        struct {
-            D3DXVECTOR3 m_StoreTarget;
-        };  // in breaking mode
-        struct {
-            float m_TrajectoryPos;  // [0..1]
-            float m_TrajectoryLen;
-            float m_TrajectoryLenRev;
-            float m_TrajectoryTargetAngle;
-        };
-    };
+    D3DXVECTOR3 m_StoreTarget;
+    float m_TrajectoryPos;  // [0..1]
+    float m_TrajectoryLen;
+    float m_TrajectoryLenRev;
+    float m_TrajectoryTargetAngle;
 
     int m_TgtUpdateCount;
 

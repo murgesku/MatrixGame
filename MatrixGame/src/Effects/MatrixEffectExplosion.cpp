@@ -342,19 +342,19 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
     int i = 0;
 
     for (; fire_cnt > 0; ++i) {
-        m_Deb[i].fire.effect = NULL;
-        m_Deb[i].light.effect = NULL;
+        m_Deb[i].u1.s3.fire.effect = NULL;
+        m_Deb[i].u1.s3.light.effect = NULL;
 
-        CMatrixEffect::CreateFire(&m_Deb[i].fire, pos, 1000000, 1000, 50, 5, false);
-        CMatrixEffect::CreatePointLight(&m_Deb[i].light, pos, 20, 0x22222202, false);
+        CMatrixEffect::CreateFire(&m_Deb[i].u1.s3.fire, pos, 1000000, 1000, 50, 5, false);
+        CMatrixEffect::CreatePointLight(&m_Deb[i].u1.s3.light, pos, 20, 0x22222202, false);
 
-        if (m_Deb[i].light.effect == NULL || m_Deb[i].fire.effect == NULL) {
+        if (m_Deb[i].u1.s3.light.effect == NULL || m_Deb[i].u1.s3.fire.effect == NULL) {
 #ifdef _DEBUG
-            m_Deb[i].light.Release(DEBUG_CALL_INFO);
-            m_Deb[i].fire.Release(DEBUG_CALL_INFO);
+            m_Deb[i].u1.s3.light.Release(DEBUG_CALL_INFO);
+            m_Deb[i].u1.s3.fire.Release(DEBUG_CALL_INFO);
 #else
-            m_Deb[i].light.Release();
-            m_Deb[i].fire.Release();
+            m_Deb[i].u1.s3.light.Release();
+            m_Deb[i].u1.s3.fire.Release();
 #endif
             m_DebCnt -= fire_cnt;  // no more slots for effects
             fire_cnt = 0;
@@ -380,10 +380,10 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
     for (; intense_cnt > 0; ++i) {
         --intense_cnt;
         m_Deb[i].type = DEB_INTENSE;
-        m_Deb[i].billboard = (CBillboard *)HAlloc(sizeof(CBillboard), m_Heap);
-        new(m_Deb[i].billboard) CBillboard(TRACE_PARAM_CALL pos, INTENSE_INIT_SIZE, FSRND(M_PI), 0x1F807E1B,
+        m_Deb[i].u1.s2.billboard = (CBillboard *)HAlloc(sizeof(CBillboard), m_Heap);
+        new(m_Deb[i].u1.s2.billboard) CBillboard(TRACE_PARAM_CALL pos, INTENSE_INIT_SIZE, FSRND(M_PI), 0x1F807E1B,
                                                    m_BBTextures[BBT_INTENSE].tex);
-        m_Deb[i].ttm = FRND(200);
+        m_Deb[i].u1.s2.ttm = FRND(200);
 
         float sn, cs;
         SinCos(FSRND(M_PI), &sn, &cs);
@@ -399,8 +399,8 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
     for (; sparks_cnt > 0; ++i) {
         --sparks_cnt;
         m_Deb[i].type = DEB_SPARK;
-        m_Deb[i].pos = pos;
-        m_Deb[i].prepos = pos;
+        m_Deb[i].u1.s1.pos = pos;
+        m_Deb[i].u1.s1.u2.s5.prepos = pos;
         // m_Deb[i].len = 20;
 
         float r = (float)RND(m_Props->min_speed, m_Props->max_speed);
@@ -409,11 +409,11 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
         m_Deb[i].v.y *= r;
         m_Deb[i].v.z = (float)RND(m_Props->min_speed_z, m_Props->max_speed_z);
 
-        m_Deb[i].bline = (CBillboardLine *)HAlloc(sizeof(CBillboardLine), m_Heap);
-        new(m_Deb[i].bline) CBillboardLine(TRACE_PARAM_CALL pos, pos + m_Deb[i].v * (1.0f / 20.0f),
+        m_Deb[i].u1.s1.u2.s5.bline = (CBillboardLine *)HAlloc(sizeof(CBillboardLine), m_Heap);
+        new(m_Deb[i].u1.s1.u2.s5.bline) CBillboardLine(TRACE_PARAM_CALL pos, pos + m_Deb[i].v * (1.0f / 20.0f),
                                                        EXPLOSION_SPARK_WIDTH, 0xFFFFFFFF, GetBBTexI(BBT_SPARK));
         m_Deb[i].ttl = (float)RND(m_Props->deb_min_ttl, m_Props->deb_max_ttl);
-        m_Deb[i].unttl = 1.0f / m_Deb[i].ttl;
+        m_Deb[i].u1.s1.u2.s5.unttl = 1.0f / m_Deb[i].ttl;
     }
 
     if (i >= m_DebCnt)
@@ -422,13 +422,13 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
     // creating debrises
 
     for (; i < m_DebCnt; ++i) {
-        m_Deb[i].pos = pos;
-        m_Deb[i].alpha = 1.0f;
-        m_Deb[i].scale = 1.0f;
+        m_Deb[i].u1.s1.pos = pos;
+        m_Deb[i].u1.s1.u2.s4.alpha = 1.0f;
+        m_Deb[i].u1.s1.u2.s4.scale = 1.0f;
 
-        m_Deb[i].angley = FSRND(1);
-        m_Deb[i].anglep = FSRND(1);
-        m_Deb[i].angler = FSRND(1);
+        m_Deb[i].u1.s1.u2.s4.angley = FSRND(1);
+        m_Deb[i].u1.s1.u2.s4.anglep = FSRND(1);
+        m_Deb[i].u1.s1.u2.s4.angler = FSRND(1);
         m_Deb[i].index = dt_idx + (rand() % dt_cnt);
 
         ASSERT(m_Deb[i].index >= 0);
@@ -457,22 +457,22 @@ void CMatrixEffectExplosion::RemoveDebris(int debi) {
 #endif
 
     if (deb->type == DEB_INTENSE) {
-        deb->billboard->Release();
-        HFree(deb->billboard, m_Heap);
+        deb->u1.s2.billboard->Release();
+        HFree(deb->u1.s2.billboard, m_Heap);
     }
     else if (deb->type == DEB_FIRE) {
-        if (deb->fire.effect) {
-            ((CMatrixEffectFire *)deb->fire.effect)->SetTTL(1000);
-            deb->fire.Unconnect();
+        if (deb->u1.s3.fire.effect) {
+            ((CMatrixEffectFire *)deb->u1.s3.fire.effect)->SetTTL(1000);
+            deb->u1.s3.fire.Unconnect();
         }
-        if (deb->light.effect) {
-            ((CMatrixEffectPointLight *)deb->light.effect)->Kill(3000);
-            deb->light.Unconnect();
+        if (deb->u1.s3.light.effect) {
+            ((CMatrixEffectPointLight *)deb->u1.s3.light.effect)->Kill(3000);
+            deb->u1.s3.light.Unconnect();
         }
     }
     else if (deb->type == DEB_SPARK) {
-        deb->bline->Release();
-        HFree(deb->bline, m_Heap);
+        deb->u1.s1.u2.s5.bline->Release();
+        HFree(deb->u1.s1.u2.s5.bline, m_Heap);
     }
 
     --m_DebCnt;
@@ -482,8 +482,8 @@ void CMatrixEffectExplosion::RemoveDebris(int debi) {
         memcpy(deb, m_Deb + m_DebCnt, sizeof(SDebris));
 
         if (deb->type == DEB_FIRE) {
-            deb->fire.Rebase();
-            deb->light.Rebase();
+            deb->u1.s3.fire.Rebase();
+            deb->u1.s3.light.Rebase();
         }
 
 #if defined _DEBUG || defined _TRACE
@@ -543,14 +543,14 @@ void CMatrixEffectExplosion::Draw(void) {
             continue;
         }
         if (m_Deb[i].type == DEB_INTENSE) {
-            if (m_Deb[i].ttm < 0) {
-                m_Deb[i].billboard->Sort(g_MatrixMap->m_Camera.GetViewMatrix());
+            if (m_Deb[i].u1.s2.ttm < 0) {
+                m_Deb[i].u1.s2.billboard->Sort(g_MatrixMap->m_Camera.GetViewMatrix());
             }
             ++i;
             continue;
         }
         if (m_Deb[i].type == DEB_SPARK) {
-            m_Deb[i].bline->AddToDrawQueue();
+            m_Deb[i].u1.s1.u2.s5.bline->AddToDrawQueue();
             ++i;
             continue;
         }
@@ -571,22 +571,25 @@ void CMatrixEffectExplosion::Draw(void) {
 
         g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFF000000 | (cc << 16) | (cc << 8) | (cc << 0));
 
-        D3DXMatrixRotationYawPitchRoll(&mat, m_Deb[i].angley * m_Time, m_Deb[i].anglep * m_Time,
-                                       m_Deb[i].angler * m_Time);
+        D3DXMatrixRotationYawPitchRoll(
+            &mat,
+            m_Deb[i].u1.s1.u2.s4.angley * m_Time,
+            m_Deb[i].u1.s1.u2.s4.anglep * m_Time,
+            m_Deb[i].u1.s1.u2.s4.angler * m_Time);
 
-        mat._11 *= m_Deb[i].scale;
-        mat._12 *= m_Deb[i].scale;
-        mat._13 *= m_Deb[i].scale;
-        mat._21 *= m_Deb[i].scale;
-        mat._22 *= m_Deb[i].scale;
-        mat._23 *= m_Deb[i].scale;
-        mat._31 *= m_Deb[i].scale;
-        mat._32 *= m_Deb[i].scale;
-        mat._33 *= m_Deb[i].scale;
+        mat._11 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._12 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._13 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._21 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._22 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._23 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._31 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._32 *= m_Deb[i].u1.s1.u2.s4.scale;
+        mat._33 *= m_Deb[i].u1.s1.u2.s4.scale;
 
-        mat._41 = m_Deb[i].pos.x;
-        mat._42 = m_Deb[i].pos.y;
-        mat._43 = m_Deb[i].pos.z;
+        mat._41 = m_Deb[i].u1.s1.pos.x;
+        mat._42 = m_Deb[i].u1.s1.pos.y;
+        mat._43 = m_Deb[i].u1.s1.pos.z;
 
         ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &mat));
         m_Debris[m_Deb[i].index].Draw(0);
@@ -633,8 +636,8 @@ void CMatrixEffectExplosion::Takt(float step) {
     i = 0;
     while (i < m_DebCnt) {
         if (m_Deb[i].type == DEB_INTENSE) {
-            if (m_Deb[i].ttm >= 0) {
-                m_Deb[i].ttm -= step;
+            if (m_Deb[i].u1.s2.ttm >= 0) {
+                m_Deb[i].u1.s2.ttm -= step;
             }
             else {
                 if ((m_Deb[i].ttl -= step) < 0) {
@@ -672,13 +675,13 @@ void CMatrixEffectExplosion::Takt(float step) {
 #endif
 
         if (deb->type == DEB_INTENSE) {
-            if (deb->ttm < 0) {
+            if (deb->u1.s2.ttm < 0) {
                 float t = 1.0f - ((float)deb->ttl * INVERT(INTENSE_TTL));
 
                 float displace_factor = (t > 0.05f) ? 1 : t * 20;
 
-                m_Deb[i].billboard->DisplaceTo(D3DXVECTOR2(deb->v.x * displace_factor, deb->v.y * displace_factor));
-                m_Deb[i].billboard->SetScale(1.0f + (INTENSE_END_SIZE / INTENSE_INIT_SIZE - 1.0f) * displace_factor);
+                m_Deb[i].u1.s2.billboard->DisplaceTo(D3DXVECTOR2(deb->v.x * displace_factor, deb->v.y * displace_factor));
+                m_Deb[i].u1.s2.billboard->SetScale(1.0f + (INTENSE_END_SIZE / INTENSE_INIT_SIZE - 1.0f) * displace_factor);
 
                 const SGradient R[3] = {{150, 0}, {100, 0.5f}, {0, 1.01f}};
                 const SGradient G[4] = {{34, 0}, {106, 0.25f}, {29, 0.5f}, {0, 1.01f}};
@@ -688,19 +691,19 @@ void CMatrixEffectExplosion::Takt(float step) {
                 BYTE r = (BYTE)Float2Int(CalcGradient(t, R));
                 BYTE g = (BYTE)Float2Int(CalcGradient(t, G));
                 BYTE b = (BYTE)Float2Int(CalcGradient(t, B));
-                deb->billboard->SetColor((a << 24) | (r << 16) | (g << 8) | b);
+                deb->u1.s2.billboard->SetColor((a << 24) | (r << 16) | (g << 8) | b);
             }
             continue;
         }
         else if (m_Deb[i].type == DEB_FIRE) {
-            if (deb->light.effect == NULL || deb->fire.effect == NULL) {
+            if (deb->u1.s3.light.effect == NULL || deb->u1.s3.fire.effect == NULL) {
                 // эффект скончался.
                 deb->ttl = 1;
                 continue;
             }
         }
 
-        D3DXVECTOR3 *pos = (deb->type == DEB_FIRE) ? &((CMatrixEffectFire *)deb->fire.effect)->m_Pos : &deb->pos;
+        D3DXVECTOR3 *pos = (deb->type == DEB_FIRE) ? &((CMatrixEffectFire *)deb->u1.s3.fire.effect)->m_Pos : &deb->u1.s1.pos;
 
         deb->v.z -= 1.1f * dtime;
 
@@ -734,19 +737,19 @@ void CMatrixEffectExplosion::Takt(float step) {
         }
 
         if (deb->type == DEB_FIRE) {
-            ASSERT(deb->light.effect);
-            ((CMatrixEffectPointLight *)deb->light.effect)->SetPos(*pos);
+            ASSERT(deb->u1.s3.light.effect);
+            ((CMatrixEffectPointLight *)deb->u1.s3.light.effect)->SetPos(*pos);
         }
         else if (deb->type == DEB_SPARK) {
-            float k = deb->ttl * deb->unttl;
+            float k = deb->ttl * deb->u1.s1.u2.s5.unttl;
             float len = 5 * k * k + 1;
 
-            D3DXVECTOR3 delta(*pos - deb->prepos);
+            D3DXVECTOR3 delta(*pos - deb->u1.s1.u2.s5.prepos);
             float x = D3DXVec3Length(&delta);
             if (x > len) {
-                deb->prepos += delta * (x - len) / x;
+                deb->u1.s1.u2.s5.prepos += delta * (x - len) / x;
             }
-            deb->bline->SetPos(deb->prepos, *pos);
+            deb->u1.s1.u2.s5.bline->SetPos(deb->u1.s1.u2.s5.prepos, *pos);
         }
     }
 }

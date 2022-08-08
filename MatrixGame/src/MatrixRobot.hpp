@@ -98,14 +98,14 @@ public:
         m_Weapon->Modify(pos, dir, speed);
     }
     void UpdateRepair(void) {
-        if (m_Unit->m_WeaponRepairData)
-            m_Unit->m_WeaponRepairData->Update(m_Unit);
+        if (m_Unit->u1.s1.m_WeaponRepairData)
+            m_Unit->u1.s1.m_WeaponRepairData->Update(m_Unit);
     }
 
     void Takt(float t) {
         m_Weapon->Takt(t);
-        if (m_Unit->m_WeaponRepairData)
-            m_Unit->m_WeaponRepairData->Update(m_Unit);
+        if (m_Unit->u1.s1.m_WeaponRepairData)
+            m_Unit->u1.s1.m_WeaponRepairData->Update(m_Unit);
     }
     bool IsFireWas(void) const { return m_Weapon->IsFireWas(); }
 
@@ -129,9 +129,9 @@ public:
     void Draw(CMatrixRobotAI *robot);
     void Release(void) {
         m_Weapon->Release();
-        if (m_Unit->m_WeaponRepairData)
-            m_Unit->m_WeaponRepairData->Release();
-        m_Unit->m_WeaponRepairData = NULL;
+        if (m_Unit->u1.s1.m_WeaponRepairData)
+            m_Unit->u1.s1.m_WeaponRepairData->Release();
+        m_Unit->u1.s1.m_WeaponRepairData = NULL;
     }
 
     void PrepareRepair(void);
@@ -355,7 +355,7 @@ public:
     int GetCtrlGroup() { return m_CtrlGroup; }
     void SetCtrlGroup(int group) { m_CtrlGroup = group; }
 
-    void MapPosCalc() { g_MatrixMap->PlaceGet(m_Unit[0].m_Kind - 1, m_PosX - 20.0f, m_PosY - 20.0f, &m_MapX, &m_MapY); }
+    void MapPosCalc() { g_MatrixMap->PlaceGet(m_Unit[0].u1.s1.m_Kind - 1, m_PosX - 20.0f, m_PosY - 20.0f, &m_MapX, &m_MapY); }
 
     bool IsDisableManual() { return FLAG(m_ObjectState, ROBOT_FLAG_DISABLE_MANUAL); }
     void SetWeaponToArcadedCoeff();
@@ -520,8 +520,8 @@ public:
 };
 
 inline void SBotWeapon::Draw(CMatrixRobotAI *robot) {
-    if (m_Unit->m_WeaponRepairData)
-        m_Unit->m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
+    if (m_Unit->u1.s1.m_WeaponRepairData)
+        m_Unit->u1.s1.m_WeaponRepairData->Draw(robot->IsInterfaceDraw());
 }
 
 inline SMatrixPlace *GetPlacePtr(int no) {

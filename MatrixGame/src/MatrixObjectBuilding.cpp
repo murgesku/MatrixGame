@@ -1902,16 +1902,16 @@ void CBuildStack::ReturnRobotResources(CMatrixRobotAI *robot) {
         int *res_point = NULL;
         switch (robot->m_Unit[i].m_Type) {
             case MRT_HEAD:
-                res_point = &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4];
+                res_point = &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4];
                 break;
             case MRT_ARMOR:
-                res_point = &g_Config.m_Price[ARMOR1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4];
+                res_point = &g_Config.m_Price[ARMOR1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4];
                 break;
             case MRT_CHASSIS:
-                res_point = &g_Config.m_Price[CHASSIS1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4];
+                res_point = &g_Config.m_Price[CHASSIS1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4];
                 break;
             case MRT_WEAPON:
-                res_point = &g_Config.m_Price[WEAPON1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4];
+                res_point = &g_Config.m_Price[WEAPON1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4];
                 break;
             default:
                 break;

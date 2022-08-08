@@ -80,37 +80,51 @@ struct SWeaponRepairData {
 };
 
 struct SChassisData {
-    union {
-        struct {
+    SChassisData() = default;
+
+    union _u1 {
+        _u1() {};
+
+        struct _s1 {
+            _s1() {};
             // for antigrav
 
             CMatrixEffectFireStream *m_LStream;
             CMatrixEffectFireStream *m_RStream;
             float m_StreamLen;
-        };
-        struct {
+        } s1;
+        struct _s2 {
+            _s2() {};
+
             float m_DustCount;  // for aircraft
-        };
-        struct {
+        } s2;
+        struct _s3 {
+            _s3() {};
+
             D3DXVECTOR3 m_LastSolePos;  // for track
-        };
-        struct {
+        } s3;
+        struct _s4 {
+            _s4() {};
+
             D3DXVECTOR2 m_LinkPos;  // for pneumatic
             int m_LinkPrevFrame;
-        };
-    };
-
-    SChassisData(){};
+        } s4;
+    } u1;
 };
 
 struct SMatrixRobotUnit {
+    SMatrixRobotUnit() = default;
+
     ERobotUnitType m_Type;  // 0-empty 1-Шасси 2-Оружие 3-Броня 4-голова
 
     CVectorObjectAnim *m_Graph;
     D3DXMATRIX m_Matrix;
 
-    union {
-        struct {
+    union _u1 {
+        _u1() {};
+        struct _s1 {
+            _s1() {};
+
             SWeaponRepairData *m_WeaponRepairData;
             CVOShadowStencil *m_ShadowStencil;
             ERobotUnitKind m_Kind;
@@ -119,20 +133,20 @@ struct SMatrixRobotUnit {
             int m_LinkMatrix;
             D3DXMATRIX m_IMatrix;
             DWORD m_Invert;
-        };
-        struct {
+        } s1;
+        struct _s2 {
+            _s2() {};
+
             D3DXVECTOR3 m_Pos;
             D3DXVECTOR3 m_Velocity;
             float m_TTL;
             float m_dp, m_dr, m_dy;
 
             BYTE m_SmokeEffect[sizeof(SEffectHandler)];
-        };
-    };
+        } s2;
+    } u1;
 
-    SMatrixRobotUnit(){};
-
-    SEffectHandler &Smoke(void) { return *(SEffectHandler *)&m_SmokeEffect; }
+    SEffectHandler &Smoke(void) { return *(SEffectHandler *)&u1.s2.m_SmokeEffect; }
 
     void PrepareForDIP(void);
 };

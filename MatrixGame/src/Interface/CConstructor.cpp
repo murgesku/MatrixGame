@@ -904,16 +904,16 @@ void CConstructor::GetConstructionPrice(int *res) {
         ZeroMemory(price, sizeof(price));
 
         if (robot->m_Unit[i].m_Type == MRT_CHASSIS) {
-            memcpy(price, &g_Config.m_Price[CHASSIS1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4], sizeof(int) * 4);
+            memcpy(price, &g_Config.m_Price[CHASSIS1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4], sizeof(int) * 4);
         }
         else if (robot->m_Unit[i].m_Type == MRT_ARMOR) {
-            memcpy(price, &g_Config.m_Price[ARMOR1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4], sizeof(int) * 4);
+            memcpy(price, &g_Config.m_Price[ARMOR1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4], sizeof(int) * 4);
         }
         else if (robot->m_Unit[i].m_Type == MRT_WEAPON) {
-            memcpy(price, &g_Config.m_Price[WEAPON1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4], sizeof(int) * 4);
+            memcpy(price, &g_Config.m_Price[WEAPON1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4], sizeof(int) * 4);
         }
         else if (robot->m_Unit[i].m_Type == MRT_HEAD) {
-            memcpy(price, &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].m_Kind - 1) * 4], sizeof(int) * 4);
+            memcpy(price, &g_Config.m_Price[HEAD1_TITAN + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 4], sizeof(int) * 4);
         }
 
         for (int j = 0; j < MAX_RESOURCES; j++) {
@@ -928,10 +928,10 @@ int CConstructor::GetConstructionStructure() {
 
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_CHASSIS) {
-            structure += Float2Int(g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (robot->m_Unit[i].m_Kind - 1) * 6]);
+            structure += Float2Int(g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 6]);
         }
         else if (robot->m_Unit[i].m_Type == MRT_ARMOR) {
-            structure += Float2Int(g_Config.m_ItemChars[ARMOR1_STRUCTURE + (robot->m_Unit[i].m_Kind - 1) * 2]);
+            structure += Float2Int(g_Config.m_ItemChars[ARMOR1_STRUCTURE + (robot->m_Unit[i].u1.s1.m_Kind - 1) * 2]);
         }
     }
 
@@ -941,16 +941,16 @@ int CConstructor::GetConstructionStructure() {
             CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
 
             const wchar *hn = L"";
-            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER) {
+            if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_BLOCKER) {
                 hn = L"S";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_DYNAMO) {
                 hn = L"D";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_LOCKATOR) {
                 hn = L"L";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_FIREWALL) {
                 hn = L"F";
             }
 
@@ -1738,19 +1738,19 @@ void GetConstructionName(CMatrixRobotAI *robot) {
     robot->m_Name = L"";
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_ARMOR) {
-            robot->m_Name += bp_tmp->ParGet(L"Hull" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(L"Hull" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
             break;
         }
     }
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_CHASSIS) {
-            robot->m_Name += bp_tmp->ParGet(L"Chas" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(L"Chas" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
             break;
         }
     }
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_HEAD) {
-            robot->m_Name += bp_tmp->ParGet(L"Head" + CWStr(int(robot->m_Unit[i].m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(L"Head" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
             break;
         }
     }
@@ -1770,16 +1770,16 @@ int GetConstructionDamage(CMatrixRobotAI *robot) {
             CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
 
             const wchar *hn = L"";
-            if (robot->m_Unit[i].m_Kind == RUK_HEAD_BLOCKER) {
+            if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_BLOCKER) {
                 hn = L"S";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_DYNAMO) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_DYNAMO) {
                 hn = L"D";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_LOCKATOR) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_LOCKATOR) {
                 hn = L"L";
             }
-            else if (robot->m_Unit[i].m_Kind == RUK_HEAD_FIREWALL) {
+            else if (robot->m_Unit[i].u1.s1.m_Kind == RUK_HEAD_FIREWALL) {
                 hn = L"F";
             }
 
@@ -1794,11 +1794,11 @@ int GetConstructionDamage(CMatrixRobotAI *robot) {
     }
 
     for (int i = 0; i < robot->m_UnitCnt; i++) {
-        if (robot->m_Unit[i].m_Type == MRT_WEAPON && robot->m_Unit[i].m_Kind != RUK_WEAPON_BOMB) {
+        if (robot->m_Unit[i].m_Type == MRT_WEAPON && robot->m_Unit[i].u1.s1.m_Kind != RUK_WEAPON_BOMB) {
             // m_RobotDamages
-            int wspeed = g_Config.m_WeaponCooldown[WeapKind2Index(robot->m_Unit[i].m_Kind)];
+            int wspeed = g_Config.m_WeaponCooldown[WeapKind2Index(robot->m_Unit[i].u1.s1.m_Kind)];
             wspeed = Float2Int(float(wspeed) + float(wspeed) * cooldown);
-            int wsingle_damage = g_Config.m_RobotDamages[WeapKind2Index(robot->m_Unit[i].m_Kind)].damage;
+            int wsingle_damage = g_Config.m_RobotDamages[WeapKind2Index(robot->m_Unit[i].u1.s1.m_Kind)].damage;
             wsingle_damage = Float2Int(float(wsingle_damage) * 1000.0f / ((float)wspeed));
             damage += wsingle_damage;
         }

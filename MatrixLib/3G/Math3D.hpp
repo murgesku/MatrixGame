@@ -63,15 +63,20 @@ inline int DetermineGreaterPowerOfTwo(int val) {
 }
 
 struct SPlane {
-    union {
-        struct {
-            D3DXPLANE dxplane;
-        };
-        struct {
-            D3DXVECTOR3 norm;
-            float dist;
-        };
-    };
+    // TODO: fix it properly
+    // union {
+    //     struct {
+    //         D3DXPLANE dxplane;
+    //     };
+    //     struct {
+    //         D3DXVECTOR3 norm;
+    //         float dist;
+    //     };
+    // };
+
+    D3DXPLANE dxplane;
+    D3DXVECTOR3 norm;
+    float dist;
     byte signbits;
 
     SPlane() {}

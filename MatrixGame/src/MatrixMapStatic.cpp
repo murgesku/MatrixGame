@@ -438,7 +438,7 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
     CMatrixRobotAI *r = AsRobot();
     for (int i = 0; i < r->m_UnitCnt; ++i) {
         if (r->m_Unit[i].m_Type == MRT_CHASSIS) {
-            switch (r->m_Unit[i].m_Kind) {
+            switch (r->m_Unit[i].u1.s1.m_Kind) {
                 case RUK_CHASSIS_ANTIGRAVITY:
                     h -= 5;
                     ra -= 5.5;
@@ -464,7 +464,7 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
     }
     for (int i = 0; i < r->m_UnitCnt; ++i) {
         if (r->m_Unit[i].m_Type == MRT_ARMOR) {
-            switch (r->m_Unit[i].m_Kind) {
+            switch (r->m_Unit[i].u1.s1.m_Kind) {
                 case RUK_ARMOR_ACTIVE:
                     h += 9.0f;
                     ra += 5.5f;
