@@ -2391,7 +2391,7 @@ int CMatrixMapLogic::FindPlace(const CPoint &mappos) {
     return -1;
 }
 
-int CMatrixMapLogic::PlaceList(byte mm, CPoint &from, CPoint &to, int radius, bool farpath, int *list, int *listcnt,
+int CMatrixMapLogic::PlaceList(byte mm, const CPoint &from, const CPoint &to, int radius, bool farpath, int *list, int *listcnt,
                                int *outdist) {
     int i, u, cnt, sme, np, dist, next, x, y, clcnt, oldcnt;
     SMatrixPlace *place;

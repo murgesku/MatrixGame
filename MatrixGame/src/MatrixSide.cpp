@@ -9020,7 +9020,7 @@ void CMatrixSideUnit::PGOrderStop(int no) {
     PGShowPlace(no);
 }
 
-void CMatrixSideUnit::PGOrderMoveTo(int no, CPoint &tp) {
+void CMatrixSideUnit::PGOrderMoveTo(int no, const CPoint &tp) {
     if (m_PlayerGroup[no].m_RobotCnt <= 0)
         return;
 
@@ -9236,7 +9236,7 @@ void CMatrixSideUnit::PGOrderAttack(int no, const CPoint &tp, CMatrixMapStatic *
     PGShowPlace(no);
 }
 
-void CMatrixSideUnit::PGOrderPatrol(int no, CPoint &tp) {
+void CMatrixSideUnit::PGOrderPatrol(int no, const CPoint &tp) {
     if (m_PlayerGroup[no].m_RobotCnt <= 0)
         return;
 
@@ -9317,7 +9317,7 @@ void CMatrixSideUnit::PGOrderRepair(int no, CMatrixMapStatic *terget_obj) {
     PGShowPlace(no);
 }
 
-void CMatrixSideUnit::PGOrderBomb(int no, CPoint &tp, CMatrixMapStatic *terget_obj) {
+void CMatrixSideUnit::PGOrderBomb(int no, const CPoint &tp, CMatrixMapStatic *terget_obj) {
     if (m_PlayerGroup[no].m_RobotCnt <= 0)
         return;
 
@@ -9504,7 +9504,7 @@ void CMatrixSideUnit::PGRemoveAllPassive(int no, CMatrixMapStatic *skip) {
 #undef IsPassive
 }
 
-void CMatrixSideUnit::PGSetPlace(CMatrixRobotAI *robot, CPoint &p) {
+void CMatrixSideUnit::PGSetPlace(CMatrixRobotAI *robot, const CPoint &p) {
     int x, y, u;
     CRect plr = g_MatrixMap->m_RN.CorrectRectPL(CRect(p.x - 4, p.y - 4, p.x + 4, p.y + 4));
 
@@ -9619,7 +9619,7 @@ void CMatrixSideUnit::PGShowPlace(int no) {
     m_PlayerGroup[no].SetShowPlace(false);
 }
 
-void CMatrixSideUnit::PGAssignPlace(int no, CPoint &center) {
+void CMatrixSideUnit::PGAssignPlace(int no, CPoint center) {
     int i, u;
     byte mm = 0;
     CMatrixMapStatic *obj;
@@ -9756,7 +9756,7 @@ void CMatrixSideUnit::PGAssignPlace(int no, CPoint &center) {
         }*/
 }
 
-void CMatrixSideUnit::PGAssignPlacePlayer(int no, CPoint &center) {
+void CMatrixSideUnit::PGAssignPlacePlayer(int no, const CPoint &center) {
     int other_cnt = 0;
     int other_size[200];
     CPoint other_des[200];

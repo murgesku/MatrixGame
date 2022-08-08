@@ -96,8 +96,8 @@ public:
     void AddBadPlace(int place);
     bool IsBadPlace(int place);
 
-    void AddBadCoord(CPoint &coord);
-    bool IsBadCoord(CPoint &coord);
+    void AddBadCoord(const CPoint &coord);
+    bool IsBadCoord(const CPoint &coord);
 
     void AddIgnore(CMatrixMapStatic *ms);
     bool IsIgnore(CMatrixMapStatic *ms);
