@@ -277,28 +277,9 @@ inline bool IsVec3Equal(const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1, float dopu
     return true;
 }
 
-// ZakkeR: Честно стырил из сырьков HL2
-// Math routines done in optimized assembly math package routines
 void inline SinCos(float radians, float *sine, float *cosine) {
-#ifdef _WIN32
-    _asm
-    {
-        fld DWORD PTR [radians]
-        fsincos
-
-        mov edx, DWORD PTR [cosine]
-        mov eax, DWORD PTR [sine]
-
-        fstp DWORD PTR [edx]
-        fstp DWORD PTR [eax]
-    }
-#elif _LINUX
-    register double __cosr, __sinr;
-    __asm __volatile__("fsincos" : "=t"(__cosr), "=u"(__sinr) : "0"(radians));
-
-    *sine = __sinr;
-    *cosine = __cosr;
-#endif
+    *sine = std::sin(radians);
+    *cosine = std::cos(radians);
 }
 
 #define SIN_TABLE_SIZE 256
