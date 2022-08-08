@@ -429,7 +429,7 @@ int L3GRun() {
 
                 // CDText::T("takt",CStr(ct-g_TaktTime));
 #endif
-                float tt1 = min(100, cur_takt);
+                float tt1 = min(100.0f, cur_takt);
                 int tt = Float2Int(tt1);
 
                 smooths -= smooth[smp];

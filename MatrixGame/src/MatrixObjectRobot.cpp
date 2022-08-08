@@ -322,7 +322,7 @@ void CMatrixRobot::RNeed(dword need) {
                     default:
                         ERROR_S(L"Unknown robot unit type");
                 }
-                path += m_Unit[i].m_Kind;
+                path += static_cast<int>(m_Unit[i].m_Kind);
 
                 name = path.Get();
 
