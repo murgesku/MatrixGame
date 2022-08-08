@@ -27,7 +27,7 @@ enum ERes {
     ERes_FORCE_DWORD = 0x7FFFFFFF
 };
 
-enum ERobotUnitKind {
+enum ERobotUnitKind : unsigned int {
     RUK_UNKNOWN = 0,
 
     // chaisis

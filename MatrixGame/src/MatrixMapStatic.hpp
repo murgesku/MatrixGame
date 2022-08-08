@@ -103,8 +103,6 @@ typedef enum {
     EShadowType_FORCE_DWORD = 0x7FFFFFFF
 } EShadowType;
 
-enum EWeapon;
-
 #define MAX_GROUPS_PER_OBJECT 36
 
 class CTemporaryLoadData;

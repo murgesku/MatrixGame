@@ -55,8 +55,6 @@ class CMatrixBuilding;
 class CMatrixEffectElevatorField;
 class CMatrixEffectFireStream;
 
-enum EWeapon;
-
 enum EFlyerUnitType {
     FLYER_UNIT_BODY = 0,
     FLYER_UNIT_VINT = 1,
@@ -65,7 +63,7 @@ enum EFlyerUnitType {
     FLYER_UNIT_WEAPON_HOLLOW = 4
 };
 
-enum EFlyerKind {
+enum EFlyerKind : unsigned int {
     FLYER_SPEED = 0,
     FLYER_ATTACK = 1,
     FLYER_TRANSPORT = 2,
@@ -145,7 +143,7 @@ struct SMatrixFlyerUnit {
 
 struct SFlyerTaktData;
 
-enum EFlyerOrder {
+enum EFlyerOrder : unsigned int {
     FO_GIVE_BOT,
     FO_FIRE,
 

@@ -42,7 +42,7 @@
 
 #define MAX_STACK_UNITS 6
 
-enum EFlyerKind;
+enum EFlyerKind : unsigned int;
 
 enum EBuildingTurrets {
     BASE_TURRETS = 4,
