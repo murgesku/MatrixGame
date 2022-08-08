@@ -53,7 +53,7 @@ inline DWORD LIC(DWORD c0, DWORD c1, float t) {
     c |= (0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t)) << 24;
     return c;
 }
-#endif BASE_MATH_DEFINED
+#endif // BASE_MATH_DEFINED
 
 using namespace Base;
 

@@ -263,9 +263,9 @@ public:
         else
             Byte(0);
     }
-    void Str(const char *str, int strlen) {
-        if (strlen > 0)
-            BufAdd(str, strlen);
+    void Str(const char *str, int len) {
+        if (len > 0)
+            BufAdd(str, len);
         Byte(0);
     }
     void Str(const char *str) {
@@ -281,7 +281,7 @@ public:
             BufAdd(str.Get(), len);
     }
     void StrNZ(const char *str, int len) {
-        if (strlen > 0)
+        if (len > 0)
             BufAdd(str, len);
     }
     void StrNZ(const char *str) {
@@ -309,9 +309,9 @@ public:
         else
             Word(0);
     }
-    void WStr(const wchar *str, int strlen) {
-        if (strlen > 0)
-            BufAdd(str, strlen << 1);
+    void WStr(const wchar *str, int len) {
+        if (len > 0)
+            BufAdd(str, len << 1);
         Word(0);
     }
     void WStr(const wchar *str) {
@@ -326,9 +326,9 @@ public:
         if (len > 0)
             BufAdd(str.Get(), len << 1);
     }
-    void WStrNZ(const wchar *str, int strlen) {
-        if (strlen > 0)
-            BufAdd(str, strlen << 1);
+    void WStrNZ(const wchar *str, int len) {
+        if (len > 0)
+            BufAdd(str, len << 1);
     }
     void WStrNZ(const wchar *str) {
         int len = Base::WStrLen(str);

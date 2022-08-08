@@ -921,7 +921,7 @@ void CMatrixConfig::ReadParams(void) {
     CBlockPar *bpl = g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR);
     bp_tmp = bpl->BlockGetNE(PAR_SOURCE_ITEMS_LABELS);
 
-    m_Labels = (CWStr *)HAlloc(sizeof(CWStr) * LABELS_LAST, g_MatrixHeap);
+    m_Labels = (CWStr*)HAlloc(sizeof(CWStr) * LABELS_LAST, g_MatrixHeap);
     for (int i = 0; i < LABELS_LAST; i++) {
         m_Labels[i].CWStr::CWStr(g_MatrixHeap);
     }
@@ -957,7 +957,7 @@ void CMatrixConfig::ReadParams(void) {
     // Items descriptions
     bp_tmp = bpl->BlockGetNE(PAR_SOURCE_ITEMS_DESCRIPTIONS);
 
-    m_Descriptions = (CWStr *)HAlloc(sizeof(CWStr) * DESCRIPTIONS_LAST, g_MatrixHeap);
+    m_Descriptions = (CWStr*)HAlloc(sizeof(CWStr) * DESCRIPTIONS_LAST, g_MatrixHeap);
     for (int i = 0; i < DESCRIPTIONS_LAST; i++) {
         m_Descriptions[i].CWStr::CWStr(g_MatrixHeap);
     }

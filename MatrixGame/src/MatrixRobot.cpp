@@ -1200,8 +1200,8 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 }
                 else if (m_OrdersList[0].GetOrderPhase() == ROP_CAPTURE_MOVING) {
                     // kshhhhchk "moving on" kshhhhchk
-                    D3DXVECTOR3 dist = factory->m_Pos - D3DXVECTOR2(m_PosX, m_PosY);
-                    dist.z = 0;
+                    D3DXVECTOR2 tmp = factory->m_Pos - D3DXVECTOR2(m_PosX, m_PosY);
+                    D3DXVECTOR3 dist = D3DXVECTOR3(tmp.x, tmp.y, 0);
                     if (factory->IsBase()) {
                         if (!FindOrderLikeThat(ROT_MOVE_TO, ROP_CAPTURE_MOVING) &&
                             D3DXVec3LengthSq(&dist) <= (BASE_DIST + 60) * (BASE_DIST + 60)) {

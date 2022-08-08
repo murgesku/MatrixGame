@@ -17,6 +17,9 @@ extern IDirect3DDevice9 *g_D3DD;
 #include "ShadowProj.hpp"
 #include "CBillboard.hpp"
 
+// #include "ShadowStencil.hpp"
+class CVOShadowStencil;
+
 #define GLOSS_TEXTURE_SUFFIX L"_gloss"
 
 #define SHADOW_ALTITUDE (0.7f)
