@@ -267,7 +267,8 @@ void CMatrixEffectBigBoom::Draw(void) {
 static bool BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     D3DXVECTOR3 anorm;
-    D3DXVec3Normalize(&anorm, &(center - ms->GetGeoCenter()));
+    auto tmp = center - ms->GetGeoCenter();
+    D3DXVec3Normalize(&anorm, &tmp);
     boom->m_Handler(ms, ms->GetGeoCenter() + anorm * ms->GetRadius(), boom->m_User, 0);
     return true;
 }
@@ -276,7 +277,8 @@ static bool BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWOR
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     if (ms->IsLiveRobot()) {
         D3DXVECTOR3 anorm;
-        D3DXVec3Normalize(&anorm, &(ms->GetGeoCenter() - center));
+        auto tmp = ms->GetGeoCenter() - center;
+        D3DXVec3Normalize(&anorm, &tmp);
         ms->AsRobot()->ApplyNaklon(anorm * 0.5f);
     }
     return true;

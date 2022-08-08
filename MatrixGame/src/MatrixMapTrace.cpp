@@ -390,7 +390,8 @@ CMatrixMapStatic *CMatrixMap::Trace(D3DXVECTOR3 *result, const D3DXVECTOR3 &star
     data.dy = end.y - start.y;
     data.dz = end.z - start.z;
 
-    data.len = D3DXVec3Length(&D3DXVECTOR3(data.dx, data.dy, data.dz));
+    auto tmp = D3DXVECTOR3(data.dx, data.dy, data.dz);
+    data.len = D3DXVec3Length(&tmp);
 
     const float oblen = INVERT(((data.len != 0) ? data.len : 1.0f));
     data.dir = D3DXVECTOR3(data.dx * oblen, data.dy * oblen, data.dz * oblen);
@@ -1055,7 +1056,8 @@ bool CMatrixMap::TraceLand(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3D
         data.out.z = 0;
 
         end = data.out;
-        data.last_t = D3DXVec3Length(&(start - end));
+        auto tmp = start - end;
+        data.last_t = D3DXVec3Length(&tmp);
     }
     else {
         data.out = start + dir * data.len;

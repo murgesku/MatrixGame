@@ -150,7 +150,8 @@ static bool FindOwner(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD use
     if (center.z > bmax.z)
         return true;
 
-    float di = D3DXVec3LengthSq(&(center - pos));
+    auto tmp = center - pos;
+    float di = D3DXVec3LengthSq(&tmp);
     if (di < d->dist) {
         d->dist = di;
         *d->target = ms;
@@ -423,7 +424,8 @@ void SEffectHandler::Release(void)
 void CMatrixEffect::CreateExplosion(const D3DXVECTOR3 &pos, const SExplosionProperties &props, bool fire) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     if (ELIST_CNT(EFFECT_EXPLOSION) >= MAX_EFFECTS_EXPLOSIONS) {
@@ -474,7 +476,8 @@ void CMatrixEffect::CreateSmoke(SEffectHandler *eh, const D3DXVECTOR3 &pos, floa
                                 DWORD color, bool intense, float speed) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     if (ELIST_CNT(EFFECT_SMOKE) >= MAX_EFFECTS_SMOKEFIRES) {
@@ -500,7 +503,8 @@ void CMatrixEffect::CreateFire(SEffectHandler *eh, const D3DXVECTOR3 &pos, float
                                float dispfactor, bool intense, float speed) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     if (ELIST_CNT(EFFECT_SMOKE) >= MAX_EFFECTS_SMOKEFIRES) {
@@ -523,7 +527,8 @@ void CMatrixEffect::CreateFire(SEffectHandler *eh, const D3DXVECTOR3 &pos, float
 }
 
 void CMatrixEffect::CreateFireAnim(SEffectHandler *eh, const D3DXVECTOR3 &pos, float w, float h, int ttl) {
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     if (ELIST_CNT(EFFECT_FIREANIM) >= MAX_EFFECTS_FIREANIM) {
@@ -559,9 +564,9 @@ void CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &p
                                         ESpotType type) {
     DTRACE();
 
+    auto tmp = pos - *(D3DXVECTOR2 *)&g_MatrixMap->m_Camera.GetFrustumCenter();
     if (type != SPOT_TURRET) {
-        if (MAX_EFFECT_DISTANCE_SQ <
-            D3DXVec2LengthSq(&(pos - *(D3DXVECTOR2 *)&g_MatrixMap->m_Camera.GetFrustumCenter())))
+        if (MAX_EFFECT_DISTANCE_SQ < D3DXVec2LengthSq(&tmp))
             return;
     }
 
@@ -708,7 +713,8 @@ CMatrixEffect *CMatrixEffect::CreatePath(const D3DXVECTOR3 *pos, int cnt) {
 void CMatrixEffect::CreatePointLight(SEffectHandler *eh, const D3DXVECTOR3 &pos, float r, DWORD color, bool drawbill) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     if (ELIST_CNT(EFFECT_POINT_LIGHT) >= MAX_EFFECTS_POINT_LIGHTS) {
@@ -734,7 +740,8 @@ void CMatrixEffect::CreateKonus(SEffectHandler *eh, const D3DXVECTOR3 &start, co
                                 float height, float angle, float ttl, bool intense, CTextureManaged *tex) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(start - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = start - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     CMatrixEffectKonus *e = HNew(m_Heap) CMatrixEffectKonus(start, dir, radius, height, angle, ttl, intense, tex);
@@ -755,7 +762,8 @@ void CMatrixEffect::CreateKonusSplash(const D3DXVECTOR3 &start, const D3DXVECTOR
                                       float angle, float ttl, bool intense, CTextureManaged *tex) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(start - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = start - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     CMatrixEffectKonusSplash *e =
@@ -803,7 +811,8 @@ void CMatrixEffect::CreateLightening(SEffectHandler *eh, const D3DXVECTOR3 &pos0
                                      float dispers, float width, DWORD color) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos0 - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos0 - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     CMatrixEffectLightening *e = HNew(m_Heap) CMatrixEffectLightening(pos0, pos1, ttl, dispers, width, color);
@@ -860,7 +869,8 @@ void CMatrixEffect::CreateBillboardLine(SEffectHandler *eh, const D3DXVECTOR3 &p
                                         float width, DWORD c1, DWORD c2, float ttl, CTextureManaged *tex) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&(pos0 - g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos0 - g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec3LengthSq(&tmp))
         return;
 
     CMatrixEffectBillboardLine *e = HNew(m_Heap) CMatrixEffectBillboardLine(pos0, pos1, width, c1, c2, ttl, tex);
@@ -893,7 +903,8 @@ CMatrixEffect *CMatrixEffect::CreateElevatorField(const D3DXVECTOR3 &pos0, const
 void CMatrixEffect::CreateDust(SEffectHandler *eh, const D3DXVECTOR2 &pos, const D3DXVECTOR2 &adddir, float ttl) {
     DTRACE();
 
-    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec2LengthSq(&(pos - *(D3DXVECTOR2 *)&g_MatrixMap->m_Camera.GetFrustumCenter())))
+    auto tmp = pos - *(D3DXVECTOR2 *)&g_MatrixMap->m_Camera.GetFrustumCenter();
+    if (MAX_EFFECT_DISTANCE_SQ < D3DXVec2LengthSq(&tmp))
         return;
 
     CMatrixEffectDust *e = HNew(m_Heap) CMatrixEffectDust(pos, adddir, ttl);

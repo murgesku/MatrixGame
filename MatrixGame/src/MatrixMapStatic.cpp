@@ -155,7 +155,8 @@ void CMatrixMapStatic::JoinToGroup(void) {
         m_Core->m_GeoCenter = (vmin + vmax) * 0.5f;
     }
 
-    m_Core->m_Radius = D3DXVec3Length(&(vmax - vmin)) * 0.5f;
+    auto tmp = vmax - vmin;
+    m_Core->m_Radius = D3DXVec3Length(&tmp) * 0.5f;
 
     DWORD tc = g_MatrixMap->GetColor(m_Core->m_GeoCenter.x, m_Core->m_GeoCenter.y);
     if (!IsFlyer()) {
@@ -498,10 +499,13 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
     // D3DXVECTOR3 fc(80, -30, h+5);
 
     D3DXVECTOR3 right;
-    D3DXVec3Cross(&right, &fc, &D3DXVECTOR3(0, 0, 1));
+    auto tmp = D3DXVECTOR3(0, 0, 1);
+    D3DXVec3Cross(&right, &fc, &tmp);
     D3DXVec3Normalize(&right, &right);
 
-    D3DXMatrixLookAtLH(&matView, &fc, &D3DXVECTOR3(-right.x * 3, -right.y * 3, h), &D3DXVECTOR3(0, 0, 1.0f));
+    auto tmp1 = D3DXVECTOR3(-right.x * 3, -right.y * 3, h);
+    auto tmp2 = D3DXVECTOR3(0, 0, 1.0f);
+    D3DXMatrixLookAtLH(&matView, &fc, &tmp1, &tmp2);
 
     D3DXMatrixPerspectiveFovLH(&matProj, fov, 1.0f, 1.0f, 500.0f);
     matView = m_Core->m_IMatrix * matView;
@@ -666,8 +670,9 @@ void CMatrixMapStatic::SortEndRecalcTerainColor(void) {
 void CMatrixMapStatic::CalcDistances(void) {
     for (int i = objects_left; i < objects_rite; ++i) {
         // calc m_CamDistSq
+        auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter;
         objects[i]->m_CamDistSq =
-                D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter));
+                D3DXVec3LengthSq(&tmp);
     }
 }
 
@@ -676,8 +681,9 @@ void CMatrixMapStatic::SortEndGraphicTakt(int step) {
 
     for (int i = objects_left; i < objects_rite; ++i) {
         // calc m_CamDistSq
+        auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter;
         objects[i]->m_CamDistSq =
-                D3DXVec3LengthSq(&(g_MatrixMap->m_Camera.GetFrustumCenter() - objects[i]->m_Core->m_GeoCenter));
+                D3DXVec3LengthSq(&tmp);
         objects[i]->Takt(step);
     }
 }

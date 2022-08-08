@@ -404,8 +404,10 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                     pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                     pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                     pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                    D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                         m_Core->m_Matrix._43 - pos.z));
+                    auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                           m_Core->m_Matrix._42 - pos.y,
+                                           m_Core->m_Matrix._43 - pos.z);
+                    D3DXVec3Normalize(&dir, &tmp);
                 }
                 while (!PickFull(pos, dir, &t) && (--cnt > 0));
 
@@ -444,8 +446,10 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                 pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                     m_Core->m_Matrix._43 - pos.z));
+                auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                       m_Core->m_Matrix._42 - pos.y,
+                                       m_Core->m_Matrix._43 - pos.z);
+                D3DXVec3Normalize(&dir, &tmp);
             }
             while (!Pick(pos, dir, &t) && (--cnt > 0));
             if (cnt > 0) {
@@ -455,8 +459,10 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                 pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                     m_Core->m_Matrix._43 - pos.z));
+                auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                       m_Core->m_Matrix._42 - pos.y,
+                                       m_Core->m_Matrix._43 - pos.z);
+                D3DXVec3Normalize(&dir, &tmp);
             }
             while (!Pick(pos, dir, &t) && (--cnt > 0));
             if (cnt > 0) {
@@ -692,7 +698,8 @@ void CMatrixRobotAI::LogicTakt(int ms) {
         DCP();
 
         if (m_Unit[0].m_Kind == RUK_CHASSIS_TRACK) {
-            float dist_sq = D3DXVec3LengthSq(&(m_ChassisData.m_LastSolePos - m_Core->m_GeoCenter));
+            auto tmp = m_ChassisData.m_LastSolePos - m_Core->m_GeoCenter;
+            float dist_sq = D3DXVec3LengthSq(&tmp);
             if (dist_sq > 100) {
                 m_ChassisData.m_LastSolePos = m_Core->m_GeoCenter;
                 int x = TruncFloat(m_Core->m_GeoCenter.x * INVERT(GLOBAL_SCALE));
@@ -708,7 +715,8 @@ void CMatrixRobotAI::LogicTakt(int ms) {
         DCP();
 
         if (m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL) {
-            float dist_sq = D3DXVec3LengthSq(&(m_ChassisData.m_LastSolePos - m_Core->m_GeoCenter));
+            auto tmp = m_ChassisData.m_LastSolePos - m_Core->m_GeoCenter;
+            float dist_sq = D3DXVec3LengthSq(&tmp);
             if (dist_sq > 100) {
                 m_ChassisData.m_LastSolePos = m_Core->m_GeoCenter;
                 int x = TruncFloat(m_Core->m_GeoCenter.x * INVERT(GLOBAL_SCALE));
@@ -1358,7 +1366,8 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 // CHECKRIDE
                 // Fire distance checkride
                 if (this != g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
-                    if (D3DXVec3LengthSq(&(GetGeoCenter() - m_WeaponDir)) > fire_dist * fire_dist) {
+                    auto tmp = GetGeoCenter() - m_WeaponDir;
+                    if (D3DXVec3LengthSq(&tmp) > fire_dist * fire_dist) {
                         m_Weapons[nC].FireEnd();
                         continue;
                     }
@@ -2253,11 +2262,12 @@ void CMatrixRobotAI::RotateHull(const D3DXVECTOR3 &dest) {
     }
 
     if (fabs(angle3) >= GRAD2RAD(160)) {
-        D3DXVec3Normalize(&m_HullForward,
-                          &(m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed * 3)));
+        auto tmp = m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed * 3);
+        D3DXVec3Normalize(&m_HullForward, &tmp);
     }
     else {
-        D3DXVec3Normalize(&m_HullForward, &(m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed)));
+        auto tmp = m_HullForward + Vec3Truncate((destDirN - m_HullForward), m_maxHullSpeed);
+        D3DXVec3Normalize(&m_HullForward, &tmp);
     }
 
     if (fabs(angle1) >= MAX_HULL_ANGLE) {
@@ -2403,10 +2413,12 @@ bool CMatrixRobotAI::Seek(const D3DXVECTOR3 &dest, bool &rotate, bool end_path, 
     float slope;
     if (back) {
         D3DXVECTOR3 f(-(*(D3DXVECTOR3 *)&m_Core->m_Matrix._21));
-        slope = D3DXVec3Dot(&D3DXVECTOR3(0, 0, 1), &f);
+        auto tmp = D3DXVECTOR3(0, 0, 1);
+        slope = D3DXVec3Dot(&tmp, &f);
     }
     else {
-        slope = D3DXVec3Dot(&D3DXVECTOR3(0, 0, 1), (D3DXVECTOR3 *)&m_Core->m_Matrix._21);
+        auto tmp = D3DXVECTOR3(0, 0, 1);
+        slope = D3DXVec3Dot(&tmp, (D3DXVECTOR3 *)&m_Core->m_Matrix._21);
     }
 
     if (slope >= 0) {
@@ -3340,24 +3352,28 @@ D3DXVECTOR3 CMatrixRobotAI::SphereToAABB(const D3DXVECTOR2 &pos, const SMatrixMa
         //
 
         D3DXVECTOR2 mind_corner = lu;
-        float prev_min_dist = D3DXVec2LengthSq(&(pos - lu));
+        auto tmp1 = pos - lu;
+        float prev_min_dist = D3DXVec2LengthSq(&tmp1);
         int angle = 8;
 
-        float a = D3DXVec2LengthSq(&(pos - D3DXVECTOR2(rd.x, lu.y)));
+        auto tmp2 = pos - D3DXVECTOR2(rd.x, lu.y);
+        float a = D3DXVec2LengthSq(&tmp2);
         if (a < prev_min_dist) {
             prev_min_dist = a;
             mind_corner = D3DXVECTOR2(rd.x, lu.y);
             angle = 1;
         }
 
-        a = D3DXVec2LengthSq(&(pos - rd));
+        auto tmp3 = pos - rd;
+        a = D3DXVec2LengthSq(&tmp3);
         if (a < prev_min_dist) {
             prev_min_dist = a;
             mind_corner = rd;
             angle = 2;
         }
 
-        a = D3DXVec2LengthSq(&(pos - D3DXVECTOR2(lu.x, rd.y)));
+        auto tmp4 = pos - D3DXVECTOR2(lu.x, rd.y);
+        a = D3DXVec2LengthSq(&tmp4);
 
         if (a < prev_min_dist) {
             prev_min_dist = a;
@@ -5434,7 +5450,8 @@ bool CMatrixRobotAI::CheckFireDist(const D3DXVECTOR3 &point) {
             if (m_Weapons[i].GetWeaponPos(wpos)) {
                 D3DXVECTOR3 hitpos(0, 0, 0);
                 D3DXVECTOR3 out(0, 0, 0);
-                D3DXVec3Normalize(&out, &(point - wpos));
+                auto tmp = point - wpos;
+                D3DXVec3Normalize(&out, &tmp);
                 out *= (m_Weapons[i].GetWeaponDist());
                 // CHelper::Create(1,0)->Line(wpos, wpos+out);
                 CMatrixMapStatic *hito = g_MatrixMap->Trace(&hitpos, wpos, wpos + out, TRACE_ALL, this);

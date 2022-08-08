@@ -312,8 +312,10 @@ void CConstructor::Render(void) {
     float h = m_Robot->GetChassisHeight();
 
     D3DXMatrixIdentity(&matWorld);
-    D3DXMatrixLookAtLH(&matView, &D3DXVECTOR3(80, -30, h + 5), &D3DXVECTOR3(0.0f, 0.0f, h),
-                       &D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+    auto tmp1 = D3DXVECTOR3(80, -30, h + 5);
+    auto tmp2 = D3DXVECTOR3(0.0f, 0.0f, h);
+    auto tmp3 = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
+    D3DXMatrixLookAtLH(&matView, &tmp1, &tmp2, &tmp3);
     D3DXMatrixPerspectiveFovLH(
             &matProj, D3DX_PI / 4,
             float(m_ViewWidthX) / float(m_ViewHeightY) /*float(g_ScreenX)/float(g_ScreenX)*/ /*1.0f*/, 1.0f, 300.0f);

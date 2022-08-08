@@ -89,11 +89,13 @@ static bool FindPatient(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD use
     if (ms->GetSide() != data->side_of_owner)
         return true;
 
-    float dist = D3DXVec3LengthSq(&(*data->wpos - ms->GetGeoCenter()));
+    auto tmp1 = *data->wpos - ms->GetGeoCenter();
+    float dist = D3DXVec3LengthSq(&tmp1);
     if (dist > data->wdist2)
         return true;
 
-    dist = D3DXVec3LengthSq(&(fpos - ms->GetGeoCenter()));
+    auto tmp2 = fpos - ms->GetGeoCenter();
+    dist = D3DXVec3LengthSq(&tmp2);
     if (dist < data->dist) {
         if (ms->IsRobot()) {
             data->tgt = ms;
@@ -253,7 +255,8 @@ void CMatrixEffectRepair::Takt(float t) {
         // build p9
         ASSERT(m_Target && m_Target->m_Object);
 
-        float len = D3DXVec3Length(&(m_Pos - m_Target->m_GeoCenter));
+        auto tmp = m_Pos - m_Target->m_GeoCenter;
+        float len = D3DXVec3Length(&tmp);
 
         float disp = len * 0.01f;
 

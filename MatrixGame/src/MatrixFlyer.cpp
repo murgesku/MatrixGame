@@ -1018,7 +1018,8 @@ static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user)
     // CDText::T("JJ",CStr(jj));
 
     D3DXVECTOR3 a;
-    D3DXVec3Normalize(&a, &(pos - ms->GetGeoCenter()));
+    auto tmp = pos - ms->GetGeoCenter();
+    D3DXVec3Normalize(&a, &tmp);
 
     td->reaction += a;
 
@@ -1160,7 +1161,9 @@ void CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder orde
         r->RChange(MR_Matrix);
         r->CalcBounds(minv, maxv);
         core->m_GeoCenter = (minv + maxv) * 0.5f;
-        core->m_Radius = D3DXVec3Length(&(minv - maxv));
+
+        auto tmp = minv - maxv;
+        core->m_Radius = D3DXVec3Length(&tmp);
 
         core->Release();
 
@@ -1202,7 +1205,8 @@ bool CMatrixFlyer::LogicTaktOrder(SFlyerTaktData &td) {
         return false;
 
     m_Core->m_GeoCenter = (vmin + vmax) * 0.5f;
-    m_Core->m_Radius = D3DXVec3Length(&(vmax - vmin)) * 0.5f;
+    auto tmp = vmax - vmin;
+    m_Core->m_Radius = D3DXVec3Length(&tmp) * 0.5f;
     m_Core->m_TerainColor = 0xFFFFFFFF;
 
     if (m_TrajectoryPos > 0.5f && CarryingRobot()) {

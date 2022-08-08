@@ -312,11 +312,13 @@ void CMatrixMapObject::SetupMatricesForShadowTextureCalc(void) {
     D3DXMatrixIdentity(&mWorld);
     g_D3DD->SetTransform(D3DTS_WORLD, &mWorld);
 
-    D3DXVec3TransformNormal(&camup, &D3DXVECTOR3(0, 0, 1), &m_Core->m_IMatrix);
+    auto tmp1 = D3DXVECTOR3(0, 0, 1);
+    D3DXVec3TransformNormal(&camup, &tmp1, &m_Core->m_IMatrix);
     D3DXVec3Normalize(&camup, &camup);
 
     D3DXMATRIX mView;
-    D3DXMatrixLookAtLH(&mView, &m_ShCampos, &(m_ShCampos + light), &camup);
+    auto tmp2 = m_ShCampos + light;
+    D3DXMatrixLookAtLH(&mView, &m_ShCampos, &tmp2, &camup);
 
     float _sx = 1.0f / m_ShDim.x;
     float _sy = 1.0f / m_ShDim.y;
@@ -743,7 +745,8 @@ void CMatrixMapObject::BeforeDraw(void) {
     }
 
     if (m_BehFlag == BEHF_TERRON && m_PB != nullptr && m_BreakHitPoint > 0) {
-        float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
+        auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter();
+        float dist = D3DXVec3Length(&tmp);
 
         if (dist < 1000) {
             D3DXVECTOR3 pos;
@@ -761,7 +764,8 @@ void CMatrixMapObject::BeforeDraw(void) {
     }
 
     if (m_BehFlag == BEHF_BREAK && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB != nullptr && m_BreakHitPoint > 0) {
-        float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
+        auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter();
+        float dist = D3DXVec3Length(&tmp);
 
         if (dist < 1000) {
             D3DXVECTOR3 pos;
@@ -778,7 +782,8 @@ void CMatrixMapObject::BeforeDraw(void) {
     }
 
     if (m_BehFlag == BEHF_ANIM && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB != nullptr && m_BreakHitPoint > 0) {
-        float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
+        auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter();
+        float dist = D3DXVec3Length(&tmp);
 
         if (dist < 1000) {
             D3DXVECTOR3 pos;
@@ -1185,7 +1190,8 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                         pos = pos0 + D3DXVECTOR3(FSRND(GetRadius()), FSRND(GetRadius()), FRND(2 * GetRadius()));
 
-                        D3DXVec3Normalize(&dir, &(pos0 - pos));
+                        auto tmp = pos0 - pos;
+                        D3DXVec3Normalize(&dir, &tmp);
                     }
                     while (!Pick(pos, dir, &t) && (--cnt > 0));
                     if (cnt > 0) {
@@ -1286,7 +1292,8 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 r->RChange(MR_Matrix);
                 r->CalcBounds(minv, maxv);
                 m_SpawnRobotCore->m_GeoCenter = (minv + maxv) * 0.5f;
-                m_SpawnRobotCore->m_Radius = D3DXVec3Length(&(minv - maxv));
+                auto tmp = minv - maxv;
+                m_SpawnRobotCore->m_Radius = D3DXVec3Length(&tmp);
 
                 r->InitMaxHitpoint((float)botpar->ParGet(L"BotHitpoint").GetDouble());
 
@@ -1396,8 +1403,10 @@ void CMatrixMapObject::LogicTakt(int ms) {
                     pos.x = m_Core->m_Matrix._41 + FSRND(GetRadius());
                     pos.y = m_Core->m_Matrix._42 + FSRND(GetRadius());
                     pos.z = m_Core->m_Matrix._43 + FRND(GetRadius() * 2);
-                    D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                         m_Core->m_Matrix._43 - pos.z));
+                    auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                           m_Core->m_Matrix._42 - pos.y,
+                                           m_Core->m_Matrix._43 - pos.z);
+                    D3DXVec3Normalize(&dir, &tmp);
                 }
                 while (!PickFull(pos, dir, &t) && (--cnt > 0));
 

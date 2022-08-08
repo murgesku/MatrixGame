@@ -102,7 +102,9 @@ static void ShadowProjBuildGeomInt(CVOShadowProj &sp, const SProjData &pd, const
     float _sy = -1.0f / D3DXVec3Length(&vy);
 
     D3DXMATRIX mView;
-    D3DXMatrixLookAtLH(&mView, &(vpos - vz), &vpos, &-vy);
+    auto tmp1 = vpos - vz;
+    auto tmp2 = -vy;
+    D3DXMatrixLookAtLH(&mView, &tmp1, &vpos, &tmp2);
 
     mView._11 *= _sx;
     mView._21 *= _sx;

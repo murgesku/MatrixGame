@@ -880,8 +880,10 @@ void CMatrixCannon::LogicTakt(int takt) {
                 pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                 pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                     m_Core->m_Matrix._43 - pos.z));
+                auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                       m_Core->m_Matrix._42 - pos.y,
+                                       m_Core->m_Matrix._43 - pos.z);
+                D3DXVec3Normalize(&dir, &tmp);
             }
             while (!Pick(pos, dir, &t) && (--cnt > 0));
 
@@ -906,8 +908,10 @@ void CMatrixCannon::LogicTakt(int takt) {
                 pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                 pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                     m_Core->m_Matrix._43 - pos.z));
+                auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                       m_Core->m_Matrix._42 - pos.y,
+                                       m_Core->m_Matrix._43 - pos.z);
+                D3DXVec3Normalize(&dir, &tmp);
             }
             while (!Pick(pos, dir, &t) && (--cnt > 0));
             if (cnt > 0) {
@@ -918,8 +922,10 @@ void CMatrixCannon::LogicTakt(int takt) {
                 pos.x = m_Core->m_Matrix._41 + FSRND(m_Core->m_Radius);
                 pos.y = m_Core->m_Matrix._42 + FSRND(m_Core->m_Radius);
                 pos.z = m_Core->m_Matrix._43 + FRND(m_Core->m_Radius * 2);
-                D3DXVec3Normalize(&dir, &D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x, m_Core->m_Matrix._42 - pos.y,
-                                                     m_Core->m_Matrix._43 - pos.z));
+                auto tmp = D3DXVECTOR3(m_Core->m_Matrix._41 - pos.x,
+                                       m_Core->m_Matrix._42 - pos.y,
+                                       m_Core->m_Matrix._43 - pos.z);
+                D3DXVec3Normalize(&dir, &tmp);
 
                 Pick(pos, dir, &t);
             }
@@ -1164,8 +1170,8 @@ void CMatrixCannon::LogicTakt(int takt) {
         }
 
         // проверка попадания цели в зону поражения
-
-        float dq = D3DXVec3LengthSq(&(m_TargetCore->m_GeoCenter - GetGeoCenter()));
+        auto tmp = m_TargetCore->m_GeoCenter - GetGeoCenter();
+        float dq = D3DXVec3LengthSq(&tmp);
         float ddq = m_Weapons[0]->GetWeaponDist();
         if (dq > POW2(ddq)) {
             // нет, не дострелим, ей богу не дострелим...

@@ -666,7 +666,8 @@ void CMatrixMap::GetNormal(D3DXVECTOR3 *out, float wx, float wy, bool check_wate
     D3DXVECTOR3 v1 = LERPVECTOR(kx, mp0->n, mp1->n);
     D3DXVECTOR3 v2 = LERPVECTOR(kx, mp2->n, mp3->n);
 
-    D3DXVec3Normalize(out, &(LERPVECTOR(ky, v1, v2)));
+    auto tmp = LERPVECTOR(ky, v1, v2);
+    D3DXVec3Normalize(out, &tmp);
 }
 
 bool CMatrixMap::UnitPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, const CRect &ar, int *ox, int *oy,
@@ -768,11 +769,15 @@ bool CMatrixMap::UnitPickGrid(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, i
     DTRACE();
 
     D3DXPLANE pl;
-    D3DXPlaneFromPoints(&pl, &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(1.0f, 0, 0), &D3DXVECTOR3(0, 1.0f, 0));
+    auto tmp1 = D3DXVECTOR3(0, 0, 0);
+    auto tmp2 = D3DXVECTOR3(1.0f, 0, 0);
+    auto tmp3 = D3DXVECTOR3(0, 1.0f, 0);
+    D3DXPlaneFromPoints(&pl, &tmp1, &tmp2, &tmp3);
     //	D3DXPlaneNormalize(&pl,&pl);
 
     D3DXVECTOR3 v;
-    if (D3DXPlaneIntersectLine(&v, &pl, &orig, &(orig + dir * 1000000.0f)) == NULL)
+    auto tmp4 = orig + dir * 1000000.0f;
+    if (D3DXPlaneIntersectLine(&v, &pl, &orig, &tmp4) == NULL)
         return false;
 
     if (ox != NULL)
@@ -785,11 +790,15 @@ bool CMatrixMap::UnitPickGrid(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, i
 
 bool CMatrixMap::UnitPickWorld(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *ox, float *oy) {
     D3DXPLANE pl;
-    D3DXPlaneFromPoints(&pl, &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(1.0f, 0, 0), &D3DXVECTOR3(0, 1.0f, 0));
+    auto tmp1 = D3DXVECTOR3(0, 0, 0);
+    auto tmp2 = D3DXVECTOR3(1.0f, 0, 0);
+    auto tmp3 = D3DXVECTOR3(0, 1.0f, 0);
+    D3DXPlaneFromPoints(&pl, &tmp1, &tmp2, &tmp3);
     //	D3DXPlaneNormalize(&pl,&pl);
 
     D3DXVECTOR3 v;
-    if (D3DXPlaneIntersectLine(&v, &pl, &orig, &(orig + dir * 1000000.0f)) == NULL)
+    auto tmp4 = orig + dir * 1000000.0f;
+    if (D3DXPlaneIntersectLine(&v, &pl, &orig, &tmp4) == NULL)
         return false;
 
     if (ox != NULL)
@@ -2609,7 +2618,8 @@ bool CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale,
                 if (ms->IsFlyer()) {
                     ms2 = ((CMatrixFlyer *)ms)->GetCarryingRobot();
                     if (ms2 != NULL) {
-                        float dist = D3DXVec2Length(&(*(D3DXVECTOR2 *)&ms2->GetGeoCenter() - pos)) -
+                        auto tmp = *(D3DXVECTOR2 *)&ms2->GetGeoCenter() - pos;
+                        float dist = D3DXVec2Length(&tmp) -
                                      ms2->GetRadius() * oscale;
                         if (dist >= radius) {
                             ms2 = NULL;
@@ -2664,7 +2674,8 @@ skip:;
                 else if (ms->GetObjectType() == OBJECT_TYPE_FLYER) {
                     msa[mscnt] = ((CMatrixFlyer *)ms)->GetCarryingRobot();
                     if (msa[mscnt] != NULL) {
-                        float dist = D3DXVec2Length(&(*(D3DXVECTOR2 *)&msa[mscnt]->GetGeoCenter() - pos)) -
+                        auto tmp = *(D3DXVECTOR2 *)&msa[mscnt]->GetGeoCenter() - pos;
+                        float dist = D3DXVec2Length(&tmp) -
                                      msa[mscnt]->GetRadius() * oscale;
                         if (dist < radius) {
                             mscnt++;
@@ -2672,8 +2683,9 @@ skip:;
                     }
                     if ((mask & TRACE_FLYER) == 0)
                         continue;
+                    auto tmp = *(D3DXVECTOR2 *)&ms->GetGeoCenter() - pos;
                     float dist =
-                            D3DXVec2Length(&(*(D3DXVECTOR2 *)&ms->GetGeoCenter() - pos)) - ms->GetRadius() * oscale;
+                            D3DXVec2Length(&tmp) - ms->GetRadius() * oscale;
                     if (dist >= radius) {
                         continue;
                     }
@@ -2798,7 +2810,8 @@ bool CMatrixMap::FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale,
                 if (ms->GetObjectType() == OBJECT_TYPE_FLYER) {
                     ms2 = ((CMatrixFlyer *)ms)->GetCarryingRobot();
                     if (ms2 != NULL) {
-                        float dist = D3DXVec3Length(&(ms2->GetGeoCenter() - pos)) - ms2->GetRadius() * oscale;
+                        auto tmp = ms2->GetGeoCenter() - pos;
+                        float dist = D3DXVec3Length(&tmp) - ms2->GetRadius() * oscale;
                         if (dist >= radius) {
                             ms2 = NULL;
                         }
@@ -2852,8 +2865,9 @@ skip:;
                 else if (ms->IsFlyer()) {
                     msa[mscnt] = ((CMatrixFlyer *)ms)->GetCarryingRobot();
                     if (msa[mscnt] != NULL) {
+                        auto tmp = msa[mscnt]->GetGeoCenter() - pos;
                         float dist =
-                                D3DXVec3Length(&(msa[mscnt]->GetGeoCenter() - pos)) - msa[mscnt]->GetRadius() * oscale;
+                                D3DXVec3Length(&tmp) - msa[mscnt]->GetRadius() * oscale;
                         if (dist < radius) {
                             mscnt++;
                         }
@@ -2861,7 +2875,8 @@ skip:;
                     if ((mask & TRACE_FLYER) == 0)
                         continue;
 
-                    float dist = D3DXVec3Length(&(ms->GetGeoCenter() - pos)) - ms->GetRadius() * oscale;
+                    auto tmp = ms->GetGeoCenter() - pos;
+                    float dist = D3DXVec3Length(&tmp) - ms->GetRadius() * oscale;
                     if (dist >= radius) {
                         continue;
                     }

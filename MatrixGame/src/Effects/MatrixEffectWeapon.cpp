@@ -365,7 +365,8 @@ void CMatrixEffectWeapon::Fire(void) {
 
             // CHelper::Create(100,0)->Line(m_Speed, m_Speed + D3DXVECTOR3(0,0,100));
 
-            float len = D3DXVec3Length(&(m_Pos - m_Speed));
+            auto tmp = m_Pos - m_Speed;
+            float len = D3DXVec3Length(&tmp);
             D3DXVECTOR3 dir((m_Pos - m_Speed) * (1.0f / len));
             if (len > m_WeaponDist * m_WeaponCoefficient)
                 len = m_WeaponDist * m_WeaponCoefficient;

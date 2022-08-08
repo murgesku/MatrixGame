@@ -89,7 +89,8 @@ void CFlamePuff::Draw(void) {
         if (m_Prev) {
             BYTE a = BYTE(m_CurAlpha);
             m_Shleif->SetPos(m_Prev->m_Pos, m_Pos);
-            float l = D3DXVec3Length(&(m_Prev->m_Pos - m_Pos));
+            auto tmp = m_Prev->m_Pos - m_Pos;
+            float l = D3DXVec3Length(&tmp);
             if (l < (m_Scale * 2.0f)) {
                 a = BYTE(float(m_CurAlpha) * (l * 0.5f / m_Scale));
             }
@@ -111,7 +112,8 @@ static bool FlameEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD use
 
     if (ms->GetObjectType() != OBJECT_TYPE_ROBOTAI) {
         D3DXVECTOR3 anorm;
-        D3DXVec3Normalize(&anorm, &(center - ms->GetGeoCenter()));
+        auto tmp = center - ms->GetGeoCenter();
+        D3DXVec3Normalize(&anorm, &tmp);
         fd->norm += anorm;
     }
     if (fd->handler)
@@ -172,11 +174,13 @@ void CFlamePuff::Takt(float step) {
     if (m_Owner->m_hitmask & TRACE_LANDSCAPE) {
         float z = g_MatrixMap->GetZ(m_Pos.x, m_Pos.y);
         if ((m_Pos.z - m_Scale) <= z) {
-            float l = D3DXVec3Length(&(m_Pos - oldpos));
+            auto tmp1 = m_Pos - oldpos;
+            float l = D3DXVec3Length(&tmp1);
             m_Pos.z = z + m_Scale;
 
             D3DXVECTOR3 n;
-            D3DXVec3Normalize(&n, &(m_Pos - oldpos));
+            auto tmp2 = m_Pos - oldpos;
+            D3DXVec3Normalize(&n, &tmp2);
             m_Pos = oldpos + n * l;
         }
     }
@@ -242,7 +246,8 @@ void CFlamePuff::Takt(float step) {
     }
     else {
         if (m_Prev && (!m_Break)) {
-            float l = D3DXVec3Length(&(m_Prev->m_Pos - m_Pos));
+            auto tmp = m_Prev->m_Pos - m_Pos;
+            float l = D3DXVec3Length(&tmp);
             BYTE a = BYTE(m_CurAlpha);
             if (l < (m_Scale * 2.0f)) {
                 a = BYTE(float(m_CurAlpha) * (l * 0.5f / m_Scale));

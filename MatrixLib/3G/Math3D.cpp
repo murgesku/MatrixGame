@@ -215,11 +215,14 @@ bool IsIntersectSphere(const D3DXVECTOR3 &center, float r, const D3DXVECTOR3 &s,
 
 bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 &s, const D3DXVECTOR2 &e, float &t1) {
     float r2 = r * r;
-    if ((D3DXVec2LengthSq(&(center - s)) < r2) && (D3DXVec2LengthSq(&(center - e)) < r2))
+    auto tmp1 = center - s;
+    auto tmp2 = center - e;
+    if ((D3DXVec2LengthSq(&tmp1) < r2) && (D3DXVec2LengthSq(&tmp2) < r2))
         return false;
 
     D3DXVECTOR2 dir;
-    D3DXVec2Normalize(&dir, &(e - s));
+    auto tmp3 = e - s;
+    D3DXVec2Normalize(&dir, &tmp3);
 
     float dx = (s.x - center.x);
     float dy = (s.y - center.y);
@@ -255,7 +258,8 @@ bool IsIntersectSphere(const D3DXVECTOR2 &center, float r, const D3DXVECTOR2 &s,
             t1 = t2;
     }
 
-    if ((t1 * t1) > (D3DXVec2LengthSq(&(e - s))))
+    auto tmp4 = e - s;
+    if ((t1 * t1) > (D3DXVec2LengthSq(&tmp4)))
         return false;
 
     return true;
@@ -519,7 +523,8 @@ void CTrajectory::Move(float dist) {
             p0 = p1;
             CalcBSplinePoint(m_Segments[m_CurSeg].koefs, p1, t);
             t += dt;
-            m_CurSegLen += D3DXVec3Length(&(p1 - p0));
+            auto tmp = p1 - p0;
+            m_CurSegLen += D3DXVec3Length(&tmp);
         }
     }
 
@@ -550,7 +555,8 @@ void CTrajectory::Move(float dist) {
             p0 = p1;
             CalcBSplinePoint(m_Segments[m_CurSeg].koefs, p1, t);
             t += dt;
-            m_CurSegLen += D3DXVec3Length(&(p1 - p0));
+            auto tmp = p1 - p0;
+            m_CurSegLen += D3DXVec3Length(&tmp);
         }
 
         if (m_CurSegLen < 0.0001f) {
@@ -646,7 +652,8 @@ float CTrajectory::CalcLength(void) {
         p0 = p1;
         CalcPoint(p1, t);
         t += dt;
-        m_Len += D3DXVec3Length(&(p1 - p0));
+        auto tmp = p1 - p0;
+        m_Len += D3DXVec3Length(&tmp);
     }
 
     return m_Len;

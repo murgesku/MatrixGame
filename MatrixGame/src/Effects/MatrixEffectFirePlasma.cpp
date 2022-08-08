@@ -30,8 +30,9 @@ CMatrixEffectFirePlasma::CMatrixEffectFirePlasma(const D3DXVECTOR3 &start, const
     CMatrixEffect::CreatePointLight(&m_Light, start, 20, 0x80202030, true);
     // CMatrixEffect::CreatePointLight(&m_Light, start,20, 0xFFFFFFFF, true);
 
-    D3DXVec3Normalize(&m_Dir, &(m_End - m_Pos));
-    m_Prevdist = D3DXVec3Length(&(m_End - m_Pos));
+    const auto tmp = m_End - m_Pos;
+    D3DXVec3Normalize(&m_Dir, &tmp);
+    m_Prevdist = D3DXVec3Length(&tmp);
 }
 
 CMatrixEffectFirePlasma::~CMatrixEffectFirePlasma() {
@@ -87,7 +88,8 @@ void CMatrixEffectFirePlasma::Takt(float step) {
     if (m_Light.effect)
         ((CMatrixEffectPointLight *)m_Light.effect)->SetPos(m_Pos);
 
-    float newdist = D3DXVec3Length(&(m_End - m_Pos));
+    const auto tmp = m_End - m_Pos;
+    float newdist = D3DXVec3Length(&tmp);
     if (newdist > m_Prevdist) {
         hit = true;
         hitpos = m_End;

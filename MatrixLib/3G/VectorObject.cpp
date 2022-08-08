@@ -1043,7 +1043,10 @@ void CVectorObject::GetBound(int noframe, const D3DXMATRIX &ma, D3DXVECTOR3 &bmi
 void CVectorObject::CalcShadowProjMatrix(int noframe, SProjData &pd, D3DXVECTOR3 &dir, float addsize) {
     DTRACE();
     D3DXMATRIX ml;
-    D3DXMatrixLookAtLH(&ml, &(-dir), &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 0, 1));
+    auto tmp1 = -dir;
+    auto tmp2 = D3DXVECTOR3(0, 0, 0);
+    auto tmp3 = D3DXVECTOR3(0, 0, 1);
+    D3DXMatrixLookAtLH(&ml, &tmp1, &tmp2, &tmp3);
 
     // SVOFrame * fr=((SVOFrame * )(Data()+Header()->m_FrameSme))+noframe;
 
@@ -1078,7 +1081,10 @@ void CVectorObject::CalcShadowProjMatrix(int cnt, CVectorObjectAnim **obj, const
                                          SProjData &pd, D3DXVECTOR3 &dir, float addsize) {
     DTRACE();
     D3DXMATRIX ml, ml2;
-    D3DXMatrixLookAtLH(&ml, &(-dir), &D3DXVECTOR3(0, 0, 0), &D3DXVECTOR3(0, 0, 1));
+    auto tmp1 = -dir;
+    auto tmp2 = D3DXVECTOR3(0, 0, 0);
+    auto tmp3 = D3DXVECTOR3(0, 0, 1);
+    D3DXMatrixLookAtLH(&ml, &tmp1, &tmp2, &tmp3);
 
     D3DXVECTOR3 vmin, vmax, _vmin, _vmax;
 
@@ -1127,7 +1133,9 @@ CTextureManaged *CVectorObject::CalcShadowTexture(int cnt, CVectorObjectAnim **o
     D3DXMATRIX mProj(-2, 0, 0, 0, 0, 2, 0, 0, 0, 0, float(1.0 / (10000 - 1)), 0, 0, 0, -float(1.0 / (10000 - 1)), 1);
     D3DXVECTOR3 vpos(pd.vpos + ((pd.vx + pd.vy) * 0.5f));
 
-    D3DXMatrixLookAtLH(&mView, &(vpos - pd.vz), &vpos, &-pd.vy);
+    auto tmp1 = vpos - pd.vz;
+    auto tmp2 = -pd.vy;
+    D3DXMatrixLookAtLH(&mView, &tmp1, &vpos, &tmp2);
 
     D3DXMatrixIdentity(&mWorld);
     ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &mWorld));

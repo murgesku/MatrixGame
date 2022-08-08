@@ -44,7 +44,8 @@ void CMatrixEffectElevatorField::UpdateData(const D3DXVECTOR3 &pos0, const D3DXV
     DTRACE();
 
     m_Pos = pos1;
-    D3DXVec3Normalize(&m_Dir, &(pos0 - pos1));
+    auto tmp = pos0 - pos1;
+    D3DXVec3Normalize(&m_Dir, &tmp);
     D3DXVECTOR3 perp;
     D3DXVec3Normalize(&perp, D3DXVec3Cross(&perp, &fwd, &m_Dir));
 

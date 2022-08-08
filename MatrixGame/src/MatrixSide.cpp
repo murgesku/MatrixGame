@@ -772,7 +772,8 @@ void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse) {
 
         while (st) {
             if (st->GetSide() == PLAYER_SIDE && st->IsLiveRobot()) {
-                if (D3DXVec3LengthSq(&(o_pos - st->GetGeoCenter())) <=
+                auto tmp = o_pos - st->GetGeoCenter();
+                if (D3DXVec3LengthSq(&tmp) <=
                     FRIENDLY_SEARCH_RADIUS * FRIENDLY_SEARCH_RADIUS) {
                     GetCurSelGroup()->AddObject(st, -4);
                 }
@@ -2194,8 +2195,8 @@ void CMatrixSideUnit::EscapeFromBomb() {
 
         enemy = ms->AsRobot()->GetEnv()->m_FirstEnemy;
         for (; enemy; enemy = enemy->m_NextEnemy) {
-            min_dist_enemy[rbcnt] =
-                    min(min_dist_enemy[rbcnt], D3DXVec2LengthSq(&(GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms))));
+            auto tmp = GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms);
+            min_dist_enemy[rbcnt] = min(min_dist_enemy[rbcnt], D3DXVec2LengthSq(&tmp));
         }
 
         rb[rbcnt] = (CMatrixRobotAI *)ms;
@@ -2282,7 +2283,8 @@ void CMatrixSideUnit::EscapeFromBomb() {
         float mde = 1e20f;
         enemy = ms->AsRobot()->GetEnv()->m_FirstEnemy;
         for (; enemy; enemy = enemy->m_NextEnemy) {
-            mde = min(mde, D3DXVec2LengthSq(&(GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms))));
+            auto tmp = GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms);
+            mde = min(mde, D3DXVec2LengthSq(&tmp));
         }
 
         for (i = 0; i < rbcnt; i++) {
@@ -5739,7 +5741,8 @@ void CMatrixSideUnit::WarTL(int group) {
                 D3DXVECTOR3 v1 = rl[i]->GetGeoCenter();
                 D3DXVECTOR3 v2 = PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-                fireline = D3DXVec3LengthSq(&(v2 - v1)) <= POW2(rl[i]->GetMaxFireDist());
+                auto tmp = v2 - v1;
+                fireline = D3DXVec3LengthSq(&tmp) <= POW2(rl[i]->GetMaxFireDist());
 
                 if (fireline) {
                     CMatrixMapStatic *trace_res =
@@ -7224,6 +7227,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup) {
                     robot = (CMatrixRobotAI *)obj;
                     if (robot->HaveBomb()) {
                         t++;
+                        auto tmp = GetWorldPos(robot) - GetWorldPos(m_PlayerGroup[i].m_Obj);
                         if (robot->PLIsInPlace()) {
                             robot->BigBoom();
                             t--;
@@ -7233,8 +7237,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup) {
                             t--;
                         }
                         else if (m_PlayerGroup[i].m_Obj && m_PlayerGroup[i].m_Obj->IsLive() &&
-                                 D3DXVec2LengthSq(&(GetWorldPos(robot) - GetWorldPos(m_PlayerGroup[i].m_Obj))) <
-                                         POW2(150)) {
+                                 D3DXVec2LengthSq(&tmp) < POW2(150)) {
                             robot->BigBoom();
                             t--;
                         }
@@ -8098,7 +8101,8 @@ bool CMatrixSideUnit::FirePL(int group) {
                 D3DXVECTOR3 v1 = rl[i]->GetGeoCenter();
                 D3DXVECTOR3 v2 = PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-                fireline = D3DXVec3LengthSq(&(v2 - v1)) <= POW2(rl[i]->GetMaxFireDist());
+                auto tmp = v2 - v1;
+                fireline = D3DXVec3LengthSq(&tmp) <= POW2(rl[i]->GetMaxFireDist());
 
                 if (fireline) {
                     CMatrixMapStatic *trace_res =
@@ -8784,7 +8788,8 @@ void CMatrixSideUnit::WarPL(int group) {
                 D3DXVECTOR3 v1 = rl[i]->GetGeoCenter();
                 D3DXVECTOR3 v2 = PointOfAim(rl[i]->GetEnv()->m_TargetAttack);
 
-                fireline = D3DXVec3LengthSq(&(v2 - v1)) <= POW2(rl[i]->GetMaxFireDist());
+                auto tmp = v2 - v1;
+                fireline = D3DXVec3LengthSq(&tmp) <= POW2(rl[i]->GetMaxFireDist());
 
                 if (fireline) {
                     CMatrixMapStatic *trace_res =

@@ -177,13 +177,20 @@ inline float DistOtrezokPoint(const D3DXVECTOR3 &p0, const D3DXVECTOR3 &p1, cons
     D3DXVECTOR3 w(p - p0);
     float c1 = D3DXVec3Dot(&w, &v);
     if (c1 <= 0)
-        return D3DXVec3Length(&(p0 - p));
+    {
+        auto tmp = p0 - p;
+        return D3DXVec3Length(&tmp);
+    }
     float c2 = D3DXVec3Dot(&v, &v);
     if (c2 <= c1)
-        return D3DXVec3Length(&(p1 - p));
+    {
+        auto tmp = p1 - p;
+        return D3DXVec3Length(&tmp);
+    }
     float b = c1 / c2;
 
-    return D3DXVec3Length(&(p - (p0 + b * v)));
+    auto tmp = p - (p0 + b * v);
+    return D3DXVec3Length(&tmp);
 }
 
 bool IntersectTriangle(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, const D3DXVECTOR3 &v0, const D3DXVECTOR3 &v1,

@@ -911,7 +911,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                         D3DXVECTOR2 bup(bu->m_Pos.x - 100 * si, bu->m_Pos.y + 100 * co);
 
                         if (ic >= 0) {
-                            if (D3DXVec2LengthSq(&(bup - cpp)) < POW2(300)) {
+                            auto tmp = bup - cpp;
+                            if (D3DXVec2LengthSq(&tmp) < POW2(300)) {
                                 g_MatrixMap->GetPlayerSide()->Select(BUILDING, ms);
                                 break;
                             }
@@ -1175,7 +1176,8 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     D3DXMatrixRotationX(&m1, m_LightMainAngleX);
     D3DXMatrixRotationZ(&m2, m_LightMainAngleZ);
     m3 = m1 * m2;
-    D3DXVec3TransformNormal(&m_LightMain, &D3DXVECTOR3(0.0f, 0.0f, -1.0f), &m3);
+    auto tmp = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+    D3DXVec3TransformNormal(&m_LightMain, &tmp, &m3);
 
     UnitInit(sizex, sizey);
 
@@ -1673,23 +1675,28 @@ void CMatrixMap::StaticPrepare(int ocnt, bool skip_progress) {
             if ((*sb)->IsBuilding()) {
                 SObjectCore *core = (*sb)->GetCore(DEBUG_CALL_INFO);
                 if ((*sb)->AsBuilding()->m_Kind == BUILDING_BASE) {
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(-8.896f, -68.774f, 55.495f),
+                    auto tmp = D3DXVECTOR3(-8.896f, -68.774f, 55.495f);
+                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
                 else if ((*sb)->AsBuilding()->m_Kind == BUILDING_TITAN) {
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.455f, 58.688f, 73.993f),
+                    auto tmp = D3DXVECTOR3(0.455f, 58.688f, 73.993f);
+                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
                 else if ((*sb)->AsBuilding()->m_Kind == BUILDING_ELECTRONIC) {
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.124f, 64.68f, 75.081f),
+                    auto tmp = D3DXVECTOR3(0.124f, 64.68f, 75.081f);
+                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
                 else if ((*sb)->AsBuilding()->m_Kind == BUILDING_ENERGY) {
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(0.1f, 110.0f, 51.103f),
+                    auto tmp = D3DXVECTOR3(0.1f, 110.0f, 51.103f);
+                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
                 else if ((*sb)->AsBuilding()->m_Kind == BUILDING_PLASMA) {
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &D3DXVECTOR3(-0.149f, 105.0f, 72.981f),
+                    auto tmp = D3DXVECTOR3(-0.149f, 105.0f, 72.981f);
+                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
 
