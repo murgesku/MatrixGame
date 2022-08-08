@@ -8,7 +8,6 @@
 #include "Tracer.hpp"
 #include <windows.h>
 #include <stdio.h>
-#include <eh.h>
 #include <exception>
 
 #ifdef DMM

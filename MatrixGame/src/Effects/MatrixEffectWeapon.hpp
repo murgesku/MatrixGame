@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "MatrixEffect.hpp"
+#include "MatrixEffectRepair.hpp"
+
 // weapon
 #define FLAME_PUFF_TTL 2000
 
@@ -28,6 +31,8 @@
 //#define WD_GUN              300
 
 #define WEAPON_MAX_HEAT 1000
+
+class CMatrixMapStatic;
 
 enum EWeapon : unsigned int {
     WEAPON_NONE,

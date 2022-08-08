@@ -9,6 +9,7 @@
 #include "Effects/MatrixEffect.hpp"
 #include "Logic/MatrixRoadNetwork.hpp"
 #include "MatrixConfig.hpp"
+#include "MatrixFlyer.hpp"
 
 //#define MAX_ROBOTS_BUILD        10
 #define MAX_ROBOTS      60
