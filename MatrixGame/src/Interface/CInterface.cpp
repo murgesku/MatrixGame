@@ -112,9 +112,9 @@ CInterface::CInterface()
     m_PrevInterface = NULL;
     m_NextInterface = NULL;
 
-    m_nTotalElements = NULL;
+    m_nTotalElements = 0;
 
-    m_nId = NULL;
+    m_nId = 0;
     m_AlwaysOnTop = FALSE;
 
     ZeroMemory(&m_Slider, sizeof(SSlide));

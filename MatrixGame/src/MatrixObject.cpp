@@ -742,7 +742,7 @@ void CMatrixMapObject::BeforeDraw(void) {
         m_BurnSkin->m_Preload(m_BurnSkin);
     }
 
-    if (m_BehFlag == BEHF_TERRON && m_PB > 0 && m_BreakHitPoint > 0) {
+    if (m_BehFlag == BEHF_TERRON && m_PB != nullptr && m_BreakHitPoint > 0) {
         float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
 
         if (dist < 1000) {
@@ -760,7 +760,7 @@ void CMatrixMapObject::BeforeDraw(void) {
         }
     }
 
-    if (m_BehFlag == BEHF_BREAK && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB > 0 && m_BreakHitPoint > 0) {
+    if (m_BehFlag == BEHF_BREAK && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB != nullptr && m_BreakHitPoint > 0) {
         float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
 
         if (dist < 1000) {
@@ -777,7 +777,7 @@ void CMatrixMapObject::BeforeDraw(void) {
         }
     }
 
-    if (m_BehFlag == BEHF_ANIM && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB > 0 && m_BreakHitPoint > 0) {
+    if (m_BehFlag == BEHF_ANIM && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL) && m_PB != nullptr && m_BreakHitPoint > 0) {
         float dist = D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter() - GetGeoCenter()));
 
         if (dist < 1000) {

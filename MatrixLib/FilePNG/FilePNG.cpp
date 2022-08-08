@@ -133,7 +133,7 @@ DWORD FilePNG_Read(DWORD id, void *buf, DWORD lenline, DWORD *arraycolor) {
             free(row_pointers);
         if (data->png_ptr != NULL)
             png_destroy_read_struct(&(data->png_ptr), &(data->info_ptr), (png_infopp)NULL);
-        if (data->fFree != NULL && data->SouBuf != NULL)
+        if (data->fFree != 0 && data->SouBuf != NULL)
             free(data->SouBuf);
         delete data;
         return 0;
@@ -143,7 +143,7 @@ DWORD FilePNG_Read(DWORD id, void *buf, DWORD lenline, DWORD *arraycolor) {
         free(row_pointers);
     if (data->png_ptr != NULL)
         png_destroy_read_struct(&(data->png_ptr), &(data->info_ptr), (png_infopp)NULL);
-    if (data->fFree != NULL && data->SouBuf != NULL)
+    if (data->fFree != 0 && data->SouBuf != NULL)
         free(data->SouBuf);
     delete data;
     return 1;

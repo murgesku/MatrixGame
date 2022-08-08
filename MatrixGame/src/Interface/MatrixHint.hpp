@@ -101,18 +101,18 @@ public:
     int m_Height;
 
     static void StaticInit(void) {
-        m_First = NULL;
-        m_Last = NULL;
-        m_Bitmaps = NULL;
-        m_BitmapsCnt = NULL;
+        m_First = nullptr;
+        m_Last = nullptr;
+        m_Bitmaps = nullptr;
+        m_BitmapsCnt = 0;
     }
 
     static void PreloadBitmaps(void);
 
     static CMatrixHint *Build(int border, const CWStr &soundin, const CWStr &soundout, SHintElement *elems,
-                              CRect *otstup = NULL);
-    static CMatrixHint *Build(const CWStr &templatename, const wchar *baserepl = NULL);
-    static CMatrixHint *Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl = NULL);
+                              CRect *otstup = nullptr);
+    static CMatrixHint *Build(const CWStr &templatename, const wchar *baserepl = nullptr);
+    static CMatrixHint *Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl = nullptr);
     void Release(void) {
         SetVisible(false);
         HDelete(CMatrixHint, this, g_MatrixHeap);

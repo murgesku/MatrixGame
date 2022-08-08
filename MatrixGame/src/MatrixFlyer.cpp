@@ -18,7 +18,7 @@
 D3D_VB CMatrixFlyer::m_VB;
 int CMatrixFlyer::m_VB_ref;
 
-CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(NULL), m_Name(L"FLYER", g_MatrixHeap) {
+CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(nullptr), m_Name(L"FLYER", g_MatrixHeap) {
     DTRACE();
 
     m_Core->m_Type = OBJECT_TYPE_FLYER;
@@ -67,19 +67,19 @@ CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(NULL), m_Nam
     // prepare unit BODY
 
     m_UnitCnt = 0;
-    m_Units = NULL;
+    m_Units = nullptr;
     m_EngineUnit = -1;
 
-    m_Streams = NULL;
-    m_StreamsCount = NULL;
+    m_Streams = nullptr;
+    m_StreamsCount = 0;
     m_StreamLen = 10;
 
     m_PB.Modify(1000000, 0, PB_FLYER_WIDTH, 1);
-    m_Selection = NULL;
+    m_Selection = nullptr;
 
-    m_BigTexture = NULL;
-    m_MedTexture = NULL;
-    m_SmallTexture = NULL;
+    m_BigTexture = nullptr;
+    m_MedTexture = nullptr;
+    m_SmallTexture = nullptr;
 
     m_CtrlGroup = 0;
 }
