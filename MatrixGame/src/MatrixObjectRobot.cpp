@@ -81,21 +81,21 @@ void CMatrixRobot::UnitInsert(int beforeunit, ERobotUnitType type, ERobotUnitKin
     m_UnitCnt++;
 
     m_Unit[beforeunit].m_Type = type;
-    m_Unit[beforeunit].m_Kind = kind;
+    m_Unit[beforeunit].u1.s1.m_Kind = kind;
     D3DXMatrixIdentity(&m_Unit[beforeunit].m_Matrix);
 
-    m_Unit[beforeunit].m_NextAnimTime = (float)g_MatrixMap->GetTime();
+    m_Unit[beforeunit].u1.s1.m_NextAnimTime = (float)g_MatrixMap->GetTime();
 
     RChange(MR_ShadowStencil | MR_ShadowProjGeom | MR_ShadowProjTex);
 
     if (type == MRT_CHASSIS) {
         if (kind == RUK_CHASSIS_ANTIGRAVITY) {
-            m_ChassisData.m_LStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(10, 0, 0));
-            m_ChassisData.m_RStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(10, 0, 0));
-            m_ChassisData.m_StreamLen = 10;
+            m_ChassisData.u1.s1.m_LStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(10, 0, 0));
+            m_ChassisData.u1.s1.m_RStream = CMatrixEffect::CreateFireStream(D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(10, 0, 0));
+            m_ChassisData.u1.s1.m_StreamLen = 10;
         }
         else if (kind == RUK_CHASSIS_TRACK || kind == RUK_CHASSIS_WHEEL) {
-            m_ChassisData.m_LastSolePos = D3DXVECTOR3(0, 0, 0);
+            m_ChassisData.u1.s3.m_LastSolePos = D3DXVECTOR3(0, 0, 0);
         }
     }
 }
@@ -113,7 +113,7 @@ void CMatrixRobot::WeaponInsert(int beforeunit, ERobotUnitType type, ERobotUnitK
     m_UnitCnt++;
 
     m_Unit[beforeunit].m_Type = type;
-    m_Unit[beforeunit].m_Kind = kind;
+    m_Unit[beforeunit].u1.s1.m_Kind = kind;
 
     int fis_pilon = pilon;
     int pilon_ost = pilon;
@@ -132,13 +132,13 @@ void CMatrixRobot::WeaponInsert(int beforeunit, ERobotUnitType type, ERobotUnitK
         }
     }
 
-    m_Unit[beforeunit].m_LinkMatrix = g_MatrixMap->m_RobotWeaponMatrix[hullno - 1].list[fis_pilon - 1].id;
-    m_Unit[beforeunit].m_Invert =
+    m_Unit[beforeunit].u1.s1.m_LinkMatrix = g_MatrixMap->m_RobotWeaponMatrix[hullno - 1].list[fis_pilon - 1].id;
+    m_Unit[beforeunit].u1.s1.m_Invert =
             (g_MatrixMap->m_RobotWeaponMatrix[hullno - 1].list[fis_pilon - 1].access_invert & SETBIT(31)) != 0;
 
     D3DXMatrixIdentity(&m_Unit[beforeunit].m_Matrix);
 
-    m_Unit[beforeunit].m_NextAnimTime = (float)g_MatrixMap->GetTime();
+    m_Unit[beforeunit].u1.s1.m_NextAnimTime = (float)g_MatrixMap->GetTime();
 
     RChange(MR_ShadowStencil | MR_ShadowProjTex);
 }
@@ -147,10 +147,10 @@ void CMatrixRobot::UnitDelete(int nounit) {
     DTRACE();
     ASSERT(nounit >= 0 && nounit < m_UnitCnt);
 
-    if (m_CurrState != ROBOT_DIP && m_Unit[nounit].m_Kind == RUK_CHASSIS_ANTIGRAVITY &&
+    if (m_CurrState != ROBOT_DIP && m_Unit[nounit].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY &&
         m_Unit[nounit].m_Type == MRT_CHASSIS) {
-        m_ChassisData.m_LStream->Release();
-        m_ChassisData.m_RStream->Release();
+        m_ChassisData.u1.s1.m_LStream->Release();
+        m_ChassisData.u1.s1.m_RStream->Release();
     }
 
     if (m_Unit[nounit].m_Graph) {
@@ -164,13 +164,13 @@ void CMatrixRobot::UnitDelete(int nounit) {
         }
     }
     else {
-        if (m_Unit[nounit].m_WeaponRepairData) {
-            m_Unit[nounit].m_WeaponRepairData->Release();
-            m_Unit[nounit].m_WeaponRepairData = NULL;
+        if (m_Unit[nounit].u1.s1.m_WeaponRepairData) {
+            m_Unit[nounit].u1.s1.m_WeaponRepairData->Release();
+            m_Unit[nounit].u1.s1.m_WeaponRepairData = NULL;
         }
-        if (m_Unit[nounit].m_ShadowStencil) {
-            HDelete(CVOShadowStencil, m_Unit[nounit].m_ShadowStencil, g_MatrixHeap);
-            m_Unit[nounit].m_ShadowStencil = NULL;
+        if (m_Unit[nounit].u1.s1.m_ShadowStencil) {
+            HDelete(CVOShadowStencil, m_Unit[nounit].u1.s1.m_ShadowStencil, g_MatrixHeap);
+            m_Unit[nounit].u1.s1.m_ShadowStencil = NULL;
         }
     }
 
@@ -241,7 +241,7 @@ void CMatrixRobot::WeaponSelectMatrix(void) {
     if (i >= m_UnitCnt)
         return;
 
-    int hullno = m_Unit[i].m_Kind - 1;
+    int hullno = m_Unit[i].u1.s1.m_Kind - 1;
     bool maccess[MR_MAXUNIT];
     for (i = 0; i < MR_MAXUNIT; i++)
         maccess[i] = true;
@@ -252,15 +252,15 @@ void CMatrixRobot::WeaponSelectMatrix(void) {
         for (t = 0; t < g_MatrixMap->m_RobotWeaponMatrix[hullno].cnt; t++) {
             if (!maccess[t])
                 continue;
-            if (!(g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].access_invert & (1 << (m_Unit[i].m_Kind - 1))))
+            if (!(g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].access_invert & (1 << (m_Unit[i].u1.s1.m_Kind - 1))))
                 continue;
             maccess[t] = false;
             break;
         }
         if (t >= g_MatrixMap->m_RobotWeaponMatrix[hullno].cnt)
             ERROR_E;
-        m_Unit[i].m_LinkMatrix = g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].id;
-        m_Unit[i].m_Invert = (g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].access_invert & SETBIT(31)) != 0;
+        m_Unit[i].u1.s1.m_LinkMatrix = g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].id;
+        m_Unit[i].u1.s1.m_Invert = (g_MatrixMap->m_RobotWeaponMatrix[hullno].list[t].access_invert & SETBIT(31)) != 0;
     }
 }
 
@@ -273,7 +273,7 @@ float CMatrixRobot::Z_From_Pos(void) {
     float roboz = g_MatrixMap->GetZ(m_PosX, m_PosY);
     if (roboz < WATER_LEVEL) {
         SETFLAG(m_ObjectState, ROBOT_FLAG_ONWATER);
-        if (m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT || m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY)
+        if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT || m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY)
             roboz = WATER_LEVEL;
 
         if (roboz < WATER_LEVEL - 100) {
@@ -324,7 +324,7 @@ void CMatrixRobot::RNeed(dword need) {
                     default:
                         ERROR_S(L"Unknown robot unit type");
                 }
-                path += static_cast<int>(m_Unit[i].m_Kind);
+                path += static_cast<int>(m_Unit[i].u1.s1.m_Kind);
 
                 name = path.Get();
 
@@ -499,7 +499,7 @@ void CMatrixRobot::RNeed(dword need) {
 
             DCP();
             m_Unit[0].m_Matrix = m_Core->m_Matrix;
-            m_Unit[0].m_IMatrix = m_Core->m_IMatrix;
+            m_Unit[0].u1.s1.m_IMatrix = m_Core->m_IMatrix;
         }
 
         bool www = false;
@@ -509,19 +509,19 @@ void CMatrixRobot::RNeed(dword need) {
             if (m_Unit[i].m_Type == MRT_WEAPON) {
                 ASSERT(narmor >= 0);
 
-                if (!www && m_Unit[i].m_Kind == RUK_WEAPON_REPAIR) {
+                if (!www && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
                     www = true;
                 }
 
-                tm = m_Unit[narmor].m_Graph->GetMatrixById(m_Unit[i].m_LinkMatrix);
+                tm = m_Unit[narmor].m_Graph->GetMatrixById(m_Unit[i].u1.s1.m_LinkMatrix);
                 m_Unit[i].m_Matrix = (*tm) * m_Unit[narmor].m_Matrix;
-                if (m_Unit[i].m_Invert) {
+                if (m_Unit[i].u1.s1.m_Invert) {
                     D3DXMATRIX *temp = &m_Unit[i].m_Matrix;
                     temp->_11 = -temp->_11;
                     temp->_12 = -temp->_12;
                     temp->_13 = -temp->_13;
                 }
-                D3DXMatrixInverse(&m_Unit[i].m_IMatrix, NULL, &m_Unit[i].m_Matrix);
+                D3DXMatrixInverse(&m_Unit[i].u1.s1.m_IMatrix, NULL, &m_Unit[i].m_Matrix);
             }
             else if (m_Unit[i].m_Type == MRT_ARMOR) {
                 narmor = i;
@@ -536,7 +536,7 @@ void CMatrixRobot::RNeed(dword need) {
                 m._12 = -th.x;
 
                 if (g_MatrixMap->GetPlayerSide()->GetArcadedObject() == this &&
-                    m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC) {
+                    m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC) {
                     p = g_MatrixMap->GetPlayerSide()->CorrectArcadedRobotArmorP(p, this);
                 }
 
@@ -555,11 +555,11 @@ void CMatrixRobot::RNeed(dword need) {
                 goto calc;
             }
             else {
-                D3DXMatrixRotationZ(&m, m_Unit[i].m_Angle);
+                D3DXMatrixRotationZ(&m, m_Unit[i].u1.s1.m_Angle);
             calc:
                 *(D3DXVECTOR3 *)&m._41 = p;
                 m_Unit[i].m_Matrix = m * m_Core->m_Matrix;
-                D3DXMatrixInverse(&m_Unit[i].m_IMatrix, NULL, &m_Unit[i].m_Matrix);
+                D3DXMatrixInverse(&m_Unit[i].u1.s1.m_IMatrix, NULL, &m_Unit[i].m_Matrix);
 
                 ASSERT(m_Unit[i].m_Graph);
                 tm = m_Unit[i].m_Graph->GetMatrixById(1);
@@ -570,7 +570,7 @@ void CMatrixRobot::RNeed(dword need) {
             }
         }
 
-        if (m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
+        if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
             // D3DXMATRIX mx;
             // BuildRotateMatrix(mx, *(D3DXVECTOR3 *)&m_Unit[narmor].m_Matrix._41, *(D3DXVECTOR3 *)&m_Matrix._11,
             // -0.4f); m_Unit[0].m_Matrix *= mx; D3DXMatrixInverse(&m_Unit[0].m_IMatrix, NULL, &m_Unit[0].m_Matrix);
@@ -580,25 +580,25 @@ void CMatrixRobot::RNeed(dword need) {
             D3DXVECTOR3 sdir = -*(D3DXVECTOR3 *)&m->_21;
             D3DXVec3TransformCoord(&spos, (D3DXVECTOR3 *)&m->_41, &m_Unit[0].m_Matrix);
             D3DXVec3TransformNormal(&sdir, &sdir, &m_Unit[0].m_Matrix);
-            m_ChassisData.m_LStream->SetPos(spos, spos + sdir * m_ChassisData.m_StreamLen);
+            m_ChassisData.u1.s1.m_LStream->SetPos(spos, spos + sdir * m_ChassisData.u1.s1.m_StreamLen);
 
             m = m_Unit[0].m_Graph->GetMatrixById(11);
             sdir = -*(D3DXVECTOR3 *)&m->_21;
             D3DXVec3TransformCoord(&spos, (D3DXVECTOR3 *)&m->_41, &m_Unit[0].m_Matrix);
             D3DXVec3TransformNormal(&sdir, &sdir, &m_Unit[0].m_Matrix);
-            m_ChassisData.m_RStream->SetPos(spos, spos + sdir * m_ChassisData.m_StreamLen);
+            m_ChassisData.u1.s1.m_RStream->SetPos(spos, spos + sdir * m_ChassisData.u1.s1.m_StreamLen);
         }
 
         if (www) {
             if (IsInterfaceDraw()) {
                 // if (0)
                 for (int i = 0; i < m_UnitCnt; i++) {
-                    if (m_Unit[i].m_Type == MRT_WEAPON && m_Unit[i].m_Kind == RUK_WEAPON_REPAIR) {
-                        if (m_Unit[i].m_WeaponRepairData == NULL) {
-                            m_Unit[i].m_WeaponRepairData = SWeaponRepairData::Allocate();
+                    if (m_Unit[i].m_Type == MRT_WEAPON && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
+                        if (m_Unit[i].u1.s1.m_WeaponRepairData == NULL) {
+                            m_Unit[i].u1.s1.m_WeaponRepairData = SWeaponRepairData::Allocate();
                         }
 
-                        m_Unit[i].m_WeaponRepairData->Update(m_Unit + i);
+                        m_Unit[i].u1.s1.m_WeaponRepairData->Update(m_Unit + i);
                     }
                 }
 
@@ -636,9 +636,9 @@ void CMatrixRobot::RNeed(dword need) {
 
         if (m_ShadowType != SHADOW_STENCIL) {
             for (int i = 0; i < m_UnitCnt; i++) {
-                if (m_Unit[i].m_ShadowStencil) {
-                    HDelete(CVOShadowStencil, m_Unit[i].m_ShadowStencil, g_MatrixHeap);
-                    m_Unit[i].m_ShadowStencil = NULL;
+                if (m_Unit[i].u1.s1.m_ShadowStencil) {
+                    HDelete(CVOShadowStencil, m_Unit[i].u1.s1.m_ShadowStencil, g_MatrixHeap);
+                    m_Unit[i].u1.s1.m_ShadowStencil = NULL;
                 }
             }
         }
@@ -649,17 +649,17 @@ void CMatrixRobot::RNeed(dword need) {
 
                 // if(m_Unit[i].m_Graph->VO()->EdgeExist()) {
 
-                if (!m_Unit[i].m_ShadowStencil)
-                    m_Unit[i].m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
+                if (!m_Unit[i].u1.s1.m_ShadowStencil)
+                    m_Unit[i].u1.s1.m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
 
                 //					if(!(m_Unit[i].m_Graph->VO()->EdgeExist())) m_Unit[i].m_Graph->VO()->EdgeBuild();
 
                 // STENCIL
-                // m_Unit[i].m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()),m_Unit[i].m_Graph->FrameVO(),
+                // m_Unit[i].u1.s1.m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()),m_Unit[i].m_Graph->FrameVO(),
                 //    g_MatrixMap->m_LightMain,m_Unit[i].m_Matrix,IsNearBase()?g_MatrixMap->m_ShadowPlaneCutBase:g_MatrixMap->m_ShadowPlaneCut);
 
                 D3DXVECTOR3 light;
-                D3DXVec3TransformNormal(&light, &g_MatrixMap->m_LightMain, &m_Unit[i].m_IMatrix);
+                D3DXVec3TransformNormal(&light, &g_MatrixMap->m_LightMain, &m_Unit[i].u1.s1.m_IMatrix);
 
                 // D3DXPLANE cutpl;
                 // D3DXPlaneTransform(&cutpl,
@@ -669,12 +669,12 @@ void CMatrixRobot::RNeed(dword need) {
                 float len = (GetRadius() * 2) + m_Unit[i].m_Matrix._43 -
                             (IsNearBase() ? g_MatrixMap->m_GroundZBase : g_MatrixMap->m_GroundZ);
 
-                m_Unit[i].m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()), m_Unit[i].m_Graph->GetVOFrame(), light,
-                                                 len, m_Unit[i].m_Invert != 0);
+                m_Unit[i].u1.s1.m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()), m_Unit[i].m_Graph->GetVOFrame(), light,
+                                                 len, m_Unit[i].u1.s1.m_Invert != 0);
 
-                if (!m_Unit[i].m_ShadowStencil->IsReady()) {
-                    HDelete(CVOShadowStencil, m_Unit[i].m_ShadowStencil, g_MatrixHeap);
-                    m_Unit[i].m_ShadowStencil = NULL;
+                if (!m_Unit[i].u1.s1.m_ShadowStencil->IsReady()) {
+                    HDelete(CVOShadowStencil, m_Unit[i].u1.s1.m_ShadowStencil, g_MatrixHeap);
+                    m_Unit[i].u1.s1.m_ShadowStencil = NULL;
                 }
             }
         }
@@ -762,8 +762,8 @@ void CMatrixRobot::DoAnimation(int cms) {
 
     if (m_Animation == ANIMATION_STAY || m_Animation == ANIMATION_BEGINMOVE || m_Animation == ANIMATION_ENDMOVE ||
         m_Animation == ANIMATION_BEGINMOVE_BACK || m_Animation == ANIMATION_ENDMOVE_BACK) {
-        if ((m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT) || (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC) ||
-            (m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY)) {
+        if ((m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) || (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC) ||
+            (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY)) {
             for (int i = 0; i < 1; i++) {
                 // if (m_Unit[i].m_Type != MRT_CHASSIS) continue;
                 if (m_Unit[i].m_Graph) {
@@ -784,23 +784,23 @@ void CMatrixRobot::DoAnimation(int cms) {
             // if (m_Unit[i].m_Type != MRT_CHASSIS) continue;
             if (m_Unit[i].m_Graph) {
                 float k = 1;
-                if (m_Unit[i].m_Kind == RUK_CHASSIS_TRACK) {
+                if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_TRACK) {
                     k = float(ANIMSPEED_CHAISIS_TRACK) / m_RotSpeed;
                 }
-                else if (m_Unit[i].m_Kind == RUK_CHASSIS_WHEEL) {
+                else if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_WHEEL) {
                     k = float(ANIMSPEED_CHAISIS_WHEEL) / m_RotSpeed;
                 }
-                else if (m_Unit[i].m_Kind == RUK_CHASSIS_PNEUMATIC) {
+                else if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC) {
                     k = float(ANIMSPEED_CHAISIS_PNEUMATIC) / m_RotSpeed;
                 }
 
                 if (k > 3)
                     k = 3;
                 bool changed = false;
-                while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].m_NextAnimTime)) {
+                while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].u1.s1.m_NextAnimTime)) {
                     changed = true;
                     float add = k * (float)m_Unit[i].m_Graph->NextFrame();
-                    m_Unit[i].m_NextAnimTime += max(add, 0.1f);
+                    m_Unit[i].u1.s1.m_NextAnimTime += max(add, 0.1f);
                 }
                 if (changed) {
                     if (m_ShadowType == SHADOW_STENCIL)
@@ -821,23 +821,23 @@ void CMatrixRobot::DoAnimation(int cms) {
             // if (m_Unit[i].m_Type != MRT_CHASSIS) continue;
             if (m_Unit[i].m_Graph) {
                 float k = 1;
-                if (m_Unit[i].m_Kind == RUK_CHASSIS_TRACK) {
+                if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_TRACK) {
                     k = float(ANIMSPEED_CHAISIS_TRACK) / m_Speed;
                 }
-                else if (m_Unit[i].m_Kind == RUK_CHASSIS_WHEEL) {
+                else if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_WHEEL) {
                     k = float(ANIMSPEED_CHAISIS_WHEEL) / m_Speed;
                 }
-                else if (m_Unit[i].m_Kind == RUK_CHASSIS_PNEUMATIC) {
+                else if (m_Unit[i].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC) {
                     k = float(ANIMSPEED_CHAISIS_PNEUMATIC) / m_Speed;
                 }
 
                 if (k > 3)
                     k = 3;
                 bool changed = false;
-                while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].m_NextAnimTime)) {
+                while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].u1.s1.m_NextAnimTime)) {
                     changed = true;
                     float add = k * (float)m_Unit[i].m_Graph->NextFrame();
-                    m_Unit[i].m_NextAnimTime += max(add, 0.1f);
+                    m_Unit[i].u1.s1.m_NextAnimTime += max(add, 0.1f);
                 }
                 if (changed) {
                     if (m_ShadowType == SHADOW_STENCIL)
@@ -853,13 +853,13 @@ endanim:;
 
 void SMatrixRobotUnit::PrepareForDIP(void) {
     DTRACE();
-    if (m_ShadowStencil) {
-        HDelete(CVOShadowStencil, m_ShadowStencil, g_MatrixHeap);
-        m_ShadowStencil = nullptr;
+    if (u1.s1.m_ShadowStencil) {
+        HDelete(CVOShadowStencil, u1.s1.m_ShadowStencil, g_MatrixHeap);
+        u1.s1.m_ShadowStencil = nullptr;
     }
-    if (m_WeaponRepairData) {
-        m_WeaponRepairData->Release();
-        m_WeaponRepairData = nullptr;
+    if (u1.s1.m_WeaponRepairData) {
+        u1.s1.m_WeaponRepairData->Release();
+        u1.s1.m_WeaponRepairData = nullptr;
     }
 #ifdef _DEBUG
     new(&Smoke()) SEffectHandler(DEBUG_CALL_INFO);
@@ -881,8 +881,8 @@ void CMatrixRobot::Takt(int cms) {
         if (FLAG(m_ObjectState, ROBOT_FLAG_ONWATER)) {
             m_KeelWaterCount += m_Speed * KEELWATER_SPAWN_FACTOR * cms;
         }
-        else if (m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT) {
-            m_ChassisData.m_DustCount += (m_Speed + 1) * DUST_SPAWN_FACTOR * cms;
+        else if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) {
+            m_ChassisData.u1.s2.m_DustCount += (m_Speed + 1) * DUST_SPAWN_FACTOR * cms;
         }
 
         while (m_KeelWaterCount > 1.0) {
@@ -890,18 +890,18 @@ void CMatrixRobot::Takt(int cms) {
                                            0x00FFFFFF, 3000, 0, TEXTURE_PATH_KEELWATER, m_Forward);
             m_KeelWaterCount -= 1.0f;
         }
-        if (m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT) {
-            while (m_ChassisData.m_DustCount > 1.0) {
+        if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) {
+            while (m_ChassisData.u1.s2.m_DustCount > 1.0) {
                 // CDText::T("spd", CStr(m_Speed));
                 D3DXVECTOR2 spd(m_Velocity.x, m_Velocity.y);
                 spd *= float(float(cms) / LOGIC_TAKT_PERIOD);
                 CMatrixEffect::CreateDust(NULL, *(D3DXVECTOR2 *)&GetGeoCenter(), spd, 500);
-                m_ChassisData.m_DustCount -= 1.0f;
+                m_ChassisData.u1.s2.m_DustCount -= 1.0f;
             }
         }
     }
 
-    if (m_Unit[0].m_Kind != RUK_CHASSIS_PNEUMATIC)
+    if (m_Unit[0].u1.s1.m_Kind != RUK_CHASSIS_PNEUMATIC)
         DoAnimation(cms);  // proceed animation only for NON pneumatic chassis
 
     // RChange(MR_Matrix);
@@ -913,7 +913,7 @@ bool CMatrixRobot::PickFull(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, flo
         return false;
     for (int i = 0; i < m_UnitCnt; i++) {
         if (m_Unit[i].m_Graph) {
-            if (m_Unit[i].m_Graph->PickFull(m_Unit[i].m_Matrix, m_Unit[i].m_IMatrix, orig, dir, outt))
+            if (m_Unit[i].m_Graph->PickFull(m_Unit[i].m_Matrix, m_Unit[i].u1.s1.m_IMatrix, orig, dir, outt))
                 return true;
         }
     }
@@ -926,7 +926,7 @@ bool CMatrixRobot::Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float *
         return false;
     for (int i = 0; i < m_UnitCnt; i++) {
         if (m_Unit[i].m_Graph) {
-            if (m_Unit[i].m_Graph->Pick(m_Unit[i].m_Matrix, m_Unit[i].m_IMatrix, orig, dir, outt))
+            if (m_Unit[i].m_Graph->Pick(m_Unit[i].m_Matrix, m_Unit[i].u1.s1.m_IMatrix, orig, dir, outt))
                 return true;
         }
     }
@@ -943,8 +943,8 @@ void CMatrixRobot::FreeDynamicResources(void) {
     }
     else if (m_ShadowType == SHADOW_STENCIL) {
         for (int i = 0; i < m_UnitCnt; ++i) {
-            if (m_Unit[i].m_ShadowStencil)
-                m_Unit[i].m_ShadowStencil->DX_Free();
+            if (m_Unit[i].u1.s1.m_ShadowStencil)
+                m_Unit[i].u1.s1.m_ShadowStencil->DX_Free();
         }
     }
 }
@@ -973,15 +973,15 @@ void CMatrixRobot::BeforeDraw(void) {
     if (g_Config.m_ShowStencilShadows && !IsInterfaceDraw()) {
         for (int i = 0; i < m_UnitCnt; i++) {
             m_Unit[i].m_Graph->BeforeDraw();
-            if (m_CurrState != ROBOT_DIP && m_Unit[i].m_ShadowStencil)
-                m_Unit[i].m_ShadowStencil->BeforeRender();
+            if (m_CurrState != ROBOT_DIP && m_Unit[i].u1.s1.m_ShadowStencil)
+                m_Unit[i].u1.s1.m_ShadowStencil->BeforeRender();
         }
     }
     if (m_CurrState != ROBOT_DIP && m_ShadowProj && g_Config.m_ShowProjShadows)
         m_ShadowProj->BeforeRender();
 
-    if (m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
-        m_ChassisData.m_LStream->BeforeDraw();
+    if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
+        m_ChassisData.u1.s1.m_LStream->BeforeDraw();
     }
 }
 
@@ -995,11 +995,11 @@ void CMatrixRobot::Draw(void) {
 
     if (m_CurrState == ROBOT_DIP) {
         for (int i = 0; i < m_UnitCnt; i++) {
-            if (m_Unit[i].m_TTL <= 0)
+            if (m_Unit[i].u1.s2.m_TTL <= 0)
                 continue;
             g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFF808080);
             ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &(m_Unit[i].m_Matrix)));
-            if (m_Unit[i].m_Invert) {
+            if (m_Unit[i].u1.s1.m_Invert) {
                 g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
                 m_Unit[i].m_Graph->Draw(coltex);
                 g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -1015,7 +1015,7 @@ void CMatrixRobot::Draw(void) {
             g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, m_Core->m_TerainColor);
 
             ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &(m_Unit[i].m_Matrix)));
-            if (m_Unit[i].m_Invert) {
+            if (m_Unit[i].u1.s1.m_Invert) {
                 g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
                 m_Unit[i].m_Graph->Draw(coltex);
                 g_D3DD->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -1037,7 +1037,7 @@ void CMatrixRobot::Draw(void) {
         //
         //        // draw foots
         //
-        //        if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC && m_Animation == ANIMATION_MOVE)
+        //        if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC && m_Animation == ANIMATION_MOVE)
         //        {
         //
         //            int vof = m_Unit[0].m_Graph->GetVOFrame();
@@ -1072,10 +1072,10 @@ void CMatrixRobot::Draw(void) {
     if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_OBJECTS_DRAWN)) {
         if (IsInterfaceDraw()) {
             for (int i = 0; i < m_UnitCnt; i++) {
-                if (m_Unit[i].m_Type == MRT_WEAPON && m_Unit[i].m_Kind == RUK_WEAPON_REPAIR) {
-                    if (m_Unit[i].m_WeaponRepairData) {
+                if (m_Unit[i].m_Type == MRT_WEAPON && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
+                    if (m_Unit[i].u1.s1.m_WeaponRepairData) {
                         // draw
-                        m_Unit[i].m_WeaponRepairData->Draw(true);
+                        m_Unit[i].u1.s1.m_WeaponRepairData->Draw(true);
                     }
                 }
             }
@@ -1088,18 +1088,18 @@ void CMatrixRobot::Draw(void) {
             }
         }
 
-        if (m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
+        if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
             if (IsInterfaceDraw()) {
                 CVectorObject::DrawEnd();
 
-                m_ChassisData.m_LStream->Draw(true);
-                m_ChassisData.m_RStream->Draw(true);
+                m_ChassisData.u1.s1.m_LStream->Draw(true);
+                m_ChassisData.u1.s1.m_RStream->Draw(true);
 
                 // CVectorObject::DrawBegin();
             }
             else {
-                m_ChassisData.m_LStream->Draw();
-                m_ChassisData.m_RStream->Draw();
+                m_ChassisData.u1.s1.m_LStream->Draw();
+                m_ChassisData.u1.s1.m_RStream->Draw();
             }
         }
     }
@@ -1123,8 +1123,8 @@ void CMatrixRobot::DrawShadowStencil(void) {
     }
 
     for (int i = 0; i < m_UnitCnt; i++) {
-        if (m_Unit[i].m_ShadowStencil) {
-            m_Unit[i].m_ShadowStencil->Render(m_Unit[i].m_Matrix);
+        if (m_Unit[i].u1.s1.m_ShadowStencil) {
+            m_Unit[i].u1.s1.m_ShadowStencil->Render(m_Unit[i].m_Matrix);
         }
     }
 }
@@ -1299,7 +1299,7 @@ void CMatrixRobot::SwitchAnimation(EAnimation a) {
             return;
         if (a != m_Animation) {
             for (int i = 0; i < m_UnitCnt; ++i) {
-                m_Unit[i].m_NextAnimTime = float(g_MatrixMap->GetTime());
+                m_Unit[i].u1.s1.m_NextAnimTime = float(g_MatrixMap->GetTime());
             }
         }
     }
@@ -1314,7 +1314,7 @@ void CMatrixRobot::SwitchAnimation(EAnimation a) {
                 m_Animation = ANIMATION_MOVE;
                 m_Unit[0].m_Graph->SetAnimByName(ANIMATION_NAME_MOVE);
 
-                if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+                if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC)
                     FirstLinkPneumatic();
             }
         }
@@ -1323,7 +1323,7 @@ void CMatrixRobot::SwitchAnimation(EAnimation a) {
                 m_Animation = ANIMATION_MOVE;
                 m_Unit[0].m_Graph->SetAnimByName(ANIMATION_NAME_MOVE);
 
-                if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+                if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC)
                     FirstLinkPneumatic();
             }
         }
@@ -1338,7 +1338,7 @@ void CMatrixRobot::SwitchAnimation(EAnimation a) {
                 m_Unit[0].m_Graph->SetAnimByName(ANIMATION_NAME_MOVE_BACK);
                 SETFLAG(m_ObjectState, ROBOT_FLAG_MOVING_BACK);
 
-                if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+                if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC)
                     FirstLinkPneumatic();
             }
         }
@@ -1348,7 +1348,7 @@ void CMatrixRobot::SwitchAnimation(EAnimation a) {
                 m_Unit[0].m_Graph->SetAnimByName(ANIMATION_NAME_MOVE_BACK);
                 SETFLAG(m_ObjectState, ROBOT_FLAG_MOVING_BACK);
 
-                if (m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC)
+                if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC)
                     FirstLinkPneumatic();
             }
         }
@@ -1418,26 +1418,26 @@ void CMatrixRobot::LinkPneumatic(void) {
         vof_add = g_fcnt;
     }
 
-    if (m_ChassisData.m_LinkPrevFrame == vof)
+    if (m_ChassisData.u1.s4.m_LinkPrevFrame == vof)
         goto correction;
 
     // bool newlink = false;
-    while (m_ChassisData.m_LinkPrevFrame != vof) {
-        if (m_Pneumaic[m_ChassisData.m_LinkPrevFrame + vof_add].newlink) {
-            D3DXVec2TransformCoord(&m_ChassisData.m_LinkPos,
-                                   &m_Pneumaic[m_ChassisData.m_LinkPrevFrame + vof_add].other_foot, &m_Core->m_Matrix);
+    while (m_ChassisData.u1.s4.m_LinkPrevFrame != vof) {
+        if (m_Pneumaic[m_ChassisData.u1.s4.m_LinkPrevFrame + vof_add].newlink) {
+            D3DXVec2TransformCoord(&m_ChassisData.u1.s4.m_LinkPos,
+                                   &m_Pneumaic[m_ChassisData.u1.s4.m_LinkPrevFrame + vof_add].other_foot, &m_Core->m_Matrix);
 
-            int x = TruncFloat(m_ChassisData.m_LinkPos.x * INVERT(GLOBAL_SCALE));
-            int y = TruncFloat(m_ChassisData.m_LinkPos.y * INVERT(GLOBAL_SCALE));
+            int x = TruncFloat(m_ChassisData.u1.s4.m_LinkPos.x * INVERT(GLOBAL_SCALE));
+            int y = TruncFloat(m_ChassisData.u1.s4.m_LinkPos.y * INVERT(GLOBAL_SCALE));
             SMatrixMapUnit *mu = g_MatrixMap->UnitGetTest(x, y);
             if (mu && mu->IsLand() && !mu->IsBridge()) {
                 float ang = (float)atan2(-m_Forward.x, m_Forward.y);
-                CMatrixEffect::CreateLandscapeSpot(NULL, m_ChassisData.m_LinkPos, ang, 1.0f, SPOT_SOLE_PNEUMATIC);
+                CMatrixEffect::CreateLandscapeSpot(NULL, m_ChassisData.u1.s4.m_LinkPos, ang, 1.0f, SPOT_SOLE_PNEUMATIC);
             }
         }
-        ++m_ChassisData.m_LinkPrevFrame;
-        if (m_ChassisData.m_LinkPrevFrame >= g_fcnt)
-            m_ChassisData.m_LinkPrevFrame = 0;
+        ++m_ChassisData.u1.s4.m_LinkPrevFrame;
+        if (m_ChassisData.u1.s4.m_LinkPrevFrame >= g_fcnt)
+            m_ChassisData.u1.s4.m_LinkPrevFrame = 0;
     }
 
 correction:
@@ -1473,7 +1473,7 @@ correction:
         D3DXVECTOR2 curlink;
         D3DXVec2TransformCoord(&curlink, &m_Pneumaic[vof + vof_add].foot, &m);
 
-        curlink -= m_ChassisData.m_LinkPos;
+        curlink -= m_ChassisData.u1.s4.m_LinkPos;
 
         m_PosX -= curlink.x;
         m_PosY -= curlink.y;
@@ -1521,8 +1521,8 @@ void CMatrixRobot::FirstLinkPneumatic(void) {
         vof_add = g_fcnt;
     }
 
-    D3DXVec2TransformCoord(&m_ChassisData.m_LinkPos, &m_Pneumaic[vof + vof_add].foot, &m);
-    m_ChassisData.m_LinkPrevFrame = vof;
+    D3DXVec2TransformCoord(&m_ChassisData.u1.s4.m_LinkPos, &m_Pneumaic[vof + vof_add].foot, &m);
+    m_ChassisData.u1.s4.m_LinkPrevFrame = vof;
 }
 
 void CMatrixRobot::BuildPneumaticData(CVectorObject *vo) {

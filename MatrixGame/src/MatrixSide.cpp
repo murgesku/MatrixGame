@@ -1367,23 +1367,23 @@ void CMatrixSideUnit::SetArcadedObject(CMatrixMapStatic *o) {
     m_Arcaded = o;
     if (IsRobotMode()) {
         CMatrixRobotAI *robot = (CMatrixRobotAI *)o;
-        if (robot->m_Unit[0].m_Kind == RUK_CHASSIS_PNEUMATIC) {
+        if (robot->m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_PNEUMATIC) {
             robot->m_SoundChassis =
                     CSound::Play(robot->m_SoundChassis, S_CHASSIS_PNEUMATIC_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
         }
-        else if (robot->m_Unit[0].m_Kind == RUK_CHASSIS_WHEEL) {
+        else if (robot->m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_WHEEL) {
             robot->m_SoundChassis =
                     CSound::Play(robot->m_SoundChassis, S_CHASSIS_WHEEL_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
         }
-        else if (robot->m_Unit[0].m_Kind == RUK_CHASSIS_TRACK) {
+        else if (robot->m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_TRACK) {
             robot->m_SoundChassis =
                     CSound::Play(robot->m_SoundChassis, S_CHASSIS_TRACK_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
         }
-        else if (robot->m_Unit[0].m_Kind == RUK_CHASSIS_HOVERCRAFT) {
+        else if (robot->m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) {
             robot->m_SoundChassis =
                     CSound::Play(robot->m_SoundChassis, S_CHASSIS_HOVERCRAFT_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
         }
-        else if (robot->m_Unit[0].m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
+        else if (robot->m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_ANTIGRAVITY) {
             robot->m_SoundChassis =
                     CSound::Play(robot->m_SoundChassis, S_CHASSIS_ANTIGRAVITY_LOOP, robot->GetGeoCenter(), SL_CHASSIS);
         }
@@ -2299,7 +2299,7 @@ void CMatrixSideUnit::EscapeFromBomb() {
         if (i >= rbcnt)
             continue;
 
-        int rp = g_MatrixMap->FindNearPlace(1 << (robot->m_Unit[0].m_Kind - 1),
+        int rp = g_MatrixMap->FindNearPlace(1 << (robot->m_Unit[0].u1.s1.m_Kind - 1),
                                             CPoint(robot->GetMapPosX(), robot->GetMapPosY()));
         if (rp < 0)
             continue;
@@ -2362,7 +2362,7 @@ void CMatrixSideUnit::EscapeFromBomb() {
                 int np = g_MatrixMap->m_RN.m_Place[rp].m_Near[i];
                 if (data[np] & 1)
                     continue;
-                if (g_MatrixMap->m_RN.m_Place[rp].m_NearMove[i] & (1 << (robot->m_Unit[0].m_Kind - 1)))
+                if (g_MatrixMap->m_RN.m_Place[rp].m_NearMove[i] & (1 << (robot->m_Unit[0].u1.s1.m_Kind - 1)))
                     continue;
 
                 ind[cnt] = np;
@@ -2838,7 +2838,7 @@ void CMatrixSideUnit::TaktHL() {
                             m_Team[team].m_Rect.right = max(m_Team[team].m_Rect.right, tp.x);
                             m_Team[team].m_Rect.bottom = max(m_Team[team].m_Rect.bottom, tp.y);
 
-                            m_Team[team].OrMove(1 << (ms->AsRobot()->m_Unit[0].m_Kind - 1));
+                            m_Team[team].OrMove(1 << (ms->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1));
 
                             if (i == m_Team[team].m_Action.m_Region)
                                 m_Team[team].SetRobotInDesRegion(true);
@@ -5221,7 +5221,7 @@ void CMatrixSideUnit::WarTL(int group) {
     while (obj) {
         if (obj->IsLiveRobot() && obj->GetSide() == m_Id && GetGroupLogic(obj) == group) {
             rl[rlcnt] = (CMatrixRobotAI *)obj;
-            mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (obj->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1);
             rlcnt++;
         }
         obj = obj->GetNextLogic();
@@ -5510,7 +5510,7 @@ void CMatrixSideUnit::WarTL(int group) {
 
                     if (place->m_Data)
                         continue;  // Занетые места игнорируем
-                    if (place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1)))
+                    if (place->m_Move & (1 << (rl[i]->m_Unit[0].u1.s1.m_Kind - 1)))
                         continue;  // Если робот не может стоять на этом месте то пропускаем
                     if (rl[i]->GetEnv()->IsBadPlace(iplace))
                         continue;  // Плохое место пропускаем
@@ -5651,7 +5651,7 @@ void CMatrixSideUnit::WarTL(int group) {
 
                         if (place->m_Data)
                             continue;  // Занетые места игнорируем
-                        if (place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1)))
+                        if (place->m_Move & (1 << (rl[i]->m_Unit[0].u1.s1.m_Kind - 1)))
                             continue;  // Если робот не может стоять на этом месте то пропускаем
                         break;
                     }
@@ -6002,7 +6002,7 @@ void CMatrixSideUnit::AssignPlace(int group, int region) {
         if (obj->IsLiveRobot()) {
             if (obj->GetSide() == m_Id && GetGroupLogic(obj) == group) {
                 rl[rlcnt] = obj->AsRobot();
-                mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+                mm |= 1 << (obj->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1);
                 rlcnt++;
             }
             if (obj->GetSide() != m_Id || GetGroupLogic(obj) != group)
@@ -7777,7 +7777,7 @@ void CMatrixSideUnit::RepairPL(int group) {
     obj = CMatrixMapStatic::GetFirstLogic();
     while (obj) {
         if (obj->IsLiveRobot() && obj->GetSide() == m_Id && GetGroupLogic(obj) == group) {
-            mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (obj->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1);
             rl[rlcnt] = obj->AsRobot();
             rlok[rlcnt] = true;
             rlcnt++;
@@ -8218,7 +8218,7 @@ void CMatrixSideUnit::WarPL(int group) {
     while (obj) {
         if (obj->IsLiveRobot() && obj->GetSide() == m_Id && GetGroupLogic(obj) == group) {
             rl[rlcnt] = (CMatrixRobotAI *)obj;
-            mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (obj->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1);
             rlcnt++;
         }
         obj = obj->GetNextLogic();
@@ -8557,7 +8557,7 @@ void CMatrixSideUnit::WarPL(int group) {
 
                     if (place->m_Data)
                         continue;  // Занетые места игнорируем
-                    if (place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1)))
+                    if (place->m_Move & (1 << (rl[i]->m_Unit[0].u1.s1.m_Kind - 1)))
                         continue;  // Если робот не может стоять на этом месте то пропускаем
                     if (rl[i]->GetEnv()->IsBadPlace(iplace))
                         continue;  // Плохое место пропускаем
@@ -8697,7 +8697,7 @@ void CMatrixSideUnit::WarPL(int group) {
 
                         if (place->m_Data)
                             continue;  // Занетые места игнорируем
-                        if (place->m_Move & (1 << (rl[i]->m_Unit[0].m_Kind - 1)))
+                        if (place->m_Move & (1 << (rl[i]->m_Unit[0].u1.s1.m_Kind - 1)))
                             continue;  // Если робот не может стоять на этом месте то пропускаем
                         break;
                     }
@@ -9040,7 +9040,7 @@ void CMatrixSideUnit::PGOrderMoveTo(int no, const CPoint &tp) {
     else {
         if (GetCurGroup()) {
             if (GetCurGroup()->GetObjectByN(GetCurSelNum())->IsLiveRobot()) {
-                int chassis = (int)GetCurGroup()->GetObjectByN(GetCurSelNum())->AsRobot()->m_Unit[0].m_Kind;
+                int chassis = (int)GetCurGroup()->GetObjectByN(GetCurSelNum())->AsRobot()->m_Unit[0].u1.s1.m_Kind;
 
                 CBlockPar *rs = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)
                                         ->BlockGet(L"ChassisSounds")
@@ -9256,7 +9256,7 @@ void CMatrixSideUnit::PGOrderPatrol(int no, const CPoint &tp) {
     else {
         if (GetCurGroup()) {
             if (GetCurGroup()->GetObjectByN(GetCurSelNum())->IsLiveRobot()) {
-                int chassis = (int)GetCurGroup()->GetObjectByN(GetCurSelNum())->AsRobot()->m_Unit[0].m_Kind;
+                int chassis = (int)GetCurGroup()->GetObjectByN(GetCurSelNum())->AsRobot()->m_Unit[0].u1.s1.m_Kind;
 
                 CBlockPar *rs = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)
                                         ->BlockGet(L"ChassisSounds")
@@ -9640,7 +9640,7 @@ void CMatrixSideUnit::PGAssignPlace(int no, CPoint center) {
         if (obj->IsLiveRobot()) {
             if (obj->GetSide() == m_Id && GetGroupLogic(obj) == no) {
                 rl[rlcnt] = (CMatrixRobotAI *)obj;
-                mm |= 1 << (obj->AsRobot()->m_Unit[0].m_Kind - 1);
+                mm |= 1 << (obj->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1);
                 rlcnt++;
             }
         }
@@ -9650,7 +9650,7 @@ void CMatrixSideUnit::PGAssignPlace(int no, CPoint center) {
         return;
 
     int x = center.x, y = center.y;
-    if (g_MatrixMap->PlaceFindNear(rl[0]->m_Unit[0].m_Kind - 1, 4, x, y, 0, NULL, NULL)) {
+    if (g_MatrixMap->PlaceFindNear(rl[0]->m_Unit[0].u1.s1.m_Kind - 1, 4, x, y, 0, NULL, NULL)) {
         center.x = x;
         center.y = y;
     }
@@ -9803,7 +9803,7 @@ void CMatrixSideUnit::PGAssignPlacePlayer(int no, const CPoint &center) {
             CMatrixRobotAI *r = (CMatrixRobotAI *)obj;
             int mx = center.x;
             int my = center.y;
-            g_MatrixMap->PlaceFindNear(r->m_Unit[0].m_Kind - 1, 4, mx, my, other_cnt, other_size, other_des);
+            g_MatrixMap->PlaceFindNear(r->m_Unit[0].u1.s1.m_Kind - 1, 4, mx, my, other_cnt, other_size, other_des);
             PGSetPlace(r, CPoint(mx, my));
 
             if (r->GetEnv()->m_Place >= 0) {
@@ -9992,7 +9992,7 @@ void CMatrixSideUnit::PGFindCaptureFactory(int no) {
         if (obj->IsLiveRobot() && (obj->AsRobot()->GetSide() == m_Id && obj->AsRobot()->GetGroupLogic() == no)) {
             CMatrixRobotAI *robot = (CMatrixRobotAI *)obj;
 
-            mm |= 1 << (robot->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (robot->m_Unit[0].u1.s1.m_Kind - 1);
 
             //            robot->CalcStrength();
             strength += robot->GetStrength();
@@ -10118,7 +10118,7 @@ void CMatrixSideUnit::PGFindAttackTarget(int no) {
         if (obj->IsLiveRobot() && (obj->AsRobot()->GetSide() == m_Id && obj->AsRobot()->GetGroupLogic() == no)) {
             CMatrixRobotAI *robot = (CMatrixRobotAI *)obj;
 
-            mm |= 1 << (robot->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (robot->m_Unit[0].u1.s1.m_Kind - 1);
 
             //            robot->CalcStrength();
             strength += robot->GetStrength();
@@ -10295,7 +10295,7 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no) {
         if (obj->IsLiveRobot() && (obj->AsRobot()->GetSide() == m_Id && obj->AsRobot()->GetGroupLogic() == no)) {
             CMatrixRobotAI *robot = (CMatrixRobotAI *)obj;
 
-            mm |= 1 << (robot->m_Unit[0].m_Kind - 1);
+            mm |= 1 << (robot->m_Unit[0].u1.s1.m_Kind - 1);
 
             //            robot->CalcStrength();
             strength += robot->GetStrength();
@@ -10616,7 +10616,7 @@ inline void ObjPlaceData(CMatrixMapStatic *obj, dword data) {
 }
 
 inline bool CanMove(byte movetype, CMatrixRobotAI *robot) {
-    return !(movetype & (1 << (robot->m_Unit[0].m_Kind - 1)));
+    return !(movetype & (1 << (robot->m_Unit[0].u1.s1.m_Kind - 1)));
 }
 
 inline int GetDesRegion(CMatrixRobotAI *robot) {

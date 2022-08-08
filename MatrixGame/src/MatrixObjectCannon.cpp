@@ -128,9 +128,9 @@ void CMatrixCannon::UnitClear(void) {
             }
         }
         else {
-            if (m_Unit[i].m_ShadowStencil) {
-                HDelete(CVOShadowStencil, m_Unit[i].m_ShadowStencil, NULL);
-                m_Unit[i].m_ShadowStencil = NULL;
+            if (m_Unit[i].u1.s1.m_ShadowStencil) {
+                HDelete(CVOShadowStencil, m_Unit[i].u1.s1.m_ShadowStencil, NULL);
+                m_Unit[i].u1.s1.m_ShadowStencil = NULL;
             }
         }
     }
@@ -278,7 +278,7 @@ void CMatrixCannon::RNeed(DWORD need) {
         D3DXVECTOR3 p(0, 0, 0);
 
         for (int i = 0; i < m_UnitCnt; i++) {
-            D3DXMatrixRotationZ(&m, m_Unit[i].m_Angle);
+            D3DXMatrixRotationZ(&m, m_Unit[i].u1.s1.m_Angle);
             *(D3DXVECTOR3 *)&m._41 = p;
 
             if (m_Unit[i].m_Type == CUT_SHAFT) {
@@ -300,7 +300,7 @@ void CMatrixCannon::RNeed(DWORD need) {
                 m_Unit[i].m_Matrix = m * m_Core->m_Matrix;
             }
 
-            D3DXMatrixInverse(&m_Unit[i].m_IMatrix, NULL, &m_Unit[i].m_Matrix);
+            D3DXMatrixInverse(&m_Unit[i].u1.s1.m_IMatrix, NULL, &m_Unit[i].m_Matrix);
 
             if (i == (m_UnitCnt - 1)) {
                 m_FireCenter = *(D3DXVECTOR3 *)&m_Unit[i].m_Matrix._41;
@@ -339,9 +339,9 @@ void CMatrixCannon::RNeed(DWORD need) {
 
         if (m_ShadowType != SHADOW_STENCIL) {
             for (int i = 0; i < m_UnitCnt; i++) {
-                if (m_Unit[i].m_ShadowStencil) {
-                    HDelete(CVOShadowStencil, m_Unit[i].m_ShadowStencil, g_MatrixHeap);
-                    m_Unit[i].m_ShadowStencil = NULL;
+                if (m_Unit[i].u1.s1.m_ShadowStencil) {
+                    HDelete(CVOShadowStencil, m_Unit[i].u1.s1.m_ShadowStencil, g_MatrixHeap);
+                    m_Unit[i].u1.s1.m_ShadowStencil = NULL;
                 }
             }
         }
@@ -351,17 +351,17 @@ void CMatrixCannon::RNeed(DWORD need) {
                 ASSERT(m_Unit[i].m_Graph->VO());
 
                 // if(m_Unit[i].m_Graph->VO()->EdgeExist()) {
-                if (!m_Unit[i].m_ShadowStencil)
-                    m_Unit[i].m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
+                if (!m_Unit[i].u1.s1.m_ShadowStencil)
+                    m_Unit[i].u1.s1.m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
 
                 //					if(!(m_Unit[i].m_Graph->VO()->EdgeExist())) m_Unit[i].m_Graph->VO()->EdgeBuild();
 
                 // STENCIL
-                // m_Unit[i].m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()),m_Unit[i].m_Graph->FrameVO(),
+                // m_Unit[i].u1.s1.m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()),m_Unit[i].m_Graph->FrameVO(),
                 //    g_MatrixMap->m_LightMain,m_Unit[i].m_Matrix,IsNearBase()?g_MatrixMap->m_ShadowPlaneCutBase:g_MatrixMap->m_ShadowPlaneCut);
 
                 D3DXVECTOR3 light;
-                D3DXVec3TransformNormal(&light, &g_MatrixMap->m_LightMain, &m_Unit[i].m_IMatrix);
+                D3DXVec3TransformNormal(&light, &g_MatrixMap->m_LightMain, &m_Unit[i].u1.s1.m_IMatrix);
 
                 // D3DXPLANE cutpl;
                 // D3DXPlaneTransform(&cutpl,
@@ -369,7 +369,7 @@ void CMatrixCannon::RNeed(DWORD need) {
                 // &m_Unit[i].m_IMatrix);
                 float len = (GetRadius() * 2) + m_Unit[i].m_Matrix._43 -
                             (IsNearBase() ? g_MatrixMap->m_GroundZBase : g_MatrixMap->m_GroundZ);
-                m_Unit[i].m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()), m_Unit[i].m_Graph->GetVOFrame(), light,
+                m_Unit[i].u1.s1.m_ShadowStencil->Build(*(m_Unit[i].m_Graph->VO()), m_Unit[i].m_Graph->GetVOFrame(), light,
                                                  len, false);
             }
         }
@@ -464,7 +464,7 @@ bool CMatrixCannon::Pick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, float 
         return false;
     for (int i = 0; i < m_UnitCnt; i++) {
         if (m_Unit[i].m_Graph) {
-            if (m_Unit[i].m_Graph->Pick(m_Unit[i].m_Matrix, m_Unit[i].m_IMatrix, orig, dir, outt))
+            if (m_Unit[i].m_Graph->Pick(m_Unit[i].m_Matrix, m_Unit[i].u1.s1.m_IMatrix, orig, dir, outt))
                 return true;
         }
     }
@@ -481,8 +481,8 @@ void CMatrixCannon::FreeDynamicResources(void) {
     }
     else if (m_ShadowType == SHADOW_STENCIL) {
         for (int i = 0; i < m_UnitCnt; ++i) {
-            if (m_Unit[i].m_ShadowStencil)
-                m_Unit[i].m_ShadowStencil->DX_Free();
+            if (m_Unit[i].u1.s1.m_ShadowStencil)
+                m_Unit[i].u1.s1.m_ShadowStencil->DX_Free();
         }
     }
 }
@@ -504,8 +504,8 @@ void CMatrixCannon::BeforeDraw(void) {
 
     for (int i = 0; i < m_UnitCnt; i++) {
         m_Unit[i].m_Graph->BeforeDraw();
-        if (m_CurrState != CANNON_DIP && m_Unit[i].m_ShadowStencil)
-            m_Unit[i].m_ShadowStencil->BeforeRender();
+        if (m_CurrState != CANNON_DIP && m_Unit[i].u1.s1.m_ShadowStencil)
+            m_Unit[i].u1.s1.m_ShadowStencil->BeforeRender();
     }
 
     if (m_CurrState != CANNON_DIP && m_ShadowProj)
@@ -523,7 +523,7 @@ void CMatrixCannon::Draw(void) {
     if (m_CurrState == CANNON_DIP) {
         g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, 0xFF808080);
         for (int i = 0; i < m_UnitCnt; i++) {
-            if (m_Unit[i].m_TTL <= 0)
+            if (m_Unit[i].u1.s2.m_TTL <= 0)
                 continue;
             ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD, &(m_Unit[i].m_Matrix)));
             m_Unit[i].m_Graph->Draw(coltex);
@@ -562,8 +562,8 @@ void CMatrixCannon::DrawShadowStencil(void) {
         return;
 
     for (int i = 0; i < m_UnitCnt; i++) {
-        if (m_Unit[i].m_ShadowStencil) {
-            m_Unit[i].m_ShadowStencil->Render(m_Unit[i].m_Matrix);
+        if (m_Unit[i].u1.s1.m_ShadowStencil) {
+            m_Unit[i].u1.s1.m_ShadowStencil->Render(m_Unit[i].m_Matrix);
         }
     }
 }
@@ -651,13 +651,13 @@ void CMatrixCannon::DIPTakt(float ms) {
 
     bool del = true;
     for (int i = 0; i < m_UnitCnt; ++i) {
-        if (m_Unit[i].m_TTL <= 0)
+        if (m_Unit[i].u1.s2.m_TTL <= 0)
             continue;
-        m_Unit[i].m_TTL -= ms;
+        m_Unit[i].u1.s2.m_TTL -= ms;
 
-        pos = &m_Unit[i].m_Pos;
+        pos = &m_Unit[i].u1.s2.m_Pos;
 
-        if (m_Unit[i].m_TTL <= 0) {
+        if (m_Unit[i].u1.s2.m_TTL <= 0) {
             // create explosive
 
             pos->z += GetRadius();
@@ -672,14 +672,14 @@ void CMatrixCannon::DIPTakt(float ms) {
 
         del = false;
 
-        if (IS_ZERO_VECTOR(m_Unit[i].m_Velocity)) {
+        if (IS_ZERO_VECTOR(m_Unit[i].u1.s2.m_Velocity)) {
             continue;
         }
 
         D3DXVECTOR3 oldpos = *pos;
 
-        m_Unit[i].m_Velocity.z -= 0.0002f * ms;
-        (*pos) += m_Unit[i].m_Velocity * float(ms);
+        m_Unit[i].u1.s2.m_Velocity.z -= 0.0002f * ms;
+        (*pos) += m_Unit[i].u1.s2.m_Velocity * float(ms);
         mat = &m_Unit[i].m_Matrix;
 
         D3DXVECTOR3 hitpos;
@@ -687,7 +687,7 @@ void CMatrixCannon::DIPTakt(float ms) {
         if (o == TRACE_STOP_WATER) {
             // in water
             if (g_MatrixMap->GetZ(hitpos.x, hitpos.y) < WATER_LEVEL) {
-                m_Unit[i].m_TTL = 0;
+                m_Unit[i].u1.s2.m_TTL = 0;
                 CMatrixEffect::CreateKonusSplash(
                         hitpos, D3DXVECTOR3(0, 0, 1), 10, 5, FSRND(M_PI), 1000, true,
                         (CTextureManaged *)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SPLASH));
@@ -699,12 +699,12 @@ void CMatrixCannon::DIPTakt(float ms) {
         }
         else if (o == TRACE_STOP_LANDSCAPE) {
             // SND:
-            m_Unit[i].m_Velocity = D3DXVECTOR3(0, 0, 0);
-            m_Unit[i].m_Pos = hitpos;
+            m_Unit[i].u1.s2.m_Velocity = D3DXVECTOR3(0, 0, 0);
+            m_Unit[i].u1.s2.m_Pos = hitpos;
         }
         else if (IS_TRACE_STOP_OBJECT(o)) {
-            o->Damage(WEAPON_DEBRIS, hitpos, m_Unit[i].m_Velocity, 0, NULL);
-            m_Unit[i].m_TTL = 1;
+            o->Damage(WEAPON_DEBRIS, hitpos, m_Unit[i].u1.s2.m_Velocity, 0, NULL);
+            m_Unit[i].u1.s2.m_TTL = 1;
         }
 
         // if (pos->z < 0) pos->z = 0;
@@ -715,7 +715,7 @@ void CMatrixCannon::DIPTakt(float ms) {
         const D3DXVECTOR3 &pos1 = m_Unit[i].m_Graph->VO()->GetFrameGeoCenter(m_Unit[i].m_Graph->GetVOFrame());
         *(D3DXVECTOR3 *)&m1._41 = pos1;
         *(D3DXVECTOR3 *)&m2._41 = -pos1;
-        D3DXMatrixRotationYawPitchRoll(&m0, m_Unit[i].m_dy * time, m_Unit[i].m_dp * time, m_Unit[i].m_dr * time);
+        D3DXMatrixRotationYawPitchRoll(&m0, m_Unit[i].u1.s2.m_dy * time, m_Unit[i].u1.s2.m_dp * time, m_Unit[i].u1.s2.m_dr * time);
         *mat = m2 * m0 * m1;
 
         mat->_41 = pos->x;
@@ -1075,7 +1075,7 @@ void CMatrixCannon::LogicTakt(int takt) {
         D3DXVECTOR2 dir(-(tgtpos.x - m_FireCenter.x), (tgtpos.y - m_FireCenter.y));
 
         float dang = (float)atan2(dir.x, dir.y);
-        float cang = m_Unit[1].m_Angle + m_Angle;
+        float cang = m_Unit[1].u1.s1.m_Angle + m_Angle;
 
         float da = float(AngleDist(cang, dang));
 
@@ -1083,25 +1083,25 @@ void CMatrixCannon::LogicTakt(int takt) {
             if (fabs(da) < CANNNON_MIN_DANGLE) {
                 matchz = true;
                 da = 0;
-                m_Unit[1].m_Angle = dang;
+                m_Unit[1].u1.s1.m_Angle = dang;
             }
             else {
                 da *= mul;
-                m_Unit[1].m_Angle += da;
+                m_Unit[1].u1.s1.m_Angle += da;
             }
         }
         else {
             if (fabs(da) < (props->max_da + 0.001)) {
-                m_Unit[1].m_Angle += da;
+                m_Unit[1].u1.s1.m_Angle += da;
                 matchz = true;
             }
             else if (da < 0)
-                m_Unit[1].m_Angle -= props->max_da;
+                m_Unit[1].u1.s1.m_Angle -= props->max_da;
             else
-                m_Unit[1].m_Angle += props->max_da;
+                m_Unit[1].u1.s1.m_Angle += props->max_da;
         }
 
-        m_Unit[2].m_Angle = m_Unit[1].m_Angle;
+        m_Unit[2].u1.s1.m_Angle = m_Unit[1].u1.s1.m_Angle;
 
         RChange(MR_Matrix);
         RNeed(MR_Matrix);
@@ -1389,17 +1389,17 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
 
         /// bool cstay = FRND(1) < 0.5f;
 
-        m_Unit[0].m_TTL = FRND(3000) + 2000;
-        m_Unit[0].m_Pos.x = m_Unit[0].m_Matrix._41;
-        m_Unit[0].m_Pos.y = m_Unit[0].m_Matrix._42;
-        m_Unit[0].m_Pos.z = m_Unit[0].m_Matrix._43;
+        m_Unit[0].u1.s2.m_TTL = FRND(3000) + 2000;
+        m_Unit[0].u1.s2.m_Pos.x = m_Unit[0].m_Matrix._41;
+        m_Unit[0].u1.s2.m_Pos.y = m_Unit[0].m_Matrix._42;
+        m_Unit[0].u1.s2.m_Pos.z = m_Unit[0].m_Matrix._43;
 
         // if (cstay)
         {
-            m_Unit[0].m_dp = 0;
-            m_Unit[0].m_dy = 0;
-            m_Unit[0].m_dr = 0;
-            m_Unit[0].m_Velocity = D3DXVECTOR3(0, 0, 0);
+            m_Unit[0].u1.s2.m_dp = 0;
+            m_Unit[0].u1.s2.m_dy = 0;
+            m_Unit[0].u1.s2.m_dr = 0;
+            m_Unit[0].u1.s2.m_Velocity = D3DXVECTOR3(0, 0, 0);
         }  // else
         //{
         // m_Unit[0].m_dp = FSRND(0.0005f);
@@ -1409,21 +1409,35 @@ bool CMatrixCannon::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTO
         //}
 
         m_Unit[0].m_Smoke.effect = NULL;
-        CMatrixEffect::CreateSmoke(&m_Unit[0].m_Smoke, m_Unit[0].m_Pos, m_Unit[0].m_TTL + 100000, 1000, 100, 0xFF000000,
-                                   false, 1.0f / 30.0f);
+        CMatrixEffect::CreateSmoke(
+            &m_Unit[0].m_Smoke,
+            m_Unit[0].u1.s2.m_Pos,
+            m_Unit[0].u1.s2.m_TTL + 100000,
+            1000,
+            100,
+            0xFF000000,
+            false,
+            1.0f / 30.0f);
 
         for (int i = 1; i < m_UnitCnt; ++i) {
-            m_Unit[i].m_dp = FSRND(0.005f);
-            m_Unit[i].m_dy = FSRND(0.005f);
-            m_Unit[i].m_dr = FSRND(0.005f);
-            m_Unit[i].m_Velocity = D3DXVECTOR3(FSRND(0.08f), FSRND(0.08f), 0.1f);
-            m_Unit[i].m_TTL = FRND(3000) + 2000;
-            m_Unit[i].m_Pos.x = m_Unit[i].m_Matrix._41;
-            m_Unit[i].m_Pos.y = m_Unit[i].m_Matrix._42;
-            m_Unit[i].m_Pos.z = m_Unit[i].m_Matrix._43;
+            m_Unit[i].u1.s2.m_dp = FSRND(0.005f);
+            m_Unit[i].u1.s2.m_dy = FSRND(0.005f);
+            m_Unit[i].u1.s2.m_dr = FSRND(0.005f);
+            m_Unit[i].u1.s2.m_Velocity = D3DXVECTOR3(FSRND(0.08f), FSRND(0.08f), 0.1f);
+            m_Unit[i].u1.s2.m_TTL = FRND(3000) + 2000;
+            m_Unit[i].u1.s2.m_Pos.x = m_Unit[i].m_Matrix._41;
+            m_Unit[i].u1.s2.m_Pos.y = m_Unit[i].m_Matrix._42;
+            m_Unit[i].u1.s2.m_Pos.z = m_Unit[i].m_Matrix._43;
             m_Unit[i].m_Smoke.effect = NULL;
-            CMatrixEffect::CreateSmoke(&m_Unit[i].m_Smoke, m_Unit[i].m_Pos, m_Unit[i].m_TTL + 100000, 1000, 100,
-                                       0xFF000000, false, 1.0f / 30.0f);
+            CMatrixEffect::CreateSmoke(
+                &m_Unit[i].m_Smoke,
+                m_Unit[i].u1.s2.m_Pos,
+                m_Unit[i].u1.s2.m_TTL + 100000,
+                1000,
+                100,
+                0xFF000000,
+                false,
+                1.0f / 30.0f);
         }
 
         return true;

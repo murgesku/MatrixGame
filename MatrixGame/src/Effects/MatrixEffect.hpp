@@ -285,6 +285,7 @@ struct SEffectHandler {
     CMatrixEffect *effect;
 
 #ifdef _DEBUG
+    SEffectHandler(void) : from("", -1), effect(NULL) {}
     SEffectHandler(SDebugCallInfo &f) : from(f), effect(NULL) {}
     ~SEffectHandler() { Release(from); }
     void Release(SDebugCallInfo &from);

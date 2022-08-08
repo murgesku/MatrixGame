@@ -3615,7 +3615,7 @@ void CIFaceList::CreateWeaponDynamicStatics() {
             int hu = 0;
             for (int i = 0; i < MR_MAXUNIT; i++) {
                 if (bot->m_Unit[i].m_Type == MRT_ARMOR) {
-                    hu = int(bot->m_Unit[i].m_Kind);
+                    hu = int(bot->m_Unit[i].u1.s1.m_Kind);
                 }
             }
             if (!hu)
@@ -3627,13 +3627,13 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                 if (bot->m_Unit[i].m_Type == MRT_WEAPON) {
                     int pos;
                     for (pos = 0; pos < 5; pos++) {
-                        if (g_IFaceList->m_Pilons[pos + hu * 5] == bot->m_Unit[i].m_LinkMatrix) {
+                        if (g_IFaceList->m_Pilons[pos + hu * 5] == bot->m_Unit[i].u1.s1.m_LinkMatrix) {
                             break;
                         }
                     }
 
                     CWStr name(g_CacheHeap);
-                    switch (bot->m_Unit[i].m_Kind) {
+                    switch (bot->m_Unit[i].u1.s1.m_Kind) {
                         case RUK_WEAPON_MACHINEGUN:
                             name = CWStr(IF_WEAPON_MACHINEGUN_ON);
                             break;
