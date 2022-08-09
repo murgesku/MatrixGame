@@ -468,28 +468,6 @@ namespace Base {
 void HListPrint(wchar *filename);
 #endif
 
-/*
-inline void MemCopy(void * s1,void * s2,int len) {
-    __asm {
-        cld
-        mov		esi,s2
-        mov		edi,s1
-        mov		ecx,len
-        rep		movsb
-    }
-}
-
-inline void MemSet(void * s1,BYTE zn,int len) {
-    __asm {
-        cld
-        mov		al,zn
-        mov		edi,s1
-        mov		ecx,len
-        rep		stosb
-    }
-}
-*/
-
 inline bool MemCmp(const void *s1, const void *s2, uint len) {
     return memcmp(s1, s2, len) == 0;
 }
