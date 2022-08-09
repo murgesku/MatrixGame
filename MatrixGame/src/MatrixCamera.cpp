@@ -11,6 +11,8 @@
 #include "MatrixRobot.hpp"
 #include "MatrixObjectCannon.hpp"
 
+#include "Effects/MatrixEffectBigBoom.hpp"
+
 float MAX_VIEW_DISTANCE = 4000.0f;
 
 void SetMaxCameraDistance(float perc) {

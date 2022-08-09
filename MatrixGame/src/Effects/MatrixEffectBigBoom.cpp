@@ -14,6 +14,9 @@
 #include "../MatrixRobot.hpp"
 #include <math.h>
 
+#include "MatrixEffectBigBoom.hpp"
+#include "MatrixEffectPointLight.hpp"
+
 CTextureManaged *CMatrixEffectBigBoom::m_Tex;
 D3D_VB CMatrixEffectBigBoom::m_VB;
 D3D_IB CMatrixEffectBigBoom::m_IB;

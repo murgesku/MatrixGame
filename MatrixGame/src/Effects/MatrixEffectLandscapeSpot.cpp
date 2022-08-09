@@ -9,6 +9,9 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectLandscapeSpot.hpp"
+#include "MatrixEffectPointLight.hpp"
+
 static SSpotProperties m_SpotProperties[SPOT_TYPES_CNT];
 
 ////////////////////////////////////////////////////////////////////////////////

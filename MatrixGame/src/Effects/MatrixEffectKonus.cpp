@@ -9,6 +9,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectKonus.hpp"
+
 D3D_VB CMatrixEffectKonus::m_VB;
 int CMatrixEffectKonus::m_VB_ref;
 

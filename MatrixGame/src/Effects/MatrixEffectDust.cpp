@@ -11,6 +11,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectDust.hpp"
+
 #define DUST_R1      5
 #define DUST_R1_VAR  3
 #define DUST_R2      25

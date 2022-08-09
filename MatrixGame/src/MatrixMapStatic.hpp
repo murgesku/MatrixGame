@@ -11,8 +11,8 @@ typedef CMatrixMapGroup *PCMatrixMapGroup;
 //#define SHOW_ASSIGNED_GROUPS    6
 //#define SHOW_ASSIGNED_GROUPS    3
 
-#include "Effects/MatrixEffect.hpp"
-#include "Effects/MatrixEffectWeapon.hpp"
+// #include "Effects/MatrixEffect.hpp"
+// #include "Effects/MatrixEffectWeapon.hpp"
 
 // Ресурс объекта
 #define MR_Graph         SETBIT(0)  // Графика
@@ -187,6 +187,8 @@ struct SRenderTexture {
     ETexSize ts;
     CTextureManaged *tex;
 };
+
+enum EWeapon : unsigned int;
 
 class CMatrixRobotAI;
 class CMatrixCannon;

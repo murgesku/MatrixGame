@@ -12,6 +12,9 @@
 #include "../MatrixRenderPipeline.hpp"
 #include <math.h>
 
+#include "MatrixEffectExplosion.hpp"
+#include "MatrixEffectPointLight.hpp"
+
 // explosions
 const SExplosionProperties ExplosionNormal = {
         0,    // float min_speed;

@@ -12,6 +12,8 @@
 #include "MatrixSkinManager.hpp"
 #include "Interface/CConstructor.h"
 
+#include "Effects/MatrixEffectExplosion.hpp"
+
 // При перемещении объекта не нужно заного расчитывать проэкционную текстуру
 
 CMatrixMapObject::SObjectShadowTexture *CMatrixMapObject::m_ShadowTextures;

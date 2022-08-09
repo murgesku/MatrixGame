@@ -9,6 +9,9 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectFirePlasma.hpp"
+#include "MatrixEffectPointLight.hpp"
+
 CMatrixEffectFirePlasma::CMatrixEffectFirePlasma(const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, float speed,
                                                  DWORD hitmask, CMatrixMapStatic *skip, FIRE_END_HANDLER handler,
                                                  DWORD user)

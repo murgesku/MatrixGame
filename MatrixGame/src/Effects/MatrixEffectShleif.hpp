@@ -9,6 +9,8 @@
 #define SHLEIF_MAX_SMOKES 64
 #define SHLEIF_TTL        2000
 
+#include "MatrixEffect.hpp"
+
 class CMatrixEffectShleif : public CMatrixEffect {
     SEffectHandler *m_Smokes;
     int m_SmokesCnt;

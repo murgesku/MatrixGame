@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "MatrixEffectBillboard.hpp"
+
 #define DUST_BILLS_CNT 5
 
 class CMatrixEffectDust : public CMatrixEffect {
