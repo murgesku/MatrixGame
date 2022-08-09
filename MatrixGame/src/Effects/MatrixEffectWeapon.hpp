@@ -7,6 +7,9 @@
 
 #include "MatrixEffect.hpp"
 #include "MatrixEffectRepair.hpp"
+#include "MatrixEffectKonus.hpp"
+
+#include "../MatrixSoundManager.hpp"
 
 // weapon
 #define FLAME_PUFF_TTL 2000

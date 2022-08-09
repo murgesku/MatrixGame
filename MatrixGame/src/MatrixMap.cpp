@@ -30,6 +30,8 @@
 #include "MatrixGameDll.hpp"
 #include "MatrixSampleStateManager.hpp"
 
+#include "Effects/MatrixEffectLandscapeSpot.hpp"
+
 #define RENDER_PROJ_SHADOWS_IN_STENCIL_PASS
 
 // Globals

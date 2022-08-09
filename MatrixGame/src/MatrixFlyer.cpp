@@ -15,6 +15,10 @@
 #include "MatrixFormGame.hpp"
 #include "MatrixObjectCannon.hpp"
 
+#include "Effects/MatrixEffectSelection.hpp"
+#include "Effects/MatrixEffectSmokeAndFire.hpp"
+#include "Effects/MatrixEffectExplosion.hpp"
+
 D3D_VB CMatrixFlyer::m_VB;
 int CMatrixFlyer::m_VB_ref;
 

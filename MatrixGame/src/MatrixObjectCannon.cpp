@@ -14,6 +14,8 @@
 #include "ShadowStencil.hpp"
 #include "Interface/CInterface.h"
 
+#include "Effects/MatrixEffectExplosion.hpp"
+
 float CMatrixCannon::GetSeekRadius(void) {
     return g_Config.m_CannonsProps[m_Num - 1].seek_radius;
 }

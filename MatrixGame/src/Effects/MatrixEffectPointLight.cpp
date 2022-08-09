@@ -11,6 +11,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectPointLight.hpp"
+
 SPL_VBIB *SPL_VBIB::m_FirstFree;
 SPL_VBIB *SPL_VBIB::m_LastFree;
 SPL_VBIB *SPL_VBIB::m_FirstAll;

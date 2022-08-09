@@ -8,6 +8,9 @@
 #include "MatrixEffect.hpp"
 #include "../MatrixMap.hpp"
 
+#include "MatrixEffectMoveTo.hpp"
+#include "MatrixEffectBillboard.hpp"
+
 #define MOVETO_TTL 400
 #define MOVETO_S   2
 #define MOVETO_R   20

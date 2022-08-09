@@ -9,6 +9,8 @@
 #include "MatrixProgressBar.hpp"
 #include "MatrixSoundManager.hpp"
 
+#include "Effects/MatrixEffectZahvat.hpp"
+
 #define BASE_FLOOR_Z      (-63.0f)
 #define BASE_FLOOR_SPEED  0.0008f
 #define MAX_ZAHVAT_POINTS 14

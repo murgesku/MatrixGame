@@ -5,7 +5,9 @@
 
 #include "../stdafx.h"
 
-#include "MatrixEffect.hpp"
+#include "MatrixEffectShleif.hpp"
+#include "MatrixEffectSmokeAndFire.hpp"
+
 #include "../MatrixMap.hpp"
 
 CMatrixEffectShleif::CMatrixEffectShleif(void) {

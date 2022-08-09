@@ -665,24 +665,29 @@ public:
 
 typedef CEffectSpawner *PCEffectSpawner;
 
-#include "MatrixEffectExplosion.hpp"
-#include "MatrixEffectSmokeAndFire.hpp"
-#include "MatrixEffectFirePlasma.hpp"
-#include "MatrixEffectLandscapeSpot.hpp"
-#include "MatrixEffectMovingObject.hpp"
-#include "MatrixEffectSelection.hpp"
-#include "MatrixEffectPath.hpp"
-#include "MatrixEffectPointLight.hpp"
-#include "MatrixEffectKonus.hpp"
-#include "MatrixEffectFlame.hpp"
-#include "MatrixEffectBigBoom.hpp"
-#include "MatrixEffectLightening.hpp"
-#include "MatrixEffectBillboard.hpp"
-#include "MatrixEffectZahvat.hpp"
-#include "MatrixEffectElevatorField.hpp"
-#include "MatrixEffectDust.hpp"
-#include "MatrixEffectMoveTo.hpp"
-#include "MatrixEffectShleif.hpp"
-#include "MatrixEffectRepair.hpp"
+// #include "MatrixEffectExplosion.hpp"
+// #include "MatrixEffectSmokeAndFire.hpp"
 
-#include "MatrixEffectWeapon.hpp"
+// #include "MatrixEffectFirePlasma.hpp"
+// #include "MatrixEffectLandscapeSpot.hpp"
+// #include "MatrixEffectMovingObject.hpp"
+
+// #include "MatrixEffectSelection.hpp"
+// #include "MatrixEffectPath.hpp"
+// #include "MatrixEffectPointLight.hpp"
+
+// #include "MatrixEffectKonus.hpp"
+// #include "MatrixEffectFlame.hpp"
+// #include "MatrixEffectBigBoom.hpp"
+
+// #include "MatrixEffectLightening.hpp"
+// #include "MatrixEffectBillboard.hpp"
+// #include "MatrixEffectZahvat.hpp"
+
+// #include "MatrixEffectElevatorField.hpp"
+// #include "MatrixEffectDust.hpp"
+// #include "MatrixEffectMoveTo.hpp"
+
+// #include "MatrixEffectShleif.hpp"
+// #include "MatrixEffectRepair.hpp"
+// #include "MatrixEffectWeapon.hpp"

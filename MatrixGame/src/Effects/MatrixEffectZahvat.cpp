@@ -11,6 +11,9 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectZahvat.hpp"
+#include "MatrixEffectBillboard.hpp"
+
 CMatrixEffectZahvat::CMatrixEffectZahvat(const D3DXVECTOR3 &pos, float radius, float angle, int cnt)
   : CMatrixEffect(), m_Count(cnt) {
     DTRACE();

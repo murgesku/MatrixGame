@@ -11,6 +11,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectElevatorField.hpp"
+
 CMatrixEffectElevatorField::CMatrixEffectElevatorField(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float radius,
                                                        const D3DXVECTOR3 &fwd)
   : CMatrixEffect(), m_AllBBCnt(0), m_Time(0), m_NextTime(0), m_Activated(false), m_Angle(0.0f) {

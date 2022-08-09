@@ -11,6 +11,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectBillboard.hpp"
+
 D3D_VB CMatrixEffectBillboard::m_VB;
 int CMatrixEffectBillboard::m_VB_ref;
 

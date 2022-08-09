@@ -11,6 +11,11 @@
 #include <math.h>
 #include "../MatrixFlyer.hpp"
 
+#include "MatrixEffectMovingObject.hpp"
+#include "MatrixEffectShleif.hpp"
+#include "MatrixEffectPointLight.hpp"
+#include "MatrixEffectExplosion.hpp"
+
 void UnloadObject(CVectorObjectAnim *o, CHeap *heap);
 
 ////////////////////////////////////////////////////////////////////////////////

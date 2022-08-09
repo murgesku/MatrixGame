@@ -14,6 +14,11 @@
 #include "MatrixFlyer.hpp"
 #include "Interface/CInterface.h"
 
+#include "Effects/MatrixEffectShleif.hpp"
+#include "Effects/MatrixEffectElevatorField.hpp"
+#include "Effects/MatrixEffectSelection.hpp"
+#include "Effects/MatrixEffectExplosion.hpp"
+
 void SWeaponRepairData::Release(void) {
     m_b0.Release();
     m_b1.Release();

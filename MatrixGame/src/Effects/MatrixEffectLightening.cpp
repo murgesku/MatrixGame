@@ -11,6 +11,8 @@
 #include "../MatrixMap.hpp"
 #include <math.h>
 
+#include "MatrixEffectLightening.hpp"
+
 CMatrixEffectLightening::CMatrixEffectLightening(const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float ttl,
                                                  float dispers, float width, DWORD color, bool bp)
   : CMatrixEffect(), m_Pos0(pos0), m_Pos1(pos1), m_TTL(ttl), m_Color(color), m_End0(NULL), m_Dispersion(dispers),

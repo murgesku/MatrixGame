@@ -7,12 +7,18 @@
 
 #include "../stdafx.h"
 
-#include "MatrixEffect.hpp"
 #include "../MatrixMap.hpp"
 #include "../MatrixObject.hpp"
 #include "../MatrixFlyer.hpp"
 #include "../MatrixRobot.hpp"
 #include <math.h>
+
+#include "MatrixEffect.hpp"
+#include "MatrixEffectLightening.hpp"
+#include "MatrixEffectFlame.hpp"
+#include "MatrixEffectPointLight.hpp"
+#include "MatrixEffectMovingObject.hpp"
+#include "MatrixEffectExplosion.hpp"
 
 void CMatrixEffectWeapon::WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &pos, DWORD user, DWORD flags) {
     DTRACE();
