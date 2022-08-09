@@ -3,6 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <algorithm>
+#include <array> // for std::begin, std::end
+
 #include "../stdafx.h"
 
 #include "CIFaceButton.h"
@@ -3073,8 +3076,12 @@ void CInterface::CopyElements(CIFaceElement *el_src, CIFaceElement *el_dest) {
     }
     el_dest->m_Param1 = el_src->m_Param1;
     el_dest->m_Param2 = el_src->m_Param2;
-    memcpy(el_dest->m_Actions, el_src->m_Actions, sizeof(SAction) * MAX_ACTIONS);
-    // el_dest->m_Actions = el_src->m_Actions;
+
+    std::copy(
+        std::begin(el_src->m_Actions),
+        std::end(el_src->m_Actions),
+        std::begin(el_dest->m_Actions)
+    );
 }
 
 CIFaceImage *CInterface::FindImageByName(CWStr name) {
@@ -4788,8 +4795,9 @@ void CIFaceList::CreateElementRamka(CIFaceElement *element, DWORD color) {
     }
 }
 
-void CIFaceList::CreateHintButton(int x, int y, EHintButton type, DialogButtonHandler handler) {
+void CIFaceList::CreateHintButton(int x, int y, EHintButton type, DialogButtonHandler in_handler) {
     EnableMainMenuButton(type);
+    auto handler = [in_handler](void*) { in_handler(); };
     void *fn = NULL, *cl = NULL;
     CIFaceElement *els = m_Hints->m_FirstElement;
     while (els) {

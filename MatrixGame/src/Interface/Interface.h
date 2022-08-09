@@ -52,13 +52,6 @@ enum EActions {
     EActions_FORCE_DWORD = 0x7FFFFFFF
 };
 
-struct SAction {
-    void *m_class;
-    void *m_function;
-
-    SAction() : m_class(NULL), m_function(NULL) {}
-};
-
 struct SStateImages {
     CTextureManaged *pImage;
     SVert_V4_UV m_Geom[4];
@@ -97,48 +90,6 @@ struct SStateImages {
         Set = false;
     }
 };
-
-/*
-void* g_asm_iface_tmp;
-
-#define FSET(dest, pObj, src) \
-    dest.m_class=(void *)pObj;\
-    g_asm_iface_tmp=dest.m_function;\
-    __asm {mov eax,src}\
-    __asm {mov g_asm_iface_tmp,eax}\
-    dest.m_function = g_asm_iface_tmp;
-*/
-
-#define FSET(act, pBut, cl, fn, pObj, src) \
-    cl = (void *)pObj; \
-    __asm {mov eax,offset src} \
-    __asm {mov[fn], eax} \
-    pBut->m_Actions[act].m_class = cl; \
-    pBut->m_Actions[act].m_function = fn;
-
-#define FCALL(a, from) \
-    __asm push from    \
-    __asm mov eax, (a)->m_class \
-    __asm push eax \
-    __asm mov eax, (a)->m_function \
-    __asm call eax
-
-#define FCALLFROMCLASS(a)                                                                                   \
-    __asm push this \
-    __asm mov eax, dword ptr a \
-    __asm add eax, dword ptr this \
-    __asm push [eax] \
-    __asm add eax, 4 \
-    __asm mov eax, [eax] \
-    __asm call eax
-
-#define FCALLFROMCLASS2(a) \
-    __asm push this \
-    __asm mov eax, dword ptr a \
-    __asm push [eax] \
-    __asm add eax, 4 \
-    __asm mov eax, [eax] \
-    __asm call eax
 
 /////////////////////////////////////////////////
 extern IDirect3DDevice9 *g_D3DD;
