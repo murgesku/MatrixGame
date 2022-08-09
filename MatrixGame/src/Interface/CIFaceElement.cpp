@@ -302,16 +302,7 @@ bool CIFaceElement::ElementAlpha(CPoint mouse) {
 
 void CIFaceElement::Action(EActions action) {
     if (m_Actions[action].m_function) {
-        if (m_strName == IF_HINTS_OK || m_strName == IF_HINTS_CANCEL || m_strName == IF_HINTS_CANCEL_MENU ||
-            m_strName == IF_HINTS_CONTINUE || m_strName == IF_HINTS_EXIT || m_strName == IF_HINTS_RESET ||
-            m_strName == IF_HINTS_SURRENDER || m_strName == IF_HINTS_HELP) {
-            DialogButtonHandler(m_Actions[action].m_function)();
-            // SetVisibility(false);
-        }
-        else {
-            void *a = (void *)(&m_Actions[action]);
-            FCALLFROMCLASS2(a);
-        }
+        m_Actions[action].m_function(reinterpret_cast<void*>(this));
     }
 }
 

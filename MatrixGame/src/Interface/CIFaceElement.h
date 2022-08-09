@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include "Interface.h"
 #include "../MatrixMap.hpp"
 #include "../MatrixObject.hpp"
@@ -29,6 +31,17 @@ struct SElementHint {
         y = 0;
     }
 };
+
+struct SAction {
+    std::function<void(void*)> m_function;
+};
+
+#define FSET(act, pBut, cl, fn, pObj, src) \
+    {                                      \
+        auto obj = pObj;                   \
+        auto func = &src;                  \
+        pBut->m_Actions[act].m_function = [obj, func](void* param) { (*obj.*func)(param); }; \
+    }
 
 class CIFaceElement : public CMain {
     DWORD m_Flags;
