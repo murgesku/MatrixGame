@@ -169,12 +169,9 @@ public:
 #endif
 
     CHeap(void);
-    explicit CHeap(int initsize, int maxsize = 0, dword flags = 0);
     ~CHeap();
 
     void Clear(void);
-
-    void Create(int initsize = 65536, int maxsize = 0, dword flags = 0);  // HEAP_NO_SERIALIZE
 
     void AllocationError(int zn);
 

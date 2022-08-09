@@ -220,16 +220,6 @@ CHeap::CHeap() : CMain() {
         ERROR_E;
 }
 
-CHeap::CHeap(int initsize, int maxsize, dword flags) {
-    m_Flags = flags;
-    m_Heap = HeapCreate(flags, initsize, maxsize);
-    if (m_Heap == NULL) {
-        m_Flags = 0;
-        m_Heap = GetProcessHeap();
-        ERROR_E;
-    }
-}
-
 CHeap::~CHeap() {
     Clear();
 }
@@ -242,18 +232,6 @@ void CHeap::Clear() {
             ERROR_E;
     }
     m_Flags = 0;
-}
-
-void CHeap::Create(int initsize, int maxsize, dword flags) {
-    Clear();
-
-    m_Flags = flags;
-    m_Heap = HeapCreate(flags, initsize, maxsize);
-    if (m_Heap == NULL) {
-        m_Flags = 0;
-        m_Heap = GetProcessHeap();
-        ERROR_E;
-    }
 }
 
 void CHeap::AllocationError(int zn) {
