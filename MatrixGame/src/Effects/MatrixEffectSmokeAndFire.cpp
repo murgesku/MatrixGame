@@ -449,11 +449,6 @@ void CMatrixEffectFireAnim::Takt(float t) {
         m_WidthCurr = LERPFLOAT(k, m_Width, m_Width * FIREFRAME_W_DEAD);
     }
 
-    // if (m_HeightCurr > m_Height || m_WidthCurr > m_Width)
-    //{
-    //    _asm int 3
-    //}
-
     Update();
 
     while (g_MatrixMap->GetTime() > m_NextTime) {

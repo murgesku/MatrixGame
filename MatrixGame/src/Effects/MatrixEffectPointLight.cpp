@@ -630,14 +630,6 @@ void CMatrixEffectPointLight::RemoveColorData(void) {
 
         ++mp;
     }
-
-    /*
-    --xxx;
-    if (xxx < 0)
-    {
-        __asm int 3;
-    }
-    */
 }
 
 void CMatrixEffectPointLight::AddColorData(void) {

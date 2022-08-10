@@ -61,7 +61,6 @@ extern STextureStageOp g_ColorOp[];
 extern STextureStageOp g_AlphaOp[];
 
 #ifdef _DEBUG
-//#define CHECKTSS(n,t,v) {DWORD vv; g_D3DD->GetTextureStageState(n,t,&vv); if (v!=vv) {_asm int 3}}
 #define CHECKTSS(n, t, v) \
     {}
 #else

@@ -35,10 +35,6 @@ CMatrixProgressBar::CMatrixProgressBar(void) {
 #ifdef _DEBUG
     static int ccc = 0;
     counter = ccc++;
-    // if (counter==0)
-    //{
-    //    _asm int 3
-    //}
 #endif
 }
 
