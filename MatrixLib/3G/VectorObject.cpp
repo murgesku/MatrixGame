@@ -1371,95 +1371,18 @@ CTextureManaged *CVectorObject::CalcShadowTextureWOMat(int cnt, CVectorObjectAni
         int addi = lor.Pitch - texsize * pxsz_src;
         int addo = loro.Pitch - texsize * pxsz_dst;
 
-        _asm {
-            mov     esi, idata
-            mov     edi, odata
+        for (int i = 0; i < texsize; i++)
+        {
+            for (int j = 0; j < texsize; j++)
+            {
+                *odata = *idata;
+                idata += pxsz_src;
+                odata += pxsz_dst;
+            }
 
-            mov     ebx, pxsz_dst
-            mov     edx, pxsz_src
-            mov     ecx, texsize
-loop2:
-            push    ecx
-
-            mov     ecx, texsize
-            shr     ecx, 4
-loop3:
-                    // 0,1
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 2,3
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 4,5
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 6,7
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 8,9
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 10, 11
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 12, 13
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            // 14, 15
-            mov     al, [esi]
-            mov     ah, [esi + edx]
-            lea     esi, [esi + edx * 2]
-            mov     [edi], al
-            mov     [edi + ebx], ah
-            lea     edi, [edi + ebx * 2]
-
-            dec     ecx
-            jnz     loop3
-
-            pop     ecx
-            add     esi, addi
-            add     edi, addo
-
-            dec     ecx
-            jnz     loop2
-
+            idata += addi;
+            odata += addo;
         }
-        ;
 
         // CBitmap bm;
         // bm.CreateRGBA(texsize,texsize,lor.Pitch, lor.pBits);
