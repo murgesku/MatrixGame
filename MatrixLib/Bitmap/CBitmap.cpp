@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <cmath>
+
 #include "Bitmap.pch"
 
 #include "CBitmap.hpp"
@@ -12,28 +14,14 @@
 
 #ifndef BASE_MATH_DEFINED
 inline int TruncFloat(float x) {
-    return int(x);
+    return static_cast<int>(std::trunc(x));
 }
-#pragma warning(disable : 4035)
 inline int Float2Int(float x) {
-    _asm
-    { 
-        fld x
-        push eax
-        fistp dword ptr [esp]
-        pop eax
-    }
+    return static_cast<int>(std::round(x));
 }
 inline int Double2Int(double x) {
-    _asm
-    { 
-        fld x
-        push eax
-        fistp dword ptr [esp]
-        pop eax
-    }
+    return static_cast<int>(std::round(x));
 }
-#pragma warning(default : 4035)
 
 inline DWORD LIC(DWORD c0, DWORD c1, float t) {
     DWORD c = 0;
