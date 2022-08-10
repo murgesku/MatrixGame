@@ -289,18 +289,13 @@ void S3D_Default(void);
 
 // keyboard
 
-#pragma warning(disable : 4035)
 inline byte __fastcall lp2key(dword lp) {
-    _asm {
-        mov eax,lp
-        shr eax,15
-        shr ah,1
-        shr ah,1
-        rcr al,1
-        // and eax,255
-    };
+    byte scan = (lp >> 16) & 0x7F;
+    byte extFlag = (lp & (1 << 24)) ? 1 : 0;
+    scan = scan | (extFlag << 7);
+
+    return scan;
 }
-#pragma warning(default : 4035)
 
 #define KEY_ESC 1
 #define KEY_F1  59
