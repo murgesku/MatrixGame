@@ -227,12 +227,6 @@ CMatrixEffectBillboardLine::~CMatrixEffectBillboardLine() {
 void CMatrixEffectBillboardLine::Release(void) {
     DTRACE();
 
-    // if (zzz != 1)
-    //{
-    //    DM("bl","error");
-    //    _asm int 3
-    //}
-
     // DM("bl","release");
     SetDIP();
     HDelete(CMatrixEffectBillboardLine, this, m_Heap);

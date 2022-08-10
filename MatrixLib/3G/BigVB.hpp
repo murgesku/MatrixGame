@@ -123,13 +123,6 @@ inline void SBigVBOne<V>::PrepareVB(void) {
 
 template <class V>
 inline int SBigVBSource<V>::Select(CBigVB<V> *bvb) {
-    // ASSERT(!IsDirty(bvb) && !IsMarkedNoNeed(bvb));
-#ifdef _DEBUG
-    if (IsDirty(bvb) || IsMarkedNoNeed(bvb)) {
-        //_asm int 3
-        // Prepare(bvb);
-    }
-#endif
     if (Prepare(bvb))
         return -1;
 
@@ -296,13 +289,6 @@ inline void CBigVB<V>::AddSource(SBigVBSource<V> *src) {
                 if (m_VB_array[i].vb) {
                     // :( VB already allocated. so make it dirty...
 
-#ifdef _DEBUG
-                    if (m_Preparewas) {
-                        // oops... we cannot do oblomation for prepared vb's
-                        //_asm int 3
-                    }
-
-#endif
                     for (int j = 0; j < m_VB_array[i].count; ++j) {
                         m_VB_array[i].parts[j].flags = BVB_DIRTY_PART | BVB_NONEED_PART;
                     }

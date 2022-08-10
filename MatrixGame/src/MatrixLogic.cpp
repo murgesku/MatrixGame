@@ -1493,10 +1493,6 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
                                6);
             }
 #endif
-
-            //#if (defined _DEBUG) &&  !(defined _RELDEBUG)
-            //            if(cnt>=maxmax) __asm int 3;
-            //#endif
             if (cnt >= maxmax)
                 break;
 

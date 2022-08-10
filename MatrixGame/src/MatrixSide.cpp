@@ -4837,8 +4837,6 @@ void CMatrixSideUnit::TaktTL() {
             continue;
 
         team = rl[0]->GetTeam();
-        // if(team<0 || team>=m_TeamCnt) __asm int 3;
-        //        ASSERT(team>=0);
         m_LogicGroup[g].RobotsCnt(rlcnt);
 
         bool orderok = true;  // Приказ не изменился, данные корректны
