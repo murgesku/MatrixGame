@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <cmath>
+#include <cstdint>
 
 #include "Bitmap.pch"
 
@@ -382,84 +383,28 @@ void CBitmap::Make2xSmaller(void) {
         }
         while (--y > 0);
     }
-    else if (m_BytePP == 4) {
-        _asm {
+    else if (m_BytePP == 4)
+    {
+        for (int y = 0; y < m_Size.y; ++y)
+        {
+            for (int x = 0; x < m_Size.x; ++x)
+            {
+                byte* pix1 = sou;
+                byte* pix2 = sou + 4;
+                byte* pix3 = sou + m_Pitch;
+                byte* pix4 = sou + m_Pitch + 4;
 
-            mov esi, sou
-            mov edi, des
-            mov ebx, this
+                des[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0]) / 4;
+                des[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1]) / 4;
+                des[2] = (pix1[2] + pix2[2] + pix3[2] + pix4[2]) / 4;
+                des[3] = (pix1[3] + pix2[3] + pix3[3] + pix4[3]) / 4;
 
-            mov eax, [ebx + m_Size + 4]
+                sou += 8;
+                des += 4;
+            }
 
-            mov ebx, [ebx + m_Pitch]
-
-loopy:
-            push eax
-            push ebp
-
-            mov eax, this
-            mov eax, [eax + m_Size]
-loopx:
-            push eax
-
-            xor ebp,ebp
-            xor ecx,ecx
-
-            mov ebp,[esi]
-            mov ecx,ebp
-            and ebp,0x00FF00FF
-            and ecx,0xFF00FF00
-            
-            mov eax,[esi+4]
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add ebp,eax
-            add ecx,edx
-
-            mov eax,[esi+ebx]
-            adc ecx,0
-
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add ebp,eax
-            add ecx,edx
-
-            mov eax,[esi+ebx+4]
-            adc ecx,0
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add eax, ebp
-            add edx, ecx
-            adc edx,0
-
-            ror eax,2
-            ror edx,2
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            or  eax,edx
-
-            mov [edi],eax
-
-            add esi, 8
-            add edi, 4
-
-            pop eax
-            dec eax
-            jnz loopx
-
-            pop ebp
-
-            add esi, ebx
-
-            pop eax
-            dec eax
-            jnz loopy
-
+            sou += m_Pitch;
         }
-        ;
     }
 
     m_Pitch /= 2;
@@ -535,83 +480,29 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
             }
         }
     }
-    else if (m_BytePP == 4) {
-        _asm {
+    else if (m_BytePP == 4)
+    {
+        for (int y = 0; y < newy; ++y)
+        {
+            for (int x = 0; x < newx; ++x)
+            {
+                byte* pix1 = sou;
+                byte* pix2 = sou + 4;
+                byte* pix3 = sou + m_Pitch;
+                byte* pix4 = sou + m_Pitch + 4;
 
-            mov esi, sou
-            mov edi, des
-            mov ebx, this
-            mov ebx, [ebx + m_Pitch]
+                des[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0]) / 4;
+                des[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1]) / 4;
+                des[2] = (pix1[2] + pix2[2] + pix3[2] + pix4[2]) / 4;
+                des[3] = (pix1[3] + pix2[3] + pix3[3] + pix4[3]) / 4;
 
-            mov eax, newy
-loopy:
-            push eax
-            push ebp
+                sou += 8;
+                des += 4;
+            }
 
-            mov eax, newx
-loopx:
-            push eax
-
-            xor ebp,ebp
-            xor ecx,ecx
-
-            mov ebp,[esi]
-            mov ecx,ebp
-            and ebp,0x00FF00FF
-            and ecx,0xFF00FF00
-            
-            mov eax,[esi+4]
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add ebp,eax
-            add ecx,edx
-
-            mov eax,[esi+ebx]
-            adc ecx,0
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add ebp,eax
-            add ecx,edx
-
-            mov eax,[esi+ebx+4]
-            adc ecx,0
-            mov edx,eax
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            add eax, ebp
-            add edx, ecx
-            adc edx,0
-
-            ror eax,2
-            ror edx,2
-            and eax,0x00FF00FF
-            and edx,0xFF00FF00
-            or  eax,edx
-
-            mov [edi],eax
-
-            add esi, 8
-            add edi, 4
-
-            pop eax
-            dec eax
-            jnz loopx
-
-            pop ebp
-
-            mov eax, sounl
-            add esi, ebx
-            add esi, eax
-            add edi, desnl
-
-            pop eax
-            dec eax
-            jnz loopy
-
+            sou += m_Pitch + sounl;
+            des += desnl;
         }
-        ;
     }
 }
 #pragma warning(default : 4731)
@@ -2101,114 +1992,122 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
         //    ++des;
         //}
 
-        _asm {
-            // dest
-            mov     edi, ddsp
-            add     edi, TYPE DDSURFACEDESC2
+        BYTE *des = (BYTE *)(ddsp + 1);
+        BYTE *sou = (BYTE *)m_Data;
 
-                    // source
-            mov     esi, this
-            mov     ecx, [esi + m_Size]
-            mov     ebx, [esi + m_BytePP]
-            shr     ecx, 2
-            mov     eax, [esi + m_Size + 4]
-            mul     ecx
-            mov     esi, [esi + m_Data]
-            mov     ecx, eax
+        if (m_BytePP == 3)
+        {
+            // TODO: this piece of code is literally an asm rewritten into C++.
+            // i have absolutely no idea what is going on here, so it looks like
+            // a shit. would be nice to rewrite it again into something meaningful.
+            uint32_t ebx, ebp;
 
-            cmp     ebx, 3
-            jz      bpp3
+            // converts every 4 pixels (3 DWORD's)
+            for (int i = 0; i < m_Size.y * m_Size.x / 4; ++i)
+            {
+                uint32_t byte1 = *((uint32_t*)(sou));
+                uint32_t byte2 = *((uint32_t*)(sou + 4));
+                uint32_t byte3 = *((uint32_t*)(sou + 8));
 
-    loop1:
-            mov     eax, [esi]
-            mov     edx, [esi + 4]
+                ebx = byte1;
+                byte1 &= 0x0000FF00;
+                ebx = (ebx >> 16 | ebx << (32 - 16));
 
-            mov     ebx, eax
-            and     eax, 0xFF00FF00
-            ror     ebx, 16
-            add     edi, 16
-            and     ebx, 0x00FF00FF
-            or      eax, ebx
-            mov     ebx, edx
-            and     edx, 0xFF00FF00
-            ror     ebx, 16
-            add     esi, 16
-            and     ebx, 0x00FF00FF
-            or      edx, ebx
+                ebp = ebx & 0x0000FF00;
 
-            mov     [edi - 16], eax
-            mov     [edi - 12], edx
+                byte1 |= ebx & 0x00FF00FF;
 
-            mov     eax, [esi - 8]
-            mov     edx, [esi - 4]
+                ebx = byte2 & 0x0000FF00;
 
-            mov     ebx, eax
-            and     eax, 0xFF00FF00
-            ror     ebx, 16
-            and     ebx, 0x00FF00FF
-            or      eax, ebx
-            mov     ebx, edx
-            and     edx, 0xFF00FF00
-            ror     ebx, 16
-            and     ebx, 0x00FF00FF
-            or      edx, ebx
+                byte1 |= ebx << 16;
+                ebx = byte2;
 
-            mov     [edi - 8], eax
-            mov     [edi - 4], edx
+                byte2 &= 0xFF0000FF;
+                ebx = ebx >> 16;
+                byte2 |= ebp;
 
-            dec     ecx
-            jnz     loop1
+                ebx &= 0x000000FF;
+                ebp = byte3;
 
-            jmp     end
-    bpp3:
-            push    ebp
-loop2:
-                                    // converts every 4 pixels (3 DWORD's)
+                byte3 &= 0x00FF0000;
+                ebp = (ebp >> 16 | ebp << (32 - 16));
+                byte3 |= ebx;
 
-            mov     eax, [esi]
-            mov     edx, [esi + 4]
-            mov     ebx, eax
-            and     eax, 0x0000FF00  // XXXXG0XX
-            ror     ebx, 16
-            mov     ebp, ebx
-            and     ebx, 0x00FF00FF  // XXR0XXG0
-            or      eax, ebx
-            mov     ebx, edx
-            and     ebx, 0x0000FF00  // XXXXR1XX
-            and     ebp, 0x0000FF00  // XXXXR0XX
-            shl     ebx, 16
-            or      eax, ebx
-            mov     ebx, edx  // store B2
-            mov     [edi], eax
-            and     edx, 0xFF0000FF  // G2XXXXG1
-            shr     ebx, 16
-            or      edx, ebp
-            mov     eax, [esi + 8]
-            and     ebx, 0x000000FF
-            mov     ebp, eax
-            and     eax, 0x00FF0000
-            ror     ebp, 16
-            or      eax, ebx
-            mov     ebx, ebp
-            and     ebp, 0x00FF0000  // XXR2XXXX
-            or      edx, ebp
-            mov     [edi + 4], edx
-            and     ebx, 0xFF00FF00
-            or      eax, ebx
-            mov     [edi + 8], eax
+                byte3 |= ebp & 0xFF00FF00;
 
-            add     esi, 12
-            add     edi, 12
+                byte2 |= ebp & 0x00FF0000;
 
-            dec     ecx
-            jnz     loop2
+                *((uint32_t*)des) = byte1;
+                *((uint32_t*)(des + 4)) = byte2;
+                *((uint32_t*)(des + 8)) = byte3;
 
-
-            pop     ebp
-    end:
-
+                sou += 12;
+                des += 12;
+            }
         }
-        ;
+        else
+        {
+            // it does not look like this code is called at all.
+            // but if it is - fire a bug about it
+            ASSERT(false);
+        //     _asm {
+        //         // dest
+        //         mov     edi, des
+
+        //                 // source
+        //         mov     esi, this
+        //         mov     ecx, [esi + m_Size]
+        //         mov     ebx, [esi + m_BytePP]
+        //         shr     ecx, 2
+        //         mov     eax, [esi + m_Size + 4]
+        //         mul     ecx
+        //         mov     esi, sou
+        //         mov     ecx, eax
+
+        //         push    ebp
+        // loop1:
+        //         mov     eax, [esi]
+        //         mov     edx, [esi + 4]
+
+        //         mov     ebx, eax
+        //         and     eax, 0xFF00FF00
+        //         ror     ebx, 16
+        //         add     edi, 16
+        //         and     ebx, 0x00FF00FF
+        //         or      eax, ebx
+        //         mov     ebx, edx
+        //         and     edx, 0xFF00FF00
+        //         ror     ebx, 16
+        //         add     esi, 16
+        //         and     ebx, 0x00FF00FF
+        //         or      edx, ebx
+
+        //         mov     [edi - 16], eax
+        //         mov     [edi - 12], edx
+
+        //         mov     eax, [esi - 8]
+        //         mov     edx, [esi - 4]
+
+        //         mov     ebx, eax
+        //         and     eax, 0xFF00FF00
+        //         ror     ebx, 16
+        //         and     ebx, 0x00FF00FF
+        //         or      eax, ebx
+        //         mov     ebx, edx
+        //         and     edx, 0xFF00FF00
+        //         ror     ebx, 16
+        //         and     ebx, 0x00FF00FF
+        //         or      edx, ebx
+
+        //         mov     [edi - 8], eax
+        //         mov     [edi - 4], edx
+
+        //         dec     ecx
+        //         jnz     loop1
+
+        //         pop     ebp
+        //     };
+        }
     }
     // memcpy(des,sou,sz);
 }
