@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <cmath>
+
 #pragma once
 
 #define pi_f    3.14159265358979f
@@ -309,31 +311,19 @@ inline float TableSin(float theta) {
     return SinCosTable[ftmp.i & (SIN_TABLE_SIZE - 1)];
 }
 
+// TODO: replace this funcs with std calls inplace
 inline int TruncFloat(float x) {
-    return int(x);
+    return static_cast<int>(std::trunc(x));
 }
 inline int TruncDouble(double x) {
-    return int(x);
+    return static_cast<int>(std::trunc(x));
 }
-
-#pragma warning(disable : 4035)
 inline int Float2Int(float x) {
-    _asm { 
-        fld x
-        push eax
-        fistp dword ptr [esp]
-        pop eax
-    }
+    return static_cast<int>(std::round(x));
 }
 inline int Double2Int(double x) {
-    _asm {
-        fld x
-        push eax
-        fistp dword ptr [esp]
-        pop eax
-    };
+    return static_cast<int>(std::round(x));
 }
-#pragma warning(default : 4035)
 
 inline float GetColorA(DWORD c) {
     return float((c >> 24) & 255) / 255.0f;
