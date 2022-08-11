@@ -3,6 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <deque>
+#include <string>
+
 #pragma once
 
 #define MAX_SCANS             16
@@ -10,6 +13,13 @@
 #define DOUBLESCAN_TIME_DELTA 200
 
 struct SKeyScan {
+    SKeyScan() = default;
+
+    SKeyScan(DWORD _time, DWORD _scan)
+    : time{_time}
+    , scan{_scan}
+    {}
+
     DWORD time;
     DWORD scan;
 };
@@ -19,7 +29,8 @@ private:
     float m_LastWorldX, m_LastWorldY;
     int m_Action;
 
-    SKeyScan m_LastScans[MAX_SCANS];
+    std::deque<SKeyScan> m_LastScans{MAX_SCANS};
+    bool IsInputEqual(std::string str);
 
 public:
     CFormMatrixGame(void);

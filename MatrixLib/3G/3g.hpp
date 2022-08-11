@@ -414,4 +414,49 @@ inline byte __fastcall lp2key(dword lp) {
 #define KEY_N 49
 #define KEY_M 50
 
+static char Scan2Char(int scan)
+{
+    if (scan == KEY_SPACE)  return ' ';
+    if (scan == KEY_A)      return 'A';
+    if (scan == KEY_B)      return 'B';
+    if (scan == KEY_C)      return 'C';
+    if (scan == KEY_D)      return 'D';
+    if (scan == KEY_E)      return 'E';
+    if (scan == KEY_F)      return 'F';
+    if (scan == KEY_G)      return 'G';
+    if (scan == KEY_H)      return 'H';
+    if (scan == KEY_I)      return 'I';
+    if (scan == KEY_J)      return 'J';
+    if (scan == KEY_K)      return 'K';
+    if (scan == KEY_L)      return 'L';
+    if (scan == KEY_M)      return 'M';
+    if (scan == KEY_N)      return 'N';
+    if (scan == KEY_O)      return 'O';
+    if (scan == KEY_P)      return 'P';
+    if (scan == KEY_Q)      return 'Q';
+    if (scan == KEY_R)      return 'R';
+    if (scan == KEY_S)      return 'S';
+    if (scan == KEY_T)      return 'T';
+    if (scan == KEY_U)      return 'U';
+    if (scan == KEY_V)      return 'V';
+    if (scan == KEY_W)      return 'W';
+    if (scan == KEY_X)      return 'X';
+    if (scan == KEY_Y)      return 'Y';
+    if (scan == KEY_Z)      return 'Z';
+    if (scan == KEY_0)      return '0';
+    if (scan == KEY_1)      return '1';
+    if (scan == KEY_2)      return '2';
+    if (scan == KEY_3)      return '3';
+    if (scan == KEY_4)      return '4';
+    if (scan == KEY_5)      return '5';
+    if (scan == KEY_6)      return '6';
+    if (scan == KEY_7)      return '7';
+    if (scan == KEY_8)      return '8';
+    if (scan == KEY_9)      return '9';
+    if (scan == KEY_LSLASH) return '\\';
+    if (scan == KEY_COMMA)  return '.'; // WTF?
+    if (scan == KEY_TILDA)  return '~';
+    return 0;
+}
+
 #endif
