@@ -69,7 +69,7 @@ target_link_libraries(
 target_link_options(MatrixGame PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
 
 target_compile_options(MatrixGame PRIVATE ${COMPILE_OPTIONS})
-target_compile_definitions(MatrixGame PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL)
+target_compile_definitions(MatrixGame PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL WINDOWS_IGNORE_PACKING_MISMATCH)
 target_link_options(MatrixGame PRIVATE ${LINK_OPTIONS})
 
 install(

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ "refactoring", "TEST" ]
+  pull_request:
+    branches: [ "refactoring" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: Build on Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+      with:
+        arch: x86
+    - name: Get DXSDK
+      run:  |
+            DXDIR=$TEMP/DXDIR
+            curl -L https://download.microsoft.com/download/a/e/7/ae743f1f-632b-4809-87a9-aa1bb3458e31/DXSDK_Jun10.exe -o _DX2010_.exe
+            7z x _DX2010_.exe DXSDK/Include -o_DX2010_
+            7z x _DX2010_.exe DXSDK/Lib/x86 -o_DX2010_
+            mkdir $DXDIR
+            mv _DX2010_/DXSDK/* $DXDIR
+            rm -fR _DX*_ _DX*_.exe
+            echo "DXSDK_DIR=$DXDIR" >> $GITHUB_ENV
+      shell: bash
+    - name: Compile
+      run: |
+        cmake -A Win32 .
+        cmake --build .
+      shell: bash
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Library
+        path: |
+          ${{ github.workspace }}/MatrixGame/Debug/MatrixGame.dll
