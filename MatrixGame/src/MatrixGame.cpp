@@ -281,13 +281,6 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CacheInit();
     DCP();
 
-    /*if (g_RangersInterface)
-    {
-        // run from rangers
-        // do not set fullscreen
-        g_MatrixData->BlockGet(L"Config")->ParSet(L"FullScreen", L"0");
-    }*/
-
 #ifdef _DEBUG
     g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
 #endif
@@ -297,6 +290,31 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
                      set->FD3DDevice);
     else
         L3GInitAsEXE(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game");
+
+    //=========================================================================
+    // this shit is pretending to be a settings provided by a main game
+    // when this engine is used as dll. dirty solution, but seems to be
+    // necessary to make it working in a standalone (exe) mode.
+    SRobotsSettings settings;
+    settings.m_ShowStencilShadows = 1;
+    settings.m_ShowProjShadows = 1;
+    settings.m_IzvratMS = 0;
+    settings.m_LandTexturesGloss = 1;
+    settings.m_ObjTexturesGloss = 1;
+    settings.m_SoftwareCursor = 0;
+    settings.m_SkyBox = 2;
+    settings.m_RobotShadow = 1;
+    settings.m_BPP = 32;
+    settings.m_ResolutionX = g_ScreenX;
+    settings.m_ResolutionY = g_ScreenY;
+    settings.m_RefreshRate = 60;
+    settings.m_Brightness = 0.5;
+    settings.m_Contrast = 0.5;
+    settings.m_FSAASamples = 0;
+    settings.m_AFDegree = 0;
+    settings.m_MaxDistance = 1;
+    settings.m_VSync = 1;
+    //=========================================================================
 
     if (set) {
         g_ScreenX = set->m_ResolutionX;
@@ -312,9 +330,15 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     g_Config.SetDefaults();
     g_Config.ReadParams();
-    if (set) {
+    if (set)
+    {
         g_Config.ApplySettings(set);
         g_Sampler.ApplySettings(set);
+    }
+    else
+    {
+        g_Config.ApplySettings(&settings);
+        g_Sampler.ApplySettings(&settings);
     }
 
     DCP();
@@ -476,9 +500,13 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     }
 
     if (set)
+    {
         set->ApplyVideoParams();
+    }
     else
-        g_D3DD->Reset(&g_D3Dpp);
+    {
+        settings.ApplyVideoParams();
+    }
 
     /*IDirect3DSurface9 * surf;
     g_D3DD->GetRenderTarget(0,&surf);
@@ -615,7 +643,6 @@ void SRobotsSettings::ApplyVideoParams(void) {
     g_D3DD->SetMaterial(&mtrl);
     g_D3DD->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
 
-    D3DXVECTOR3 vecDir;
     D3DLIGHT9 light;
     ZeroMemory(&light, sizeof(D3DLIGHT9));
     light.Type = D3DLIGHT_DIRECTIONAL;  // D3DLIGHT_POINT;//D3DLIGHT_DIRECTIONAL;

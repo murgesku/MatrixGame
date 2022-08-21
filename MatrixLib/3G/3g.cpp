@@ -191,9 +191,57 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
 
     GetClientRect(g_Wnd, &tr);
     if ((g_ScreenX != (tr.right - tr.left)) || (g_ScreenY != (tr.bottom - tr.top)))
-        ERROR_S(L"Resolution error");
+        ERROR_S(
+            L"Resolution error: expected " +
+            CWStr(g_ScreenX) + L"x" + CWStr(g_ScreenY) +
+            L", actual " +
+            CWStr((int)(tr.right - tr.left)) + L"x" + CWStr((int)(tr.bottom - tr.top))
+        );
 
     SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
+
+    g_D3D = Direct3DCreate9(D3D_SDK_VERSION);
+    if (!g_D3D)
+    {
+        ERROR_S(L"Direct3DCreate9 failed");
+    }
+
+    D3DDISPLAYMODE mode;
+    ASSERT_DX(g_D3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode));
+
+    D3DPRESENT_PARAMETERS d3dpp;
+    memset(&d3dpp, 0, sizeof(d3dpp));
+    d3dpp.BackBufferWidth = g_ScreenX;
+    d3dpp.BackBufferHeight = g_ScreenY;
+    d3dpp.BackBufferFormat = mode.Format;
+    d3dpp.BackBufferCount = 2;
+    d3dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
+    d3dpp.Windowed = !FLAG(g_Flags, GFLAG_FULLSCREEN);
+    d3dpp.EnableAutoDepthStencil = 0;
+    d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+
+    auto cd_res =
+        g_D3D->CreateDevice(
+            D3DADAPTER_DEFAULT,
+            D3DDEVTYPE_HAL,
+            g_Wnd,
+            D3DCREATE_HARDWARE_VERTEXPROCESSING,
+            &d3dpp,
+            &g_D3DD
+        );
+
+    switch(cd_res)
+    {
+        case D3D_OK: break;
+        case D3DERR_DEVICELOST:
+            ERROR_S(L"CreateDevice failed: D3DERR_DEVICELOST");
+        case D3DERR_INVALIDCALL:
+            ERROR_S(L"CreateDevice failed: D3DERR_INVALIDCALL");
+        case D3DERR_NOTAVAILABLE:
+            ERROR_S(L"CreateDevice failed: D3DERR_NOTAVAILABLE");
+        case D3DERR_OUTOFVIDEOMEMORY:
+            ERROR_S(L"CreateDevice failed: D3DERR_OUTOFVIDEOMEMORY");
+    }
 
     IDirect3DSurface9 *surf;
     g_D3DD->GetRenderTarget(0, &surf);
