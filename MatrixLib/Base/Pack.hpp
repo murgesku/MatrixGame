@@ -35,6 +35,7 @@ enum EFileType {
 
 #define MAX_VIRTUAL_HANDLE_COUNT (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS)  // do not modify this
 
+#pragma pack(push, 1)
 struct SFileRec {
     DWORD m_Size;                      // Размер файла (+4) - это размер блока
     DWORD m_RealSize;                  // Настоящий размер файла (не сжатого)
@@ -47,6 +48,7 @@ struct SFileRec {
     DWORD m_Offset;  // Смещение данных относительно начала файла
     DWORD m_Extra;   // Данные во время работы объекта
 };
+#pragma pack(pop)
 typedef SFileRec *PSFileRec;
 
 struct SFolderRec {
