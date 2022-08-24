@@ -1,9 +1,5 @@
 add_library(MatrixLib STATIC)
 
-if(MSVC)
-    enable_language(ASM_MASM)
-endif()
-
 set(3G_SOURCES
     3G/3g.cpp
     3G/BigIB.cpp
@@ -77,7 +73,6 @@ set(BASE_HEADERS
     Base/Tracer.hpp
 )
 set(BITMAP_SOURCES
-    Bitmap/asharpen.asm
     Bitmap/CBitmap.cpp
     Bitmap/sharpen.cpp
 )
