@@ -27,11 +27,9 @@
 //    BOOL fClip;
 //};
 
+// #define USE_ASM
 
-
-#define USE_ASM
-
-
+#ifdef USE_ASM
 extern "C" void __cdecl asm_sharpen_run(
         void *dst,
         void *src,
@@ -51,6 +49,7 @@ extern "C" void __cdecl asm_sharpen_run_MMX(
         unsigned long dststride,
         long a_mult,
         long b_mult);
+#endif
 
 #define C_TOPOK		(1)
 #define C_BOTTOMOK	(2)
@@ -142,36 +141,18 @@ static inline unsigned long do_conv2(unsigned long *data, long *m, long pit) {
 }
 #endif
 
+#ifdef USE_ASM
 enum MMXSTATE
 {
     MMX_UNKNOWN,
     MMX_PRESENT,
     MMX_ABSENT
-
 };
 
 #define _CPU_FEATURE_MMX 0x0001 
 #define _CPU_FEATURE_SSE 0x0002 
 #define _CPU_FEATURE_SSE2 0x0004 
 #define _CPU_FEATURE_3DNOW 0x0008 
-
-
-bool IsCPUID(void) 
-{ 
-    __try
-    { 
-        _asm
-        { 
-            xor eax, eax 
-            cpuid 
-        } 
-    } 
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    { 
-        return false; 
-    } 
-    return true; 
-} 
 
 int _os_support(int feature) 
 { 
@@ -217,7 +198,7 @@ int _os_support(int feature)
     } 
     return 1; 
 } 
-
+#endif
 
 void sharpen_run(CBitmap &obm, CBitmap &ibm, int lv)
 {
@@ -226,16 +207,21 @@ void sharpen_run(CBitmap &obm, CBitmap &ibm, int lv)
     ASSERT(obm.BytePP() == 4);
     //obm.CreateRGBA(ibm.SizeX(), ibm.SizeY());
 
+    ibm.BitmapDuplicate(obm);
+    return;
+
     unsigned long w,h;
     unsigned long *src = (unsigned long *)ibm.Data(), *dst = (unsigned long *)obm.Data();
     unsigned long pitch = ibm.Pitch();
 
+#ifdef USE_ASM
     static MMXSTATE mmx = MMX_UNKNOWN;
 
     if (mmx == MMX_UNKNOWN)
     {
         mmx = _os_support(_CPU_FEATURE_MMX) ? MMX_PRESENT:MMX_ABSENT;
     }
+#endif
 
 //    ConvoluteFilterData fd;
 
