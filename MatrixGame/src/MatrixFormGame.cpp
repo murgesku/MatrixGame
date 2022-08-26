@@ -1820,7 +1820,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             float len = D3DXVec3Length(&dir);
             float dd = len / 3;
             dir *= 1.0f / len;
-            D3DXVec3Cross(&side, &dir, &D3DXVECTOR3(0, 0, 1));
+            auto tmp = D3DXVECTOR3(0, 0, 1);
+            D3DXVec3Cross(&side, &dir, &tmp);
             D3DXVec3Normalize(&side, &side);
 
             D3DXVECTOR3 to[128];

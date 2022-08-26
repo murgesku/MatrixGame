@@ -2708,8 +2708,8 @@ void HelperT(D3DXVECTOR2 from, D3DXVECTOR2 to) {
     return;
     CHelper::Create(1, 0)->Line(D3DXVECTOR3(from.x, from.y, 2), D3DXVECTOR3(to.x, to.y, 2), 0xffffff00, 0xffffff00);
 
-    D3DXVECTOR3 n = to - from;
-    n.z = 0;
+    auto tmp = to - from;
+    D3DXVECTOR3 n{tmp.x, tmp.y, 0};
     D3DXVec3Normalize(&n, &n);
 
     CHelper::Create(1, 0)->Line(D3DXVECTOR3(to.x - n.y * 1.5f, to.y + n.x * 1.5f, 2),
