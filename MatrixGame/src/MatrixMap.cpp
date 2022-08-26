@@ -2917,7 +2917,7 @@ skip:;
 }
 
 #ifdef _DEBUG
-void CMatrixMap::SubEffect(SDebugCallInfo &from, PCMatrixEffect e)
+void CMatrixMap::SubEffect(const SDebugCallInfo &from, PCMatrixEffect e)
 #else
 void CMatrixMap::SubEffect(PCMatrixEffect e)
 #endif
