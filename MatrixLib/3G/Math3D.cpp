@@ -5,6 +5,8 @@
 
 #include "3g.pch"
 
+#include <algorithm>
+
 float SinCosTable[SIN_TABLE_SIZE];
 
 static class InitMath3D {
@@ -443,10 +445,10 @@ void CTrajectory::Init1(const D3DXVECTOR3 *points, int pcnt) {
         goto alloc;
 
     for (int i = 0; i < m_SegCnt; ++i) {
-        int i0 = max(i - 1, 0);
+        int i0 = std::max(i - 1, 0);
         int i1 = i;
         int i2 = i + 1;
-        int i3 = min(i + 2, pcnt - 1);
+        int i3 = std::min(i + 2, pcnt - 1);
 
         m_Segments[i].Build1(points[i0], points[i1], points[i2], points[i3]);
     }
@@ -470,10 +472,10 @@ void CTrajectory::Init2(const D3DXVECTOR3 *points, int pcnt) {
         goto alloc;
 
     for (int i = 0; i < m_SegCnt; ++i) {
-        int i0 = max(i - 1, 0);
+        int i0 = std::max(i - 1, 0);
         int i1 = i;
         int i2 = i + 1;
-        int i3 = min(i + 2, pcnt - 1);
+        int i3 = std::min(i + 2, pcnt - 1);
 
         m_Segments[i].Build2(points[i0], points[i1], points[i2], points[i3]);
     }
@@ -591,7 +593,7 @@ void CTrajectory::Continue1(const D3DXVECTOR3 *points, int pcnt) {
         int i0 = i - 3;
         int i1 = i - 2;
         int i2 = i - 1;
-        int i3 = min(i, pcnt - 1);
+        int i3 = std::min(i, pcnt - 1);
 
         m_Segments[i + m_SegCnt].Build1((i0 >= 0) ? points[i0] : p[4 + i0], (i1 >= 0) ? points[i1] : p[4 + i1],
                                         points[i2], points[i3]);
@@ -617,7 +619,7 @@ void CTrajectory::Continue2(const D3DXVECTOR3 *points, int pcnt) {
         int i0 = i - 3;
         int i1 = i - 2;
         int i2 = i - 1;
-        int i3 = min(i, pcnt - 1);
+        int i3 = std::min(i, pcnt - 1);
 
         m_Segments[i + m_SegCnt].Build2((i0 >= 0) ? points[i0] : p[4 + i0], (i1 >= 0) ? points[i1] : p[4 + i1],
                                         points[i2], points[i3]);

@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "stdafx.h"
 
@@ -450,7 +451,7 @@ float CMatrixMap::GetZInterpolatedLand(float wx, float wy) {
                 z = m_GroundZBaseMiddle;
             else if (z > m_GroundZBaseMax)
                 z = m_GroundZBaseMax;
-            xx[i].z = max(prex_z, z);  //(prex_z + z) * 0.5f;
+            xx[i].z = std::max(prex_z, z);  //(prex_z + z) * 0.5f;
             prex_z = z;
         }
         SBSplineKoefs kx;
@@ -490,7 +491,7 @@ float CMatrixMap::GetZInterpolatedObj(float wx, float wy) {
             xx[i].x = cx * (GLOBAL_SCALE * MAP_GROUP_SIZE);
             xx[i].y = cy * (GLOBAL_SCALE * MAP_GROUP_SIZE);
             z = GetGroupMaxZObj(cx, cy);
-            xx[i].z = max(prex_z, z);  //(prex_z + z) * 0.5f;
+            xx[i].z = std::max(prex_z, z);  //(prex_z + z) * 0.5f;
             prex_z = z;
         }
         SBSplineKoefs kx;
@@ -530,7 +531,7 @@ float CMatrixMap::GetZInterpolatedObjRobots(float wx, float wy) {
             xx[i].x = cx * (GLOBAL_SCALE * MAP_GROUP_SIZE);
             xx[i].y = cy * (GLOBAL_SCALE * MAP_GROUP_SIZE);
             z = GetGroupMaxZObjRobots(cx, cy);
-            xx[i].z = max(prex_z, z);  //(prex_z + z) * 0.5f;
+            xx[i].z = std::max(prex_z, z);  //(prex_z + z) * 0.5f;
             prex_z = z;
         }
         SBSplineKoefs kx;
@@ -686,8 +687,8 @@ bool CMatrixMap::UnitPick(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, const
     float mt = 1e30f;
     bool rv = false;
 
-    for (y = max(0, ar.top); y < min(m_Size.y, ar.bottom); y++) {
-        for (x = max(0, ar.left); x < min(m_Size.x, ar.right); x++) {
+    for (y = std::max(0, ar.top); y < std::min(m_Size.y, ar.bottom); y++) {
+        for (x = std::max(0, ar.left); x < std::min(m_Size.x, ar.right); x++) {
             un = UnitGet(x, y);
             if (!un->IsLand())
                 continue;
@@ -2917,7 +2918,7 @@ skip:;
 }
 
 #ifdef _DEBUG
-void CMatrixMap::SubEffect(SDebugCallInfo &from, PCMatrixEffect e)
+void CMatrixMap::SubEffect(const SDebugCallInfo &from, PCMatrixEffect e)
 #else
 void CMatrixMap::SubEffect(PCMatrixEffect e)
 #endif

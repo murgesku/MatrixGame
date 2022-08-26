@@ -405,10 +405,10 @@ public:
     inline float GetRadius(void) const { return m_Core->m_Radius; }
 
 #ifdef _DEBUG
-    SObjectCore *GetCore(SDebugCallInfo &dci);
+    SObjectCore *GetCore(const SDebugCallInfo &dci);
 #else
 #ifdef _TRACE
-    inline SObjectCore *GetCore(SDebugCallInfo &) {
+    inline SObjectCore *GetCore(const SDebugCallInfo&) {
         m_Core->RefInc();
         return m_Core;
     }

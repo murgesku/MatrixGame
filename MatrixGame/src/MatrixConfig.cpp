@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "stdafx.h"
 
@@ -1026,7 +1027,7 @@ void CMatrixConfig::ReadParams(void) {
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_WHEELSTEP)
                         m_CamParams[index].m_CamMouseWheelStep = (float)bp_c->ParGet(j).GetDouble();
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTANGLEMIN)
-                        m_CamParams[index].m_CamRotAngleMin = GRAD2RAD(min(94.0f, (float)bp_c->ParGet(j).GetDouble()));
+                        m_CamParams[index].m_CamRotAngleMin = GRAD2RAD(std::min(94.0f, (float)bp_c->ParGet(j).GetDouble()));
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_ROTANGLEMAX)
                         m_CamParams[index].m_CamRotAngleMax = GRAD2RAD((float)bp_c->ParGet(j).GetDouble());
                     else if (bp_c->ParGetName(j) == PAR_SOURCE_CAMERA_DISTMIN)

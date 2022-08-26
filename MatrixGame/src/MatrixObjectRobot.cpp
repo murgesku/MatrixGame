@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "stdafx.h"
 
@@ -223,12 +224,12 @@ void CMatrixRobot::BoundGet(D3DXVECTOR3 &bmin, D3DXVECTOR3 &bmax) {
 
         for (int u = 0; u < 8; u++) {
             D3DXVec3TransformCoord(&(v[u]), &(v[u]), &(m_Unit[i].m_Matrix));
-            bmin.x = min(bmin.x, v[u].x);
-            bmin.y = min(bmin.y, v[u].y);
-            bmin.z = min(bmin.z, v[u].z);
-            bmax.x = max(bmax.x, v[u].x);
-            bmax.y = max(bmax.y, v[u].y);
-            bmax.z = max(bmax.z, v[u].z);
+            bmin.x = std::min(bmin.x, v[u].x);
+            bmin.y = std::min(bmin.y, v[u].y);
+            bmin.z = std::min(bmin.z, v[u].z);
+            bmax.x = std::max(bmax.x, v[u].x);
+            bmax.y = std::max(bmax.y, v[u].y);
+            bmax.z = std::max(bmax.z, v[u].z);
         }
     }
 }
@@ -803,7 +804,7 @@ void CMatrixRobot::DoAnimation(int cms) {
                 while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].u1.s1.m_NextAnimTime)) {
                     changed = true;
                     float add = k * (float)m_Unit[i].m_Graph->NextFrame();
-                    m_Unit[i].u1.s1.m_NextAnimTime += max(add, 0.1f);
+                    m_Unit[i].u1.s1.m_NextAnimTime += std::max(add, 0.1f);
                 }
                 if (changed) {
                     if (m_ShadowType == SHADOW_STENCIL)
@@ -840,7 +841,7 @@ void CMatrixRobot::DoAnimation(int cms) {
                 while (g_MatrixMap->GetTime() > Float2Int(m_Unit[i].u1.s1.m_NextAnimTime)) {
                     changed = true;
                     float add = k * (float)m_Unit[i].m_Graph->NextFrame();
-                    m_Unit[i].u1.s1.m_NextAnimTime += max(add, 0.1f);
+                    m_Unit[i].u1.s1.m_NextAnimTime += std::max(add, 0.1f);
                 }
                 if (changed) {
                     if (m_ShadowType == SHADOW_STENCIL)
@@ -1176,12 +1177,12 @@ bool CMatrixRobot::CalcBounds(D3DXVECTOR3 &minv, D3DXVECTOR3 &maxv) {
         for (int i = 0; i < cnt; ++i) {
             m_Unit[u].m_Graph->VO()->GetBound(i, m_Unit[u].m_Matrix, bminout, bmaxout);
 
-            minv.x = min(minv.x, bminout.x);
-            minv.y = min(minv.y, bminout.y);
-            minv.z = min(minv.z, bminout.z);
-            maxv.x = max(maxv.x, bmaxout.x);
-            maxv.y = max(maxv.y, bmaxout.y);
-            maxv.z = max(maxv.z, bmaxout.z);
+            minv.x = std::min(minv.x, bminout.x);
+            minv.y = std::min(minv.y, bminout.y);
+            minv.z = std::min(minv.z, bminout.z);
+            maxv.x = std::max(maxv.x, bmaxout.x);
+            maxv.y = std::max(maxv.y, bmaxout.y);
+            maxv.z = std::max(maxv.z, bmaxout.z);
         }
     }
     DCP();

@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <algorithm>
+
 #include "BitmapDef.hpp"
 #include "../Base/Base.hpp"
 
@@ -117,7 +119,7 @@ public:
         Clear();
         m_Size.x = lenx;
         m_Size.y = leny;
-        m_Pitch = max(lenx * 3, pitch);
+        m_Pitch = std::max(lenx * 3, pitch);
         m_Format = BMF_FLAT;
         m_BytePP = 3;
         m_BitPP = 24;
@@ -144,7 +146,7 @@ public:
         Clear();
         m_Size.x = lenx;
         m_Size.y = leny;
-        m_Pitch = max(lenx * 4, pitch);
+        m_Pitch = std::max(lenx * 4, pitch);
         m_Format = BMF_FLAT;
         m_BytePP = 4;
         m_BitPP = 32;

@@ -425,7 +425,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
 }
 
 #ifdef _DEBUG
-void SEffectHandler::Release(SDebugCallInfo &from)
+void SEffectHandler::Release(const SDebugCallInfo &from)
 #else
 void SEffectHandler::Release(void)
 #endif

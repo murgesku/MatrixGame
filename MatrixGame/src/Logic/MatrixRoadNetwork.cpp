@@ -5,6 +5,8 @@
 
 #include "../stdafx.h"
 
+#include <algorithm>
+
 using namespace Base;
 
 #include "MatrixRoadNetwork.hpp"
@@ -1272,7 +1274,7 @@ void CMatrixRoadNetwork::SelectUnneededIsland() {
     int cnt = 0;
     CMatrixCrotch *crotch = m_CrotchFirst;
     while (crotch) {
-        cnt = max(cnt, crotch->m_Island + 1);
+        cnt = std::max(cnt, crotch->m_Island + 1);
         crotch->m_Select = false;
         crotch = crotch->m_Next;
     }
@@ -2293,7 +2295,7 @@ int CMatrixRoadNetwork::CalcRadiusRegion(int no) {
 
     int r = 0;
     for (int u = 0; u < region->m_CrotchCnt; u++) {
-        r = max(r, region->m_Center.Dist2(m_Zone[region->m_Crotch[u]->m_Zone].m_Center));
+        r = std::max(r, region->m_Center.Dist2(m_Zone[region->m_Crotch[u]->m_Zone].m_Center));
     }
     return int(sqrt(double(r)));
 }
@@ -2306,7 +2308,7 @@ void CMatrixRoadNetwork::CalcRadiusPlaceRegion(int no) {
     for (int i = 0; i < region->m_PlaceCnt; i++) {
         SMatrixPlace *place = GetPlace(region->m_Place[i]);
         region->m_RadiusPlace =
-                max(region->m_RadiusPlace, region->m_Center.Dist2(CPoint(place->m_Pos.x + 2, place->m_Pos.y + 2)));
+                std::max(region->m_RadiusPlace, region->m_Center.Dist2(CPoint(place->m_Pos.x + 2, place->m_Pos.y + 2)));
     }
     region->m_RadiusPlace = int(sqrt(double(region->m_RadiusPlace))) + 2;
 }
@@ -2570,16 +2572,16 @@ void CMatrixRoadNetwork::InitPL(int mapsizex, int mapsizey) {
 }
 
 CRect CMatrixRoadNetwork::CorrectRectPL(const CRect &mapcoords) {
-    return CRect(max(0, mapcoords.left >> m_PLShift), max(0, mapcoords.top >> m_PLShift),
-                 min(m_PLSizeX, (mapcoords.right >> m_PLShift) + 1),
-                 min(m_PLSizeY, (mapcoords.bottom >> m_PLShift) + 1));
+    return CRect(std::max(0, mapcoords.left >> m_PLShift), std::max(0, mapcoords.top >> m_PLShift),
+                 std::min(m_PLSizeX, (mapcoords.right >> m_PLShift) + 1),
+                 std::min(m_PLSizeY, (mapcoords.bottom >> m_PLShift) + 1));
 }
 
 void CMatrixRoadNetwork::ActionDataPL(const CRect &mapcoords, dword mask_and, dword mask_or) {
-    int sx = max(0, mapcoords.left >> m_PLShift);
-    int sy = max(0, mapcoords.top >> m_PLShift);
-    int ex = min(m_PLSizeX, (mapcoords.right >> m_PLShift) + 1);
-    int ey = min(m_PLSizeY, (mapcoords.bottom >> m_PLShift) + 1);
+    int sx = std::max(0, mapcoords.left >> m_PLShift);
+    int sy = std::max(0, mapcoords.top >> m_PLShift);
+    int ex = std::min(m_PLSizeX, (mapcoords.right >> m_PLShift) + 1);
+    int ey = std::min(m_PLSizeY, (mapcoords.bottom >> m_PLShift) + 1);
 
     SMatrixPlaceList *pl = m_PLList + sx + sy * m_PLSizeX;
     for (int y = sy; y < ey; y++, pl += m_PLSizeX - (ex - sx)) {

@@ -5,6 +5,14 @@
 
 #pragma once
 
+// it's a total shit that we have to do this...
+#ifdef MSVC7
+    #undef min
+    #undef max
+#endif
+
+#include <algorithm>
+
 #include "CException.hpp"
 #include "CMain.hpp"
 #include "CHeap.hpp"
@@ -501,7 +509,7 @@ inline void CWStr::ModifyLen(CHeap *heap, int len) {
         CWStrData *olddata = m_Data;
         olddata->RefDec();
         NewDataLen(heap, len);
-        memcpy(m_Data->Data(), olddata->Data(), (min(len, olddata->m_Len) + 1) * sizeof(wchar));
+        memcpy(m_Data->Data(), olddata->Data(), (std::min(len, olddata->m_Len) + 1) * sizeof(wchar));
     }
     else {
         Tream(len);
