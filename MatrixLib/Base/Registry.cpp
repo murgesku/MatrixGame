@@ -5,6 +5,8 @@
 
 #include "Base.pch"
 
+#include <cwchar>
+
 #include "CWStr.hpp"
 #include "CException.hpp"
 #include "CStr.hpp"
@@ -14,15 +16,15 @@ namespace Base {
 
 HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
     int len = WStrLen(path);
-    if (len > 5 && MemCmp(path, L"HKCR\\", 5)) {
+    if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
     }
-    else if (len > 5 && MemCmp(path, L"HKCU\\", 5)) {
+    else if (len > 5 && !std::wmemcmp(path, L"HKCU\\", 5)) {
         key = HKEY_CURRENT_USER;
         path += 5;
     }
-    else if (len > 5 && MemCmp(path, L"HKLM\\", 5)) {
+    else if (len > 5 && !std::wmemcmp(path, L"HKLM\\", 5)) {
         key = HKEY_LOCAL_MACHINE;
         path += 5;
     }
@@ -42,15 +44,15 @@ HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
 
 HKEY Reg_CreateKey(HKEY key, const wchar *path, dword access) {
     int len = WStrLen(path);
-    if (len > 5 && MemCmp(path, L"HKCR\\", 5)) {
+    if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
     }
-    else if (len > 5 && MemCmp(path, L"HKCU\\", 5)) {
+    else if (len > 5 && !std::wmemcmp(path, L"HKCU\\", 5)) {
         key = HKEY_CURRENT_USER;
         path += 5;
     }
-    else if (len > 5 && MemCmp(path, L"HKLM\\", 5)) {
+    else if (len > 5 && !std::wmemcmp(path, L"HKLM\\", 5)) {
         key = HKEY_LOCAL_MACHINE;
         path += 5;
     }

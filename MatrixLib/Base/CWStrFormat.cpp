@@ -6,6 +6,8 @@
 #include "Base.pch"
 
 #include <stdlib.h>
+#include <cwchar>
+
 #include "CWStr.hpp"
 #include "CStr.hpp"
 #include "CException.hpp"
@@ -284,13 +286,13 @@ CWStr &CWStr::Format(const wchar *format, ...) {
             else if (t_len >= 3 && *format == 'f' && *(format + 1) == '=') {
                 t_fill = ff_GetInt(format + 2, t_len - 2);
             }
-            else if (t_len >= 3 && MemCmp(format, L"a=[", 3)) {
+            else if (t_len >= 3 && !std::wmemcmp(format, L"a=[", 3)) {
                 t_aling = -1;
             }
-            else if (t_len >= 3 && MemCmp(format, L"a=-", 3)) {
+            else if (t_len >= 3 && !std::wmemcmp(format, L"a=-", 3)) {
                 t_aling = 0;
             }
-            else if (t_len >= 3 && MemCmp(format, L"a=]", 3)) {
+            else if (t_len >= 3 && !std::wmemcmp(format, L"a=]", 3)) {
                 t_aling = 1;
             }
             else if (t_len >= 3 && *format == 'p' && *(format + 1) == '=') {
