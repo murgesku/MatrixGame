@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixFlyer.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixObjectBuilding.hpp"
@@ -1857,12 +1859,12 @@ bool CMatrixFlyer::CalcBounds(D3DXVECTOR3 &minv, D3DXVECTOR3 &maxv) {
         for (int i = 0; i < cnt; i++) {
             m_Units[u].m_Graph->VO()->GetBound(i, m_Units[u].m_Matrix, bminout, bmaxout);
 
-            minv.x = min(minv.x, bminout.x);
-            minv.y = min(minv.y, bminout.y);
-            minv.z = min(minv.z, bminout.z);
-            maxv.x = max(maxv.x, bmaxout.x);
-            maxv.y = max(maxv.y, bmaxout.y);
-            maxv.z = max(maxv.z, bmaxout.z);
+            minv.x = std::min(minv.x, bminout.x);
+            minv.y = std::min(minv.y, bminout.y);
+            minv.z = std::min(minv.z, bminout.z);
+            maxv.x = std::max(maxv.x, bmaxout.x);
+            maxv.y = std::max(maxv.y, bmaxout.y);
+            maxv.z = std::max(maxv.z, bmaxout.z);
         }
     }
 

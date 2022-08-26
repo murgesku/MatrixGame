@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "3g.pch"
 
@@ -1100,12 +1101,12 @@ void CVectorObject::CalcShadowProjMatrix(int cnt, CVectorObjectAnim **obj, const
     for (int i = 0; i < cnt; i++) {
         D3DXMatrixMultiply(&ml2, wm + i, &ml);
         obj[i]->VO()->GetBound(noframe[i], ml2, _vmin, _vmax);
-        vmin.x = min(vmin.x, _vmin.x - addsize);
-        vmin.y = min(vmin.y, _vmin.y - addsize);
-        vmin.z = min(vmin.z, _vmin.z - addsize);
-        vmax.x = max(vmax.x, _vmax.x + addsize);
-        vmax.y = max(vmax.y, _vmax.y + addsize);
-        vmax.z = max(vmax.z, _vmax.z + addsize);
+        vmin.x = std::min(vmin.x, _vmin.x - addsize);
+        vmin.y = std::min(vmin.y, _vmin.y - addsize);
+        vmin.z = std::min(vmin.z, _vmin.z - addsize);
+        vmax.x = std::max(vmax.x, _vmax.x + addsize);
+        vmax.y = std::max(vmax.y, _vmax.y + addsize);
+        vmax.z = std::max(vmax.z, _vmax.z + addsize);
     }
 
     pd.vpos = D3DXVECTOR3(vmin.x, vmin.y, vmin.z);
@@ -2148,13 +2149,13 @@ void CVectorObjectGroup::BoundGet(D3DXVECTOR3 &bmin, D3DXVECTOR3 &bmax) {
                 bmax = bmaxout;
             }
             else {
-                bmin.x = min(bmin.x, bminout.x);
-                bmin.y = min(bmin.y, bminout.y);
-                bmin.z = min(bmin.z, bminout.z);
+                bmin.x = std::min(bmin.x, bminout.x);
+                bmin.y = std::min(bmin.y, bminout.y);
+                bmin.z = std::min(bmin.z, bminout.z);
 
-                bmax.x = max(bmax.x, bmaxout.x);
-                bmax.y = max(bmax.y, bmaxout.y);
-                bmax.z = max(bmax.z, bmaxout.z);
+                bmax.x = std::max(bmax.x, bmaxout.x);
+                bmax.y = std::max(bmax.y, bmaxout.y);
+                bmax.z = std::max(bmax.z, bmaxout.z);
             }
         }
         u = u->m_Next;
@@ -2198,13 +2199,13 @@ void CVectorObjectGroup::BoundGetAllFrame(D3DXVECTOR3 &bmin, D3DXVECTOR3 &bmax) 
                     bmax = bmaxout;
                 }
                 else {
-                    bmin.x = min(bmin.x, bminout.x);
-                    bmin.y = min(bmin.y, bminout.y);
-                    bmin.z = min(bmin.z, bminout.z);
+                    bmin.x = std::min(bmin.x, bminout.x);
+                    bmin.y = std::min(bmin.y, bminout.y);
+                    bmin.z = std::min(bmin.z, bminout.z);
 
-                    bmax.x = max(bmax.x, bmaxout.x);
-                    bmax.y = max(bmax.y, bmaxout.y);
-                    bmax.z = max(bmax.z, bmaxout.z);
+                    bmax.x = std::max(bmax.x, bmaxout.x);
+                    bmax.y = std::max(bmax.y, bmaxout.y);
+                    bmax.z = std::max(bmax.z, bmaxout.z);
                 }
             }
         }

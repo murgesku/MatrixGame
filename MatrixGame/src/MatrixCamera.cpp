@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixCamera.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixFlyer.hpp"
@@ -789,7 +791,7 @@ float CMatrixCamera::GetFrustPlaneMinDist(const D3DXVECTOR3 &pos) {
     float d1 = GetFrustPlaneR().Distance(pos);
     float d2 = GetFrustPlaneT().Distance(pos);
     float d3 = GetFrustPlaneB().Distance(pos);
-    return min(min(d0, d1), min(d2, d3));
+    return std::min(std::min(d0, d1), std::min(d2, d3));
 }
 
 // void  CMatrixCamera::ModeChanged(void)
@@ -1010,7 +1012,7 @@ void CMatrixCamera::Takt(float ms) {
             D3DXVECTOR2 ccc(g_MatrixMap->m_Size.x * GLOBAL_SCALE / 2, g_MatrixMap->m_Size.y * GLOBAL_SCALE / 2);
             D3DXVECTOR2 bd(ccc - m_XY_Strategy);
             float r = D3DXVec2Length(&bd);
-            float rlim = 3 * max(ccc.x, ccc.y);
+            float rlim = 3 * std::max(ccc.x, ccc.y);
             if (r > rlim) {
                 m_XY_Strategy += bd * INVERT(r) * (r - rlim);
             }

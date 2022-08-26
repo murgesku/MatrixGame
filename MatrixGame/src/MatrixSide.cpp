@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixSide.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
@@ -1868,7 +1870,7 @@ void CMatrixSideUnit::CalcStrength() {
 
     int res = 0;
     for (int r = 0; r < MAX_RESOURCES; r++)
-        res += min(1000, m_Resources[r]);
+        res += std::min(1000, m_Resources[r]);
     res /= MAX_RESOURCES;
 
     m_Strength = 5.0f * c_base + 1.0f * c_building + s_cannon / 2000.0f + s_robot / 1000.0f + float(res) / 100.0f;
@@ -2196,7 +2198,7 @@ void CMatrixSideUnit::EscapeFromBomb() {
         enemy = ms->AsRobot()->GetEnv()->m_FirstEnemy;
         for (; enemy; enemy = enemy->m_NextEnemy) {
             auto tmp = GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms);
-            min_dist_enemy[rbcnt] = min(min_dist_enemy[rbcnt], D3DXVec2LengthSq(&tmp));
+            min_dist_enemy[rbcnt] = std::min(min_dist_enemy[rbcnt], D3DXVec2LengthSq(&tmp));
         }
 
         rb[rbcnt] = (CMatrixRobotAI *)ms;
@@ -2284,7 +2286,7 @@ void CMatrixSideUnit::EscapeFromBomb() {
         enemy = ms->AsRobot()->GetEnv()->m_FirstEnemy;
         for (; enemy; enemy = enemy->m_NextEnemy) {
             auto tmp = GetWorldPos(enemy->m_Enemy) - GetWorldPos(ms);
-            mde = min(mde, D3DXVec2LengthSq(&tmp));
+            mde = std::min(mde, D3DXVec2LengthSq(&tmp));
         }
 
         for (i = 0; i < rbcnt; i++) {
@@ -2558,8 +2560,8 @@ void CMatrixSideUnit::CalcMaxSpeed() {
             float ry = rl[u]->m_PosY;
 
             pr[u] = dx * (rx - cx) + dy * (ry - cy);
-            minpr = min(pr[u], minpr);
-            maxpr = max(pr[u], maxpr);
+            minpr = std::min(pr[u], minpr);
+            maxpr = std::max(pr[u], maxpr);
         }
 
         for (u = 0; u < rlcnt - 1; u++) {
@@ -2833,10 +2835,10 @@ void CMatrixSideUnit::TaktHL() {
                             m_Team[team].m_RobotCnt++;
                             m_Team[team].m_Strength += ms->AsRobot()->GetStrength();
                             m_Team[team].m_CenterMass += tp;
-                            m_Team[team].m_Rect.left = min(m_Team[team].m_Rect.left, tp.x);
-                            m_Team[team].m_Rect.top = min(m_Team[team].m_Rect.top, tp.y);
-                            m_Team[team].m_Rect.right = max(m_Team[team].m_Rect.right, tp.x);
-                            m_Team[team].m_Rect.bottom = max(m_Team[team].m_Rect.bottom, tp.y);
+                            m_Team[team].m_Rect.left = std::min(m_Team[team].m_Rect.left, tp.x);
+                            m_Team[team].m_Rect.top = std::min(m_Team[team].m_Rect.top, tp.y);
+                            m_Team[team].m_Rect.right = std::max(m_Team[team].m_Rect.right, tp.x);
+                            m_Team[team].m_Rect.bottom = std::max(m_Team[team].m_Rect.bottom, tp.y);
 
                             m_Team[team].OrMove(1 << (ms->AsRobot()->m_Unit[0].u1.s1.m_Kind - 1));
 
@@ -3195,8 +3197,8 @@ void CMatrixSideUnit::TaktHL() {
 
             team = ((CMatrixRobotAI *)ms)->GetTeam();
             if (team >= 0 && team < m_TeamCnt) {
-                m_Team[team].m_RadiusMass = max(m_Team[team].m_RadiusMass, m_Team[team].m_CenterMass.Dist2(tp));
-                m_Team[team].m_Radius = max(m_Team[team].m_Radius, m_Team[team].m_Center.Dist2(tp));
+                m_Team[team].m_RadiusMass = std::max(m_Team[team].m_RadiusMass, m_Team[team].m_CenterMass.Dist2(tp));
+                m_Team[team].m_Radius = std::max(m_Team[team].m_Radius, m_Team[team].m_Center.Dist2(tp));
             }
         }
         ms = ms->GetNextLogic();
@@ -3370,7 +3372,7 @@ void CMatrixSideUnit::TaktHL() {
         for (u = 0; u < g_MatrixMap->m_RN.m_Region[m_Team[i].m_RegionMass].m_NearCnt; u++) {
             t = g_MatrixMap->m_RN.m_Region[m_Team[i].m_RegionMass].m_Near[u];
 
-            if (max(1.0, m_Team[i].m_Strength * 0.4) >= m_Region[t].m_Danger) {
+            if (std::max(1.0, m_Team[i].m_Strength * 0.4) >= m_Region[t].m_Danger) {
                 if (m_Region[t].m_Danger < md) {
                     md = m_Region[t].m_Danger;
                     m_Team[i].m_RegionNearRetreat = t;
@@ -3435,7 +3437,7 @@ void CMatrixSideUnit::TaktHL() {
             //                (m_Team[i].m_Action.m_Type==mlat_Defence) &&
             //                (g_MatrixMap->GetTime()-m_Team[i].m_ActionTime>3*60*1000))) {
             int bravecnt = GetMaxSideRobots();
-            bravecnt = min(Float2Int(m_BraveMul * float(bravecnt)), bravecnt);
+            bravecnt = std::min(Float2Int(m_BraveMul * float(bravecnt)), bravecnt);
             if (bravecnt < 1)
                 bravecnt = 1;
 
@@ -4743,10 +4745,10 @@ void CMatrixSideUnit::TaktTL() {
             if (IsLiveUnit(obj) && obj->GetSide() != m_Id) {
                 tp = GetMapPos(obj);
                 CRect rect(1000000000, 1000000000, -1000000000, -1000000000);
-                rect.left = min(rect.left, tp.x);
-                rect.top = min(rect.top, tp.y);
-                rect.right = max(rect.right, tp.x + ROBOT_MOVECELLS_PER_SIZE);
-                rect.bottom = max(rect.bottom, tp.y + ROBOT_MOVECELLS_PER_SIZE);
+                rect.left = std::min(rect.left, tp.x);
+                rect.top = std::min(rect.top, tp.y);
+                rect.right = std::max(rect.right, tp.x + ROBOT_MOVECELLS_PER_SIZE);
+                rect.bottom = std::max(rect.bottom, tp.y + ROBOT_MOVECELLS_PER_SIZE);
 
                 tp.x += ROBOT_MOVECELLS_PER_SIZE >> 1;
                 tp.y += ROBOT_MOVECELLS_PER_SIZE >> 1;
@@ -5392,8 +5394,8 @@ void CMatrixSideUnit::WarTL(int group) {
             if (!rl[i]->GetEnv()->m_TargetAttack)
                 continue;
             tp2 = GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
-            radiusrobot = max(radiusrobot, Float2Int(rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE));
-            radius = max(radius, Float2Int(sqrt(float(POW2(center.x - tp2.x) + POW2(center.y - tp2.y))) +
+            radiusrobot = std::max(radiusrobot, Float2Int(rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE));
+            radius = std::max(radius, Float2Int(sqrt(float(POW2(center.x - tp2.x) + POW2(center.y - tp2.y))) +
                                            rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE));
         }
 
@@ -5428,17 +5430,17 @@ void CMatrixSideUnit::WarTL(int group) {
             // int growsizemax=0;
 
             // for(i=0;i<rlcnt;i++) {
-            //    growsizemin=max(growsizemin,int(rl[i]->GetMinFireDist()/GLOBAL_SCALE_MOVE));
-            //    growsizemax=max(growsizemax,int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
+            //    growsizemin=std::max(growsizemin,int(rl[i]->GetMinFireDist()/GLOBAL_SCALE_MOVE));
+            //    growsizemax=std::max(growsizemax,int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
 
             //    CEnemy * enemy=rl[i]->GetEnv()->m_FirstEnemy;
             //    while(enemy) {
             //        if(IsLiveUnit(enemy->m_Enemy)) {
             //            tp=GetMapPos(enemy->m_Enemy);
-            //            rect.left=min(rect.left,tp.x);
-            //            rect.top=min(rect.top,tp.y);
-            //            rect.right=max(rect.right,tp.x+ROBOT_MOVECELLS_PER_SIZE);
-            //            rect.bottom=max(rect.bottom,tp.y+ROBOT_MOVECELLS_PER_SIZE);
+            //            rect.left=std::min(rect.left,tp.x);
+            //            rect.top=std::min(rect.top,tp.y);
+            //            rect.right=std::max(rect.right,tp.x+ROBOT_MOVECELLS_PER_SIZE);
+            //            rect.bottom=std::max(rect.bottom,tp.y+ROBOT_MOVECELLS_PER_SIZE);
             //        }
             //        enemy=enemy->m_NextEnemy;
             //    }
@@ -5757,7 +5759,7 @@ void CMatrixSideUnit::WarTL(int group) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
 
-                        env->m_TargetAngle=min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
+                        env->m_TargetAngle=std::min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
                         if(g_MatrixMap->Rnd(0,9)<5) env->m_TargetAngle=-env->m_TargetAngle;
                     }
                     else if(env->m_TargetAngle>0) env->m_TargetAngle-=1.0f*ToRad;
@@ -5770,7 +5772,7 @@ void CMatrixSideUnit::WarTL(int group) {
                         env->m_TargetAngle = 0.0f;
 
                         env->m_TargetAngle =
-                                min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
+                                std::min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
                                                           env->m_TargetAttack->AsRobot()->m_AimProtect * ToRad);
                         if (g_MatrixMap->Rnd(0, 9) < 5)
                             env->m_TargetAngle = -env->m_TargetAngle;
@@ -6311,7 +6313,7 @@ float CMatrixSideUnit::BuildRobotMinStrange(CMatrixBuilding *base) {
         }
         mps = mps->GetNextLogic();
     }
-    return max(0.0f, minstrange * 0.7f);  // Занижаем минимальную силу
+    return std::max(0.0f, minstrange * 0.7f);  // Занижаем минимальную силу
 }
 
 void CMatrixSideUnit::BuildRobot(void) {
@@ -6398,11 +6400,11 @@ void CMatrixSideUnit::BuildRobot(void) {
     // Время сколько можно подождать
     int waittime = 10000;
     if (m_Region[GetRegion(base)].m_EnemyRobotDist >= 0)
-        waittime = 10000 * max(0, m_Region[GetRegion(base)].m_EnemyRobotDist - 1);
+        waittime = 10000 * std::max(0, m_Region[GetRegion(base)].m_EnemyRobotDist - 1);
     else if (m_Region[GetRegion(base)].m_EnemyBuildingDist >= 0)
-        waittime = 10000 * max(0, m_Region[GetRegion(base)].m_EnemyBuildingDist - 1);
+        waittime = 10000 * std::max(0, m_Region[GetRegion(base)].m_EnemyBuildingDist - 1);
 
-    waittime = Float2Int(m_WaitResMul * float(min(waittime, 40000)));  // Нет смысла долго ждять.
+    waittime = Float2Int(m_WaitResMul * float(std::min(waittime, 40000)));  // Нет смысла долго ждять.
 
     // Сколько нужно ждать до запланированного робота
     int waitend = -1;
@@ -6416,7 +6418,7 @@ void CMatrixSideUnit::BuildRobot(void) {
                     break;
                 }
                 waitend =
-                        max(waitend, Float2Int(float(k * g_Config.m_Timings[r]) /
+                        std::max(waitend, Float2Int(float(k * g_Config.m_Timings[r]) /
                                                float(wr[r] * RESOURCES_INCOME +
                                                      (RESOURCES_INCOME_BASE * GetResourceForceUp() / 100 * basecnt))));
             }
@@ -6426,7 +6428,7 @@ void CMatrixSideUnit::BuildRobot(void) {
     // Сколько будет ресурсов, если немного подождать
     int mr = 0;
     for (r = 0; r < MAX_RESOURCES; r++)
-        mr += min(2000, m_Resources[r]);
+        mr += std::min(2000, m_Resources[r]);
     mr = Float2Int(float(mr / MAX_RESOURCES) * 0.6f);
 
     for (r = 0; r < MAX_RESOURCES; r++) {
@@ -6526,7 +6528,7 @@ void CMatrixSideUnit::BuildRobot(void) {
         if (i < cnt) {
             if (base->m_BS.GetItemsCnt() < 6) {
                 for (r = 0; r < MAX_RESOURCES; r++)
-                    m_Resources[r] = max(0, m_Resources[r] - SSpecialBot::m_AIRobotTypeList[list[i]].m_Resources[r]);
+                    m_Resources[r] = std::max(0, m_Resources[r] - SSpecialBot::m_AIRobotTypeList[list[i]].m_Resources[r]);
                 m_Constructor->SetBase(base);
                 m_Constructor->BuildSpecialBot(SSpecialBot::m_AIRobotTypeList[list[i]]);
 
@@ -6699,7 +6701,7 @@ void CMatrixSideUnit::BuildRobot(void) {
 
         if (base->m_BS.GetItemsCnt() < 6) {
             for (r = 0; r < MAX_RESOURCES; r++)
-                m_Resources[r] = max(0, m_Resources[r] - SSpecialBot::m_AIRobotTypeList[list[i]].m_Resources[r]);
+                m_Resources[r] = std::max(0, m_Resources[r] - SSpecialBot::m_AIRobotTypeList[list[i]].m_Resources[r]);
 
             m_Constructor->SetBase(base);
             m_Constructor->BuildSpecialBot(SSpecialBot::m_AIRobotTypeList[list[i]]);
@@ -6785,7 +6787,7 @@ void CMatrixSideUnit::BuildCannon(void) {
 
     int vmin = ct[0];
     for (int i = 1; i < CANNON_TYPE_CNT; i++)
-        vmin = min(ct[i], vmin);
+        vmin = std::min(ct[i], vmin);
 
     int curtype = 0;
     while (true) {
@@ -6810,7 +6812,7 @@ void CMatrixSideUnit::BuildCannon(void) {
         return;
 
     for (r = 0; r < MAX_RESOURCES; r++)
-        m_Resources[r] = max(0, m_Resources[r] - g_Config.m_CannonsProps[curtype].m_Resources[r]);
+        m_Resources[r] = std::max(0, m_Resources[r] - g_Config.m_CannonsProps[curtype].m_Resources[r]);
 
     CPoint pcannon = plist[g_MatrixMap->Rnd(0, plistcnt - 1)];
 
@@ -6882,10 +6884,10 @@ void CMatrixSideUnit::TaktPL(int onlygroup) {
             if (IsLiveUnit(obj) && obj->GetSide() != m_Id) {
                 tp = GetMapPos(obj);
                 CRect rect(1000000000, 1000000000, -1000000000, -1000000000);
-                rect.left = min(rect.left, tp.x);
-                rect.top = min(rect.top, tp.y);
-                rect.right = max(rect.right, tp.x + ROBOT_MOVECELLS_PER_SIZE);
-                rect.bottom = max(rect.bottom, tp.y + ROBOT_MOVECELLS_PER_SIZE);
+                rect.left = std::min(rect.left, tp.x);
+                rect.top = std::min(rect.top, tp.y);
+                rect.right = std::max(rect.right, tp.x + ROBOT_MOVECELLS_PER_SIZE);
+                rect.bottom = std::max(rect.bottom, tp.y + ROBOT_MOVECELLS_PER_SIZE);
 
                 tp.x += ROBOT_MOVECELLS_PER_SIZE >> 1;
                 tp.y += ROBOT_MOVECELLS_PER_SIZE >> 1;
@@ -8119,7 +8121,7 @@ bool CMatrixSideUnit::FirePL(int group) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
 
-                        env->m_TargetAngle=min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
+                        env->m_TargetAngle=std::min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
                         if(g_MatrixMap->Rnd(0,9)<5) env->m_TargetAngle=-env->m_TargetAngle;
                     }
                     else if(env->m_TargetAngle>0) env->m_TargetAngle-=1.0f*ToRad;
@@ -8132,7 +8134,7 @@ bool CMatrixSideUnit::FirePL(int group) {
                         env->m_TargetAngle = 0.0f;
 
                         env->m_TargetAngle =
-                                min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
+                                std::min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
                                                           env->m_TargetAttack->AsRobot()->m_AimProtect * ToRad);
                         if (g_MatrixMap->Rnd(0, 9) < 5)
                             env->m_TargetAngle = -env->m_TargetAngle;
@@ -8434,8 +8436,8 @@ void CMatrixSideUnit::WarPL(int group) {
             if (!rl[i]->GetEnv()->m_TargetAttack)
                 continue;
             tp2 = GetMapPos(rl[i]->GetEnv()->m_TargetAttack);
-            radiusrobot = max(radiusrobot, Float2Int(rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE));
-            radius = max(radius, Float2Int(sqrt(float(POW2(center.x - tp2.x) + POW2(center.y - tp2.y))) +
+            radiusrobot = std::max(radiusrobot, Float2Int(rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE));
+            radius = std::max(radius, Float2Int(sqrt(float(POW2(center.x - tp2.x) + POW2(center.y - tp2.y))) +
                                            rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE));
         }
 
@@ -8471,17 +8473,17 @@ void CMatrixSideUnit::WarPL(int group) {
             // int growsizemax=0;
 
             // for(i=0;i<rlcnt;i++) {
-            //    growsizemin=max(growsizemin,int(rl[i]->GetMinFireDist()/GLOBAL_SCALE_MOVE));
-            //    growsizemax=max(growsizemax,int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
+            //    growsizemin=std::max(growsizemin,int(rl[i]->GetMinFireDist()/GLOBAL_SCALE_MOVE));
+            //    growsizemax=std::max(growsizemax,int(rl[i]->GetMaxFireDist()/GLOBAL_SCALE_MOVE));
 
             //    CEnemy * enemy=rl[i]->GetEnv()->m_FirstEnemy;
             //    while(enemy) {
             //        if(IsLive(enemy->m_Enemy)) {
             //            tp=GetMapPos(enemy->m_Enemy);
-            //            rect.left=min(rect.left,tp.x);
-            //            rect.top=min(rect.top,tp.y);
-            //            rect.right=max(rect.right,tp.x+ROBOT_MOVECELLS_PER_SIZE);
-            //            rect.bottom=max(rect.bottom,tp.y+ROBOT_MOVECELLS_PER_SIZE);
+            //            rect.left=std::min(rect.left,tp.x);
+            //            rect.top=std::min(rect.top,tp.y);
+            //            rect.right=std::max(rect.right,tp.x+ROBOT_MOVECELLS_PER_SIZE);
+            //            rect.bottom=std::max(rect.bottom,tp.y+ROBOT_MOVECELLS_PER_SIZE);
             //        }
             //        enemy=enemy->m_NextEnemy;
             //    }
@@ -8804,7 +8806,7 @@ void CMatrixSideUnit::WarPL(int group) {
                     if(env->m_Target!=env->m_TargetAttack || fabs(env->m_TargetAngle)<=1.0f*1.1f*ToRad) {
                         env->m_TargetAngle=0.0f;
 
-                        env->m_TargetAngle=min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
+                        env->m_TargetAngle=std::min(30.0f*ToRad,(float)atan(env->m_TargetAttack->AsRobot()->m_AimProtect/sqrt(POW2(des.x-rl[i]->m_PosX)+POW2(des.y-rl[i]->m_PosY))));
                         if(g_MatrixMap->Rnd(0,9)<5) env->m_TargetAngle=-env->m_TargetAngle;
                     }
                     else if(env->m_TargetAngle>0) env->m_TargetAngle-=1.0f*ToRad;
@@ -8817,7 +8819,7 @@ void CMatrixSideUnit::WarPL(int group) {
                         env->m_TargetAngle = 0.0f;
 
                         env->m_TargetAngle =
-                                min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
+                                std::min(8.0f * ToRad, (float)g_MatrixMap->Rnd(1, 100) / 100.0f * 16.0f *
                                                           env->m_TargetAttack->AsRobot()->m_AimProtect * ToRad);
                         if (g_MatrixMap->Rnd(0, 9) < 5)
                             env->m_TargetAngle = -env->m_TargetAngle;

@@ -717,7 +717,7 @@ void CBitmap::Tile(const Base::CPoint &pdes, const Base::CPoint &desize, const C
 
     int cx = szsou.x;
     while (cx < desize.x) {
-        int w = min((desize.x - cx), cx);
+        int w = std::min((desize.x - cx), cx);
         Copy(CPoint(pdes.x + cx, pdes.y), CPoint(w, szsou.y), *this, pdes);
         cx += w;
     }
@@ -726,7 +726,7 @@ void CBitmap::Tile(const Base::CPoint &pdes, const Base::CPoint &desize, const C
 
     int cy = szsou.y;
     while (cy < desize.y) {
-        int h = min((desize.y - cy), cy);
+        int h = std::min((desize.y - cy), cy);
         Copy(CPoint(pdes.x, pdes.y + cy), CPoint(desize.x, h), *this, pdes);
         cy += h;
     }
@@ -769,7 +769,7 @@ void CBitmap::Copy(const Base::CPoint &pdes, const Base::CPoint &size, const CBi
                 DWORD color = *((DWORD *)sou1) | alpha;
                 *((DWORD *)des1) = color;
             }
-            int c = min(bmsou.m_BytePP, m_BytePP);
+            int c = std::min(bmsou.m_BytePP, m_BytePP);
             while (c--) {
                 *des1++ = *sou1++;
             }

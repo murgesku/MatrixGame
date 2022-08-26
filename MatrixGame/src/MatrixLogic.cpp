@@ -149,7 +149,7 @@ void CMatrixMapLogic::GatherInfo(int type) {
 void CMatrixMapLogic::PrepareBuf() {
 #if (defined _DEBUG) && !(defined _RELDEBUG)
     if (m_ZoneDataZero) {
-        int cnt = max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt);
+        int cnt = std::max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt);
         dword *buf = m_ZoneDataZero;
         while (cnt) {
             if (*buf != 0)
@@ -161,11 +161,11 @@ void CMatrixMapLogic::PrepareBuf() {
 #endif
 
     if (!m_ZoneIndex)
-        m_ZoneIndex = (int *)HAlloc(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
+        m_ZoneIndex = (int *)HAlloc(std::max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
     if (!m_ZoneDataZero)
-        m_ZoneDataZero = (dword *)HAllocClear(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(dword), g_MatrixHeap);
+        m_ZoneDataZero = (dword *)HAllocClear(std::max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(dword), g_MatrixHeap);
     if (!m_ZoneIndexAccess)
-        m_ZoneIndexAccess = (int *)HAlloc(max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
+        m_ZoneIndexAccess = (int *)HAlloc(std::max(m_RN.m_ZoneCnt, m_RN.m_PlaceCnt) * sizeof(int), g_MatrixHeap);
 }
 
 // void CMatrixMapLogic::ZoneClear()
@@ -1335,21 +1335,21 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
     if (!m_MapPoint)
         m_MapPoint = (CPoint *)HAlloc(m_SizeMove.x * m_SizeMove.y * sizeof(CPoint), g_MatrixHeap);
 
-    int zoneskipcnt = min(zonepathcnt - 1, 6);
+    int zoneskipcnt = std::min(zonepathcnt - 1, 6);
 
     CRect re = m_RN.m_Zone[zonepath[zoneskipcnt]].m_Rect;
     for (i = 0; i < zoneskipcnt; i++) {
         UnionRect((LPRECT)&re, (LPRECT)&re, (LPRECT)&(m_RN.m_Zone[zonepath[i]].m_Rect));
     }
-    re.left = min(mx, re.left);
-    re.top = min(my, re.top);
-    re.right = max(mx + 1, re.right);
-    re.bottom = max(my + 1, re.bottom);
+    re.left = std::min(mx, re.left);
+    re.top = std::min(my, re.top);
+    re.right = std::max(mx + 1, re.right);
+    re.bottom = std::max(my + 1, re.bottom);
 
-    re.left = max(re.left - size, 0);
-    re.top = max(re.top - size, 0);
-    re.right = min(re.right + size, m_SizeMove.x - size);
-    re.bottom = min(re.bottom + size, m_SizeMove.y - size);
+    re.left = std::max(re.left - size, 0);
+    re.top = std::max(re.top - size, 0);
+    re.right = std::min(re.right + size, m_SizeMove.x - size);
+    re.bottom = std::min(re.bottom + size, m_SizeMove.y - size);
 
     ASSERT(!re.IsEmpty());
 
@@ -1368,10 +1368,10 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
                     SetWeightFromTo(other_size[i],pl->x,pl->y,(pl+1)->x,(pl+1)->y);
                 }*/
         // Куда робот становится 200%
-        int sx = max(0, other_des[i].x - (other_size[i] - 1));
-        int sy = max(0, other_des[i].y - (other_size[i] - 1));
-        int ex = min(m_SizeMove.x, other_des[i].x + other_size[i]);
-        int ey = min(m_SizeMove.y, other_des[i].y + other_size[i]);
+        int sx = std::max(0, other_des[i].x - (other_size[i] - 1));
+        int sy = std::max(0, other_des[i].y - (other_size[i] - 1));
+        int ex = std::min(m_SizeMove.x, other_des[i].x + other_size[i]);
+        int ey = std::min(m_SizeMove.y, other_des[i].y + other_size[i]);
         smm = MoveGet(sx, sy);
         for (y = sy; y < ey; y++, smm += m_SizeMove.x - (ey - sy)) {
             for (x = sx; x < ex; x++, smm++) {
@@ -1381,10 +1381,10 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
         }
         // Где робот стоит 30%
         if (other_path_cnt[i] > 0) {
-            int sx = max(0, other_path_list[i]->x - (other_size[i] - 1));
-            int sy = max(0, other_path_list[i]->y - (other_size[i] - 1));
-            int ex = min(m_SizeMove.x, other_path_list[i]->x + other_size[i]);
-            int ey = min(m_SizeMove.y, other_path_list[i]->y + other_size[i]);
+            int sx = std::max(0, other_path_list[i]->x - (other_size[i] - 1));
+            int sy = std::max(0, other_path_list[i]->y - (other_size[i] - 1));
+            int ex = std::min(m_SizeMove.x, other_path_list[i]->x + other_size[i]);
+            int ey = std::min(m_SizeMove.y, other_path_list[i]->y + other_size[i]);
             smm = MoveGet(sx, sy);
             for (y = sy; y < ey; y++, smm += m_SizeMove.x - (ey - sy)) {
                 for (x = sx; x < ex; x++, smm++) {
@@ -2281,9 +2281,9 @@ int CMatrixMapLogic::RandomizeMovePath(int nsh, int size, int cnt, CPoint *path)
 
         int dist2 = (path[i].x - path[i - 1].x) * (path[i].x - path[i - 1].x) +
                     (path[i].y - path[i - 1].y) * (path[i].y - path[i - 1].y);
-        dist2 = min(dist2, (path[i].x - path[i + 1].x) * (path[i].x - path[i + 1].x) +
+        dist2 = std::min(dist2, (path[i].x - path[i + 1].x) * (path[i].x - path[i + 1].x) +
                                    (path[i].y - path[i + 1].y) * (path[i].y - path[i + 1].y));
-        dist2 = min(dist2, 7 * 7);
+        dist2 = std::min(dist2, 7 * 7);
 
         for (int u = 0; u < 5; u++) {
             int newpx = Rnd(re.left, re.right);

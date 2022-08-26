@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixMap.hpp"
 #include "MatrixObject.hpp"
 #include "MatrixObjectRobot.hpp"
@@ -88,7 +90,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroup(void *d, int gx, int gy, 
     if (t0 > data->last_t)
         return SR_BREAK;
 
-    double minz = min(start.z + data->dir.z * t0, start.z + data->dir.z * t1);
+    double minz = std::min(start.z + data->dir.z * t0, start.z + data->dir.z * t1);
     if (minz < data->minz)
         minz = data->minz;
 
@@ -201,7 +203,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroup(void *d, int gx, int gy, 
         float bx;
         if (data->gdx > 0) {
             x = (gx * MAP_GROUP_SIZE);
-            ex = min(((gx + 1) * MAP_GROUP_SIZE), px1);
+            ex = std::min(((gx + 1) * MAP_GROUP_SIZE), px1);
             bx = (x * GLOBAL_SCALE);
             if (bx < start.x) {
                 x = TruncFloat(start.x * INVERT(GLOBAL_SCALE));
@@ -212,7 +214,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroup(void *d, int gx, int gy, 
         }
         else {
             x = ((gx + 1) * MAP_GROUP_SIZE) - 1;
-            ex = min((gx * MAP_GROUP_SIZE), px1);
+            ex = std::min((gx * MAP_GROUP_SIZE), px1);
             bx = ((x + 1) * GLOBAL_SCALE);
             if (bx > start.x) {
                 x = TruncFloat(start.x * INVERT(GLOBAL_SCALE));
@@ -290,7 +292,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroup(void *d, int gx, int gy, 
         float by;
         if (data->gdy > 0) {
             y = (gy * MAP_GROUP_SIZE);
-            ey = min(((gy + 1) * MAP_GROUP_SIZE), py1);
+            ey = std::min(((gy + 1) * MAP_GROUP_SIZE), py1);
             by = (y * GLOBAL_SCALE);
             if (by < start.y) {
                 y = TruncFloat(start.y * INVERT(GLOBAL_SCALE));
@@ -301,7 +303,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroup(void *d, int gx, int gy, 
         }
         else {
             y = ((gy + 1) * MAP_GROUP_SIZE) - 1;
-            ey = min((gy * MAP_GROUP_SIZE), py1);
+            ey = std::min((gy * MAP_GROUP_SIZE), py1);
             by = ((y + 1) * GLOBAL_SCALE);
             if (by > start.y) {
                 y = TruncFloat(start.y * INVERT(GLOBAL_SCALE));
@@ -397,8 +399,8 @@ CMatrixMapStatic *CMatrixMap::Trace(D3DXVECTOR3 *result, const D3DXVECTOR3 &star
     data.dir = D3DXVECTOR3(data.dx * oblen, data.dy * oblen, data.dz * oblen);
 
     data.last_t = data.len;
-    data.minz = min(start.z, end.z);
-    data.maxz = max(start.z, end.z);
+    data.minz = std::min(start.z, end.z);
+    data.maxz = std::max(start.z, end.z);
     data.obj = NULL;
 
     if (m_AD_Obj_cnt > 0) {
@@ -796,7 +798,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroupForLand(void *d, int gx, i
     if (t0 > data->last_t)
         return SR_BREAK;
 
-    double minz = min(start.z + data->dir.z * t0, start.z + data->dir.z * t1);
+    double minz = std::min(start.z + data->dir.z * t0, start.z + data->dir.z * t1);
     if (minz < data->minz)
         minz = data->minz;
 
@@ -833,7 +835,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroupForLand(void *d, int gx, i
         float bx;
         if (data->gdx > 0) {
             x = (gx * MAP_GROUP_SIZE);
-            ex = min(((gx + 1) * MAP_GROUP_SIZE), px1);
+            ex = std::min(((gx + 1) * MAP_GROUP_SIZE), px1);
             bx = (x * GLOBAL_SCALE);
             if (bx < start.x) {
                 x = TruncFloat(start.x * INVERT(GLOBAL_SCALE));
@@ -844,7 +846,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroupForLand(void *d, int gx, i
         }
         else {
             x = ((gx + 1) * MAP_GROUP_SIZE) - 1;
-            ex = min((gx * MAP_GROUP_SIZE), px1);
+            ex = std::min((gx * MAP_GROUP_SIZE), px1);
             bx = ((x + 1) * GLOBAL_SCALE);
             if (bx > start.x) {
                 x = TruncFloat(start.x * INVERT(GLOBAL_SCALE));
@@ -921,7 +923,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroupForLand(void *d, int gx, i
         float by;
         if (data->gdy > 0) {
             y = (gy * MAP_GROUP_SIZE);
-            ey = min(((gy + 1) * MAP_GROUP_SIZE), py1);
+            ey = std::min(((gy + 1) * MAP_GROUP_SIZE), py1);
             by = (y * GLOBAL_SCALE);
             if (by < start.y) {
                 y = TruncFloat(start.y * INVERT(GLOBAL_SCALE));
@@ -932,7 +934,7 @@ CMatrixMap::EScanResult CMatrixMap::ScanLandscapeGroupForLand(void *d, int gx, i
         }
         else {
             y = ((gy + 1) * MAP_GROUP_SIZE) - 1;
-            ey = min((gy * MAP_GROUP_SIZE), py1);
+            ey = std::min((gy * MAP_GROUP_SIZE), py1);
             by = ((y + 1) * GLOBAL_SCALE);
             if (by > start.y) {
                 y = TruncFloat(start.y * INVERT(GLOBAL_SCALE));
@@ -1014,15 +1016,15 @@ bool CMatrixMap::TraceLand(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3D
     data.dy = dir.y;
     data.dz = dir.z;
 
-    data.len = max(m_Size.x, m_Size.y) * GLOBAL_SCALE * 1.5f;
+    data.len = std::max(m_Size.x, m_Size.y) * GLOBAL_SCALE * 1.5f;
 
     const double oblen = 1.0 / data.len;
     data.dir = dir;
 
     data.last_t = data.len;
     float zz = (start.z + dir.z * data.len);
-    data.minz = min(start.z, zz);
-    data.maxz = max(start.z, zz);
+    data.minz = std::min(start.z, zz);
+    data.maxz = std::max(start.z, zz);
     if (data.minz < 0)
         data.minz = 0;
 
@@ -1256,8 +1258,8 @@ bool CMatrixMap::CatchPoint(const D3DXVECTOR3 &from, const D3DXVECTOR3 &to) {
     data.dir.z = float(data.dz * oblen);
 
     data.last_t = data.len;
-    data.minz = min(from.z, to.z);
-    data.maxz = max(from.z, to.z);
+    data.minz = std::min(from.z, to.z);
+    data.maxz = std::max(from.z, to.z);
 
     if (((*((DWORD *)(&data.dx)) | *((DWORD *)(&data.dy))) & 0x7FFFFFFF) == 0) {
         if (data.dz == 0) {

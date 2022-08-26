@@ -5,11 +5,11 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixMap.hpp"
 #include "MatrixShadowManager.hpp"
 #include "MatrixObject.hpp"
-
-//#include <malloc.h> // _alloca
 
 CMatrixShadowProj::~CMatrixShadowProj() {
     int cnt = g_MatrixMap->m_GroupSize.x * g_MatrixMap->m_GroupSize.y;
@@ -84,10 +84,10 @@ static void ShadowProjBuildGeomInt(CVOShadowProj &sp, const SProjData &pd, const
 
     int msx = Float2Int(objma._41 / GLOBAL_SCALE) - mapradius;
     int msy = Float2Int(objma._42 / GLOBAL_SCALE) - mapradius;
-    int mex = min(g_MatrixMap->m_Size.x, msx + mapradius * 2);
-    int mey = min(g_MatrixMap->m_Size.y, msy + mapradius * 2);
-    msx = max(0, msx);
-    msy = max(0, msy);
+    int mex = std::min(g_MatrixMap->m_Size.x, msx + mapradius * 2);
+    int mey = std::min(g_MatrixMap->m_Size.y, msy + mapradius * 2);
+    msx = std::max(0, msx);
+    msy = std::max(0, msy);
     if (msx >= mex || msy >= mey)
         return;
 

@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "stdafx.h"
 
@@ -349,9 +350,9 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     }
 
     if (m_ColsWeight)
-        m_ColsWeight = max(0, m_ColsWeight - ms);
+        m_ColsWeight = std::max(0, m_ColsWeight - ms);
     if (m_ColsWeight2)
-        m_ColsWeight2 = max(0, m_ColsWeight2 - ms);
+        m_ColsWeight2 = std::max(0, m_ColsWeight2 - ms);
     else
         GetEnv()->m_BadCoordCnt = 0;
 
@@ -2439,15 +2440,15 @@ bool CMatrixRobotAI::Seek(const D3DXVECTOR3 &dest, bool &rotate, bool end_path, 
         k *= LERPFLOAT(-slope, 1.0f, m_SpeedSlopeCorrDown);
     }
 
-    if ((destLength - min(m_GroupSpeed, m_ColSpeed)) < 0.001f) {
+    if ((destLength - std::min(m_GroupSpeed, m_ColSpeed)) < 0.001f) {
         m_Velocity = destDir * k;
         m_Speed = destLength * k;
     }
     else {
-        m_Speed = k * min(m_GroupSpeed, m_ColSpeed);
+        m_Speed = k * std::min(m_GroupSpeed, m_ColSpeed);
         if (end_path) {
-            float t = min(1.0f, destLength / 20.0f);
-            t *= min(1.0f, (1.0f - rangle / pi_f));
+            float t = std::min(1.0f, destLength / 20.0f);
+            t *= std::min(1.0f, (1.0f - rangle / pi_f));
             m_Speed = m_Speed * t;
         }
         m_Velocity = forward * m_Speed;
@@ -2930,7 +2931,7 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
                                         data->stop = true;
                                         data->far_col = true;
                                         data->robot->m_ColSpeed =
-                                                min(data->robot->m_GroupSpeed, pCurrBot->m_GroupSpeed * 0.5f);
+                                                std::min(data->robot->m_GroupSpeed, pCurrBot->m_GroupSpeed * 0.5f);
                                     }
                                 }
                             }
@@ -3031,7 +3032,7 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
                                 else {
                                     data->far_col = true;
                                     data->robot->m_ColSpeed =
-                                            min(data->robot->m_GroupSpeed, pCurrBot->m_GroupSpeed * 0.5f);
+                                            std::min(data->robot->m_GroupSpeed, pCurrBot->m_GroupSpeed * 0.5f);
                                 }
                             }
                         }
@@ -4363,7 +4364,7 @@ void CMatrixRobotAI::CalcRobotMass() {
             continue;
         }
         if (m_Weapons[cnt].GetWeaponType() == WEAPON_REPAIR) {
-            r_min = min(r_min, m_Weapons[cnt].GetWeaponDist());
+            r_min = std::min(r_min, m_Weapons[cnt].GetWeaponDist());
             cnt++;
             continue;
         }
@@ -4423,7 +4424,7 @@ void CMatrixRobotAI::GatherInfo(int type) {
                 float dist_enemy = D3DXVec3LengthSq(&enemy_napr);
                 DCP();
 
-                if (dist_enemy <= POW2(max(robot->m_MaxFireDist, m_MaxFireDist) *
+                if (dist_enemy <= POW2(std::max(robot->m_MaxFireDist, m_MaxFireDist) *
                                        1.1) /*(D3DXVec3LengthSq(&enemy_napr) <= m_MinFireDist*m_MinFireDist) ||
                                                (D3DXVec3LengthSq(&enemy_napr) <= m_MaxFireDist*m_MaxFireDist &&
                                                angle_rad <= ROBOT_FOV)*/
@@ -4480,7 +4481,7 @@ void CMatrixRobotAI::GatherInfo(int type) {
                 else {
                     DCP();
                     if (/*robot->m_FireTarget != this && */ dist_enemy >
-                        POW2(max(robot->m_MaxFireDist, m_MaxFireDist) * 1.4))
+                        POW2(std::max(robot->m_MaxFireDist, m_MaxFireDist) * 1.4))
                         m_Environment.RemoveFromListSlowly(obj);
                 }
                 DCP();
@@ -4499,7 +4500,7 @@ void CMatrixRobotAI::GatherInfo(int type) {
 
                 DCP();
                 if (dist_enemy <=
-                            POW2(max(cannon->GetFireRadius() * 1.01,
+                            POW2(std::max(cannon->GetFireRadius() * 1.01,
                                      m_MaxFireDist *
                                              1.1)) /*(D3DXVec3LengthSq(&enemy_napr) <= m_MinFireDist*m_MinFireDist)*/
                     /* || (D3DXVec3LengthSq(&enemy_napr) <= m_MaxFireDist*m_MaxFireDist && angle_rad <= ROBOT_FOV) */
@@ -4557,7 +4558,7 @@ void CMatrixRobotAI::GatherInfo(int type) {
                 else {
                     DCP();
                     if (cannon->m_TargetCore != this->m_Core &&
-                        dist_enemy > POW2(max(cannon->GetFireRadius(), m_MaxFireDist) * 1.5))
+                        dist_enemy > POW2(std::max(cannon->GetFireRadius(), m_MaxFireDist) * 1.5))
                         m_Environment.RemoveFromListSlowly(obj);
                     DCP();
                 }
