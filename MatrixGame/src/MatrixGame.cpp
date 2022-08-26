@@ -128,7 +128,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
 #endif
-        g_Cache->Clear();
+        if (g_Cache)
+        {
+            g_Cache->Clear();
+        }
         L3GDeinit();
 
         MessageBox(NULL, CStr(ex->Info()).Get(), "Exception:", MB_OK);
