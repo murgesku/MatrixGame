@@ -302,7 +302,7 @@ void CDebugTracer::StaticInit(void) throw() {
     m_hist_end = 0;
 #endif
 
-    std::set_terminate((terminate_function)&cpp_except_terminate);
+    std::set_terminate((terminate_handler)&cpp_except_terminate);
 
     SetUnhandledExceptionFilter(sys_except_handler);
 }

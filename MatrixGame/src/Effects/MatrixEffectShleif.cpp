@@ -18,7 +18,7 @@ CMatrixEffectShleif::CMatrixEffectShleif(void) {
     m_Smokes = (SEffectHandler *)HAlloc(sizeof(SEffectHandler) * SHLEIF_MAX_SMOKES, m_Heap);
 #ifdef _DEBUG
     for (int i = 0; i < SHLEIF_MAX_SMOKES; ++i) {
-        m_Smokes[i].SEffectHandler::SEffectHandler(DEBUG_CALL_INFO);
+        new (&m_Smokes[i]) SEffectHandler(DEBUG_CALL_INFO);
     }
 #else
     memset(m_Smokes, 0, sizeof(SEffectHandler) * SHLEIF_MAX_SMOKES);
