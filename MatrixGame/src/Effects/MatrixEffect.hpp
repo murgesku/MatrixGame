@@ -286,9 +286,9 @@ struct SEffectHandler {
 
 #ifdef _DEBUG
     SEffectHandler(void) : from("", -1), effect(NULL) {}
-    SEffectHandler(SDebugCallInfo &f) : from(f), effect(NULL) {}
+    SEffectHandler(const SDebugCallInfo &f) : from(f), effect(NULL) {}
     ~SEffectHandler() { Release(from); }
-    void Release(SDebugCallInfo &from);
+    void Release(const SDebugCallInfo &from);
 #else
     SEffectHandler(void) : effect(NULL) {}
     ~SEffectHandler() { Release(); }

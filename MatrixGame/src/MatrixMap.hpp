@@ -574,7 +574,7 @@ public:
 
     bool AddEffect(CMatrixEffect *ef);
 #ifdef _DEBUG
-    void SubEffect(SDebugCallInfo &from, PCMatrixEffect e);
+    void SubEffect(const SDebugCallInfo &from, PCMatrixEffect e);
 #else
     void SubEffect(PCMatrixEffect e);
 #endif

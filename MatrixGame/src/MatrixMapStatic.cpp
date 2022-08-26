@@ -56,7 +56,7 @@ CMatrixMapStatic *CMatrixMapStatic::m_FirstLogicTemp;
 CMatrixMapStatic *CMatrixMapStatic::m_LastLogicTemp;
 
 #ifdef _DEBUG
-SObjectCore *CMatrixMapStatic::GetCore(SDebugCallInfo &dci) {
+SObjectCore *CMatrixMapStatic::GetCore(const SDebugCallInfo &dci) {
     m_Core->m_dci = dci;
 
     //#ifdef _DEBUG
