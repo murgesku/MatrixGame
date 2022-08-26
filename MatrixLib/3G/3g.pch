@@ -16,8 +16,14 @@
 
 #include "d3d9.h"
 #include "d3dx9tex.h"
-//#include "dxerr9.h"
-#include "dxerr.h"
+
+#ifdef __GNUC__
+    #include "dxerr9.h"
+    #define DXGetErrorStringW DXGetErrorString9W
+    #define DXGetErrorDescriptionW DXGetErrorDescription9W
+#else
+    #include "dxerr.h"
+#endif // __GNUC__
 
 #include "../Bitmap/Bitmap.pch"
 #include "../Base/Base.hpp"
