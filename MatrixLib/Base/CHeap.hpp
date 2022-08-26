@@ -158,55 +158,49 @@ __inline int CheckValidPtr(const void *ptr) {
 }
 
 class BASE_API CHeap : public CMain {
-private:
-    HANDLE m_Heap;
-    dword m_Flags;
-
 public:
 #ifdef MEM_SPY_ENABLE
     static void StaticInit(void);
     static void StaticDeInit(void);
 #endif
 
-    CHeap(void);
-    ~CHeap();
-
-    void Clear(void);
-
-    void AllocationError(int zn);
+    static void AllocationError(int zn);
 
 #ifdef MEM_SPY_ENABLE
-    void *Alloc(uint size, const char *file, int line);
-    void *AllocClear(uint size, const char *file, int line);
-    void *ReAlloc(void *buf, uint size, const char *file, int line);
-    void *ReAllocClear(void *buf, uint size, const char *file, int line);
-    void *AllocEx(void *buf, uint size, const char *file, int line);
-    void *AllocClearEx(void *buf, uint size, const char *file, int line);
-    void Free(void *buf, const char *file, int line);
+    static void *Alloc(uint size, const char *file, int line);
+    static void *AllocClear(uint size, const char *file, int line);
+    static void *ReAlloc(void *buf, uint size, const char *file, int line);
+    static void *ReAllocClear(void *buf, uint size, const char *file, int line);
+    static void *AllocEx(void *buf, uint size, const char *file, int line);
+    static void *AllocClearEx(void *buf, uint size, const char *file, int line);
+    static void Free(void *buf, const char *file, int line);
 #endif
 
-    void *Alloc(size_t size);
-    void *AllocClear(size_t size);
-    void *ReAlloc(void *buf, size_t size);
-    void *ReAllocClear(void *buf, size_t size);
-    void *AllocEx(void *buf, size_t size);
-    void *AllocClearEx(void *buf, size_t size);
-    void Free(void *buf);
+    static void *Alloc(size_t size);
+    static void *AllocClear(size_t size);
+    static void *ReAlloc(void *buf, size_t size);
+    static void *ReAllocClear(void *buf, size_t size);
+    static void *AllocEx(void *buf, size_t size);
+    static void *AllocClearEx(void *buf, size_t size);
+    static void Free(void *buf);
 };
 
 #ifdef MEM_SPY_ENABLE
+
 inline void *CHeap::Alloc(uint size, const char *file, int line) {
     DTRACE();
     uint sz = SMemHeader::CalcSize(size);
     SMemHeader *h = (SMemHeader *)Alloc(sz);
     return h->Init(sz, file, line);
 }
+
 inline void *CHeap::AllocClear(uint size, const char *file, int line) {
     DTRACE();
     uint sz = SMemHeader::CalcSize(size);
     SMemHeader *h = (SMemHeader *)AllocClear(sz);
     return h->Init(sz, file, line);
 }
+
 inline void *CHeap::ReAlloc(void *buf, uint size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
@@ -218,6 +212,7 @@ inline void *CHeap::ReAlloc(void *buf, uint size, const char *file, int line) {
     h = (SMemHeader *)ReAlloc(h, sz);
     return h->Init(sz, file, line);
 }
+
 inline void *CHeap::ReAllocClear(void *buf, uint size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
@@ -254,158 +249,79 @@ inline void *CHeap::AllocClearEx(void *buf, uint size, const char *file, int lin
     return h->Init(sz, file, line);
 }
 
-#endif
+#endif // MEM_SPY_ENABLE
 
 inline void *CHeap::Alloc(size_t size) {
-    void *buf;
-    if (this == NULL)
-        buf = HeapAlloc(GetProcessHeap(), 0, size);
-    else
-        buf = HeapAlloc(m_Heap, m_Flags, size);
-    if (buf == NULL)
-        AllocationError(size);
+    void *buf = malloc(size);
+    if (!buf) AllocationError(size);
     return buf;
 }
 
 inline void *CHeap::AllocClear(size_t size) {
-    void *buf;
-    if (this == NULL)
-        buf = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size);
-    else
-        buf = HeapAlloc(m_Heap, m_Flags | HEAP_ZERO_MEMORY, size);
-    if (buf == NULL)
-        AllocationError(size);
+    void *buf = calloc(size, 1);
+    if (!buf) AllocationError(size);
     return buf;
 }
 
 inline void *CHeap::ReAlloc(void *buf, size_t size) {
-    if ((buf = HeapReAlloc(GetProcessHeap(), 0, buf, size)) == NULL)
-        ERROR_E;
-
-    if (this == NULL)
-        buf = HeapReAlloc(GetProcessHeap(), 0, buf, size);
-    else
-        buf = HeapReAlloc(m_Heap, m_Flags, buf, size);
-    if (buf == NULL)
-        AllocationError(size);
+    buf = realloc(buf, size);
+    if (!buf) AllocationError(size);
     return buf;
 }
 
 inline void *CHeap::ReAllocClear(void *buf, size_t size) {
-    if ((buf = HeapReAlloc(GetProcessHeap(), 0, buf, size)) == NULL)
-        ERROR_E;
-
-    if (this == NULL)
-        buf = HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, buf, size);
-    else
-        buf = HeapReAlloc(m_Heap, m_Flags | HEAP_ZERO_MEMORY, buf, size);
-    if (buf == NULL)
-        AllocationError(size);
-
+    // there is no standard way to zero-fill only newly added memory
+    // after realloc. but i guess this memory is used right after
+    // allocation, so there is no reason to clean it up.
+    buf = realloc(buf, size);
+    if (!buf) AllocationError(size);
     return buf;
 }
 
 inline void *CHeap::AllocEx(void *buf, size_t size) {
-    if (this == NULL) {
-        if (size <= 0 && buf != NULL) {
-            HeapFree(GetProcessHeap(), 0, buf);
-            buf = NULL;
-        }
-        else if (size <= 0) {
-            buf = NULL;
-        }
-        else if (size > 0 && buf != NULL) {
-            if ((buf = HeapReAlloc(GetProcessHeap(), 0, buf, size)) == NULL)
-                AllocationError(size);
-        }
-        else {
-            if ((buf = HeapAlloc(GetProcessHeap(), 0, size)) == NULL)
-                AllocationError(size);
-        }
+    if (size > 0)
+    {
+        return (buf ? ReAlloc(buf, size) : Alloc(size));
     }
-    else {
-        if (size <= 0 && buf != NULL) {
-            HeapFree(m_Heap, m_Flags, buf);
-            buf = NULL;
-        }
-        else if (size <= 0) {
-            buf = NULL;
-        }
-        else if (size > 0 && buf != NULL) {
-            if ((buf = HeapReAlloc(m_Heap, m_Flags, buf, size)) == NULL)
-                AllocationError(size);
-        }
-        else {
-            if ((buf = HeapAlloc(m_Heap, m_Flags, size)) == NULL)
-                AllocationError(size);
-        }
-    }
-    return buf;
+
+    Free(buf);
+    return nullptr;
 }
 
 inline void *CHeap::AllocClearEx(void *buf, size_t size) {
-    if (this == NULL) {
-        if (size <= 0 && buf != NULL) {
-            HeapFree(GetProcessHeap(), 0, buf);
-            buf = NULL;
-        }
-        else if (size <= 0) {
-            buf = NULL;
-        }
-        else if (size > 0 && buf != NULL) {
-            if ((buf = HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, buf, size)) == NULL)
-                AllocationError(size);
-        }
-        else {
-            if ((buf = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size)) == NULL)
-                AllocationError(size);
-        }
+    if (size > 0)
+    {
+        return (buf ? ReAllocClear(buf, size) : AllocClear(size));
     }
-    else {
-        if (size <= 0 && buf != NULL) {
-            HeapFree(m_Heap, m_Flags, buf);
-            buf = NULL;
-        }
-        else if (size <= 0) {
-            buf = NULL;
-        }
-        else if (size > 0 && buf != NULL) {
-            if ((buf = HeapReAlloc(m_Heap, m_Flags | HEAP_ZERO_MEMORY, buf, size)) == NULL)
-                AllocationError(size);
-        }
-        else {
-            if ((buf = HeapAlloc(m_Heap, m_Flags | HEAP_ZERO_MEMORY, size)) == NULL)
-                AllocationError(size);
-        }
-    }
-    return buf;
+
+    Free(buf);
+    return nullptr;
 }
 
 inline void CHeap::Free(void *buf) {
-    if (buf == NULL)
-        return;
-    if (this == NULL)
-        HeapFree(GetProcessHeap(), 0, buf);
-    else
-        HeapFree(m_Heap, m_Flags, buf);
+    if (!buf) free(buf);
 }
 
 }  // namespace Base
 
 // lint -e1532
 #ifdef MEM_SPY_ENABLE
-inline BASE_API void *operator new(size_t size, const char *file, int line, Base::CHeap *heap) {
-    return heap->Alloc(size, file, line);
+inline BASE_API void *operator new(size_t size, const char *file, int line, Base::CHeap*)
+{
+    return Base::CHeap::Alloc(size, file, line);
 }
-inline BASE_API void operator delete(void *buf, const char *file, int line, Base::CHeap *heap) {
-    heap->Free(buf, file, line);
+inline BASE_API void operator delete(void *buf, const char *file, int line, Base::CHeap*)
+{
+    Base::CHeap::Free(buf, file, line);
 }
 #else
-inline BASE_API void *operator new(size_t size, Base::CHeap *heap) {
-    return heap->Alloc(size);
+inline BASE_API void *operator new(size_t size, Base::CHeap*)
+{
+    return Base::CHeap::Alloc(size);
 }
-inline BASE_API void operator delete(void *buf, Base::CHeap *heap) {
-    heap->Free(buf);
+inline BASE_API void operator delete(void *buf, Base::CHeap*)
+{
+    Base::CHeap::Free(buf);
 }
 #endif
 // lint +e1532
@@ -413,36 +329,36 @@ inline BASE_API void operator delete(void *buf, Base::CHeap *heap) {
 namespace Base {
 
 #ifdef MEM_SPY_ENABLE
-#define HNew(heap) new (__FILE__, __LINE__, (Base::CHeap *)(heap))
-#define HDelete(aclass, buf, heap)                                         \
-    {                                                                      \
-        (buf)->~aclass();                                                  \
-        operator delete((buf), __FILE__, __LINE__, (Base::CHeap *)(heap)); \
+#define HNew(heap) new (__FILE__, __LINE__, (Base::CHeap*)(heap))
+#define HDelete(aclass, buf, heap)                                        \
+    {                                                                     \
+        (buf)->~aclass();                                                 \
+        operator delete((buf), __FILE__, __LINE__, (Base::CHeap*)(heap)); \
     }
 
-#define HAlloc(size, heap)             ((Base::CHeap *)(heap))->Alloc((size), __FILE__, __LINE__)
-#define HAllocClear(size, heap)        ((Base::CHeap *)(heap))->AllocClear((size), __FILE__, __LINE__)
-#define HReAlloc(buf, size, heap)      ((Base::CHeap *)(heap))->ReAlloc((buf), (size), __FILE__, __LINE__)
-#define HReAllocClear(buf, size, heap) ((Base::CHeap *)(heap))->ReAllocClear((buf), (size), __FILE__, __LINE__)
-#define HAllocEx(buf, size, heap)      ((Base::CHeap *)(heap))->AllocEx((buf), (size), __FILE__, __LINE__)
-#define HAllocClearEx(buf, size, heap) ((Base::CHeap *)(heap))->AllocClearEx((buf), (size), __FILE__, __LINE__)
-#define HFree(buf, heap)               ((Base::CHeap *)(heap))->Free((buf), __FILE__, __LINE__)
+#define HAlloc(size, heap)             CHeap::Alloc((size), __FILE__, __LINE__)
+#define HAllocClear(size, heap)        CHeap::AllocClear((size), __FILE__, __LINE__)
+#define HReAlloc(buf, size, heap)      CHeap::ReAlloc((buf), (size), __FILE__, __LINE__)
+#define HReAllocClear(buf, size, heap) CHeap::ReAllocClear((buf), (size), __FILE__, __LINE__)
+#define HAllocEx(buf, size, heap)      CHeap::AllocEx((buf), (size), __FILE__, __LINE__)
+#define HAllocClearEx(buf, size, heap) CHeap::AllocClearEx((buf), (size), __FILE__, __LINE__)
+#define HFree(buf, heap)               CHeap::Free((buf), __FILE__, __LINE__)
 #else
 
-#define HNew(heap) new ((Base::CHeap *)(heap))
-#define HDelete(aclass, buf, heap)                       \
-    {                                                    \
-        (buf)->~aclass();                                \
-        operator delete((buf), ((Base::CHeap *)(heap))); \
+#define HNew(heap) new ((CHeap*)(heap))
+#define HDelete(aclass, buf, heap)                \
+    {                                             \
+        (buf)->~aclass();                         \
+        operator delete((buf), ((CHeap*)(heap))); \
     }
 
-#define HAlloc(size, heap)             ((Base::CHeap *)(heap))->Alloc((size))
-#define HAllocClear(size, heap)        ((Base::CHeap *)(heap))->AllocClear((size))
-#define HReAlloc(buf, size, heap)      ((Base::CHeap *)(heap))->ReAlloc((buf), (size))
-#define HReAllocClear(buf, size, heap) ((Base::CHeap *)(heap))->ReAllocClear((buf), (size))
-#define HAllocEx(buf, size, heap)      ((Base::CHeap *)(heap))->AllocEx((buf), (size))
-#define HAllocClearEx(buf, size, heap) ((Base::CHeap *)(heap))->AllocClearEx((buf), (size))
-#define HFree(buf, heap)               ((Base::CHeap *)(heap))->Free((buf))
+#define HAlloc(size, heap)             CHeap::Alloc((size))
+#define HAllocClear(size, heap)        CHeap::AllocClear((size))
+#define HReAlloc(buf, size, heap)      CHeap::ReAlloc((buf), (size))
+#define HReAllocClear(buf, size, heap) CHeap::ReAllocClear((buf), (size))
+#define HAllocEx(buf, size, heap)      CHeap::AllocEx((buf), (size))
+#define HAllocClearEx(buf, size, heap) CHeap::AllocClearEx((buf), (size))
+#define HFree(buf, heap)               CHeap::Free((buf))
 
 #endif
 
