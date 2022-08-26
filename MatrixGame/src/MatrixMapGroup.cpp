@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixMap.hpp"
 #include "MatrixMapGroup.hpp"
 #include "MatrixObject.hpp"
@@ -207,8 +209,8 @@ void CMatrixMapGroup::BuildBottom(int x, int y, BYTE *rawbottom) {
 
     m_Matrix = g_MatrixMap->GetIdentityMatrix();
 
-    int w = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
-    int h = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
+    int w = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
+    int h = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
 
     m_Matrix._41 = ((w >> 1) + x) * GLOBAL_SCALE;
     m_Matrix._42 = ((h >> 1) + y) * GLOBAL_SCALE;
@@ -337,8 +339,8 @@ void CMatrixMapGroup::BuildWater(int x, int y) {
         x *= MAP_GROUP_SIZE;
         y *= MAP_GROUP_SIZE;
 
-        int w = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
-        int h = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
+        int w = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
+        int h = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
 
         // const int shadesize = alphasize*alphasize;
 
@@ -837,8 +839,8 @@ bool CMatrixMapGroup::Pick(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &_dir, floa
         int x = m_PosX;
         int y = m_PosY;
 
-        int w = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
-        int h = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
+        int w = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - x));
+        int h = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - y));
 
         int cv = 0;
         int ci = 0;

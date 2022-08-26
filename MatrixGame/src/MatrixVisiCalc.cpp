@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixMap.hpp"
 
 struct STempPoints {
@@ -52,8 +54,8 @@ struct SVisGroup {
             minz = 100000;
             // build dest pts
 
-            int width = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - xp));
-            int heigth = min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - yp));
+            int width = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.x - xp));
+            int heigth = std::min(MAP_GROUP_SIZE, (g_MatrixMap->m_Size.y - yp));
 
             ASSERT(width != 0 && heigth != 0);
 

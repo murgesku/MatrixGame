@@ -4,6 +4,7 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <algorithm>
 
 #include "stdafx.h"
 
@@ -819,11 +820,11 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
             gu = m_GGraph->GetById(2);
             SETFLAG(gu->m_Flags, VOUF_MATRIX_USE);
-            D3DXMatrixTranslation(&(gu->m_Matrix), min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
+            D3DXMatrixTranslation(&(gu->m_Matrix), std::min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
 
             gu = m_GGraph->GetById(3);
             SETFLAG(gu->m_Flags, VOUF_MATRIX_USE);
-            D3DXMatrixTranslation(&(gu->m_Matrix), -min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
+            D3DXMatrixTranslation(&(gu->m_Matrix), -std::min(m_BaseFloor * 2, 1.0f) * 25.0f, 0, 0);
 
             RChange(MR_Matrix);
         }

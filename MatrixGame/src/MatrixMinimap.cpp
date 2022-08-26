@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+
 #include "MatrixMap.hpp"
 #include "MatrixObject.hpp"
 #include "MatrixObjectBuilding.hpp"
@@ -188,7 +190,7 @@ void CMinimap::BeforeDraw(void) {
 
     m_Delta = D3DXVECTOR2(0, 0);
 
-    int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
+    int sz = std::max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = float(sz) * GLOBAL_SCALE;
     float x0 = (float(g_MatrixMap->m_Size.x - sz) * 0.5f * GLOBAL_SCALE);
     float y0 = (float(g_MatrixMap->m_Size.y - sz) * 0.5f * GLOBAL_SCALE);
@@ -249,7 +251,7 @@ void CMinimap::Map2World(D3DXVECTOR2 &out, const D3DXVECTOR2 &in) {
     pos = in;
 #endif
 
-    int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
+    int sz = std::max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (GLOBAL_SCALE * float(sz));
 
     float fx = (pos.x - m_Delta.x - float(m_PosX) - float(m_SizeX) * 0.5f) * fsz / float(float(m_SizeX));
@@ -262,7 +264,7 @@ void CMinimap::Map2World(D3DXVECTOR2 &out, const D3DXVECTOR2 &in) {
 void CMinimap::World2Map(D3DXVECTOR2 &out, const D3DXVECTOR2 &in) {
     DTRACE();
 
-    int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
+    int sz = std::max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(1.0 / GLOBAL_SCALE) / float(sz));
 
     float fx = ((in.x - m_Center.x) * m_Scale + m_Center.x) - g_MatrixMap->m_Size.x * GLOBAL_SCALE * 0.5f;
@@ -987,7 +989,7 @@ render:
     auto tmp2 = D3DXVECTOR3(0, -1, 0);
     D3DXMatrixLookAtLH(&mView, &campos, &tmp1, &tmp2);
 
-    int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
+    int sz = std::max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(sz) * GLOBAL_SCALE);
     float scale = 1.0f / fsz;
     // scale = 0.1;
@@ -1284,7 +1286,7 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s) {
     auto tmp2 = D3DXVECTOR3(0, -1, 0);
     D3DXMatrixLookAtLH(&mView, &campos, &tmp1, &tmp2);
 
-    int sz = max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
+    int sz = std::max(g_MatrixMap->m_Size.x, g_MatrixMap->m_Size.y);
     float fsz = (float(sz) * GLOBAL_SCALE);
     float scale = 1.0f / fsz;
 
