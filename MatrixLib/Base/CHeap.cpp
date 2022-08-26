@@ -164,24 +164,6 @@ void SMemHeader::Release(void) {
     memset(d2, 0, MEM_CHECK_BOUND_SIZE);
 #endif
 }
-void CHeap::Free(void *buf, const char *file, int line) {
-    if (buf == NULL) {
-        CWStr t(L"NULL pointer is passed to Free function at:\n");
-        t += CWStr(CStr(file));
-        t += L" - ";
-        t += line;
-
-        ERROR_S(t.Get());
-    }
-
-#ifdef DEAD_PTR_SPY_ENABLE
-    DeadPtr::free_mem(buf);
-#endif
-
-    SMemHeader *h = SMemHeader::CalcBegin(buf);
-    h->Release();
-    Free(h);
-}
 
 void CHeap::StaticDeInit(void) {
     // check!!!!!!!!!
@@ -211,21 +193,25 @@ void CHeap::StaticDeInit(void) {
     }
 }
 
+void CHeap::Free(void *buf, const char *file, int line) {
+    if (!buf)
+    {
+        ERROR_S(
+            L"NULL pointer is passed to Free function at: " +
+            CWStr(CStr(file)) +
+            L" - " + line);
+    }
+
+#ifdef DEAD_PTR_SPY_ENABLE
+    DeadPtr::free_mem(buf);
 #endif
 
-CHeap::CHeap() : CMain() {
-    m_Flags = 0;
-    m_Heap = GetProcessHeap();
-    if (m_Heap == 0)
-        ERROR_E;
+    SMemHeader *h = SMemHeader::CalcBegin(buf);
+    h->Release();
+    Free(h);
 }
 
-CHeap::~CHeap() {
-    Clear();
-}
-
-void CHeap::Clear() {
-}
+#endif
 
 void CHeap::AllocationError(int zn) {
 #ifdef _DEBUG
