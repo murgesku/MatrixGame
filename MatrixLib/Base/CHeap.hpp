@@ -145,9 +145,9 @@ __inline int CheckValidPtr(const void *ptr) {
 
     GetSystemInfo(&si);
 
-    if (((dword)ptr) < ((dword)si.lpMinimumApplicationAddress))
+    if (((uintptr_t)ptr) < ((uintptr_t)si.lpMinimumApplicationAddress))
         return -1;
-    if (((dword)ptr) > ((dword)si.lpMaximumApplicationAddress))
+    if (((uintptr_t)ptr) > ((uintptr_t)si.lpMaximumApplicationAddress))
         return -1;
 
     VirtualQuery(ptr, &mbi, sizeof(mbi));
