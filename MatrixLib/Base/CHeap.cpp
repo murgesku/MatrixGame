@@ -225,17 +225,9 @@ CHeap::~CHeap() {
 }
 
 void CHeap::Clear() {
-    if (m_Heap != GetProcessHeap()) {
-        HeapDestroy(m_Heap);
-        m_Heap = GetProcessHeap();
-        if (m_Heap == 0)
-            ERROR_E;
-    }
-    m_Flags = 0;
 }
 
 void CHeap::AllocationError(int zn) {
-    debugbreak();
 #ifdef _DEBUG
     debugbreak();
 #else

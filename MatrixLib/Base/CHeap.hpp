@@ -230,33 +230,18 @@ inline void *CHeap::ReAllocClear(void *buf, uint size, const char *file, int lin
     return h->Init(sz, file, line);
 }
 
-//#include <stdio.h>
-
 inline void *CHeap::AllocEx(void *buf, uint size, const char *file, int line) {
     DTRACE();
-
-    // char bb[128];
-    // sprintf(bb, "Req: %i, ", size);
-
     SMemHeader *h = NULL;
     if (buf != NULL) {
         h = SMemHeader::CalcBegin(buf);
-
-        // sprintf(bb + strlen(bb), "Before %i, ", h->blocksize);
-
         h->Release();
-    }
-    else {
-        // strcat(bb, "Before NULL, ");
     }
     uint sz = SMemHeader::CalcSize(size);
     h = (SMemHeader *)AllocEx(h, sz);
-
-    // sprintf(bb + strlen(bb), "After %i", sz);
-    // DM("MEM", bb);
-
     return h->Init(sz, file, line);
 }
+
 inline void *CHeap::AllocClearEx(void *buf, uint size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
@@ -407,9 +392,6 @@ inline void CHeap::Free(void *buf) {
 
 }  // namespace Base
 
-//inline void * operator new (size_t size) { return Base::Alloc(size,NULL); }
-//inline void operator delete (void * buf) { Base::Free(buf,NULL); }
-
 // lint -e1532
 #ifdef MEM_SPY_ENABLE
 inline BASE_API void *operator new(size_t size, const char *file, int line, Base::CHeap *heap) {
@@ -467,13 +449,5 @@ namespace Base {
 #ifdef _DEBUG
 void HListPrint(wchar *filename);
 #endif
-
-inline bool MemCmp(const void *s1, const void *s2, uint len) {
-    return memcmp(s1, s2, len) == 0;
-}
-
-inline bool MemCmp(const wchar_t *s1, const wchar_t *s2, uint len) {
-    return memcmp(s1, s2, len * sizeof(wchar_t)) == 0;
-}
 
 }  // namespace Base
