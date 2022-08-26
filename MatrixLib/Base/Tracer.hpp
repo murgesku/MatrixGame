@@ -6,6 +6,10 @@
 #ifndef TRACER_HPP
 #define TRACER_HPP
 
+#ifdef __GNUC__
+#include <x86intrin.h>
+#endif
+
 #ifdef DMM
 void writedump(const char *txt);
 #endif
@@ -184,7 +188,7 @@ public:
     static void SaveHistory(void) throw();
 #endif
 
-    static void StaticInit(void);
+    static void StaticInit(void) throw();
 
     friend char *generate_trace_text(void);
 
@@ -225,8 +229,8 @@ struct CDText {
     static void T(const char *, const char *){};
 };
 
-char *generate_trace_text(void);
-
 #endif  //  #ifdef _DEBUG  //
+
+char *generate_trace_text(void);
 
 #endif  //  #ifndef PROF_HPP  //
