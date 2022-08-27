@@ -5,6 +5,8 @@
 
 #include "Base.pch"
 
+#include <cwchar>
+
 #include "CWStr.hpp"
 #include "CException.hpp"
 #include "CStr.hpp"
@@ -753,7 +755,7 @@ bool CWStr::Equal(const wchar *zn, int len) const {
         return false;
     if (len <= 0)
         return true;
-    return MemCmp(Get(), zn, len);
+    return !std::wmemcmp(Get(), zn, len);
 }
 
 bool CWStr::CompareFirst(const CWStr &str) const {

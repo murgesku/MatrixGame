@@ -138,7 +138,7 @@ public:
 public:
     CDCommand(void *buf) {
         m_BufSize = *(int *)((char *)(buf) + 8);
-        m_Buf = (char *)HeapAlloc(GetProcessHeap(), 0, m_BufSize);
+        m_Buf = (char *)malloc(m_BufSize);
         CopyMemory(m_Buf, buf, m_BufSize);
         m_NameW = (wchar_t *)((m_Buf) + (*(int *)((m_Buf) + 16)));
         m_NameA = (char *)((m_Buf) + (*(int *)((m_Buf) + 16 + 4)));
@@ -153,11 +153,11 @@ public:
     }
     ~CDCommand() {
         if (m_Buf != NULL) {
-            HeapFree(GetProcessHeap(), 0, m_Buf);
+            free(m_Buf);
             m_Buf = NULL;
         }
         if (m_ABuf != NULL) {
-            HeapFree(GetProcessHeap(), 0, m_ABuf);
+            free(m_ABuf);
             m_ABuf = NULL;
         }
     }
@@ -230,12 +230,12 @@ public:
     }
     void AnswerTest(int size) {
         if (m_ABuf == NULL) {
-            m_ABuf = (char *)HeapAlloc(GetProcessHeap(), 0, size);
+            m_ABuf = (char*)malloc(size);
             m_ABufSizeMax = size;
         }
         else if (m_ABufSizeMax < (m_ABufSize + size)) {
             m_ABufSizeMax = m_ABufSize + size + 1024;
-            m_ABuf = (char *)HeapReAlloc(GetProcessHeap(), 0, m_ABuf, m_ABufSizeMax);
+            m_ABuf = (char*)realloc(m_ABuf, m_ABufSizeMax);
         }
     }
     void Answer(wchar_t *str, int strsize) {

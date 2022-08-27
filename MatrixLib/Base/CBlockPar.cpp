@@ -336,7 +336,7 @@ int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) {
 
 void CBlockPar::ArrayAdd(CBlockParUnit *el) {
     DTRACE();
-    m_Array = (CBlockParUnit **)HAllocClearEx(m_Array, (m_ArrayCnt + 1) * sizeof(CBlockParUnit *), m_Heap);
+    m_Array = (CBlockParUnit **)HAllocEx(m_Array, (m_ArrayCnt + 1) * sizeof(CBlockParUnit *), m_Heap);
 
     int no = ArrayFindInsertIndex(el);
     if (no >= m_ArrayCnt) {
@@ -366,7 +366,7 @@ void CBlockPar::ArrayDel(CBlockParUnit *el) {
             if (no < (m_ArrayCnt - 1))
                 MoveMemory(m_Array + no, m_Array + no + 1, (m_ArrayCnt - no - 1) * sizeof(CBlockParUnit *));
             m_ArrayCnt--;
-            m_Array = (CBlockParUnit **)HAllocClearEx(m_Array, m_ArrayCnt * sizeof(CBlockParUnit *), m_Heap);
+            m_Array = (CBlockParUnit **)HAllocEx(m_Array, m_ArrayCnt * sizeof(CBlockParUnit *), m_Heap);
             return;
         }
         no++;
