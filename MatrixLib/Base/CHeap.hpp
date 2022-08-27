@@ -7,7 +7,6 @@
 
 #include "CMain.hpp"
 #include "Tracer.hpp"
-//#include "DebugMsg.h"
 
 #if (defined _DEBUG) || (defined FORCE_ENABLE_MEM_SPY)
 #define MEM_SPY_ENABLE
@@ -113,14 +112,7 @@ struct SMemHeader {
 
         if (sz > maxblocksize) {
             maxblocksize = sz;
-            // DbgShowDword("maxblock",sz);
         }
-        // if (sz == 672)
-        //{
-        //    static int c = 0;
-        //    cnt = c++;
-        //    if (cnt == -1) _asm int 3
-        //}
 
         void *ptr;
 #ifdef MEM_CHECK
@@ -138,24 +130,6 @@ struct SMemHeader {
 };
 
 #endif
-
-__inline int CheckValidPtr(const void *ptr) {
-    SYSTEM_INFO si;
-    MEMORY_BASIC_INFORMATION mbi;
-
-    GetSystemInfo(&si);
-
-    if (((uintptr_t)ptr) < ((uintptr_t)si.lpMinimumApplicationAddress))
-        return -1;
-    if (((uintptr_t)ptr) > ((uintptr_t)si.lpMaximumApplicationAddress))
-        return -1;
-
-    VirtualQuery(ptr, &mbi, sizeof(mbi));
-    if (mbi.State == MEM_FREE)
-        return -1;
-
-    return 0;
-}
 
 class BASE_API CHeap : public CMain {
 public:
@@ -360,10 +334,6 @@ namespace Base {
 #define HAllocClearEx(buf, size, heap) CHeap::AllocClearEx((buf), (size))
 #define HFree(buf, heap)               CHeap::Free((buf))
 
-#endif
-
-#ifdef _DEBUG
-void HListPrint(wchar *filename);
 #endif
 
 }  // namespace Base
