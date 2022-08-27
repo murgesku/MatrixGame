@@ -253,27 +253,4 @@ void CHeap::AllocationError(int zn) {
 #endif
 }
 
-#ifdef MEM_SPY_ENABLE
-void HListPrint(wchar *filename) {
-    char sbuf[1024];
-
-    CBuf buf;
-    buf.SetGranula(1024 * 1024);
-
-    SMemHeader *fb = SMemHeader::first_mem_block;
-    while (fb) {
-        sprintf(sbuf, "%d\t%d\t%d\t%s\t%d\n", DWORD(fb), DWORD(fb) + fb->blocksize - 1, fb->blocksize, fb->file,
-                fb->line);
-
-        buf.BufAdd(sbuf, strlen(sbuf));
-        //        fi.Write(sbuf,strlen(sbuf));
-
-        fb = fb->next;
-    }
-    CFile fi(filename);
-    fi.Create();
-    fi.Write(buf.Get(), buf.Len());
-}
-#endif
-
 }  // namespace Base

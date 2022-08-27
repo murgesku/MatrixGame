@@ -2651,12 +2651,6 @@ void CMatrixSideUnit::TaktHL() {
 
     EscapeFromBomb();
 
-    /*static int lastsave=0;
-    if(timeGetTime()-lastsave>1000) {
-        lastsave=timeGetTime();
-        HListPrint(L"#save_mem.xls");
-    }*/
-
     // Расчет с кем воюем
 
     if (m_NextWarSideCalcTime < g_MatrixMap->GetTime()) {
