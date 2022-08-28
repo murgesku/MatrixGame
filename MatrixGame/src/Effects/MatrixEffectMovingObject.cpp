@@ -658,7 +658,7 @@ void CMatrixEffectBuoy::Takt(float step) {
 
     m_Props.startpos *= mul;
 
-    // CDText::T("mul", CStr(mul));
+    // CDText::T("mul", mul);
 
     if (IRND(7000) < step) {
         ((float *)&m_Props.velocity)[IRND(3)] *= 2;

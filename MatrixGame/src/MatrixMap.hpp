@@ -717,7 +717,7 @@ inline bool CMatrixMap::AddEffect(CMatrixEffect *ef) {
     LIST_ADD(ef, m_EffectsFirst, m_EffectsLast, m_Prev, m_Next);
     ++m_EffectsCnt;
 #ifdef _DEBUG
-    CDText::T("E", CStr(m_EffectsCnt));
+    CDText::T("E", m_EffectsCnt);
 #endif
     return true;
 }

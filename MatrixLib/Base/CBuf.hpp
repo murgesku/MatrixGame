@@ -252,9 +252,9 @@ public:
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CStr(abuf, len, m_Heap);
+            return CStr(abuf, len);
         else
-            return CStr(m_Heap);
+            return CStr();
     }
     void Str(const CStr &str) {
         int len = str.Len();
@@ -353,9 +353,9 @@ public:
             }
         }
         if (len > 0)
-            return CStr(abuf, len, m_Heap);
+            return CStr(abuf, len);
         else
-            return CStr(m_Heap);
+            return CStr();
     }
     void StrText(CStr &str) {
         int len = str.Len();
@@ -381,9 +381,9 @@ public:
             }
         }
         if (len > 0)
-            return CWStr(abuf, len, m_Heap);
+            return CWStr(abuf, len);
         else
-            return CWStr(m_Heap);
+            return CWStr();
     }
     void WStrText(CWStr &str) {
         int len = str.GetLen();

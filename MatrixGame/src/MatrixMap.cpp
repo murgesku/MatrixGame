@@ -361,7 +361,7 @@ DWORD CMatrixMap::GetColor(float wx, float wy) {
     DTRACE();
 
     // static int ccc = 0;
-    // CDText::T("COLOR", CStr(ccc++));
+    // CDText::T("COLOR", ccc++);
 
     float scaledx = wx * INVERT(GLOBAL_SCALE);
     float scaledy = wy * INVERT(GLOBAL_SCALE);
@@ -1172,7 +1172,7 @@ void CMatrixMap::BeforeDraw(void) {
     // flyer
     CMatrixSideUnit *player_side = GetPlayerSide();
 
-    // CDText::T("sel", CStr(player_side->m_CurrSel));
+    // CDText::T("sel", player_side->m_CurrSel);
     // if(player_side->IsArcadeMode() &&  player_side->GetArcadedObject()->GetObjectType() == OBJECT_TYPE_FLYER &&
     // (GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000)==0x8000 && g_IFaceList->m_InFocus != INTERFACE)
     //{
@@ -1226,7 +1226,7 @@ void CMatrixMap::BeforeDraw(void) {
 
 #endif
 
-    // CDText::T("t", CStr(int(m_TraceStopObj)));
+    // CDText::T("t", int(m_TraceStopObj));
 
     // if (m_KeyDown && m_KeyScan == KEY_PGDN) {m_KeyDown = false; m_Minimap.SetOutParams(m_Minimap.GetScale() * 0.8f);}
     // if (m_KeyDown && m_KeyScan == KEY_PGUP) {m_KeyDown = false; m_Minimap.SetOutParams(m_Minimap.GetScale()
@@ -1252,7 +1252,7 @@ void CMatrixMap::BeforeDraw(void) {
     //        if (m_KeyDown && m_KeyScan == KEY_PGDN) {m_KeyDown = false; t -= 1;}
     //        if (m_KeyDown && m_KeyScan == KEY_PGUP) {m_KeyDown = false; t += 1;}
     //
-    //        CDText::T("v", CStr(t));
+    //        CDText::T("v", t);
     //
     //        ((CMatrixMapObject *)m_TraceStopObj)->m_BurnTexVis = (BYTE)(t&255);
     //
@@ -1308,7 +1308,7 @@ void CMatrixMap::BeforeDraw(void) {
 
     //}
 
-    // CDText::T("tracez",CStr(p0.z));
+    // CDText::T("tracez", p0.z);
 
     // TAKT_END("Trace");
 
@@ -1530,7 +1530,7 @@ void CMatrixMap::DrawLandscape(bool all) {
     DTRACE();
 
 #ifdef _DEBUG
-    CDText::T("land_dp_calls", CStr(CMatrixMapGroup::m_DPCalls));
+    CDText::T("land_dp_calls", CMatrixMapGroup::m_DPCalls);
     CMatrixMapGroup::m_DPCalls = 0;
 #endif
 
@@ -2237,7 +2237,7 @@ void CMatrixMap::Draw(void) {
         }
     }
 
-    // CDText::T("COL", CStr((int)GetColor(m_TraceStopPos.x, m_TraceStopPos.y)));
+    // CDText::T("COL", (int)GetColor(m_TraceStopPos.x, m_TraceStopPos.y));
 
     /*
         CHelper::Create(1,0)->Line(D3DXVECTOR3(m_TraceStopPos.x, m_TraceStopPos.y, -100),
@@ -2963,7 +2963,7 @@ void CMatrixMap::SubEffect(PCMatrixEffect e)
     }
 
 #ifdef _DEBUG
-    CDText::T("E", CStr(m_EffectsCnt));
+    CDText::T("E", m_EffectsCnt);
 #endif
 }
 

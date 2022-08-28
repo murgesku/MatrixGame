@@ -858,7 +858,7 @@ struct SFlyerTaktData {
 //        m_StrifeSpeed += (float)fabs(m_StrifeSpeed + FLYER_MAX_STRIFE_SPEED) * (1.0f - td.pow998);
 //        if (m_StrifeSpeed > FLYER_MAX_STRIFE_SPEED) m_StrifeSpeed = FLYER_MAX_STRIFE_SPEED;
 //    }
-//    //CDText::T("strife", CStr(m_StrifeSpeed));
+//    //CDText::T("strife", m_StrifeSpeed);
 //    if (FLAG(m_Flags, FLYER_ACTION_MOVE_FORWARD))
 //    {
 //        //SetTarget(D3DXVECTOR2(m_Pos.x, m_Pos.y) + hdir * 1000);
@@ -1021,7 +1021,7 @@ static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user)
     // static float jj = 1;
     // if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_INSERT) {jj += 0.01f;}
     // if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_DELETE)  {jj -= 0.01f;}
-    // CDText::T("JJ",CStr(jj));
+    // CDText::T("JJ", jj);
 
     D3DXVECTOR3 a;
     auto tmp = pos - ms->GetGeoCenter();
@@ -1378,7 +1378,7 @@ void CMatrixFlyer::LogicTakt(int takt) {
             else if (tgtwa > w->m_Weapon.m_UpAngle)
                 tgtwa = w->m_Weapon.m_UpAngle;
 
-            // CDText::T("ca", CStr(tgtwa));
+            // CDText::T("ca", tgtwa);
 
             da = (float)AngleDist(curwa, tgtwa);
 

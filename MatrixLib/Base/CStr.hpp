@@ -36,7 +36,6 @@ class BASE_API CStr : public CMain {
             memcpy(m_Str, src, uint(len + 1));
         }
     };
-    void Init(const wchar *src, int len, CHeap *heap);
 
 public:
     CStr(void) : CMain(), m_Heap(NULL), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
@@ -60,19 +59,16 @@ public:
     explicit CStr(double zn, int zpz = 8, CHeap *heap = NULL);
     //		CStr(void * zn, CHeap * heap=NULL);
     //		CStr(BYTE zn, CHeap * heap=NULL);
-    ~CStr() { ClearFull(); }
-
-    // Clear - Очищает строку
-    void Clear(void);
-
-    // ClearFull - Очищает строку и удаляет буфер
-    void ClearFull(void) {
+    ~CStr() {
         if (m_Str != NULL) {
             HFree(m_Str, m_Heap);
             m_Str = NULL;
         }
         m_Len = m_MaxLen = 0;
     }
+
+    // Clear - Очищает строку
+    void Clear(void);
 
     void SetLen(int len);  // Установить длину строки (Выделение памяти если нужно)
     void SetZeroLenNoTream(void) {
@@ -117,45 +113,49 @@ public:
         return m_Str;
     }
     char *GetBuf(void) { return m_Str; }
-    char *GetBufEx(void) const {
-        if (IsEmpty())
-            return NULL;
-        return m_Str;
-    }
+    // char *GetBufEx(void) const {
+    //     if (IsEmpty())
+    //         return NULL;
+    //     return m_Str;
+    // }
     int GetLen(void) const { return m_Len; }
     int Len(void) const { return m_Len; }
 
-    int GetInt(void) const;
-    double GetDouble(void) const;
-    int GetHex(void) const;
-    DWORD GetHexUnsigned(void) const;
+    // int GetInt(void) const;
+    // double GetDouble(void) const;
+    // int GetHex(void) const;
+    // DWORD GetHexUnsigned(void) const;
 
-    bool IsOnlyInt(void) const;
+    // bool IsOnlyInt(void) const;
     bool IsEmpty(void) const { return m_Len < 1; }
 
-    CStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-    CStr &TrimFull(void);  // Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
-    void TabToSpace(void);  // Конвертит 0x9 в 0x20
+    // CStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
+    // CStr &TrimFull(void);  // Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
+    // void TabToSpace(void);  // Конвертит 0x9 в 0x20
 
-    void Del(int sme, int len);                        // Удалить символы
-    void Insert(int sme, const char *tstr, int slen);  // Вставить символы
-    void Insert(int sme, const char *tstr) { Insert(sme, tstr, (int)strlen(tstr)); };
-    void Insert(int sme, const CStr &tstr) { Insert(sme, tstr.Get(), tstr.Len()); };
-    void Replace(const CStr &substr, const CStr &strreplace);  // Заменить часть строки ну другую
+    // void Del(int sme, int len);                        // Удалить символы
 
-    int Find(const char *substr, int sublen,
-             int sme = 0) const;  // Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
-    int Find(const CStr &substr, int sme = 0) const { return Find(substr.Get(), substr.Len(), sme); };
-    int FindR(const char *substr, int sublen) const;
-    int FindR(const char *substr) const { return FindR(substr, (int)strlen(substr)); };
+private:
+    // void Insert(int sme, const char *tstr, int slen);  // Вставить символы
 
-    int GetSmePar(int np, const char *ogsim) const;
-    int GetLenPar(int smepar, const char *ogsim) const;
+public:
+    // void Insert(int sme, const char *tstr) { Insert(sme, tstr, (int)strlen(tstr)); };
+    // void Insert(int sme, const CStr &tstr) { Insert(sme, tstr.Get(), tstr.Len()); };
+    // void Replace(const CStr &substr, const CStr &strreplace);  // Заменить часть строки ну другую
 
-    CStr GetStrPar(int np, const char *ogsim) const {
-        int sme = GetSmePar(np, ogsim);
-        return CStr(Get() + sme, GetLenPar(sme, ogsim), GetHeap());
-    }
+    // int Find(const char *substr, int sublen,
+    //          int sme = 0) const;  // Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
+    // int Find(const CStr &substr, int sme = 0) const { return Find(substr.Get(), substr.Len(), sme); };
+    // int FindR(const char *substr, int sublen) const;
+    // int FindR(const char *substr) const { return FindR(substr, (int)strlen(substr)); };
+
+    // int GetSmePar(int np, const char *ogsim) const;
+    // int GetLenPar(int smepar, const char *ogsim) const;
+
+    // CStr GetStrPar(int np, const char *ogsim) const {
+    //     int sme = GetSmePar(np, ogsim);
+    //     return CStr(Get() + sme, GetLenPar(sme, ogsim), GetHeap());
+    // }
 
     void Split(CStr &beg, CStr &rem, const char *ogsim) const {
         const char *c = Get();
@@ -179,11 +179,11 @@ public:
     void LowerCase(int sme = 0, int len = -1);
     void UpperCase(int sme = 0, int len = -1);
 
-    static int Compare(const CStr &zn1, const CStr &zn2);  // "A","B"=-1  "A","A"=0  "B","A"=1
-    int CompareFirst(const CStr &str);
-    int CompareFirst(const char *str) { return CompareFirst(CStr(str)); }
-    int CompareSubstring(const CStr &str);
-    int CompareSubstring(const char *str) { return CompareSubstring(CStr(str)); }
+    // static int Compare(const CStr &zn1, const CStr &zn2);  // "A","B"=-1  "A","A"=0  "B","A"=1
+    // int CompareFirst(const CStr &str);
+    // int CompareFirst(const char *str) { return CompareFirst(CStr(str)); }
+    // int CompareSubstring(const CStr &str);
+    // int CompareSubstring(const char *str) { return CompareSubstring(CStr(str)); }
 
     CStr &operator=(const CStr &s) {
         if (this != &s) {
@@ -213,96 +213,96 @@ public:
     }
     //		CStr & operator = (void * zn)									{ Set(zn); return *this; }
 
-    char operator[](int n) const { /*lint -e613*/
-        return *(m_Str + n);       /*lint +e613*/
-    }
-    char &operator[](int n) { /*lint -e613*/
-        return *(m_Str + n);  /*lint +e613*/
-    }
+    // char operator[](int n) const { /*lint -e613*/
+    //     return *(m_Str + n);       /*lint +e613*/
+    // }
+    // char &operator[](int n) { /*lint -e613*/
+    //     return *(m_Str + n);  /*lint +e613*/
+    // }
 
-    friend int operator==(const CStr &zn1, const CStr &zn2);
-    friend int operator==(const CStr &zn1, const char *zn2);
-    friend int operator==(const char *zn1, const CStr &zn2) { return zn2 == zn1; }
+    // friend int operator==(const CStr &zn1, const CStr &zn2);
+    // friend int operator==(const CStr &zn1, const char *zn2);
+    // friend int operator==(const char *zn1, const CStr &zn2) { return zn2 == zn1; }
 
-    friend int operator!=(const CStr &zn1, const CStr &zn2) { return !(zn1 == zn2); }
-    friend int operator!=(const CStr &zn1, const char *zn2) { return !(zn1 == zn2); }
-    friend int operator!=(const char *zn1, const CStr &zn2) { return !(zn1 == zn2); }
+    // friend int operator!=(const CStr &zn1, const CStr &zn2) { return !(zn1 == zn2); }
+    // friend int operator!=(const CStr &zn1, const char *zn2) { return !(zn1 == zn2); }
+    // friend int operator!=(const char *zn1, const CStr &zn2) { return !(zn1 == zn2); }
 
-    friend int operator<(const CStr &zn1, const CStr &zn2) {
-        if (CStr::Compare(zn1, zn2) < 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator<(const CStr &zn1, const char *zn2) {
-        if (CStr::Compare(zn1, CStr(zn2)) < 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator<(const char *zn1, const CStr &zn2) {
-        if (CStr::Compare(CStr(zn1), zn2) < 0) {
-            return 1;
-        }
-        return 0;
-    }
+    // friend int operator<(const CStr &zn1, const CStr &zn2) {
+    //     if (CStr::Compare(zn1, zn2) < 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator<(const CStr &zn1, const char *zn2) {
+    //     if (CStr::Compare(zn1, CStr(zn2)) < 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator<(const char *zn1, const CStr &zn2) {
+    //     if (CStr::Compare(CStr(zn1), zn2) < 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
 
-    friend int operator>(const CStr &zn1, const CStr &zn2) {
-        if (CStr::Compare(zn1, zn2) > 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator>(const CStr &zn1, const char *zn2) {
-        if (CStr::Compare(zn1, CStr(zn2)) > 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator>(const char *zn1, const CStr &zn2) {
-        if (CStr::Compare(CStr(zn1), zn2) > 0) {
-            return 1;
-        }
-        return 0;
-    }
+    // friend int operator>(const CStr &zn1, const CStr &zn2) {
+    //     if (CStr::Compare(zn1, zn2) > 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator>(const CStr &zn1, const char *zn2) {
+    //     if (CStr::Compare(zn1, CStr(zn2)) > 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator>(const char *zn1, const CStr &zn2) {
+    //     if (CStr::Compare(CStr(zn1), zn2) > 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
 
-    friend int operator<=(const CStr &zn1, const CStr &zn2) {
-        if (CStr::Compare(zn1, zn2) <= 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator<=(const CStr &zn1, const char *zn2) {
-        if (CStr::Compare(zn1, CStr(zn2)) <= 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator<=(const char *zn1, const CStr &zn2) {
-        if (CStr::Compare(CStr(zn1), zn2) <= 0) {
-            return 1;
-        }
-        return 0;
-    }
+    // friend int operator<=(const CStr &zn1, const CStr &zn2) {
+    //     if (CStr::Compare(zn1, zn2) <= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator<=(const CStr &zn1, const char *zn2) {
+    //     if (CStr::Compare(zn1, CStr(zn2)) <= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator<=(const char *zn1, const CStr &zn2) {
+    //     if (CStr::Compare(CStr(zn1), zn2) <= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
 
-    friend int operator>=(const CStr &zn1, const CStr &zn2) {
-        if (CStr::Compare(zn1, zn2) >= 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator>=(const CStr &zn1, const char *zn2) {
-        if (CStr::Compare(zn1, CStr(zn2)) >= 0) {
-            return 1;
-        }
-        return 0;
-    }
-    friend int operator>=(const char *zn1, const CStr &zn2) {
-        if (CStr::Compare(CStr(zn1), zn2) >= 0) {
-            return 1;
-        }
-        return 0;
-    }
+    // friend int operator>=(const CStr &zn1, const CStr &zn2) {
+    //     if (CStr::Compare(zn1, zn2) >= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator>=(const CStr &zn1, const char *zn2) {
+    //     if (CStr::Compare(zn1, CStr(zn2)) >= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
+    // friend int operator>=(const char *zn1, const CStr &zn2) {
+    //     if (CStr::Compare(CStr(zn1), zn2) >= 0) {
+    //         return 1;
+    //     }
+    //     return 0;
+    // }
 
     CStr &operator+=(const CStr &str) {
         Add(str);

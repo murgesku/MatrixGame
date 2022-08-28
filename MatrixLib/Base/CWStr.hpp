@@ -17,6 +17,8 @@
 #include "CMain.hpp"
 #include "CHeap.hpp"
 
+#include "CStr.hpp"
+
 namespace Base {
 
 inline int WStrLen(const wchar *str) {
@@ -42,8 +44,6 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
         s2++;
     }
 }
-
-class CStr;
 
 struct CWStrData {
     CHeap *m_Heap;
@@ -76,13 +76,11 @@ class BASE_API CWStr : public CMain {
     }
 
 public:
-    static int call_num;
-
     explicit CWStr(CHeap *heap = NULL) : CMain() {
         NewDataLen(heap, 0);
         m_Data->Data()[0] = 0;
     }
-    explicit CWStr(const CStr &s);
+    explicit CWStr(const char* s);
     CWStr(const CWStr &s) : CMain(), m_Data(s.m_Data) { ++s.m_Data->m_Refs; }
     explicit CWStr(const wchar *s, CHeap *heap = NULL) : CMain() {
         int len = WStrLen(s);
@@ -117,12 +115,15 @@ public:
         NewDataLen(heap, 32);
         Set(zn, zpz);
     }
-    //		CWStr(void * zn, CHeap * heap=NULL);
-    //		CWStr(BYTE zn, CHeap * heap=NULL);
 
     // lint -save -e1740
     ~CWStr() { m_Data->RefDecAndDelete(); }
     // lint -restore
+
+    CStr toCStr() const
+    {
+        return CStr{*this};
+    }
 
     CHeap *GetHeap(void) const { return m_Data->m_Heap; }
 
@@ -141,7 +142,7 @@ public:
             ++s.m_Data->m_Refs;
         }
     }
-    void Set(const CStr &cstr);
+    void Set(const char* cstr);
     void Set(const wchar *s) {
         if (m_Data->Data() != s) {
             int len = WStrLen(s);

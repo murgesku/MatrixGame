@@ -143,10 +143,10 @@ void SMemHeader::Release(void) {
         if (begin || end) {
 #ifdef _DEBUG
             if (begin) {
-                ERROR_S((L"Memory corruption detected at (begin):\n" + CWStr(CStr(file)) + L" - " + CWStr(line)).Get());
+                ERROR_S((L"Memory corruption detected at (begin):\n" + CWStr(file) + L" - " + CWStr(line)).Get());
             }
             else {
-                ERROR_S((L"Memory corruption detected at (end):\n" + CWStr(CStr(file)) + L" - " + CWStr(line)).Get());
+                ERROR_S((L"Memory corruption detected at (end):\n" + CWStr(file) + L" - " + CWStr(line)).Get());
             }
 #else
             char buf[1024];
@@ -198,7 +198,7 @@ void CHeap::Free(void *buf, const char *file, int line) {
     {
         ERROR_S(
             L"NULL pointer is passed to Free function at: " +
-            CWStr(CStr(file)) +
+            CWStr(file) +
             L" - " + line);
     }
 

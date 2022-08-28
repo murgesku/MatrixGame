@@ -288,7 +288,7 @@ int EGExp::GroupMaterialFindAdd(Mtl * ml, int sm, int & twosided)
 				Texmap * tex = ml->GetSubTexmap(ID_DI);
 				if(tex->ClassID() == Class_ID(BMTEX_CLASS_ID, 0x00)) {
 					TSTR mapName = ((BitmapTex *)tex)->GetMapName();
-					Base::CWStr namestr(Base::CStr((char *)mapName));
+					Base::CWStr namestr(mapName.data());
 					if(!namestr.IsEmpty()) {
 						namestr=RenameByCfg(namestr.GetStrPar(namestr.GetCountPar(L"\\/")-1,L"\\/"));
 //						int cnt=namestr.GetCountPar(L".");
@@ -648,12 +648,12 @@ int EGExp::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BOOL suppre
 	showPrompts = suppressPrompts ? FALSE : TRUE;
 	exportSelected = (options & SCENE_EXPORT_SELECTED) ? TRUE : FALSE;
 
-	m_FileName.Set(Base::CStr((char *)name));
+	m_FileName.Set(name);
 
 	ip = i;
 
 	try {
-		m_Cfg.LoadFromTextFile(Base::CWStr(Base::CStr((char *)ip->GetDir(APP_PLUGCFG_DIR)))+L"\\EGExp.cfg");
+		m_Cfg.LoadFromTextFile(Base::CWStr((const char*)ip->GetDir(APP_PLUGCFG_DIR)) + L"\\EGExp.cfg");
 	} catch(...) {
 	}
 
@@ -663,7 +663,7 @@ int EGExp::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BOOL suppre
 		}
 //	}
 
-	m_Cfg.SaveInTextFile(Base::CWStr(Base::CStr((char *)ip->GetDir(APP_PLUGCFG_DIR)))+L"\\EGExp.cfg",true);
+	m_Cfg.SaveInTextFile(Base::CWStr((const char*)ip->GetDir(APP_PLUGCFG_DIR)) + L"\\EGExp.cfg", true);
 
 	return 1;
 }

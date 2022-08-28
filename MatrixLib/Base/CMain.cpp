@@ -111,7 +111,6 @@ void CMain::DCS_Reincarnation(void) const {
 #endif
 
 void CMain::BaseInit(void) {
-    CWStr::call_num = 0;
     CFile::StaticInit();
 
 #ifndef MAXEXP_EXPORTS

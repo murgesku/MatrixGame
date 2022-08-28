@@ -19,7 +19,7 @@ void CException::CreateCallTrace(void) {
 }
 
 CWStr CException::Info() {
-    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", CWStr(CStr(call_trace)).Get(), CWStr(CStr(m_File)).Get(), m_Line);
+    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", CWStr(call_trace).Get(), CWStr(m_File).Get(), m_Line);
 }
 
 CExceptionStr::CExceptionStr(const char *file, int line, const wchar *str, const wchar *str2, const wchar *str3,

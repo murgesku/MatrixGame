@@ -504,7 +504,7 @@ void CMatrixEffectWeapon::Fire(void) {
             CMatrixMapStatic *s = g_MatrixMap->Trace(&hitpos, m_Pos, hitpos, TRACE_ALL, m_Skip);
 
             // float l = D3DXVec3Length(&(m_Pos- hitpos));
-            // CDText::T("len", CStr(l));
+            // CDText::T("len", l);
 
             // CHelper::Create(10,0)->Line(m_Pos, hitpos);
             // CHelper::Create(10,0)->Line(hitpos, hitpos + D3DXVECTOR3(0,0,100));

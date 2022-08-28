@@ -663,7 +663,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
             }
         }
     }
-    // if (m_Kind==BUILDING_BASE) CDText::T("hp",CStr((float)m_HitPoint));
+    // if (m_Kind==BUILDING_BASE) CDText::T("hp",(float)m_HitPoint);
 
     int downtime = -BUILDING_EXPLOSION_TIME;
     if (m_Kind == BUILDING_BASE) {

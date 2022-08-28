@@ -1279,12 +1279,12 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         else                           \
             buf.WordLoop(0x09, level); \
     }
-#define SaveStr(str)                      \
-    {                                     \
-        if (ansi)                         \
-            buf.StrNZ(CStr(str, m_Heap)); \
-        else                              \
-            buf.WStrNZ(str);              \
+#define SaveStr(str)              \
+    {                             \
+        if (ansi)                 \
+            buf.StrNZ(CStr(str)); \
+        else                      \
+            buf.WStrNZ(str);      \
     }
 #define SaveSpace           \
     {                       \
