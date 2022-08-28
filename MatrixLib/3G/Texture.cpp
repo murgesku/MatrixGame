@@ -492,7 +492,7 @@ void CTextureManaged::Load(void) {
     }
 #endif
 
-    //    CDText::T("texcnt", CStr(g_TexManagedCnt));
+    //    CDText::T("texcnt", g_TexManagedCnt);
 }
 
 void CTextureManaged::Unload(void) {
@@ -503,7 +503,7 @@ void CTextureManaged::Unload(void) {
         m_Tex = NULL; /*g_TexManagedCnt--;*/
     }
 #endif
-    // CDText::T("texcnt", CStr(g_TexManagedCnt));
+    // CDText::T("texcnt", g_TexManagedCnt);
 }
 
 // void CTextureManaged::LoadFromBitmapAsIs(const CBitmap & bm)

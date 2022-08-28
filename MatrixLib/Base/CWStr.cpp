@@ -13,16 +13,20 @@
 
 namespace Base {
 
-CWStr::CWStr(const CStr &s) : CMain() {
-    NewDataLen(s.GetHeap(), s.Len());
-    Set(s);
+CWStr::CWStr(const char* s): CMain()
+{
+    CStr tmp(s);
+    NewDataLen(nullptr, tmp.Len());
+    Set(tmp);
 }
 
 #include <stdio.h>
 
-int CWStr::call_num;
+void CWStr::Set(const char* str)
+{
+    CStr cstr{str};
 
-void CWStr::Set(const CStr &cstr) {
+    static int call_num = 0;
     ++call_num;
     if (cstr.Len() <= 0) {
         ModifyLen(m_Data->m_Heap, 0);

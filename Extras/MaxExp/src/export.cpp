@@ -888,7 +888,7 @@ BOOL EGExp::ExportSimple_NodeEnumFirst(INode *node,TimeValue timev,int frame)
 				TSTR tstr;
 
                 if(!m_GroupName.IsEmpty() && node->GetUserPropString("Group",tstr)) {
-                    Base::CWStr atstr(Base::CStr(tstr.data()));
+                    Base::CWStr atstr(tstr.data());
                     atstr.Trim();
                     if(atstr!=m_GroupName) break;
                 }
@@ -899,7 +899,7 @@ BOOL EGExp::ExportSimple_NodeEnumFirst(INode *node,TimeValue timev,int frame)
 						m_MatCenter.Invert();
 
 						if(node->GetUserPropString("MaxSize",tstr)) {
-							Base::CWStr ts(Base::CStr(tstr.data()));
+							Base::CWStr ts(tstr.data());
 //							if(sc>0) m_MaxSize=sc;
 
 							int cp=ts.GetCountPar(L",");
@@ -908,7 +908,7 @@ BOOL EGExp::ExportSimple_NodeEnumFirst(INode *node,TimeValue timev,int frame)
 							if(cp>=3 && !ts.GetStrPar(2,L",").Trim().IsEmpty()) m_MaxSizeZ=ts.GetDoublePar(2,L",");
 						}
 						if(node->GetUserPropString("Scale",tstr)) {
-							Base::CWStr ts(Base::CStr(tstr.data()));
+							Base::CWStr ts(tstr.data());
 
 							int cp=ts.GetCountPar(L",");
 							if(cp>=1 && !ts.GetStrPar(0,L",").Trim().IsEmpty()) m_Scale.x=(float)ts.GetDoublePar(0,L",");
@@ -965,7 +965,7 @@ void EGExp::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 
     TSTR tstr;
     if(!m_GroupName.IsEmpty() && node->GetUserPropString("Group",tstr)) {
-        Base::CWStr atstr(Base::CStr(tstr.data()));
+        Base::CWStr atstr(tstr.data());
         atstr.Trim();
         if(atstr!=m_GroupName) return;
     }
@@ -1019,12 +1019,12 @@ void EGExp::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 	mesh->buildNormals();
 
 	if(mesh->tVerts==NULL) {
-//		Log(Base::CWStr(L"Mapping coords not found: ")+Base::CWStr(Base::CStr(node->NodeName())));
+		Log(Base::CWStr(L"Mapping coords not found: ")+Base::CWStr(node->NodeName()));
 		TSTR str;
 		node->EvalWorldState(timev).obj->GetClassName(str);
 		Log(Base::CWStr().Format(L"Mapping coords not found: <s>  Class name: <s>",
-				Base::CWStr(Base::CStr(node->NodeName())).Get(),
-				Base::CWStr(Base::CStr(str.data())).Get() 
+				Base::CWStr(node->NodeName()).Get(),
+				Base::CWStr(str.data()).Get()
 			));
 	}
 
@@ -1144,8 +1144,8 @@ void EGExp::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					Log(Base::CWStr().Format(L"Face has not 2 tris. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
-						Base::CWStr(Base::CStr(node->NodeName())).Get(),
-						Base::CWStr(Base::CStr(str.data())).Get() 
+						Base::CWStr(node->NodeName()).Get(),
+						Base::CWStr(str.data()).Get()
 					));
 				}
 
@@ -1170,7 +1170,7 @@ void EGExp::ExportSimple_Helper(INode *node,TimeValue timev,int frame)
 //            if(m_GroupName.IsEmpty())
 
             if(!m_GroupName.IsEmpty() && node->GetUserPropString("Group",tstr)) {
-                Base::CWStr atstr(Base::CStr(tstr.data()));
+                Base::CWStr atstr(tstr.data());
                 atstr.Trim();
                 if(atstr!=m_GroupName) return;
             }
@@ -1184,7 +1184,7 @@ void EGExp::ExportSimple_Helper(INode *node,TimeValue timev,int frame)
 			if(node->GetUserPropInt("Id",etype)) emh.m_Id=etype;
 			Base::CWStr ts;
 			if(node->GetUserPropString("Name",tstr)) {
-				ts.Set(Base::CStr(tstr.data()));
+				ts.Set(tstr.data());
 				ts=RenameByCfg(ts);
 				if(ts.GetLen()>31) ts.SetLen(31);
 				CopyMemory(emh.m_Name,ts.Get(),ts.GetLen()*2);
@@ -1227,7 +1227,7 @@ bool EGExp::LoadCfgFromScene(INode * node)
 					if(tstr==L"ExportCfg") {
 						Base::CWStr ss;
 						node->GetUserPropBuffer(tstr);
-						ss.Set(Base::CStr(tstr.data()));
+						ss.Set(tstr.data());
 
 						m_CfgFromScene.Clear();
 						m_CfgFromScene.LoadFromText(ss.Get());
@@ -2864,7 +2864,7 @@ int EGExp2::GroupMaterialFindAdd(Mtl * ml, int sm, int & twosided)
 				Texmap * tex = ml->GetSubTexmap(ID_DI);
 				if(tex->ClassID() == Class_ID(BMTEX_CLASS_ID, 0x00)) {
 					TSTR mapName = ((BitmapTex *)tex)->GetMapName();
-					Base::CWStr namestr(Base::CStr((char *)mapName));
+					Base::CWStr namestr(mapName.data());
 					if(!namestr.IsEmpty()) {
 						namestr=RenameByCfg(namestr.GetStrPar(namestr.GetCountPar(L"\\/")-1,L"\\/"));
 //						int cnt=namestr.GetCountPar(L".");
@@ -3662,12 +3662,11 @@ void EGExp2::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 	mesh->buildNormals();
 
 	if(mesh->tVerts==NULL) {
-//		Log(Base::CWStr(L"Mapping coords not found: ")+Base::CWStr(Base::CStr(node->NodeName())));
 		TSTR str;
 		node->EvalWorldState(timev).obj->GetClassName(str);
 		Log(Base::CWStr().Format(L"Mapping coords not found: <s>  Class name: <s>",
-				Base::CWStr(Base::CStr(node->NodeName())).Get(),
-				Base::CWStr(Base::CStr(str.data())).Get() 
+				Base::CWStr(node->NodeName()).Get(),
+				Base::CWStr(str.data()).Get()
 			));
 	}
 
@@ -3787,8 +3786,8 @@ void EGExp2::ExportSimple_GeomObject(INode * node,TimeValue timev,int frame)
 					Log(Base::CWStr().Format(L"У грани не 2 триугольника. Face:<i> Cnt: <i>  Name: <s>  Class name: <s>",
 						i+1,
 						cnttri,
-						Base::CWStr(Base::CStr(node->NodeName())).Get(),
-						Base::CWStr(Base::CStr(str.data())).Get() 
+						Base::CWStr(node->NodeName()).Get(),
+						Base::CWStr(str.data()).Get()
 					));
 				}
 

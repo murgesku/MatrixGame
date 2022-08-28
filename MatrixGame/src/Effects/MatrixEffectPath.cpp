@@ -154,7 +154,7 @@ void CMatrixEffectPath::Draw(void) {
     //   D3DXVECTOR3 timepos;
     //    GetPos(&timepos, m_Time);
 
-    // CDText::T("Time", CStr(m_Time));
+    // CDText::T("Time", m_Time);
 
     // CHelper::Create(1,0)->Line(timepos-D3DXVECTOR3(0,0,10),timepos+D3DXVECTOR3(0,0,10));
 

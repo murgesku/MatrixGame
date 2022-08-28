@@ -193,7 +193,7 @@ bool CHsFolder::ReadFolder(DWORD Handle, DWORD Offset) {
     // Теперь читаем информацию о вложенных папках
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0) {
-            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(CStr(m_Files[i].m_RealName, m_Heap), this, m_Heap);
+            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(CStr(m_Files[i].m_RealName), this, m_Heap);
             m_Files[i].m_Extra = DWORD(PFolder);
             if (!PFolder->ReadFolder(Handle, m_Files[i].m_Offset)) {
                 Clear();
@@ -1413,18 +1413,18 @@ void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
             }
             else {
                 if (PFile->m_NType == FILEEC_COMPRESSED) {
-                    if (!Func(false, true, CStr(PFile->m_RealName, m_Heap)))
+                    if (!Func(false, true, CStr(PFile->m_RealName)))
                         return;
                 }
                 else {
-                    if (!Func(false, false, CStr(PFile->m_RealName, m_Heap)))
+                    if (!Func(false, false, CStr(PFile->m_RealName)))
                         return;
                 }
             }
         }
     }
     if (!m_RealName.IsEmpty()) {
-        Func(true, false, CStr("..", m_Heap));
+        Func(true, false, CStr(".."));
     }
 }
 
@@ -1503,7 +1503,7 @@ bool CPackFile::OpenPacketFile(void) {
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
-        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+        m_RootFolder = HNew(m_Heap) CHsFolder(CStr());
         m_RootFolder->AllocEmptyFolder();
         return true;
     }
@@ -1515,7 +1515,7 @@ bool CPackFile::OpenPacketFile(void) {
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1536,7 +1536,7 @@ bool CPackFile::OpenPacketFile(void) {
         return false;
     }
     // Теперь читаем данные о корневой папке
-    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
+    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(), m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
@@ -1575,7 +1575,7 @@ bool CPackFile::ClosePacketFile(void) {
 //    if (FLAG(m_Flags, PFFLAG_EMPTY))
 //    {
 //        m_RootOffset = 0;
-//        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+//        m_RootFolder = HNew(m_Heap) CHsFolder(CStr());
 //        m_RootFolder->AllocEmptyFolder();
 //        return true;
 //    }
@@ -1588,7 +1588,7 @@ bool CPackFile::ClosePacketFile(void) {
 //        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    } else
 //    {
-//        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
+//        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
 //        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    }
 //
@@ -1602,7 +1602,7 @@ bool CPackFile::ClosePacketFile(void) {
 //    }
 //    // Теперь читаем данные о корневой папке
 //    m_RootOffset = 4;
-//    m_RootFolder = HNew (m_Heap) CHsFolder(CStr(m_Heap));
+//    m_RootFolder = HNew (m_Heap) CHsFolder(CStr());
 //    m_RootFolder->AllocEmptyFolder();
 //    return true;
 //}
@@ -1614,7 +1614,7 @@ bool CPackFile::OpenPacketFileEx() {
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
-        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+        m_RootFolder = HNew(m_Heap) CHsFolder(CStr());
         m_RootFolder->AllocEmptyFolder();
         return true;
     }
@@ -1628,7 +1628,7 @@ bool CPackFile::OpenPacketFileEx() {
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ | GENERIC_WRITE,
+                (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1649,7 +1649,7 @@ bool CPackFile::OpenPacketFileEx() {
         return false;
     }
     // Теперь читаем данные о корневой папке
-    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
+    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(), m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;

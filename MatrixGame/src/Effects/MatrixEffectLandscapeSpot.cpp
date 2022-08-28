@@ -461,7 +461,7 @@ CMatrixEffectLandscapeSpot::~CMatrixEffectLandscapeSpot() {
     //    CMatrixEffectLandscapeSpot *eff = (CMatrixEffectLandscapeSpot *)ELIST_FIRST(EFFECT_LANDSCAPE_SPOT);
     //    for (;eff;eff = (CMatrixEffectLandscapeSpot *)eff->m_TypeNext)
     //    {
-    //        b.StrNZ(CStr(CWStr(eff->Priority()) + L":" + eff->m_Texture->m_Name).Get());
+    //        b.StrNZ(CWStr(eff->Priority()) + L":" + eff->m_Texture->m_Name).toCStr().Get());
     //        b.StrNZ("\r\n");
 
     //    }

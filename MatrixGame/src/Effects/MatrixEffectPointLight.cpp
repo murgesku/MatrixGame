@@ -681,7 +681,7 @@ void CMatrixEffectPointLight::Draw(void) {
     if (g_Config.m_VertexLight) {
         g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, m_Color);
 
-        // CDText::T("col", CStr((int)m_Color));
+        // CDText::T("col", (int)m_Color);
         SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_DIFFUSE, D3DTA_TFACTOR);
         SetAlphaOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_DIFFUSE, D3DTA_TFACTOR);
         // SetColorOpSelect(0, D3DTA_DIFFUSE);
@@ -766,7 +766,7 @@ void CMatrixEffectPointLight::Takt(float step) {
         if (m_Pos.z > m_Radius) dz = -dz;
         if (m_Pos.z < 1) dz = -dz;
 
-        CDText::T("Z", CStr(m_Pos.z));
+        CDText::T("Z", m_Pos.z);
     */
     // UpdateData();
 }

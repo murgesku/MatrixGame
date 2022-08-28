@@ -45,8 +45,8 @@ class D3DResource : public CMain {
     ~D3DResource() { LIST_DEL(this, m_First, m_Last, m_Prev, m_Next); }
 
     void DrawInfo(void) {
-        CDText::T("IB", CStr(m_IB_cnt).Get());
-        CDText::T("VB", CStr(m_VB_cnt).Get());
+        CDText::T("IB", m_IB_cnt);
+        CDText::T("VB", m_VB_cnt);
     }
 
 public:

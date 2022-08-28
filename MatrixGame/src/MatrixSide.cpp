@@ -1792,7 +1792,7 @@ void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param) {
         //    if(prev_mp.x != mp.x || prev_mp.y != mp.y){
         //        static int calles3;
         //        calles3++;
-        //        CDText::T("ccc", CStr(calles3));
+        //        CDText::T("ccc", calles3);
         //
         //        CMatrixGroupObject* o2 = tmp2->m_FirstObject;
         //        while(o2){
@@ -1802,7 +1802,7 @@ void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param) {
         //                if(o2->GetObject() && o2->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI){
         //                    static int calles2;
         //                    calles2++;
-        //                    CDText::T("bbb", CStr(calles2));
+        //                    CDText::T("bbb", calles2);
         //
         //                    ((CMatrixRobotAI*)o2->GetObject())->UnSelect();
         //                }else if(ms->GetObjectType() == OBJECT_TYPE_FLYER){
@@ -1819,7 +1819,7 @@ void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param) {
         //                if(!((CMatrixRobotAI*)o1->GetObject())->IsSelected()){
         //                    static int calles;
         //                    calles++;
-        //                    CDText::T("aaa", CStr(calles));
+        //                    CDText::T("aaa", calles);
         //                    ((CMatrixRobotAI*)o1->GetObject())->SelectByGroup();
         //                    ((CMatrixRobotAI*)o1->GetObject())->GetSelection()->SetColor(SEL_COLOR_TMP);
 

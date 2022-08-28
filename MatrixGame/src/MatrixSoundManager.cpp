@@ -335,7 +335,7 @@ void CSound::Takt(void) {
                     ++sc;
                 }
             }
-            // CDText::T("SND: ", CStr(sc));
+            // CDText::T("SND: ", sc);
             g_MatrixMap->m_DI.T(L"Active sounds: ", CWStr(sc));
         }
     }

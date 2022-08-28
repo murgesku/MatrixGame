@@ -863,7 +863,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     CStr mmname(PathToOutputFiles(FOLDER_NAME_CACHE), g_CacheHeap);
     {
         mmname += "\\";
-        mmname += CStr(name, g_CacheHeap);
+        mmname += name.toCStr();
         mmname += ".";
 
         mmname += (char)((uniq & 0x0F) + 65);
@@ -1168,7 +1168,7 @@ render:
 
         CStr n(PathToOutputFiles(FOLDER_NAME_CACHE), g_CacheHeap);
         n += "\\";
-        n += CStr(name, g_CacheHeap);
+        n += name.toCStr();
         n += ".*";
 
         HANDLE ff;
