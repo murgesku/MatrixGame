@@ -95,7 +95,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         if (map) {
             FILE *file;
             file = fopen("calcvis.log", "a");
-            CStr name(g_MatrixMap->MapName(), g_MatrixHeap);
+            CStr name(g_MatrixMap->MapName());
             fwrite(name.Get(), name.Len(), 1, file);
             fwrite(" ...", 4, 1, file);
             fclose(file);

@@ -42,15 +42,15 @@ void CWStr::Set(const char* str)
         fwrite(txt.Get(), txt.Len(), 1, file);
         DWORD err = GetLastError();
 
-        txt = "unknown error: ";
+        txt = CStr("unknown error: ");
         if (err == ERROR_INSUFFICIENT_BUFFER)
-            txt = "ERROR_INSUFFICIENT_BUFFER";
+            txt = CStr("ERROR_INSUFFICIENT_BUFFER");
         else if (err == ERROR_INVALID_FLAGS)
-            txt = "ERROR_INVALID_FLAGS";
+            txt = CStr("ERROR_INVALID_FLAGS");
         else if (err == ERROR_INVALID_PARAMETER)
-            txt = "ERROR_INVALID_PARAMETER";
+            txt = CStr("ERROR_INVALID_PARAMETER");
         else if (err == ERROR_NO_UNICODE_TRANSLATION)
-            txt = "ERROR_NO_UNICODE_TRANSLATION";
+            txt = CStr("ERROR_NO_UNICODE_TRANSLATION");
         else {
             txt.Add(int(err));
         }
@@ -584,7 +584,7 @@ void CWStr::LowerCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharLowerBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this, GetHeap());
+        CStr tstr(*this);
         tstr.LowerCase(sme, len);
         Set(tstr.Get());
     }
@@ -601,7 +601,7 @@ void CWStr::UpperCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharUpperBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this, GetHeap());
+        CStr tstr(*this);
         tstr.UpperCase(sme, len);
         Set(tstr.Get());
     }

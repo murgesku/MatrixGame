@@ -1232,7 +1232,7 @@ int CBlockPar::LoadFromText(const wchar *text, int textlen) {
 
 void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     DTRACE();
-    CFile fi(CWStr(filename, filenamelen, m_Heap), m_Heap);
+    CFile fi(CWStr(filename, filenamelen), m_Heap);
     fi.OpenRead();
 
     word zn;
@@ -1247,8 +1247,8 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     fs -= fi.Pointer();
     if (fs > 0) {
         if (fansi) {
-            CStr astr(m_Heap);
-            CWStr wstr(m_Heap);
+            CStr astr;
+            CWStr wstr;
 
             astr.SetLen(fs);
             fi.Read(astr.GetBuf(), fs);
@@ -1257,7 +1257,7 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
             LoadFromText(wstr.Get(), wstr.GetLen());
         }
         else {
-            CWStr wstr(m_Heap);
+            CWStr wstr;
 
             wstr.SetLen(fs >> 1);
             fi.Read(wstr.GetBuf(), (fs >> 1) << 1);

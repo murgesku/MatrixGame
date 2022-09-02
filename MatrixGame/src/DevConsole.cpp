@@ -47,8 +47,7 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
             }
             if (cnt == 0)
                 continue;
-            CStr ss(g_CacheHeap);
-            ss = i;
+            CStr ss(i);
             ss += " - ";
             ss += cnt;
             ss += "\n";

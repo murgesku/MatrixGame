@@ -440,7 +440,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        CStr name((cd->m_Name == NULL) ? L"NULL" : cd->m_Name, g_CacheHeap);
+        CStr name((cd->m_Name == NULL) ? L"NULL" : cd->m_Name);
 
         char *loaded;
         if (cd->IsLoaded())

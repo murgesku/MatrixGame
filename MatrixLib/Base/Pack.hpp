@@ -81,7 +81,7 @@ struct SSearchRec {
     DWORD T;
     CHsFolder *Folder;
 
-    SSearchRec(CHeap *heap) : Name(heap), Path(heap) {}
+    SSearchRec(CHeap *heap) {}
 };
 
 class CHsFolder : public CMain {
@@ -308,8 +308,8 @@ public:
     }
     void FindClose(SSearchRec &S) {
         S.Folder = NULL;
-        S.Path = "";
-        S.Name = "";
+        S.Path = CStr("");
+        S.Name = CStr("");
     }
 };
 

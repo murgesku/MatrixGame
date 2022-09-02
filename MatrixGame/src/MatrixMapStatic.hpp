@@ -173,7 +173,11 @@ struct SObjectCore {
 #ifdef _DEBUG
             if (m_Ref < 0)
                 debugbreak();
-            DeleteFile("Errors\\" + CStr(int(this)) + ".log");
+
+            auto path = CStr("Errors\\");
+            path += (void*)this;
+            path += ".log";
+            DeleteFile(path.Get());
 #endif
             HFree(this, g_MatrixHeap);
         }

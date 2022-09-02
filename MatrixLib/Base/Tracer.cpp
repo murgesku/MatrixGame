@@ -114,7 +114,7 @@ void CDText::Get(char *out) {
 void DbgShowDword(const char *n, DWORD sz) {
     char buf[32];
     sprintf(buf, "%i", sz);
-    CDText::T(n, buf);
+    CDText::T(n, (const char*)buf);
 }
 
 #endif
@@ -302,7 +302,7 @@ void CDebugTracer::StaticInit(void) throw() {
     m_hist_end = 0;
 #endif
 
-    std::set_terminate((terminate_handler)&cpp_except_terminate);
+    std::set_terminate((std::terminate_handler)&cpp_except_terminate);
 
     SetUnhandledExceptionFilter(sys_except_handler);
 }
