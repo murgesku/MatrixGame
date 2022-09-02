@@ -18,22 +18,22 @@ namespace Base {
     m_Str = (char *)HAlloc(m_MaxLen + 1, nullptr); \
     m_Str[0] = 0
 
-CStr::CStr(const CWStr &s, CHeap *heap) : CMain() {
+CStr::CStr(const CWStr &s) : CMain() {
     FI;
     Set(s);
 }
 
-CStr::CStr(const wchar *s, CHeap *heap) : CMain() {
+CStr::CStr(const wchar *s) : CMain() {
     FI;
     Set(s);
 }
 
-CStr::CStr(int zn, CHeap *heap) : CMain() {
+CStr::CStr(int zn) : CMain() {
     FI;
     Set(zn);
 }
 
-CStr::CStr(double zn, int zpz, CHeap *heap) : CMain() {
+CStr::CStr(double zn, int zpz) : CMain() {
     FI;
     Set(zn, zpz);
 }

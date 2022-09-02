@@ -23,7 +23,7 @@ class BASE_API CStr : public CMain {
         }
     }
 
-    void Init(const char *src, int len, CHeap*) {
+    void Init(const char *src, int len) {
         m_Len = len;
         m_MaxLen = len + 16;
         m_Str = (char *)HAlloc(uint(m_MaxLen + 1), nullptr);
@@ -37,24 +37,24 @@ class BASE_API CStr : public CMain {
 
 public:
     CStr(void) : CMain(), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
-    explicit CStr(CHeap*) : CMain(), m_MaxLen(0), m_Len(0), m_Str(NULL) {} // TODO: remove
-    CStr(const CStr &s, CHeap *heap = NULL) : CMain() { Init(s.m_Str, s.Len(), nullptr); }
-    explicit CStr(const CWStr &s, CHeap *heap = NULL);
-    explicit CStr(const wchar *s, CHeap *heap = NULL);
-    explicit CStr(const char *s, CHeap *heap = NULL) : CMain() { Init(s, int(strlen(s)), heap); }
-    CStr(const char *s, int len, CHeap *heap = NULL) : CMain() { Init(s, len, heap); }
-    explicit CStr(char sim, CHeap *heap = NULL) : CMain(), m_MaxLen(16), m_Len(1) {
+    CStr(const CStr &s) : CMain() { Init(s.m_Str, s.Len()); }
+
+    explicit CStr(const CWStr &s);
+    explicit CStr(const wchar *s);
+    explicit CStr(const char *s) : CMain() { Init(s, int(strlen(s))); }
+    explicit CStr(const char *s, int len) : CMain() { Init(s, len); }
+    explicit CStr(char sim) : CMain(), m_MaxLen(16), m_Len(1) {
         m_Str = (char *)HAlloc(uint(m_MaxLen + 1), nullptr);
         m_Str[0] = sim;
         m_Str[1] = 0;
     };
-    CStr(char sim, int count, CHeap *heap = NULL) : CMain(), m_MaxLen(count + 16), m_Len(count) {
+    explicit CStr(char sim, int count) : CMain(), m_MaxLen(count + 16), m_Len(count) {
         m_Str = (char *)HAlloc(uint(m_MaxLen + 1), nullptr);
         memset(m_Str, int(sim), uint(count));
         m_Str[count] = 0;
     };
-    explicit CStr(int zn, CHeap *heap = NULL);
-    explicit CStr(double zn, int zpz = 8, CHeap *heap = NULL);
+    explicit CStr(int zn);
+    explicit CStr(double zn, int zpz = 8);
 
     ~CStr() {
         if (m_Str != NULL) {
@@ -102,7 +102,6 @@ public:
     const char *Get(void) const { return m_Str; }
     char *GetBuf(void) { return m_Str; }
 
-    int GetLen(void) const { return m_Len; } // TODO: replace with Len
     int Len(void) const { return m_Len; }
 
     bool IsEmpty(void) const { return m_Len < 1; }
@@ -133,26 +132,6 @@ public:
         if (this != &s) {
             Set(s);
         }
-        return *this;
-    }
-    CStr &operator=(const CWStr &s) {
-        Set(s);
-        return *this;
-    }
-    CStr &operator=(const char *s) {
-        Set(s);
-        return *this;
-    }
-    CStr &operator=(char zn) {
-        Set(zn);
-        return *this;
-    }
-    CStr &operator=(int zn) {
-        Set(zn);
-        return *this;
-    }
-    CStr &operator=(double zn) {
-        Set(zn);
         return *this;
     }
 
@@ -191,41 +170,6 @@ public:
         str += s2;
         return str;
     }
-    // friend CStr operator+(const char *s1, const CStr &s2) {
-    //     CStr str(s1);
-    //     str += s2;
-    //     return str;
-    // }
-    // friend CStr operator+(const CStr &s1, char sim) {
-    //     CStr str(s1);
-    //     str += sim;
-    //     return str;
-    // }
-    // friend CStr operator+(char sim, const CStr &s2) {
-    //     CStr str(sim);
-    //     str += s2;
-    //     return str;
-    // }
-    friend CStr operator+(const CStr &s, int zn) {
-        CStr str(s);
-        str += zn;
-        return str;
-    }
-    // friend CStr operator+(int zn, const CStr &s) {
-    //     CStr str(zn);
-    //     str += s;
-    //     return str;
-    // }
-    friend CStr operator+(const CStr &s, double zn) {
-        CStr str(s);
-        str += zn;
-        return str;
-    }
-    // friend CStr operator+(double zn, const CStr &s) {
-    //     CStr str(zn);
-    //     str += s;
-    //     return str;
-    // }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
 };

@@ -860,7 +860,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     DTRACE();
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
-    CStr mmname(PathToOutputFiles(FOLDER_NAME_CACHE), g_CacheHeap);
+    CStr mmname(PathToOutputFiles(FOLDER_NAME_CACHE));
     {
         mmname += "\\";
         mmname += name.toCStr();
@@ -1166,7 +1166,7 @@ render:
 
         // seek files
 
-        CStr n(PathToOutputFiles(FOLDER_NAME_CACHE), g_CacheHeap);
+        CStr n(PathToOutputFiles(FOLDER_NAME_CACHE));
         n += "\\";
         n += name.toCStr();
         n += ".*";
@@ -1176,7 +1176,7 @@ render:
             WIN32_FIND_DATA fd;
             ff = FindFirstFile(n.Get(), &fd);
             if (ff != INVALID_HANDLE_VALUE) {
-                CStr nn(PathToOutputFiles(FOLDER_NAME_CACHE), g_CacheHeap);
+                CStr nn(PathToOutputFiles(FOLDER_NAME_CACHE));
                 nn += "\\";
                 nn += fd.cFileName;
                 DeleteFile(nn.Get());

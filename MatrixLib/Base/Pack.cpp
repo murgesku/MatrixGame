@@ -100,7 +100,7 @@ namespace Base {
 //***************** КЛАСС - КАТАЛОГ ************************************
 //**********************************************************************
 
-CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
+CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name), m_RealName(Name) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
@@ -110,7 +110,7 @@ CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name,
 }
 
 CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
-  : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
+  : m_Heap(heap), m_Name(Name), m_RealName(Name) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
@@ -122,7 +122,7 @@ CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
 SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     SFileRec *PFile;
 
-    CStr n(name, m_Heap);
+    CStr n(name);
     n.UpperCase();
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
@@ -223,8 +223,8 @@ void CHsFolder::Clear(void) {
 }
 
 bool CHsFolder::FileExists(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -328,8 +328,8 @@ bool CHsFolder::FileExists(const CStr &name) const {
 // end;
 
 bool CHsFolder::PathExists(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -346,8 +346,8 @@ bool CHsFolder::PathExists(const CStr &name) const {
 }
 
 SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -620,8 +620,8 @@ CStr CHsFolder::GetFullPath(const CStr &name) {
 }
 
 DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -707,8 +707,8 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
 }
 
 DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -1432,8 +1432,8 @@ CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
     if (path.IsEmpty())
         return this;
 
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    CStr beg;
+    CStr rem;
 
     path.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
@@ -1456,7 +1456,7 @@ int CHsFolder::FindNext(SSearchRec &S) {
         if (PFile == NULL) {
             return 1;
         }
-        S.Name = PFile->m_RealName;
+        S.Name = CStr(PFile->m_RealName);
         S.T = PFile->m_Type;
         ++S.Ind;
     }
@@ -2278,7 +2278,7 @@ bool CPackFile::FileExists(const CStr &path) {
 int CPackFile::FindFirst(const CStr &path, DWORD Attr, SSearchRec &S) {
     S.Path = path;
     S.Ind = 0;
-    S.Name = "";
+    S.Name = CStr("");
     S.Folder = NULL;
     if (m_RootFolder == NULL)
         return 0;

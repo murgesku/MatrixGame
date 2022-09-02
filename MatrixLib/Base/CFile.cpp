@@ -568,7 +568,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
 
     int l = WStrLen(exts);
 
-    CStr fn(outname.GetHeap());
+    CStr fn;
     for (; sm1 <= l; ++sm1) {
         if (exts[sm1] == '~' || exts[sm1] == 0) {
             if (sm0 != sm1) {
@@ -634,7 +634,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
     }
     else {
         CStr fn(folderfrom);
-        if (fn.GetLen() > 0 && !(*(fn.Get() + fn.GetLen() - 1) == '\\' || (*(fn.Get() + fn.GetLen() - 1) == '/'))) {
+        if (fn.Len() > 0 && !(*(fn.Get() + fn.Len() - 1) == '\\' || (*(fn.Get() + fn.Len() - 1) == '/'))) {
             fn.Add("\\");
         }
         CStr fnf(fn);

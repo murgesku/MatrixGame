@@ -1075,9 +1075,9 @@ void CSound::SaveSoundLog(void) {
     b.StrNZ("Sounds:\n");
 
     for (int i = 0; i < MAX_SOUNDS; ++i) {
-        CStr ss(g_CacheHeap);
+        CStr ss;
 
-        ss = i;
+        ss = CStr(i);
         ss += " - id:";
         ss += int(m_AllSounds[i].id);
 
