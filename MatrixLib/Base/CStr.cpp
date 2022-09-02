@@ -147,7 +147,7 @@ void CStr::Set(int zn) {
 }
 
 void CStr::Set(double zn, int zpz) {
-    CStr tstr();
+    CStr tstr;
     int dec, sign, le;
     int count = 0;
     char *st = _fcvt(zn, zpz, &dec, &sign);

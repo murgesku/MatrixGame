@@ -900,7 +900,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
         HANDLE ff = FindFirstFile(mmname.Get(), &fd);
         if (ff != INVALID_HANDLE_VALUE) {
             CBitmap bm(g_CacheHeap);
-            bm.LoadFromPNG(CWStr(mmname).Get());
+            bm.LoadFromPNG(CWStr(mmname.Get()).Get());
             if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
                 goto render;
 
@@ -1211,7 +1211,7 @@ render:
         //*(des)=*(sou+2);
         //*(des+2)=*(sou+0);
 
-        bm2.SaveInPNG(CWStr(mmname).Get());
+        bm2.SaveInPNG(CWStr(mmname.Get()).Get());
 
         outtgt->UnlockRect();
 

@@ -17,7 +17,7 @@ CWStr::CWStr(const char* s): CMain()
 {
     CStr tmp(s);
     NewDataLen(nullptr, tmp.Len());
-    Set(tmp);
+    Set(tmp.Get());
 }
 
 #include <stdio.h>
@@ -39,7 +39,7 @@ void CWStr::Set(const char* str)
         FILE *file = fopen("error.log", "w+b");
 
         CStr txt(">>>>>>> MultiByteToWideChar <<<<<<<\n");
-        fwrite(txt, strlen(txt), 1, file);
+        fwrite(txt.Get(), txt.Len(), 1, file);
         DWORD err = GetLastError();
 
         txt = "unknown error: ";
@@ -586,7 +586,7 @@ void CWStr::LowerCase(int sme, int len) {
     else {
         CStr tstr(*this, GetHeap());
         tstr.LowerCase(sme, len);
-        Set(tstr);
+        Set(tstr.Get());
     }
 }
 
@@ -603,7 +603,7 @@ void CWStr::UpperCase(int sme, int len) {
     else {
         CStr tstr(*this, GetHeap());
         tstr.UpperCase(sme, len);
-        Set(tstr);
+        Set(tstr.Get());
     }
 }
 
