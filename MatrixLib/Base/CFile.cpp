@@ -578,7 +578,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
                 fn.SetLen(fn.Len() - (l - sm1));
 
                 if (m_Packs->FileExists(fn)) {
-                    outname.Set(fn);
+                    outname.Set(fn.Get());
                     if (withpar)
                         outname += (mname + lenfile);
                     return true;
@@ -647,7 +647,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(fn + CStr(fd.cFileName));
+                    CWStr found((fn + CStr(fd.cFileName)).Get());
                     ef(found, user);
                 }
             }
@@ -662,7 +662,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                     CWStr found(fd.cFileName);
                     if (found != L"." && found != L"..") {
-                        FindFiles(CWStr(fn) + found, files, ef, user);
+                        FindFiles(CWStr(fn.Get()) + found, files, ef, user);
                     }
                 }
             }

@@ -127,7 +127,7 @@ SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
         if (PFile->m_Free == 0) {
-            if (n == PFile->m_Name)
+            if (n == CStr(PFile->m_Name))
                 return PFile;
         }
     }
@@ -1678,7 +1678,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     if (H < 0)
         return 0xFFFFFFFF;
     if (m_RootFolder == NULL) {
-        ERROR_S((L"Package not opened: " + CWStr(filename)).Get());
+        ERROR_S((L"Package not opened: " + CWStr(filename.Get())).Get());
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
@@ -1740,7 +1740,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
     if (Error == 0xFFFFFFFF) {
-        ERROR_S((L"Packet file system error:" + CWStr(filename)).Get());
+        ERROR_S((L"Packet file system error:" + CWStr(filename.Get())).Get());
     }
     return H;
 }

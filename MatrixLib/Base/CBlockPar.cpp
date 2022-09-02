@@ -1252,7 +1252,7 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
 
             astr.SetLen(fs);
             fi.Read(astr.GetBuf(), fs);
-            wstr.Set(astr);
+            wstr.Set(astr.Get());
 
             LoadFromText(wstr.Get(), wstr.GetLen());
         }
