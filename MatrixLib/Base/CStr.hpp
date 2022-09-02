@@ -228,14 +228,6 @@ public:
     }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
-
-    // lint -e1930
-    // operator const char *(void) const { return Get(); } // TODO: remove, replace with .Get()
-    // lint +e1930
-
-    // lint -e1763
-    CHeap *GetHeap(void) const { return nullptr; } // TODO: remove, replace result with nullptr
-    // lint +e1763
 };
 
 }  // namespace Base
