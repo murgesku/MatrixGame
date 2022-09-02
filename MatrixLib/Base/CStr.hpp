@@ -191,41 +191,41 @@ public:
         str += s2;
         return str;
     }
-    friend CStr operator+(const char *s1, const CStr &s2) {
-        CStr str(s1);
-        str += s2;
-        return str;
-    }
-    friend CStr operator+(const CStr &s1, char sim) {
-        CStr str(s1);
-        str += sim;
-        return str;
-    }
-    friend CStr operator+(char sim, const CStr &s2) {
-        CStr str(sim);
-        str += s2;
-        return str;
-    }
+    // friend CStr operator+(const char *s1, const CStr &s2) {
+    //     CStr str(s1);
+    //     str += s2;
+    //     return str;
+    // }
+    // friend CStr operator+(const CStr &s1, char sim) {
+    //     CStr str(s1);
+    //     str += sim;
+    //     return str;
+    // }
+    // friend CStr operator+(char sim, const CStr &s2) {
+    //     CStr str(sim);
+    //     str += s2;
+    //     return str;
+    // }
     friend CStr operator+(const CStr &s, int zn) {
         CStr str(s);
         str += zn;
         return str;
     }
-    friend CStr operator+(int zn, const CStr &s) {
-        CStr str(zn);
-        str += s;
-        return str;
-    }
+    // friend CStr operator+(int zn, const CStr &s) {
+    //     CStr str(zn);
+    //     str += s;
+    //     return str;
+    // }
     friend CStr operator+(const CStr &s, double zn) {
         CStr str(s);
         str += zn;
         return str;
     }
-    friend CStr operator+(double zn, const CStr &s) {
-        CStr str(zn);
-        str += s;
-        return str;
-    }
+    // friend CStr operator+(double zn, const CStr &s) {
+    //     CStr str(zn);
+    //     str += s;
+    //     return str;
+    // }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
 };
