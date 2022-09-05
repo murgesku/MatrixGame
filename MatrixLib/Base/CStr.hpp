@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "CException.hpp"
+#include <string>
+
 #include "CMain.hpp"
-#include "CHeap.hpp"
 
 namespace Base {
 
@@ -166,6 +166,12 @@ public:
     }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
+
+    template<typename... Args>
+    static std::string format(const char* format, Args... args);
+
+    static std::string from_wstring(const std::wstring& wstr);
+    static std::wstring to_wstring(const std::string& str);
 };
 
 }  // namespace Base
