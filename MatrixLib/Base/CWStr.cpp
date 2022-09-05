@@ -6,6 +6,7 @@
 #include "Base.pch"
 
 #include <cwchar>
+#include <cwctype>
 
 #include "CWStr.hpp"
 #include "CException.hpp"
@@ -584,9 +585,10 @@ void CWStr::LowerCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharLowerBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this);
-        tstr.LowerCase(sme, len);
-        Set(tstr.Get());
+        for (size_t i = 0; i < len; ++i)
+        {
+            m_Data->Data()[sme + i] = std::towlower(m_Data->Data()[sme + i]);
+        }
     }
 }
 
@@ -601,9 +603,10 @@ void CWStr::UpperCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharUpperBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this);
-        tstr.UpperCase(sme, len);
-        Set(tstr.Get());
+        for (int i = 0; i < len; ++i)
+        {
+            m_Data->Data()[sme + i] = std::towupper(m_Data->Data()[sme + i]);
+        }
     }
 }
 

@@ -440,7 +440,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        CStr name((cd->m_Name == NULL) ? L"NULL" : cd->m_Name);
+        std::string name{CStr::from_wstring((cd->m_Name == NULL) ? L"NULL" : cd->m_Name)};
 
         char *loaded;
         if (cd->IsLoaded())
@@ -450,7 +450,7 @@ void CCache::Dump(void) {
 
         int l = strlen(buf);
         if (l < 65000) {
-            sprintf(buf + l, "%s%s : %s (%s : %i)\n", loaded, type, name.Get(), cd->d_file, cd->d_line);
+            sprintf(buf + l, "%s%s : %s (%s : %i)\n", loaded, type, name.c_str(), cd->d_file, cd->d_line);
         }
         cd = cd->d_Next;
     }

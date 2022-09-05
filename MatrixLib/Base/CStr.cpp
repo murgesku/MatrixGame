@@ -26,16 +26,6 @@ namespace Base {
     m_Str = (char *)HAlloc(m_MaxLen + 1, nullptr); \
     m_Str[0] = 0
 
-CStr::CStr(const CWStr &s) : CMain() {
-    FI;
-    Set(s);
-}
-
-CStr::CStr(const wchar *s) : CMain() {
-    FI;
-    Set(s);
-}
-
 CStr::CStr(int zn) : CMain() {
     FI;
     Set(zn);
@@ -72,20 +62,6 @@ void CStr::Set(const CStr &cstr) {
     m_Len = cstr.m_Len;
     memcpy(m_Str, cstr.m_Str, m_Len);
     m_Str[m_Len] = 0;
-}
-
-void CStr::Set(const CWStr &cstr)
-{
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::string str = converter.to_bytes(cstr.Get());
-    Set(str.c_str());
-}
-
-void CStr::Set(const wchar *wstr)
-{
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::string str = converter.to_bytes(wstr);
-    Set(str.c_str());
 }
 
 void CStr::Set(const char *value) {

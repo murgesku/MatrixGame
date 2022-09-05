@@ -1283,7 +1283,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 #define SaveStr(str)              \
     {                             \
         if (ansi)                 \
-            buf.StrNZ(CStr(str)); \
+            buf.StrNZ(CStr::from_wstring(std::wstring{str}).c_str()); \
         else                      \
             buf.WStrNZ(str);      \
     }

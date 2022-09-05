@@ -122,7 +122,7 @@ public:
 
     CStr toCStr() const
     {
-        return CStr{*this};
+        return CStr(CStr::from_wstring(this->Get()).c_str());
     }
 
     CHeap *GetHeap(void) const { return m_Data->m_Heap; }

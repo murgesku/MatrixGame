@@ -39,8 +39,6 @@ public:
     CStr(void) : CMain(), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
     CStr(const CStr &s) : CMain() { Init(s.m_Str, s.Len()); }
 
-    explicit CStr(const CWStr &s);
-    explicit CStr(const wchar *s);
     explicit CStr(const char *s) : CMain() { Init(s, int(strlen(s))); }
     explicit CStr(const char *s, int len) : CMain() { Init(s, len); }
     explicit CStr(char sim) : CMain(), m_MaxLen(16), m_Len(1) {
@@ -70,8 +68,6 @@ public:
     void SetLen(int len);  // Установить длину строки (Выделение памяти если нужно)
 
     void Set(const CStr &cstr);
-    void Set(const CWStr &cstr);
-    void Set(const wchar *wstr);
     void Set(const char *str);
     void Set(const char *str, int lstr);
     void Set(char sim);
