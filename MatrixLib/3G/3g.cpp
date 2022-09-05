@@ -154,7 +154,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
 
     g_WndClassName = HNew(g_CacheHeap) CWStr(sysname, g_CacheHeap);
     *g_WndClassName += L"_wc";
-    CStr classname(*g_WndClassName);
+    std::string classname{CStr::from_wstring(g_WndClassName->Get())};
 
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -167,7 +167,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
     wcex.hbrBackground = 0;  //(HBRUSH)(COLOR_WINDOW+1);
     wcex.lpszMenuName = NULL;
-    wcex.lpszClassName = classname.Get();
+    wcex.lpszClassName = classname.c_str();
     wcex.hIconSm = NULL;
     if (!(g_WndA = RegisterClassEx(&wcex)))
         ERROR_E;
@@ -178,12 +178,12 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
     tr.bottom = g_ScreenY;
     if (!FLAG(g_Flags, GFLAG_FULLSCREEN)) {
         AdjustWindowRectEx(&tr, WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU, false, 0);
-        g_Wnd = CreateWindow(classname.Get(), CWStr(captionname).toCStr().Get(),
+        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().Get(),
                              WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER, 0, 0, tr.right - tr.left,
                              tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     else {
-        g_Wnd = CreateWindow(classname.Get(), CWStr(captionname).toCStr().Get(), WS_POPUP, 0, 0, tr.right - tr.left,
+        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().Get(), WS_POPUP, 0, 0, tr.right - tr.left,
                              tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     if (!g_Wnd)

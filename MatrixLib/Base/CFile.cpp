@@ -572,9 +572,9 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     for (; sm1 <= l; ++sm1) {
         if (exts[sm1] == '~' || exts[sm1] == 0) {
             if (sm0 != sm1) {
-                fn.Set(filename);
+                fn.Set(CStr::from_wstring(filename.Get()).c_str());
                 fn += ".";
-                fn += CStr(exts + sm0);
+                fn += CStr(CStr::from_wstring(exts + sm0).c_str());
                 fn.SetLen(fn.Len() - (l - sm1));
 
                 if (m_Packs->FileExists(fn)) {
@@ -633,21 +633,21 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
     }
     else {
-        CStr fn(folderfrom);
-        if (fn.Len() > 0 && !(*(fn.Get() + fn.Len() - 1) == '\\' || (*(fn.Get() + fn.Len() - 1) == '/'))) {
-            fn.Add("\\");
+        std::string fn{CStr::from_wstring(folderfrom.Get())};
+        if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
+            fn +=  "\\";
         }
-        CStr fnf(fn);
+        std::string fnf{fn};
 
         WIN32_FIND_DATAA fd;
 
         // seek files
-        fnf += CStr(files);
-        HANDLE h = FindFirstFileA(fnf.Get(), &fd);
+        fnf += CStr::from_wstring(files);
+        HANDLE h = FindFirstFileA(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found((fn + CStr(fd.cFileName)).Get());
+                    CWStr found((fn + fd.cFileName).c_str());
                     ef(found, user);
                 }
             }
@@ -656,13 +656,13 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
 
         fnf = fn + "*.*";
-        h = FindFirstFileA(fnf.Get(), &fd);
+        h = FindFirstFileA(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
                     CWStr found(fd.cFileName);
                     if (found != L"." && found != L"..") {
-                        FindFiles(CWStr(fn.Get()) + found, files, ef, user);
+                        FindFiles(CWStr(fn.c_str()) + found, files, ef, user);
                     }
                 }
             }
