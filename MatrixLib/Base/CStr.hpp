@@ -100,7 +100,6 @@ public:
     }
 
     const char *Get(void) const { return m_Str; }
-    char *GetBuf(void) { return m_Str; }
 
     int Len(void) const { return m_Len; }
 

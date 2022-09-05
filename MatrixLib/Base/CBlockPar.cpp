@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <string>
+
 #include "Base.pch"
 
 #include "CBlockPar.hpp"
@@ -1247,12 +1249,11 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     fs -= fi.Pointer();
     if (fs > 0) {
         if (fansi) {
-            CStr astr;
+            std::string astr(fs, ' '); // TODO: maybe not spaces?
             CWStr wstr;
 
-            astr.SetLen(fs);
-            fi.Read(astr.GetBuf(), fs);
-            wstr.Set(astr.Get());
+            fi.Read(&astr[0], fs);
+            wstr.Set(astr.data());
 
             LoadFromText(wstr.Get(), wstr.GetLen());
         }
