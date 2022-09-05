@@ -3,13 +3,19 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <cctype>
+#include <locale>
+#include <codecvt>
+#include <cstdio>
+#include <stdexcept>
+
+#include <inttypes.h>
+
 #include "Base.pch"
 
 #include "CStr.hpp"
-// #include "Mem.hpp"
 #include "CWStr.hpp"
 
-#include <cctype>
 
 namespace Base {
 
@@ -68,153 +74,60 @@ void CStr::Set(const CStr &cstr) {
     m_Str[m_Len] = 0;
 }
 
-void CStr::Set(const CWStr &cstr) {
-    Tream(cstr.GetLen());
-    m_Len = cstr.GetLen();
-    if (m_Len > 0) {
-        if (!WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK | WC_DEFAULTCHAR, cstr.Get(), cstr.GetLen(), m_Str, m_MaxLen,
-                                 " ", NULL))
-            ERROR_E;
-    }
-    m_Str[m_Len] = 0;
+void CStr::Set(const CWStr &cstr)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::string str = converter.to_bytes(cstr.Get());
+    Set(str.c_str());
 }
 
-void CStr::Set(const wchar *wstr) {
-    int len = WStrLen(wstr);
-    Tream(len);
-    m_Len = len;
-    if (len > 0) {
-        if (!WideCharToMultiByte(CP_ACP, WC_COMPOSITECHECK | WC_DEFAULTCHAR, wstr, len, m_Str, m_MaxLen, " ", NULL))
-            ERROR_E;
-    }
-    m_Str[m_Len] = 0;
+void CStr::Set(const wchar *wstr)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::string str = converter.to_bytes(wstr);
+    Set(str.c_str());
 }
 
-void CStr::Set(const char *str) {
-    m_Len = strlen(str);
+void CStr::Set(const char *value) {
+    m_Len = strlen(value);
     Tream(m_Len);
-    memcpy(m_Str, str, m_Len);
+    memcpy(m_Str, value, m_Len);
     m_Str[m_Len] = 0;
 }
 
-void CStr::Set(const char *str, int lstr) {
-    Tream(lstr);
-    m_Len = lstr;
-    memcpy(m_Str, str, m_Len);
-    m_Str[m_Len] = 0;
+void CStr::Set(const char *value, int lstr) {
+    std::string str(value, lstr);
+    Set(str.c_str());
 }
 
 void CStr::Set(char sim) {
-    Tream(1);
-    m_Len = 1;
-    m_Str[0] = sim;
-    m_Str[1] = 0;
+    std::string str(1, sim);
+    Set(str.c_str());
 }
 
 void CStr::Set(char sim, int count) {
-    Tream(count);
-    m_Len = count;
-    for (int i = 0; i < count; i++)
-        m_Str[i] = sim;
-    m_Str[m_Len] = 0;
+    std::string str(count, sim);
+    Set(str.c_str());
 }
 
 void CStr::Set(int zn) {
-    Tream(32u);
-    m_Len = 32;
-
-    int fm = 0;
-    if (zn < 0) {
-        fm = 1;
-        zn = -zn;
-    }
-
-    while (zn > 0) {
-        m_Str[m_Len] = char(zn - int(zn / 10) * 10) + char('0');
-        m_Len++;
-        zn = zn / 10;
-    }
-    if (fm) {
-        m_Str[m_Len] = '-';
-        m_Len++;
-    }
-    if (m_Len == 32 || (m_Len == 33 && fm)) {
-        m_Str[m_Len] = char('0');
-        m_Len++;
-    }
-    for (int i = 0; i < int(m_Len - 32); i++)
-        m_Str[i] = m_Str[m_Len - 1 - i];
-    m_Len -= 32;
-    m_Str[m_Len] = 0;
+    auto str = CStr::format("%d", zn);
+    Set(str.c_str());
 }
 
 void CStr::Set(double zn, int zpz) {
-    CStr tstr;
-    int dec, sign, le;
-    int count = 0;
-    char *st = _fcvt(zn, zpz, &dec, &sign);
-    if (sign == 0)
-        Clear();
-    else
-        Set((char)'-');
-    le = strlen(st);
-    if (dec < 0) {
-        Add('0');
-        if (le > 0) {
-            Add('.');
-            Add('0', -dec);
-            for (int i = le - 1; i >= 0; i--)
-                if (st[i] == '0')
-                    count++;
-                else
-                    break;
-            if (le > count) {
-                for (int yu = 0; yu < le - count; yu++)
-                    Add(char(st[yu]));
-            }
-        }
-    }
-    else {
-        if (dec > 0) {
-            for (int yu = 0; yu < dec; yu++)
-                Add(char(st[yu]));
-        }
-        else {
-            Add('0');
-        }
-
-        for (int i = le - 1; i >= dec; i--)
-            if (st[i] == '0')
-                count++;
-            else
-                break;
-        if (dec < le - count) {
-            Add('.');
-            for (int yu = 0; yu < le - count - dec; yu++)
-                Add(char(st[dec + yu]));
-        }
-    }
+    auto str = CStr::format("%0.*f", zpz, zn);
+    Set(str.c_str());
 }
 
-char *Str_CH = "0123456789ABCDEF";
 void CStr::SetHex(void *zn) {
-    DWORD dw = DWORD(zn);
-    m_Len = 8;
-    Tream(m_Len);
-    m_Str[m_Len] = 0;
-    for (int i = 0; i < 8; i++) {
-        m_Str[7 - i] = Str_CH[(dw >> (i * 4)) & 0x0f];
-    }
+    auto str = CStr::format("%0" PRIuPTR, reinterpret_cast<uintptr_t>(zn));
+    Set(str.c_str());
 }
 
 void CStr::SetHex(BYTE zn) {
-    DWORD dw = (DWORD)zn;
-    m_Len = 2;
-    Tream(m_Len);
-    m_Str[m_Len] = 0;
-    for (int i = 0; i < 2; i++) {
-        m_Str[1 - i] = Str_CH[(dw >> (i * 4)) & 0x0f];
-    }
+    auto str = CStr::format("%02u", static_cast<uint8_t>(zn));
+    Set(str.c_str());
 }
 
 void CStr::Add(const CStr &cstr) {
@@ -294,6 +207,29 @@ void CStr::UpperCase(int sme, int len) {
     {
         m_Str[sme + i] = static_cast<char>(std::toupper(m_Str[sme + i]));
     }
+}
+
+template<typename... Args>
+std::string CStr::format(const char* format, Args... args)
+{
+    char buf[10240];
+    if (std::sprintf(buf, format, args...) < 0)
+    {
+        throw std::runtime_error("sprintf() failed");
+    }
+    return std::string{buf};
+}
+
+std::string CStr::from_wstring(const std::wstring& wstr)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    return converter.to_bytes(wstr);
+}
+
+std::wstring CStr::to_wstring(const std::string& str)
+{
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    return converter.from_bytes(str);
 }
 
 }  // namespace Base
