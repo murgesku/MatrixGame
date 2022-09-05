@@ -87,7 +87,6 @@ public:
     void Add(char sim);
     void Add(char sim, int count);
     void Add(int zn) { Add(CStr(zn)); }
-    void Add(double zn, int zpz = 8) { Add(CStr(zn, zpz)); }
     void Add(void *zn) {
         CStr s;
         s.SetHex(zn);
@@ -147,10 +146,6 @@ public:
         return *this;
     }
     CStr &operator+=(int zn) {
-        Add(zn);
-        return *this;
-    }
-    CStr &operator+=(double zn) {
         Add(zn);
         return *this;
     }

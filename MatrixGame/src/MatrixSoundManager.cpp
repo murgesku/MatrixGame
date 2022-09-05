@@ -1079,22 +1079,22 @@ void CSound::SaveSoundLog(void) {
 
         ss = CStr(i);
         ss += " - id:";
-        ss += int(m_AllSounds[i].id);
+        ss += CStr(int(m_AllSounds[i].id));
 
         ss += ", idi:";
-        ss += int(m_AllSounds[i].id_internal);
+        ss += CStr(int(m_AllSounds[i].id_internal));
 
         ss += ", vol:";
-        ss += m_AllSounds[i].curvol;
+        ss += CStr(m_AllSounds[i].curvol);
 
         ss += ", pan:";
-        ss += m_AllSounds[i].curpan;
+        ss += CStr(m_AllSounds[i].curpan);
 
         ss += ", rvol:";
-        ss += g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal);
+        ss += CStr(g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal));
 
         ss += ", is_play:";
-        ss += g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal);
+        ss += CStr(g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
         ss += "\n";
 
         b.StrNZ(ss);
