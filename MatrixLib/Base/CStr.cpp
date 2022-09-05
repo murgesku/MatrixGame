@@ -14,25 +14,26 @@
 #include "Base.pch"
 
 #include "CStr.hpp"
-#include "CWStr.hpp"
-
 
 namespace Base {
 
-#define FI                                        \
-    m_MaxLen = 16;                                \
-    m_Len = 0;                                    \
-    m_Str = NULL;                                 \
-    m_Str = (char *)HAlloc(m_MaxLen + 1, nullptr); \
-    m_Str[0] = 0
-
-CStr::CStr(int zn) : CMain() {
-    FI;
+CStr::CStr(int zn)
+  : CMain()
+  , m_MaxLen{16}
+  , m_Len{0}
+{
+    m_Str = (char*)HAlloc(m_MaxLen + 1, nullptr);
+    m_Str[0] = 0;
     Set(zn);
 }
 
-CStr::CStr(double zn, int zpz) : CMain() {
-    FI;
+CStr::CStr(double zn, int zpz)
+  : CMain()
+  , m_MaxLen{16}
+  , m_Len{0}
+{
+    m_Str = (char*)HAlloc(m_MaxLen + 1, nullptr);
+    m_Str[0] = 0;
     Set(zn, zpz);
 }
 
