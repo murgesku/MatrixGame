@@ -9,6 +9,8 @@
 // #include "Mem.hpp"
 #include "CWStr.hpp"
 
+#include <cctype>
+
 namespace Base {
 
 #define FI                                        \
@@ -276,7 +278,10 @@ void CStr::LowerCase(int sme, int len) {
     if ((sme < 0) || (len <= 0) || ((sme + len) > Len()))
         return;
 
-    CharLowerBuffA(GetBuf() + sme, len);
+    for (int i = 0; i < len; ++i)
+    {
+        m_Str[sme + i] = static_cast<char>(std::tolower(m_Str[sme + i]));
+    }
 }
 
 void CStr::UpperCase(int sme, int len) {
@@ -285,7 +290,10 @@ void CStr::UpperCase(int sme, int len) {
     if ((sme < 0) || (len <= 0) || ((sme + len) > Len()))
         return;
 
-    CharUpperBuffA(GetBuf() + sme, len);
+    for (int i = 0; i < len; ++i)
+    {
+        m_Str[sme + i] = static_cast<char>(std::toupper(m_Str[sme + i]));
+    }
 }
 
 }  // namespace Base
