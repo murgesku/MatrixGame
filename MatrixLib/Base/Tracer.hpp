@@ -63,18 +63,26 @@ class CDText {
 public:
     static void StaticInit(void) { first_dtext = NULL; }
 
-    static void T(const char *key, const char *text);
+    static void T(const char* key, const char* arg);
 
-    template<typename arg_t>
-    static void T(const char* key, const arg_t arg)
+    static void T(const char* key, int arg)
     {
         T(key, std::to_string(arg).c_str());
     }
+
+    static void T(const char* key, DWORD arg)
+    {
+        T(key, std::to_string(arg).c_str());
+    }
+
+    template<typename arg_t>
+    static void T(const char* key, const arg_t arg) = delete;
 
     static void D(const char *key);
 
     static void Get(char *out);
 };
+
 #endif
 // lint +e1712
 

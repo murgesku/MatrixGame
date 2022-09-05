@@ -112,9 +112,7 @@ void CDText::Get(char *out) {
 }
 
 void DbgShowDword(const char *n, DWORD sz) {
-    char buf[32];
-    sprintf(buf, "%i", sz);
-    CDText::T(n, (const char*)buf);
+    CDText::T(n, sz);
 }
 
 #endif
