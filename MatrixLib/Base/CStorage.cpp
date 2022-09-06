@@ -12,7 +12,7 @@
 #undef ZEXPORT
 #define ZEXPORT __cdecl
 
-#include "../../ThirdParty/ZLib/zlib.h"
+#include "zlib.h"
 
 namespace Base {
 

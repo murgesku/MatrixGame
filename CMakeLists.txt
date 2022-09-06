@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CONFIGURATION_TYPES Release Debug)
@@ -22,24 +22,24 @@ if(MSVC)
     include_directories(AFTER ${DIRECTX9_INCLUDE_DIRS})
 endif()
 
-add_subdirectory(MatrixGame)
+include(ThirdParty/CMakeLists.txt)
 
 list(APPEND COMPILE_DEFINITIONS MATRIXGAME_EXPORTS USE_PNGLIB $<$<CONFIG:Release>:ASSERT_OFF>)
 
 if(MSVC)
     set(COMPILE_OPTIONS
-        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /MT /GS- /Gy- /Gr>
-        $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /MTd /Gr>
+        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /GS- /Gy- /Gr>
+        $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /Gr>
     )
     set(LINK_OPTIONS
-        $<$<CONFIG:Release>:/INCREMENTAL:NO /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /DYNAMICBASE:NO /MACHINE:X86>
-        $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86>
+        /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86
+        $<$<CONFIG:Release>:/INCREMENTAL:NO /OPT:REF /OPT:ICF>
+        $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG>
     )
 
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
 else()
     set(COMPILE_OPTIONS
-        -std=c++11
         -fpermissive # TODO: remove and fix
         -Wno-write-strings # TODO: remove and fix
     )
@@ -50,30 +50,7 @@ endif()
 add_subdirectory(MatrixLib)
 add_subdirectory(MatrixLib/DebugMsg)
 add_subdirectory(MatrixLib/FilePNG)
-add_subdirectory(ThirdParty/ZLib)
-
-target_link_libraries(
-    MatrixGame
-    winmm
-    ${DIRECTX9_LIBRARIES}
-    DebugMsg
-    FilePNG
-    ZLIB
-    MatrixLib
-)
-
-if(MSVC)
-    target_link_libraries(
-        MatrixGame
-        legacy_stdio_definitions
-    )
-endif()
-
-target_link_options(MatrixGame PUBLIC "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>")
-
-target_compile_options(MatrixGame PRIVATE ${COMPILE_OPTIONS})
-target_compile_definitions(MatrixGame PRIVATE ${COMPILE_DEFINITIONS} _ALLOW_RTCc_IN_STL WINDOWS_IGNORE_PACKING_MISMATCH)
-target_link_options(MatrixGame PRIVATE ${LINK_OPTIONS})
+add_subdirectory(MatrixGame)
 
 install(
     TARGETS MatrixGame

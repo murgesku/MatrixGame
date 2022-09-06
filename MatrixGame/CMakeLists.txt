@@ -1,17 +1,9 @@
-if(MATRIXGAME_BUILD_DLL)
-    add_library(MatrixGame MODULE)
-else()
-    add_executable(MatrixGame)
-endif()
-
-if(MSVC)
-    include_directories(AFTER ${DIRECTX9_INCLUDE_DIRS})
-endif()
+add_library(MatrixGameInternal STATIC)
 
 macro(add_matrix_directory DIRECTORY)
     file(GLOB DIR_SOURCES ${DIRECTORY}/*.cpp ${DIRECTORY}/*.c)
     file(GLOB DIR_HEADERS ${DIRECTORY}/*.hpp ${DIRECTORY}/*.h)
-    target_sources(MatrixGame PRIVATE ${DIR_SOURCES} ${DIR_HEADERS})
+    target_sources(MatrixGameInternal PRIVATE ${DIR_SOURCES} ${DIR_HEADERS})
     get_filename_component (GROUP ${DIRECTORY} NAME)
     source_group ("${GROUP}\\Source Files" FILES ${DIR_SOURCES})
     source_group ("${GROUP}\\Header Files" FILES ${DIR_HEADERS})
@@ -23,24 +15,59 @@ file(GLOB MATRIX_HEADERS src/*.hpp src/*.h)
 set(MATRIX_RESOURCES
     MatrixGame.ico
     MatrixGame.rc
-    Resource.h
-)
+    Resource.h)
 
-target_sources(MatrixGame PRIVATE
-    ${MATRIX_SOURCES}
-    ${MATRIX_HEADERS}
-    ${MATRIX_RESOURCES}
+target_sources(
+    MatrixGameInternal
+    PRIVATE
+        ${MATRIX_SOURCES}
+        ${MATRIX_HEADERS}
+        ${MATRIX_RESOURCES})
+
+target_include_directories(
+    MatrixGameInternal
+    PUBLIC
+        .
+        src
+        "$<$<C_COMPILER_ID:MSVC>:${DIRECTX9_INCLUDE_DIRS}>")
+
+target_compile_options(
+    MatrixGameInternal
+    PUBLIC
+        ${COMPILE_OPTIONS})
+
+target_compile_definitions(
+    MatrixGameInternal
+    PUBLIC
+        MATRIXGAME_EXPORTS
+        $<$<CONFIG:Release>:ASSERT_OFF>
+        _ALLOW_RTCc_IN_STL
+        WINDOWS_IGNORE_PACKING_MISMATCH
+        ${COMPILE_DEFINITIONS})
+
+target_link_options(
+    MatrixGameInternal
+    PUBLIC
+        "$<$<C_COMPILER_ID:MSVC>:-SAFESEH:NO>"
+        ${LINK_OPTIONS})
+
+target_link_libraries(
+    MatrixGameInternal
+    PUBLIC
+        winmm
+        ${DIRECTX9_LIBRARIES}
+        DebugMsg
+        FilePNG
+        ZLIB
+        MatrixLib
+        "$<$<C_COMPILER_ID:MSVC>:legacy_stdio_definitions>"
 )
-target_include_directories(MatrixGame PRIVATE . src)
 
 if(NOT MATRIXGAME_BUILD_DLL)
     set_source_files_properties(
         src/MatrixFormGame.cpp
         PROPERTIES
             COMPILE_DEFINITIONS $<$<CONFIG:Release>:EXE_VERSION>)
-else()
-    # remove lib prefix from the DLL name (for GCC build)
-    set_target_properties(MatrixGame PROPERTIES PREFIX "")
 endif()
 
 if(MATRIXGAME_CHEATS)
@@ -55,3 +82,17 @@ add_matrix_directory(src/Interface)
 add_matrix_directory(src/Logic)
 
 source_group("Resources" FILES ${MATRIX_RESOURCES})
+
+if(MATRIXGAME_BUILD_DLL)
+    add_library(MatrixGame SHARED)
+    # remove lib prefix from the DLL name (for GCC build)
+    set_target_properties(MatrixGame PROPERTIES PREFIX "")
+else()
+    add_executable(MatrixGame)
+endif()
+
+target_sources(MatrixGame PRIVATE
+    src/MatrixGame.cpp
+)
+
+target_link_libraries(MatrixGame MatrixGameInternal)
