@@ -32,6 +32,7 @@ set(3G_HEADERS
     3G/Texture.hpp
     3G/VectorObject.hpp
 )
+
 set(BASE_SOURCES
     Base/CBlockPar.cpp
     Base/CBuf.cpp
@@ -72,6 +73,7 @@ set(BASE_HEADERS
     Base/Registry.hpp
     Base/Tracer.hpp
 )
+
 set(BITMAP_SOURCES
     Bitmap/CBitmap.cpp
     Bitmap/sharpen.cpp
@@ -82,6 +84,16 @@ set(BITMAP_HEADERS
     Bitmap/BitmapDef.hpp
     Bitmap/CBitmap.hpp
 )
+
+# TODO: remove unused files and replace set with globs
+# file(GLOB 3G_SOURCES 3G/*.cpp)
+# file(GLOB 3G_HEADERS 3G/*.hpp 3G/*.pch)
+
+# file(GLOB BASE_SOURCES Base/*.cpp)
+# file(GLOB BASE_HEADERS Base/*.hpp Base/*.pch)
+
+# file(GLOB BITMAP_SOURCES Bitmap/*.cpp)
+# file(GLOB BITMAP_HEADERS Bitmap/*.hpp Bitmap/*.pch)
 
 target_sources(
     MatrixLib
@@ -116,6 +128,7 @@ if(MSVC)
     source_group("Bitmap\\Header Files" FILES ${BITMAP_HEADERS})
 else()
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
+    list(APPEND COMPILE_OPTIONS -fpermissive)
 endif()
 
 target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})
