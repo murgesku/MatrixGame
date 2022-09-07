@@ -133,22 +133,30 @@ public:
         Add(str);
         return *this;
     }
-    CStr &operator+=(const char *str) {
-        Add(str);
-        return *this;
-    }
-    CStr &operator+=(char sim) {
-        Add(sim);
-        return *this;
-    }
-    CStr &operator+=(int zn) {
-        Add(zn);
-        return *this;
-    }
-    CStr &operator+=(void *zn) {
-        Add(zn);
-        return *this;
-    }
+
+    // CStr &operator+=(const char *str) {
+    //     Add(str);
+    //     return *this;
+    // }
+    // CStr &operator+=(char sim) {
+    //     Add(sim);
+    //     return *this;
+    // }
+    // CStr &operator+=(int zn) {
+    //     Add(zn);
+    //     return *this;
+    // }
+    // CStr &operator+=(double zn) {
+    //     Add(zn);
+    //     return *this;
+    // }
+    // CStr &operator+=(void *zn) {
+    //     Add(zn);
+    //     return *this;
+    // }
+
+    template<typename arg_t>
+    CStr &operator+=(const arg_t value) = delete;
 
     friend CStr operator+(const CStr &s1, const CStr &s2) {
         CStr str(s1);

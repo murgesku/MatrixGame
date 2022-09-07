@@ -47,10 +47,12 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
             }
             if (cnt == 0)
                 continue;
-            CStr ss(i);
-            ss += " - ";
-            ss += cnt;
-            ss += "\n";
+
+            CStr ss;
+            ss = CStr(i);
+            ss += CStr(" - ");
+            ss += CStr(cnt);
+            ss += CStr("\n");
 
             b.StrNZ(ss);
         }
