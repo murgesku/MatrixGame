@@ -273,7 +273,7 @@ inline void *CHeap::AllocClearEx(void *buf, size_t size) {
 }
 
 inline void CHeap::Free(void *buf) {
-    if (!buf) free(buf);
+    if (buf) free(buf);
 }
 
 }  // namespace Base
