@@ -612,7 +612,7 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 
 CStr CHsFolder::GetFullPath(const CStr &name) {
     if (m_Parent) {
-        return m_Parent->GetFullPath(m_RealName + "\\" + name);
+        return m_Parent->GetFullPath(m_RealName + CStr("\\") + name);
     }
     else {
         return name;

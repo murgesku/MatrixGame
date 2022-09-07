@@ -155,11 +155,6 @@ public:
         str += s2;
         return str;
     }
-    friend CStr operator+(const CStr &s1, const char *s2) {
-        CStr str(s1);
-        str += s2;
-        return str;
-    }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
 
