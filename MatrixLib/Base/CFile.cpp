@@ -573,7 +573,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
         if (exts[sm1] == '~' || exts[sm1] == 0) {
             if (sm0 != sm1) {
                 fn.Set(CStr::from_wstring(filename.Get()).c_str());
-                fn += ".";
+                fn += CStr(".");
                 fn += CStr(CStr::from_wstring(exts + sm0).c_str());
                 fn.SetLen(fn.Len() - (l - sm1));
 

@@ -862,25 +862,25 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
 
     CStr mmname(PathToOutputFiles(FOLDER_NAME_CACHE));
     {
-        mmname += "\\";
+        mmname += CStr("\\");
         mmname += name.toCStr();
-        mmname += ".";
+        mmname += CStr(".");
 
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
-        mmname += (char)((uniq & 0x0F) + 65);
+        mmname += CStr((char)((uniq & 0x0F) + 65));
         uniq >>= 4;
     }
 
@@ -1167,9 +1167,9 @@ render:
         // seek files
 
         CStr n(PathToOutputFiles(FOLDER_NAME_CACHE));
-        n += "\\";
+        n += CStr("\\");
         n += name.toCStr();
-        n += ".*";
+        n += CStr(".*");
 
         HANDLE ff;
         for (;;) {
@@ -1177,8 +1177,8 @@ render:
             ff = FindFirstFile(n.Get(), &fd);
             if (ff != INVALID_HANDLE_VALUE) {
                 CStr nn(PathToOutputFiles(FOLDER_NAME_CACHE));
-                nn += "\\";
-                nn += fd.cFileName;
+                nn += CStr("\\");
+                nn += CStr(fd.cFileName);
                 DeleteFile(nn.Get());
             }
             else {
