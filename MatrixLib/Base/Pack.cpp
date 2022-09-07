@@ -12,7 +12,7 @@
 #undef ZEXPORT
 #define ZEXPORT __cdecl
 
-#include "../../ThirdParty/ZLib/zlib.h"
+#include "zlib.h"
 
 //#define _MAKESTR1(x) #x
 //#define MAKESTR(n) _MAKESTR1(n)
