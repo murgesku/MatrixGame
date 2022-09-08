@@ -174,7 +174,7 @@ struct SObjectCore {
             if (m_Ref < 0)
                 debugbreak();
 
-            // DeleteFile((CStr("Errors\\") + CStr((void*)this) + CStr(".log")).Get());
+            DeleteFile(CStr::format("Errors/%x.log", this).c_str());
 #endif
             HFree(this, g_MatrixHeap);
         }

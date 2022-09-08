@@ -9,6 +9,7 @@
 
 #include <utility>
 #include <tuple> // for std::tie
+#include <cctype> // for std::toupper
 
 //#ifdef BLABLA
 
@@ -37,6 +38,16 @@ split_path(const std::string& path, const std::string& delimiters)
     }
 
     return std::make_pair(beg, rem);
+}
+
+std::string to_upper(const std::string& str)
+{
+    std::string res{str};
+    for (auto& sym : res)
+    {
+        sym = std::toupper(sym);
+    }
+    return res;
 }
 
 } // namespace
@@ -133,7 +144,7 @@ CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = NULL;
-    m_Name = CStr(CStr::to_upper(m_Name.Get()).c_str());
+    m_Name = CStr(to_upper(m_Name.Get()).c_str());
 }
 
 CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
@@ -143,13 +154,13 @@ CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = parent;
-    m_Name = CStr(CStr::to_upper(m_Name.Get()).c_str());
+    m_Name = CStr(to_upper(m_Name.Get()).c_str());
 }
 
 SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     SFileRec *PFile;
 
-    std::string n = CStr::to_upper(name.Get());
+    std::string n = to_upper(name.Get());
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
         if (PFile->m_Free == 0) {
@@ -635,7 +646,7 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 
 CStr CHsFolder::GetFullPath(const CStr &name) {
     if (m_Parent) {
-        return m_Parent->GetFullPath(m_RealName + CStr("\\") + name);
+        return m_Parent->GetFullPath(CStr(CStr::format("%s/%s", m_RealName.Get(), name.Get()).c_str()));
     }
     else {
         return name;
