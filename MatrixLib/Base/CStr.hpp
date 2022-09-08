@@ -50,54 +50,20 @@ public:
         m_Len = m_MaxLen = 0;
     }
 
-    // Clear - Очищает строку
-    void Clear(void);
-
-    void Set(const CStr &cstr);
-
-    void Add(const CStr &cstr);
-
     const char *Get(void) const { return m_Str; }
 
     int Len(void) const { return m_Len; }
 
     bool IsEmpty(void) const { return m_Len < 1; }
 
-    // void Split(CStr &beg, CStr &rem, const char *ogsim) const {
-    //     const char *c = Get();
-    //     int ogl = (int)strlen(ogsim);
-
-    //     for (; *c; ++c) {
-    //         const char *cc = ogsim;
-    //         for (; *cc; ++cc) {
-    //             if (*c == *cc) {
-    //                 beg.Set(CStr(Get(), int(c - Get())));
-    //                 rem.Set(CStr(c + 1));
-    //                 return;
-    //             }
-    //         }
-    //     }
-
-    //     beg = *this;
-    //     rem.Clear();
-    // }
-
     CStr &operator=(const CStr &s) {
         if (this != &s) {
-            Set(s);
+            Tream(s.m_Len);
+            m_Len = s.m_Len;
+            memcpy(m_Str, s.m_Str, m_Len);
+            m_Str[m_Len] = 0;
         }
         return *this;
-    }
-
-    CStr &operator+=(const CStr &str) {
-        Add(str);
-        return *this;
-    }
-
-    friend CStr operator+(const CStr &s1, const CStr &s2) {
-        CStr str(s1);
-        str += s2;
-        return str;
     }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
@@ -115,8 +81,6 @@ public:
 
     static std::string from_wstring(const std::wstring& wstr);
     static std::wstring to_wstring(const std::string& str);
-
-    static std::string to_upper(const std::string& str);
 };
 
 }  // namespace Base
