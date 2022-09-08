@@ -7,12 +7,39 @@
 
 #include "Pack.hpp"
 
+#include <utility>
+#include <tuple> // for std::tie
+
 //#ifdef BLABLA
 
 #undef ZEXPORT
 #define ZEXPORT __cdecl
 
 #include "zlib.h"
+
+namespace {
+
+std::pair<std::string, std::string>
+split_path(const std::string& path, const std::string& delimiters)
+{
+    std::string beg, rem;
+    auto pos = path.find_first_of(delimiters);
+
+    if (pos != std::string::npos)
+    {
+        beg = path.substr(0, pos);
+        rem = path.substr(pos + 1); // +1 to skip delimiter
+    }
+    else // if no delimiters were found
+    {
+        beg = path;
+        rem.clear();
+    }
+
+    return std::make_pair(beg, rem);
+}
+
+} // namespace
 
 //#define _MAKESTR1(x) #x
 //#define MAKESTR(n) _MAKESTR1(n)
@@ -222,20 +249,19 @@ void CHsFolder::Clear(void) {
 }
 
 bool CHsFolder::FileExists(const CStr &name) const {
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name.Get(), "/\\");
 
-    name.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
         return false;
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return false;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->FileExists(rem);
+        return PFolder->FileExists(CStr(rem.c_str()));
     }
-    return rem.IsEmpty();
+    return rem.empty();
 }
 
 // Procedure   CHsFolder.SetFileType(name:string; NType:DWORD);
@@ -327,38 +353,36 @@ bool CHsFolder::FileExists(const CStr &name) const {
 // end;
 
 bool CHsFolder::PathExists(const CStr &name) const {
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name.Get(), "/\\");
 
-    name.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
         return false;
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return true;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->PathExists(rem);
+        return PFolder->PathExists(CStr(rem.c_str()));
     }
-    return rem.IsEmpty();
+    return rem.empty();
 }
 
 SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name.Get(), "/\\");
 
-    name.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == nullptr)
         return nullptr;
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return PFile;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->GetFileRecEx(rem);
+        return PFolder->GetFileRecEx(CStr(rem.c_str()));
     }
-    return rem.IsEmpty() ? PFile : nullptr;
+    return rem.empty() ? PFile : nullptr;
 }
 
 // Function    CHsFolder.ReAllocFileRecs(number:integer):boolean;
@@ -619,11 +643,10 @@ CStr CHsFolder::GetFullPath(const CStr &name) {
 }
 
 DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(filename.Get(), "/\\");
 
-    filename.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
         return 0xFFFFFFFF;
 
@@ -633,12 +656,12 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
     // DWORD totalsize; // Общий размер сжатых данных + длина (4 байта)
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->CompressedFileSize(Handle, rem);
+        return PFolder->CompressedFileSize(Handle, CStr(rem.c_str()));
     }
-    if (!rem.IsEmpty())
+    if (!rem.empty())
         return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
@@ -706,23 +729,22 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
 }
 
 DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(filename.Get(), "/\\");
 
-    filename.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
         return 0xFFFFFFFF;
 
     // size:DWORD;
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        return PFolder->DecompressedFileSize(Handle, rem);
+        return PFolder->DecompressedFileSize(Handle, CStr(rem.c_str()));
     }
-    if (!rem.IsEmpty())
+    if (!rem.empty())
         return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
@@ -1431,18 +1453,17 @@ CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
     if (path.IsEmpty())
         return this;
 
-    CStr beg;
-    CStr rem;
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(path.Get(), "/\\");
 
-    path.Split(beg, rem, "/\\");
-    SFileRec *PFile = GetFileRec(beg);
+    SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
         return NULL;
     if (PFile->m_Type == FILEEC_FOLDER) {
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        if (rem.IsEmpty())
+        if (rem.empty())
             return PFolder;
-        return PFolder->GetFolderEx(rem);
+        return PFolder->GetFolderEx(CStr(rem.c_str()));
     }
     return NULL;
 }
