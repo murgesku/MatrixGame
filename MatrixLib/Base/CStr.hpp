@@ -63,24 +63,24 @@ public:
 
     bool IsEmpty(void) const { return m_Len < 1; }
 
-    void Split(CStr &beg, CStr &rem, const char *ogsim) const {
-        const char *c = Get();
-        int ogl = (int)strlen(ogsim);
+    // void Split(CStr &beg, CStr &rem, const char *ogsim) const {
+    //     const char *c = Get();
+    //     int ogl = (int)strlen(ogsim);
 
-        for (; *c; ++c) {
-            const char *cc = ogsim;
-            for (; *cc; ++cc) {
-                if (*c == *cc) {
-                    beg.Set(CStr(Get(), int(c - Get())));
-                    rem.Set(CStr(c + 1));
-                    return;
-                }
-            }
-        }
+    //     for (; *c; ++c) {
+    //         const char *cc = ogsim;
+    //         for (; *cc; ++cc) {
+    //             if (*c == *cc) {
+    //                 beg.Set(CStr(Get(), int(c - Get())));
+    //                 rem.Set(CStr(c + 1));
+    //                 return;
+    //             }
+    //         }
+    //     }
 
-        beg = *this;
-        rem.Clear();
-    }
+    //     beg = *this;
+    //     rem.Clear();
+    // }
 
     CStr &operator=(const CStr &s) {
         if (this != &s) {
