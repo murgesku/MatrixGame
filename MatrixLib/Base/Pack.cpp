@@ -106,7 +106,7 @@ CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = NULL;
-    m_Name.UpperCase();
+    m_Name = CStr(CStr::to_upper(m_Name.Get()).c_str());
 }
 
 CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
@@ -116,18 +116,17 @@ CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = parent;
-    m_Name.UpperCase();
+    m_Name = CStr(CStr::to_upper(m_Name.Get()).c_str());
 }
 
 SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     SFileRec *PFile;
 
-    CStr n(name);
-    n.UpperCase();
+    std::string n = CStr::to_upper(name.Get());
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
         if (PFile->m_Free == 0) {
-            if (n == CStr(PFile->m_Name))
+            if (n == PFile->m_Name)
                 return PFile;
         }
     }
