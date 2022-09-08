@@ -162,30 +162,6 @@ void CStr::Add(char sim, int count) {
     m_Str[m_Len] = 0;
 }
 
-void CStr::LowerCase(int sme, int len) {
-    if (len < 0)
-        len = Len() - sme;
-    if ((sme < 0) || (len <= 0) || ((sme + len) > Len()))
-        return;
-
-    for (int i = 0; i < len; ++i)
-    {
-        m_Str[sme + i] = static_cast<char>(std::tolower(m_Str[sme + i]));
-    }
-}
-
-void CStr::UpperCase(int sme, int len) {
-    if (len < 0)
-        len = Len() - sme;
-    if ((sme < 0) || (len <= 0) || ((sme + len) > Len()))
-        return;
-
-    for (int i = 0; i < len; ++i)
-    {
-        m_Str[sme + i] = static_cast<char>(std::toupper(m_Str[sme + i]));
-    }
-}
-
 template<typename... Args>
 std::string CStr::format(const char* format, Args... args)
 {
@@ -207,6 +183,16 @@ std::wstring CStr::to_wstring(const std::string& str)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     return converter.from_bytes(str);
+}
+
+std::string CStr::to_upper(const std::string& str)
+{
+    std::string res{str};
+    for (auto& sym : res)
+    {
+        sym = std::toupper(sym);
+    }
+    return res;
 }
 
 }  // namespace Base
