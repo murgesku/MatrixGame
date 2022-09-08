@@ -27,6 +27,8 @@
 #include <sys/timeb.h>
 #include "stdio.h"
 
+#include <utils.hpp>
+
 CFormMatrixGame::CFormMatrixGame() : CForm() {
     DTRACE();
     m_Name = L"MatrixGame";
@@ -273,74 +275,27 @@ void CFormMatrixGame::Takt(int step) {
     }
 
     if (GetAsyncKeyState(/*VK_SNAPSHOT*/ VK_F9) != 0) {
-        CreateDirectory(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS), NULL);
+        const std::string screenshots_dir{PathToOutputFiles(FOLDER_NAME_SCREENSHOTS)};
 
-        // seek files
+        static uint16_t index = 0;
+        index++;
 
-        int maxn = 0;
+        CreateDirectory(screenshots_dir.c_str(), NULL);
 
-        WIN32_FIND_DATA fd;
+        time_t cur_time = time(NULL);
+        struct tm tstruct = *localtime(&cur_time);
+        char time_str[20];
+        strftime(time_str, sizeof(time_str), "%Y-%m-%d-%H-%M-%S", &tstruct);
 
-        int slen = strlen(FILE_NAME_SCREENSHOT);
+        std::string filename =
+            utils::format(
+                "%s\\%s-%s-%03d.png",
+                screenshots_dir.c_str(),
+                FILE_NAME_SCREENSHOT,
+                time_str,
+                index);
 
-        CStr n(PathToOutputFiles(FOLDER_NAME_SCREENSHOTS), g_CacheHeap);
-
-        n += "\\";
-        n.Add(FILE_NAME_SCREENSHOT, slen);
-        n += "*.*";
-
-        HANDLE ff = FindFirstFile(n.Get(), &fd);
-        if (ff != INVALID_HANDLE_VALUE) {
-            for (;;) {
-                if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-                    n = fd.cFileName;
-                    int idx = n.FindR(FILE_NAME_SCREENSHOT, slen);
-                    n.Del(0, idx + slen);
-                    idx = n.Find(".", 1);
-                    if (idx > 0)
-                        n.SetLen(idx);
-                    int nn = n.GetInt();
-                    if (nn > maxn)
-                        maxn = nn;
-                }
-                if (0 == FindNextFile(ff, &fd))
-                    break;
-            }
-            FindClose(ff);
-            ++maxn;
-        }
-
-        n.Set(maxn);
-        n.Insert(0, "000", 3);
-        n.Del(0, n.Len() - 3);
-        /*
-        CStr    n("",g_CacheHeap);
-
-        struct _timeb timebuffer;
-        time_t time1;
-        unsigned short millitm1;
-
-        _ftime64( &timebuffer );
-
-        time1 = timebuffer.time;
-        millitm1 = timebuffer.millitm;
-        struct tm  tstruct;
-        char       buf[80];
-        tstruct = *localtime(&time1);
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H.%M.%S.", &tstruct);
-        n.Set( millitm1 );
-        n.Insert(0,"000",3);
-        n.Del(0,n.Len() - 3);
-
-        n.Insert(0,buf,20);
-        n.Insert(0," ",1);*/
-
-        n.Insert(0, FILE_NAME_SCREENSHOT, slen);
-        n.Insert(0, "\\", 1);
-        n.Insert(0, PathToOutputFiles(FOLDER_NAME_SCREENSHOTS));
-        n.Add(".png", 4);
-
-        DeleteFile(n.Get());
+        DeleteFile(filename.c_str());
 
         if (!g_D3Dpp.Windowed) {
             IDirect3DSurface9 *pTargetSurface = NULL;
@@ -395,8 +350,8 @@ void CFormMatrixGame::Takt(int step) {
 
                                 pSurface->UnlockRect();
 
-                                bm.SaveInPNG(CWStr(n).Get());
-                                g_MatrixMap->m_DI.T(L"Screen shot has been saved", L"");
+                                bm.SaveInPNG(utils::to_wstring(filename).c_str());
+                                g_MatrixMap->m_DI.T((L"Screen shot has been saved into " + utils::to_wstring(filename)).c_str(), L"");
                             }
                             else {
                                 // LockRect fail
@@ -451,7 +406,7 @@ void CFormMatrixGame::Takt(int step) {
         bm.WBM_Save(true);
 
         bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
-        bmout.SaveInPNG(CWStr(n).Get());
+        bmout.SaveInPNG(utils::to_wstring(filename).c_str());
 
         // HFree(data, g_CacheHeap);
 
