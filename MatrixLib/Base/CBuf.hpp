@@ -259,7 +259,7 @@ public:
     void Str(const CStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len + 1);
+            BufAdd(str.c_str(), len + 1);
         else
             Byte(0);
     }
@@ -278,7 +278,7 @@ public:
     void StrNZ(const CStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len);
+            BufAdd(str.c_str(), len);
     }
     void StrNZ(const char *str, int len) {
         if (len > 0)
@@ -360,7 +360,7 @@ public:
     void StrText(CStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len);
+            BufAdd(str.c_str(), len);
         Word(0x0a0d);
     }
 

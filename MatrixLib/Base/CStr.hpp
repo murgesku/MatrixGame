@@ -50,7 +50,7 @@ public:
         m_Len = m_MaxLen = 0;
     }
 
-    const char *Get() const { return m_Str; }
+    const char* c_str() const { return m_Str; }
 
     int length() const { return m_Len; }
 

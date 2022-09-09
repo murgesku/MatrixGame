@@ -865,7 +865,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     std::string mmname =
         utils::format("%s\\%s.",
             PathToOutputFiles(FOLDER_NAME_CACHE),
-            name.toCStr().Get());
+            name.toCStr().c_str());
     {
         mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
@@ -1166,7 +1166,7 @@ render:
         CreateDirectory(PathToOutputFiles(FOLDER_NAME_CACHE), NULL);
 
         // seek files
-        auto n = utils::format("%s\\%s.*", PathToOutputFiles(FOLDER_NAME_CACHE), name.toCStr().Get());
+        auto n = utils::format("%s\\%s.*", PathToOutputFiles(FOLDER_NAME_CACHE), name.toCStr().c_str());
 
         HANDLE ff;
         for (;;) {

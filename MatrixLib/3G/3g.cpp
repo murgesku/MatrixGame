@@ -182,12 +182,12 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
     tr.bottom = g_ScreenY;
     if (!FLAG(g_Flags, GFLAG_FULLSCREEN)) {
         AdjustWindowRectEx(&tr, WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU, false, 0);
-        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().Get(),
+        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().c_str(),
                              WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER, 0, 0, tr.right - tr.left,
                              tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     else {
-        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().Get(), WS_POPUP, 0, 0, tr.right - tr.left,
+        g_Wnd = CreateWindow(classname.c_str(), CWStr(captionname).toCStr().c_str(), WS_POPUP, 0, 0, tr.right - tr.left,
                              tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     if (!g_Wnd)
@@ -406,7 +406,7 @@ void L3GDeinit() {
             DestroyWindow(g_Wnd);
             g_Wnd = 0;
         }
-        UnregisterClass(g_WndClassName->toCStr().Get(), g_HInst);
+        UnregisterClass(g_WndClassName->toCStr().c_str(), g_HInst);
         g_WndA = 0;
 
         HDelete(CWStr, g_WndClassName, g_CacheHeap);

@@ -146,7 +146,7 @@ CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = NULL;
-    m_Name = CStr(to_upper(m_Name.Get()).c_str());
+    m_Name = CStr(to_upper(m_Name.c_str()).c_str());
 }
 
 CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
@@ -156,13 +156,13 @@ CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = parent;
-    m_Name = CStr(to_upper(m_Name.Get()).c_str());
+    m_Name = CStr(to_upper(m_Name.c_str()).c_str());
 }
 
 SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
     SFileRec *PFile;
 
-    std::string n = to_upper(name.Get());
+    std::string n = to_upper(name.c_str());
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
         if (PFile->m_Free == 0) {
@@ -263,7 +263,7 @@ void CHsFolder::Clear(void) {
 
 bool CHsFolder::FileExists(const CStr &name) const {
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(name.Get(), "/\\");
+    std::tie(beg, rem) = split_path(name.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
@@ -367,7 +367,7 @@ bool CHsFolder::FileExists(const CStr &name) const {
 
 bool CHsFolder::PathExists(const CStr &name) const {
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(name.Get(), "/\\");
+    std::tie(beg, rem) = split_path(name.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
@@ -384,7 +384,7 @@ bool CHsFolder::PathExists(const CStr &name) const {
 
 SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(name.Get(), "/\\");
+    std::tie(beg, rem) = split_path(name.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == nullptr)
@@ -648,7 +648,7 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 
 CStr CHsFolder::GetFullPath(const CStr &name) {
     if (m_Parent) {
-        return m_Parent->GetFullPath(CStr(utils::format("%s\\%s", m_RealName.Get(), name.Get()).c_str()));
+        return m_Parent->GetFullPath(CStr(utils::format("%s\\%s", m_RealName.c_str(), name.c_str()).c_str()));
     }
     else {
         return name;
@@ -657,7 +657,7 @@ CStr CHsFolder::GetFullPath(const CStr &name) {
 
 DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(filename.Get(), "/\\");
+    std::tie(beg, rem) = split_path(filename.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
@@ -743,7 +743,7 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
 
 DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(filename.Get(), "/\\");
+    std::tie(beg, rem) = split_path(filename.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
@@ -1467,7 +1467,7 @@ CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
         return this;
 
     std::string beg, rem;
-    std::tie(beg, rem) = split_path(path.Get(), "/\\");
+    std::tie(beg, rem) = split_path(path.c_str(), "/\\");
 
     SFileRec *PFile = GetFileRec(CStr(beg.c_str()));
     if (PFile == NULL)
@@ -1548,7 +1548,7 @@ bool CPackFile::OpenPacketFile(void) {
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1661,7 +1661,7 @@ bool CPackFile::OpenPacketFileEx() {
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ | GENERIC_WRITE,
+                (DWORD)CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1711,7 +1711,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     if (H < 0)
         return 0xFFFFFFFF;
     if (m_RootFolder == NULL) {
-        ERROR_S((L"Package not opened: " + CWStr(filename.Get())).Get());
+        ERROR_S((L"Package not opened: " + CWStr(filename.c_str())).Get());
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
@@ -1719,12 +1719,12 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
 #ifdef HANDLE_OUT_OF_PACK_FILES
         // *** Если файл не найден, то пытаемся найти его на диске *** //
         WIN32_FIND_DATAA fd;
-        HANDLE h = FindFirstFileA(filename.Get(), &fd);
+        HANDLE h = FindFirstFileA(filename.c_str(), &fd);
         if (h = INVALID_HANDLE_VALUE)
             return 0xFFFFFFFF;
         FindClose(h);
 
-        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.Get(), modeopen, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.c_str(), modeopen, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
         if ((HANDLE)m_Handles[H].m_Handle == INVALID_HANDLE_VALUE)
@@ -1773,7 +1773,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
     if (Error == 0xFFFFFFFF) {
-        ERROR_S((L"Packet file system error:" + CWStr(filename.Get())).Get());
+        ERROR_S((L"Packet file system error:" + CWStr(filename.c_str())).Get());
     }
     return H;
 }
@@ -2010,7 +2010,7 @@ bool CPackFile::PathExists(const CStr &path) {
         return true;
 
     WIN32_FIND_DATAA fd;
-    HANDLE h = FindFirstFileA(path.Get(), &fd);
+    HANDLE h = FindFirstFileA(path.c_str(), &fd);
     if (h = INVALID_HANDLE_VALUE)
         return false;
     FindClose(h);
@@ -2022,7 +2022,7 @@ bool CPackFile::FileExists(const CStr &path) {
         return true;
 
     WIN32_FIND_DATAA fd;
-    HANDLE h = FindFirstFileA(path.Get(), &fd);
+    HANDLE h = FindFirstFileA(path.c_str(), &fd);
     if (h = INVALID_HANDLE_VALUE)
         return false;
     FindClose(h);

@@ -100,7 +100,7 @@ void CFile::Open(DWORD shareMode) {
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -119,7 +119,7 @@ void CFile::OpenRead(DWORD shareMode) {
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ, shareMode, NULL,
+            m_Handle = CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
 
@@ -150,7 +150,7 @@ bool CFile::OpenReadNE(DWORD shareMode) {
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ, shareMode, NULL,
+            m_Handle = CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -168,7 +168,7 @@ void CFile::Create(DWORD shareMode) {
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -185,7 +185,7 @@ bool CFile::CreateNE(DWORD shareMode) {
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -373,7 +373,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     CWStr filename(str, lenfile, outname.GetHeap());
 
     WIN32_FIND_DATAA fd;
-    HANDLE fh = FindFirstFileA(filename.toCStr().Get(), &fd);
+    HANDLE fh = FindFirstFileA(filename.toCStr().c_str(), &fd);
     if (fh != INVALID_HANDLE_VALUE) {
         FindClose(fh);
         if (withpar)
@@ -383,7 +383,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileA((CWStr(str, lenfile) + L".*").toCStr().Get(), &fd);
+    fh = FindFirstFileA((CWStr(str, lenfile) + L".*").toCStr().c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
