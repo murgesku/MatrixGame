@@ -44,7 +44,6 @@ set(BASE_SOURCES
     Base/CRC32.cpp
     Base/CReminder.cpp
     Base/CStorage.cpp
-    Base/CStr.cpp
     Base/CWStr.cpp
     Base/CWStrFormat.cpp
     Base/Mem.cpp

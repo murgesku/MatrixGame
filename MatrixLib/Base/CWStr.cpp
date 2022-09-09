@@ -17,7 +17,7 @@ namespace Base {
 CWStr::CWStr(const char* s): CMain()
 {
     CStr tmp(s);
-    NewDataLen(nullptr, tmp.Len());
+    NewDataLen(nullptr, tmp.length());
     Set(tmp.Get());
 }
 
@@ -52,10 +52,10 @@ void CWStr::Set(const char* str)
         else if (err == ERROR_NO_UNICODE_TRANSLATION)
             txt = "ERROR_NO_UNICODE_TRANSLATION";
         else {
-            txt = CStr::format("unknown error: %d", err);
+            txt = utils::format("unknown error: %d", err);
         }
 
-        txt += CStr::format("\nCall number: %d\n", call_num);
+        txt += utils::format("\nCall number: %d\n", call_num);
 
         fwrite(txt.c_str(), txt.length(), 1, file);
         if (cstr.c_str() == NULL) {

@@ -17,6 +17,8 @@
 #include "MatrixTerSurface.hpp"
 #include "MatrixSampleStateManager.hpp"
 
+#include <utils.hpp>
+
 #define MINIMAP_Z 0.0000f
 
 #define MINIMAP_CAM_COLOR 0xFF30FFFF
@@ -861,7 +863,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
     std::string mmname =
-        CStr::format("%s/%s.",
+        utils::format("%s\\%s.",
             PathToOutputFiles(FOLDER_NAME_CACHE),
             name.toCStr().Get());
     {
@@ -1164,14 +1166,14 @@ render:
         CreateDirectory(PathToOutputFiles(FOLDER_NAME_CACHE), NULL);
 
         // seek files
-        auto n = CStr::format("%s\\%s.*", PathToOutputFiles(FOLDER_NAME_CACHE), name.toCStr().Get());
+        auto n = utils::format("%s\\%s.*", PathToOutputFiles(FOLDER_NAME_CACHE), name.toCStr().Get());
 
         HANDLE ff;
         for (;;) {
             WIN32_FIND_DATA fd;
             ff = FindFirstFile(n.c_str(), &fd);
             if (ff != INVALID_HANDLE_VALUE) {
-                auto nn = CStr::format("%s\\%s", PathToOutputFiles(FOLDER_NAME_CACHE), fd.cFileName);
+                auto nn = utils::format("%s\\%s", PathToOutputFiles(FOLDER_NAME_CACHE), fd.cFileName);
                 DeleteFile(nn.c_str());
             }
             else {

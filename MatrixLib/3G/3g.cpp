@@ -12,6 +12,10 @@
 
 #include <stdio.h>
 
+#include <utils.hpp>
+
+#define GWL_WNDPROC GWLP_WNDPROC
+
 HINSTANCE g_HInst = 0;
 IDirect3D9 *g_D3D = NULL;
 IDirect3DDevice9 *g_D3DD = NULL;
@@ -154,7 +158,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
 
     g_WndClassName = HNew(g_CacheHeap) CWStr(sysname, g_CacheHeap);
     *g_WndClassName += L"_wc";
-    std::string classname{CStr::from_wstring(g_WndClassName->Get())};
+    std::string classname{utils::from_wstring(g_WndClassName->Get())};
 
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);

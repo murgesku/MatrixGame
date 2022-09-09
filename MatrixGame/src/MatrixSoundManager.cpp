@@ -11,6 +11,8 @@
 #include "MatrixGameDll.hpp"
 #include "MatrixMap.hpp"
 
+#include <utils.hpp>
+
 CSound::SSoundItem CSound::m_Sounds[S_COUNT];
 CSound::SLID CSound::m_LayersI[SL_COUNT];
 int CSound::m_LastGroup;
@@ -1076,7 +1078,7 @@ void CSound::SaveSoundLog(void) {
 
     for (int i = 0; i < MAX_SOUNDS; ++i) {
         auto ss =
-            CStr::format(
+            utils::format(
                 "%d - id:%d, idi:%d, vol:%.8f, pan:%.8f, rvol:%.8f, is_play:%d\n",
                 i,
                 int(m_AllSounds[i].id),
