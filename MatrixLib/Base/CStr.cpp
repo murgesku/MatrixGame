@@ -7,7 +7,7 @@
 #include <locale>
 #include <codecvt>
 #include <cstdio>
-#include <stdexcept>
+
 
 #include <inttypes.h>
 
@@ -16,26 +16,6 @@
 #include "CStr.hpp"
 
 namespace Base {
-
-CStr::CStr(int zn)
-  : CMain()
-  , m_MaxLen{16}
-  , m_Len{0}
-{
-    m_Str = (char*)HAlloc(m_MaxLen + 1, nullptr);
-    m_Str[0] = 0;
-    Set(zn);
-}
-
-CStr::CStr(double zn, int zpz)
-  : CMain()
-  , m_MaxLen{16}
-  , m_Len{0}
-{
-    m_Str = (char*)HAlloc(m_MaxLen + 1, nullptr);
-    m_Str[0] = 0;
-    Set(zn, zpz);
-}
 
 void CStr::Clear() {
     m_Len = 0;
@@ -48,63 +28,11 @@ void CStr::Clear() {
     }
 }
 
-void CStr::SetLen(int len) {
-    if (len < 1) {
-        Clear();
-        return;
-    }
-    Tream(len);
-    m_Len = len;
-    m_Str[m_Len] = 0;
-}
-
 void CStr::Set(const CStr &cstr) {
     Tream(cstr.m_Len);
     m_Len = cstr.m_Len;
     memcpy(m_Str, cstr.m_Str, m_Len);
     m_Str[m_Len] = 0;
-}
-
-void CStr::Set(const char *value) {
-    m_Len = strlen(value);
-    Tream(m_Len);
-    memcpy(m_Str, value, m_Len);
-    m_Str[m_Len] = 0;
-}
-
-void CStr::Set(const char *value, int lstr) {
-    std::string str(value, lstr);
-    Set(str.c_str());
-}
-
-void CStr::Set(char sim) {
-    std::string str(1, sim);
-    Set(str.c_str());
-}
-
-void CStr::Set(char sim, int count) {
-    std::string str(count, sim);
-    Set(str.c_str());
-}
-
-void CStr::Set(int zn) {
-    auto str = CStr::format("%d", zn);
-    Set(str.c_str());
-}
-
-void CStr::Set(double zn, int zpz) {
-    auto str = CStr::format("%0.*f", zpz, zn);
-    Set(str.c_str());
-}
-
-void CStr::SetHex(void *zn) {
-    auto str = CStr::format("%0" PRIuPTR, reinterpret_cast<uintptr_t>(zn));
-    Set(str.c_str());
-}
-
-void CStr::SetHex(BYTE zn) {
-    auto str = CStr::format("%02u", static_cast<uint8_t>(zn));
-    Set(str.c_str());
 }
 
 void CStr::Add(const CStr &cstr) {
@@ -116,61 +44,6 @@ void CStr::Add(const CStr &cstr) {
 
     m_Len += cstr.m_Len;
     m_Str[m_Len] = 0;
-}
-
-void CStr::Add(const char *str) {
-    int lstr = strlen(str);
-    if (lstr < 1)
-        return;
-
-    Tream(m_Len + lstr);
-
-    memcpy(m_Str + m_Len, str, lstr);
-
-    m_Len += lstr;
-    m_Str[m_Len] = 0;
-}
-
-void CStr::Add(const char *str, int lstr) {
-    if (lstr < 1)
-        return;
-
-    Tream(m_Len + lstr);
-
-    memcpy(m_Str + m_Len, str, lstr);
-
-    m_Len += lstr;
-    m_Str[m_Len] = 0;
-}
-
-void CStr::Add(char sim) {
-    Tream(m_Len + 1);
-
-    m_Str[m_Len] = sim;
-
-    m_Len += 1;
-    m_Str[m_Len] = 0;
-}
-
-void CStr::Add(char sim, int count) {
-    Tream(m_Len + count);
-
-    for (int i = 0; i < count; i++)
-        m_Str[m_Len + i] = sim;
-
-    m_Len += count;
-    m_Str[m_Len] = 0;
-}
-
-template<typename... Args>
-std::string CStr::format(const char* format, Args... args)
-{
-    char buf[10240];
-    if (std::sprintf(buf, format, args...) < 0)
-    {
-        throw std::runtime_error("sprintf() failed");
-    }
-    return std::string{buf};
 }
 
 std::string CStr::from_wstring(const std::wstring& wstr)

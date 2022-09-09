@@ -1075,30 +1075,18 @@ void CSound::SaveSoundLog(void) {
     b.StrNZ("Sounds:\n");
 
     for (int i = 0; i < MAX_SOUNDS; ++i) {
-        CStr ss;
+        auto ss =
+            CStr::format(
+                "%d - id:%d, idi:%d, vol:%.8f, pan:%.8f, rvol:%.8f, is_play:%d\n",
+                i,
+                int(m_AllSounds[i].id),
+                int(m_AllSounds[i].id_internal),
+                m_AllSounds[i].curvol,
+                m_AllSounds[i].curpan,
+                g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal),
+                g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
 
-        ss = CStr(i);
-
-        ss += CStr(" - id:");
-        ss += CStr(int(m_AllSounds[i].id));
-
-        ss += CStr(", idi:");
-        ss += CStr(int(m_AllSounds[i].id_internal));
-
-        ss += CStr(", vol:");
-        ss += CStr(m_AllSounds[i].curvol);
-
-        ss += CStr(", pan:");
-        ss += CStr(m_AllSounds[i].curpan);
-
-        ss += CStr(", rvol:");
-        ss += CStr(g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal));
-
-        ss += CStr(", is_play:");
-        ss += CStr(g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
-        ss += CStr("\n");
-
-        b.StrNZ(ss);
+        b.StrNZ(CStr(ss.c_str()));
     }
 
     b.SaveInFile(L"log_sounds.txt");

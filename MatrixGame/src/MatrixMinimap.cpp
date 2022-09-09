@@ -860,27 +860,26 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     DTRACE();
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
-    CStr mmname(PathToOutputFiles(FOLDER_NAME_CACHE));
+    std::string mmname =
+        CStr::format("%s/%s.",
+            PathToOutputFiles(FOLDER_NAME_CACHE),
+            name.toCStr().Get());
     {
-        mmname += CStr("\\");
-        mmname += name.toCStr();
-        mmname += CStr(".");
-
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
-        mmname += CStr((char)((uniq & 0x0F) + 65));
+        mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
     }
 
@@ -897,10 +896,10 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
 
     {
         WIN32_FIND_DATA fd;
-        HANDLE ff = FindFirstFile(mmname.Get(), &fd);
+        HANDLE ff = FindFirstFile(mmname.c_str(), &fd);
         if (ff != INVALID_HANDLE_VALUE) {
             CBitmap bm(g_CacheHeap);
-            bm.LoadFromPNG(CWStr(mmname.Get()).Get());
+            bm.LoadFromPNG(CWStr(mmname.c_str()).Get());
             if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
                 goto render;
 
@@ -1165,21 +1164,15 @@ render:
         CreateDirectory(PathToOutputFiles(FOLDER_NAME_CACHE), NULL);
 
         // seek files
-
-        CStr n(PathToOutputFiles(FOLDER_NAME_CACHE));
-        n += CStr("\\");
-        n += name.toCStr();
-        n += CStr(".*");
+        auto n = CStr::format("%s\\%s.*", PathToOutputFiles(FOLDER_NAME_CACHE), name.toCStr().Get());
 
         HANDLE ff;
         for (;;) {
             WIN32_FIND_DATA fd;
-            ff = FindFirstFile(n.Get(), &fd);
+            ff = FindFirstFile(n.c_str(), &fd);
             if (ff != INVALID_HANDLE_VALUE) {
-                CStr nn(PathToOutputFiles(FOLDER_NAME_CACHE));
-                nn += CStr("\\");
-                nn += CStr(fd.cFileName);
-                DeleteFile(nn.Get());
+                auto nn = CStr::format("%s\\%s", PathToOutputFiles(FOLDER_NAME_CACHE), fd.cFileName);
+                DeleteFile(nn.c_str());
             }
             else {
                 break;
@@ -1211,7 +1204,7 @@ render:
         //*(des)=*(sou+2);
         //*(des+2)=*(sou+0);
 
-        bm2.SaveInPNG(CWStr(mmname.Get()).Get());
+        bm2.SaveInPNG(CWStr(mmname.c_str()).Get());
 
         outtgt->UnlockRect();
 
