@@ -568,17 +568,19 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
 
     int l = WStrLen(exts);
 
-    CStr fn;
+    std::string fn;
     for (; sm1 <= l; ++sm1) {
         if (exts[sm1] == '~' || exts[sm1] == 0) {
             if (sm0 != sm1) {
-                fn.Set(CStr::from_wstring(filename.Get()).c_str());
-                fn += CStr(".");
-                fn += CStr(CStr::from_wstring(exts + sm0).c_str());
-                fn.SetLen(fn.Len() - (l - sm1));
+                fn = CStr::format(
+                        "%s.%s",
+                        CStr::from_wstring(filename.Get()).c_str(),
+                        CStr::from_wstring(exts + sm0).c_str());
 
-                if (m_Packs->FileExists(fn)) {
-                    outname.Set(fn.Get());
+                fn.resize(fn.length() - (l - sm1));
+
+                if (m_Packs->FileExists(CStr(fn.c_str()))) {
+                    outname.Set(fn.c_str());
                     if (withpar)
                         outname += (mname + lenfile);
                     return true;

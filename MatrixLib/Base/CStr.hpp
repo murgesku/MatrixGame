@@ -6,6 +6,7 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 #include "CMain.hpp"
 
 namespace Base {
@@ -40,18 +41,6 @@ public:
 
     explicit CStr(const char *s) : CMain() { Init(s, int(strlen(s))); }
     explicit CStr(const char *s, int len) : CMain() { Init(s, len); }
-    explicit CStr(char sim) : CMain(), m_MaxLen(16), m_Len(1) {
-        m_Str = (char *)HAlloc(uint(m_MaxLen + 1), nullptr);
-        m_Str[0] = sim;
-        m_Str[1] = 0;
-    };
-    explicit CStr(char sim, int count) : CMain(), m_MaxLen(count + 16), m_Len(count) {
-        m_Str = (char *)HAlloc(uint(m_MaxLen + 1), nullptr);
-        memset(m_Str, int(sim), uint(count));
-        m_Str[count] = 0;
-    };
-    explicit CStr(int zn);
-    explicit CStr(double zn, int zpz = 8);
 
     ~CStr() {
         if (m_Str != NULL) {
@@ -64,34 +53,9 @@ public:
     // Clear - Очищает строку
     void Clear(void);
 
-    void SetLen(int len);  // Установить длину строки (Выделение памяти если нужно)
-
     void Set(const CStr &cstr);
-    void Set(const char *str);
-    void Set(const char *str, int lstr);
-    void Set(char sim);
-    void Set(char sim, int count);
-    void Set(int zn);
-    void Set(double zn, int zpz = 8);
-    void SetHex(void *zn);
-    void SetHex(BYTE zn);
 
     void Add(const CStr &cstr);
-    void Add(const char *str);
-    void Add(const char *str, int lstr);
-    void Add(char sim);
-    void Add(char sim, int count);
-    void Add(int zn) { Add(CStr(zn)); }
-    void Add(void *zn) {
-        CStr s;
-        s.SetHex(zn);
-        Add(s);
-    }
-    void Add(BYTE zn) {
-        CStr s;
-        s.SetHex(zn);
-        Add(s);
-    }
 
     const char *Get(void) const { return m_Str; }
 
@@ -107,8 +71,8 @@ public:
             const char *cc = ogsim;
             for (; *cc; ++cc) {
                 if (*c == *cc) {
-                    beg.Set(Get(), int(c - Get()));
-                    rem.Set(c + 1);
+                    beg.Set(CStr(Get(), int(c - Get())));
+                    rem.Set(CStr(c + 1));
                     return;
                 }
             }
@@ -139,7 +103,15 @@ public:
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
 
     template<typename... Args>
-    static std::string format(const char* format, Args... args);
+    static std::string format(const char* format, Args... args)
+    {
+        char buf[10240];
+        if (std::snprintf(buf, sizeof(buf), format, args...) < 0)
+        {
+            throw std::runtime_error("snprintf() failed");
+        }
+        return std::string{buf};
+    }
 
     static std::string from_wstring(const std::wstring& wstr);
     static std::wstring to_wstring(const std::string& str);

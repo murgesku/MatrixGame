@@ -48,13 +48,7 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
             if (cnt == 0)
                 continue;
 
-            CStr ss;
-            ss = CStr(i);
-            ss += CStr(" - ");
-            ss += CStr(cnt);
-            ss += CStr("\n");
-
-            b.StrNZ(ss);
+            b.StrNZ(CStr{CStr::format("%d - %d\n", i, cnt).c_str()});
         }
 
         b.SaveInFile(L"log.txt");
