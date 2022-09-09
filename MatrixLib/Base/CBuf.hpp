@@ -257,7 +257,7 @@ public:
             return CStr();
     }
     void Str(const CStr &str) {
-        int len = str.Len();
+        int len = str.length();
         if (len > 0)
             BufAdd(str.Get(), len + 1);
         else
@@ -276,7 +276,7 @@ public:
             Byte(0);
     }
     void StrNZ(const CStr &str) {
-        int len = str.Len();
+        int len = str.length();
         if (len > 0)
             BufAdd(str.Get(), len);
     }
@@ -358,7 +358,7 @@ public:
             return CStr();
     }
     void StrText(CStr &str) {
-        int len = str.Len();
+        int len = str.length();
         if (len > 0)
             BufAdd(str.Get(), len);
         Word(0x0a0d);

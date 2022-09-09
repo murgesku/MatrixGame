@@ -11,6 +11,8 @@
 #include <tuple> // for std::tie
 #include <cctype> // for std::toupper
 
+#include <utils.hpp>
+
 //#ifdef BLABLA
 
 #undef ZEXPORT
@@ -646,7 +648,7 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 
 CStr CHsFolder::GetFullPath(const CStr &name) {
     if (m_Parent) {
-        return m_Parent->GetFullPath(CStr(CStr::format("%s/%s", m_RealName.Get(), name.Get()).c_str()));
+        return m_Parent->GetFullPath(CStr(utils::format("%s\\%s", m_RealName.Get(), name.Get()).c_str()));
     }
     else {
         return name;
@@ -1431,7 +1433,7 @@ void CHsFolder::UpdateFileRec(void) {
 // end;
 
 void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
-    if (!m_RealName.IsEmpty()) {
+    if (!m_RealName.empty()) {
         Func(true, false, m_RealName);
     }
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
@@ -1455,13 +1457,13 @@ void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
             }
         }
     }
-    if (!m_RealName.IsEmpty()) {
+    if (!m_RealName.empty()) {
         Func(true, false, CStr(".."));
     }
 }
 
 CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
-    if (path.IsEmpty())
+    if (path.empty())
         return this;
 
     std::string beg, rem;
@@ -2313,7 +2315,7 @@ int CPackFile::FindFirst(const CStr &path, DWORD Attr, SSearchRec &S) {
     S.Folder = NULL;
     if (m_RootFolder == NULL)
         return 0;
-    if (path.IsEmpty())
+    if (path.empty())
         S.Folder = m_RootFolder;
     else
         S.Folder = m_RootFolder->GetFolderEx(S.Path);

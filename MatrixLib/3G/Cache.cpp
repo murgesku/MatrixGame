@@ -8,6 +8,8 @@
 #include "Cache.hpp"
 #include "VectorObject.hpp"
 
+#include <utils.hpp>
+
 bool CCacheData::m_dip;
 
 // bool CacheFileGetA(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
@@ -440,7 +442,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        std::string name{CStr::from_wstring((cd->m_Name == NULL) ? L"NULL" : cd->m_Name)};
+        std::string name{utils::from_wstring((cd->m_Name == NULL) ? L"NULL" : cd->m_Name)};
 
         char *loaded;
         if (cd->IsLoaded())

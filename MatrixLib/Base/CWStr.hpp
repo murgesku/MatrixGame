@@ -18,6 +18,7 @@
 #include "CHeap.hpp"
 
 #include "CStr.hpp"
+#include <utils.hpp>
 
 namespace Base {
 
@@ -122,7 +123,7 @@ public:
 
     CStr toCStr() const
     {
-        return CStr(CStr::from_wstring(this->Get()).c_str());
+        return CStr(utils::from_wstring(this->Get()).c_str());
     }
 
     CHeap *GetHeap(void) const { return m_Data->m_Heap; }

@@ -36,8 +36,8 @@ class BASE_API CStr : public CMain {
     };
 
 public:
-    CStr(void) : CMain(), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
-    CStr(const CStr &s) : CMain() { Init(s.m_Str, s.Len()); }
+    CStr() : CMain(), m_MaxLen(0), m_Len(0), m_Str(NULL) {}
+    CStr(const CStr &s) : CMain() { Init(s.m_Str, s.length()); }
 
     explicit CStr(const char *s) : CMain() { Init(s, int(strlen(s))); }
     explicit CStr(const char *s, int len) : CMain() { Init(s, len); }
@@ -50,11 +50,11 @@ public:
         m_Len = m_MaxLen = 0;
     }
 
-    const char *Get(void) const { return m_Str; }
+    const char *Get() const { return m_Str; }
 
-    int Len(void) const { return m_Len; }
+    int length() const { return m_Len; }
 
-    bool IsEmpty(void) const { return m_Len < 1; }
+    bool empty() const { return m_Len < 1; }
 
     CStr &operator=(const CStr &s) {
         if (this != &s) {
@@ -67,20 +67,6 @@ public:
     }
 
     bool operator == (const CStr& that) { return strcmp(m_Str, that.m_Str) == 0; }
-
-    template<typename... Args>
-    static std::string format(const char* format, Args... args)
-    {
-        char buf[10240];
-        if (std::snprintf(buf, sizeof(buf), format, args...) < 0)
-        {
-            throw std::runtime_error("snprintf() failed");
-        }
-        return std::string{buf};
-    }
-
-    static std::string from_wstring(const std::wstring& wstr);
-    static std::wstring to_wstring(const std::string& str);
 };
 
 }  // namespace Base

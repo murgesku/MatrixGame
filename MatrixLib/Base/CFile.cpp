@@ -10,6 +10,8 @@
 #include "CFile.hpp"
 #include "CException.hpp"
 
+#include <utils.hpp>
+
 namespace Base {
 
 #ifndef MAXEXP_EXPORTS
@@ -572,10 +574,10 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     for (; sm1 <= l; ++sm1) {
         if (exts[sm1] == '~' || exts[sm1] == 0) {
             if (sm0 != sm1) {
-                fn = CStr::format(
+                fn = utils::format(
                         "%s.%s",
-                        CStr::from_wstring(filename.Get()).c_str(),
-                        CStr::from_wstring(exts + sm0).c_str());
+                        utils::from_wstring(filename.Get()).c_str(),
+                        utils::from_wstring(exts + sm0).c_str());
 
                 fn.resize(fn.length() - (l - sm1));
 
@@ -635,7 +637,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
     }
     else {
-        std::string fn{CStr::from_wstring(folderfrom.Get())};
+        std::string fn{utils::from_wstring(folderfrom.Get())};
         if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
             fn +=  "\\";
         }
@@ -644,7 +646,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         WIN32_FIND_DATAA fd;
 
         // seek files
-        fnf += CStr::from_wstring(files);
+        fnf += utils::from_wstring(files);
         HANDLE h = FindFirstFileA(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {

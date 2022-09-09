@@ -34,6 +34,8 @@
 
 #include <ddraw.h>
 
+#include <utils.hpp>
+
 ////////////////////////////////////////////////////////////////////////////////
 CHeap *g_MatrixHeap;
 CBlockPar *g_MatrixData;
@@ -95,7 +97,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         if (map) {
             FILE *file;
             file = fopen("calcvis.log", "a");
-            std::string name = CStr::from_wstring(g_MatrixMap->MapName().Get());
+            std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
             fwrite(name.c_str(), name.length(), 1, file);
             fwrite(" ...", 4, 1, file);
             fclose(file);
