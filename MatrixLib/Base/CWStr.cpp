@@ -18,7 +18,7 @@ CWStr::CWStr(const char* s): CMain()
 {
     CStr tmp(s);
     NewDataLen(nullptr, tmp.length());
-    Set(tmp.Get());
+    Set(tmp.c_str());
 }
 
 #include <stdio.h>
