@@ -12,6 +12,8 @@
 #include "CStr.hpp"
 #include "CBuf.hpp"
 
+#include <utils.hpp>
+
 namespace Base {
 
 HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
@@ -35,7 +37,7 @@ HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
     if (GetVersion() < 0x80000000)
         rz = RegOpenKeyExW(key, path, 0, access, &kkey);
     else
-        rz = RegOpenKeyExA(key, CWStr(path).toCStr().c_str(), 0, access, &kkey);
+        rz = RegOpenKeyExA(key, utils::from_wstring(path).c_str(), 0, access, &kkey);
 
     if (rz != ERROR_SUCCESS)
         return 0;
@@ -64,7 +66,7 @@ HKEY Reg_CreateKey(HKEY key, const wchar *path, dword access) {
     if (GetVersion() < 0x80000000)
         rz = RegCreateKeyExW(key, path, 0, NULL, 0, access, NULL, &kkey, &dv);
     else
-        rz = RegCreateKeyExA(key, CWStr(path).toCStr().c_str(), 0, NULL, 0, access, NULL, &kkey, &dv);
+        rz = RegCreateKeyExA(key, utils::from_wstring(path).c_str(), 0, NULL, 0, access, NULL, &kkey, &dv);
 
     if (rz != ERROR_SUCCESS)
         return 0;
@@ -78,7 +80,7 @@ bool Reg_GetData(HKEY key, const wchar *name, dword *ltype, CBuf *buf) {
     if (GetVersion() < 0x80000000)
         rz = RegQueryValueExW(key, name, 0, ltype, NULL, &size);
     else
-        rz = RegQueryValueExA(key, CWStr(name).toCStr().c_str(), 0, ltype, NULL, &size);
+        rz = RegQueryValueExA(key, utils::from_wstring(name).c_str(), 0, ltype, NULL, &size);
     if (rz != ERROR_SUCCESS)
         return false;
     if (size == 0)
@@ -88,7 +90,7 @@ bool Reg_GetData(HKEY key, const wchar *name, dword *ltype, CBuf *buf) {
     if (GetVersion() < 0x80000000)
         rz = RegQueryValueExW(key, name, 0, ltype, (byte *)buf->Get(), &size);
     else
-        rz = RegQueryValueExA(key, CWStr(name).toCStr().c_str(), 0, ltype, (byte *)buf->Get(), &size);
+        rz = RegQueryValueExA(key, utils::from_wstring(name).c_str(), 0, ltype, (byte *)buf->Get(), &size);
     if (rz != ERROR_SUCCESS)
         return false;
 
@@ -108,7 +110,7 @@ BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWS
             if (GetVersion() < 0x80000000)
                 str.Set((wchar *)buf.Get(), buf.Len() / 2 - 1);
             else
-                str.Set((const char*)buf.Get());
+                str.Set(utils::to_wstring((const char*)buf.Get()));
         }
         else if (type == REG_DWORD && buf.Len() == 4) {
             str.Set(*((dword *)buf.Get()));
@@ -135,7 +137,7 @@ BASE_API void Reg_SetString(HKEY pkey, const wchar *path, const wchar *name, con
     if (GetVersion() < 0x80000000)
         RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, WStrLen(str) * 2 + 2);
     else
-        RegSetValueExA(kkey, CWStr(name).toCStr().c_str(), 0, REG_SZ, (byte*)CWStr(str).toCStr().c_str(), WStrLen(str) + 1);
+        RegSetValueExA(kkey, utils::from_wstring(name).c_str(), 0, REG_SZ, (byte*)utils::from_wstring(str).c_str(), WStrLen(str) + 1);
 
     RegCloseKey(kkey);
 }

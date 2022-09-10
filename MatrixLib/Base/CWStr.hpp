@@ -17,8 +17,7 @@
 #include "CMain.hpp"
 #include "CHeap.hpp"
 
-#include "CStr.hpp"
-#include <utils.hpp>
+#include <string>
 
 namespace Base {
 
@@ -81,7 +80,8 @@ public:
         NewDataLen(heap, 0);
         m_Data->Data()[0] = 0;
     }
-    explicit CWStr(const char* s);
+    CWStr(const std::wstring& str) : CWStr(str.c_str()) {}
+
     CWStr(const CWStr &s) : CMain(), m_Data(s.m_Data) { ++s.m_Data->m_Refs; }
     explicit CWStr(const wchar *s, CHeap *heap = NULL) : CMain() {
         int len = WStrLen(s);
@@ -121,11 +121,6 @@ public:
     ~CWStr() { m_Data->RefDecAndDelete(); }
     // lint -restore
 
-    CStr toCStr() const
-    {
-        return CStr(utils::from_wstring(this->Get()).c_str());
-    }
-
     CHeap *GetHeap(void) const { return m_Data->m_Heap; }
 
     // Clear - Очищает строку
@@ -136,6 +131,11 @@ public:
         m_Data->Data()[len] = 0;
     };
 
+    void Set(const std::wstring& str)
+    {
+        Set(str.c_str());
+    }
+
     void Set(const CWStr &s) {
         if (m_Data != s.m_Data) {
             m_Data->RefDecAndDelete();
@@ -143,7 +143,6 @@ public:
             ++s.m_Data->m_Refs;
         }
     }
-    void Set(const char* cstr);
     void Set(const wchar *s) {
         if (m_Data->Data() != s) {
             int len = WStrLen(s);

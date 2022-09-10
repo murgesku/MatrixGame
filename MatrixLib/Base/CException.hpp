@@ -7,6 +7,8 @@
 
 #include "BaseDef.hpp"
 
+#include <string>
+
 namespace Base {
 
 class CWStr;
@@ -56,6 +58,10 @@ class BASE_API CExceptionStr : public CException {
 public:
     CExceptionStr(const char *file, int line, const wchar *str, const wchar *str2 = NULL, const wchar *str3 = NULL,
                   const wchar *str4 = NULL);
+
+    CExceptionStr(const char *file, int line, const std::wstring& str)
+        :CExceptionStr(file, line, str.c_str())
+    {}
 
     virtual CWStr Info(void);
 };

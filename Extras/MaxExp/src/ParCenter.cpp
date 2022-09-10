@@ -92,7 +92,7 @@ class ParCenterDlgProc : public ParamMap2UserDlgProc {
                         }
                     }
         			SendMessage(win,CB_SETCURSEL,(WPARAM)-1,0);
-                    if(!ob->m_Group.IsEmpty()) SetWindowText(win, ob->m_Group.toCStr().Get());
+                    if(!ob->m_Group.IsEmpty()) SetWindowText(win, utils::from_wstring(ob->m_Group.Get()).c_str());
 
                     return TRUE;
                 }

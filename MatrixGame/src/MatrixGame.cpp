@@ -136,7 +136,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         }
         L3GDeinit();
 
-        MessageBox(NULL, ex->Info().toCStr().c_str(), "Exception:", MB_OK);
+        MessageBox(NULL, utils::from_wstring(ex->Info().Get()).c_str(), "Exception:", MB_OK);
 
         delete ex;
     }
