@@ -9,7 +9,6 @@
 #include "CException.hpp"
 #include "CMain.hpp"
 #include "CHeap.hpp"
-#include "CStr.hpp"
 #include "CWStr.hpp"
 #include "CFile.hpp"
 #include "CBuf.hpp"

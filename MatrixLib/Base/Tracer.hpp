@@ -7,6 +7,7 @@
 #define TRACER_HPP
 
 #include <string>
+#include <utils.hpp>
 
 #ifdef __GNUC__
 #include <x86intrin.h>
@@ -45,7 +46,8 @@ inline unsigned __int64 GetCPUTakt(void) {
         static int ccc = 1;        \
         CDText::T(s, ccc++); \
     }
-#define DDVECT(s, v) CDText::T(s, "(" + CStr((v).x) + "|" + CStr((v).y) + "|" + CStr((v).z) + ")");
+#define DDVECT(s, v) CDText::T(s, utils::format("(%f|%f|%f)", (v).x, (v).y, (v).z).c_str());
+    ;
 
 class CDText {
     static CDText *first_dtext;

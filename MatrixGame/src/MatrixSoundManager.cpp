@@ -1088,7 +1088,7 @@ void CSound::SaveSoundLog(void) {
                 g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal),
                 g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
 
-        b.StrNZ(CStr(ss.c_str()));
+        b.StrNZ(ss);
     }
 
     b.SaveInFile(L"log_sounds.txt");
