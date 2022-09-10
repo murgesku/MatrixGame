@@ -9,7 +9,6 @@
 
 #include "CWStr.hpp"
 #include "CException.hpp"
-#include "CStr.hpp"
 #include "CBuf.hpp"
 
 #include <utils.hpp>

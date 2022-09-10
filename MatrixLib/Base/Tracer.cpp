@@ -11,15 +11,15 @@
 #include <exception>
 
 #ifdef DMM
-#include "CStr.hpp"
+
 void writedump(const char *txt) {
-    static CStr buf;
+    static std::string buf;
     buf += txt;
     buf += "\n";
-    if (buf.Len() > 1000000) {
+    if (buf.length() > 1000000) {
         FILE *f = fopen("bug", "a+");
         fwrite(txt, strlen(txt), 1, f);
-        fwrite(buf.Get(), buf.Len(), 1, f);
+        fwrite(buf.c_str(), buf.length(), 1, f);
         fclose(f);
         buf.SetZeroLenNoTream();
     }

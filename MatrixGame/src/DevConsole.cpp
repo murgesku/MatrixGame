@@ -50,7 +50,7 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
             if (cnt == 0)
                 continue;
 
-            b.StrNZ(CStr{utils::format("%d - %d\n", i, cnt).c_str()});
+            b.StrNZ(utils::format("%d - %d\n", i, cnt));
         }
 
         b.SaveInFile(L"log.txt");

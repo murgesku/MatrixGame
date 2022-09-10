@@ -7,7 +7,6 @@
 
 #include "CException.hpp"
 #include "CWStr.hpp"
-#include "CStr.hpp"
 #include <stdio.h>
 
 #include "Tracer.hpp"

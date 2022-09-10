@@ -5,10 +5,9 @@
 
 #ifndef CBUF_HEADER
 #define CBUF_HEADER
-//#pragma once
+// #pragma once
 
 #include "CMain.hpp"
-#include "CStr.hpp"
 #include "CWStr.hpp"
 #include "Mem.hpp"
 #include "Tracer.hpp"
@@ -245,18 +244,18 @@ public:
     }
 
     int StrLen(void);
-    CStr Str(void) {
+    std::string Str(void) {
         int len = StrLen();
         char *abuf = (char *)(m_Buf + m_Pointer);
         m_Pointer += len + 1;
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CStr(abuf, len);
+            return std::string(abuf, len);
         else
-            return CStr();
+            return std::string();
     }
-    void Str(const CStr &str) {
+    void Str(const std::string& str) {
         int len = str.length();
         if (len > 0)
             BufAdd(str.c_str(), len + 1);
@@ -275,7 +274,7 @@ public:
         else
             Byte(0);
     }
-    void StrNZ(const CStr &str) {
+    void StrNZ(const std::string& str) {
         int len = str.length();
         if (len > 0)
             BufAdd(str.c_str(), len);
@@ -337,7 +336,7 @@ public:
     }
 
     int StrTextLen(void);
-    CStr StrText(void) {
+    std::string StrText(void) {
         char ch;
         int len = StrTextLen();
         char *abuf = (char *)(m_Buf + m_Pointer);
@@ -353,11 +352,11 @@ public:
             }
         }
         if (len > 0)
-            return CStr(abuf, len);
+            return std::string(abuf, len);
         else
-            return CStr();
+            return std::string();
     }
-    void StrText(CStr &str) {
+    void StrText(const std::string& str) {
         int len = str.length();
         if (len > 0)
             BufAdd(str.c_str(), len);
