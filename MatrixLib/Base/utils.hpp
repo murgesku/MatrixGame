@@ -20,6 +20,18 @@ inline std::string format(const char* format, Args... args)
     return std::string{buf};
 }
 
+template<typename... Args>
+inline std::wstring format(const wchar_t* format, Args... args)
+{
+    // TODO: replace with std::format/fmt::format
+    wchar_t buf[10240];
+    if (std::swprintf(buf, sizeof(buf), format, args...) < 0)
+    {
+        throw std::runtime_error("swprintf() failed");
+    }
+    return std::wstring{buf};
+}
+
 inline std::string from_wstring(const std::wstring& wstr)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;

@@ -1548,7 +1548,7 @@ bool CPackFile::OpenPacketFile(void) {
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1621,7 +1621,7 @@ bool CPackFile::ClosePacketFile(void) {
 //        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    } else
 //    {
-//        m_Handle = (DWORD)CreateFileA(m_FileName.toCStr().Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
+//        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
 //        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    }
 //
@@ -1661,7 +1661,7 @@ bool CPackFile::OpenPacketFileEx() {
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(m_FileName.toCStr().c_str(), GENERIC_READ | GENERIC_WRITE,
+                (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1711,7 +1711,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     if (H < 0)
         return 0xFFFFFFFF;
     if (m_RootFolder == NULL) {
-        ERROR_S((L"Package not opened: " + CWStr(filename.c_str())).Get());
+        ERROR_S(utils::format(L"Package not opened: %s", utils::to_wstring(filename).c_str()));
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
@@ -1737,12 +1737,12 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
         m_Handles[H].m_Compressed = false;
         m_Handles[H].m_Blocknumber = -1;
         if (m_Handles[H].m_Size == INVALID_FILE_SIZE) {
-            ERROR_S((L"File system error:" + CWStr(filename)).Get());
+            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
         }
 
         DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
         if (Error == 0xFFFFFFFF) {
-            ERROR_S((L"File system error:" + CWStr(filename)).Get());
+            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
         }
 
         m_Handles[H].m_Free = false;
@@ -1773,7 +1773,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
     if (Error == 0xFFFFFFFF) {
-        ERROR_S((L"Packet file system error:" + CWStr(filename.c_str())).Get());
+        ERROR_S(utils::format(L"Packet file system error: %s", utils::to_wstring(filename).c_str()));
     }
     return H;
 }

@@ -10,67 +10,10 @@
 
 #include "CWStr.hpp"
 #include "CException.hpp"
-#include "CStr.hpp"
+
+#include <utils.hpp>
 
 namespace Base {
-
-CWStr::CWStr(const char* s): CMain()
-{
-    CStr tmp(s);
-    NewDataLen(nullptr, tmp.length());
-    Set(tmp.c_str());
-}
-
-#include <stdio.h>
-
-void CWStr::Set(const char* str)
-{
-    std::string cstr{str};
-
-    static int call_num = 0;
-    ++call_num;
-    if (cstr.length() <= 0) {
-        ModifyLen(m_Data->m_Heap, 0);
-        return;
-    }
-
-    ModifyLen(m_Data->m_Heap, cstr.length());
-
-    if (!MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, cstr.c_str(), m_Data->m_Len, m_Data->Data(), m_Data->m_Len)) {
-        FILE *file = fopen("error.log", "w+b");
-
-        std::string txt(">>>>>>> MultiByteToWideChar <<<<<<<\n");
-        fwrite(txt.c_str(), txt.length(), 1, file);
-        DWORD err = GetLastError();
-
-        if (err == ERROR_INSUFFICIENT_BUFFER)
-            txt = "ERROR_INSUFFICIENT_BUFFER";
-        else if (err == ERROR_INVALID_FLAGS)
-            txt = "ERROR_INVALID_FLAGS";
-        else if (err == ERROR_INVALID_PARAMETER)
-            txt = "ERROR_INVALID_PARAMETER";
-        else if (err == ERROR_NO_UNICODE_TRANSLATION)
-            txt = "ERROR_NO_UNICODE_TRANSLATION";
-        else {
-            txt = utils::format("unknown error: %d", err);
-        }
-
-        txt += utils::format("\nCall number: %d\n", call_num);
-
-        fwrite(txt.c_str(), txt.length(), 1, file);
-        if (cstr.c_str() == NULL) {
-            fwrite("<Input is NULL>", strlen("<Input is NULL>"), 1, file);
-        }
-        else {
-            fwrite(cstr.c_str(), cstr.length(), 1, file);
-        }
-
-        fclose(file);
-
-        ERROR_E;
-    }
-    m_Data->Data()[m_Data->m_Len] = 0;
-}
 
 void CWStr::Set(int zn) {
     if (m_Data->m_Refs > 1) {

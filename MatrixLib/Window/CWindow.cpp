@@ -140,7 +140,7 @@ void CWindow::WndCreate() {
             m_CreateParams.m_ClassWindow.lpszClassName = ClassName();
         }
 
-        m_Wnd = CreateWindowExA(m_CreateParams.m_StyleEx, tempname.Get(), m_Text.toCStr().Get(),
+        m_Wnd = CreateWindowExA(m_CreateParams.m_StyleEx, tempname.Get(), utils::from_wstring(m_Text.Get()).c_str(),
                                 m_CreateParams.m_Style, m_Pos.x, m_Pos.y, m_Size.x, m_Size.y,
                                 (m_Parent != NULL) ? (m_Parent->m_Wnd) : m_WndParent, 0, g_Instance, NULL);
         if (!m_Wnd)
