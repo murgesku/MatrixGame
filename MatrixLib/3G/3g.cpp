@@ -14,8 +14,6 @@
 
 #include <utils.hpp>
 
-#define GWL_WNDPROC GWLP_WNDPROC
-
 HINSTANCE g_HInst = 0;
 IDirect3D9 *g_D3D = NULL;
 IDirect3DDevice9 *g_D3DD = NULL;

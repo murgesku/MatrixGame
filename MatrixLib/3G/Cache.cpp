@@ -24,11 +24,11 @@ bool CCacheData::m_dip;
 //	CWStr filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAA fd;
-//	HANDLE fh=FindFirstFileA(filename.toCStr().Get(),&fd);
+//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.Get()).c_str(),&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileA((CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).toCStr().Get(),&fd);
+//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).Get()).c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
 //		CWStr curname(outname.GetHeap());
@@ -263,7 +263,7 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         }
 
         WIN32_FIND_DATA fd;
-        HANDLE fh=FindFirstFile((CWStr(str,lenfile,g_CacheHeap)+L".*").toCStr().Get(),&fd);
+        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").Get()).c_str(),&fd);
         if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.Get());
         FindClose(fh);
 
@@ -442,7 +442,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        std::string name{utils::from_wstring((cd->m_Name == NULL) ? L"NULL" : cd->m_Name)};
+        std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
 
         char *loaded;
         if (cd->IsLoaded())

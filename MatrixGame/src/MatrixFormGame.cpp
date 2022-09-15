@@ -205,7 +205,7 @@ void CFormMatrixGame::Draw(void) {
 #endif
 
 #ifdef MEM_SPY_ENABLE
-    CDText::T("ALLOC", std::to_string((int)SMemHeader::fullsize).c_str());
+    CDText::T("ALLOC", (int)SMemHeader::fullsize);
 
     char buff[1024];
     CDText::Get(buff);

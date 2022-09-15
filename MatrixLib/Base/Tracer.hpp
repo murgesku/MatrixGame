@@ -77,9 +77,6 @@ public:
         T(key, std::to_string(arg).c_str());
     }
 
-    template<typename arg_t>
-    static void T(const char* key, const arg_t arg) = delete;
-
     static void D(const char *key);
 
     static void Get(char *out);
