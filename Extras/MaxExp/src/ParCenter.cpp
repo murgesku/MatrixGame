@@ -88,11 +88,11 @@ class ParCenterDlgProc : public ParamMap2UserDlgProc {
                     for(int i=0;i<cnt;i++) {
                         Base::CWStr tstr;
                         if(ExportGroupGetName(tstr,i,no)) {
-                            SendMessage(win,CB_ADDSTRING,0,(LPARAM)(LPCTSTR)(tstr.data()));
+                            SendMessage(win,CB_ADDSTRING,0,(LPARAM) (LPCTSTR) (Base::CStr(tstr).Get()));
                         }
                     }
         			SendMessage(win,CB_SETCURSEL,(WPARAM)-1,0);
-                    if(!ob->m_Group.IsEmpty()) SetWindowText(win, utils::from_wstring(ob->m_Group.Get()).c_str());
+                    if(!ob->m_Group.IsEmpty()) SetWindowText(win,Base::CStr(ob->m_Group).Get());
 
                     return TRUE;
                 }
