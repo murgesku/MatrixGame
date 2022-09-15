@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include <string>
+
 #include "MatrixFormGame.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
@@ -203,7 +205,7 @@ void CFormMatrixGame::Draw(void) {
 #endif
 
 #ifdef MEM_SPY_ENABLE
-    CDText::T("ALLOC", CStr((int)SMemHeader::fullsize));
+    CDText::T("ALLOC", (int)SMemHeader::fullsize);
 
     char buff[1024];
     CDText::Get(buff);
@@ -1809,8 +1811,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             //    if (fShift) --to; else ++to;
             //    if (to < from) to = from;
 
-            //    CDText::T("from", CStr(from));
-            //    CDText::T("to", CStr(to));
+            //    CDText::T("from", from);
+            //    CDText::T("to", to);
 
             //    g_MatrixMap->CalcVisTemp(from, to, ptfrom);
             //}

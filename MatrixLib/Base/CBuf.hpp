@@ -5,10 +5,9 @@
 
 #ifndef CBUF_HEADER
 #define CBUF_HEADER
-//#pragma once
+// #pragma once
 
 #include "CMain.hpp"
-#include "CStr.hpp"
 #include "CWStr.hpp"
 #include "Mem.hpp"
 #include "Tracer.hpp"
@@ -245,21 +244,21 @@ public:
     }
 
     int StrLen(void);
-    CStr Str(void) {
+    std::string Str(void) {
         int len = StrLen();
         char *abuf = (char *)(m_Buf + m_Pointer);
         m_Pointer += len + 1;
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CStr(abuf, len, m_Heap);
+            return std::string(abuf, len);
         else
-            return CStr(m_Heap);
+            return std::string();
     }
-    void Str(const CStr &str) {
-        int len = str.Len();
+    void Str(const std::string& str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len + 1);
+            BufAdd(str.c_str(), len + 1);
         else
             Byte(0);
     }
@@ -275,10 +274,10 @@ public:
         else
             Byte(0);
     }
-    void StrNZ(const CStr &str) {
-        int len = str.Len();
+    void StrNZ(const std::string& str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len);
+            BufAdd(str.c_str(), len);
     }
     void StrNZ(const char *str, int len) {
         if (len > 0)
@@ -337,7 +336,7 @@ public:
     }
 
     int StrTextLen(void);
-    CStr StrText(void) {
+    std::string StrText(void) {
         char ch;
         int len = StrTextLen();
         char *abuf = (char *)(m_Buf + m_Pointer);
@@ -353,14 +352,14 @@ public:
             }
         }
         if (len > 0)
-            return CStr(abuf, len, m_Heap);
+            return std::string(abuf, len);
         else
-            return CStr(m_Heap);
+            return std::string();
     }
-    void StrText(CStr &str) {
-        int len = str.Len();
+    void StrText(const std::string& str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len);
+            BufAdd(str.c_str(), len);
         Word(0x0a0d);
     }
 
@@ -381,9 +380,9 @@ public:
             }
         }
         if (len > 0)
-            return CWStr(abuf, len, m_Heap);
+            return CWStr(abuf, len);
         else
-            return CWStr(m_Heap);
+            return CWStr();
     }
     void WStrText(CWStr &str) {
         int len = str.GetLen();

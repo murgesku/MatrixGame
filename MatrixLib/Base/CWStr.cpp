@@ -6,69 +6,14 @@
 #include "Base.pch"
 
 #include <cwchar>
+#include <cwctype>
 
 #include "CWStr.hpp"
 #include "CException.hpp"
-#include "CStr.hpp"
+
+#include <utils.hpp>
 
 namespace Base {
-
-CWStr::CWStr(const CStr &s) : CMain() {
-    NewDataLen(s.GetHeap(), s.Len());
-    Set(s);
-}
-
-#include <stdio.h>
-
-int CWStr::call_num;
-
-void CWStr::Set(const CStr &cstr) {
-    ++call_num;
-    if (cstr.Len() <= 0) {
-        ModifyLen(m_Data->m_Heap, 0);
-        return;
-    }
-
-    ModifyLen(m_Data->m_Heap, cstr.Len());
-
-    if (!MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS, cstr.Get(), m_Data->m_Len, m_Data->Data(), m_Data->m_Len)) {
-        FILE *file = fopen("error.log", "w+b");
-
-        CStr txt(">>>>>>> MultiByteToWideChar <<<<<<<\n");
-        fwrite(txt, strlen(txt), 1, file);
-        DWORD err = GetLastError();
-
-        txt = "unknown error: ";
-        if (err == ERROR_INSUFFICIENT_BUFFER)
-            txt = "ERROR_INSUFFICIENT_BUFFER";
-        else if (err == ERROR_INVALID_FLAGS)
-            txt = "ERROR_INVALID_FLAGS";
-        else if (err == ERROR_INVALID_PARAMETER)
-            txt = "ERROR_INVALID_PARAMETER";
-        else if (err == ERROR_NO_UNICODE_TRANSLATION)
-            txt = "ERROR_NO_UNICODE_TRANSLATION";
-        else {
-            txt.Add(int(err));
-        }
-
-        txt.Add("\nCall number: ");
-        txt.Add(call_num);
-        txt.Add("\n");
-
-        fwrite(txt.Get(), txt.Len(), 1, file);
-        if (cstr.Get() == NULL) {
-            fwrite("<Input is NULL>", strlen("<Input is NULL>"), 1, file);
-        }
-        else {
-            fwrite(cstr.Get(), cstr.Len(), 1, file);
-        }
-
-        fclose(file);
-
-        ERROR_E;
-    }
-    m_Data->Data()[m_Data->m_Len] = 0;
-}
 
 void CWStr::Set(int zn) {
     if (m_Data->m_Refs > 1) {
@@ -580,9 +525,10 @@ void CWStr::LowerCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharLowerBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this, GetHeap());
-        tstr.LowerCase(sme, len);
-        Set(tstr);
+        for (size_t i = 0; i < len; ++i)
+        {
+            m_Data->Data()[sme + i] = std::towlower(m_Data->Data()[sme + i]);
+        }
     }
 }
 
@@ -597,9 +543,10 @@ void CWStr::UpperCase(int sme, int len) {
     if (GetVersion() < 0x80000000)
         CharUpperBuffW(GetBuf() + sme, len);
     else {
-        CStr tstr(*this, GetHeap());
-        tstr.UpperCase(sme, len);
-        Set(tstr);
+        for (int i = 0; i < len; ++i)
+        {
+            m_Data->Data()[sme + i] = std::towupper(m_Data->Data()[sme + i]);
+        }
     }
 }
 

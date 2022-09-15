@@ -10,6 +10,8 @@
 #include "CWStr.hpp"
 #include "MatrixSoundManager.hpp"
 
+#include <utils.hpp>
+
 static void hHelp(const Base::CWStr &cmd, const Base::CWStr &params) {
     g_MatrixMap->m_Console.ShowHelp();
 }
@@ -47,13 +49,8 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
             }
             if (cnt == 0)
                 continue;
-            CStr ss(g_CacheHeap);
-            ss = i;
-            ss += " - ";
-            ss += cnt;
-            ss += "\n";
 
-            b.StrNZ(ss);
+            b.StrNZ(utils::format("%d - %d\n", i, cnt));
         }
 
         b.SaveInFile(L"log.txt");

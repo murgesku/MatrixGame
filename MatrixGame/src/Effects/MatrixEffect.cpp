@@ -611,7 +611,7 @@ void CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &p
         //
         //                log += (int)ef->GetType();
         //                log += ":";
-        //                log += CStr(hex);
+        //                log += utils::from_wstring(hex.Get()).c_str();
         //                log += ":";
         //                log += ef->Priority();
         //                //log += "\n";

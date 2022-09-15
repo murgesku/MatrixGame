@@ -6,6 +6,9 @@
 #ifndef TRACER_HPP
 #define TRACER_HPP
 
+#include <string>
+#include <utils.hpp>
+
 #ifdef __GNUC__
 #include <x86intrin.h>
 #endif
@@ -41,9 +44,10 @@ inline unsigned __int64 GetCPUTakt(void) {
 #define DCNT(s)                    \
     {                              \
         static int ccc = 1;        \
-        CDText::T(s, CStr(ccc++)); \
+        CDText::T(s, ccc++); \
     }
-#define DDVECT(s, v) CDText::T(s, "(" + CStr((v).x) + "|" + CStr((v).y) + "|" + CStr((v).z) + ")");
+#define DDVECT(s, v) CDText::T(s, utils::format("(%f|%f|%f)", (v).x, (v).y, (v).z).c_str());
+    ;
 
 class CDText {
     static CDText *first_dtext;
@@ -61,11 +65,23 @@ class CDText {
 public:
     static void StaticInit(void) { first_dtext = NULL; }
 
-    static void T(const char *key, const char *text);
+    static void T(const char* key, const char* arg);
+
+    static void T(const char* key, int arg)
+    {
+        T(key, std::to_string(arg).c_str());
+    }
+
+    static void T(const char* key, DWORD arg)
+    {
+        T(key, std::to_string(arg).c_str());
+    }
+
     static void D(const char *key);
 
     static void Get(char *out);
 };
+
 #endif
 // lint +e1712
 
@@ -132,7 +148,7 @@ struct SDebugCallInfo {
     int t___s = 0;                                 \
     for (int t___ii = 0; t___ii < 64; ++t___ii)    \
         t___s += t___smooth[t___ii];               \
-    CDText::T(ss, CStr(t___s / 64))
+    CDText::T(ss, t___s / 64)
 
 //===========================================================================//
 //                              T Y P E S

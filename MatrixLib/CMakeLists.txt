@@ -2,8 +2,8 @@ add_library(MatrixLib STATIC)
 
 set(3G_SOURCES
     3G/3g.cpp
-    3G/BigIB.cpp
-    3G/BigVB.cpp
+    # 3G/BigIB.cpp
+    # 3G/BigVB.cpp
     3G/Cache.cpp
     3G/CBillboard.cpp
     3G/DeviceState.cpp
@@ -44,10 +44,9 @@ set(BASE_SOURCES
     Base/CRC32.cpp
     Base/CReminder.cpp
     Base/CStorage.cpp
-    Base/CStr.cpp
     Base/CWStr.cpp
     Base/CWStrFormat.cpp
-    Base/Mem.cpp
+    # Base/Mem.cpp
     Base/Pack.cpp
     Base/Registry.cpp
     Base/Tracer.cpp
@@ -66,7 +65,6 @@ set(BASE_HEADERS
     Base/CRC32.hpp
     Base/CReminder.hpp
     Base/CStorage.hpp
-    Base/CStr.hpp
     Base/CWStr.hpp
     Base/Mem.hpp
     Base/Pack.hpp

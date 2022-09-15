@@ -8,7 +8,6 @@
 #include "CMain.hpp"
 #include "CHeap.hpp"
 #include "CException.hpp"
-#include "CStr.hpp"
 #include "CWStr.hpp"
 #include "CBuf.hpp"
 #include "Tracer.hpp"

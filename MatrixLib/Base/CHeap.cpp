@@ -8,6 +8,8 @@
 #include "CHeap.hpp"
 #include "CException.hpp"
 
+#include <utils.hpp>
+
 #ifdef DEAD_PTR_SPY_ENABLE
 #define DEAD_PTR_SPY_SEEK 10
 namespace DeadPtr {
@@ -142,20 +144,13 @@ void SMemHeader::Release(void) {
         bool end = *(d2 + i) != MEM_CHECK_FILLER;
         if (begin || end) {
 #ifdef _DEBUG
-            if (begin) {
-                ERROR_S((L"Memory corruption detected at (begin):\n" + CWStr(CStr(file)) + L" - " + CWStr(line)).Get());
-            }
-            else {
-                ERROR_S((L"Memory corruption detected at (end):\n" + CWStr(CStr(file)) + L" - " + CWStr(line)).Get());
-            }
+            ERROR_S(utils::format(L"Memory corruption detected at (%s)\n%s - %d",
+                begin ? L"begin" : L"end",
+                utils::to_wstring(file).c_str(),
+                line));
 #else
-            char buf[1024];
-            strcpy(buf, "Memory corruption detected at:\n");
-            strcat(buf, file);
-            sprintf(buf + strlen(buf), " - %i", line);
-
-            MessageBox(NULL, buf, "Memory corruption!", MB_OK | MB_ICONERROR);
-
+            auto str = utils::format("Memory corruption detected at:\n%s - %d", file, line);
+            MessageBox(NULL, str.c_str(), "Memory corruption!", MB_OK | MB_ICONERROR);
             debugbreak();
 #endif
         }
@@ -197,9 +192,10 @@ void CHeap::Free(void *buf, const char *file, int line) {
     if (!buf)
     {
         ERROR_S(
-            L"NULL pointer is passed to Free function at: " +
-            CWStr(CStr(file)) +
-            L" - " + line);
+            utils::format(
+                L"NULL pointer is passed to Free function at: %s - %d",
+                utils::to_wstring(file).c_str(),
+                line));
     }
 
 #ifdef DEAD_PTR_SPY_ENABLE

@@ -896,7 +896,7 @@ void CMatrixRobot::Takt(int cms) {
         }
         if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) {
             while (m_ChassisData.u1.s2.m_DustCount > 1.0) {
-                // CDText::T("spd", CStr(m_Speed));
+                // CDText::T("spd", m_Speed);
                 D3DXVECTOR2 spd(m_Velocity.x, m_Velocity.y);
                 spd *= float(float(cms) / LOGIC_TAKT_PERIOD);
                 CMatrixEffect::CreateDust(NULL, *(D3DXVECTOR2 *)&GetGeoCenter(), spd, 500);

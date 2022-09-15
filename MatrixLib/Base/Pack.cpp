@@ -7,12 +7,52 @@
 
 #include "Pack.hpp"
 
+#include <utility>
+#include <tuple> // for std::tie
+#include <cctype> // for std::toupper
+
+#include <utils.hpp>
+
 //#ifdef BLABLA
 
 #undef ZEXPORT
 #define ZEXPORT __cdecl
 
 #include "zlib.h"
+
+namespace {
+
+std::pair<std::string, std::string>
+split_path(const std::string& path, const std::string& delimiters)
+{
+    std::string beg, rem;
+    auto pos = path.find_first_of(delimiters);
+
+    if (pos != std::string::npos)
+    {
+        beg = path.substr(0, pos);
+        rem = path.substr(pos + 1); // +1 to skip delimiter
+    }
+    else // if no delimiters were found
+    {
+        beg = path;
+        rem.clear();
+    }
+
+    return std::make_pair(beg, rem);
+}
+
+std::string to_upper(const std::string& str)
+{
+    std::string res{str};
+    for (auto& sym : res)
+    {
+        sym = std::toupper(sym);
+    }
+    return res;
+}
+
+} // namespace
 
 //#define _MAKESTR1(x) #x
 //#define MAKESTR(n) _MAKESTR1(n)
@@ -100,30 +140,29 @@ namespace Base {
 //***************** КЛАСС - КАТАЛОГ ************************************
 //**********************************************************************
 
-CHsFolder::CHsFolder(const CStr &Name, CHeap *heap) : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
+CHsFolder::CHsFolder(const std::string &Name, CHeap *heap) : m_Heap(heap), m_Name(Name), m_RealName(Name) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = NULL;
-    m_Name.UpperCase();
+    m_Name = to_upper(m_Name);
 }
 
-CHsFolder::CHsFolder(const CStr &Name, CHsFolder *parent, CHeap *heap)
-  : m_Heap(heap), m_Name(Name, heap), m_RealName(Name, heap) {
+CHsFolder::CHsFolder(const std::string &Name, CHsFolder *parent, CHeap *heap)
+  : m_Heap(heap), m_Name(Name), m_RealName(Name) {
     m_Files = NULL;
     m_FolderRec.m_Size = sizeof(SFolderRec);
     m_FolderRec.m_Recnum = 0;
     m_FolderRec.m_RecSize = sizeof(SFileRec);
     m_Parent = parent;
-    m_Name.UpperCase();
+    m_Name = to_upper(m_Name);
 }
 
-SFileRec *CHsFolder::GetFileRec(const CStr &name) const {
+SFileRec *CHsFolder::GetFileRec(const std::string& name) const {
     SFileRec *PFile;
 
-    CStr n(name, m_Heap);
-    n.UpperCase();
+    std::string n = to_upper(name.c_str());
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         PFile = GetFileRec(i);
         if (PFile->m_Free == 0) {
@@ -193,7 +232,7 @@ bool CHsFolder::ReadFolder(DWORD Handle, DWORD Offset) {
     // Теперь читаем информацию о вложенных папках
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0) {
-            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(CStr(m_Files[i].m_RealName, m_Heap), this, m_Heap);
+            CHsFolder *PFolder = HNew(m_Heap) CHsFolder(m_Files[i].m_RealName, this, m_Heap);
             m_Files[i].m_Extra = DWORD(PFolder);
             if (!PFolder->ReadFolder(Handle, m_Files[i].m_Offset)) {
                 Clear();
@@ -222,21 +261,20 @@ void CHsFolder::Clear(void) {
     UpdateFileRec();
 }
 
-bool CHsFolder::FileExists(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+bool CHsFolder::FileExists(const std::string& name) const {
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name, "/\\");
 
-    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == NULL)
         return false;
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return false;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->FileExists(rem);
     }
-    return rem.IsEmpty();
+    return rem.empty();
 }
 
 // Procedure   CHsFolder.SetFileType(name:string; NType:DWORD);
@@ -327,39 +365,37 @@ bool CHsFolder::FileExists(const CStr &name) const {
 //    end;
 // end;
 
-bool CHsFolder::PathExists(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+bool CHsFolder::PathExists(const std::string& name) const {
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name, "/\\");
 
-    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == NULL)
         return false;
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return true;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->PathExists(rem);
     }
-    return rem.IsEmpty();
+    return rem.empty();
 }
 
-SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+SFileRec *CHsFolder::GetFileRecEx(const std::string& name) const {
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(name, "/\\");
 
-    name.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == nullptr)
         return nullptr;
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return PFile;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->GetFileRecEx(rem);
     }
-    return rem.IsEmpty() ? PFile : nullptr;
+    return rem.empty() ? PFile : nullptr;
 }
 
 // Function    CHsFolder.ReAllocFileRecs(number:integer):boolean;
@@ -610,20 +646,19 @@ SFileRec *CHsFolder::GetFileRecEx(const CStr &name) const {
 //    result:=AddFileEx(GetLocalPath(name),date,size,ftype);
 // end;
 
-CStr CHsFolder::GetFullPath(const CStr &name) {
+std::string CHsFolder::GetFullPath(const std::string& name) {
     if (m_Parent) {
-        return m_Parent->GetFullPath(m_RealName + "\\" + name);
+        return m_Parent->GetFullPath(utils::format("%s\\%s", m_RealName.c_str(), name.c_str()));
     }
     else {
         return name;
     }
 }
 
-DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+DWORD CHsFolder::CompressedFileSize(DWORD Handle, const std::string& filename) {
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(filename, "/\\");
 
-    filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == NULL)
         return 0xFFFFFFFF;
@@ -634,12 +669,12 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
     // DWORD totalsize; // Общий размер сжатых данных + длина (4 байта)
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->CompressedFileSize(Handle, rem);
     }
-    if (!rem.IsEmpty())
+    if (!rem.empty())
         return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
@@ -706,11 +741,10 @@ DWORD CHsFolder::CompressedFileSize(DWORD Handle, const CStr &filename) {
     // Result:=totalsize;
 }
 
-DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const std::string& filename) {
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(filename, "/\\");
 
-    filename.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == NULL)
         return 0xFFFFFFFF;
@@ -718,12 +752,12 @@ DWORD CHsFolder::DecompressedFileSize(DWORD Handle, const CStr &filename) {
     // size:DWORD;
 
     if (PFile->m_Type == FILEEC_FOLDER) {
-        if (rem.IsEmpty())
+        if (rem.empty())
             return 0xFFFFFFFF;
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
         return PFolder->DecompressedFileSize(Handle, rem);
     }
-    if (!rem.IsEmpty())
+    if (!rem.empty())
         return 0xFFFFFFFF;
 
     // Нашли файл - теперь необходимо вычислить размер этого файла
@@ -1399,7 +1433,7 @@ void CHsFolder::UpdateFileRec(void) {
 // end;
 
 void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
-    if (!m_RealName.IsEmpty()) {
+    if (!m_RealName.empty()) {
         Func(true, false, m_RealName);
     }
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
@@ -1413,35 +1447,34 @@ void CHsFolder::ListFileNames(FILENAME_CALLBACK_FUNC Func) {
             }
             else {
                 if (PFile->m_NType == FILEEC_COMPRESSED) {
-                    if (!Func(false, true, CStr(PFile->m_RealName, m_Heap)))
+                    if (!Func(false, true, PFile->m_RealName))
                         return;
                 }
                 else {
-                    if (!Func(false, false, CStr(PFile->m_RealName, m_Heap)))
+                    if (!Func(false, false, PFile->m_RealName))
                         return;
                 }
             }
         }
     }
-    if (!m_RealName.IsEmpty()) {
-        Func(true, false, CStr("..", m_Heap));
+    if (!m_RealName.empty()) {
+        Func(true, false, "..");
     }
 }
 
-CHsFolder *CHsFolder::GetFolderEx(const CStr &path) {
-    if (path.IsEmpty())
+CHsFolder *CHsFolder::GetFolderEx(const std::string& path) {
+    if (path.empty())
         return this;
 
-    CStr beg(m_Heap);
-    CStr rem(m_Heap);
+    std::string beg, rem;
+    std::tie(beg, rem) = split_path(path, "/\\");
 
-    path.Split(beg, rem, "/\\");
     SFileRec *PFile = GetFileRec(beg);
     if (PFile == NULL)
         return NULL;
     if (PFile->m_Type == FILEEC_FOLDER) {
         CHsFolder *PFolder = (CHsFolder *)PFile->m_Extra;
-        if (rem.IsEmpty())
+        if (rem.empty())
             return PFolder;
         return PFolder->GetFolderEx(rem);
     }
@@ -1503,7 +1536,7 @@ bool CPackFile::OpenPacketFile(void) {
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
-        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+        m_RootFolder = HNew(m_Heap) CHsFolder({});
         m_RootFolder->AllocEmptyFolder();
         return true;
     }
@@ -1515,7 +1548,7 @@ bool CPackFile::OpenPacketFile(void) {
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1536,7 +1569,7 @@ bool CPackFile::OpenPacketFile(void) {
         return false;
     }
     // Теперь читаем данные о корневой папке
-    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
+    m_RootFolder = HNew(m_Heap) CHsFolder({}, m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
@@ -1575,7 +1608,7 @@ bool CPackFile::ClosePacketFile(void) {
 //    if (FLAG(m_Flags, PFFLAG_EMPTY))
 //    {
 //        m_RootOffset = 0;
-//        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+//        m_RootFolder = HNew(m_Heap) CHsFolder({});
 //        m_RootFolder->AllocEmptyFolder();
 //        return true;
 //    }
@@ -1588,7 +1621,7 @@ bool CPackFile::ClosePacketFile(void) {
 //        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    } else
 //    {
-//        m_Handle = (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
+//        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
 //        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    }
 //
@@ -1602,7 +1635,7 @@ bool CPackFile::ClosePacketFile(void) {
 //    }
 //    // Теперь читаем данные о корневой папке
 //    m_RootOffset = 4;
-//    m_RootFolder = HNew (m_Heap) CHsFolder(CStr(m_Heap));
+//    m_RootFolder = HNew (m_Heap) CHsFolder({});
 //    m_RootFolder->AllocEmptyFolder();
 //    return true;
 //}
@@ -1614,7 +1647,7 @@ bool CPackFile::OpenPacketFileEx() {
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     if (FLAG(m_Flags, PFFLAG_EMPTY)) {
         m_RootOffset = 0;
-        m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap));
+        m_RootFolder = HNew(m_Heap) CHsFolder({});
         m_RootFolder->AllocEmptyFolder();
         return true;
     }
@@ -1628,7 +1661,7 @@ bool CPackFile::OpenPacketFileEx() {
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(CStr(m_FileName, m_Heap).Get(), GENERIC_READ | GENERIC_WRITE,
+                (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1649,7 +1682,7 @@ bool CPackFile::OpenPacketFileEx() {
         return false;
     }
     // Теперь читаем данные о корневой папке
-    m_RootFolder = HNew(m_Heap) CHsFolder(CStr(m_Heap), m_Heap);
+    m_RootFolder = HNew(m_Heap) CHsFolder({}, m_Heap);
     if (!m_RootFolder->ReadFolder(m_Handle, m_RootOffset)) {
         HDelete(CHsFolder, m_RootFolder, m_Heap);
         m_RootFolder = NULL;
@@ -1671,14 +1704,14 @@ int CPackFile::GetFreeHandle(void) {
     return -1;
 }
 
-DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
+DWORD CPackFile::Open(const std::string& filename, DWORD modeopen) {
     SFileRec *PFile;
 
     int H = GetFreeHandle();
     if (H < 0)
         return 0xFFFFFFFF;
     if (m_RootFolder == NULL) {
-        ERROR_S((L"Package not opened: " + CWStr(filename)).Get());
+        ERROR_S(utils::format(L"Package not opened: %s", utils::to_wstring(filename).c_str()));
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
@@ -1686,12 +1719,12 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
 #ifdef HANDLE_OUT_OF_PACK_FILES
         // *** Если файл не найден, то пытаемся найти его на диске *** //
         WIN32_FIND_DATAA fd;
-        HANDLE h = FindFirstFileA(filename.Get(), &fd);
+        HANDLE h = FindFirstFileA(filename.c_str(), &fd);
         if (h = INVALID_HANDLE_VALUE)
             return 0xFFFFFFFF;
         FindClose(h);
 
-        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.Get(), modeopen, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        m_Handles[H].m_Handle = (DWORD)CreateFileA(filename.c_str(), modeopen, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
         if ((HANDLE)m_Handles[H].m_Handle == INVALID_HANDLE_VALUE)
@@ -1704,12 +1737,12 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
         m_Handles[H].m_Compressed = false;
         m_Handles[H].m_Blocknumber = -1;
         if (m_Handles[H].m_Size == INVALID_FILE_SIZE) {
-            ERROR_S((L"File system error:" + CWStr(filename)).Get());
+            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
         }
 
         DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
         if (Error == 0xFFFFFFFF) {
-            ERROR_S((L"File system error:" + CWStr(filename)).Get());
+            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
         }
 
         m_Handles[H].m_Free = false;
@@ -1740,7 +1773,7 @@ DWORD CPackFile::Open(const CStr &filename, DWORD modeopen) {
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
     if (Error == 0xFFFFFFFF) {
-        ERROR_S((L"Packet file system error:" + CWStr(filename)).Get());
+        ERROR_S(utils::format(L"Packet file system error: %s", utils::to_wstring(filename).c_str()));
     }
     return H;
 }
@@ -1972,24 +2005,24 @@ DWORD CPackFile::GetHandle(DWORD Handle) {
 }
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
-bool CPackFile::PathExists(const CStr &path) {
+bool CPackFile::PathExists(const std::string& path) {
     if (m_RootFolder->PathExists(path))
         return true;
 
     WIN32_FIND_DATAA fd;
-    HANDLE h = FindFirstFileA(path.Get(), &fd);
+    HANDLE h = FindFirstFileA(path.c_str(), &fd);
     if (h = INVALID_HANDLE_VALUE)
         return false;
     FindClose(h);
     return (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-bool CPackFile::FileExists(const CStr &path) {
+bool CPackFile::FileExists(const std::string& path) {
     if (m_RootFolder->FileExists(path))
         return true;
 
     WIN32_FIND_DATAA fd;
-    HANDLE h = FindFirstFileA(path.Get(), &fd);
+    HANDLE h = FindFirstFileA(path.c_str(), &fd);
     if (h = INVALID_HANDLE_VALUE)
         return false;
     FindClose(h);
@@ -2275,14 +2308,14 @@ bool CPackFile::FileExists(const CStr &path) {
 //    Result:=true;
 // end;
 
-int CPackFile::FindFirst(const CStr &path, DWORD Attr, SSearchRec &S) {
+int CPackFile::FindFirst(const std::string& path, DWORD Attr, SSearchRec &S) {
     S.Path = path;
     S.Ind = 0;
     S.Name = "";
     S.Folder = NULL;
     if (m_RootFolder == NULL)
         return 0;
-    if (path.IsEmpty())
+    if (path.empty())
         S.Folder = m_RootFolder;
     else
         S.Folder = m_RootFolder->GetFolderEx(S.Path);
@@ -2379,7 +2412,7 @@ bool CPackCollection::ClosePacketFilesEx(void) {
 
 //******** Процедуры для работы файлами ***********//
 
-bool CPackCollection::FileExists(const CStr &name) {
+bool CPackCollection::FileExists(const std::string& name) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
     for (; ff < fe; ++ff) {
@@ -2389,7 +2422,7 @@ bool CPackCollection::FileExists(const CStr &name) {
     return false;
 }
 
-bool CPackCollection::PathExists(const CStr &path) {
+bool CPackCollection::PathExists(const std::string& path) {
     PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
     PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
     for (; ff < fe; ++ff) {
@@ -2400,7 +2433,7 @@ bool CPackCollection::PathExists(const CStr &path) {
 }
 
 //******* работа с виртуальными номерами объектов CPackFile
-DWORD CPackCollection::Open(const CStr &name, DWORD modeopen) {
+DWORD CPackCollection::Open(const std::string& name, DWORD modeopen) {
     DWORD Handle;
     DWORD Counter = 0;
 
@@ -2486,7 +2519,7 @@ DWORD CPackCollection::GetHandle(DWORD Handle) {
     return P->GetHandle(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-// bool  CPackCollection::UnpackFile(const CStr&souname,const CStr&desname)
+// bool  CPackCollection::UnpackFile(const std::string& souname,const std::string& desname)
 //{
 //    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
 //    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();

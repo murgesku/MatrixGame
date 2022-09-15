@@ -9,7 +9,6 @@
 #include <cwchar>
 
 #include "CWStr.hpp"
-#include "CStr.hpp"
 #include "CException.hpp"
 #include "Mem.hpp"
 

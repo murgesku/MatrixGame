@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <utils.hpp>
+
 class CMatrixMapGroup;
 typedef CMatrixMapGroup *PCMatrixMapGroup;
 
@@ -173,7 +175,8 @@ struct SObjectCore {
 #ifdef _DEBUG
             if (m_Ref < 0)
                 debugbreak();
-            DeleteFile("Errors\\" + CStr(int(this)) + ".log");
+
+            DeleteFile(utils::format("Errors\\%x.log", this).c_str());
 #endif
             HFree(this, g_MatrixHeap);
         }

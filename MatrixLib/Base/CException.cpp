@@ -7,10 +7,11 @@
 
 #include "CException.hpp"
 #include "CWStr.hpp"
-#include "CStr.hpp"
 #include <stdio.h>
 
 #include "Tracer.hpp"
+
+#include <utils.hpp>
 
 namespace Base {
 
@@ -19,7 +20,7 @@ void CException::CreateCallTrace(void) {
 }
 
 CWStr CException::Info() {
-    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", CWStr(CStr(call_trace)).Get(), CWStr(CStr(m_File)).Get(), m_Line);
+    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", utils::to_wstring(call_trace).c_str(), utils::to_wstring(m_File).c_str(), m_Line);
 }
 
 CExceptionStr::CExceptionStr(const char *file, int line, const wchar *str, const wchar *str2, const wchar *str3,

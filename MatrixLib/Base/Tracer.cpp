@@ -11,15 +11,15 @@
 #include <exception>
 
 #ifdef DMM
-#include "CStr.hpp"
+
 void writedump(const char *txt) {
-    static CStr buf;
+    static std::string buf;
     buf += txt;
     buf += "\n";
-    if (buf.Len() > 1000000) {
+    if (buf.length() > 1000000) {
         FILE *f = fopen("bug", "a+");
         fwrite(txt, strlen(txt), 1, f);
-        fwrite(buf.Get(), buf.Len(), 1, f);
+        fwrite(buf.c_str(), buf.length(), 1, f);
         fclose(f);
         buf.SetZeroLenNoTream();
     }
@@ -112,9 +112,7 @@ void CDText::Get(char *out) {
 }
 
 void DbgShowDword(const char *n, DWORD sz) {
-    char buf[32];
-    sprintf(buf, "%i", sz);
-    CDText::T(n, buf);
+    CDText::T(n, sz);
 }
 
 #endif
@@ -302,7 +300,7 @@ void CDebugTracer::StaticInit(void) throw() {
     m_hist_end = 0;
 #endif
 
-    std::set_terminate((terminate_handler)&cpp_except_terminate);
+    std::set_terminate((std::terminate_handler)&cpp_except_terminate);
 
     SetUnhandledExceptionFilter(sys_except_handler);
 }

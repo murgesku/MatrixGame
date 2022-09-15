@@ -11,6 +11,8 @@
 #include "MatrixGameDll.hpp"
 #include "MatrixMap.hpp"
 
+#include <utils.hpp>
+
 CSound::SSoundItem CSound::m_Sounds[S_COUNT];
 CSound::SLID CSound::m_LayersI[SL_COUNT];
 int CSound::m_LastGroup;
@@ -335,7 +337,7 @@ void CSound::Takt(void) {
                     ++sc;
                 }
             }
-            // CDText::T("SND: ", CStr(sc));
+            // CDText::T("SND: ", sc);
             g_MatrixMap->m_DI.T(L"Active sounds: ", CWStr(sc));
         }
     }
@@ -1075,27 +1077,16 @@ void CSound::SaveSoundLog(void) {
     b.StrNZ("Sounds:\n");
 
     for (int i = 0; i < MAX_SOUNDS; ++i) {
-        CStr ss(g_CacheHeap);
-
-        ss = i;
-        ss += " - id:";
-        ss += int(m_AllSounds[i].id);
-
-        ss += ", idi:";
-        ss += int(m_AllSounds[i].id_internal);
-
-        ss += ", vol:";
-        ss += m_AllSounds[i].curvol;
-
-        ss += ", pan:";
-        ss += m_AllSounds[i].curpan;
-
-        ss += ", rvol:";
-        ss += g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal);
-
-        ss += ", is_play:";
-        ss += g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal);
-        ss += "\n";
+        auto ss =
+            utils::format(
+                "%d - id:%d, idi:%d, vol:%.8f, pan:%.8f, rvol:%.8f, is_play:%d\n",
+                i,
+                int(m_AllSounds[i].id),
+                int(m_AllSounds[i].id_internal),
+                m_AllSounds[i].curvol,
+                m_AllSounds[i].curpan,
+                g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal),
+                g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
 
         b.StrNZ(ss);
     }

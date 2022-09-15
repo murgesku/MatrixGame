@@ -3,11 +3,15 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <string>
+
 #include "Base.pch"
 
 #include "CBlockPar.hpp"
 #include "CFile.hpp"
 #include "CException.hpp"
+
+#include <utils.hpp>
 
 namespace Base {
 
@@ -1232,7 +1236,7 @@ int CBlockPar::LoadFromText(const wchar *text, int textlen) {
 
 void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     DTRACE();
-    CFile fi(CWStr(filename, filenamelen, m_Heap), m_Heap);
+    CFile fi(CWStr(filename, filenamelen), m_Heap);
     fi.OpenRead();
 
     word zn;
@@ -1247,17 +1251,16 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     fs -= fi.Pointer();
     if (fs > 0) {
         if (fansi) {
-            CStr astr(m_Heap);
-            CWStr wstr(m_Heap);
+            std::string astr(fs, ' '); // TODO: maybe not spaces?
+            CWStr wstr;
 
-            astr.SetLen(fs);
-            fi.Read(astr.GetBuf(), fs);
-            wstr.Set(astr);
+            fi.Read(&astr[0], fs);
+            wstr.Set(utils::to_wstring(astr.c_str()));
 
             LoadFromText(wstr.Get(), wstr.GetLen());
         }
         else {
-            CWStr wstr(m_Heap);
+            CWStr wstr;
 
             wstr.SetLen(fs >> 1);
             fi.Read(wstr.GetBuf(), (fs >> 1) << 1);
@@ -1279,12 +1282,12 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         else                           \
             buf.WordLoop(0x09, level); \
     }
-#define SaveStr(str)                      \
-    {                                     \
-        if (ansi)                         \
-            buf.StrNZ(CStr(str, m_Heap)); \
-        else                              \
-            buf.WStrNZ(str);              \
+#define SaveStr(str)              \
+    {                             \
+        if (ansi)                 \
+            buf.StrNZ(utils::from_wstring(str).c_str()); \
+        else                      \
+            buf.WStrNZ(str);      \
     }
 #define SaveSpace           \
     {                       \
@@ -1316,23 +1319,23 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 
         if (unit->m_Type == 1) {
             if (!unit->m_Name.IsEmpty()) {
-                SaveStr(unit->m_Name);
+                SaveStr(unit->m_Name.Get());
                 SaveStrConst("=");
             }
-            SaveStr(*unit->m_Par);
+            SaveStr(unit->m_Par->Get());
             if (!unit->m_Com.IsEmpty())
-                SaveStr(unit->m_Com);
+                SaveStr(unit->m_Com.Get());
         }
         else if (unit->m_Type == 2) {
             addspace = false;
             if (!unit->m_Name.IsEmpty()) {
-                SaveStr(unit->m_Name);
+                SaveStr(unit->m_Name.Get());
                 addspace = true;
             }
 
             if (unit->m_Block->m_FromFile) {
                 SaveStrConst("=");
-                SaveStr(*unit->m_Block->m_FromFile);
+                SaveStr(unit->m_Block->m_FromFile->Get());
                 SaveStrConst(" {}");
 
                 unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile->Get(), ansi);
@@ -1352,11 +1355,11 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
                 if (unit->m_Block->AllCount() == 0) {
                     SaveStrConst("}");
                     if (!unit->m_Com.IsEmpty())
-                        SaveStr(unit->m_Com);
+                        SaveStr(unit->m_Com.Get());
                 }
                 else {
                     if (!unit->m_Com.IsEmpty())
-                        SaveStr(unit->m_Com);
+                        SaveStr(unit->m_Com.Get());
                     SaveNewLine;
 
                     unit->m_Block->SaveInText(buf, ansi, level + 1);
@@ -1368,7 +1371,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         }
         else {
             if (!unit->m_Com.IsEmpty())
-                SaveStr(unit->m_Com);
+                SaveStr(unit->m_Com.Get());
         }
 
         SaveNewLine;

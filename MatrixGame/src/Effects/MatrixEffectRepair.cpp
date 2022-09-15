@@ -141,7 +141,7 @@ void CMatrixEffectRepair::Takt(float t) {
         }
     }
 
-    // CDText::T("ct", CStr(m_ChangeTime));
+    // CDText::T("ct", m_ChangeTime);
 
     if (!FLAG(m_Flags, ERF_MAX_AMP)) {
         m_OffTargetAmp += 0.001f * t;

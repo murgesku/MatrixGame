@@ -6,9 +6,10 @@
 #ifndef PACK_INCLUDE
 #define PACK_INCLUDE
 
+#include <string>
+
 #include "Base.pch"
 
-#include "CStr.hpp"
 #include "CWStr.hpp"
 #include "CException.hpp"
 #include "CMain.hpp"
@@ -71,24 +72,24 @@ struct SFileHandleRec {
     WORD dummy00;       // align
 };
 
-typedef bool (*FILENAME_CALLBACK_FUNC)(bool Dir, bool Compr, const CStr &name);
+typedef bool (*FILENAME_CALLBACK_FUNC)(bool Dir, bool Compr, const std::string& name);
 class CHsFolder;
 
 struct SSearchRec {
-    CStr Name;
-    CStr Path;
+    std::string Name;
+    std::string Path;
     int Ind;
     DWORD T;
     CHsFolder *Folder;
 
-    SSearchRec(CHeap *heap) : Name(heap), Path(heap) {}
+    SSearchRec(CHeap *heap) {}
 };
 
 class CHsFolder : public CMain {
     CHeap *m_Heap;
 
-    CStr m_Name;      // Имя папки без учета регистров
-    CStr m_RealName;  // Имя папки с учетом регистров
+    std::string m_Name;      // Имя папки без учета регистров
+    std::string m_RealName;  // Имя папки с учетом регистров
     SFolderRec m_FolderRec;
     CHsFolder *m_Parent;
     SFileRec *m_Files;  // Память, связанная с файлами
@@ -104,21 +105,21 @@ class CHsFolder : public CMain {
     }
 
     SFileRec *GetFreeRec(void) const;
-    bool AddFileEx(const CStr &name, DWORD date, DWORD size, EFileType ftype);  // Добавляет файл в пакетный файл
+    bool AddFileEx(const std::string& name, DWORD date, DWORD size, EFileType ftype);  // Добавляет файл в пакетный файл
 public:
-    CHsFolder(const CStr &name, CHeap *heap);  // Создает пустую папку, не пригодную к работе
-    CHsFolder(const CStr &name, CHsFolder *Parent, CHeap *heap);  // Создает пустую папку, не пригодную к работе
+    CHsFolder(const std::string& name, CHeap *heap);  // Создает пустую папку, не пригодную к работе
+    CHsFolder(const std::string& name, CHsFolder *Parent, CHeap *heap);  // Создает пустую папку, не пригодную к работе
     ~CHsFolder() { Clear(); };  // Уничтожает все данные, связанные с объектом
 
     bool ReadFolder(DWORD Handle, DWORD Offset);  // Читает данные из пакетного файла
     // void    AllocEmptyFolder(void);
 
     void Clear(void);                         // Очищает память и информацию о файлах
-    bool FileExists(const CStr &name) const;  // Существует ли указанный файл
-    bool PathExists(const CStr &name) const;  // Существует ли указанный путь
-    SFileRec *GetFileRec(const CStr &name) const;    // Возвращает запись по имени файла
-    SFileRec *GetFileRecEx(const CStr &name) const;  // Возвращает запись по пути файла
-    CHsFolder *GetFolderEx(const CStr &path);
+    bool FileExists(const std::string& name) const;  // Существует ли указанный файл
+    bool PathExists(const std::string& name) const;  // Существует ли указанный путь
+    SFileRec *GetFileRec(const std::string& name) const;    // Возвращает запись по имени файла
+    SFileRec *GetFileRecEx(const std::string& name) const;  // Возвращает запись по пути файла
+    CHsFolder *GetFolderEx(const std::string& path);
     int FileRecsNumber(void) const  // Возвращает количество записей в директории
     {
         return m_FolderRec.m_Recnum;
@@ -132,43 +133,43 @@ public:
 
     //*** Функции, используемые при упаковке в пакетный файл
 
-    // bool    CreateFolder(const CStr &name);
-    // bool    AddPath(const CStr &name);
-    // bool    AddPath(const CStr &name,EFileType ftype);
-    // bool    AddFile(const CStr &name);
-    // bool    AddFile(const CStr &name,EFileType ftype);
-    // bool    DeleteFile(const CStr &name);
-    CStr GetFullPath(const CStr &name);
+    // bool    CreateFolder(const std::string& name);
+    // bool    AddPath(const std::string& name);
+    // bool    AddPath(const std::string& name,EFileType ftype);
+    // bool    AddFile(const std::string& name);
+    // bool    AddFile(const std::string& name,EFileType ftype);
+    // bool    DeleteFile(const std::string& name);
+    std::string GetFullPath(const std::string& name);
 
-    DWORD CompressedFileSize(DWORD Handle, const CStr &filename);
-    DWORD DecompressedFileSize(DWORD Handle, const CStr &filename);
+    DWORD CompressedFileSize(DWORD Handle, const std::string& filename);
+    DWORD DecompressedFileSize(DWORD Handle, const std::string& filename);
     int GetSize(void) { return GetLocalSize(); }
 
     int GetLocalSize(void);
     int GetFolderSize(void) { return sizeof(SFolderRec) + m_FolderRec.m_Recnum * m_FolderRec.m_RecSize; }
 
-    // DWORD   Pack(DWORD Handle,DWORD Offset,int *PInt,const CStr &PStr);
-    // DWORD   PackFile(DWORD Handle,const CStr &name,DWORD Offset);
-    // DWORD   PackAndCompressFile(DWORD Handle,const CStr &name,DWORD Offset);
+    // DWORD   Pack(DWORD Handle,DWORD Offset,int *PInt,const std::string& PStr);
+    // DWORD   PackFile(DWORD Handle,const std::string& name,DWORD Offset);
+    // DWORD   PackAndCompressFile(DWORD Handle,const std::string& name,DWORD Offset);
 
     // DWORD   DecodeFile(DWORD Handle,SFileRec *PFile,DWORD Offset);
     // DWORD   EncodeFile(DWORD Handle,SFileRec *PFile,DWORD Offset);
 
-    // DWORD   CompressFile(DWORD SouHandle,DWORD Handle,const CStr &name,DWORD Offset);
-    // DWORD   Compress(DWORD SouHandle,DWORD Handle,DWORD Offset,int *PInt,const CStr &PStr);
+    // DWORD   CompressFile(DWORD SouHandle,DWORD Handle,const std::string& name,DWORD Offset);
+    // DWORD   Compress(DWORD SouHandle,DWORD Handle,DWORD Offset,int *PInt,const std::string& PStr);
     // void    CompressFolder(void);
 
     //    //*** Функции, используемые при распаковке пакетного файла
-    // bool    UnpackFile(DWORD SouHandle,const CStr &name);
-    // bool    UnpackCompressedFile(DWORD SouHandle,const CStr &name);
-    // bool    UnpackFolder(const CStr &name);
-    // bool    Unpack(DWORD SouHandle,int *PInt,const CStr &PStr);
+    // bool    UnpackFile(DWORD SouHandle,const std::string& name);
+    // bool    UnpackCompressedFile(DWORD SouHandle,const std::string& name);
+    // bool    UnpackFolder(const std::string& name);
+    // bool    Unpack(DWORD SouHandle,int *PInt,const std::string& PStr);
 
     void ListFileNames(FILENAME_CALLBACK_FUNC Func);
 
     //*** Функции, используемые при установке типа файла *****
-    // void    SetFileType(const CStr &name, EFileType NType);
-    // void    SetFolderType(const CStr &name, EFileType NType);
+    // void    SetFileType(const std::string& name, EFileType NType);
+    // void    SetFolderType(const std::string& name, EFileType NType);
 
     int FindNext(SSearchRec &S);
 };
@@ -219,7 +220,7 @@ public:
     DWORD GetHandle(void) const { return m_Handle; }
     void Clear(void);
     //***** Процедуры работы с файлами -- позиционирование указателя в файл ложится на объект PackFile
-    DWORD Open(const CStr &filename, DWORD modeopen = GENERIC_READ | GENERIC_WRITE);
+    DWORD Open(const std::string& filename, DWORD modeopen = GENERIC_READ | GENERIC_WRITE);
     bool Close(DWORD Handle);
     bool Read(DWORD Handle, void *buf, int Size);
 #ifdef HANDLE_OUT_OF_PACK_FILES
@@ -233,13 +234,13 @@ public:
     //***** Общесистемные процедуры работы с файлами ****
 
 #ifdef HANDLE_OUT_OF_PACK_FILES
-    bool PathExists(const CStr &path);
-    bool FileExists(const CStr &path);
+    bool PathExists(const std::string& path);
+    bool FileExists(const std::string& path);
 #else
-    bool PathExists(const CStr &path) { return m_RootFolder->PathExists(path); }
-    bool FileExists(const CStr &path) { return m_RootFolder->FileExists(path); }
+    bool PathExists(const std::string& path) { return m_RootFolder->PathExists(path); }
+    bool FileExists(const std::string& path) { return m_RootFolder->FileExists(path); }
 #endif
-    DWORD CompressedFileSize(const CStr &filename) {
+    DWORD CompressedFileSize(const std::string& filename) {
         if (m_Handle == 0xFFFFFFFF)
             return 0xFFFFFFFF;
         if (m_RootFolder)
@@ -247,7 +248,7 @@ public:
         return 0xFFFFFFFF;
     }
 
-    DWORD DecompressedFileSize(const CStr &filename) {
+    DWORD DecompressedFileSize(const std::string& filename) {
         if (m_Handle == 0xFFFFFFFF)
             return 0xFFFFFFFF;
         if (m_RootFolder)
@@ -256,25 +257,25 @@ public:
     }
 
     //***** Процедуры работы с пакетным файлом **********
-    // bool    AddFile(const CStr &name);
-    // bool    AddFile(const CStr &name,EFileType ftype);
-    // bool    AddFiles(CBlockPar &block, CStr &log);
+    // bool    AddFile(const std::string& name);
+    // bool    AddFile(const std::string& name,EFileType ftype);
+    // bool    AddFiles(CBlockPar &block, std::string& log);
     // bool    AddFiles(CBlockPar &block);
-    // bool    AddPath(const CStr &name);
-    // bool    AddPath(const CStr &name,EFileType ftype);
-    // bool    DeleteFile(const CStr &name);
-    // bool    CreateFolder(const CStr &name);
+    // bool    AddPath(const std::string& name);
+    // bool    AddPath(const std::string& name,EFileType ftype);
+    // bool    DeleteFile(const std::string& name);
+    // bool    CreateFolder(const std::string& name);
 
-    // bool    Compress(int *PInt,CStr &PStr);
-    // bool    Compress(const CStr &name,int *PInt,CStr &PStr);
-    // bool    Pack(int *PInt,CStr &PStr);
-    // bool    Unpack(int *PInt,CStr &PStr);
+    // bool    Compress(int *PInt,std::string& PStr);
+    // bool    Compress(const std::string& name,int *PInt,std::string& PStr);
+    // bool    Pack(int *PInt,std::string& PStr);
+    // bool    Unpack(int *PInt,std::string& PStr);
     // bool    Compress(void);
-    // bool    Compress(const CStr &name);
+    // bool    Compress(const std::string& name);
     // bool    Pack(void);
     // bool    Unpack(void);
-    // bool    UnpackFile(const CStr &souname);
-    // bool    UnpackFile(const CStr &souname,const CStr &desname);
+    // bool    UnpackFile(const std::string& souname);
+    // bool    UnpackFile(const std::string& souname,const std::string& desname);
 
     void ListFileNames(FILENAME_CALLBACK_FUNC Func) {
         if (m_Handle == 0xFFFFFFFF)
@@ -285,20 +286,20 @@ public:
     }
 
     //*** Функции, используемые при установке типа файла *****
-    // void    SetFileType(const CStr &name, EFileType NType)
+    // void    SetFileType(const std::string& name, EFileType NType)
     //{
     //    if (m_RootFolder == NULL) return;
     //    if (m_Handle == 0xFFFFFFFF) return;
     //    m_RootFolder->SetFileType(name, NType);
     //}
-    // void    SetFolderType(const CStr &name, EFileType NType)
+    // void    SetFolderType(const std::string& name, EFileType NType)
     //{
     //    if (m_RootFolder == NULL) return;
     //    if (m_Handle == 0xFFFFFFFF) return;
     //    m_RootFolder->SetFolderType(name, NType);
     //}
 
-    int FindFirst(const CStr &path, DWORD Attr, SSearchRec &S);
+    int FindFirst(const std::string& path, DWORD Attr, SSearchRec &S);
     int FindNext(SSearchRec &S) {
         if (m_RootFolder == NULL)
             return 1;
@@ -335,10 +336,10 @@ public:
     bool ClosePacketFilesEx(void);
     CPackFile *GetPacketFile(int i) { return m_PackFiles.Buff<PCPackFile>()[i]; };
     //******** Процедуры для работы файлами ***********//
-    bool FileExists(const CStr &name);
-    bool PathExists(const CStr &path);
+    bool FileExists(const std::string& name);
+    bool PathExists(const std::string& path);
     //******* работа с виртуальными номерами объектов CPackFile
-    DWORD Open(const CStr &name, DWORD modeopen = GENERIC_READ);
+    DWORD Open(const std::string& name, DWORD modeopen = GENERIC_READ);
     bool Close(DWORD Handle);
     bool Read(DWORD Handle, void *Buf, int Size);
     // bool        Write(DWORD Handle, const void *Buf, int Size);
@@ -347,8 +348,8 @@ public:
     DWORD GetSize(DWORD Handle);
     DWORD GetHandle(DWORD Handle);
     //******* работа с извлекаемыми файлами *********************
-    // bool        UnpackFile(const CStr&souname) {UnpackFile(souname,souname);};
-    // bool        UnpackFile(const CStr&souname,const CStr&desname);
+    // bool        UnpackFile(const std::string& souname) {UnpackFile(souname,souname);};
+    // bool        UnpackFile(const std::string& souname,const std::string& desname);
 };
 
 }  // namespace Base

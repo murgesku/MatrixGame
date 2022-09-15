@@ -8,6 +8,8 @@
 #include "Cache.hpp"
 #include "VectorObject.hpp"
 
+#include <utils.hpp>
+
 bool CCacheData::m_dip;
 
 // bool CacheFileGetA(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
@@ -22,17 +24,17 @@ bool CCacheData::m_dip;
 //	CWStr filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAA fd;
-//	HANDLE fh=FindFirstFileA(CStr(filename).Get(),&fd);
+//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.Get()).c_str(),&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileA(CStr(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).Get(),&fd);
+//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).Get()).c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
 //		CWStr curname(outname.GetHeap());
 //		for(;;)
 //        {
-//			curname.Set(CStr(fd.cFileName));
+//			curname.Set(fd.cFileName);
 //			int sme=curname.FindR(L'.')+1;
 //			if(sme>0 && sme<curname.GetLen()) {
 //				curname.LowerCase(sme);
@@ -66,8 +68,8 @@ bool CCacheData::m_dip;
 //	if(lenpath>0)
 //    {
 //        outname.Set(str,lenpath);
-//        outname.Add( CWStr( CStr(fd.cFileName,outname.GetHeap())));
-//    } else outname.Set(CStr(fd.cFileName,outname.GetHeap()));
+//        outname.Add(CWStr(fd.cFileName));
+//    } else outname.Set(fd.cFileName);
 //
 //	if(withpar && lenfile<len) outname.Add(str+lenfile,len-lenfile);
 //
@@ -261,14 +263,14 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         }
 
         WIN32_FIND_DATA fd;
-        HANDLE fh=FindFirstFile(CStr(CWStr(str,lenfile,g_CacheHeap)+L".*").Get(),&fd);
+        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").Get()).c_str(),&fd);
         if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.Get());
         FindClose(fh);
 
         int lenpath=lenfile; while(lenpath>0 && str[lenpath-1]!='\\' && str[lenpath-1]!='/') lenpath--;
 
-        if(lenpath>0) fi.Init(CWStr(str,lenpath,g_CacheHeap)+CWStr(CStr(fd.cFileName,g_CacheHeap),g_CacheHeap));
-        else fi.Init(CWStr(CStr(fd.cFileName,g_CacheHeap),g_CacheHeap));
+        if(lenpath>0) fi.Init(CWStr(str,lenpath)+CWStr(fd.cFileName),g_CacheHeap));
+        else fi.Init(CWStr(fd.cFileName),g_CacheHeap));
 
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());
@@ -440,7 +442,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        CStr name((cd->m_Name == NULL) ? L"NULL" : cd->m_Name, g_CacheHeap);
+        std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
 
         char *loaded;
         if (cd->IsLoaded())
@@ -450,7 +452,7 @@ void CCache::Dump(void) {
 
         int l = strlen(buf);
         if (l < 65000) {
-            sprintf(buf + l, "%s%s : %s (%s : %i)\n", loaded, type, name.Get(), cd->d_file, cd->d_line);
+            sprintf(buf + l, "%s%s : %s (%s : %i)\n", loaded, type, name.c_str(), cd->d_file, cd->d_line);
         }
         cd = cd->d_Next;
     }

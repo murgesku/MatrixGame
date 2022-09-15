@@ -802,7 +802,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     //    m_Environment.LogicTakt();
 
     // if(this == (CMatrixRobotAI*)g_MatrixMap->GetPlayerSide()->GetArcadedObject())
-    //    CDText::T("Velocity", CStr(m_Speed));
+    //    CDText::T("Velocity", m_Speed);
     DCP();
 
     if (m_Side == PLAYER_SIDE && this == g_MatrixMap->GetPlayerSide()->GetArcadedObject() &&
@@ -1440,8 +1440,8 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 // float cos = vPosNorm.x*vDir.x + vPosNorm.y*vDir.y + /*vPosNorm.z*/vDir.z*vDir.z;
 
                 float angle = (float)acos(D3DXVec2Dot(&dir1, &dir2));
-                //            CDText::T("angle",CStr(angle));
-                //            CDText::T("cos",CStr(cos));
+                //            CDText::T("angle", angle);
+                //            CDText::T("cos", cos);
                 if (angle > BARREL_TO_SHOT_ANGLE && m_Weapons[nC].GetWeaponType() != WEAPON_REPAIR) {
                     m_Weapons[nC].FireEnd();
                     continue;
@@ -5476,7 +5476,7 @@ bool CMatrixRobotAI::CheckFireDist(const D3DXVECTOR3 &point) {
 
 // void SOrder::LogicTakt()
 //{
-////    CDText::T("orders", CStr(m_OrdersInPool));
+////    CDText::T("orders", m_OrdersInPool);
 //    switch(m_OrderType){
 //        case ROT_MOVE_TO:
 //            if(m_OrderPhase != ROBOT_MOVING)
