@@ -88,11 +88,11 @@ class ParMatrixDlgProc : public ParamMap2UserDlgProc {
                     for(int i=0;i<cnt;i++) {
                         Base::CWStr tstr;
                         if(ExportGroupGetName(tstr,i,no)) {
-                            SendMessage(win,CB_ADDSTRING,0,(LPARAM) (LPCTSTR)tstr.data());
+                            SendMessage(win,CB_ADDSTRING,0,(LPARAM) (LPCTSTR) (Base::CStr(tstr).Get()));
                         }
                     }
         			SendMessage(win,CB_SETCURSEL,(WPARAM)-1,0);
-                    if(!ob->m_Group.IsEmpty()) SetWindowText(win,ob->m_Group.toCStr().Get());
+                    if(!ob->m_Group.IsEmpty()) SetWindowText(win,Base::CStr(ob->m_Group).Get());
 
                     return TRUE;
                 }
@@ -250,7 +250,7 @@ extern bool ExportMatrixGetProp(INode *node, const Base::CWStr & group,
             ((ParMatrixMod *)mod)->m_PBlock->GetValue(egpb_Id,0,id,FOREVER);
 
             ((ParMatrixMod *)mod)->m_PBlock->GetValue(egpb_Name,0,ach,FOREVER);
-            name=Base::CWStr(ach);
+            name=Base::CWStr(Base::CStr(ach));
 
             return true;
         }

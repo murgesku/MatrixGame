@@ -181,7 +181,7 @@ void ParGroupMod::BeginEditParams(IObjParam  *ip, ULONG flags,Animatable *prev)
 {
     static TCHAR sr[MAX_PATH];
     if(m_ExportFile.IsEmpty()) sr[0]=0;
-    else  { TSTR tstr=m_ExportFile.toCStr().GetEx(); CopyMemory(sr,tstr.data(),tstr.length()+1); }
+    else  { TSTR tstr=Base::CStr(m_ExportFile).GetEx(); CopyMemory(sr,tstr.data(),tstr.length()+1); }
     descP.ParamOption(egpb_File, p_init_file, sr);
 
 	g_ParGroupModClassDesc.BeginEditParams(ip, this, flags, prev);
@@ -261,7 +261,7 @@ IOResult ParGroupMod::Save(ISave *isave)
 
 void ParGroupMod::SetExportFile(TCHAR *file)
 {
-    m_ExportFile=Base::CWStr(file);
+    m_ExportFile=Base::CWStr(Base::CStr(file));
 
     descP.ParamOption(egpb_File, p_init_file, file);
 
@@ -376,7 +376,7 @@ extern bool ExportGroupGetName(Base::CWStr & tstr,int no,int & nocur,INode *node
             if(no==nocur) {
                 const TCHAR * ach;
                 ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Name,0,ach,FOREVER);
-                tstr=Base::CWStr(ach);
+                tstr=Base::CWStr(Base::CStr(ach));
                 return true;
             } else nocur++;
         }
@@ -408,7 +408,7 @@ extern bool ExportGroupGetProp(int no,int & nocur,INode *node,
                 const TCHAR * ach;
 
                 ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Name,0,ach,FOREVER);
-                name=Base::CWStr(ach);
+                name=Base::CWStr(Base::CStr(ach));
 
                 ((ParGroupMod *)mod)->m_PBlock->GetValue(egpb_Export,0,exp,FOREVER);
 
