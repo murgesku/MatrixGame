@@ -15,9 +15,9 @@
 #include "MatrixFlyer.hpp"
 #include "MatrixObjectCannon.hpp"
 
-bool FreeObjResources(DWORD user) {
+bool FreeObjResources(uintptr_t user) {
     DTRACE();
-    CMatrixMapStatic *obj = (CMatrixMapStatic *)user;
+    auto obj = reinterpret_cast<CMatrixMapStatic*>(user);
     obj->FreeDynamicResources();
     return false;  // not dead
 }

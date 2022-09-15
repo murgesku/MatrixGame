@@ -18,8 +18,8 @@ SPL_VBIB *SPL_VBIB::m_LastFree;
 SPL_VBIB *SPL_VBIB::m_FirstAll;
 SPL_VBIB *SPL_VBIB::m_LastAll;
 
-static bool UnloadDX(DWORD user) {
-    SPL_VBIB *r = (SPL_VBIB *)user;
+static bool UnloadDX(uintptr_t user) {
+    auto r = reinterpret_cast<SPL_VBIB*>(user);
     r->Release();
     return true;  // dead
 }
@@ -102,7 +102,7 @@ SPL_VBIB *SPL_VBIB::GetCreate(int vbsize, int ibsize, DWORD fvf) {
     else {
     create:
         r = (SPL_VBIB *)HAllocClear(sizeof(SPL_VBIB), CMatrixEffect::m_Heap);
-        new(&r->m_RemindCore) SRemindCore(UnloadDX, (DWORD)r);
+        new(&r->m_RemindCore) SRemindCore(UnloadDX, reinterpret_cast<uintptr_t>(r));
         r->m_FVF = fvf;
         LIST_ADD(r, m_FirstAll, m_LastAll, m_PrevAll, m_NextAll);
     }

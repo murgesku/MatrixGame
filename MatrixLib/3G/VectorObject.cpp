@@ -25,16 +25,16 @@ extern Base::CHeap *g_MatrixHeap;
 CBigVB<SVOVertex> *CVectorObject::m_VB;
 CBigIB *CVectorObject::m_IB;
 
-static bool FreeObjectResources(DWORD user) {
+static bool FreeObjectResources(uintptr_t user) {
     DTRACE();
-    CVectorObject *o = (CVectorObject *)user;
+    auto o = reinterpret_cast<CVectorObject*>(user);
     o->DX_Free();
     return false;
 }
 
 #pragma warning(disable : 4355)
 CVectorObject::CVectorObject(void)
-  : CCacheData(), m_RemindCore(FreeObjectResources, (DWORD)this), m_Props(true, g_CacheHeap) {
+  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)), m_Props(true, g_CacheHeap) {
     DTRACE();
     m_Type = cc_VO;
 
