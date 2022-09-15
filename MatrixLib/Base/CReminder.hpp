@@ -9,7 +9,7 @@
 
 namespace Base {
 
-typedef bool (*REMIND_HANDLER)(DWORD param);  // returns true, if core is dead
+typedef bool (*REMIND_HANDLER)(uintptr_t param);  // returns true, if core is dead
 
 #define CHECK_TIME 10
 
@@ -25,9 +25,9 @@ struct SRemindCore {
     SRemindCore *prev;
     int time;
     REMIND_HANDLER handler;
-    DWORD param;
+    uintptr_t param;
 
-    SRemindCore(REMIND_HANDLER hand, DWORD par) : next(NULL), prev(NULL), time(gtime), handler(hand), param(par) {}
+    SRemindCore(REMIND_HANDLER hand, uintptr_t par) : next(NULL), prev(NULL), time(gtime), handler(hand), param(par) {}
     ~SRemindCore(void) { Down(); }
 
     static void StaticInit(void) {
@@ -46,7 +46,7 @@ struct SRemindCore {
 
     void Use(int nexttime) {
         if (first != NULL) {
-            if ((((DWORD)next) | ((DWORD)prev)) == 0 && (this != first)) {
+            if ((((uintptr_t)next) | ((uintptr_t)prev)) == 0 && (this != first)) {
                 LIST_ADD(this, first, last, prev, next);
             }
         }

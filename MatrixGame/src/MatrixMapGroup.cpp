@@ -24,10 +24,10 @@ CBigIB *CMatrixMapGroup::m_BigIB_bottom;
 int CMatrixMapGroup::m_DPCalls = 0;
 #endif
 
-static bool FreeResources(DWORD user) {
+static bool FreeResources(uintptr_t user) {
     DTRACE();
 
-    CMatrixMapGroup *g = (CMatrixMapGroup *)user;
+    CMatrixMapGroup* g = reinterpret_cast<CMatrixMapGroup*>(user);
     g->DX_Free();
     return false;
 }
@@ -38,7 +38,7 @@ void CMatrixMapGroup::MarkAllBuffersNoNeed(void) {
 }
 
 #pragma warning(disable : 4355)
-CMatrixMapGroup::CMatrixMapGroup(void) : CMain(), m_RemindCore(FreeResources, (DWORD)this) {
+CMatrixMapGroup::CMatrixMapGroup(void) : CMain(), m_RemindCore(FreeResources, reinterpret_cast<uintptr_t>(this)) {
     memset(((BYTE *)this) + sizeof(m_RemindCore) + sizeof(CMain), 0,
            sizeof(CMatrixMapGroup) - sizeof(m_RemindCore) - sizeof(CMain));
 

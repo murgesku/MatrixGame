@@ -184,7 +184,7 @@ struct SObjectCore {
     void Release(void) { RefDec(); }
 };
 
-bool FreeObjResources(DWORD user);
+bool FreeObjResources(uintptr_t user);
 
 struct SRenderTexture {
     ETexSize ts;
@@ -325,7 +325,7 @@ public:
     CMatrixMapStatic(void)
       : CMain(), m_RChange(0xffffffff), m_LastVisFrame(0xFFFFFFFF), m_NearBaseCnt(0), m_IntersectFlagTracer(0xFFFFFFFF),
         m_IntersectFlagFindObjects(0xFFFFFFFF), m_ObjectState(0), m_ObjectStateTTLAblaze(0), m_ObjectStateTTLShorted(0),
-        m_InCnt(0), m_PrevLogicTemp(NULL), m_NextLogicTemp(NULL), m_RemindCore(FreeObjResources, (DWORD)this) {
+        m_InCnt(0), m_PrevLogicTemp(NULL), m_NextLogicTemp(NULL), m_RemindCore(FreeObjResources, reinterpret_cast<uintptr_t>(this)) {
         m_Core = SObjectCore::Create(this);
 
         m_Core->m_TerainColor = 0xFFFFFFFF;
