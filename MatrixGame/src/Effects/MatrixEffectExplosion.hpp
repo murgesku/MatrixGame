@@ -85,6 +85,7 @@ struct SDebris
     float ttl;  // time to live
     union _u1 {
         _u1() {}
+        ~_u1() {}
 
         struct _s1 // debris
         {
