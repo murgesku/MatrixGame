@@ -424,9 +424,11 @@ void CMatrixSideUnit::LogicTakt(int ms) {
 
     if (GetStatus() != SS_NONE && FLAG(g_Config.m_DIFlags, DI_SIDEINFO)) {
         g_MatrixMap->m_DI.T(CWStr(L"Side ") + m_Id,
-                            CWStr().Format(L"Titan <i>, Electronics <i>, Plasma <i>, Energy <i>", m_Resources[TITAN],
-                                           m_Resources[ELECTRONICS], m_Resources[PLASMA], m_Resources[ENERGY])
-                                    .Get());
+                            utils::format(L"Titan %d, Electronics %d, Plasma %d, Energy %d",
+                                          m_Resources[TITAN],
+                                          m_Resources[ELECTRONICS],
+                                          m_Resources[PLASMA],
+                                          m_Resources[ENERGY]).c_str());
     }
 
     if (GetStatus() != SS_NONE) {
