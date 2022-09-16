@@ -19,8 +19,16 @@ void CException::CreateCallTrace(void) {
     strcpy(call_trace, generate_trace_text());
 }
 
-CWStr CException::Info() {
-    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", utils::to_wstring(call_trace).c_str(), utils::to_wstring(m_File).c_str(), m_Line);
+CWStr CException::Info()
+{
+    auto str =
+        utils::format(
+            L"%sFile=%s\nLine=%d\n",
+            utils::to_wstring(call_trace).c_str(),
+            utils::to_wstring(m_File).c_str(),
+            m_Line);
+
+    return CWStr(str.c_str());
 }
 
 CExceptionStr::CExceptionStr(const char *file, int line, const wchar *str, const wchar *str2, const wchar *str3,
