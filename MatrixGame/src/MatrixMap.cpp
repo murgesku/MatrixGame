@@ -1153,10 +1153,12 @@ void CMatrixMap::BeforeDraw(void) {
             m_DI.T(L"Under cursor", L"Mesh", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
             m_DI.T(L"Under cursor",
-                   CWStr().Format(L"Robot <b=16><u>   S<b=10><i> T<i> G<i>", DWORD(m_TraceStopObj),
-                                  m_TraceStopObj->GetSide(), ((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),
-                                  ((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic())
-                           .Get(),
+                   utils::format(L"Robot %x   S%d T%d G%d",
+                                 DWORD(m_TraceStopObj),
+                                 m_TraceStopObj->GetSide(),
+                                 ((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),
+                                 ((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic())
+                           .c_str(),
                    1000);
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)

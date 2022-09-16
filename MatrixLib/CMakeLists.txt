@@ -45,7 +45,6 @@ set(BASE_SOURCES
     Base/CReminder.cpp
     Base/CStorage.cpp
     Base/CWStr.cpp
-    Base/CWStrFormat.cpp
     # Base/Mem.cpp
     Base/Pack.cpp
     Base/Registry.cpp
