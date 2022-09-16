@@ -255,7 +255,7 @@ public:
     void LowerCase(int sme = 0, int len = -1);
     void UpperCase(int sme = 0, int len = -1);
 
-    CWStr &Format(const wchar *format, ...);
+    // CWStr &Format(const wchar *format, ...);
 
     // Функции для работы с параметрами
     // Примеры :

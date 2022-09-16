@@ -343,7 +343,7 @@ void CFile::Read(void *buf, DWORD kolbyte) {
     }
 
     if (!ok) {
-        ERROR_S(CWStr().Format(L"Error read file: <s> cnt=<i>", m_FileName.Get(), kolbyte).Get());
+        ERROR_S(utils::format(L"Error read file: %s cnt=%d", m_FileName.Get(), kolbyte));
     }
 }
 
@@ -356,7 +356,7 @@ void CFile::Write(void *buf, DWORD kolbyte) {
     DWORD temp;
 
     if (WriteFile(m_Handle, buf, kolbyte, &temp, NULL) == FALSE || temp != kolbyte) {
-        ERROR_S(CWStr().Format(L"Error write file: <s> cnt=<i>", m_FileName.Get(), kolbyte).Get());
+        ERROR_S(utils::format(L"Error write file: %s cnt=%d", m_FileName.Get(), kolbyte));
     }
 }
 

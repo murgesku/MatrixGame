@@ -230,130 +230,130 @@ void ff_FormatStr(CWStr &cs, wchar *str, int width, wchar fill, int align) {
 // <f>,<d>
 // <s>
 
-CWStr &CWStr::Format(const wchar *format, ...) {
-    wchar tbuf[256];
-    bool tag = false;
-    int t_width = 0;
-    wchar t_fill = L' ';
-    int t_aling = -1;  // -1=left 0=center 1=right
-    int t_len;
-    int t_p = 8;
-    int t_base = 10;
-    const wchar *end;
+// CWStr &CWStr::Format(const wchar *format, ...) {
+//     wchar tbuf[256];
+//     bool tag = false;
+//     int t_width = 0;
+//     wchar t_fill = L' ';
+//     int t_aling = -1;  // -1=left 0=center 1=right
+//     int t_len;
+//     int t_p = 8;
+//     int t_base = 10;
+//     const wchar *end;
 
-    if (format == NULL)
-        return *this;
-    ModifyLenNoCopy(GetHeap(), 0);
+//     if (format == NULL)
+//         return *this;
+//     ModifyLenNoCopy(GetHeap(), 0);
 
-    va_list marker;
-    va_start(marker, format);
+//     va_list marker;
+//     va_start(marker, format);
 
-    for (;;) {
-        tag = false;
+//     for (;;) {
+//         tag = false;
 
-        if (*format == 0) {
-            break;
-        }
-        else if (*format == L'<' && *(format + 1) == L'<') {
-            format++;
-            end = format;
-        }
-        else if (*format == L'<') {
-            format++;
-            end = format;
-            while (*end != 0 && *end != L'>')
-                end++;
-            tag = *end == L'>';
-            end--;
-        }
-        else {
-            end = format + 1;
-            while (*end != 0 && *end != L'<')
-                end++;
-            end--;
-        }
+//         if (*format == 0) {
+//             break;
+//         }
+//         else if (*format == L'<' && *(format + 1) == L'<') {
+//             format++;
+//             end = format;
+//         }
+//         else if (*format == L'<') {
+//             format++;
+//             end = format;
+//             while (*end != 0 && *end != L'>')
+//                 end++;
+//             tag = *end == L'>';
+//             end--;
+//         }
+//         else {
+//             end = format + 1;
+//             while (*end != 0 && *end != L'<')
+//                 end++;
+//             end--;
+//         }
 
-        if (tag) {
-            t_len = ((DWORD(end) - DWORD(format)) >> 1) + 1;
-            if (t_len >= 3 && *format == 'w' && *(format + 1) == '=') {
-                t_width = ff_GetInt(format + 2, t_len - 2);
-                if (t_width < 0)
-                    t_width = 0;
-                else if (t_width > 1024 * 32)
-                    t_width = 1024 * 32;  // 255;
-            }
-            else if (t_len >= 3 && *format == 'f' && *(format + 1) == '=') {
-                t_fill = ff_GetInt(format + 2, t_len - 2);
-            }
-            else if (t_len >= 3 && !std::wmemcmp(format, L"a=[", 3)) {
-                t_aling = -1;
-            }
-            else if (t_len >= 3 && !std::wmemcmp(format, L"a=-", 3)) {
-                t_aling = 0;
-            }
-            else if (t_len >= 3 && !std::wmemcmp(format, L"a=]", 3)) {
-                t_aling = 1;
-            }
-            else if (t_len >= 3 && *format == 'p' && *(format + 1) == '=') {
-                t_p = ff_GetInt(format + 2, t_len - 2);
-            }
-            else if (t_len >= 3 && *format == 'b' && *(format + 1) == '=') {
-                t_base = ff_GetInt(format + 2, t_len - 2);
-                if (t_base < 2)
-                    t_base = 2;
-                else if (t_base > 32)
-                    t_base = 32;
-            }
-            else if (t_len == 1 && *format == L'i') {
-                ff_FormatInt64(*this, va_arg(marker, long), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'i' && *(format + 1) == L'1') {
-                ff_FormatInt64(*this, va_arg(marker, char), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'i' && *(format + 1) == L'2') {
-                ff_FormatInt64(*this, va_arg(marker, short), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'i' && *(format + 1) == L'4') {
-                ff_FormatInt64(*this, va_arg(marker, long), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'i' && *(format + 1) == L'8') {
-                ff_FormatInt64(*this, va_arg(marker, __int64), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 1 && *format == L'u') {
-                ff_FormatInt64(*this, va_arg(marker, unsigned long), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'u' && *(format + 1) == L'1') {
-                ff_FormatInt64(*this, va_arg(marker, unsigned char), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'u' && *(format + 1) == L'2') {
-                ff_FormatInt64(*this, va_arg(marker, unsigned short), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 2 && *format == L'u' && *(format + 1) == L'4') {
-                ff_FormatInt64(*this, va_arg(marker, unsigned long), tbuf, 255, t_width, t_fill, t_aling, t_base);
-            }
-            else if (t_len == 1 && *format == L'f') {
-                ff_FormatDouble(*this, va_arg(marker, double /*float*/), tbuf, t_p, t_width, t_fill, t_aling);
-            }
-            else if (t_len == 1 && *format == L'd') {
-                ff_FormatDouble(*this, va_arg(marker, double), tbuf, t_p, t_width, t_fill, t_aling);
-            }
-            else if (t_len == 1 && *format == L's') {
-                ff_FormatStr(*this, va_arg(marker, wchar *), t_width, t_fill, t_aling);
-            }
+//         if (tag) {
+//             t_len = ((DWORD(end) - DWORD(format)) >> 1) + 1;
+//             if (t_len >= 3 && *format == 'w' && *(format + 1) == '=') {
+//                 t_width = ff_GetInt(format + 2, t_len - 2);
+//                 if (t_width < 0)
+//                     t_width = 0;
+//                 else if (t_width > 1024 * 32)
+//                     t_width = 1024 * 32;  // 255;
+//             }
+//             else if (t_len >= 3 && *format == 'f' && *(format + 1) == '=') {
+//                 t_fill = ff_GetInt(format + 2, t_len - 2);
+//             }
+//             else if (t_len >= 3 && !std::wmemcmp(format, L"a=[", 3)) {
+//                 t_aling = -1;
+//             }
+//             else if (t_len >= 3 && !std::wmemcmp(format, L"a=-", 3)) {
+//                 t_aling = 0;
+//             }
+//             else if (t_len >= 3 && !std::wmemcmp(format, L"a=]", 3)) {
+//                 t_aling = 1;
+//             }
+//             else if (t_len >= 3 && *format == 'p' && *(format + 1) == '=') {
+//                 t_p = ff_GetInt(format + 2, t_len - 2);
+//             }
+//             else if (t_len >= 3 && *format == 'b' && *(format + 1) == '=') {
+//                 t_base = ff_GetInt(format + 2, t_len - 2);
+//                 if (t_base < 2)
+//                     t_base = 2;
+//                 else if (t_base > 32)
+//                     t_base = 32;
+//             }
+//             else if (t_len == 1 && *format == L'i') {
+//                 ff_FormatInt64(*this, va_arg(marker, long), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'i' && *(format + 1) == L'1') {
+//                 ff_FormatInt64(*this, va_arg(marker, char), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'i' && *(format + 1) == L'2') {
+//                 ff_FormatInt64(*this, va_arg(marker, short), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'i' && *(format + 1) == L'4') {
+//                 ff_FormatInt64(*this, va_arg(marker, long), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'i' && *(format + 1) == L'8') {
+//                 ff_FormatInt64(*this, va_arg(marker, __int64), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 1 && *format == L'u') {
+//                 ff_FormatInt64(*this, va_arg(marker, unsigned long), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'u' && *(format + 1) == L'1') {
+//                 ff_FormatInt64(*this, va_arg(marker, unsigned char), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'u' && *(format + 1) == L'2') {
+//                 ff_FormatInt64(*this, va_arg(marker, unsigned short), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 2 && *format == L'u' && *(format + 1) == L'4') {
+//                 ff_FormatInt64(*this, va_arg(marker, unsigned long), tbuf, 255, t_width, t_fill, t_aling, t_base);
+//             }
+//             else if (t_len == 1 && *format == L'f') {
+//                 ff_FormatDouble(*this, va_arg(marker, double /*float*/), tbuf, t_p, t_width, t_fill, t_aling);
+//             }
+//             else if (t_len == 1 && *format == L'd') {
+//                 ff_FormatDouble(*this, va_arg(marker, double), tbuf, t_p, t_width, t_fill, t_aling);
+//             }
+//             else if (t_len == 1 && *format == L's') {
+//                 ff_FormatStr(*this, va_arg(marker, wchar *), t_width, t_fill, t_aling);
+//             }
 
-            end++;
-        }
-        else {
-            if (DWORD(end) < DWORD(format))
-                break;
-            Add(format, ((DWORD(end) - DWORD(format)) >> 1) + 1);
-        }
+//             end++;
+//         }
+//         else {
+//             if (DWORD(end) < DWORD(format))
+//                 break;
+//             Add(format, ((DWORD(end) - DWORD(format)) >> 1) + 1);
+//         }
 
-        format = end + 1;
-    }
+//         format = end + 1;
+//     }
 
-    va_end(marker);
-    return *this;
-}
+//     va_end(marker);
+//     return *this;
+// }
 
 }  // namespace Base
