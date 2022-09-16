@@ -106,7 +106,7 @@ CWStr CExceptionD3D::Info() {
            CWStr((wchar *)DXGetErrorDescriptionW(m_Error));
 }
 
-void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *captionname) {
+void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname) {
     RECT tr;
 
     L3GDeinit();
@@ -325,7 +325,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
 #endif
 }
 
-void L3GInitAsDLL(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *captionname, HWND hwnd, long FDirect3D,
+void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname, HWND hwnd, long FDirect3D,
                   long FD3DDevice) {
     // RECT tr;
 

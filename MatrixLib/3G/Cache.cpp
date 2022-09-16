@@ -433,7 +433,7 @@ void CCache::Dump(void) {
     int cnt = 0;
     while (cd) {
         ++cnt;
-        char *type = "Unknown       ";
+        const char* type = "Unknown       ";
 
         if (cd->m_Type == cc_Texture)
             type = "Texture       ";
@@ -444,7 +444,7 @@ void CCache::Dump(void) {
 
         std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
 
-        char *loaded;
+        const char* loaded;
         if (cd->IsLoaded())
             loaded = "+";
         else

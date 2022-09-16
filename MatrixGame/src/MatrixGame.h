@@ -37,4 +37,4 @@ struct SRobotsSettings;
 void MatrixGameInit(HINSTANCE hInstance, HWND wnd, wchar *map = NULL, SRobotsSettings *set = NULL, wchar *lang = NULL,
                     wchar *txt_start = NULL, wchar *txt_win = NULL, wchar *txt_loss = NULL, wchar *planet = NULL);
 void MatrixGameDeinit(void);
-LPCSTR PathToOutputFiles(LPSTR dest);
+LPCSTR PathToOutputFiles(LPCSTR dest);

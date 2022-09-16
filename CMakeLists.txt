@@ -41,7 +41,6 @@ if(MSVC)
 else()
     set(COMPILE_OPTIONS
         -fpermissive # TODO: remove and fix
-        -Wno-write-strings # TODO: remove and fix
     )
 
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
