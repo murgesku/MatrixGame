@@ -3273,7 +3273,7 @@ void HelpRequestHandler(void) {
         si0.cb = sizeof(si0);
         ZeroMemory(&pi0, sizeof(pi0));
 
-        CreateProcess("Manual.exe", "", NULL, NULL, FALSE, 0, NULL, NULL, &si0, &pi0);
+        CreateProcess("Manual.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si0, &pi0);
 
         ShowWindow(g_Wnd, SW_MINIMIZE);
 

@@ -789,7 +789,7 @@ void MatrixGameDeinit(void) {
     }
 }
 
-LPCSTR PathToOutputFiles(LPSTR dest) {
+LPCSTR PathToOutputFiles(LPCSTR dest) {
     ITEMIDLIST *pidl;
     static char lpPath[MAX_PATH];
 
