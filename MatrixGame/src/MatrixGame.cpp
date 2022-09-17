@@ -6,6 +6,7 @@
 // MatrixGame.cpp : Defines the entry point for the application.
 
 #include <new>
+#include <fstream>
 
 #include "stdafx.h"
 
@@ -94,21 +95,23 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         //*(buf-1)=1;
         // HFree(buf,NULL);
 
-        if (map) {
-            FILE *file;
-            file = fopen("calcvis.log", "a");
-            std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
-            fwrite(name.c_str(), name.length(), 1, file);
-            fwrite(" ...", 4, 1, file);
-            fclose(file);
+        if (map)
+        {
+            {
+                std::ofstream out("calcvis.log", std::ios::app);
+                std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
+                out << name.c_str() << " ...";
+            }
 
             g_MatrixMap->CalcVis();
 
-            file = fopen("calcvis.log", "a");
-            fwrite("done\n", 5, 1, file);
-            fclose(file);
+            {
+                std::ofstream out("calcvis.log", std::ios::app);
+                out << "done\n";
+            }
         }
-        else {
+        else
+        {
             L3GRun();
         }
 
