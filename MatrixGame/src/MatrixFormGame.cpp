@@ -1011,6 +1011,20 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             return;
         }
 
+        if (IsInputEqual("RICHIERICH"))
+        {
+            m_LastScans.clear();
+
+            CMatrixSideUnit* s = g_MatrixMap->GetPlayerSide();
+            if (s)
+            {
+               s->AddResourceAmount(TITAN, 9000);
+               s->AddResourceAmount(ELECTRONICS, 9000);
+               s->AddResourceAmount(ENERGY, 9000);
+               s->AddResourceAmount(PLASMA, 9000);
+           }
+        }
+
         if (IsInputEqual("CRASH"))
         {
             abort();
