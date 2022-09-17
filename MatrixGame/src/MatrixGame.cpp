@@ -207,15 +207,14 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CStorage stor_cfg(g_MatrixHeap);
     bool stor_cfg_present = false;
     CWStr stor_cfg_name(g_MatrixHeap);
-    wchar conf_file[80];
-    wcscpy(conf_file, FILE_CONFIGURATION_LOCATION);
+    std::wstring conf_file{FILE_CONFIGURATION_LOCATION};
     if (lang != NULL) {
-        wcscat(conf_file, lang);
-        wcscat(conf_file, L"\\");
+        conf_file += lang;
+        conf_file += L"\\";
     }
-    wcscat(conf_file, FILE_CONFIGURATION);
-    if (CFile::FileExist(stor_cfg_name, conf_file)) {
-        stor_cfg.Load(conf_file);
+    conf_file += FILE_CONFIGURATION;
+    if (CFile::FileExist(stor_cfg_name, conf_file.c_str())) {
+        stor_cfg.Load(conf_file.c_str());
         stor_cfg_present = true;
     }
 
@@ -790,28 +789,27 @@ void MatrixGameDeinit(void) {
 }
 
 LPCSTR PathToOutputFiles(LPCSTR dest) {
-    ITEMIDLIST *pidl;
-    static char lpPath[MAX_PATH];
+    static std::string path{};
 
-    HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
-    if (hRes == NOERROR) {
-        SHGetPathFromIDList(pidl, lpPath);
+    if (path.empty())
+    {
+        ITEMIDLIST *pidl;
 
-        strcat(lpPath, "\\SpaceRangersHD");
-        CreateDirectory(lpPath, NULL);
-        strcat(lpPath, "\\");
-        strcat(lpPath, dest);
+        HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
+        if (hRes == NOERROR)
+        {
+            char lpPath[MAX_PATH];
+            SHGetPathFromIDList(pidl, lpPath);
+
+            path = utils::format("%s\\SpaceRangersHD", lpPath);
+            CreateDirectory(path.c_str(), NULL);
+            path += "\\";
+            path += dest;
+        }
+        else {
+            path = utils::format(".\\%s", dest);
+        }
     }
-    else {
-        strcpy(lpPath, "");
-    }
 
-    LPCSTR result;
-    result = lpPath;
-
-    // FILE * fp = fopen("1.log", "w+t");
-    // fprintf(fp, "Direct3D=%s\n", result);
-    // fclose(fp);
-
-    return result;
+    return path.c_str();
 }
