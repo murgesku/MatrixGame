@@ -826,10 +826,19 @@ void CMinimap::Draw(void) {
     campts[3].z = MINIMAP_Z;
     campts[3].w = 1.0f;
 
-    World2Map(*(D3DXVECTOR2 *)&campts[0], *(D3DXVECTOR2 *)&campts[0]);
-    World2Map(*(D3DXVECTOR2 *)&campts[1], *(D3DXVECTOR2 *)&campts[1]);
-    World2Map(*(D3DXVECTOR2 *)&campts[2], *(D3DXVECTOR2 *)&campts[2]);
-    World2Map(*(D3DXVECTOR2 *)&campts[3], *(D3DXVECTOR2 *)&campts[3]);
+    auto Vec4World2Map = [this](D3DXVECTOR4& vec) {
+        D3DXVECTOR2 in, out;
+        in.x = vec.x;
+        in.y = vec.y;
+        World2Map(out, in);
+        vec.x = out.x;
+        vec.y = out.y;
+    };
+
+    Vec4World2Map(campts[0]);
+    Vec4World2Map(campts[1]);
+    Vec4World2Map(campts[2]);
+    Vec4World2Map(campts[3]);
 
 #ifdef MINIMAP_SUPPORT_ROTATION
     D3DXVec2TransformCoordArray((D3DXVECTOR2 *)&campts[0], sizeof(D3DXVECTOR4), (D3DXVECTOR2 *)&campts[0],
