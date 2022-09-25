@@ -18,31 +18,17 @@
 #include "CHeap.hpp"
 
 #include <string>
+#include <cwchar>
 
 namespace Base {
 
+// TODO: replace with plain std func calls
 inline int WStrLen(const wchar *str) {
-    if (str == NULL) {
-        return 0;
-    }
-    int len = 0;
-    while (str[len] != 0) {
-        len++;
-    }
-    return len;
+    return std::wcslen(str);
 }
 
 inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
-    for (;;) {
-        if (*s1 != *s2) {
-            return false;
-        }
-        if (*s1 == 0) {
-            return true;
-        }
-        s1++;
-        s2++;
-    }
+    return !std::wcscmp(s1, s2);
 }
 
 struct CWStrData {
