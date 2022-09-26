@@ -467,6 +467,10 @@ int L3GRun() {
             };
 
             QueryPerformanceCounter(&ctakt_li);
+            if (FLAG(g_Flags, GFLAG_4SPEED))
+            {
+                ctakt *= 4;
+            }
             ctakt -= zero_offset;
             float cur_takt = float(double(ctakt - takt) * freq_inv);
             if (cur_takt <= 0)
