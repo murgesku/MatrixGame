@@ -575,6 +575,12 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
 
             // case WM_ACTIVATE:
         case WM_ACTIVATEAPP:
+        {
+            if (FLAG(g_Flags, GFLAG_KEEPALIVE))
+            {
+                // don't minimize or pause the game when keepalive flag is set
+                break;
+            }
             // g_D3DD->TestCooperativeLevel();
             if (wParam != 0) {
                 SETFLAG(g_Flags, GFLAG_APPACTIVE);
@@ -586,7 +592,7 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 else {
                     ShowWindow(g_Wnd, SW_RESTORE);
                 }
-                g_D3DD->TestCooperativeLevel();
+                // g_D3DD->TestCooperativeLevel();
                 // if (g_D3DD->TestCooperativeLevel() == D3DERR_DEVICENOTRESET) {g_D3DD->Reset(&g_D3Dpp);}
                 if (g_FormCur)
                     g_FormCur->SystemEvent(SYSEV_ACTIVATED);
@@ -602,9 +608,10 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 }
                 ShowWindow(g_Wnd, SW_MINIMIZE);
                 ClipCursor(NULL);
-                g_D3DD->TestCooperativeLevel();
+                // g_D3DD->TestCooperativeLevel();
             }
             break;
+        }
 
         case 0x020A:  // WM_MOUSEWHEEL: // */) {(msg==0x020A/*
         {

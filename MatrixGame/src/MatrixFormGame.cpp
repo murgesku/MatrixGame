@@ -1025,6 +1025,13 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
            }
         }
 
+        if (IsInputEqual("KEEPALIVE"))
+        {
+            m_LastScans.clear();
+            INVERTFLAG(g_Flags, GFLAG_KEEPALIVE);
+            g_MatrixMap->m_DI.T(L"KEEPALIVE flag is set to ", FLAG(g_Flags, GFLAG_KEEPALIVE) ? L"true" : L"false", 1000);
+        }
+
         if (IsInputEqual("CRASH"))
         {
             abort();

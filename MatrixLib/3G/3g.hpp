@@ -19,6 +19,7 @@
 #define GFLAG_GAMMA            SETBIT(5)
 #define GFLAG_EXITLOOP         SETBIT(7)
 #define GFLAG_PRESENT_REQUIRED SETBIT(8)
+#define GFLAG_KEEPALIVE        SETBIT(9)
 
 #ifdef _DEBUG
 #define GFLAG_EXTRAFREERES     SETBIT(29)
