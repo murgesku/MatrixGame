@@ -48,8 +48,6 @@ else()
 endif()
 
 add_subdirectory(MatrixLib)
-add_subdirectory(MatrixLib/DebugMsg)
-add_subdirectory(MatrixLib/FilePNG)
 add_subdirectory(MatrixGame)
 
 install(
