@@ -39,10 +39,6 @@ if(MSVC)
 
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
 else()
-    set(COMPILE_OPTIONS
-        -fpermissive # TODO: remove and fix
-    )
-
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 endif()
 
