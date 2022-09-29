@@ -125,7 +125,6 @@ if(MSVC)
     source_group("Bitmap\\Header Files" FILES ${BITMAP_HEADERS})
 else()
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
-    list(APPEND COMPILE_OPTIONS -fpermissive)
 endif()
 
 target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})
