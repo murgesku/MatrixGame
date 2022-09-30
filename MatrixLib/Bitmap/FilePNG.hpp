@@ -5,21 +5,15 @@
 
 #pragma once
 
-#ifdef FILEPNG_DLL
-#ifdef FILEPNG_EXPORTS
-#define FILEPNG_API __declspec(dllexport)
-#else
-#define FILEPNG_API __declspec(dllimport)
-#endif
-#else
-#define FILEPNG_API
-#endif
+namespace FilePNG
+{
 
 // format: 1-gray 2-rgb 3-rgba 4-palate
-FILEPNG_API DWORD __cdecl FilePNG_ReadStart_Buf(void *soubuf, DWORD soubuflen, DWORD *lenx, DWORD *leny,
-                                               DWORD *countcolor, DWORD *format);
-FILEPNG_API DWORD __cdecl FilePNG_Read(DWORD id, void *buf, DWORD lenline, DWORD *arraycolor);
+uint32_t ReadStart_Buf(void *soubuf, uint32_t soubuflen, uint32_t *lenx, uint32_t *leny, uint32_t *countcolor, uint32_t *format);
+uint32_t Read(uint32_t id, void *buf, uint32_t lenline, uint32_t *arraycolor);
 
 // Возвращает полный размер файла. Если больше bufoutlen то нужно вызвать повторно. При ошибке 0
-FILEPNG_API int __cdecl FilePNG_Write(void *bufout, int bufoutlen, void *buf, DWORD ll, DWORD lx, DWORD ly, DWORD bytepp,
+int Write(void *bufout, int bufoutlen, void *buf, uint32_t ll, uint32_t lx, uint32_t ly, uint32_t bytepp,
                                      int rgb_to_bgr);
+
+} // namespace FilePNG
