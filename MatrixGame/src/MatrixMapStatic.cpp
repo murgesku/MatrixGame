@@ -547,9 +547,7 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
         int curt = 0;
 
         CBitmap bm(g_CacheHeap);
-        CBitmap bm_temp(g_CacheHeap);
         CBitmap src(g_CacheHeap);
-        bm_temp.CreateRGBA(128, 128);
 
         D3DLOCKED_RECT lor;
         newTarget->LockRect(&lor, NULL, 0);
@@ -566,9 +564,6 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
 
         ETexSize tsz = TEXSIZE_256;
 
-        CBitmap *bm0 = &bm;
-        CBitmap *bm1 = &bm_temp;
-
         for (;;) {
             if (rt[curt].ts >= tsz) {
                 int sz = ConvertTexSize(tsz);
@@ -582,23 +577,15 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
                     ok = false;
                     goto end;
                 }
-                memcpy(lor.pBits, bm0->Data(), sz * sz * 4);
+                memcpy(lor.pBits, bm.Data(), sz * sz * 4);
                 rt[curt].tex->UnlockRect();
                 ++curt;
                 if (curt >= n)
                     goto end;
             }
 
-            bm0->Make2xSmaller();
+            bm.Make2xSmaller();
 
-            bm1->SetRGBA(bm0->SizeX(), bm0->SizeY());
-            sharpen_run(*bm1, *bm0, 16);
-
-            {
-                CBitmap *t = bm1;
-                bm1 = bm0;
-                bm0 = t;
-            }
             tsz = ETexSize((int)tsz - 1);
         }
     }

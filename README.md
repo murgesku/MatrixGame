@@ -78,5 +78,4 @@ Let's make _Space Rangers_ great again! :wink:
 
 ## License
 According to the copyright holder's permission, the source code of the MatrixGame engine itself (the content of the MatrixGame and MatrixLib directories) is released as open source and should continue to be distributed under the GNU General Public License v2 or a newer one.<br>
-The game engine uses libpng and zlib as a static libs (they are downloaded and compiled as a part of building process).<br>
-VirtualDub's _sharpen.cpp_ and _asharpen.asm_ included as a parts of the MatrixLib/Bitmap and are distributed under the licenses and terms specified in their header files and no one in Elemental Games, Katauri Interactive, or CHK-Games claims authorship or any other proprietary or exclusive rights, nor can change original distribution terms.
+The game engine uses [libpng](https://github.com/glennrp/libpng/) and [zlib](https://github.com/madler/zlib) distributed under their own licenses and terms. No one in Elemental Games, Katauri Interactive, or CHK-Games claims authorship or any other proprietary or exclusive rights, nor can change original distribution terms.
