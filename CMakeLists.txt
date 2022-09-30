@@ -28,8 +28,8 @@ list(APPEND COMPILE_DEFINITIONS MATRIXGAME_EXPORTS USE_PNGLIB $<$<CONFIG:Release
 
 if(MSVC)
     set(COMPILE_OPTIONS
-        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /GS- /Gy- /Gr>
-        $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1 /Gr>
+        $<$<CONFIG:Release>:/Zi /W3 /O2 /Ob2 /Oi /Ot /Oy /GF /EHsc /GS- /Gy->
+        $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1>
     )
     set(LINK_OPTIONS
         /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86
