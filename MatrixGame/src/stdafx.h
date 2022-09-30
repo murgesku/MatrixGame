@@ -27,7 +27,6 @@
 #include "../../MatrixLib/3G/CBillboard.hpp"
 #include "../../MatrixLib/3G/BigVB.hpp"
 #include "../../MatrixLib/3G/BigIB.hpp"
-#include "../../MatrixLib/DebugMsg/DebugMsg.h"
 
 #include "MatrixMultiSelection.hpp"
 
