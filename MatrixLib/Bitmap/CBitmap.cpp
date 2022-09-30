@@ -9,7 +9,7 @@
 #include "Bitmap.pch"
 
 #include "CBitmap.hpp"
-#include "../FilePNG/FilePNG.hpp"
+#include "FilePNG.hpp"
 #include <malloc.h>
 #include <ddraw.h>
 
