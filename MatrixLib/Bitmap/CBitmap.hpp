@@ -23,10 +23,7 @@ enum EAreaType {
     EAreaType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-class CBitmap;
-void sharpen_run(CBitmap &obm, CBitmap &ibm, int lv);
-
-class /* BITMAP_API */ CBitmap : public Base::CMain {
+class CBitmap : public Base::CMain {
 private:
     Base::CHeap *m_Heap;
 
@@ -192,8 +189,6 @@ public:
               const Base::CPoint &szsou);
 
     void Fill(const Base::CPoint &pdes, const Base::CPoint &size, dword color);
-
-    void Sharpen(int lv);  // lv [0..64]
 
     void Rotate90(const Base::CPoint &pdes, const Base::CPoint &sizesou, const CBitmap &bmsou,
                   const Base::CPoint &spsou);

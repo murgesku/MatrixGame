@@ -74,7 +74,6 @@ set(BASE_HEADERS
 
 set(BITMAP_SOURCES
     Bitmap/CBitmap.cpp
-    Bitmap/sharpen.cpp
     Bitmap/FilePNG.cpp
 )
 set(BITMAP_HEADERS

@@ -1693,21 +1693,6 @@ void CBitmap::ModulateGrayscaleWithAlpha(const Base::CPoint &pdes, const Base::C
     }
 }
 
-void sharpen_run(CBitmap &obm, CBitmap &ibm, int lv);
-
-void CBitmap::Sharpen(int lv) {
-    CBitmap bb(m_Heap);
-    bb.CreateRGBA(SizeX(), SizeY());
-
-    sharpen_run(bb, *this, lv);
-
-    void *temp = m_Data;
-
-    m_Data = bb.m_Data;
-
-    bb.m_Data = temp;
-}
-
 void CBitmap::WBM_Clear() {
     if (m_WindowDC) {
         DeleteDC(m_WindowDC);
