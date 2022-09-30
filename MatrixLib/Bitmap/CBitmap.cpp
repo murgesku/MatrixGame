@@ -10,6 +10,7 @@
 
 #include "CBitmap.hpp"
 #include "FilePNG.hpp"
+
 #include <malloc.h>
 #include <ddraw.h>
 
@@ -2123,9 +2124,9 @@ void CBitmap::SaveInDDSUncompressed(const wchar *filename, int filenamelen) cons
 bool CBitmap::LoadFromPNG(void *buf, int buflen) {
     Clear();
 
-    DWORD lenx, leny, countcolor, format;
+    uint32_t lenx, leny, countcolor, format;
 
-    DWORD id = FilePNG_ReadStart_Buf(buf, buflen, &lenx, &leny, &countcolor, &format);
+    DWORD id = FilePNG::ReadStart_Buf(buf, buflen, &lenx, &leny, &countcolor, &format);
     if (id == 0)
         return false;
 
@@ -2144,7 +2145,7 @@ bool CBitmap::LoadFromPNG(void *buf, int buflen) {
     else
         ERROR_E;
 
-    if (!FilePNG_Read(id, m_Data, m_Pitch, (DWORD *)m_AddData[0])) {
+    if (!FilePNG::Read(id, m_Data, m_Pitch, (uint32_t*)m_AddData[0])) {
         Clear();
         return false;
     }
@@ -2185,7 +2186,7 @@ int CBitmap::SaveInPNG(void *buf, int buflen) {
     if (m_Size.x <= 0 || m_Size.y <= 0)
         return 0;
 
-    return FilePNG_Write(buf, buflen, m_Data, m_Pitch, m_Size.x, m_Size.y, m_BytePP, 0);
+    return FilePNG::Write(buf, buflen, m_Data, m_Pitch, m_Size.x, m_Size.y, m_BytePP, 0);
 }
 
 bool CBitmap::SaveInPNG(CBuf &buf) {
