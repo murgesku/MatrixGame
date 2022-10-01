@@ -74,13 +74,14 @@ set(BASE_HEADERS
 
 set(BITMAP_SOURCES
     Bitmap/CBitmap.cpp
-    Bitmap/sharpen.cpp
+    Bitmap/FilePNG.cpp
 )
 set(BITMAP_HEADERS
     Bitmap/Bitmap.pch
     Bitmap/Bitmap.hpp
     Bitmap/BitmapDef.hpp
     Bitmap/CBitmap.hpp
+    Bitmap/FilePNG.hpp
 )
 
 # TODO: remove unused files and replace set with globs
@@ -112,9 +113,8 @@ target_include_directories(
 target_link_libraries(
     MatrixLib
     PUBLIC
-        FilePNG
+        LIBPNG
         ${DIRECTX9_LIBRARIES}
-        ZLIB
 )
 
 if(MSVC)

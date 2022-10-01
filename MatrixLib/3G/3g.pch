@@ -29,7 +29,6 @@
 #include "../Base/Base.hpp"
 
 #include "../Bitmap/CBitmap.hpp"
-#include "../DebugMsg/DebugMsg.h"
 
 using namespace Base;
 

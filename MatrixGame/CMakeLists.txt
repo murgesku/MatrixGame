@@ -56,9 +56,6 @@ target_link_libraries(
     PUBLIC
         winmm
         ${DIRECTX9_LIBRARIES}
-        DebugMsg
-        FilePNG
-        ZLIB
         MatrixLib
         "$<$<C_COMPILER_ID:MSVC>:legacy_stdio_definitions>"
 )
