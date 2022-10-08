@@ -206,7 +206,7 @@ public:
 
     static void StaticInit(void) throw();
 
-    friend char *generate_trace_text(void);
+    friend std::string generate_trace_text(void);
 
 #ifdef MSVC7
     CDebugTracer(const char *src_file, int src_line, const char *src_func, bool cp) throw();
@@ -247,6 +247,6 @@ struct CDText {
 
 #endif  //  #ifdef _DEBUG  //
 
-char *generate_trace_text(void);
+std::string generate_trace_text(void);
 
 #endif  //  #ifndef PROF_HPP  //
