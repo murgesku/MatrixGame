@@ -15,8 +15,9 @@
 
 namespace Base {
 
-void CException::CreateCallTrace(void) {
-    strcpy(call_trace, generate_trace_text());
+void CException::CreateCallTrace(void)
+{
+    call_trace = generate_trace_text();
 }
 
 CWStr CException::Info()

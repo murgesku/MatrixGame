@@ -162,9 +162,8 @@ static const S_EXCEPT_CODE_T s_ecodes[] = {{EXCEPTION_ACCESS_VIOLATION, "EXCEPTI
 //                      L O C A L    F U N C T I O N S
 
 static void cpp_except_terminate(void) throw() {
-    char buff[65536];
-    strcpy(buff, generate_trace_text());
-    MessageBoxA(0, buff, "Unhandled Exception", MB_ICONEXCLAMATION);
+    std::string message = generate_trace_text();
+    MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
     ExitProcess(-1);
 }
 
@@ -201,9 +200,8 @@ static LONG WINAPI sys_except_handler(
         ecode_str = "UNKNOWN EXCEPTION";
     }
 
-    char buff[65536];
-
-    sprintf(buff,
+    auto message =
+        utils::format(
             "Program executed an illegal operation and was closed :("
             "\nexception code: 0x%X(%s)"
             "\nexception address: %p\n",
@@ -212,14 +210,13 @@ static LONG WINAPI sys_except_handler(
     k = info->ExceptionRecord->NumberParameters;
 
     for (i = 0; i < k; ++i) {
-        sprintf(buff + strlen(buff), "exception parameter %u) 0x%x", i, info->ExceptionRecord->ExceptionInformation[i]);
+        message += utils::format("exception parameter %u) 0x%x", i, info->ExceptionRecord->ExceptionInformation[i]);
     }
 
-    sprintf(buff + strlen(buff), "++FATAL ERROR++\n");
+    message += "++FATAL ERROR++\n";
+    message += generate_trace_text();
 
-    strcpy(buff, generate_trace_text());
-
-    MessageBoxA(0, buff, "Unhandled Exception", MB_ICONEXCLAMATION);
+    MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
 
     return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -242,11 +239,10 @@ void CDebugTracer::SaveHistory(void) throw() {
         fwrite(e, strlen(e), 1, file);
     }
     else {
-        char buf[1024];
         SDebugCallInfo *di = (SDebugCallInfo *)&m_history;
         while (i != m_hist_end) {
-            sprintf(buf, "%s:%i\n", di[i]._file, di[i]._line);
-            fwrite(buf, strlen(buf), 1, file);
+            auto mes = utils::format("%s:%i\n", di[i]._file, di[i]._line);
+            fwrite(mes.c_str(), mes.length(), 1, file);
             ++i;
             if (i >= HISTORY_SIZE) {
                 i = 0;
@@ -434,35 +430,40 @@ const CDebugTracer *CDebugTracer::get_call(const CDebugTracer *item) throw() {
 
 #endif  //  #ifdef _DEBUG  //
 
-char *generate_trace_text(void) {
-    static char call_trace[65536];
-    strcpy(call_trace, "call stack:\n");
+std::string generate_trace_text(void) {
+    std::string call_trace = "call stack:\n";
 #ifdef _DEBUG
-    for (const CDebugTracer *item = 0;;) {
+    const CDebugTracer *item = 0;
+    while (true)
+    {
         item = CDebugTracer::get_call(item);
-        if (item == 0) {
+        if (item == 0)
+        {
             break;
         }
 #ifdef MSVC7
-        if (item->m_checkpoint) {
-            sprintf(call_trace + strlen(call_trace), "\tcheck point: %s - %i\n", item->m_src_file, item->m_src_line);
+        if (item->m_checkpoint)
+        {
+            call_trace += utils::format("\tcheck point: %s - %i\n", item->m_src_file, item->m_src_line);
         }
-        else {
-            sprintf(call_trace + strlen(call_trace), "\t%s - %s\n", item->m_src_file, item->m_src_func);
+        else
+        {
+            call_trace += utils::format("\t%s - %s\n", item->m_src_file, item->m_src_func);
         }
 #else
-        if (item->m_checkpoint) {
-            sprintf(call_trace + strlen(call_trace), "\tcheck point: %s - %i\n", item->m_src_file, item->m_src_line);
+        if (item->m_checkpoint)
+        {
+            call_trace += utils::format("\tcheck point: %s - %i\n", item->m_src_file, item->m_src_line);
         }
-        else {
-            sprintf(call_trace + strlen(call_trace), "\t%s:%u\n", item->m_src_file, item->m_src_line);
+        else
+        {
+            call_trace += utils::format("\t%s:%u\n", item->m_src_file, item->m_src_line);
         }
-
 #endif
     }
-    strcat(call_trace, "\n");
+    call_trace += "\n";
 #else
-    strcat(call_trace, "[unavailable in release]\n");
+    call_trace += "[unavailable in release]\n";
 #endif
 
     return call_trace;

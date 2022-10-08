@@ -42,7 +42,7 @@ class BASE_API CException {
     const char *m_File;
     int m_Line;
 
-    char call_trace[65536];
+    std::string call_trace;
 
 public:
     CException(const char *file, int line) : m_File(file), m_Line(line) { CreateCallTrace(); }
