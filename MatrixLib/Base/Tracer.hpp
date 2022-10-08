@@ -79,7 +79,7 @@ public:
 
     static void D(const char *key);
 
-    static void Get(char *out);
+    static void Get(std::string& out);
 };
 
 #endif

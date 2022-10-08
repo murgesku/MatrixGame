@@ -104,10 +104,8 @@ void CDText::D(const char *key)
     }
 }
 
-void CDText::Get(char *out)
+void CDText::Get(std::string& out)
 {
-    *out = 0;
-
     std::string res;
 
     CDText *tmp = first_dtext;
@@ -121,7 +119,7 @@ void CDText::Get(char *out)
         }
     }
 
-    strcpy(out, res.c_str());
+    out = res;
 }
 
 void DbgShowDword(const char *n, DWORD sz)
