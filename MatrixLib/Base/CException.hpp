@@ -46,6 +46,7 @@ class BASE_API CException {
 
 public:
     CException(const char *file, int line) : m_File(file), m_Line(line) { CreateCallTrace(); }
+    virtual ~CException() = default;
 
     void CreateCallTrace(void);
 
