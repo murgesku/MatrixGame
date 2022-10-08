@@ -37,37 +37,36 @@ int CDebugTracer::m_hist_end;
 #ifdef _DEBUG
 CDText *CDText::first_dtext;
 
-void CDText::Set(const char *text) {
-    delete[] v;
-    v = new char[strlen(text) + 1];
-    strcpy(v, text);
+void CDText::Set(const char *text)
+{
+    m_value = text;
 }
-CDText::CDText(const char *key, const char *text) {
-    m_prev = 0;
-    m_next = 0;
+CDText::CDText(const char *key, const char *text)
+: m_key{key}
+, m_value{text}
+, m_next{0}
+, m_prev{0}
+{
+}
 
-    k = new char[strlen(key) + 1];
-    strcpy(k, key);
-
-    v = new char[strlen(text) + 1];
-    strcpy(v, text);
-}
-CDText::~CDText() {
-    delete[] k;
-    delete[] v;
-}
-void CDText::T(const char *key, const char *text) {
-    if (!first_dtext) {
+void CDText::T(const char *key, const char *text)
+{
+    if (!first_dtext)
+    {
         first_dtext = new CDText(key, text);
     }
-    else {
+    else
+    {
         CDText *tmp = first_dtext;
-        for (;;) {
-            if (!strcmp(tmp->k, key)) {
+        for (;;)
+        {
+            if (tmp->m_key == key)
+            {
                 tmp->Set(text);
                 break;
             }
-            if (!tmp->m_next) {
+            if (!tmp->m_next)
+            {
                 tmp->m_next = new CDText(key, text);
                 tmp->m_next->m_prev = tmp;
                 break;
@@ -77,16 +76,26 @@ void CDText::T(const char *key, const char *text) {
     }
 }
 
-void CDText::D(const char *key) {
+void CDText::D(const char *key)
+{
     CDText *tmp = first_dtext;
-    while (tmp) {
-        if (!strcmp(tmp->k, key)) {
+    while (tmp)
+    {
+        if (tmp->m_key == key)
+        {
             if (tmp->m_prev)
+            {
                 tmp->m_prev->m_next = tmp->m_next;
+            }
             else
+            {
                 first_dtext = tmp->m_next;
+            }
+
             if (tmp->m_next)
+            {
                 tmp->m_next->m_prev = tmp->m_prev;
+            }
             delete tmp;
 
             break;
@@ -95,23 +104,28 @@ void CDText::D(const char *key) {
     }
 }
 
-void CDText::Get(char *out) {
+void CDText::Get(char *out)
+{
     *out = 0;
 
-    CDText *tmp = first_dtext;
-    while (tmp) {
-        strcat(out, tmp->k);
-        strcat(out, ":");
-        strcat(out, tmp->v);
-        tmp = tmp->m_next;
+    std::string res;
 
-        if (tmp) {
-            strcat(out, " / ");
+    CDText *tmp = first_dtext;
+    while (tmp)
+    {
+        res += utils::format("%s:%s", tmp->m_key.c_str(), tmp->m_value.c_str());
+        tmp = tmp->m_next;
+        if (tmp)
+        {
+            res += " / ";
         }
     }
+
+    strcpy(out, res.c_str());
 }
 
-void DbgShowDword(const char *n, DWORD sz) {
+void DbgShowDword(const char *n, DWORD sz)
+{
     CDText::T(n, sz);
 }
 

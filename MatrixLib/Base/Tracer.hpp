@@ -52,15 +52,15 @@ inline unsigned __int64 GetCPUTakt(void) {
 class CDText {
     static CDText *first_dtext;
 
-    char *k;
-    char *v;
+    std::string m_key;
+    std::string m_value;
 
     CDText *m_next;
     CDText *m_prev;
 
     void Set(const char *text);
     CDText(const char *key, const char *text);
-    ~CDText();
+    ~CDText() = default;
 
 public:
     static void StaticInit(void) { first_dtext = NULL; }
