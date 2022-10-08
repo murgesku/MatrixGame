@@ -3560,7 +3560,7 @@ void CMatrixMapLogic::DumpLogic() {
                         CMatrixRobotAI *robot = (CMatrixRobotAI *)ms;
                         CInfo *env = robot->GetEnv();
 
-                        fprintf(fi, "            --- Robot(%x) ---\n", ms);
+                        fprintf(fi, "            --- Robot(%p) ---\n", ms);
 
                         fprintf(fi, "            m_MapPos=%d,%d    Region=%d\n", robot->GetMapPosX(),
                                 robot->GetMapPosY(), robot->GetRegion());
