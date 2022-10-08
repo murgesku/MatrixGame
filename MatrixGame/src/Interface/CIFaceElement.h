@@ -36,7 +36,7 @@ struct SAction {
     std::function<void(void*)> m_function;
 };
 
-#define FSET(act, pBut, cl, fn, pObj, src) \
+#define FSET(act, pBut, pObj, src) \
     {                                      \
         auto obj = pObj;                   \
         auto func = &src;                  \
