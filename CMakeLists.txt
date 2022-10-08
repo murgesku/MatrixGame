@@ -58,7 +58,6 @@ else()
         -Wno-unused-value
         -Wno-format
         -Wno-class-memaccess
-        -Wno-delete-non-virtual-dtor # !!!!!!!!!!!!
         -Wno-parentheses
         -Wno-nonnull-compare
         -Wno-switch
