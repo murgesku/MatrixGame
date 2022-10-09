@@ -52,15 +52,15 @@ inline unsigned __int64 GetCPUTakt(void) {
 class CDText {
     static CDText *first_dtext;
 
-    char *k;
-    char *v;
+    std::string m_key;
+    std::string m_value;
 
     CDText *m_next;
     CDText *m_prev;
 
     void Set(const char *text);
     CDText(const char *key, const char *text);
-    ~CDText();
+    ~CDText() = default;
 
 public:
     static void StaticInit(void) { first_dtext = NULL; }
@@ -79,7 +79,7 @@ public:
 
     static void D(const char *key);
 
-    static void Get(char *out);
+    static void Get(std::string& out);
 };
 
 #endif
@@ -206,7 +206,7 @@ public:
 
     static void StaticInit(void) throw();
 
-    friend char *generate_trace_text(void);
+    friend std::string generate_trace_text(void);
 
 #ifdef MSVC7
     CDebugTracer(const char *src_file, int src_line, const char *src_func, bool cp) throw();
@@ -247,6 +247,6 @@ struct CDText {
 
 #endif  //  #ifdef _DEBUG  //
 
-char *generate_trace_text(void);
+std::string generate_trace_text(void);
 
 #endif  //  #ifndef PROF_HPP  //

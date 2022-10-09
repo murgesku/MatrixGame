@@ -25,16 +25,16 @@ extern Base::CHeap *g_MatrixHeap;
 CBigVB<SVOVertex> *CVectorObject::m_VB;
 CBigIB *CVectorObject::m_IB;
 
-static bool FreeObjectResources(DWORD user) {
+static bool FreeObjectResources(uintptr_t user) {
     DTRACE();
-    CVectorObject *o = (CVectorObject *)user;
+    auto o = reinterpret_cast<CVectorObject*>(user);
     o->DX_Free();
     return false;
 }
 
 #pragma warning(disable : 4355)
 CVectorObject::CVectorObject(void)
-  : CCacheData(), m_RemindCore(FreeObjectResources, (DWORD)this), m_Props(true, g_CacheHeap) {
+  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)), m_Props(true, g_CacheHeap) {
     DTRACE();
     m_Type = cc_VO;
 
@@ -2350,7 +2350,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     while (gu) {
         if (!gu->m_LinkMatrixName.IsEmpty()) {
             if (gu->m_LinkMatrixName.GetCountPar(L",") != 2)
-                ERROR_S4(L"In file: ", filename, L"   Unknown format link: ", gu->m_LinkMatrixName.Get());
+                ERROR_S(utils::format(L"In file: %s   Unknown format link: %s", filename, gu->m_LinkMatrixName.Get()));
 
             tstr = gu->m_LinkMatrixName.GetStrPar(0, L",");
             gu->m_LinkMatrixName = gu->m_LinkMatrixName.GetStrPar(1, L",");
@@ -2362,7 +2362,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
                 gu->m_Link = GetByNameNE(tstr.Get());
             }
             if (gu->m_Link == NULL)
-                ERROR_S4(L"In file: ", filename, L"   Not found link: ", tstr.Get());
+                ERROR_S(utils::format(L"In file: %s   Not found link: %s", filename, tstr.Get()));
 
             if (gu->m_LinkMatrixName.IsOnlyInt()) {
                 gu->m_LinkMatrixId = gu->m_LinkMatrixName.GetInt();

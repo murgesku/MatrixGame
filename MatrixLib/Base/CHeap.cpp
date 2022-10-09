@@ -163,28 +163,34 @@ void SMemHeader::Release(void) {
 void CHeap::StaticDeInit(void) {
     // check!!!!!!!!!
     if (SMemHeader::first_mem_block) {
-        char buf[65536];
-        strcpy(buf, "There are some memory leaks have detected:\n");
+        std::string buf{"There are some memory leaks have detected:\n"};
         while (SMemHeader::last_mem_block) {
-            int len = strlen(buf);
-            if (len < 65000) {
-                sprintf(buf + len, "%i, %u : %s - %i\n", SMemHeader::last_mem_block->cnt,
-                        SMemHeader::last_mem_block->blocksize, SMemHeader::last_mem_block->file,
+            if (buf.length() < 65000)
+            {
+                auto rec =
+                    utils::format("%i, %u : %s - %i\n",
+                        SMemHeader::last_mem_block->cnt,
+                        SMemHeader::last_mem_block->blocksize,
+                        SMemHeader::last_mem_block->file,
                         SMemHeader::last_mem_block->line);
-                char *f = strstr(buf, buf + len);
-                if (f && f != (buf + len)) {
-                    buf[len] = 0;
+
+                // if the same record is already in the buffer - don't add it again
+                if (buf.find(rec) == std::string::npos)
+                {
+                    buf += rec;
                 }
+
                 // sprintf(buf + len, "%u : %s - %i\n", SMemHeader::last_mem_block->blocksize,
                 // SMemHeader::last_mem_block->file, SMemHeader::last_mem_block->line);
             }
-            else {
-                strcat(buf, "............ and more.......");
+            else
+            {
+                buf += "............ and more.......";
                 break;
             }
             SMemHeader::last_mem_block = SMemHeader::last_mem_block->prev;
         }
-        MessageBoxA(0, buf, "Memory leaks!!!!!!!!!", MB_ICONEXCLAMATION);
+        MessageBoxA(0, buf.c_str(), "Memory leaks!!!!!!!!!", MB_ICONEXCLAMATION);
     }
 }
 

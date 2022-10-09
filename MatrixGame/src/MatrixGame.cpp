@@ -6,6 +6,7 @@
 // MatrixGame.cpp : Defines the entry point for the application.
 
 #include <new>
+#include <fstream>
 
 #include "stdafx.h"
 
@@ -94,21 +95,23 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         //*(buf-1)=1;
         // HFree(buf,NULL);
 
-        if (map) {
-            FILE *file;
-            file = fopen("calcvis.log", "a");
-            std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
-            fwrite(name.c_str(), name.length(), 1, file);
-            fwrite(" ...", 4, 1, file);
-            fclose(file);
+        if (map)
+        {
+            {
+                std::ofstream out("calcvis.log", std::ios::app);
+                std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
+                out << name.c_str() << " ...";
+            }
 
             g_MatrixMap->CalcVis();
 
-            file = fopen("calcvis.log", "a");
-            fwrite("done\n", 5, 1, file);
-            fclose(file);
+            {
+                std::ofstream out("calcvis.log", std::ios::app);
+                out << "done\n";
+            }
         }
-        else {
+        else
+        {
             L3GRun();
         }
 
@@ -125,7 +128,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
 
         CMain::BaseDeInit();
     }
-    catch (CException *ex) {
+    catch (const CException& ex)
+    {
         ClipCursor(NULL);
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
@@ -136,9 +140,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         }
         L3GDeinit();
 
-        MessageBox(NULL, utils::from_wstring(ex->Info().Get()).c_str(), "Exception:", MB_OK);
-
-        delete ex;
+        MessageBox(NULL, utils::from_wstring(ex.Info().Get()).c_str(), "Exception:", MB_OK);
     }
     catch (...) {
 #ifdef ENABLE_HISTORY
@@ -207,15 +209,14 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CStorage stor_cfg(g_MatrixHeap);
     bool stor_cfg_present = false;
     CWStr stor_cfg_name(g_MatrixHeap);
-    wchar conf_file[80];
-    wcscpy(conf_file, FILE_CONFIGURATION_LOCATION);
+    std::wstring conf_file{FILE_CONFIGURATION_LOCATION};
     if (lang != NULL) {
-        wcscat(conf_file, lang);
-        wcscat(conf_file, L"\\");
+        conf_file += lang;
+        conf_file += L"\\";
     }
-    wcscat(conf_file, FILE_CONFIGURATION);
-    if (CFile::FileExist(stor_cfg_name, conf_file)) {
-        stor_cfg.Load(conf_file);
+    conf_file += FILE_CONFIGURATION;
+    if (CFile::FileExist(stor_cfg_name, conf_file.c_str())) {
+        stor_cfg.Load(conf_file.c_str());
         stor_cfg_present = true;
     }
 
@@ -789,29 +790,28 @@ void MatrixGameDeinit(void) {
     }
 }
 
-LPCSTR PathToOutputFiles(LPSTR dest) {
-    ITEMIDLIST *pidl;
-    static char lpPath[MAX_PATH];
+LPCSTR PathToOutputFiles(LPCSTR dest) {
+    static std::string path{};
 
-    HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
-    if (hRes == NOERROR) {
-        SHGetPathFromIDList(pidl, lpPath);
+    if (path.empty())
+    {
+        ITEMIDLIST *pidl;
 
-        strcat(lpPath, "\\SpaceRangersHD");
-        CreateDirectory(lpPath, NULL);
-        strcat(lpPath, "\\");
-        strcat(lpPath, dest);
+        HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
+        if (hRes == NOERROR)
+        {
+            char lpPath[MAX_PATH];
+            SHGetPathFromIDList(pidl, lpPath);
+
+            path = utils::format("%s\\SpaceRangersHD", lpPath);
+            CreateDirectory(path.c_str(), NULL);
+            path += "\\";
+            path += dest;
+        }
+        else {
+            path = utils::format(".\\%s", dest);
+        }
     }
-    else {
-        strcpy(lpPath, "");
-    }
 
-    LPCSTR result;
-    result = lpPath;
-
-    // FILE * fp = fopen("1.log", "w+t");
-    // fprintf(fp, "Direct3D=%s\n", result);
-    // fclose(fp);
-
-    return result;
+    return path.c_str();
 }

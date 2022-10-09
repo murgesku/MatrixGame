@@ -160,7 +160,7 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &s
         CPoint size;
         CPoint size_down;
         DWORD present;
-        wchar *name;
+        const wchar* name;
 
     } parts[9];
 

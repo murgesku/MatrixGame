@@ -39,12 +39,40 @@ if(MSVC)
 
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
 else()
-    set(COMPILE_OPTIONS
-        -fpermissive # TODO: remove and fix
-        -Wno-write-strings # TODO: remove and fix
-    )
-
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
+
+    # All the warnings below are potential bugs.
+    # -Wno-... options should be fixed and removed.
+    list(APPEND COMPILE_OPTIONS
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+
+        -Wno-unknown-pragmas
+        -Wno-reorder
+        -Wno-sign-compare
+        -Wno-unused-function
+        -Wno-unused-variable
+        -Wno-unused-but-set-variable
+        -Wno-unused-value
+        -Wno-format
+        -Wno-class-memaccess
+        -Wno-parentheses
+        -Wno-nonnull-compare
+        -Wno-switch
+        -Wno-address
+        -Wno-strict-aliasing
+        -Wno-maybe-uninitialized
+        -Wno-array-bounds
+        -Wno-use-after-free
+        -Wno-empty-body
+        -Wno-unused-parameter
+        -Wno-deprecated-copy
+        -Wno-type-limits
+        -Wno-missing-field-initializers
+        -Wno-pedantic
+    )
 endif()
 
 add_subdirectory(MatrixLib)

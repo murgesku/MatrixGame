@@ -15,55 +15,39 @@
 
 namespace Base {
 
-void CException::CreateCallTrace(void) {
-    strcpy(call_trace, generate_trace_text());
+CException::CException(const char *file, int line)
+: m_File{file}
+, m_Line{line}
+, call_trace{generate_trace_text()}
+{
 }
 
-CWStr CException::Info() {
-    return CWStr().Format(L"<s>File=<s>\nLine=<i>\n", utils::to_wstring(call_trace).c_str(), utils::to_wstring(m_File).c_str(), m_Line);
+CWStr CException::Info() const
+{
+    auto str =
+        utils::format(
+            L"%sFile=%s\nLine=%d\n",
+            utils::to_wstring(call_trace).c_str(),
+            utils::to_wstring(m_File).c_str(),
+            m_Line);
+
+    return CWStr(str.c_str());
 }
 
-CExceptionStr::CExceptionStr(const char *file, int line, const wchar *str, const wchar *str2, const wchar *str3,
-                             const wchar *str4)
-  : CException(file, line) {
-    int sme, len;
-
-    ZeroMemory(m_Str, sizeof(m_Str));
-    int maxlen = (sizeof(m_Str) >> 1) - 1;
-
-    sme = 0;
-
-    len = WStrLen(str);
-    if ((sme + len) >= maxlen)
-        len = maxlen - sme;
-    if (len > 0)
-        CopyMemory(m_Str + sme, str, len * 2);
-    sme += len;
-
-    len = WStrLen(str2);
-    if ((sme + len) >= maxlen)
-        len = maxlen - sme;
-    if (len > 0)
-        CopyMemory(m_Str + sme, str2, len * 2);
-    sme += len;
-
-    len = WStrLen(str3);
-    if ((sme + len) >= maxlen)
-        len = maxlen - sme;
-    if (len > 0)
-        CopyMemory(m_Str + sme, str3, len * 2);
-    sme += len;
-
-    len = WStrLen(str4);
-    if ((sme + len) >= maxlen)
-        len = maxlen - sme;
-    if (len > 0)
-        CopyMemory(m_Str + sme, str4, len * 2);
-    sme += len;
+CExceptionStr::CExceptionStr(
+    const char *file,
+    int line,
+    const wchar *str,
+    const wchar *str2)
+: CException(file, line)
+{
+    m_str = str;
+    m_str += str2;
 }
 
-CWStr CExceptionStr::Info() {
-    return CException::Info() + L"Text: " + m_Str;
+CWStr CExceptionStr::Info() const
+{
+    return CException::Info() + L"Text: " + m_str.c_str();
 }
 
 }  // namespace Base

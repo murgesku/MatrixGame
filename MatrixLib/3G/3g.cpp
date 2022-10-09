@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <fstream>
+
 #include "3g.pch"
 
 #include "Texture.hpp"
@@ -68,7 +70,6 @@ int D3DResource::m_TEX_cnt;
 DWORD D3DResource::m_UID_current;
 D3DResource *D3DResource::m_First;
 D3DResource *D3DResource::m_Last;
-#include <stdio.h>
 
 void D3DResource::StaticInit(void) {
     m_IB_cnt = 0;
@@ -79,34 +80,36 @@ void D3DResource::StaticInit(void) {
     m_Last = NULL;
 }
 void D3DResource::Dump(D3DResType t) {
-    char buf[65536];
-    strcpy(buf, "D3D Dump\n");
+    std::string buf{"D3D Dump\n"};
     D3DResource *el = m_First;
-    while (el) {
-        if (t == el->m_Type) {
-            int l = strlen(buf);
-            if (l < 65000) {
-                sprintf(buf + l, "%u : %s - %i\n", el->m_UID, el->m_File, el->m_Line);
+    while (el)
+    {
+        if (t == el->m_Type)
+        {
+            if (buf.length() < 65000)
+            {
+                buf += utils::format("%u : %s - %i\n", el->m_UID, el->m_File, el->m_Line);
             }
         }
         el = el->m_Next;
     }
 
-    // MessageBox(g_Wnd, buf, "D3D Dump", MB_ICONINFORMATION);
+    // MessageBox(g_Wnd, buf.c_str(), "D3D Dump", MB_ICONINFORMATION);
 
-    CBuf b(g_CacheHeap);
-    b.Len(strlen(buf));
-    memcpy(b.Get(), &buf, strlen(buf));
-    b.SaveInFile(L"debug_dump.txt");
+    std::ofstream out("debug_dump.txt");
+    out << buf;
 }
 #endif
 
 CWStr CExceptionD3D::Info() {
-    return CException::Info() + L"Text: {" + CWStr((wchar *)DXGetErrorStringW(m_Error)) + L"} " +
-           CWStr((wchar *)DXGetErrorDescriptionW(m_Error));
+    return CException::Info() +
+           utils::format(
+               L"Text: {%s} %s",
+               DXGetErrorStringW(m_Error),
+               DXGetErrorDescriptionW(m_Error)).c_str();
 }
 
-void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *captionname) {
+void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname) {
     RECT tr;
 
     L3GDeinit();
@@ -189,16 +192,23 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
                              tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     if (!g_Wnd)
+    {
         ERROR_E;
+    }
 
     GetClientRect(g_Wnd, &tr);
     if ((g_ScreenX != (tr.right - tr.left)) || (g_ScreenY != (tr.bottom - tr.top)))
-        ERROR_S(
-            L"Resolution error: expected " +
-            CWStr(g_ScreenX) + L"x" + CWStr(g_ScreenY) +
-            L", actual " +
-            CWStr((int)(tr.right - tr.left)) + L"x" + CWStr((int)(tr.bottom - tr.top))
-        );
+    {
+        auto str =
+            utils::format(
+                "Resolution error: expected %dx%d, actual %dx%d",
+                g_ScreenX,
+                g_ScreenY,
+                (int)(tr.right - tr.left),
+                (int)(tr.bottom - tr.top));
+
+        ERROR_S(utils::to_wstring(str));
+    }
 
     SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
 
@@ -325,7 +335,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *capt
 #endif
 }
 
-void L3GInitAsDLL(HINSTANCE hinst, CBlockPar &bpcfg, wchar *sysname, wchar *captionname, HWND hwnd, long FDirect3D,
+void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname, HWND hwnd, long FDirect3D,
                   long FD3DDevice) {
     // RECT tr;
 

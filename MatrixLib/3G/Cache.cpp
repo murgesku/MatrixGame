@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <fstream>
+
 #include "3g.pch"
 
 #include "Cache.hpp"
@@ -235,12 +237,12 @@ void CCacheData::Prepare() {
 void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
     DTRACE();
 
-    CWStr tstr(g_CacheHeap), tname(g_CacheHeap);
+    CWStr tstr, tname;
 
     tname = m_Name.GetStrPar(0, L"?");
 
     if (!CFile::FileExist(tstr, tname.Get(), exts, false)) {
-        ERROR_S4(L"File not found: ", tname.Get(), L"   Exts: ", exts);
+        ERROR_S(utils::format(L"File not found: %s   Exts: %s", tname.Get(), exts));
     }
 
     buf.LoadFromFile(tstr.Get());
@@ -427,13 +429,12 @@ void CCache::Destroy(CCacheData *cd) {
 #ifdef _DEBUG
 #include <stdio.h>
 void CCache::Dump(void) {
-    char buf[65536];
-    strcpy(buf, "Cache Dump\n");
+    std::string buf{"Cache Dump\n"};
     CCacheData *cd = d_First;
     int cnt = 0;
     while (cd) {
         ++cnt;
-        char *type = "Unknown       ";
+        const char* type = "Unknown       ";
 
         if (cd->m_Type == cc_Texture)
             type = "Texture       ";
@@ -444,28 +445,24 @@ void CCache::Dump(void) {
 
         std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
 
-        char *loaded;
+        const char* loaded;
         if (cd->IsLoaded())
             loaded = "+";
         else
             loaded = "-";
 
-        int l = strlen(buf);
-        if (l < 65000) {
-            sprintf(buf + l, "%s%s : %s (%s : %i)\n", loaded, type, name.c_str(), cd->d_file, cd->d_line);
+        if (buf.length() < 65000) {
+            buf += utils::format("%s%s : %s (%s : %i)\n", loaded, type, name.c_str(), cd->d_file, cd->d_line);
         }
         cd = cd->d_Next;
     }
 
-    int l = strlen(buf);
-    sprintf(buf + l, "count: %i\n", cnt);
+    buf += utils::format("count: %i\n", cnt);
 
     // MessageBox(g_Wnd, buf, "D3D Dump", MB_ICONINFORMATION);
 
-    CBuf b(g_CacheHeap);
-    b.Len(strlen(buf));
-    memcpy(b.Get(), &buf, strlen(buf));
-    b.SaveInFile(L"debug_dump.txt");
+    std::ofstream out("debug_dump.txt");
+    out << buf;
 }
 #endif
 

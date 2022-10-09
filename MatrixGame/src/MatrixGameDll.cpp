@@ -288,7 +288,7 @@ int __stdcall Run(HINSTANCE hinst, HWND hwnd, wchar *map, SRobotsSettings *set, 
     */
     //}
 
-    /*catch(CException * ex)
+    /*catch(const CException& ex)
     {
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
@@ -296,7 +296,7 @@ int __stdcall Run(HINSTANCE hinst, HWND hwnd, wchar *map, SRobotsSettings *set, 
         g_Cache->Clear();
         L3GDeinit();
 
-        CStr exs(ex->Info());
+        CStr exs(ex.Info());
         CBuf exb;
         exb.StrNZ(exs);
 
@@ -309,8 +309,6 @@ int __stdcall Run(HINSTANCE hinst, HWND hwnd, wchar *map, SRobotsSettings *set, 
 
 
         MessageBox(NULL,exs.Get(),"Exception:",MB_OK);
-
-        delete ex;
     }
     catch(...)
     {

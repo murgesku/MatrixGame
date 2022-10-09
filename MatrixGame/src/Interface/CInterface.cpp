@@ -156,7 +156,6 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
     int nElementNum = 0;
     CWStr tmpStr;
     CBlockPar *pbp1 = NULL, *pbp2 = NULL;
-    void *fn = NULL, *cl = NULL;
 
     // Loading interface file
     pbp1 = bp.BlockGet(name);
@@ -248,117 +247,117 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                     pButton->m_strName == IF_BASE_PILON3 || pButton->m_strName == IF_BASE_PILON4 ||
                     pButton->m_strName == IF_BASE_PILON5 || pButton->m_strName == IF_BASE_HEAD_EMPTY ||
                     pButton->m_strName == IF_BASE_WEAPON_EMPTY) {
-                    FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor,
+                    FSET(ON_UN_PRESS, pButton, g_MatrixMap->GetPlayerSide()->m_Constructor,
                          CConstructor::RemoteOperateUnit);
-                    FSET(ON_FOCUS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel,
+                    FSET(ON_FOCUS, pButton, g_MatrixMap->GetPlayerSide()->m_ConstructPanel,
                          CConstructorPanel::RemoteFocusElement);
-                    FSET(ON_UN_FOCUS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_ConstructPanel,
+                    FSET(ON_UN_FOCUS, pButton, g_MatrixMap->GetPlayerSide()->m_ConstructPanel,
                          CConstructorPanel::RemoteUnFocusElement);
                     pButton->m_nId = POPUP_REACTION_ELEMENT_ID;
                 }
                 else if (pButton->m_strName == IF_BASE_CONST_BUILD) {
-                    FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide()->m_Constructor,
+                    FSET(ON_UN_PRESS, pButton, g_MatrixMap->GetPlayerSide()->m_Constructor,
                          CConstructor::RemoteBuild);
                 }
                 else if (pButton->m_strName == IF_BASE_CONST_CANCEL) {
-                    FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                    FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
                 }
             }
 
             if (pButton->m_strName == IF_MAP_ZOOM_IN) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
+                FSET(ON_UN_PRESS, pButton, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomIn);
             }
             else if (pButton->m_strName == IF_MAP_ZOOM_OUT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
+                FSET(ON_UN_PRESS, pButton, &g_MatrixMap->m_Minimap, CMinimap::ButtonZoomOut);
             }
             else if (pButton->m_strName == IF_BUILD_RO) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_MatrixMap->GetPlayerSide(), CMatrixSideUnit::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_MatrixMap->GetPlayerSide(), CMatrixSideUnit::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_FROBOT_ON) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_FROBOT_OFF) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_PROTECT_ON) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_PROTECT_OFF) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_CAPTURE_ON) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_AORDER_CAPTURE_OFF) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_FIRE) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_CAPTURE) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_PATROL) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_MOVE) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_REPAIR) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_BOMB) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_CANCEL) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ORDER_STOP) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_ENTER_ROBOT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_LEAVE_ROBOT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_MAIN_SELFBOMB) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_CA) {
                 g_IFaceList->m_BuildCa = pButton;
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_CALL_FROM_HELL) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_HE) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_REPAIR) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_SHOWROBOTS_BUTT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ShowPlayerBots);
+                FSET(ON_UN_PRESS, pButton, &g_MatrixMap->m_Minimap, CMinimap::ShowPlayerBots);
             }
             else if (pButton->m_strName == IF_BUILD_TUR1) {
                 g_IFaceList->m_Turrets[0] = pButton;
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_TUR2) {
                 g_IFaceList->m_Turrets[1] = pButton;
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_TUR3) {
                 g_IFaceList->m_Turrets[2] = pButton;
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BUILD_TUR4) {
                 g_IFaceList->m_Turrets[3] = pButton;
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_MAIN_MENU_BUTTON) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList, CIFaceList::PlayerAction);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList, CIFaceList::PlayerAction);
             }
             else if (pButton->m_strName == IF_BASE_CHASSIS3) {
                 g_IFaceList->m_Chassis[0] = pButton;
@@ -436,18 +435,18 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 g_IFaceList->m_Weapon[Float2Int(pButton->m_Param2)] = pButton;
             }
             else if (pButton->m_strName == IF_BASE_UP) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Up);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList->m_RCountControl, CIFaceCounter::Up);
                 g_IFaceList->m_RCountControl->SetButtonUp(pButton);
             }
             else if (pButton->m_strName == IF_BASE_DOWN) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_IFaceList->m_RCountControl, CIFaceCounter::Down);
+                FSET(ON_UN_PRESS, pButton, g_IFaceList->m_RCountControl, CIFaceCounter::Down);
                 g_IFaceList->m_RCountControl->SetButtonDown(pButton);
             }
             else if (pButton->m_strName == IF_BASE_HISTORY_RIGHT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_ConfigHistory, CHistory::NextConfig);
+                FSET(ON_UN_PRESS, pButton, g_ConfigHistory, CHistory::NextConfig);
             }
             else if (pButton->m_strName == IF_BASE_HISTORY_LEFT) {
-                FSET(ON_UN_PRESS, pButton, cl, fn, g_ConfigHistory, CHistory::PrevConfig);
+                FSET(ON_UN_PRESS, pButton, g_ConfigHistory, CHistory::PrevConfig);
             }
 
             if (pButton->m_strName == IF_BASE_PILON_CHASSIS) {
@@ -597,7 +596,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                                                 g_MatrixMap->m_Size.y * GLOBAL_SCALE * 0.5f),
                                                     1.0f, 0xFFFFFFFF);
 
-                // FSET(ON_UN_PRESS,pStatic, cl, fn, &g_MatrixMap->m_Minimap, CMinimap::ButtonClick);
+                // FSET(ON_UN_PRESS,pStatic, &g_MatrixMap->m_Minimap, CMinimap::ButtonClick);
                 pStatic->m_iParam = IF_MAP_PANELI;
             }
             else if (pStatic->m_strName == IF_RADAR_PN) {
@@ -625,19 +624,19 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 g_IFaceList->m_RCountControl->SetImage(6, pStatic);
             }
             else if (pStatic->m_strName == IF_TITAN_PLANT) {
-                FSET(ON_PRESS, pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
+                FSET(ON_PRESS, pStatic, g_IFaceList, CIFaceList::JumpToBuilding);
             }
             else if (pStatic->m_strName == IF_PLASMA_PLANT) {
-                FSET(ON_PRESS, pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
+                FSET(ON_PRESS, pStatic, g_IFaceList, CIFaceList::JumpToBuilding);
             }
             else if (pStatic->m_strName == IF_ELECTRO_PLANT) {
-                FSET(ON_PRESS, pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
+                FSET(ON_PRESS, pStatic, g_IFaceList, CIFaceList::JumpToBuilding);
             }
             else if (pStatic->m_strName == IF_ENERGY_PLANT) {
-                FSET(ON_PRESS, pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
+                FSET(ON_PRESS, pStatic, g_IFaceList, CIFaceList::JumpToBuilding);
             }
             else if (pStatic->m_strName == IF_BASE_PLANT) {
-                FSET(ON_PRESS, pStatic, cl, fn, g_IFaceList, CIFaceList::JumpToBuilding);
+                FSET(ON_PRESS, pStatic, g_IFaceList, CIFaceList::JumpToBuilding);
             }
 
             pStatic->SetStateImage(
@@ -4445,8 +4444,7 @@ void CIFaceList::CreatePersonal() {
                 }
 
                 if (s) {
-                    void *cl, *fn;
-                    FSET(ON_PRESS, s, cl, fn, g_IFaceList, CIFaceList::JumpToRobot);
+                    FSET(ON_PRESS, s, g_IFaceList, CIFaceList::JumpToRobot);
                     s->SetVisibility(true);
                     s->m_nId = PERSONAL_ICON_ID;
                 }

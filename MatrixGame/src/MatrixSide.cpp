@@ -424,9 +424,11 @@ void CMatrixSideUnit::LogicTakt(int ms) {
 
     if (GetStatus() != SS_NONE && FLAG(g_Config.m_DIFlags, DI_SIDEINFO)) {
         g_MatrixMap->m_DI.T(CWStr(L"Side ") + m_Id,
-                            CWStr().Format(L"Titan <i>, Electronics <i>, Plasma <i>, Energy <i>", m_Resources[TITAN],
-                                           m_Resources[ELECTRONICS], m_Resources[PLASMA], m_Resources[ENERGY])
-                                    .Get());
+                            utils::format(L"Titan %d, Electronics %d, Plasma %d, Energy %d",
+                                          m_Resources[TITAN],
+                                          m_Resources[ELECTRONICS],
+                                          m_Resources[PLASMA],
+                                          m_Resources[ENERGY]).c_str());
     }
 
     if (GetStatus() != SS_NONE) {
@@ -10836,9 +10838,9 @@ bool CMatrixSideUnit::CanMoveNoEnemy(byte mm, int r1, int r2) {
 }
 
 void CMatrixSideUnit::DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar *format, ...) {
-    wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
+    const wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
                     L"mlat_Retreat", L"mlat_Capture", L"mlat_Intercept"};
-    wchar *sstate;
+    const wchar *sstate;
     if (state < 0)
         sstate = L" Cancel";
     else if (state > 0)

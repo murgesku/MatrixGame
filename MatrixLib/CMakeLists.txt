@@ -45,7 +45,6 @@ set(BASE_SOURCES
     Base/CReminder.cpp
     Base/CStorage.cpp
     Base/CWStr.cpp
-    Base/CWStrFormat.cpp
     # Base/Mem.cpp
     Base/Pack.cpp
     Base/Registry.cpp
@@ -126,7 +125,6 @@ if(MSVC)
     source_group("Bitmap\\Header Files" FILES ${BITMAP_HEADERS})
 else()
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
-    list(APPEND COMPILE_OPTIONS -fpermissive)
 endif()
 
 target_compile_options(MatrixLib PRIVATE ${COMPILE_OPTIONS})

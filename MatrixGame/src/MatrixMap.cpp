@@ -1153,10 +1153,12 @@ void CMatrixMap::BeforeDraw(void) {
             m_DI.T(L"Under cursor", L"Mesh", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
             m_DI.T(L"Under cursor",
-                   CWStr().Format(L"Robot <b=16><u>   S<b=10><i> T<i> G<i>", DWORD(m_TraceStopObj),
-                                  m_TraceStopObj->GetSide(), ((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),
-                                  ((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic())
-                           .Get(),
+                   utils::format(L"Robot %x   S%d T%d G%d",
+                                 DWORD(m_TraceStopObj),
+                                 m_TraceStopObj->GetSide(),
+                                 ((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),
+                                 ((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic())
+                           .c_str(),
                    1000);
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
@@ -3273,7 +3275,7 @@ void HelpRequestHandler(void) {
         si0.cb = sizeof(si0);
         ZeroMemory(&pi0, sizeof(pi0));
 
-        CreateProcess("Manual.exe", "", NULL, NULL, FALSE, 0, NULL, NULL, &si0, &pi0);
+        CreateProcess("Manual.exe", NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si0, &pi0);
 
         ShowWindow(g_Wnd, SW_MINIMIZE);
 
