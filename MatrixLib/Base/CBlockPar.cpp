@@ -768,8 +768,7 @@ void CBlockPar::ParPathSetAdd(const wchar *path, int pathlen, const wchar *zn, i
             ERROR_E;
         te->m_Par->Set(zn, znlen);
     }
-    catch (CException *ex) {
-        delete ex;
+    catch (const CException& ex) {
         ParPathAdd(path, pathlen, zn, znlen);
     }
 }
@@ -843,8 +842,7 @@ CBlockPar *CBlockPar::BlockPathGetAdd(const wchar *path, int pathlen) {
     try {
         return BlockPathGet(path, pathlen);
     }
-    catch (CException *ex) {
-        delete ex;
+    catch (const CException& ex) {
         return BlockPathAdd(path, pathlen);
     }
 }
