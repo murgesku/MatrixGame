@@ -265,11 +265,11 @@ public:
     virtual CWStr Info(void);
 };
 
-#define FAILED_DX(x)                                         \
-    {                                                        \
-        HRESULT hr = x;                                      \
-        if (hr != D3D_OK)                                    \
-            throw new CExceptionD3D(__FILE__, __LINE__, hr); \
+#define FAILED_DX(x)                                     \
+    {                                                    \
+        HRESULT hr = x;                                  \
+        if (hr != D3D_OK)                                \
+            throw CExceptionD3D(__FILE__, __LINE__, hr); \
     }
 
 #ifdef ASSERT_OFF

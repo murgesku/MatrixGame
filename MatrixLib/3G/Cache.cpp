@@ -237,12 +237,12 @@ void CCacheData::Prepare() {
 void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
     DTRACE();
 
-    CWStr tstr(g_CacheHeap), tname(g_CacheHeap);
+    CWStr tstr, tname;
 
     tname = m_Name.GetStrPar(0, L"?");
 
     if (!CFile::FileExist(tstr, tname.Get(), exts, false)) {
-        ERROR_S4(L"File not found: ", tname.Get(), L"   Exts: ", exts);
+        ERROR_S(utils::format(L"File not found: %s   Exts: %s", tname.Get(), exts));
     }
 
     buf.LoadFromFile(tstr.Get());
