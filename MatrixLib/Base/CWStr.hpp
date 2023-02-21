@@ -314,7 +314,6 @@ public:
         Set(zn);
         return *this;
     }
-    //      CWStr & operator = (void * zn)                                      { Set(zn); return *this; }
 
     wchar &operator[](int n)
     {
@@ -326,30 +325,13 @@ public:
         return m_data[n];
     }
 
-    friend bool operator==(const CWStr &zn1, const CWStr &zn2) {
-        int lens1 = zn1.GetLen();
-        if (lens1 != zn2.GetLen())
-            return false;
-
-        const wchar *str1 = zn1.Get();
-        const wchar *str2 = zn2.Get();
-
-        for (int i = 0; i < lens1; i++)
-            if (str1[i] != str2[i])
-                return false;
-        return true;
+    friend bool operator==(const CWStr &zn1, const CWStr &zn2)
+    {
+        return zn1.m_data == zn2.m_data;
     }
-    friend bool operator==(const CWStr &zn1, const wchar *zn2) {
-        int lens1 = zn1.GetLen();
-        if (lens1 != WStrLen(zn2))
-            return false;
-
-        const wchar *str1 = zn1.Get();
-
-        for (int i = 0; i < lens1; i++)
-            if (str1[i] != zn2[i])
-                return false;
-        return true;
+    friend bool operator==(const CWStr &zn1, const wchar *zn2)
+    {
+        return zn1.m_data == zn2;
     }
     friend bool operator==(const wchar *zn1, const CWStr &zn2) { return zn2 == zn1; }
 
@@ -469,16 +451,6 @@ public:
     }
     friend CWStr operator+(int zn, const CWStr &s) {
         CWStr str(zn, s.GetHeap());
-        str += s;
-        return str;
-    }
-    friend CWStr operator+(const CWStr &s, double zn) {
-        CWStr str(s, s.GetHeap());
-        str += zn;
-        return str;
-    }
-    friend CWStr operator+(double zn, const CWStr &s) {
-        CWStr str(zn, 8, s.GetHeap());
         str += s;
         return str;
     }
