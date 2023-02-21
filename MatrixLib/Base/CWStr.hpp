@@ -35,11 +35,6 @@ class BASE_API CWStr : public CMain {
     // as a first step - just replace custom copy-on-write with standard wide string
     std::wstring m_data;
 
-    void Tream(int len);
-    void ModifyLen(CHeap *heap, int len);
-    void ModifyLenNoCopy(CHeap *heap, int len);
-    void NewDataLen(CHeap *heap, int len);
-
     CWStr(const wchar *s1, int len1, const wchar *s2, int len2, CHeap *heap = nullptr)
     {
         m_data.clear();
@@ -484,26 +479,5 @@ public:
     }
     // lint +e1930
 };
-
-inline void CWStr::Tream(int len)
-{
-    m_data.resize(len);
-}
-
-inline void CWStr::NewDataLen(CHeap *heap, int len)
-{
-    m_data.clear();
-    m_data.resize(len);
-}
-
-inline void CWStr::ModifyLen(CHeap *heap, int len)
-{
-    m_data.resize(len);
-}
-
-inline void CWStr::ModifyLenNoCopy(CHeap *heap, int len)
-{
-    m_data.resize(len);
-}
 
 }  // namespace Base
