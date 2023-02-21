@@ -15,148 +15,29 @@
 
 namespace Base {
 
-void CWStr::Set(int zn) {
-    if (m_Data->m_Refs > 1) {
-        m_Data->RefDec();
-        NewDataLen(m_Data->m_Heap, 32);
-    }
-    else {
-        Tream(32);
-    }
-
-    wchar *tstr = m_Data->Data();
-    int tsme = m_Data->m_Len;
-
-    int fm = 0;
-    if (zn < 0) {
-        fm = 1;
-        zn = -zn;
-    }
-
-    while (zn > 0) {
-        tsme--;
-        tstr[tsme] = wchar(zn - int(zn / 10) * 10) + wchar('0');
-        zn = zn / 10;
-    }
-    if (fm) {
-        tsme--;
-        tstr[tsme] = L'-';
-    }
-    if (tsme >= m_Data->m_Len) {
-        tstr[0] = L'0';
-        tstr[1] = 0;
-        m_Data->m_Len = 1;
-        return;
-    }
-    int cnt = m_Data->m_Len - tsme;
-    for (int i = 0; i < cnt; i++)
-        tstr[i] = tstr[tsme + i];
-    m_Data->m_Len = cnt;
-    tstr[cnt] = 0;
+void CWStr::Set(int zn)
+{
+    Set(utils::format(L"%d", zn));
 }
 
-void CWStr::Set(dword zn) {
-    if (m_Data->m_Refs > 1) {
-        m_Data->RefDec();
-        NewDataLen(m_Data->m_Heap, 32);
-    }
-    else {
-        Tream(32);
-    }
-
-    wchar *tstr = m_Data->Data();
-    int tsme = m_Data->m_Len;
-
-    while (zn > 0) {
-        tsme--;
-        tstr[tsme] = wchar(zn - dword(zn / 10) * 10) + wchar('0');
-        zn = zn / 10;
-    }
-    if (tsme >= m_Data->m_Len) {
-        tstr[0] = L'0';
-        tstr[1] = 0;
-        m_Data->m_Len = 1;
-        return;
-    }
-    int cnt = m_Data->m_Len - tsme;
-    for (int i = 0; i < cnt; i++)
-        tstr[i] = tstr[tsme + i];
-    m_Data->m_Len = cnt;
-    tstr[cnt] = 0;
+void CWStr::Set(dword zn)
+{
+    Set(utils::format(L"%u", zn));
 }
 
-void CWStr::Set(double zn, int zpz) {
-    CWStr tstr;
-    int dec, sign, le;
-    int count = 0;
-    char *st = _fcvt(zn, zpz, &dec, &sign);
-    if (sign == 0)
-        ModifyLenNoCopy(m_Data->m_Heap, 0);
-    else
-        Set((wchar)'-');
-    le = strlen(st);
-    if (dec < 0) {
-        Add(L'0');
-        if (le > 0) {
-            Add(L'.');
-            Add(L'0', -dec);
-            for (int i = le - 1; i >= 0; i--)
-                if (st[i] == '0')
-                    count++;
-                else
-                    break;
-            if (le > count) {
-                for (int yu = 0; yu < le - count; yu++)
-                    Add(wchar(st[yu]));
-            }
-        }
-    }
-    else {
-        if (dec > 0) {
-            for (int yu = 0; yu < dec; yu++)
-                Add(wchar(st[yu]));
-        }
-        else {
-            Add(L'0');
-        }
-
-        for (int i = le - 1; i >= dec; i--)
-            if (st[i] == '0')
-                count++;
-            else
-                break;
-        if (dec < le - count) {
-            Add(L'.');
-            for (int yu = 0; yu < le - count - dec; yu++)
-                Add(wchar(st[dec + yu]));
-        }
-    }
+void CWStr::Set(double zn, int zpz)
+{
+    Set(utils::format(L"%.*f", zpz, zn));
 }
 
-static const wchar *Str_CH = L"0123456789ABCDEF";
-
-void CWStr::SetHex(void *zn) {
-    ModifyLenNoCopy(m_Data->m_Heap, 8);
-
-    wchar *tstr = m_Data->Data();
-    tstr[8] = 0;
-
-    dword dw = (dword)zn;
-    for (int i = 0; i < 8; i++) {
-        tstr[7 - i] = Str_CH[(dw >> (i * 4)) & 0x0f];
-    }
+void CWStr::SetHex(void *zn)
+{
+    Set(utils::format(L"%X", reinterpret_cast<dword>(zn)));
 }
 
-void CWStr::SetHex(BYTE zn) {
-    ModifyLenNoCopy(m_Data->m_Heap, 2);
-
-    wchar *tstr = m_Data->Data();
-    tstr[2] = 0;
-
-    DWORD dw = (DWORD)zn;
-    for (int i = 0; i < 2; i++) {
-        tstr[1 - i] = Str_CH[(dw >> (i * 4)) & 0x0f];
-    }
+void CWStr::SetHex(BYTE zn)
+{
+    Set(utils::format(L"%X", zn));
 }
 
 CWStr &CWStr::Add(const CWStr &cstr) {
