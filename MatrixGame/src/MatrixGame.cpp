@@ -142,6 +142,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
 
         MessageBox(NULL, utils::from_wstring(ex.Info().Get()).c_str(), "Exception:", MB_OK);
     }
+    catch (const std::exception& e)
+    {
+        MessageBox(NULL, e.what(), "Exception:", MB_OK);
+    }
     catch (...) {
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
