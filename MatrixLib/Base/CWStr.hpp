@@ -206,6 +206,7 @@ public:
             return m_Data->Data();
     }
     int GetLen(void) const { return m_Data->m_Len; }
+    void RawSetLen(int len) { m_Data->m_Len = len; }
 
     int GetInt(void) const;
     DWORD GetDword(void) const;
@@ -302,7 +303,7 @@ public:
             ERROR_E;
         }
         else
-            return (m_Data->Data())[n];
+            return (GetBuf())[n];
     }
 
     friend bool operator==(const CWStr &zn1, const CWStr &zn2) {
