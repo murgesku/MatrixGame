@@ -31,133 +31,126 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     return !std::wcscmp(s1, s2);
 }
 
-struct CWStrData {
-    CHeap *m_Heap;
-    int m_Refs;
-    int m_Len;
-    int m_Max;
-
-    wchar *Data() { return (wchar *)(this + 1); }
-
-    void RefDecAndDelete(void) {
-        if ((--m_Refs) <= 0)
-            HFree(this, m_Heap);
-    }
-    void RefDec(void) { --m_Refs; };
-};
-
 class BASE_API CWStr : public CMain {
-    CWStrData *m_Data;
+    // as a first step - just replace custom copy-on-write with standard wide string
+    std::wstring m_data;
 
     void Tream(int len);
     void ModifyLen(CHeap *heap, int len);
     void ModifyLenNoCopy(CHeap *heap, int len);
     void NewDataLen(CHeap *heap, int len);
 
-    CWStr(const wchar *s1, int len1, const wchar *s2, int len2, CHeap *heap) {
-        NewDataLen(heap, len1 + len2);
-        memcpy(m_Data->Data(), s1, len1 * sizeof(wchar));
-        memcpy(m_Data->Data() + len1, s2, len2 * sizeof(wchar));
-        m_Data->Data()[m_Data->m_Len] = 0;
+    CWStr(const wchar *s1, int len1, const wchar *s2, int len2, CHeap *heap = nullptr)
+    {
+        m_data.clear();
+        m_data += std::wstring(s1, len1);
+        m_data += std::wstring(s2, len2);
     }
 
 public:
-    explicit CWStr(CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, 0);
-        m_Data->Data()[0] = 0;
+    explicit CWStr(CHeap *heap = nullptr)
+    : CMain{}
+    {
     }
-    CWStr(const std::wstring& str) : CWStr(str.c_str()) {}
 
-    CWStr(const CWStr &s) : CMain(), m_Data(s.m_Data) { ++s.m_Data->m_Refs; }
-    explicit CWStr(const wchar *s, CHeap *heap = NULL) : CMain() {
-        int len = WStrLen(s);
-        NewDataLen(heap, len);
-        memcpy(m_Data->Data(), s, (len + 1) * sizeof(wchar));
+    CWStr(const std::wstring& str) : CWStr(str.c_str())
+    {
     }
-    CWStr(const wchar *s, int len, CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, len);
-        memcpy(m_Data->Data(), s, len * sizeof(wchar));
-        m_Data->Data()[len] = 0;
+
+    CWStr(const CWStr &s)
+    : CMain{}
+    , m_data(s.m_data)
+    {
     }
-    explicit CWStr(wchar sim, CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, 1);
-        *m_Data->Data() = sim, *(m_Data->Data() + 1) = 0;
+
+    explicit CWStr(const wchar *s, CHeap *heap = NULL)
+    : CMain{}
+    , m_data{s}
+    {
     }
-    CWStr(wchar sim, int count, CHeap *heap = NULL) {
-        NewDataLen(heap, count);
-        for (int i = 0; i < count; i++) {
-            m_Data->Data()[i] = sim;
-        }
-        m_Data->Data()[count] = 0;
+
+    CWStr(const wchar *s, int len, CHeap *heap = NULL)
+    : CMain{}
+    , m_data{s, static_cast<size_t>(len)}
+    {
     }
-    explicit CWStr(int zn, CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, 32);
+
+    explicit CWStr(wchar sim, CHeap *heap = NULL)
+    : CMain{}
+    , m_data(size_t{1}, sim)
+    {
+    }
+
+    CWStr(wchar sim, int count, CHeap *heap = NULL)
+    : CMain{}
+    , m_data(static_cast<size_t>(count), sim)
+    {
+    }
+
+    explicit CWStr(int zn, CHeap *heap = NULL)
+    : CMain{}
+    {
         Set(zn);
     }
-    explicit CWStr(DWORD zn, CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, 32);
+
+    explicit CWStr(DWORD zn, CHeap *heap = NULL)
+    : CMain{}
+    {
         Set(zn);
     }
-    explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL) : CMain() {
-        NewDataLen(heap, 32);
+
+    explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL)
+    : CMain{}
+    {
         Set(zn, zpz);
     }
 
-    // lint -save -e1740
-    ~CWStr() { m_Data->RefDecAndDelete(); }
-    // lint -restore
+    ~CWStr() = default;
 
-    CHeap *GetHeap(void) const { return m_Data->m_Heap; }
+    CHeap* GetHeap() const
+    {
+        return nullptr;
+    }
 
     // Clear - Очищает строку
-    void Clear(void) { ModifyLenNoCopy(GetHeap(), 0); }
+    void Clear()
+    {
+        m_data.clear();
+    }
 
-    void SetLen(int len) {
-        ModifyLen(m_Data->m_Heap, len);
-        m_Data->Data()[len] = 0;
+    void SetLen(int len)
+    {
+        m_data.resize(len);
     };
 
     void Set(const std::wstring& str)
     {
-        Set(str.c_str());
+        m_data = str;
     }
 
-    void Set(const CWStr &s) {
-        if (m_Data != s.m_Data) {
-            m_Data->RefDecAndDelete();
-            m_Data = s.m_Data;
-            ++s.m_Data->m_Refs;
-        }
+    void Set(const CWStr &s)
+    {
+        m_data = s.m_data;
     }
+
     void Set(const wchar *s) {
-        if (m_Data->Data() != s) {
-            int len = WStrLen(s);
-            ModifyLenNoCopy(m_Data->m_Heap, len);
-            memcpy(m_Data->Data(), s, (len + 1) * sizeof(wchar));
-        }
+        m_data = s;
     }
-    void Set(const wchar *s, int len) {
-        if (m_Data->Data() == s) {
-            ModifyLen(GetHeap(), len);
-        }
-        else {
-            ModifyLenNoCopy(m_Data->m_Heap, len);
-            memcpy(m_Data->Data(), s, len * sizeof(wchar));
-        }
-        m_Data->Data()[len] = 0;
+    void Set(const wchar *s, int len)
+    {
+        m_data = std::wstring{s, static_cast<size_t>(len)};
     }
-    void Set(wchar sim) {
-        ModifyLenNoCopy(m_Data->m_Heap, 1);
-        m_Data->Data()[0] = sim;
-        m_Data->Data()[1] = 0;
+
+    void Set(wchar sim)
+    {
+        m_data = std::wstring{1, sim};
     }
-    void Set(wchar sim, int count) {
-        ModifyLenNoCopy(m_Data->m_Heap, count);
-        for (int i = 0; i < count; i++) {
-            m_Data->Data()[i] = sim;
-        }
-        m_Data->Data()[count] = 0;
+
+    void Set(wchar sim, int count)
+    {
+        m_data = std::wstring(static_cast<size_t>(count), sim);
     }
+
     void Set(int zn);
     void Set(dword zn);
     void Set(double zn, int zpz = 8);
@@ -191,22 +184,39 @@ public:
         return *this;
     }
 
-    const wchar *Get(void) const { return m_Data->Data(); }
-    const wchar *GetEx(void) const {
-        if (IsEmpty())
-            return NULL;
-        else
-            return m_Data->Data();
+    const wchar *Get(void) const
+    {
+        return m_data.c_str();
     }
-    wchar *GetBuf(void) { return m_Data->Data(); }
-    wchar *GetBufEx(void) {
-        if (IsEmpty())
-            return NULL;
+
+    const wchar *GetEx(void) const
+    {
+        if (m_data.empty())
+            return nullptr;
         else
-            return m_Data->Data();
+            return m_data.c_str();
     }
-    int GetLen(void) const { return m_Data->m_Len; }
-    void RawSetLen(int len) { m_Data->m_Len = len; }
+    wchar *GetBuf(void)
+    {
+        return const_cast<wchar*>(m_data.data());
+    }
+    wchar *GetBufEx(void)
+    {
+        if (m_data.empty())
+            return nullptr;
+        else
+            return const_cast<wchar*>(m_data.data());
+    }
+
+    int GetLen(void) const
+    {
+        return m_data.length();
+    }
+
+    void RawSetLen(int len)
+    {
+        m_data.resize(len);
+    }
 
     int GetInt(void) const;
     DWORD GetDword(void) const;
@@ -215,7 +225,10 @@ public:
     DWORD GetHexUnsigned(void) const;
 
     bool IsOnlyInt(void) const;
-    bool IsEmpty(void) const { return GetLen() == 0; }
+    bool IsEmpty(void) const
+    {
+        return m_data.empty();
+    }
 
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
     CWStr &TrimFull(void);  // Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
@@ -296,14 +309,11 @@ public:
         Set(zn);
         return *this;
     }
-    //		CWStr & operator = (void * zn)										{ Set(zn); return *this; }
+    //      CWStr & operator = (void * zn)                                      { Set(zn); return *this; }
 
-    wchar &operator[](int n) {
-        if (m_Data == NULL) {
-            ERROR_E;
-        }
-        else
-            return (GetBuf())[n];
+    wchar &operator[](int n)
+    {
+        return m_data[n];
     }
 
     friend bool operator==(const CWStr &zn1, const CWStr &zn2) {
@@ -421,7 +431,7 @@ public:
         Add(zn);
         return *this;
     }
-    //		CWStr & operator +=(void * zn)									{ Add(zn); return *this; }
+    //      CWStr & operator +=(void * zn)                                  { Add(zn); return *this; }
 
     friend CWStr operator+(const CWStr &s1, const CWStr &s2) {
         return CWStr(s1.Get(), s1.GetLen(), s2.Get(), s2.GetLen(), s1.GetHeap());
@@ -462,56 +472,38 @@ public:
         str += s;
         return str;
     }
-    //		BASE_API friend CWStr operator + (void * zn,CWStr & s)						{ CWStr str(zn,s.m_Heap); str+=s; return
-    //str; } 		BASE_API friend CWStr operator + (CWStr & s,void * zn)						{ s.Add(zn); return s; }
+    //      BASE_API friend CWStr operator + (void * zn,CWStr & s)                      { CWStr str(zn,s.m_Heap); str+=s; return
+    //str; }        BASE_API friend CWStr operator + (CWStr & s,void * zn)                      { s.Add(zn); return s; }
 
-    // operator int (void) const											{ return GetInt(); }
-    // operator double (void) const										{ return GetDouble(); }
+    // operator int (void) const                                            { return GetInt(); }
+    // operator double (void) const                                     { return GetDouble(); }
     // lint -e1930
-    operator const wchar *(void) const { return Get(); }
+    operator const wchar*() const
+    {
+        return m_data.c_str();
+    }
     // lint +e1930
 };
 
-inline void CWStr::Tream(int len) {
-    if (m_Data->m_Len < len && len >= m_Data->m_Max) {
-        m_Data->m_Len = len;
-        m_Data->m_Max = len + 16;
-        m_Data = (CWStrData *)HAllocEx(m_Data, sizeof(CWStrData) + (len + 16 + 1) * 2, m_Data->m_Heap);
-    }
-    else {
-        m_Data->m_Len = len;
-    }
+inline void CWStr::Tream(int len)
+{
+    m_data.resize(len);
 }
 
-inline void CWStr::NewDataLen(CHeap *heap, int len) {
-    m_Data = (CWStrData *)HAlloc(sizeof(CWStrData) + (len + 16 + 1) * 2, heap);
-    m_Data->m_Heap = heap;
-    m_Data->m_Refs = 1;
-    m_Data->m_Len = len;
-    m_Data->m_Max = len + 16;
+inline void CWStr::NewDataLen(CHeap *heap, int len)
+{
+    m_data.clear();
+    m_data.resize(len);
 }
 
-inline void CWStr::ModifyLen(CHeap *heap, int len) {
-    if (m_Data->m_Refs > 1) {
-        CWStrData *olddata = m_Data;
-        olddata->RefDec();
-        NewDataLen(heap, len);
-        memcpy(m_Data->Data(), olddata->Data(), (std::min(len, olddata->m_Len) + 1) * sizeof(wchar));
-    }
-    else {
-        Tream(len);
-    }
+inline void CWStr::ModifyLen(CHeap *heap, int len)
+{
+    m_data.resize(len);
 }
 
-inline void CWStr::ModifyLenNoCopy(CHeap *heap, int len) {
-    if (m_Data->m_Refs > 1) {
-        CWStrData *olddata = m_Data;
-        olddata->RefDec();
-        NewDataLen(heap, len);
-    }
-    else {
-        Tream(len);
-    }
+inline void CWStr::ModifyLenNoCopy(CHeap *heap, int len)
+{
+    m_data.resize(len);
 }
 
 }  // namespace Base
