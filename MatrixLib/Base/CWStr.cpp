@@ -42,66 +42,70 @@ void CWStr::SetHex(BYTE zn)
 
 CWStr& CWStr::Add(const std::wstring& str)
 {
-    int addlen = str.length();
-    if (addlen < 1)
-        return *this;
-    int oldlen = GetLen();
-    ModifyLen(GetHeap(), oldlen + addlen);
-    memcpy(GetBuf() + oldlen, str.c_str(), addlen * sizeof(wchar) + sizeof(wchar));
-
+    m_data += str;
     return *this;
 }
 
 CWStr &CWStr::Add(const CWStr &cstr)
 {
-    Add(std::wstring{cstr.Get()});
+    m_data += cstr.Get();
     return *this;
 }
 
 CWStr &CWStr::Add(const wchar *str)
 {
-    Add(std::wstring{str});
+    m_data += str;
     return *this;
 }
 
 CWStr &CWStr::Add(const wchar *str, int lstr)
 {
-    Add(std::wstring{str, static_cast<size_t>(lstr)});
+    m_data += std::wstring{str, static_cast<size_t>(lstr)};
     return *this;
 }
 
 CWStr &CWStr::Add(wchar sim)
 {
-    Add(std::wstring(1, sim));
+    m_data += std::wstring(1, sim);
     return *this;
 }
 
 CWStr &CWStr::Add(wchar sim, int count)
 {
-    Add(std::wstring(count, sim));
+    m_data += std::wstring(count, sim);
     return *this;
 }
 
-int CWStr::GetInt() const {
-    int tlen = GetLen();
-    if (tlen < 1)
+int CWStr::GetInt() const
+{
+    if (m_data.empty())
+    {
         return 0;
-    const wchar *tstr = Get();
-
-    int zn = 0;
-    wchar ch;
-    for (int i = 0; i < tlen; i++) {
-        ch = tstr[i] - '0';
-        if (ch < 10)
-            zn = zn * 10 + ch;
     }
-    for (int i = 0; i < tlen; i++)
-        if (tstr[i] == '-') {
-            zn = -zn;
-            break;
+
+    int value = 0;
+    bool sign = false;
+
+    // the original algorithm skips all the non-digit chars and treats
+    // '-' at any position as a number sign.
+    // needless to say - it's a bullshit, but as other code expectes it
+    // to work like this, so...
+    for (const auto sym : m_data)
+    {
+        wchar ch = sym - '0';
+        if (ch < 10)
+        {
+            value = value * 10 + ch;
         }
 
-    return zn;
+        if (sym == '-')
+        {
+            sign = true;
+        }
+
+    }
+
+    return sign ? -value : value;
 }
 
 DWORD CWStr::GetDword() const {
@@ -228,7 +232,7 @@ CWStr &CWStr::Trim() {
             break;
     }
     if (i == tlen) {
-        ModifyLenNoCopy(GetHeap(), 0);
+        m_data.clear();
         return *this;
     }
     int u;
@@ -237,12 +241,13 @@ CWStr &CWStr::Trim() {
             break;
     }
     tlen = u - i + 1;
-    if (tlen < 1) {
-        ModifyLenNoCopy(GetHeap(), 0);
+    if (tlen < 1)
+    {
+        m_data.clear();
         return *this;
     }
 
-    ModifyLen(GetHeap(), tlen);
+    m_data.resize(tlen);
     if (i == 0) {
         return *this;
     }
@@ -258,7 +263,7 @@ CWStr &CWStr::TrimFull() {
     if (tlen < 4)
         return *this;
 
-    ModifyLen(GetHeap(), tlen);
+    m_data.resize(tlen);
     wchar *tstr = GetBuf();
 
     for (int i = 2; i < tlen - 1; i++) {
@@ -277,7 +282,6 @@ void CWStr::TabToSpace() {
     int tlen = GetLen();
     if (tlen < 1)
         return;
-    ModifyLen(GetHeap(), tlen);
     wchar *tstr = GetBuf();
 
     for (int i = 0; i < tlen; i++)
@@ -285,45 +289,15 @@ void CWStr::TabToSpace() {
             tstr[i] = ' ';
 }
 
-CWStr &CWStr::Del(int sme, int len) {
-    int ost_sme = sme + len;
-    int ost_len = GetLen() - ost_sme;
-    if (ost_len > 0) {
-        ModifyLen(GetHeap(), GetLen());
-        memcpy(GetBuf() + sme, GetBuf() + ost_sme, sizeof(wchar) + sizeof(wchar) * ost_len);
-        RawSetLen(GetLen() - len);
-        GetBuf()[GetLen()] = 0;
-    }
-    else {
-        ModifyLen(GetHeap(), GetLen());
-        RawSetLen(GetLen() - len);
-        GetBuf()[GetLen()] = 0;
-        if (GetLen() < 1)
-            ModifyLenNoCopy(GetHeap(), 0);
-    }
-
+CWStr &CWStr::Del(int sme, int len)
+{
+    m_data.erase(sme, static_cast<size_t>(len));
     return *this;
 }
 
-CWStr &CWStr::Insert(int sme, const wchar *str, int len) {
-    if (len < 1)
-        return *this;
-    int oldlen = GetLen();
-    if (oldlen < 1) {
-        Set(str, len);
-        return *this;
-    }
-    ModifyLen(GetHeap(), oldlen + len);
-    wchar *tstr = GetBuf();
-    if (sme > oldlen)
-        sme = oldlen;
-
-    for (int i = oldlen; i >= sme; i--)
-        tstr[i + len] = tstr[i];
-
-    for (int i = 0; i < len; i++)
-        tstr[sme + i] = str[i];
-
+CWStr &CWStr::Insert(int sme, const wchar *str, int len)
+{
+    m_data.insert(sme, str, static_cast<size_t>(len));
     return *this;
 }
 
@@ -385,8 +359,6 @@ void CWStr::LowerCase(int sme, int len) {
     if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
         return;
 
-    ModifyLen(GetHeap(), GetLen());
-
     if (GetVersion() < 0x80000000)
         CharLowerBuffW(GetBuf() + sme, len);
     else {
@@ -402,8 +374,6 @@ void CWStr::UpperCase(int sme, int len) {
         len = GetLen() - sme;
     if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
         return;
-
-    ModifyLen(GetHeap(), GetLen());
 
     if (GetVersion() < 0x80000000)
         CharUpperBuffW(GetBuf() + sme, len);
