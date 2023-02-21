@@ -380,7 +380,7 @@ void CMatrixMap::CalcVis(void) {
     HFree(visibilityGroup, g_MatrixHeap);
 
     CStorage stor(g_MatrixHeap);
-    stor.Load(MapName());
+    stor.Load(MapName().c_str());
 
     stor.DelRecord(DATA_GROUPS_VIS);
 

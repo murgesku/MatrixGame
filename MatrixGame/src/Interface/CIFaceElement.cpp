@@ -223,7 +223,7 @@ void CIFaceElement::Render(BYTE alpha) {
 #if defined _TRACE || defined _DEBUG
         }
         catch (...) {
-            ERROR_S(L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">");
+            ERROR_S((L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">").c_str());
         }
 #endif
 

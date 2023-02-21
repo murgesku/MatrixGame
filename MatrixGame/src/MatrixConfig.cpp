@@ -462,7 +462,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
             const CWStr &par = bp_tmp->ParGet(i);
@@ -486,7 +486,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT)) {
             const CWStr &par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
@@ -519,7 +519,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         // if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT))
         //{
         //    const CWStr &par = bp_tmp->ParGet(i);
@@ -554,7 +554,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
             const CWStr &par = bp_tmp->ParGet(i);
@@ -578,7 +578,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
             const CWStr &par = bp_tmp->ParGet(i);
@@ -595,7 +595,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
             const CWStr &par = bp_tmp->ParGet(i);
@@ -609,7 +609,7 @@ void CMatrixConfig::ReadParams(void) {
 
     n = bp_tmp->ParCount();
     for (int i = 0; i < n; ++i) {
-        const wchar *name = bp_tmp->ParGetName(i);
+        const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
             const CWStr &par = bp_tmp->ParGet(i);

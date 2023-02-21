@@ -96,7 +96,7 @@ void CFile::Init(const wchar *filename, int len) {
 void CFile::Open(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW((const wchar *)m_FileName, GENERIC_READ | GENERIC_WRITE, shareMode, NULL,
+            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
@@ -455,7 +455,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     CWStr filename(str, lenfile, outname.GetHeap());
 
     WIN32_FIND_DATAW fd;
-    HANDLE fh = FindFirstFileW(filename, &fd);
+    HANDLE fh = FindFirstFileW(filename.c_str(), &fd);
     if (fh != INVALID_HANDLE_VALUE) {
         FindClose(fh);
         if (withpar)

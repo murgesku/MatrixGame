@@ -114,7 +114,7 @@ void CMatrixCursor::Select(const wchar *name) {
         CFile::FileExist(tn, n.Get(), CacheExtsTex);
         DCP();
 
-        bm.LoadFromPNG(tn);
+        bm.LoadFromPNG(tn.c_str());
         DCP();
 
         int i = 0, x = 0, y = 0;

@@ -94,7 +94,7 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
     DWORD time2 = timeGetTime();
 
-    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1, g_CacheHeap), 5000);
+    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1, g_CacheHeap).c_str(), 5000);
 }
 
 static void hMusic(const Base::CWStr &cmd, const Base::CWStr &params) {
@@ -110,7 +110,7 @@ static void hCalcVis(const Base::CWStr &cmd, const Base::CWStr &params) {
 
 static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params) {
     CWStr name(g_CacheHeap);
-    if (CFile::FileExist(name, params)) {
+    if (CFile::FileExist(name, params.c_str())) {
         CBuf fil(g_CacheHeap);
         CStorage out(g_CacheHeap);
         fil.LoadFromFile(params);
@@ -123,9 +123,9 @@ static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params) {
         b->AddArray();
         b->AddToArray<BYTE>(0, (BYTE *)fil.Get(), fil.Len());
 
-        CacheReplaceFileExt(name, params, L".strg");
+        CacheReplaceFileExt(name, params.c_str(), L".strg");
 
-        out.Save(name, true);
+        out.Save(name.c_str(), true);
     }
 }
 
@@ -156,7 +156,7 @@ void CDevConsole::ShowHelp(void) {
         else if (i == 2)
             desc = L"Switch cannons logic : [0|1]";
 
-        g_MatrixMap->m_DI.T(m_Commands[i].cmd, desc, 5000);
+        g_MatrixMap->m_DI.T(m_Commands[i].cmd, desc.c_str(), 5000);
 
         ++i;
     }

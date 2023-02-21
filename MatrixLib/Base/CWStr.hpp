@@ -52,7 +52,7 @@ public:
     {
     }
 
-    CWStr(const CWStr &s)
+    CWStr(const CWStr &s, CHeap *heap = NULL)
     : CMain{}
     , m_data(s.m_data)
     {
@@ -177,6 +177,16 @@ public:
         s.SetHex(zn);
         Add(s);
         return *this;
+    }
+
+    const wchar* c_str() const
+    {
+        return m_data.c_str();
+    }
+
+    const std::wstring& to_wstring() const
+    {
+        return m_data;
     }
 
     const wchar *Get(void) const
@@ -307,6 +317,11 @@ public:
     //      CWStr & operator = (void * zn)                                      { Set(zn); return *this; }
 
     wchar &operator[](int n)
+    {
+        return m_data[n];
+    }
+
+    const wchar &operator[](int n) const
     {
         return m_data[n];
     }
@@ -448,7 +463,7 @@ public:
         return str;
     }
     friend CWStr operator+(const CWStr &s, int zn) {
-        CWStr str(s, s.GetHeap());
+        CWStr str(s);
         str += zn;
         return str;
     }
@@ -467,17 +482,6 @@ public:
         str += s;
         return str;
     }
-    //      BASE_API friend CWStr operator + (void * zn,CWStr & s)                      { CWStr str(zn,s.m_Heap); str+=s; return
-    //str; }        BASE_API friend CWStr operator + (CWStr & s,void * zn)                      { s.Add(zn); return s; }
-
-    // operator int (void) const                                            { return GetInt(); }
-    // operator double (void) const                                     { return GetDouble(); }
-    // lint -e1930
-    operator const wchar*() const
-    {
-        return m_data.c_str();
-    }
-    // lint +e1930
 };
 
 }  // namespace Base

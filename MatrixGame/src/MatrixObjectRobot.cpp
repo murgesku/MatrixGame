@@ -345,7 +345,7 @@ void CMatrixRobot::RNeed(dword need) {
                     }
                 }
 
-                m_Unit[i].m_Graph = LoadObject((path + L".vo").Get(), g_MatrixHeap, true, name);
+                m_Unit[i].m_Graph = LoadObject((path + L".vo").Get(), g_MatrixHeap, true, name.c_str());
 
                 m_Unit[i].m_Graph->SetAnimByName(ANIMATION_NAME_IDLE);
             }
