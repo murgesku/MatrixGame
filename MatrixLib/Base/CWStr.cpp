@@ -274,7 +274,7 @@ CWStr &CWStr::TrimFull() {
             i--;
         }
     }
-    RawSetLen(tlen);
+    m_data.resize(tlen);
     return *this;
 }
 
