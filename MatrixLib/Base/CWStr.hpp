@@ -194,33 +194,14 @@ public:
         return m_data.c_str();
     }
 
-    const wchar *GetEx(void) const
-    {
-        if (m_data.empty())
-            return nullptr;
-        else
-            return m_data.c_str();
-    }
     wchar *GetBuf(void)
     {
         return const_cast<wchar*>(m_data.data());
-    }
-    wchar *GetBufEx(void)
-    {
-        if (m_data.empty())
-            return nullptr;
-        else
-            return const_cast<wchar*>(m_data.data());
     }
 
     int GetLen(void) const
     {
         return m_data.length();
-    }
-
-    void RawSetLen(int len)
-    {
-        m_data.resize(len);
     }
 
     int GetInt(void) const;
