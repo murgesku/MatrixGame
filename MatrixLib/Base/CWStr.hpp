@@ -164,6 +164,7 @@ public:
     void SetHex(void *zn);
     void SetHex(BYTE zn);
 
+    CWStr& Add(const std::wstring& str);
     CWStr &Add(const CWStr &cstr);
     CWStr &Add(const wchar *str);
     CWStr &Add(const wchar *str, int lstr);

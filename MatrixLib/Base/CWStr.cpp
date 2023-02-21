@@ -40,61 +40,45 @@ void CWStr::SetHex(BYTE zn)
     Set(utils::format(L"%X", zn));
 }
 
-CWStr &CWStr::Add(const CWStr &cstr) {
-    int oldlen = GetLen();
-    int addlen = cstr.GetLen();
-    ModifyLen(m_Data->m_Heap, oldlen + addlen);
-
-    memcpy(m_Data->Data() + oldlen, cstr.Get(), addlen * 2 + 2);
-
-    return *this;
-}
-
-CWStr &CWStr::Add(const wchar *str) {
-    int addlen = WStrLen(str);
+CWStr& CWStr::Add(const std::wstring& str)
+{
+    int addlen = str.length();
     if (addlen < 1)
         return *this;
     int oldlen = GetLen();
     ModifyLen(GetHeap(), oldlen + addlen);
-    memcpy(m_Data->Data() + oldlen, str, addlen * sizeof(wchar) + sizeof(wchar));
+    memcpy(m_Data->Data() + oldlen, str.c_str(), addlen * sizeof(wchar) + sizeof(wchar));
 
     return *this;
 }
 
-CWStr &CWStr::Add(const wchar *str, int lstr) {
-    if (lstr < 1)
-        return *this;
-
-    int oldlen = GetLen();
-
-    ModifyLen(GetHeap(), oldlen + lstr);
-
-    memcpy(m_Data->Data() + oldlen, str, lstr * sizeof(wchar));
-    m_Data->Data()[m_Data->m_Len] = 0;
-
+CWStr &CWStr::Add(const CWStr &cstr)
+{
+    Add(std::wstring{cstr.Get()});
     return *this;
 }
 
-CWStr &CWStr::Add(wchar sim) {
-    ModifyLen(GetHeap(), GetLen() + 1);
-
-    m_Data->Data()[m_Data->m_Len - 1] = sim;
-    m_Data->Data()[m_Data->m_Len] = 0;
-
+CWStr &CWStr::Add(const wchar *str)
+{
+    Add(std::wstring{str});
     return *this;
 }
 
-CWStr &CWStr::Add(wchar sim, int count) {
-    if (count < 1)
-        return *this;
+CWStr &CWStr::Add(const wchar *str, int lstr)
+{
+    Add(std::wstring{str, static_cast<size_t>(lstr)});
+    return *this;
+}
 
-    int oldlen = GetLen();
-    ModifyLen(GetHeap(), oldlen + count);
+CWStr &CWStr::Add(wchar sim)
+{
+    Add(std::wstring(1, sim));
+    return *this;
+}
 
-    for (int i = 0; i < count; i++)
-        m_Data->Data()[oldlen + i] = sim;
-    m_Data->Data()[m_Data->m_Len] = 0;
-
+CWStr &CWStr::Add(wchar sim, int count)
+{
+    Add(std::wstring(count, sim));
     return *this;
 }
 
