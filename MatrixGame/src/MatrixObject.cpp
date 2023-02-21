@@ -1385,7 +1385,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                     m_PrevStateRobotsInRadius = 0;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 6) {
-                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(5, L":"), GetGeoCenter());
+                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(5, L":").c_str(), GetGeoCenter());
                     }
                 }
             }

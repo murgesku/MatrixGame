@@ -1085,7 +1085,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
         m_SkyAngle = GRAD2RAD((float)skbp->ParGet(L"Angle").GetDouble());
         m_SkyDeltaAngle = GRAD2RAD((float)skbp->ParGet(L"DeltaAngle").GetDouble());
 
-        m_Reflection = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, skbp->ParGet(L"Reflection"));
+        m_Reflection = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, skbp->ParGet(L"Reflection").c_str());
 
         if (g_Config.m_SkyBox != 0) {
             for (int idx = 0; idx < 4; ++idx) {
@@ -1778,7 +1778,7 @@ void CMatrixMap::Restart(void) {
 
     CStorage stor(g_CacheHeap);
 
-    stor.Load(MapName());
+    stor.Load(MapName().c_str());
 
     ReloadDynamics(stor, RS_SIDEAI);
     ReloadDynamics(stor, RS_RESOURCES);

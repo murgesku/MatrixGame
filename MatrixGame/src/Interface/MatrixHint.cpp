@@ -25,11 +25,11 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &s
 
         if (bph) {
             CWStr src(g_CacheHeap);
-            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE), L"png")) {
+            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png")) {
                 // return NULL;
             }
             else {
-                bmps.LoadFromPNG(src);
+                bmps.LoadFromPNG(src.c_str());
                 bmps.SwapByte(CPoint(0, 0), bmps.Size(), 0, 2);
             }
         }
@@ -419,12 +419,12 @@ void CMatrixHint::PreloadBitmaps(void) {
     m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
     CWStr src(g_CacheHeap);
     for (int i = 0; i < m_BitmapsCnt; ++i) {
-        if (!CFile::FileExist(src, bph->ParGet(i), L"png")) {
-            ERROR_S(L"Hint bitmap not found:" + *m_Bitmaps[i].name);
+        if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
+            ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
         }
         m_Bitmaps[i].name = &bph->ParGetName(i);
         m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
-        m_Bitmaps[i].bmp->LoadFromPNG(src);
+        m_Bitmaps[i].bmp->LoadFromPNG(src.c_str());
         m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
                                    2);  // store format should be [A]RGB, not [A]BGR
     }

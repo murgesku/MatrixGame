@@ -386,7 +386,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     CBlockPar &bb = *bp_in.BlockGet(PAR_SOURCE_BILLBOARDS);
     CBlockPar &tex = *bb.BlockGet(PAR_SOURCE_BILLBOARDS_TEXTURES);
 
-    CTextureManaged *ts = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXSORT));
+    CTextureManaged *ts = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXSORT).c_str());
     // CTextureManaged *ti = (CTextureManaged *)g_Cache->Get(cc_TextureManaged,
     // bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXINTENSE));
     ts->Preload();

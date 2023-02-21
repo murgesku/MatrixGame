@@ -118,7 +118,7 @@ void CTerSurface::Load(BYTE *raw) {
                 CWStr gloss_name(g_CacheHeap);
                 CacheReplaceFileNameAndExt(gloss_name, name.Get(), parv.Get());
                 if (!parv.IsEmpty() && CFile::FileExist(name, gloss_name.Get(), L"png~dds")) {
-                    m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name);
+                    m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name.c_str());
                     SETFLAG(m_Flags, SURFF_GLOSS);
                 }
             }
@@ -213,7 +213,7 @@ void CTerSurface::LoadM(BYTE *raw) {
                 CWStr gloss_name(g_CacheHeap);
                 CacheReplaceFileNameAndExt(gloss_name, name.Get(), parv.Get());
                 if (CFile::FileExist(name, gloss_name.Get(), L"png~dds")) {
-                    m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name);
+                    m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name.c_str());
                     SETFLAG(m_Flags, SURFF_GLOSS);
                 }
             }

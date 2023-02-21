@@ -132,7 +132,7 @@ bool CIFaceButton::OnMouseMove(CPoint mouse) {
         if (g_IFaceList->m_CurrentHint == NULL && m_Hint.HintTemplate != L"") {
             if (g_IFaceList->CheckShowHintLogic(m_strName)) {
                 g_IFaceList->AddHintReplacements(m_strName);
-                CMatrixHint *hint = CMatrixHint::Build(m_Hint.HintTemplate, m_strName);
+                CMatrixHint *hint = CMatrixHint::Build(m_Hint.HintTemplate, m_strName.c_str());
                 int x = Float2Int(m_PosElInX) + m_Hint.x;
                 int y = Float2Int(m_PosElInY) + m_Hint.y;
                 g_IFaceList->CorrectCoordinates(g_ScreenX, g_ScreenY, x, y, hint->m_Width, hint->m_Height, m_strName);

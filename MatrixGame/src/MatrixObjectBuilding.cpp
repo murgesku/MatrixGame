@@ -392,7 +392,7 @@ void CMatrixBuilding::Takt(int cms) {
             case BUILDING_BASE: {
                 int fu = g_MatrixMap->GetPlayerSide()->GetResourceForceUp();
                 int prihod = RESOURCES_INCOME_BASE * fu / 100;
-                CMatrixEffect::CreateBillboardScore(L"a" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFFFF);
+                CMatrixEffect::CreateBillboardScore((L"a" + CWStr(prihod)).c_str(), m_TopPoint, 0xFFFFFFFF);
                 // if(m_BaseRCycle == 0){
                 //    CMatrixEffect::CreateBillboardScore(L"t" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}else if(m_BaseRCycle == 1){

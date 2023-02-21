@@ -127,6 +127,10 @@ public:
         if (!ParSetNE(name.Get(), name.GetLen(), zn, WStrLen(zn)))
             ParAdd(name, zn);
     }
+    void ParSetAdd(const wchar* name, const CWStr &zn) {
+        if (!ParSetNE(name, WStrLen(name), zn.Get(), zn.GetLen()))
+            ParAdd(name, zn);
+    }
     void ParSetAdd(const wchar *name, const wchar *zn) {
         if (!ParSetNE(name, WStrLen(name), zn, WStrLen(zn)))
             ParAdd(name, zn);
@@ -175,9 +179,9 @@ public:
             return CWStr();
     }
 
-    void Par(const CWStr &name, const CWStr &zn) { ParSetAdd((const CWStr &)name, (const CWStr &)zn); }
-    void Par(const CWStr &name, const wchar *zn) { ParSetAdd((const CWStr &)name, zn); }
-    void Par(const wchar *name, const CWStr &zn) { ParSetAdd(name, WStrLen(name), zn, zn.GetLen()); }
+    void Par(const CWStr &name, const CWStr &zn) { ParSetAdd(name, zn); }
+    void Par(const CWStr &name, const wchar *zn) { ParSetAdd(name, zn); }
+    void Par(const wchar *name, const CWStr &zn) { ParSetAdd(name, WStrLen(name), zn.Get(), zn.GetLen()); }
     void Par(const wchar *name, const wchar *zn) { ParSetAdd(name, WStrLen(name), zn, WStrLen(zn)); }
     const CWStr &Par(const CWStr &name) { return ParGet(name); }
     const CWStr &Par(const wchar *name) { return ParGet(name); }
