@@ -47,7 +47,7 @@ CWStr& CWStr::Add(const std::wstring& str)
         return *this;
     int oldlen = GetLen();
     ModifyLen(GetHeap(), oldlen + addlen);
-    memcpy(m_Data->Data() + oldlen, str.c_str(), addlen * sizeof(wchar) + sizeof(wchar));
+    memcpy(GetBuf() + oldlen, str.c_str(), addlen * sizeof(wchar) + sizeof(wchar));
 
     return *this;
 }
@@ -248,7 +248,7 @@ CWStr &CWStr::Trim() {
     }
 
     memcpy(GetBuf(), tstr + i, tlen * sizeof(wchar));
-    m_Data->Data()[tlen] = 0;
+    GetBuf()[tlen] = 0;
     return *this;
 }
 
@@ -269,7 +269,7 @@ CWStr &CWStr::TrimFull() {
             i--;
         }
     }
-    m_Data->m_Len = tlen;
+    RawSetLen(tlen);
     return *this;
 }
 
@@ -291,14 +291,14 @@ CWStr &CWStr::Del(int sme, int len) {
     if (ost_len > 0) {
         ModifyLen(GetHeap(), GetLen());
         memcpy(GetBuf() + sme, GetBuf() + ost_sme, sizeof(wchar) + sizeof(wchar) * ost_len);
-        m_Data->m_Len -= len;
-        m_Data->Data()[m_Data->m_Len] = 0;
+        RawSetLen(GetLen() - len);
+        GetBuf()[GetLen()] = 0;
     }
     else {
         ModifyLen(GetHeap(), GetLen());
-        m_Data->m_Len -= len;
-        m_Data->Data()[m_Data->m_Len] = 0;
-        if (m_Data->m_Len < 1)
+        RawSetLen(GetLen() - len);
+        GetBuf()[GetLen()] = 0;
+        if (GetLen() < 1)
             ModifyLenNoCopy(GetHeap(), 0);
     }
 
@@ -392,7 +392,7 @@ void CWStr::LowerCase(int sme, int len) {
     else {
         for (size_t i = 0; i < len; ++i)
         {
-            m_Data->Data()[sme + i] = std::towlower(m_Data->Data()[sme + i]);
+            GetBuf()[sme + i] = std::towlower(Get()[sme + i]);
         }
     }
 }
@@ -410,7 +410,7 @@ void CWStr::UpperCase(int sme, int len) {
     else {
         for (int i = 0; i < len; ++i)
         {
-            m_Data->Data()[sme + i] = std::towupper(m_Data->Data()[sme + i]);
+            GetBuf()[sme + i] = std::towupper(Get()[sme + i]);
         }
     }
 }
