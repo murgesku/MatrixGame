@@ -475,13 +475,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     for (int k = 0; k < uindex; ++k) {
                         if (m_Units[k].m_Type == seekfor) {
-                            CWStr bt(L"|", g_CacheHeap);
-                            bt += unit;
-                            bt += L"_";
-                            bt += m_Units[uindex].m_Weapon.m_MatrixID;
-                            bt += L"_";
-                            bt += k;
-                            bt += L"|";
+                               auto bt = utils::format(L"|%s_%d_%d|", unit.c_str(), m_Units[uindex].m_Weapon.m_MatrixID, k);
 
                             if (busy.Find(bt) < 0) {
                                 // found
@@ -589,9 +583,9 @@ void CMatrixFlyer::RNeed(DWORD need) {
                         CWStr bt(L"|", g_CacheHeap);
                         bt += unit;
                         bt += L"_";
-                        bt += m_Streams[i].matrix;
+                        bt.Add(m_Streams[i].matrix);
                         bt += L"_";
-                        bt += k;
+                        bt.Add(k);
                         bt += L"|";
 
                         if (busy.Find(bt) < 0) {

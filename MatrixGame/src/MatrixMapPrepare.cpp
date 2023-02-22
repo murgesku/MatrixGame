@@ -629,7 +629,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 
                 CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
                 namet += L"b";
-                namet += n;
+                namet.Add(n);
                 CWStr namev(namet, g_CacheHeap);
                 namev += L".vo";
 
