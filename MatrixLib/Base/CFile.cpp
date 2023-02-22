@@ -584,7 +584,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
                 if (m_Packs->FileExists(fn)) {
                     outname.Set(utils::to_wstring(fn));
                     if (withpar)
-                        outname += (mname + lenfile);
+                        outname.Add(mname + lenfile);
                     return true;
                 }
             }
