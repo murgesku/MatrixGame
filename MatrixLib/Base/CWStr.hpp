@@ -35,6 +35,7 @@ class BASE_API CWStr : public CMain {
     // as a first step - just replace custom copy-on-write with standard wide string
     std::wstring m_data;
 
+public:
     CWStr(const wchar *s1, int len1, const wchar *s2, int len2, CHeap *heap = nullptr)
     {
         m_data.clear();
@@ -42,7 +43,6 @@ class BASE_API CWStr : public CMain {
         m_data += std::wstring(s2, len2);
     }
 
-public:
     explicit CWStr(CHeap *heap = nullptr)
     : CMain{}
     {
@@ -320,70 +320,10 @@ public:
     friend bool operator!=(const CWStr &zn1, const wchar *zn2) { return !(zn1 == zn2); }
     friend bool operator!=(const wchar *zn1, const CWStr &zn2) { return !(zn1 == zn2); }
 
-    friend bool operator<(const CWStr &zn1, const CWStr &zn2) {
-        if (Compare(zn1, zn2) < 0)
-            return 1;
-        return 0;
+    CWStr &operator+=(const std::wstring &str) {
+        Add(str);
+        return *this;
     }
-    friend bool operator<(const CWStr &zn1, const wchar *zn2) {
-        if (Compare(zn1, CWStr(zn2)) < 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator<(const wchar *zn1, const CWStr &zn2) {
-        if (Compare(CWStr(zn1), zn2) < 0)
-            return 1;
-        return 0;
-    }
-
-    friend bool operator>(const CWStr &zn1, const CWStr &zn2) {
-        if (Compare(zn1, zn2) > 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator>(const CWStr &zn1, const wchar *zn2) {
-        if (Compare(zn1, CWStr(zn2)) > 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator>(const wchar *zn1, const CWStr &zn2) {
-        if (Compare(CWStr(zn1), zn2) > 0)
-            return 1;
-        return 0;
-    }
-
-    friend bool operator<=(const CWStr &zn1, const CWStr &zn2) {
-        if (Compare(zn1, zn2) <= 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator<=(const CWStr &zn1, const wchar *zn2) {
-        if (Compare(zn1, CWStr(zn2)) <= 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator<=(const wchar *zn1, const CWStr &zn2) {
-        if (Compare(CWStr(zn1), zn2) <= 0)
-            return 1;
-        return 0;
-    }
-
-    friend bool operator>=(const CWStr &zn1, const CWStr &zn2) {
-        if (Compare(zn1, zn2) >= 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator>=(const CWStr &zn1, const wchar *zn2) {
-        if (Compare(zn1, CWStr(zn2)) >= 0)
-            return 1;
-        return 0;
-    }
-    friend bool operator>=(const wchar *zn1, const CWStr &zn2) {
-        if (Compare(CWStr(zn1), zn2) >= 0)
-            return 1;
-        return 0;
-    }
-
     CWStr &operator+=(const CWStr &str) {
         Add(str);
         return *this;
@@ -396,45 +336,41 @@ public:
         Add(sim);
         return *this;
     }
-    CWStr &operator+=(int zn) {
-        Add(zn);
-        return *this;
-    }
-    CWStr &operator+=(double zn) {
-        Add(zn);
-        return *this;
-    }
-    //      CWStr & operator +=(void * zn)                                  { Add(zn); return *this; }
-
-    friend CWStr operator+(const CWStr &s1, const CWStr &s2) {
-        return CWStr(s1.Get(), s1.GetLen(), s2.Get(), s2.GetLen(), s1.GetHeap());
-    }
-    friend CWStr operator+(const CWStr &s1, const wchar *s2) {
-        return CWStr(s1.Get(), s1.GetLen(), s2, WStrLen(s2), s1.GetHeap());
-    }
-    friend CWStr operator+(const wchar *s1, const CWStr &s2) {
-        return CWStr(s1, WStrLen(s1), s2.Get(), s2.GetLen(), s2.GetHeap());
-    }
-    friend CWStr operator+(const CWStr &s1, wchar sim) {
-        CWStr str(s1.Get(), s1.GetLen(), s1.GetHeap());
-        str += sim;
-        return str;
-    }
-    friend CWStr operator+(wchar sim, const CWStr &s2) {
-        CWStr str(sim, s2.GetHeap());
-        str += s2;
-        return str;
-    }
-    friend CWStr operator+(const CWStr &s, int zn) {
-        CWStr str(s);
-        str += zn;
-        return str;
-    }
-    friend CWStr operator+(int zn, const CWStr &s) {
-        CWStr str(zn, s.GetHeap());
-        str += s;
-        return str;
-    }
 };
+
+inline CWStr operator+(const CWStr &s1, const CWStr &s2)
+{
+    return CWStr(s1.to_wstring() + s2.to_wstring());
+}
+
+inline CWStr operator+(const CWStr &s1, const wchar *s2)
+{
+    return s1 + CWStr(s2);
+}
+
+inline CWStr operator+(const wchar *s1, const CWStr &s2)
+{
+    return CWStr(s1) + s2;
+}
+
+inline CWStr operator+(const CWStr &s1, wchar sim)
+{
+    return s1 + CWStr(sim);
+}
+
+inline CWStr operator+(wchar sim, const CWStr &s2)
+{
+    return CWStr(sim) + s2;
+}
+
+inline CWStr operator+(const CWStr &s, int zn)
+{
+    return s + CWStr(zn);
+}
+
+inline CWStr operator+(int zn, const CWStr &s)
+{
+    return CWStr(zn) + s;
+}
 
 }  // namespace Base

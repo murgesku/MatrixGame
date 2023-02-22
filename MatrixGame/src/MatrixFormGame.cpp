@@ -957,13 +957,10 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
 
             // vidmode
             D3DDISPLAYMODE d3ddm;
-
-            CWStr modet(g_CacheHeap);
-            CWStr modev(g_CacheHeap);
-            for (int i = 0; i < 2; ++i) {
-                modet.Set(L"Buffer ");
-                modet += i;
-                modet += L" mode";
+            for (int i = 0; i < 2; ++i)
+            {
+                std::wstring modet = utils::format(L"Buffer %d mode", i);
+                std::wstring modev;
                 ASSERT_DX(g_D3DD->GetDisplayMode(0, &d3ddm));
                 if (d3ddm.Format == D3DFMT_X8R8G8B8) {
                     modev = L"X8R8G8B8";
@@ -978,9 +975,9 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                     modev = L"R5G6B5";
                 }
                 else {
-                    modev.Set(static_cast<int>(d3ddm.Format));
+                    modev = utils::format(L"%d", d3ddm.Format);
                 }
-                g_MatrixMap->m_DI.T(modet.Get(), modev.Get(), 10000);
+                g_MatrixMap->m_DI.T(modet.c_str(), modev.c_str(), 10000);
             }
 
             return;

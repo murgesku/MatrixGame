@@ -158,7 +158,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         refresh = bpcfg.Par(L"FullScreen").GetIntPar(2, L",");
 
     g_WndClassName = HNew(g_CacheHeap) CWStr(sysname, g_CacheHeap);
-    *g_WndClassName += L"_wc";
+    g_WndClassName->Add(L"_wc");
     std::string classname{utils::from_wstring(g_WndClassName->Get())};
 
     WNDCLASSEX wcex;
