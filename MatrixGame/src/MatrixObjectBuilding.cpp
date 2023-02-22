@@ -701,7 +701,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
             CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
             namet += L"b";
-            namet += n;
+            namet.Add(n);
             CWStr namev(namet, g_MatrixHeap);
             namev += L".vo";
 
@@ -718,7 +718,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
             n = IRND(30) + 20;
             for (int i = 0; i < n; ++i) {
                 CWStr type(L"1,1000,5000,", g_CacheHeap);
-                type += (IRND(500) + 700);
+                type.Add(IRND(500) + 700);
                 type += L",2400,60,false,0.03,78000000";
 
                 D3DXVECTOR3 dir, pos;
