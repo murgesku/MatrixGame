@@ -176,23 +176,21 @@ void CDevConsole::Takt(int ms) {
         INVERTFLAG(m_Flags, DCON_CURSOR);
     }
 
-    CWStr out(g_MatrixHeap);
-    out.Set(m_Text.Get(), m_CurPos);
+    std::wstring out{m_Text.Get(), static_cast<size_t>(m_CurPos)};
 
     if (FLAG(m_Flags, DCON_CURSOR)) {
-        // out.Add(L"&");
-        out.Add(L"|");
+        out += L"|";
     }
     else {
     }
     if (m_CurPos < m_Text.GetLen()) {
-        out.Add(m_Text.Get() + m_CurPos);
+        out += std::wstring{m_Text.Get() + m_CurPos};
     }
     else {
-        out.Add(L" ");
+        out += L" ";
     }
 
-    g_MatrixMap->m_DI.T(L"Console", out.Get(), 1000);
+    g_MatrixMap->m_DI.T(L"Console", out.c_str(), 1000);
 }
 void CDevConsole::Keyboard(int scan, bool down) {
     if (down) {
@@ -214,7 +212,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
         }
         else if (scan == KEY_RIGHT) {
-            if (m_CurPos < m_Text.GetLen()) {
+            if (m_CurPos < m_Text.length()) {
                 ++m_CurPos;
             }
         }
@@ -222,19 +220,19 @@ void CDevConsole::Keyboard(int scan, bool down) {
             m_CurPos = 0;
         }
         else if (scan == KEY_END) {
-            m_CurPos = m_Text.GetLen();
+            m_CurPos = m_Text.length();
         }
         else if (scan == KEY_ENTER) {
             CWStr cmd(g_MatrixHeap);
             CWStr params(g_MatrixHeap);
             int i = 0;
-            while (i < m_Text.GetLen()) {
+            while (i < m_Text.length()) {
                 if (m_Text[i] == ' ')
                     break;
                 ++i;
             }
-            cmd.Set(m_Text.Get(), i);
-            if (i < m_Text.GetLen())
+            cmd = std::wstring{m_Text.Get(), static_cast<size_t>(i)};
+            if (i < m_Text.length())
                 params.Set(m_Text.Get() + i + 1);
             cmd.UpperCase();
 
@@ -242,7 +240,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
             while (m_Commands[i].cmd != NULL) {
                 if (m_Commands[i].cmd == cmd) {
                     m_Commands[i].handler(cmd, params);
-                    m_Text.SetLen(0);
+                    m_Text.clear();
                     m_CurPos = 0;
                     break;
                 }
@@ -250,10 +248,10 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
         }
         else if (scan == KEY_ESC) {
-            if (m_Text.GetLen() == 0)
+            if (m_Text.length() == 0)
                 SetActive(false);
             else {
-                m_Text.SetLen(0);
+                m_Text.clear();
                 m_CurPos = 0;
             }
         }

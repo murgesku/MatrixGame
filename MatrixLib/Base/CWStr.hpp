@@ -104,38 +104,9 @@ public:
         this->clear();
     }
 
-    void SetLen(int len)
-    {
-        this->resize(len);
-    };
-
     void Set(const std::wstring& str)
     {
         this->assign(str);
-    }
-
-    void Set(const CWStr &s)
-    {
-        this->Set(s.to_wstring());
-    }
-
-    void Set(const wchar *s)
-    {
-        this->Set(std::wstring{s});
-    }
-    void Set(const wchar *s, int len)
-    {
-        this->Set(std::wstring{s, static_cast<size_t>(len)});
-    }
-
-    void Set(wchar sim)
-    {
-        this->Set(std::wstring{1, sim});
-    }
-
-    void Set(wchar sim, int count)
-    {
-        this->Set(std::wstring(static_cast<size_t>(count), sim));
     }
 
     void Set(int zn);
@@ -171,11 +142,6 @@ public:
         return *this;
     }
 
-    const std::wstring& to_wstring() const
-    {
-        return *this;
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
@@ -204,8 +170,6 @@ public:
     }
 
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-    CWStr &TrimFull(void);  // Trim() и в середине строки удоляет повторяющиеся 0x20,0x9
-    void TabToSpace(void);  // Конвертит 0x9 в 0x20
 
     CWStr &Del(int sme, int len);              // Удалить символы
     CWStr &Insert(int sme, const CWStr &istr)  // Вставить символы
@@ -254,32 +218,13 @@ public:
         return Compare(zn1.Get(), zn1.GetLen(), zn2.Get(), zn2.GetLen());
     }
 
-    bool Equal(const wchar *zn, int len) const;
-    bool Equal(const wchar *zn) const { return Equal(zn, WStrLen(zn)); }
-
     bool CompareFirst(const CWStr &str) const;
     bool CompareFirst(const wchar *str) const { return CompareFirst(CWStr(str)); }
     int CompareSubstring(const CWStr &str) const;
     int CompareSubstring(const wchar *str) const { return CompareSubstring(CWStr(str)); }
 
-    CWStr &operator=(const CWStr &s) {
-        Set(s);
-        return *this;
-    }
     CWStr &operator=(const wchar *s) {
         Set(s);
-        return *this;
-    }
-    CWStr &operator=(wchar zn) {
-        Set(zn);
-        return *this;
-    }
-    CWStr &operator=(int zn) {
-        Set(zn);
-        return *this;
-    }
-    CWStr &operator=(double zn) {
-        Set(zn);
         return *this;
     }
 

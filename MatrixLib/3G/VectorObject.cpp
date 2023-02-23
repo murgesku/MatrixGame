@@ -2268,8 +2268,8 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
     m_Name = filename;
 
-    CWStr tstr(g_CacheHeap), tstr2(g_CacheHeap), unit(g_CacheHeap), bs(g_CacheHeap);
-    CWStr texture(g_CacheHeap), texture_gloss(g_CacheHeap), texture_back(g_CacheHeap), texture_mask(g_CacheHeap);
+    CWStr tstr, tstr2, unit, bs;
+    CWStr texture, texture_gloss, texture_back, texture_mask;
 
     CBlockPar bp(true, g_CacheHeap);
     CVectorObjectGroupUnit *gu;
@@ -2293,7 +2293,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         if (!tstr.IsEmpty()) {
             int idx = tstr.Find(L"?");
             if (idx >= 0)
-                tstr.SetLen(idx);
+                tstr.resize(idx);
             CacheReplaceFileNameAndExt(unit, filename, tstr.Get());
         }
 
@@ -2320,7 +2320,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
             gu->m_LinkMatrixName = bp2.Par(L"Link");
 
         if (texture_mask.IsEmpty())
-            texture_back.SetLen(0);
+            texture_back.clear();
 
         CVectorObject *vo = (CVectorObject *)(g_Cache->Get(cc_VO, unit.Get()));
         if (texture.IsEmpty() && texture_gloss.IsEmpty() && texture_mask.IsEmpty()) {

@@ -171,11 +171,11 @@ void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
         smeext = lenfile;
     }
 
-    outname.Set(mname, smeext);
+    outname = std::wstring{mname, static_cast<size_t>(smeext)};
     if (ext)
-        outname.Add(ext);
+        outname += ext;
     if (lenfile < len)
-        outname.Add(mname + lenfile, len - lenfile);
+        outname += std::wstring{mname + lenfile, static_cast<size_t>(len - lenfile)};
 }
 
 void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar *replname) {
@@ -200,11 +200,11 @@ void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar 
         smefile = 0; /*outname=mname; return;*/
     }
 
-    outname.Set(mname, smefile);
+    outname = std::wstring{mname, static_cast<size_t>(smefile)};
     if (replname)
-        outname.Add(replname);
+        outname += replname;
     if (lenfile < len)
-        outname.Add(mname + lenfile, len - lenfile);
+        outname += std::wstring{mname + lenfile, static_cast<size_t>(len - lenfile)};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
