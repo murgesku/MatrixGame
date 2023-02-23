@@ -330,22 +330,22 @@ void CMatrixRobot::RNeed(dword need) {
                 }
                 path.Add(static_cast<int>(m_Unit[i].u1.s1.m_Kind));
 
-                name = path.Get();
+                name = path.c_str();
 
                 if (m_Side != PLAYER_SIDE) {
                     name_e = path + L"_e";
-                    if (CFile::FileExist(name_e, name_e.Get(), L"dds~png")) {
+                    if (CFile::FileExist(name_e, name_e.c_str(), L"dds~png")) {
                         name = name_e;
                     }
-                    if (CFile::FileExist(name_e, (name + GLOSS_TEXTURE_SUFFIX).Get(), L"dds~png")) {
+                    if (CFile::FileExist(name_e, (name + GLOSS_TEXTURE_SUFFIX).c_str(), L"dds~png")) {
                         name += L"*" + name_e;
                     }
-                    else if (CFile::FileExist(name_e, (path + GLOSS_TEXTURE_SUFFIX).Get(), L"dds~png")) {
+                    else if (CFile::FileExist(name_e, (path + GLOSS_TEXTURE_SUFFIX).c_str(), L"dds~png")) {
                         name += L"*" + name_e;
                     }
                 }
 
-                m_Unit[i].m_Graph = LoadObject((path + L".vo").Get(), g_MatrixHeap, true, name.c_str());
+                m_Unit[i].m_Graph = LoadObject((path + L".vo").c_str(), g_MatrixHeap, true, name.c_str());
 
                 m_Unit[i].m_Graph->SetAnimByName(ANIMATION_NAME_IDLE);
             }

@@ -222,8 +222,9 @@ void CIFaceElement::Render(BYTE alpha) {
             m_StateImages[GetState()].pImage->Prepare();
 #if defined _TRACE || defined _DEBUG
         }
-        catch (...) {
-            ERROR_S((L"Crash in GUI: <" + m_strName + L">,<" + m_nId + L">,<" + m_iParam + L">").c_str());
+        catch (...)
+        {
+            ERROR_S(utils::format(L"Crash in GUI: <%s>,<%d>,<%d>", m_strName.c_str(), m_nId, m_iParam));
         }
 #endif
 

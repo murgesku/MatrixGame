@@ -31,7 +31,7 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     return !std::wcscmp(s1, s2);
 }
 
-class BASE_API CWStr : private std::wstring, public CMain
+class BASE_API CWStr : public std::wstring, public CMain
 {
 public:
     explicit CWStr(CHeap *heap = nullptr)
@@ -176,16 +176,6 @@ public:
         return *this;
     }
 
-    const wchar* c_str(void) const
-    {
-        return ((std::wstring*)this)->c_str();
-    }
-
-    bool empty(void) const
-    {
-        return ((std::wstring*)this)->empty();
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
@@ -293,81 +283,6 @@ public:
         return *this;
     }
 
-    wchar &operator[](int n)
-    {
-        return ((std::wstring&)*this)[n];
-    }
-
-    const wchar &operator[](int n) const
-    {
-        return ((std::wstring&)*this)[n];
-    }
-
-    friend bool operator==(const CWStr &zn1, const CWStr &zn2)
-    {
-        return ((std::wstring&)zn1) == ((std::wstring&)zn2);
-    }
-    friend bool operator==(const CWStr &zn1, const wchar *zn2)
-    {
-        return ((std::wstring&)zn1) == zn2;
-    }
-    friend bool operator==(const wchar *zn1, const CWStr &zn2) { return zn2 == zn1; }
-
-    friend bool operator!=(const CWStr &zn1, const CWStr &zn2) { return !(zn1 == zn2); }
-    friend bool operator!=(const CWStr &zn1, const wchar *zn2) { return !(zn1 == zn2); }
-    friend bool operator!=(const wchar *zn1, const CWStr &zn2) { return !(zn1 == zn2); }
-
-    CWStr &operator+=(const std::wstring &str) {
-        Add(str);
-        return *this;
-    }
-    CWStr &operator+=(const CWStr &str) {
-        Add(str);
-        return *this;
-    }
-    CWStr &operator+=(const wchar *str) {
-        Add(str);
-        return *this;
-    }
-    CWStr &operator+=(const wchar sim) {
-        Add(sim);
-        return *this;
-    }
 };
-
-inline CWStr operator+(const CWStr &s1, const CWStr &s2)
-{
-    return CWStr(s1.to_wstring() + s2.to_wstring());
-}
-
-inline CWStr operator+(const CWStr &s1, const wchar *s2)
-{
-    return s1 + CWStr(s2);
-}
-
-inline CWStr operator+(const wchar *s1, const CWStr &s2)
-{
-    return CWStr(s1) + s2;
-}
-
-inline CWStr operator+(const CWStr &s1, wchar sim)
-{
-    return s1 + CWStr(sim);
-}
-
-inline CWStr operator+(wchar sim, const CWStr &s2)
-{
-    return CWStr(sim) + s2;
-}
-
-inline CWStr operator+(const CWStr &s, int zn)
-{
-    return s + CWStr(zn);
-}
-
-inline CWStr operator+(int zn, const CWStr &s)
-{
-    return CWStr(zn) + s;
-}
 
 }  // namespace Base
