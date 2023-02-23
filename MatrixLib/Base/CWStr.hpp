@@ -75,20 +75,20 @@ public:
 
     explicit CWStr(int zn, CHeap *heap = NULL)
     : CMain{}
+    , std::wstring{utils::format(L"%d", zn)}
     {
-        Add(zn);
     }
 
     explicit CWStr(DWORD zn, CHeap *heap = NULL)
     : CMain{}
+    , std::wstring{utils::format(L"%u", zn)}
     {
-        Set(utils::format(L"%u", zn));
     }
 
     explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL)
     : CMain{}
+    , std::wstring{utils::format(L"%.*f", zpz, zn)}
     {
-        Add(zn, zpz);
     }
 
     ~CWStr() = default;
@@ -113,24 +113,9 @@ public:
     CWStr &Add(const CWStr &cstr);
     CWStr &Add(const wchar *str);
     CWStr &Add(const wchar *str, int lstr);
-    CWStr &Add(wchar sim);
-    CWStr &Add(wchar sim, int count);
-    CWStr &Add(int zn) {
-        Add(utils::format(L"%d", zn));
-        return *this;
-    }
-    CWStr &Add(double zn, int zpz = 8) {
-        Add(utils::format(L"%.*f", zpz, zn));
-        return *this;
-    }
-    CWStr &AddHex(void *zn) {
-        Add(utils::format(L"%X", reinterpret_cast<dword>(zn)));
-        return *this;
-    }
-    CWStr &AddHex(BYTE zn) {
-        Add(utils::format(L"%X", zn));
-        return *this;
-    }
+
+    template<typename TTT>
+    CWStr& Add(const TTT val) = delete;
 
     const wchar *Get(void) const
     {

@@ -699,10 +699,10 @@ void CMatrixBuilding::LogicTakt(int cms) {
             // replace geometry
             int n = (int)m_Kind;
 
-            CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
+            CWStr namet(OBJECT_PATH_BUILDINGS_RUINS);
             namet += L"b";
-            namet.Add(n);
-            CWStr namev(namet, g_MatrixHeap);
+            namet += CWStr(n);
+            CWStr namev(namet);
             namev += L".vo";
 
             CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
@@ -717,8 +717,8 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
             n = IRND(30) + 20;
             for (int i = 0; i < n; ++i) {
-                CWStr type(L"1,1000,5000,", g_CacheHeap);
-                type.Add(IRND(500) + 700);
+                CWStr type(L"1,1000,5000,");
+                type += CWStr(IRND(500) + 700);
                 type += L",2400,60,false,0.03,78000000";
 
                 D3DXVECTOR3 dir, pos;

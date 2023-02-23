@@ -104,7 +104,7 @@ void D3DResource::Dump(D3DResType t) {
 CWStr CExceptionD3D::Info() {
     return CException::Info() +
            utils::format(
-               L"Text: {%s} %s",
+               L"Text: {%ls} %s",
                DXGetErrorStringW(m_Error),
                DXGetErrorDescriptionW(m_Error)).c_str();
 }

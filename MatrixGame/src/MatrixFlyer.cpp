@@ -462,7 +462,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     m_Units[uindex].m_Weapon.m_MatrixID = bp->ParGet(L"Matrix").GetIntPar(1, L",");
 
-                    CWStr unit(g_CacheHeap);
+                    CWStr unit;
                     unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");
 
                     EFlyerUnitType seekfor = FLYER_UNIT_BODY;
@@ -475,7 +475,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     for (int k = 0; k < uindex; ++k) {
                         if (m_Units[k].m_Type == seekfor) {
-                               auto bt = utils::format(L"|%s_%d_%d|", unit.c_str(), m_Units[uindex].m_Weapon.m_MatrixID, k);
+                               auto bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Units[uindex].m_Weapon.m_MatrixID, k);
 
                             if (busy.Find(bt) < 0) {
                                 // found
@@ -580,13 +580,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                 for (int k = 0; k < m_UnitCnt; ++k) {
                     if (m_Units[k].m_Type == seekfor) {
-                        CWStr bt(L"|", g_CacheHeap);
-                        bt += unit;
-                        bt += L"_";
-                        bt.Add(m_Streams[i].matrix);
-                        bt += L"_";
-                        bt.Add(k);
-                        bt += L"|";
+                        CWStr bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Streams[i].matrix, k);
 
                         if (busy.Find(bt) < 0) {
                             // found

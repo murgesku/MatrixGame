@@ -1209,7 +1209,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         //    damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BOMB)].damage / wspeed;
         //}
 
-        CWStr c(color, g_CacheHeap);
+        CWStr c(color);
         CWStr colored_damage = c.Add(CWStr(L"dam</color>")).Replace(CWStr(L"dam"), CWStr(damage / 10));
         c = color;
         CWStr colored_adamage = c.Add(CWStr(L"dam</color>")).Replace(CWStr(L"dam"), CWStr(adamage / 10));
@@ -1237,7 +1237,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         bp = bp->BlockGetNE(hn);
         if (bp) {
             int ccc = bp->ParCount();
-            CWStr repl(g_CacheHeap);
+            CWStr repl;
             for (int i = 0; i < ccc; ++i) {
                 double sign = 1;
 
@@ -1274,7 +1274,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
                 int val = Double2Int(sign * bp->ParGet(i).GetDouble());
 
-                m_FocusedLabel.Replace(repl, color.Add(val) + L"</color>");
+                m_FocusedLabel.Replace(repl, color + CWStr(val) + L"</color>");
             }
         }
     }

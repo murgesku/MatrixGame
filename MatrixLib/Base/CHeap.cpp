@@ -144,7 +144,7 @@ void SMemHeader::Release(void) {
         bool end = *(d2 + i) != MEM_CHECK_FILLER;
         if (begin || end) {
 #ifdef _DEBUG
-            ERROR_S(utils::format(L"Memory corruption detected at (%s)\n%s - %d",
+            ERROR_S(utils::format(L"Memory corruption detected at (%ls)\n%ls - %d",
                 begin ? L"begin" : L"end",
                 utils::to_wstring(file).c_str(),
                 line));
@@ -199,7 +199,7 @@ void CHeap::Free(void *buf, const char *file, int line) {
     {
         ERROR_S(
             utils::format(
-                L"NULL pointer is passed to Free function at: %s - %d",
+                L"NULL pointer is passed to Free function at: %ls - %d",
                 utils::to_wstring(file).c_str(),
                 line));
     }

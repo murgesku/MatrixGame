@@ -2350,7 +2350,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     while (gu) {
         if (!gu->m_LinkMatrixName.IsEmpty()) {
             if (gu->m_LinkMatrixName.GetCountPar(L",") != 2)
-                ERROR_S(utils::format(L"In file: %s   Unknown format link: %s", filename, gu->m_LinkMatrixName.Get()));
+                ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, gu->m_LinkMatrixName.Get()));
 
             tstr = gu->m_LinkMatrixName.GetStrPar(0, L",");
             gu->m_LinkMatrixName = gu->m_LinkMatrixName.GetStrPar(1, L",");
@@ -2362,7 +2362,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
                 gu->m_Link = GetByNameNE(tstr.Get());
             }
             if (gu->m_Link == NULL)
-                ERROR_S(utils::format(L"In file: %s   Not found link: %s", filename, tstr.Get()));
+                ERROR_S(utils::format(L"In file: %ls   Not found link: %ls", filename, tstr.Get()));
 
             if (gu->m_LinkMatrixName.IsOnlyInt()) {
                 gu->m_LinkMatrixId = gu->m_LinkMatrixName.GetInt();

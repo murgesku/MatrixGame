@@ -36,7 +36,8 @@ void CTransition::BuildTexture(void) {
     CBlockPar *tra = g_MatrixData->BlockGetNE(L"Transitions");
     if (tra == NULL)
         return;
-    tra = tra->BlockGetNE(CWStr(m_ScreenX, g_CacheHeap).Add(L".").Add(m_ScreenY).Get());
+    tra = tra->BlockGetNE(utils::format(L"%d.%d", m_ScreenX, m_ScreenY).c_str());
+
     if (tra == NULL)
         return;
 

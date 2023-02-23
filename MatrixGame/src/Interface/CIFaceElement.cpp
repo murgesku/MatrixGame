@@ -224,7 +224,7 @@ void CIFaceElement::Render(BYTE alpha) {
         }
         catch (...)
         {
-            ERROR_S(utils::format(L"Crash in GUI: <%s>,<%d>,<%d>", m_strName.c_str(), m_nId, m_iParam));
+            ERROR_S(utils::format(L"Crash in GUI: <%ls>,<%d>,<%d>", m_strName.c_str(), m_nId, m_iParam));
         }
 #endif
 

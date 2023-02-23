@@ -232,7 +232,7 @@ void CMatrixMap::RobotPreload(void) {
 
     for (int i = 1; i <= ROBOT_HEAD_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_HEAD).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_HEAD, i).c_str());
 
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
@@ -240,7 +240,7 @@ void CMatrixMap::RobotPreload(void) {
     }
     for (int i = 1; i <= ROBOT_CHASSIS_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_CHASSIS, i).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         if (i == RUK_CHASSIS_PNEUMATIC) {
@@ -251,7 +251,7 @@ void CMatrixMap::RobotPreload(void) {
     }
     for (int i = 1; i <= ROBOT_WEAPON_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_WEAPON, i).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         g_LoadProgress->SetCurLPPos(curlp++);
@@ -259,7 +259,7 @@ void CMatrixMap::RobotPreload(void) {
 
     for (int i = 0; i < ROBOT_ARMOR_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(i + 1).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_ARMOR, i + 1).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
         g_LoadProgress->SetCurLPPos(curlp++);
 
@@ -1164,7 +1164,7 @@ void CMatrixMap::BeforeDraw(void) {
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
             m_DI.T(L"Under cursor", L"Cannon", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING) {
-            m_DI.T(L"Under cursor", CWStr(L"Building: 0x", g_CacheHeap).AddHex((void *)m_TraceStopObj).Get(), 1000);
+            m_DI.T(L"Under cursor", utils::format(L"Building: 0x%X", reinterpret_cast<dword>((void*)m_TraceStopObj)).c_str(), 1000);
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
             m_DI.T(L"Under cursor", L"Flyer", 1000);

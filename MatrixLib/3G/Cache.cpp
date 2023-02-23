@@ -242,7 +242,7 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
     tname = m_Name.GetStrPar(0, L"?");
 
     if (!CFile::FileExist(tstr, tname.Get(), exts, false)) {
-        ERROR_S(utils::format(L"File not found: %s   Exts: %s", tname.Get(), exts));
+        ERROR_S(utils::format(L"File not found: %ls   Exts: %ls", tname.Get(), exts));
     }
 
     buf.LoadFromFile(tstr.Get());

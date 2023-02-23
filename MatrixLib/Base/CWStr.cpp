@@ -23,7 +23,7 @@ CWStr& CWStr::Add(const std::wstring& str)
 
 CWStr &CWStr::Add(const CWStr &cstr)
 {
-    this->Add((std::wstring&)cstr);
+    this->Add((const std::wstring&)cstr);
     return *this;
 }
 
@@ -36,18 +36,6 @@ CWStr &CWStr::Add(const wchar *str)
 CWStr &CWStr::Add(const wchar *str, int lstr)
 {
     this->Add(std::wstring{str, static_cast<size_t>(lstr)});
-    return *this;
-}
-
-CWStr &CWStr::Add(wchar sim)
-{
-    this->Add(std::wstring(1, sim));
-    return *this;
-}
-
-CWStr &CWStr::Add(wchar sim, int count)
-{
-    this->Add(std::wstring(count, sim));
     return *this;
 }
 
@@ -421,11 +409,11 @@ CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
-    return CWStr(Get() + sme1, sme2 - sme1, GetHeap());
+    return CWStr(Get() + sme1, sme2 - sme1);
 }
 
 bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {
-    CWStr tstr(*this, GetHeap());
+    CWStr tstr(*this);
     GetStrPar(tstr, np, ogsim);
 
     if (tstr == L"true" || tstr == L"True" || tstr == L"TRUE")

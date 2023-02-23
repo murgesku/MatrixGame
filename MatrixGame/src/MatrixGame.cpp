@@ -370,11 +370,11 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     if (map) {
         if (wcschr(map, '\\') == NULL) {
-            mapname.Set(L"Matrix\\Map\\");
-            mapname.Add(map);
+            mapname = L"Matrix\\Map\\";
+            mapname += map;
         }
         else {
-            mapname.Set(map);
+            mapname = map;
         }
     }
     else {
