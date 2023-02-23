@@ -146,10 +146,10 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
 #ifdef _DEBUG
     bool ok =
 #endif
-            stor.Load(m_Name.Get());
+            stor.Load(m_Name.c_str());
 #ifdef _DEBUG
     if (!ok) {
-        ERROR_S((L"Unable to load object: " + m_Name).Get());
+        ERROR_S((L"Unable to load object: " + m_Name).c_str());
     }
 #endif
 

@@ -240,7 +240,7 @@ void CSound::Init(void) {
     for (int i = 0; i < S_COUNT; ++i) {
         if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED)) {
             // ERROR_S((CWStr(L"Sound ") + i + L" not initialized!").Get());
-            MessageBoxW(NULL, (CWStr(L"Sound ") + i + L" not initialized!").Get(), L"Error", MB_ICONERROR);
+            MessageBoxW(NULL, (CWStr(L"Sound ").Add(i) + L" not initialized!").c_str(), L"Error", MB_ICONERROR);
             debugbreak();
         }
     }

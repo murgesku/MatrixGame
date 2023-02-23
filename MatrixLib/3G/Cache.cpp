@@ -443,7 +443,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
+        std::string name{(cd->m_Name.empty()) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
 
         const char* loaded;
         if (cd->IsLoaded())

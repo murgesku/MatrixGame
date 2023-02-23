@@ -946,7 +946,7 @@ void CMatrixMapObject::Init(int ids) {
             // if (idx >= 0) trans = L"?Trans"; else trans.SetLen(0);
 
             m_BurnSkin = (SMatrixSkin *)CSkinManager::GetSkin(
-                    (g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*") + temp.GetStrPar(1, L",")).Get(),
+                    (g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*") + temp.GetStrPar(1, L",")).c_str(),
                     GSP_ORDINAL);
         }
     }

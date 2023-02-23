@@ -1274,7 +1274,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
                 int val = Double2Int(sign * bp->ParGet(i).GetDouble());
 
-                m_FocusedLabel.Replace(repl, color + val + L"</color>");
+                m_FocusedLabel.Replace(repl, color.Add(val) + L"</color>");
             }
         }
     }

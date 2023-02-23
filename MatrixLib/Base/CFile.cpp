@@ -370,10 +370,10 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile, outname.GetHeap());
+    CWStr filename(str, lenfile);
 
     WIN32_FIND_DATAA fd;
-    HANDLE fh = FindFirstFileA(utils::from_wstring(filename.Get()).c_str(), &fd);
+    HANDLE fh = FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(), &fd);
     if (fh != INVALID_HANDLE_VALUE) {
         FindClose(fh);
         if (withpar)
@@ -383,7 +383,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileA(utils::from_wstring((CWStr(str, lenfile) + L".*").Get()).c_str(), &fd);
+    fh = FindFirstFileA(utils::from_wstring(CWStr(str, lenfile) + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
@@ -393,7 +393,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
             int sme = curname.FindR(L'.') + 1;
             if (sme > 0 && sme < curname.GetLen()) {
                 curname.LowerCase(sme);
-                const wchar *str = curname.Get() + sme;
+                const wchar *str = curname.c_str() + sme;
                 int len = curname.GetLen() - sme;
 
                 const wchar *exts2 = exts;
@@ -465,7 +465,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileW((CWStr(str, lenfile, outname.GetHeap()) + L".*").Get(), &fd);
+    fh = FindFirstFileW((CWStr(str, lenfile) + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
@@ -475,7 +475,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
             int sme = curname.FindR(L'.') + 1;
             if (sme > 0 && sme < curname.GetLen()) {
                 curname.LowerCase(sme);
-                const wchar *str = curname.Get() + sme;
+                const wchar *str = curname.c_str() + sme;
                 int len = curname.GetLen() - sme;
 
                 const wchar *exts2 = exts;
