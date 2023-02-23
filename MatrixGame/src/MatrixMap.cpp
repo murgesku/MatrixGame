@@ -268,7 +268,7 @@ void CMatrixMap::RobotPreload(void) {
         for (int u = 0; u < n; u++) {
             if (vo->GetMatrixId(u) < 20)
                 continue;
-            tstr.Set(vo->GetMatrixName(u));
+            tstr = vo->GetMatrixName(u);
 
             int cntp = tstr.GetCountPar(L",");
             for (int p = 0; p < cntp; p++) {

@@ -389,7 +389,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     if (exts != NULL) {
         CWStr curname(outname.GetHeap());
         while (true) {
-            curname.Set(utils::to_wstring(fd.cFileName));
+            curname = utils::to_wstring(fd.cFileName);
             int sme = curname.FindR(L'.') + 1;
             if (sme > 0 && sme < curname.GetLen()) {
                 curname.LowerCase(sme);
@@ -469,9 +469,9 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname(outname.GetHeap());
+        CWStr curname;
         while (true) {
-            curname.Set(fd.cFileName);
+            curname = fd.cFileName;
             int sme = curname.FindR(L'.') + 1;
             if (sme > 0 && sme < curname.GetLen()) {
                 curname.LowerCase(sme);
@@ -582,7 +582,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
                 fn.resize(fn.length() - (l - sm1));
 
                 if (m_Packs->FileExists(fn)) {
-                    outname.Set(utils::to_wstring(fn));
+                    outname = utils::to_wstring(fn);
                     if (withpar)
                         outname += (mname + lenfile);
                     return true;

@@ -57,12 +57,12 @@ void CMatrixCursor::Select(const wchar *name) {
 
     m_Frame = 0;
 
-    CWStr n(g_CacheHeap);
+    CWStr n;
     DCP();
     int idx;
     for (idx = 0; idx < g_Config.m_CursorsCnt; ++idx) {
         if (g_Config.m_Cursors[idx].key == name) {
-            n.Set(g_Config.m_Cursors[idx].val);
+            n = g_Config.m_Cursors[idx].val;
 
             m_HotSpot.x = n.GetStrPar(1, L"?").GetIntPar(0, L",");
             m_HotSpot.y = n.GetStrPar(1, L"?").GetIntPar(1, L",");
@@ -82,7 +82,7 @@ void CMatrixCursor::Select(const wchar *name) {
 
             m_FrameInc = 1;
 
-            n.Set(n.GetStrPar(0, L"?"));
+            n = n.GetStrPar(0, L"?");
 
             break;
         }

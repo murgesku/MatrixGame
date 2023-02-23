@@ -1258,7 +1258,7 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
             CWStr wstr;
 
             fi.Read(&astr[0], fs);
-            wstr.Set(utils::to_wstring(astr.c_str()));
+            wstr = utils::to_wstring(astr.c_str());
 
             LoadFromText(wstr.c_str(), wstr.length());
         }
