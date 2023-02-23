@@ -399,31 +399,6 @@ bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {
     return 0;
 }
 
-int CWStr::Compare(const wchar *zn1, int zn1len, const wchar *zn2, int zn2len) {
-    if (zn1len == 0 && zn2len == 0)
-        return 0;
-    else if (zn1len == 0)
-        return -1;
-    else if (zn2len == 0)
-        return 1;
-
-    int len = zn1len;
-    if (len > zn2len)
-        len = zn2len;
-
-    for (int i = 0; i < len; i++) {
-        if (zn1[i] < zn2[i])
-            return -1;
-        else if (zn1[i] > zn2[i])
-            return 1;
-    }
-    if (zn1len < zn2len)
-        return -1;
-    else if (zn1len > zn2len)
-        return 1;
-    return 0;
-}
-
 bool CWStr::CompareFirst(const CWStr &str) const {
     int lens1 = GetLen();
     if (lens1 < 1)
