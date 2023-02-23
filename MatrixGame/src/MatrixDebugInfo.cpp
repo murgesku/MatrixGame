@@ -94,7 +94,7 @@ void CMatrixDebugInfo::T(const wchar *key, const wchar *val, int ttl, int bttl, 
     if (!add) {
         while (i < m_ItemsCnt) {
             if (*m_Items[i].key == key) {
-                m_Items[i].val->Set(val);
+                *(m_Items[i].val) = val;
                 m_Items[i].ttl = ttl;
                 m_Items[i].bttl = bttl;
                 return;

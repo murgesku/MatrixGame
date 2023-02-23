@@ -104,11 +104,6 @@ public:
         this->clear();
     }
 
-    void Set(const std::wstring& str)
-    {
-        this->assign(str);
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
@@ -191,7 +186,7 @@ public:
     int CompareSubstring(const wchar *str) const { return CompareSubstring(CWStr(str)); }
 
     CWStr &operator=(const wchar *s) {
-        Set(std::wstring{s});
+        this->assign(s);
         return *this;
     }
 

@@ -2807,17 +2807,15 @@ void CMatrixMapLogic::Takt(int step) {
         if (FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG | MMFLAG_STAT_DIALOG_D)) {
             // stat
             CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
-            CWStr temp(g_CacheHeap);
+            CWStr temp;
             for (int i = 0; i < m_SideCnt; ++i) {
                 CMatrixSideUnit *su = m_Side + i;
 
                 if (su == GetPlayerSide())
                     temp = L"_p_";
                 else {
-                    temp = CWStr(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id, g_CacheHeap))[0]);
+                    temp = L"_" + CWStr(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id))[0]) + L"_";
                     temp.LowerCase();
-                    temp.Insert(0, L"_");
-                    temp += L"_";
                 }
 
                 if (su->GetStatValue(STAT_TIME) == 0) {
@@ -2834,21 +2832,13 @@ void CMatrixMapLogic::Takt(int step) {
                     int mins = (time - hours * 3600) / 60;
                     int secs = (time - hours * 3600 - mins * 60);
 
-                    CWStr h(hours, g_CacheHeap);
-                    CWStr m(mins, g_CacheHeap);
-                    CWStr s(secs, g_CacheHeap);
-                    if (h.GetLen() < 2)
-                        h.Insert(0, L"0");
-                    if (m.GetLen() < 2)
-                        m.Insert(0, L"0");
-                    if (s.GetLen() < 2)
-                        s.Insert(0, L"0");
+                    auto time_str = utils::format(L"%02d:%02d:%02d", hours, mins, secs);
 
                     if (winer) {
-                        repl->ParSetAdd(temp + L"c6", L"<color=0,255,0>" + h + L":" + m + L":" + s + L"</color>");
+                        repl->ParSetAdd(temp + L"c6", L"<color=0,255,0>" + time_str + L"</color>");
                     }
                     else {
-                        repl->ParSetAdd(temp + L"c6", h + L":" + m + L":" + s);
+                        repl->ParSetAdd(temp + L"c6", time_str);
                     }
 
                     repl->ParSetAdd(temp + L"c1", CWStr(su->GetStatValue(STAT_ROBOT_BUILD), g_CacheHeap));

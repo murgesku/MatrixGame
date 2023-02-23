@@ -509,7 +509,7 @@ DWORD CSound::Play(const wchar *name, const D3DXVECTOR3 &pos, ESoundLayer sl, ES
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
 
     return Play(S_SPECIAL_SLOT, pos, sl, interrupt);
 }
@@ -521,7 +521,7 @@ DWORD CSound::Play(const wchar *name, ESoundLayer sl, ESoundInterruptFlag interr
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
 
     return Play(S_SPECIAL_SLOT, sl, interrupt);
 }
@@ -842,7 +842,7 @@ void CSound::AddSound(const wchar *name, const D3DXVECTOR3 &pos) {
         return;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
     SureLoaded(S_SPECIAL_SLOT);
 
     AddSound(pos, m_Sounds[S_SPECIAL_SLOT].attn, m_Sounds[S_SPECIAL_SLOT].pan0, m_Sounds[S_SPECIAL_SLOT].pan1,

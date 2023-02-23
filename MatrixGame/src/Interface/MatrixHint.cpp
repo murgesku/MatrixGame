@@ -576,7 +576,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             continue;
 
         if (temp.CompareFirst(L"_FONT:")) {
-            font.Set(temp.Get() + 6);
+            font = (temp.Get() + 6);
         }
         else if (temp.CompareFirst(L"_COLOR:")) {
             // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
@@ -584,10 +584,10 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             color = temp.GetStrPar(1, L":").GetHexUnsigned();
         }
         else if (temp.CompareFirst(L"_SOUNDIN:")) {
-            soundin.Set(temp.Get() + 9);
+            soundin = (temp.Get() + 9);
         }
         else if (temp.CompareFirst(L"_SOUNDOUT:")) {
-            soundout.Set(temp.Get() + 10);
+            soundout = (temp.Get() + 10);
         }
         else if (temp.CompareFirst(L"_BORDER:")) {
             otstup = true;

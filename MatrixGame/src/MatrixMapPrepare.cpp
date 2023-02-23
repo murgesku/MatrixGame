@@ -399,8 +399,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 
         ic = propkey->FindAsWStr(DATA_SIDEAIINFO);
         if (ic >= 0) {
-            CWStr sideaiinfo(propval->GetAsWStr(ic), g_CacheHeap);
-            CWStr inf(g_CacheHeap), na(g_CacheHeap), da(g_CacheHeap), data(g_CacheHeap);
+            CWStr sideaiinfo(propval->GetAsWStr(ic));
+            CWStr inf, na, da, data;
 
             CBlockPar *bps = g_MatrixData->BlockGet(L"Side");
             int sc = bps->ParCount();
@@ -417,8 +417,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                         int cd = da.GetCountPar(L"/");
                         data = da;
                         for (int d = 0; d < cd; d += 2) {
-                            na.Set(data.GetStrPar(d, L"/"));
-                            da.Set(data.GetStrPar(d + 1, L"/"));
+                            na = data.GetStrPar(d, L"/");
+                            da = data.GetStrPar(d + 1, L"/");
 
                             if (na == L"TBB")
                                 su->m_TimeNextBomb = g_MatrixMap->GetTime() + da.GetInt();

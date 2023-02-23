@@ -233,7 +233,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
             cmd = std::wstring{m_Text.Get(), static_cast<size_t>(i)};
             if (i < m_Text.length())
-                params.Set(m_Text.Get() + i + 1);
+                params = (m_Text.Get() + i + 1);
             cmd.UpperCase();
 
             i = 0;
