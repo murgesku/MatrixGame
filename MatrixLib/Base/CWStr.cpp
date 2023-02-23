@@ -201,12 +201,6 @@ CWStr &CWStr::Del(int sme, int len)
     return *this;
 }
 
-CWStr &CWStr::Insert(int sme, const wchar *str, int len)
-{
-    this->insert(sme, str, static_cast<size_t>(len));
-    return *this;
-}
-
 CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
     int tlen = GetLen();
     if (tlen < 1 || tlen < substr.GetLen())
@@ -219,7 +213,7 @@ CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
             break;
         //      sme+=ff;
         Del(sme, substr.GetLen());
-        Insert(sme, strreplace);
+        this->insert(sme, strreplace);
         sme += strreplace.GetLen();
     }
     return *this;

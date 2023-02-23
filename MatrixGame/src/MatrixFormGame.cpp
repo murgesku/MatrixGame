@@ -100,38 +100,37 @@ void CFormMatrixGame::Draw(void) {
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_DRAWFPS))
-        g_MatrixMap->m_DI.T(L"FPS", CWStr(g_DrawFPS, g_MatrixHeap).Get());
+        g_MatrixMap->m_DI.T(L"FPS", CWStr(g_DrawFPS).c_str());
     if (FLAG(g_Config.m_DIFlags, DI_TMEM)) {
-        g_MatrixMap->m_DI.T(L"Free Texture Mem", CWStr(g_AvailableTexMem, g_MatrixHeap).Get());
+        g_MatrixMap->m_DI.T(L"Free Texture Mem", CWStr(g_AvailableTexMem).c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
-        CWStr txt(g_MatrixHeap);
+        CWStr txt;
         txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
         txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt.insert(txt.length() - 1, L".");
         // txt += L", ";
         // txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
-        // txt.Insert(txt.GetLen()-1,L".",1);
-        g_MatrixMap->m_DI.T(L"Camera target", txt.Get());
+        // txt.Insert(txt.length()-1,L".",1);
+        g_MatrixMap->m_DI.T(L"Camera target", txt.c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
-        CWStr txt(g_MatrixHeap);
-
+        CWStr txt;
         txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
         txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
         txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
-        txt.Insert(txt.GetLen() - 1, L".", 1);
-        g_MatrixMap->m_DI.T(L"Frustum Center", txt.Get());
+        txt.insert(txt.length() - 1, L".");
+        g_MatrixMap->m_DI.T(L"Frustum Center", txt.c_str());
 
         // txt =
         // Float2Int(D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter()-(g_MatrixMap->m_Camera.GetTarget()+D3DXVECTOR3(0,0,g_MatrixMap->m_Camera.GetZRel()))))
-        // * 10.0f); txt.Insert(txt.GetLen()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
+        // * 10.0f); txt.Insert(txt.length()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
 
         // g_MatrixMap->m_DI.T(L"Z rel",CWStr(g_MatrixMap->m_Camera.GetZRel()));
     }

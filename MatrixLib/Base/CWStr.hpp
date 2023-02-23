@@ -134,15 +134,7 @@ public:
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
 
     CWStr &Del(int sme, int len);              // Удалить символы
-    CWStr &Insert(int sme, const CWStr &istr)  // Вставить символы
-    {
-        return Insert(sme, istr.Get(), istr.GetLen());
-    }
-    CWStr &Insert(int sme, const wchar *str, int len);  // Вставить символы
-    CWStr &Insert(int sme, const wchar *str)            // Вставить символы
-    {
-        return Insert(sme, str, WStrLen(str));
-    }
+
     CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     int Find(const wchar *substr, int slen,
