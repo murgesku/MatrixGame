@@ -284,7 +284,7 @@ int CBlockPar::ArrayFind(const wchar *name, int namelen) const {
     for (;;) {
         int icur = istart + ((iend - istart) / 2);
         CBlockParUnit *el = *(m_Array + icur);
-        int cz = CWStr::Compare(name, namelen, el->m_Name.Get(), el->m_Name.GetLen());
+        int cz = std::wstring{name, static_cast<size_t>(namelen)}.compare(el->m_Name);
         if (cz == 0)
             return icur - el->m_FastFirst;
         else if (cz < 0)
@@ -309,7 +309,7 @@ int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) {
     for (;;) {
         int icur = istart + ((iend - istart) / 2);
         CBlockParUnit *el = *(m_Array + icur);
-        int cz = CWStr::Compare(ael->m_Name, el->m_Name);
+        int cz = ael->m_Name.compare(el->m_Name);
         if (cz == 0) {
             if (el->m_FastFirst != 0) {
                 rv = icur - el->m_FastFirst;
