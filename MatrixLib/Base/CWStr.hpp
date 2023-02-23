@@ -31,18 +31,9 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     return !std::wcscmp(s1, s2);
 }
 
-class BASE_API CWStr : public CMain {
-    // as a first step - just replace custom copy-on-write with standard wide string
-    std::wstring m_data;
-
+class BASE_API CWStr : private std::wstring, public CMain
+{
 public:
-    CWStr(const wchar *s1, int len1, const wchar *s2, int len2, CHeap *heap = nullptr)
-    {
-        m_data.clear();
-        m_data += std::wstring(s1, len1);
-        m_data += std::wstring(s2, len2);
-    }
-
     explicit CWStr(CHeap *heap = nullptr)
     : CMain{}
     {
@@ -54,31 +45,31 @@ public:
 
     CWStr(const CWStr &s, CHeap *heap = NULL)
     : CMain{}
-    , m_data(s.m_data)
+    , std::wstring(s)
     {
     }
 
     explicit CWStr(const wchar *s, CHeap *heap = NULL)
     : CMain{}
-    , m_data{s}
+    , std::wstring{s}
     {
     }
 
     CWStr(const wchar *s, int len, CHeap *heap = NULL)
     : CMain{}
-    , m_data{s, static_cast<size_t>(len)}
+    , std::wstring{s, static_cast<size_t>(len)}
     {
     }
 
     explicit CWStr(wchar sim, CHeap *heap = NULL)
     : CMain{}
-    , m_data(size_t{1}, sim)
+    , std::wstring(size_t{1}, sim)
     {
     }
 
     CWStr(wchar sim, int count, CHeap *heap = NULL)
     : CMain{}
-    , m_data(static_cast<size_t>(count), sim)
+    , std::wstring(static_cast<size_t>(count), sim)
     {
     }
 
@@ -110,40 +101,41 @@ public:
     // Clear - Очищает строку
     void Clear()
     {
-        m_data.clear();
+        this->clear();
     }
 
     void SetLen(int len)
     {
-        m_data.resize(len);
+        this->resize(len);
     };
 
     void Set(const std::wstring& str)
     {
-        m_data = str;
+        this->assign(str);
     }
 
     void Set(const CWStr &s)
     {
-        m_data = s.m_data;
+        this->Set(s.to_wstring());
     }
 
-    void Set(const wchar *s) {
-        m_data = s;
+    void Set(const wchar *s)
+    {
+        this->Set(std::wstring{s});
     }
     void Set(const wchar *s, int len)
     {
-        m_data = std::wstring{s, static_cast<size_t>(len)};
+        this->Set(std::wstring{s, static_cast<size_t>(len)});
     }
 
     void Set(wchar sim)
     {
-        m_data = std::wstring{1, sim};
+        this->Set(std::wstring{1, sim});
     }
 
     void Set(wchar sim, int count)
     {
-        m_data = std::wstring(static_cast<size_t>(count), sim);
+        this->Set(std::wstring(static_cast<size_t>(count), sim));
     }
 
     void Set(int zn);
@@ -179,29 +171,34 @@ public:
         return *this;
     }
 
-    const wchar* c_str() const
-    {
-        return m_data.c_str();
-    }
-
     const std::wstring& to_wstring() const
     {
-        return m_data;
+        return *this;
+    }
+
+    const wchar* c_str(void) const
+    {
+        return ((std::wstring*)this)->c_str();
+    }
+
+    bool empty(void) const
+    {
+        return ((std::wstring*)this)->empty();
     }
 
     const wchar *Get(void) const
     {
-        return m_data.c_str();
+        return this->c_str();
     }
 
     wchar *GetBuf(void)
     {
-        return const_cast<wchar*>(m_data.data());
+        return const_cast<wchar*>(this->data());
     }
 
     int GetLen(void) const
     {
-        return m_data.length();
+        return this->length();
     }
 
     int GetInt(void) const;
@@ -213,7 +210,7 @@ public:
     bool IsOnlyInt(void) const;
     bool IsEmpty(void) const
     {
-        return m_data.empty();
+        return this->empty();
     }
 
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
@@ -298,21 +295,21 @@ public:
 
     wchar &operator[](int n)
     {
-        return m_data[n];
+        return ((std::wstring&)*this)[n];
     }
 
     const wchar &operator[](int n) const
     {
-        return m_data[n];
+        return ((std::wstring&)*this)[n];
     }
 
     friend bool operator==(const CWStr &zn1, const CWStr &zn2)
     {
-        return zn1.m_data == zn2.m_data;
+        return ((std::wstring&)zn1) == ((std::wstring&)zn2);
     }
     friend bool operator==(const CWStr &zn1, const wchar *zn2)
     {
-        return zn1.m_data == zn2;
+        return ((std::wstring&)zn1) == zn2;
     }
     friend bool operator==(const wchar *zn1, const CWStr &zn2) { return zn2 == zn1; }
 
