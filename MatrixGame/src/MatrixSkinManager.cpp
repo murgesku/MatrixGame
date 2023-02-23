@@ -89,7 +89,7 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
             }
         }
         else if (i == 1 && g_Config.m_ObjTexturesGloss) {
-            if (temp.Equal(L".")) {
+            if (temp == L".") {
                 gloss_off = true;
             }
             else {

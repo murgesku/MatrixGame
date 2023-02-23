@@ -48,7 +48,7 @@ CWStr& CWStr::Add(const std::wstring& str)
 
 CWStr &CWStr::Add(const CWStr &cstr)
 {
-    this->Add(cstr.to_wstring());
+    this->Add((std::wstring&)cstr);
     return *this;
 }
 
@@ -252,41 +252,8 @@ CWStr &CWStr::Trim() {
         return *this;
     }
 
-    memcpy(GetBuf(), tstr + i, tlen * sizeof(wchar));
-    GetBuf()[tlen] = 0;
+    *this = this->substr(i, tlen);
     return *this;
-}
-
-CWStr &CWStr::TrimFull() {
-    Trim();
-    int tlen = GetLen();
-    if (tlen < 4)
-        return *this;
-
-    this->resize(tlen);
-    wchar *tstr = GetBuf();
-
-    for (int i = 2; i < tlen - 1; i++) {
-        if ((tstr[i] == ' ' || tstr[i] == 0x9) && (tstr[i - 1] == ' ' || tstr[i - 1] == 0x9)) {
-            for (int u = i; u < tlen; u++)
-                tstr[u] = tstr[u + 1];
-            tlen--;
-            i--;
-        }
-    }
-    this->resize(tlen);
-    return *this;
-}
-
-void CWStr::TabToSpace() {
-    int tlen = GetLen();
-    if (tlen < 1)
-        return;
-    wchar *tstr = GetBuf();
-
-    for (int i = 0; i < tlen; i++)
-        if (tstr[i] == 0x9)
-            tstr[i] = ' ';
 }
 
 CWStr &CWStr::Del(int sme, int len)
@@ -465,14 +432,14 @@ int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
 void CWStr::GetStrPar(CWStr &str, int np, const wchar *ogsim) const {
     int sme = GetSmePar(np, ogsim);
     int len = GetLenPar(sme, ogsim);
-    str.Set(Get() + sme, len);
+    str = std::wstring{Get() + sme, static_cast<size_t>(len)};
 }
 
 void CWStr::GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
-    str.Set(Get() + sme1, sme2 - sme1);
+    str = std::wstring{Get() + sme1, static_cast<size_t>(sme2 - sme1)};
 }
 
 CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
@@ -528,16 +495,6 @@ int CWStr::Compare(const wchar *zn1, int zn1len, const wchar *zn2, int zn2len) {
     else if (zn1len > zn2len)
         return 1;
     return 0;
-}
-
-bool CWStr::Equal(const wchar *zn, int len) const {
-    if (len < 0)
-        len = WStrLen(zn);
-    if (GetLen() != len)
-        return false;
-    if (len <= 0)
-        return true;
-    return !std::wmemcmp(Get(), zn, len);
 }
 
 bool CWStr::CompareFirst(const CWStr &str) const {

@@ -107,9 +107,9 @@ BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWS
     if (Reg_GetData(kkey, name, &type, &buf)) {
         if (type == REG_SZ || type == REG_MULTI_SZ) {
             if (GetVersion() < 0x80000000)
-                str.Set((wchar *)buf.Get(), buf.Len() / 2 - 1);
+                str = std::wstring{(wchar*)buf.Get(), static_cast<size_t>(buf.Len() / 2 - 1)};
             else
-                str.Set(utils::to_wstring((const char*)buf.Get()));
+                str = utils::to_wstring((const char*)buf.Get());
         }
         else if (type == REG_DWORD && buf.Len() == 4) {
             str.Set(*((dword *)buf.Get()));
