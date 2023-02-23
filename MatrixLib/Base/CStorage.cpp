@@ -426,7 +426,7 @@ void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
         propkey->AddWStr(bp.BlockGetName(i));
 
         do {
-            uniq_s.Set(uniq);
+            uniq_s = CWStr(uniq);
             uniq++;
         }
         while (IsTablePresent(uniq_s.Get()));
