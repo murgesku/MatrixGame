@@ -76,19 +76,19 @@ public:
     explicit CWStr(int zn, CHeap *heap = NULL)
     : CMain{}
     {
-        Set(zn);
+        Add(zn);
     }
 
     explicit CWStr(DWORD zn, CHeap *heap = NULL)
     : CMain{}
     {
-        Set(zn);
+        Set(utils::format(L"%u", zn));
     }
 
     explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL)
     : CMain{}
     {
-        Set(zn, zpz);
+        Add(zn, zpz);
     }
 
     ~CWStr() = default;
@@ -109,12 +109,6 @@ public:
         this->assign(str);
     }
 
-    void Set(int zn);
-    void Set(dword zn);
-    void Set(double zn, int zpz = 8);
-    void SetHex(void *zn);
-    void SetHex(BYTE zn);
-
     CWStr& Add(const std::wstring& str);
     CWStr &Add(const CWStr &cstr);
     CWStr &Add(const wchar *str);
@@ -122,23 +116,19 @@ public:
     CWStr &Add(wchar sim);
     CWStr &Add(wchar sim, int count);
     CWStr &Add(int zn) {
-        Add(CWStr(zn));
+        Add(utils::format(L"%d", zn));
         return *this;
     }
     CWStr &Add(double zn, int zpz = 8) {
-        Add(CWStr(zn, zpz));
+        Add(utils::format(L"%.*f", zpz, zn));
         return *this;
     }
     CWStr &AddHex(void *zn) {
-        CWStr s(GetHeap());
-        s.SetHex(zn);
-        Add(s);
+        Add(utils::format(L"%X", reinterpret_cast<dword>(zn)));
         return *this;
     }
     CWStr &AddHex(BYTE zn) {
-        CWStr s(GetHeap());
-        s.SetHex(zn);
-        Add(s);
+        Add(utils::format(L"%X", zn));
         return *this;
     }
 
@@ -224,7 +214,7 @@ public:
     int CompareSubstring(const wchar *str) const { return CompareSubstring(CWStr(str)); }
 
     CWStr &operator=(const wchar *s) {
-        Set(s);
+        Set(std::wstring{s});
         return *this;
     }
 

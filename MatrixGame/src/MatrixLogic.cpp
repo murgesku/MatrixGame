@@ -2814,7 +2814,7 @@ void CMatrixMapLogic::Takt(int step) {
                 if (su == GetPlayerSide())
                     temp = L"_p_";
                 else {
-                    temp.Set(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id, g_CacheHeap))[0]);
+                    temp = CWStr(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id, g_CacheHeap))[0]);
                     temp.LowerCase();
                     temp.Insert(0, L"_");
                     temp += L"_";

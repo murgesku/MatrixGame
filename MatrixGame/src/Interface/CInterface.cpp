@@ -1983,28 +1983,28 @@ void CInterface::Init(void) {
                 if (pElement->m_strName == IF_TITAN_LABEL) {
                     if (prev_titan != player_side->GetResourcesAmount(TITAN)) {
                         prev_titan = player_side->GetResourcesAmount(TITAN);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_titan);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_titan);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ELECTRO_LABEL) {
                     if (prev_electro != player_side->GetResourcesAmount(ELECTRONICS)) {
                         prev_electro = player_side->GetResourcesAmount(ELECTRONICS);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_electro);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_electro);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ENERGY_LABEL) {
                     if (prev_energy != player_side->GetResourcesAmount(ENERGY)) {
                         prev_energy = player_side->GetResourcesAmount(ENERGY);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_energy);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_energy);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_PLASMA_LABEL) {
                     if (prev_plasma != player_side->GetResourcesAmount(PLASMA)) {
                         prev_plasma = player_side->GetResourcesAmount(PLASMA);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_plasma);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_plasma);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2013,7 +2013,7 @@ void CInterface::Init(void) {
                         /*максимальное количество изменилось*/ max_robots != player_side->GetMaxSideRobots()) {
                         robots = player_side->GetSideRobots();
                         max_robots = player_side->GetMaxSideRobots();
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(robots);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(robots);
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption.Add(L"/").Add(max_robots);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }

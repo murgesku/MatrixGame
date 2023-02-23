@@ -15,31 +15,6 @@
 
 namespace Base {
 
-void CWStr::Set(int zn)
-{
-    Set(utils::format(L"%d", zn));
-}
-
-void CWStr::Set(dword zn)
-{
-    Set(utils::format(L"%u", zn));
-}
-
-void CWStr::Set(double zn, int zpz)
-{
-    Set(utils::format(L"%.*f", zpz, zn));
-}
-
-void CWStr::SetHex(void *zn)
-{
-    Set(utils::format(L"%X", reinterpret_cast<dword>(zn)));
-}
-
-void CWStr::SetHex(BYTE zn)
-{
-    Set(utils::format(L"%X", zn));
-}
-
 CWStr& CWStr::Add(const std::wstring& str)
 {
     this->append(str);
