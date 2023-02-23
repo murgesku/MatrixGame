@@ -42,43 +42,43 @@ void CWStr::SetHex(BYTE zn)
 
 CWStr& CWStr::Add(const std::wstring& str)
 {
-    m_data += str;
+    this->append(str);
     return *this;
 }
 
 CWStr &CWStr::Add(const CWStr &cstr)
 {
-    m_data += cstr.Get();
+    this->Add(cstr.to_wstring());
     return *this;
 }
 
 CWStr &CWStr::Add(const wchar *str)
 {
-    m_data += str;
+    this->Add(std::wstring{str});
     return *this;
 }
 
 CWStr &CWStr::Add(const wchar *str, int lstr)
 {
-    m_data += std::wstring{str, static_cast<size_t>(lstr)};
+    this->Add(std::wstring{str, static_cast<size_t>(lstr)});
     return *this;
 }
 
 CWStr &CWStr::Add(wchar sim)
 {
-    m_data += std::wstring(1, sim);
+    this->Add(std::wstring(1, sim));
     return *this;
 }
 
 CWStr &CWStr::Add(wchar sim, int count)
 {
-    m_data += std::wstring(count, sim);
+    this->Add(std::wstring(count, sim));
     return *this;
 }
 
 int CWStr::GetInt() const
 {
-    if (m_data.empty())
+    if (this->empty())
     {
         return 0;
     }
@@ -90,7 +90,7 @@ int CWStr::GetInt() const
     // '-' at any position as a number sign.
     // needless to say - it's a bullshit, but as other code expectes it
     // to work like this, so...
-    for (const auto sym : m_data)
+    for (const auto sym : *this)
     {
         wchar ch = sym - '0';
         if (ch < 10)
@@ -232,7 +232,7 @@ CWStr &CWStr::Trim() {
             break;
     }
     if (i == tlen) {
-        m_data.clear();
+        this->clear();
         return *this;
     }
     int u;
@@ -243,11 +243,11 @@ CWStr &CWStr::Trim() {
     tlen = u - i + 1;
     if (tlen < 1)
     {
-        m_data.clear();
+        this->clear();
         return *this;
     }
 
-    m_data.resize(tlen);
+    this->resize(tlen);
     if (i == 0) {
         return *this;
     }
@@ -263,7 +263,7 @@ CWStr &CWStr::TrimFull() {
     if (tlen < 4)
         return *this;
 
-    m_data.resize(tlen);
+    this->resize(tlen);
     wchar *tstr = GetBuf();
 
     for (int i = 2; i < tlen - 1; i++) {
@@ -274,7 +274,7 @@ CWStr &CWStr::TrimFull() {
             i--;
         }
     }
-    m_data.resize(tlen);
+    this->resize(tlen);
     return *this;
 }
 
@@ -291,13 +291,13 @@ void CWStr::TabToSpace() {
 
 CWStr &CWStr::Del(int sme, int len)
 {
-    m_data.erase(sme, static_cast<size_t>(len));
+    this->erase(sme, static_cast<size_t>(len));
     return *this;
 }
 
 CWStr &CWStr::Insert(int sme, const wchar *str, int len)
 {
-    m_data.insert(sme, str, static_cast<size_t>(len));
+    this->insert(sme, str, static_cast<size_t>(len));
     return *this;
 }
 
@@ -308,10 +308,10 @@ CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
 
     int sme = 0;
     for (;;) {
-        //		int ff;
+        //      int ff;
         if ((sme = Find(substr, sme)) == -1)
             break;
-        //		sme+=ff;
+        //      sme+=ff;
         Del(sme, substr.GetLen());
         Insert(sme, strreplace);
         sme += strreplace.GetLen();
@@ -412,7 +412,7 @@ int CWStr::GetSmePar(int np, const wchar *ogsim) const {
     int lenogsim = WStrLen(ogsim);
     int tlen = GetLen();
     // if(tlen<1 || lenogsim<1 || np<0) ERROR_OK("Data in CWStr::GetSmePar()");
-    //	if((tlen<1 || lenogsim<1 || np<0))
+    //  if((tlen<1 || lenogsim<1 || np<0))
     //        ASSERT(1);
     ASSERT(!(tlen < 1 || lenogsim < 1 || np < 0));
     int smepar = 0;
