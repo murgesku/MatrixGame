@@ -1640,7 +1640,7 @@ void CInterface::Init(void) {
                 if (pElement->m_strName == IF_LIVES_LABEL && player_side->m_CurrSel != NOTHING_SELECTED) {
                     if (new_lives) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption =
-                                CWStr(Float2Int(lives)).Add(L"/").Add(CWStr(Float2Int(max_lives)));
+                            utils::format(L"%d/%d", Float2Int(lives), Float2Int(max_lives));
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     pElement->SetVisibility(true);

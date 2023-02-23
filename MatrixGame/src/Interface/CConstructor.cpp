@@ -1186,7 +1186,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
     m_FocusedLabel.Replace(CWStr(L"<br>"), CWStr(L"\r\n"));
 
-    CWStr color(L"<Color=247,195,0>", g_CacheHeap);
+    CWStr color(L"<Color=247,195,0>");
     if (type == MRT_WEAPON) {
         int wspeed = g_Config.m_WeaponCooldown[WeapKind2Index(kind)];
         int damage = g_Config.m_RobotDamages[WeapKind2Index(kind)].damage;
@@ -1209,10 +1209,8 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         //    damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BOMB)].damage / wspeed;
         //}
 
-        CWStr c(color);
-        CWStr colored_damage = c.Add(CWStr(L"dam</color>")).Replace(CWStr(L"dam"), CWStr(damage / 10));
-        c = color;
-        CWStr colored_adamage = c.Add(CWStr(L"dam</color>")).Replace(CWStr(L"dam"), CWStr(adamage / 10));
+        CWStr colored_damage = color + CWStr(damage / 10) + L"</color>";
+        CWStr colored_adamage = color + CWStr(adamage / 10) + L"</color>";
 
         m_FocusedLabel.Replace(CWStr(L"<Damage>"), colored_damage);
         m_FocusedLabel.Replace(CWStr(L"<AddDamage>"), colored_adamage);
@@ -1283,12 +1281,9 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         int pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].common;
         int ext_pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].extra;
 
-        CWStr c = color;
-        CWStr colored_size = c.Add(CWStr(L"a</color>")).Replace(CWStr(L"a"), CWStr(structure / 10));
-        c = color;
-        CWStr colored_pilons = c.Add(CWStr(L"a</color>")).Replace(CWStr(L"a"), CWStr(pilons));
-        c = color;
-        CWStr colored_epilons = c.Add(CWStr(L"a</color>")).Replace(CWStr(L"a"), CWStr(ext_pilons));
+        CWStr colored_size = color + CWStr(structure / 10) + L"</color>";
+        CWStr colored_pilons = color + CWStr(pilons) + L"</color>";
+        CWStr colored_epilons = color + CWStr(ext_pilons) + L"</color>";
 
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
         m_FocusedLabel.Replace(CWStr(L"<Pilons>"), colored_pilons);
@@ -1296,7 +1291,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
     }
     else if (type == MRT_CHASSIS) {
         int structure = (int)g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (kind - 1) * 6];
-        CWStr colored_size = color.Add(CWStr(L"size</color>")).Replace(CWStr(L"size"), CWStr(structure / 10));
+        CWStr colored_size = color + CWStr(structure / 10) + L"</color>";
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
     }
 }

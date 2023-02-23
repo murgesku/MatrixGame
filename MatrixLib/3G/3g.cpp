@@ -126,7 +126,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
 
     int cntpar = bpcfg.Par(L"FullScreen").GetCountPar(L",");
 
-    CWStr str(bpcfg.Par(L"Resolution"), g_CacheHeap);
+    CWStr str(bpcfg.Par(L"Resolution"));
     if (str.GetCountPar(L",") < 2)
         ERROR_E;
     g_ScreenX = str.GetIntPar(0, L",");
@@ -157,9 +157,9 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     else
         refresh = bpcfg.Par(L"FullScreen").GetIntPar(2, L",");
 
-    g_WndClassName = HNew(g_CacheHeap) CWStr(sysname, g_CacheHeap);
-    g_WndClassName->Add(L"_wc");
-    std::string classname{utils::from_wstring(g_WndClassName->Get())};
+    g_WndClassName = HNew(g_CacheHeap) CWStr(sysname);
+    *g_WndClassName += L"_wc";
+    std::string classname{utils::from_wstring(g_WndClassName->c_str())};
 
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);

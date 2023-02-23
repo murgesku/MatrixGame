@@ -15,30 +15,6 @@
 
 namespace Base {
 
-CWStr& CWStr::Add(const std::wstring& str)
-{
-    this->append(str);
-    return *this;
-}
-
-CWStr &CWStr::Add(const CWStr &cstr)
-{
-    this->Add((const std::wstring&)cstr);
-    return *this;
-}
-
-CWStr &CWStr::Add(const wchar *str)
-{
-    this->Add(std::wstring{str});
-    return *this;
-}
-
-CWStr &CWStr::Add(const wchar *str, int lstr)
-{
-    this->Add(std::wstring{str, static_cast<size_t>(lstr)});
-    return *this;
-}
-
 int CWStr::GetInt() const
 {
     if (this->empty())
