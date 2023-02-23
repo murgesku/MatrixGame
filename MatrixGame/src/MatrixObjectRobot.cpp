@@ -307,8 +307,8 @@ void CMatrixRobot::RNeed(dword need) {
         // float hp = (float)g_Config.m_RobotHitPoint;
         // InitMaxHitpoint(hp);
 
-        CWStr name(g_CacheHeap), name_e(g_CacheHeap);
-        CWStr path(g_CacheHeap);
+        CWStr name, name_e;
+        CWStr path;
 
         for (int i = 0; i < m_UnitCnt; i++) {
             if (!m_Unit[i].m_Graph) {
@@ -328,7 +328,7 @@ void CMatrixRobot::RNeed(dword need) {
                     default:
                         ERROR_S(L"Unknown robot unit type");
                 }
-                path.Add(static_cast<int>(m_Unit[i].u1.s1.m_Kind));
+                path += CWStr(static_cast<int>(m_Unit[i].u1.s1.m_Kind));
 
                 name = path.c_str();
 

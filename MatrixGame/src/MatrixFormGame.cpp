@@ -106,10 +106,10 @@ void CFormMatrixGame::Draw(void) {
     }
     if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
         CWStr txt(g_MatrixHeap);
-        txt.Add(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
+        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
         txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
-        txt.Add(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
+        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
         txt.Insert(txt.GetLen() - 1, L".", 1);
         // txt += L", ";
         // txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
@@ -119,13 +119,13 @@ void CFormMatrixGame::Draw(void) {
     if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
         CWStr txt(g_MatrixHeap);
 
-        txt.Add(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
+        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
         txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
-        txt.Add(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
+        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
         txt.Insert(txt.GetLen() - 1, L".", 1);
         txt += L", ";
-        txt.Add(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
+        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
         txt.Insert(txt.GetLen() - 1, L".", 1);
         g_MatrixMap->m_DI.T(L"Frustum Center", txt.Get());
 

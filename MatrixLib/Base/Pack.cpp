@@ -1711,7 +1711,7 @@ DWORD CPackFile::Open(const std::string& filename, DWORD modeopen) {
     if (H < 0)
         return 0xFFFFFFFF;
     if (m_RootFolder == NULL) {
-        ERROR_S(utils::format(L"Package not opened: %s", utils::to_wstring(filename).c_str()));
+        ERROR_S(utils::format(L"Package not opened: %ls", utils::to_wstring(filename).c_str()));
     }
     PFile = m_RootFolder->GetFileRecEx(filename);
 
@@ -1737,12 +1737,12 @@ DWORD CPackFile::Open(const std::string& filename, DWORD modeopen) {
         m_Handles[H].m_Compressed = false;
         m_Handles[H].m_Blocknumber = -1;
         if (m_Handles[H].m_Size == INVALID_FILE_SIZE) {
-            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
+            ERROR_S(utils::format(L"File system error: %ls", utils::to_wstring(filename).c_str()));
         }
 
         DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
         if (Error == 0xFFFFFFFF) {
-            ERROR_S(utils::format(L"File system error: %s", utils::to_wstring(filename).c_str()));
+            ERROR_S(utils::format(L"File system error: %ls", utils::to_wstring(filename).c_str()));
         }
 
         m_Handles[H].m_Free = false;
@@ -1773,7 +1773,7 @@ DWORD CPackFile::Open(const std::string& filename, DWORD modeopen) {
     };
     DWORD Error = SetFilePointer((HANDLE)m_Handles[H].m_Handle, m_Handles[H].m_Offset, NULL, FILE_BEGIN);
     if (Error == 0xFFFFFFFF) {
-        ERROR_S(utils::format(L"Packet file system error: %s", utils::to_wstring(filename).c_str()));
+        ERROR_S(utils::format(L"Packet file system error: %ls", utils::to_wstring(filename).c_str()));
     }
     return H;
 }

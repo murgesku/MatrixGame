@@ -627,11 +627,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 // replace geometry
                 int n = (int)kind[i];
 
-                CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
-                namet += L"b";
-                namet.Add(n);
-                CWStr namev(namet, g_CacheHeap);
-                namev += L".vo";
+                CWStr namet = utils::format(L"%lsb%d", OBJECT_PATH_BUILDINGS_RUINS, n);
+                CWStr namev = namet + L".vo";
 
                 CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
                 mo->InitAsBaseRuins(D3DXVECTOR2(xf[i], yf[i]), ang[i], namev, namet, true);

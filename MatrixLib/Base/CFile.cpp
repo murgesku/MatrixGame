@@ -343,7 +343,7 @@ void CFile::Read(void *buf, DWORD kolbyte) {
     }
 
     if (!ok) {
-        ERROR_S(utils::format(L"Error read file: %s cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error read file: %ls cnt=%d", m_FileName.Get(), kolbyte));
     }
 }
 
@@ -356,7 +356,7 @@ void CFile::Write(void *buf, DWORD kolbyte) {
     DWORD temp;
 
     if (WriteFile(m_Handle, buf, kolbyte, &temp, NULL) == FALSE || temp != kolbyte) {
-        ERROR_S(utils::format(L"Error write file: %s cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error write file: %ls cnt=%d", m_FileName.Get(), kolbyte));
     }
 }
 
@@ -513,13 +513,13 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
 
     if (lenpath > 0) {
         outname = std::wstring{str, static_cast<size_t>(lenpath)};
-        outname.Add(fd.cFileName);
+        outname += fd.cFileName;
     }
     else
-        outname.Set(fd.cFileName);
+        outname = fd.cFileName;
 
     if (withpar && lenfile < len)
-        outname.Add(str + lenfile, len - lenfile);
+        outname += std::wstring{str + lenfile, static_cast<size_t>(len - lenfile)};
 
     return true;
 }

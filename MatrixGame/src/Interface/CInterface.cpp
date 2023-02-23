@@ -753,8 +753,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 st = IFACE_PRESSED_UNFOCUSED;
                             }
                             if (labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL) {
-                                CWStr t_code;
-                                t_code.Add(if_elem->m_strName).Add(L"_").Add(state);
+                                CWStr t_code = if_elem->m_strName;
+                                t_code += L"_" + state;
                                 CWStr text = labels_file->Par(t_code);
 
                                 if (t_code == L"iw1text_sNormal") {
@@ -2013,8 +2013,7 @@ void CInterface::Init(void) {
                         /*максимальное количество изменилось*/ max_robots != player_side->GetMaxSideRobots()) {
                         robots = player_side->GetSideRobots();
                         max_robots = player_side->GetMaxSideRobots();
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(robots);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Add(L"/").Add(max_robots);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d/%d", robots, max_robots);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
