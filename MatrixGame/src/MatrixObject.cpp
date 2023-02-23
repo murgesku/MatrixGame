@@ -928,7 +928,7 @@ void CMatrixMapObject::Init(int ids) {
     temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*");
 
     if (temp[0] == '+') {
-        temp.Del(0, 1);
+        temp.erase(0, 1);
         ++g_MatrixMap->m_BeforeWinCount;
 
         SETFLAG(m_ObjectState, OBJECT_STATE_SPECIAL);

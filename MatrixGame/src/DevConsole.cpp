@@ -198,12 +198,12 @@ void CDevConsole::Keyboard(int scan, bool down) {
         if (scan == KEY_BACKSPACE) {
             if (m_CurPos > 0) {
                 --m_CurPos;
-                m_Text.Del(m_CurPos, 1);
+                m_Text.erase(m_CurPos, 1);
             }
         }
         else if (scan == KEY_DELETE) {
             if (m_CurPos < m_Text.GetLen()) {
-                m_Text.Del(m_CurPos, 1);
+                m_Text.erase(m_CurPos, 1);
             }
         }
         else if (scan == KEY_LEFT) {
