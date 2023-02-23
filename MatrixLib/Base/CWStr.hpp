@@ -133,8 +133,6 @@ public:
 
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
 
-    CWStr &Del(int sme, int len);              // Удалить символы
-
     CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     int Find(const wchar *substr, int slen,

@@ -1896,7 +1896,7 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
         CWStr nnn(MapName(), g_CacheHeap);
         int iii = std::max(nnn.FindR('\\'), nnn.FindR('/'));
         if (iii >= 0)
-            nnn.Del(0, iii + 1);
+            nnn.erase(0, iii + 1);
 
         m_Minimap.RenderBackground(nnn, uniq);
 
