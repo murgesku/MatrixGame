@@ -265,7 +265,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
                     if (c >= 'A' && c <= 'Z')
                         c |= 32;
                 }
-                m_Text.Insert(m_CurPos, CWStr(c, g_MatrixHeap));
+                m_Text.insert(m_CurPos, 1, c);
                 ++m_CurPos;
             }
         }
