@@ -584,7 +584,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
                 if (m_Packs->FileExists(fn)) {
                     outname.Set(utils::to_wstring(fn));
                     if (withpar)
-                        outname.Add(mname + lenfile);
+                        outname += (mname + lenfile);
                     return true;
                 }
             }
@@ -601,7 +601,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
     if (IS_UNICODE()) {
         CWStr fn(folderfrom);
         if (fn.GetLen() > 0 && !(*(fn.Get() + fn.GetLen() - 1) == '\\' || (*(fn.Get() + fn.GetLen() - 1) == '/'))) {
-            fn.Add(L"\\");
+            fn += L"\\";
         }
         CWStr fnf(fn);
 
@@ -679,7 +679,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
 BASE_API void CorrectFilePath(CWStr &filepath) {
     if (filepath.GetLen() > 0 &&
         (*(filepath.Get() + filepath.GetLen() - 1) == '\\' || (*(filepath.Get() + filepath.GetLen() - 1) == '/'))) {
-        filepath.Add(L"\\");
+        filepath += L"\\";
     }
 }
 

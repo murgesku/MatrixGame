@@ -109,14 +109,6 @@ public:
         this->assign(str);
     }
 
-    CWStr& Add(const std::wstring& str);
-    CWStr &Add(const CWStr &cstr);
-    CWStr &Add(const wchar *str);
-    CWStr &Add(const wchar *str, int lstr);
-
-    template<typename TTT>
-    CWStr& Add(const TTT val) = delete;
-
     const wchar *Get(void) const
     {
         return this->c_str();
