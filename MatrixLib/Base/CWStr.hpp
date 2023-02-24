@@ -98,12 +98,6 @@ public:
         return nullptr;
     }
 
-    // Clear - Очищает строку
-    void Clear()
-    {
-        this->clear();
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
