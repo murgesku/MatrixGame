@@ -1551,15 +1551,15 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
             str2 = str.GetStrPar(2, L",");
             str2.Trim();
 
-            if (str2.GetLen() > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt +
+            if (str2.length() > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt +
                                         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxExtraWeaponCnt)
-                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", CWStr(i).Get());
+                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", CWStr(i).c_str());
 
             int cntnormal = 0;
             int cntextra = 0;
 
-            for (u = 0; u < str2.GetLen(); u++) {
-                wchar ch = str2.GetBuf()[u];
+            for (u = 0; u < str2.length(); u++) {
+                wchar ch = str2[u];
                 if (ch == L'G') {
                     cntnormal++;
                     m_AIRobotTypeList[m_AIRobotTypeCnt].m_Weapon[u].m_Unit.m_nKind = RUK_WEAPON_MACHINEGUN;
