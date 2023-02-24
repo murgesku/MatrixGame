@@ -3021,7 +3021,7 @@ void CMatrixMapLogic::Takt(int step) {
         // check easter egg :)
         CWStr mn(MapName(), g_CacheHeap);
         mn.LowerCase();
-        if (mn.Find(L"terron") >= 0) {
+        if (mn.find(L"terron") != std::wstring::npos) {
             int egg1 = 0, egg2 = 0;
             FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (DWORD)&egg1);
             if (egg1 == 1) {

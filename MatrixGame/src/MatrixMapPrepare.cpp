@@ -1893,10 +1893,23 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
         robots_buf = NULL;
 
         m_Minimap.Init();
-        CWStr nnn(MapName(), g_CacheHeap);
-        int iii = std::max(nnn.FindR('\\'), nnn.FindR('/'));
-        if (iii >= 0)
+        CWStr nnn(MapName());
+        size_t pos1 = nnn.rfind('\\');
+        size_t pos2 = nnn.rfind('/');
+
+        size_t iii{std::wstring::npos};
+        if (pos1 != std::wstring::npos)
+        {
+            iii = pos1;
+        }
+        if (pos2 != std::wstring::npos && pos2 > iii)
+        {
+            iii = pos2;
+        }
+        if (iii != std::wstring::npos)
+        {
             nnn.erase(0, iii + 1);
+        }
 
         m_Minimap.RenderBackground(nnn, uniq);
 

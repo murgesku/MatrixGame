@@ -135,13 +135,6 @@ public:
 
     CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
-    int Find(const wchar *substr, int slen,
-             int sme = 0) const;  // Поиск подстроки. return = смещение от начала  -1 = Подстрока не найдена
-    int Find(const CWStr &substr, int sme = 0) const { return Find(substr.Get(), substr.GetLen(), sme); }
-    int Find(const wchar *substr, int sme = 0) const { return Find(substr, WStrLen(substr), sme); }
-    int FindR(wchar ch, int sme = -1)
-            const;  // Поиск символа в обратном порядке. return = смещение от начала  -1 = Подстрока не найдена
-
     void LowerCase(int sme = 0, int len = -1);
     void UpperCase(int sme = 0, int len = -1);
 

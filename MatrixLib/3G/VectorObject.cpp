@@ -2291,8 +2291,8 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
         tstr = bp2.ParNE(L"Model");
         if (!tstr.IsEmpty()) {
-            int idx = tstr.Find(L"?");
-            if (idx >= 0)
+            auto idx = tstr.find(L"?");
+            if (idx != std::wstring::npos)
                 tstr.resize(idx);
             CacheReplaceFileNameAndExt(unit, filename, tstr.Get());
         }

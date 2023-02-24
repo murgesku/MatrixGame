@@ -196,55 +196,21 @@ CWStr &CWStr::Trim() {
 }
 
 CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
-    int tlen = GetLen();
-    if (tlen < 1 || tlen < substr.GetLen())
+    int tlen = length();
+    if (tlen < 1 || tlen < substr.length())
         return *this;
 
-    int sme = 0;
+    size_t sme = 0;
     for (;;) {
         //      int ff;
-        if ((sme = Find(substr, sme)) == -1)
+        if ((sme = this->find(substr, sme)) == std::wstring::npos)
             break;
         //      sme+=ff;
-        this->erase(sme, substr.GetLen());
+        this->erase(sme, substr.length());
         this->insert(sme, strreplace);
-        sme += strreplace.GetLen();
+        sme += strreplace.length();
     }
     return *this;
-}
-
-int CWStr::Find(const wchar *substr, int slen, int sme) const {
-    int tlen = GetLen();
-    if (tlen < 1)
-        return -1;
-    if (slen < 1 || (tlen - sme) < slen)
-        return -1;
-    const wchar *tstr = Get();
-
-    for (int i = sme; i <= (tlen - slen); ++i) {
-        int u;
-        for (u = 0; u < slen; ++u) {
-            if (tstr[i + u] != substr[u])
-                break;
-        }
-        if (u >= slen)
-            return i;
-    }
-    return -1;
-}
-
-int CWStr::FindR(wchar ch, int sme) const {
-    if (sme < 0)
-        sme = GetLen() - 1;
-    if ((sme < 0) || (sme >= GetLen()))
-        return -1;
-
-    const wchar *curch = Get() + sme;
-    while (sme >= 0 && *curch != ch) {
-        sme--;
-        curch--;
-    }
-    return sme;
 }
 
 void CWStr::LowerCase(int sme, int len) {
