@@ -52,7 +52,7 @@ public:
     {
     }
 
-    CWStr(const wchar *s, int len, CHeap *heap = NULL)
+    explicit CWStr(const wchar *s, int len, CHeap *heap = NULL)
     : std::wstring{s, static_cast<size_t>(len)}
     {
     }
@@ -62,7 +62,7 @@ public:
     {
     }
 
-    CWStr(wchar sim, int count, CHeap *heap = NULL)
+    explicit CWStr(wchar sim, int count, CHeap *heap = NULL)
     : std::wstring(static_cast<size_t>(count), sim)
     {
     }
@@ -74,11 +74,6 @@ public:
 
     explicit CWStr(DWORD zn, CHeap *heap = NULL)
     : std::wstring{utils::format(L"%u", zn)}
-    {
-    }
-
-    explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL)
-    : std::wstring{utils::format(L"%.*f", zpz, zn)}
     {
     }
 

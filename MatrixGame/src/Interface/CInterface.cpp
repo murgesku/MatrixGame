@@ -5049,7 +5049,7 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[0].m_Hitpoint / 10));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[0].m_Hitpoint / 10);
         repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
@@ -5069,7 +5069,7 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[1].m_Hitpoint / 10));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[1].m_Hitpoint / 10);
         repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[1].m_Resources[i]) {
@@ -5088,9 +5088,8 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[2].m_Hitpoint / 10));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[2].m_Hitpoint / 10);
         repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
-
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[2].m_Resources[i]) {
                 repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
@@ -5108,7 +5107,7 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[3].m_Hitpoint / 10));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[3].m_Hitpoint / 10);
         repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
