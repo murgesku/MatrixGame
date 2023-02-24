@@ -397,13 +397,13 @@ bool CStorage::Load(CBuf &buf_in) {
 void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
     DTRACE();
 
-    CWStr root_name(root, m_Heap);
+    CWStr root_name(root);
 
     CStorageRecord sr(root_name, m_Heap);
-    sr.AddItem(CStorageRecordItem(CWStr(L"0", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"1", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"2", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"3", m_Heap), ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(CWStr(L"0"), ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(CWStr(L"1"), ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(CWStr(L"2"), ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(CWStr(L"3"), ST_WCHAR));
     AddRecord(sr);
 
     CDataBuf *propkey = GetBuf(root, L"0", ST_WCHAR);
@@ -421,7 +421,7 @@ void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
     propval = GetBuf(root, L"3", ST_WCHAR);
     cnt = bp.BlockCount();
 
-    CWStr uniq_s(m_Heap);
+    CWStr uniq_s;
     for (int i = 0; i < cnt; ++i) {
         propkey->AddWStr(bp.BlockGetName(i));
 

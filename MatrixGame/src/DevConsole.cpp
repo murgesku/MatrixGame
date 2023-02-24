@@ -94,7 +94,7 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
     DWORD time2 = timeGetTime();
 
-    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1, g_CacheHeap).c_str(), 5000);
+    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1).c_str(), 5000);
 }
 
 static void hMusic(const Base::CWStr &cmd, const Base::CWStr &params) {
@@ -109,14 +109,14 @@ static void hCalcVis(const Base::CWStr &cmd, const Base::CWStr &params) {
 }
 
 static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params) {
-    CWStr name(g_CacheHeap);
+    CWStr name;
     if (CFile::FileExist(name, params.c_str())) {
         CBuf fil(g_CacheHeap);
         CStorage out(g_CacheHeap);
         fil.LoadFromFile(params);
 
-        CStorageRecord sr(CWStr(L"0", g_CacheHeap), g_CacheHeap);
-        sr.AddItem(CStorageRecordItem(CWStr(L"0", g_CacheHeap), ST_BYTE));
+        CStorageRecord sr(CWStr(L"0"), g_CacheHeap);
+        sr.AddItem(CStorageRecordItem(CWStr(L"0"), ST_BYTE));
         out.AddRecord(sr);
 
         CDataBuf *b = out.GetBuf(L"0", L"0", ST_BYTE);
@@ -137,7 +137,7 @@ SCmdItem CDevConsole::m_Commands[] = {
         {NULL, NULL}  // last
 };
 
-CDevConsole::CDevConsole(void) : m_Flags(0), m_Text(g_MatrixHeap), m_CurPos(0) {
+CDevConsole::CDevConsole(void) : m_Flags(0), m_Text{}, m_CurPos(0) {
     m_Time = 0;
     m_NextTime = 0;
 }
@@ -147,7 +147,7 @@ CDevConsole::~CDevConsole() {}
 void CDevConsole::ShowHelp(void) {
     int i = 0;
     while (m_Commands[i].cmd != NULL) {
-        CWStr desc(g_MatrixHeap);
+        CWStr desc;
 
         if (i == 0)
             desc = L"Shows help";
@@ -223,8 +223,8 @@ void CDevConsole::Keyboard(int scan, bool down) {
             m_CurPos = m_Text.length();
         }
         else if (scan == KEY_ENTER) {
-            CWStr cmd(g_MatrixHeap);
-            CWStr params(g_MatrixHeap);
+            CWStr cmd;
+            CWStr params;
             int i = 0;
             while (i < m_Text.length()) {
                 if (m_Text[i] == ' ')

@@ -159,7 +159,7 @@ void CMatrixSideUnit::InterpolateArcadedRobotArmorP(int ms) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 CMatrixSideUnit::CMatrixSideUnit()
-  : CMain(), m_Name(g_MatrixHeap), m_PlayerName(L"Player1", g_MatrixHeap), m_SideStatus(SS_NONE) {
+  : CMain(), m_Name{}, m_PlayerName(L"Player1"), m_SideStatus(SS_NONE) {
     DTRACE();
 
     m_TimeNextBomb = 60000;

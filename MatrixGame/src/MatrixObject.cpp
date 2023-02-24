@@ -246,8 +246,8 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
                 m_PB = NULL;
             }
 
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","), g_CacheHeap);
-            CWStr temp1(g_CacheHeap);
+            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","));
+            CWStr temp1;
 
             int cnt = temp.GetCountPar(L"#");
             for (int i = 0; i < cnt; ++i) {
@@ -270,8 +270,8 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
 void CMatrixMapObject::ApplyAnimState(int anims) {
     m_AnimState = anims;
 
-    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","), g_CacheHeap);
-    CWStr temp1(g_CacheHeap);
+    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","));
+    CWStr temp1;
 
     int cnt = temp.GetCountPar(L"#");
     for (int i = 0; i < cnt; ++i) {
@@ -396,7 +396,7 @@ void CMatrixMapObject::RNeed(dword need) {
             UnloadObject(m_Graph, g_MatrixHeap);
 
         // prepare texture
-        CWStr path(g_CacheHeap), tex(g_CacheHeap), vo(g_CacheHeap), temp(g_CacheHeap);
+        CWStr path, tex, vo, temp;
         path = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*");
 
         if (m_BehFlag != BEHF_PORTRET) {
@@ -429,7 +429,7 @@ void CMatrixMapObject::RNeed(dword need) {
                 tex += L"*" + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_SCROLL, L"*");
             }
             else {
-                tex = path + L"p" + CWStr(m_PrevStateRobotsInRadius, g_CacheHeap);
+                tex = path + L"p" + CWStr(m_PrevStateRobotsInRadius);
                 tex += L"**";
                 tex += path + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_BACK, L"*");
                 tex += L"*";
@@ -652,8 +652,8 @@ void CMatrixMapObject::Takt(int cms) {
 
             if (m_BehFlag == BEHF_ANIM) {
                 if (m_Graph->IsAnimEnd()) {
-                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
-                    CWStr temp1(g_CacheHeap);
+                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
+                    CWStr temp1;
 
                     int cnt = temp.GetCountPar(L"#");
                     for (int i = 0; i < cnt; ++i) {

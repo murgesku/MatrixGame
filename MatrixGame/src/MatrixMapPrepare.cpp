@@ -444,8 +444,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
     if (step == RS_RESOURCES) {
         ic = propkey->FindAsWStr(DATA_SIDERESINFO);
         if (ic >= 0) {
-            CWStr sideresinfo(g_CacheHeap);
-            CWStr def(g_CacheHeap);
+            CWStr sideresinfo;
+            CWStr def;
             sideresinfo = propval->GetAsWStr(ic);
             int cnt = sideresinfo.GetCountPar(L"|");
             for (int i = 0; i < cnt; ++i) {
@@ -691,14 +691,14 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 SPreRobot sb;
                 memset(&sb, 0, sizeof(sb));
 
-                CWStr units(g_CacheHeap);
+                CWStr units;
                 units = c6->GetAsWStr(i);
 
                 int cc = units.GetCountPar(L"|");
 
                 int wi = 0;
                 for (int k = 0; k < cc; k++) {
-                    CWStr unit(units.GetStrPar(k, L"|"), g_CacheHeap);
+                    CWStr unit(units.GetStrPar(k, L"|"));
 
                     ERobotUnitType type = (ERobotUnitType)unit.GetIntPar(0, L",");
                     ERobotUnitKind kind = (ERobotUnitKind)unit.GetIntPar(1, L",");
@@ -986,7 +986,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_MACROTEXTURE);
     if (ic >= 0) {
-        CWStr mt(g_CacheHeap);
+        CWStr mt;
         mt = propval->GetAsWStr(ic);
         if (mt.empty()) {
             MacrotextureClear();
@@ -1074,7 +1074,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_SKYNAME);
     if (ic >= 0) {
-        CWStr skyname(g_CacheHeap);
+        CWStr skyname;
         skyname = propval->GetAsWStr(ic);
 
         CBlockPar *skbp = g_MatrixData->BlockGet(L"Sky")->BlockGet(skyname);
@@ -1096,7 +1096,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
                     skyname = L"Right";
                 // else if (idx == 4) skyname = L"Up";
 
-                CWStr texname(skbp->ParGet(skyname).GetStrPar(0, L","), g_CacheHeap);
+                CWStr texname(skbp->ParGet(skyname).GetStrPar(0, L","));
 
                 if (g_Config.m_SkyBox == 2)
                     texname += L"_high";

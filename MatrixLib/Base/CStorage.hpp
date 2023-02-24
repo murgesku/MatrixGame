@@ -230,7 +230,7 @@ public:
       : m_Name(item.m_Name), m_Type(item.m_Type), m_Buf(NULL) {}
     CStorageRecordItem(const CWStr &name, EStorageType type)
       : m_Name(name), m_Type(type), m_Buf(NULL) {}
-    CStorageRecordItem(CHeap *heap) : m_Name(heap), m_Buf(NULL) { InitBuf(heap); }
+    CStorageRecordItem(CHeap *heap) : m_Name{}, m_Buf(NULL) { InitBuf(heap); }
     ~CStorageRecordItem();
 
     void InitBuf(CHeap *heap);
@@ -256,7 +256,7 @@ public:
     CStorageRecord(const CStorageRecord &rec);
     CStorageRecord(CWStr name, CHeap *heap = NULL)
       : m_Heap(heap), m_Name(name), m_Items(NULL), m_ItemsCount(0) {}
-    CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name(heap), m_Items(NULL), m_ItemsCount(0) {}
+    CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name{}, m_Items(NULL), m_ItemsCount(0) {}
     ~CStorageRecord();
 
     const CWStr &GetName(void) const { return m_Name; }
