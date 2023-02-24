@@ -390,7 +390,8 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     CWStr mn(g_MatrixMap->MapName(), g_MatrixHeap);
     mn.LowerCase();
-    if (mn.Find(L"demo") >= 0) {
+    if (mn.find(L"demo") != std::wstring::npos)
+    {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE | MMFLAG_FLYCAM | MMFLAG_FULLAUTO);
     }
 

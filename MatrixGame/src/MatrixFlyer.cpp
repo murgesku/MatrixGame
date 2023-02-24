@@ -432,13 +432,13 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
             int index = 0;
             int uindex = 0;
-            CWStr model(g_CacheHeap), texture(g_CacheHeap);
+            CWStr model, texture;
 
-            CWStr busy(g_CacheHeap);
+            CWStr busy;
 
             for (; bcnt > 0; ++index, --bcnt) {
                 CBlockPar *bp = flb->BlockGet(index);
-                CWStr bn(flb->BlockGetName(index), g_CacheHeap);
+                CWStr bn(flb->BlockGetName(index));
                 if (bn == L"Fire") {
                     m_Streams[findex++].bp = bp;
                     continue;
@@ -477,7 +477,8 @@ void CMatrixFlyer::RNeed(DWORD need) {
                         if (m_Units[k].m_Type == seekfor) {
                                auto bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Units[uindex].m_Weapon.m_MatrixID, k);
 
-                            if (busy.Find(bt) < 0) {
+                            if (busy.find(bt) == std::wstring::npos)
+                            {
                                 // found
                                 m_Units[uindex].m_Weapon.m_Unit = k;
                                 busy += bt;
@@ -567,7 +568,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                 m_Streams[i].matrix = bp->ParGet(L"Matrix").GetIntPar(1, L",");
 
-                CWStr unit(g_CacheHeap);
+                CWStr unit;
                 unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");
 
                 EFlyerUnitType seekfor = FLYER_UNIT_BODY;
@@ -582,7 +583,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     if (m_Units[k].m_Type == seekfor) {
                         CWStr bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Streams[i].matrix, k);
 
-                        if (busy.Find(bt) < 0) {
+                        if (busy.find(bt) == std::wstring::npos) {
                             // found
                             m_Streams[i].unit = k;
                             busy += bt;

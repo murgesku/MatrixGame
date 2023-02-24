@@ -72,7 +72,8 @@ bool CIFaceButton::OnMouseLBDown() {
             SetState(IFACE_PRESSED);
             m_DefState = IFACE_NORMAL;
             Action(ON_PRESS);
-            if (m_strName.Find(L"conf")) {
+            if (m_strName.find(L"conf")) // TODO: return value not checked, possibly a bug
+            {
                 CSound::Play(S_PRESET_CLICK, SL_INTERFACE);
             }
             else {

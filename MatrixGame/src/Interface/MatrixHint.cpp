@@ -455,15 +455,16 @@ static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index
 
 static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
     CWStr text2;
-    int ii = 0;
+    size_t ii = 0;
     for (;;) {
-        int i1 = text.Find(L"[", 1, ii);
-        if (i1 >= ii) {
-            int i2 = text.Find(L"]", 1, i1 + 1);
-            if (i2 < 0)
+        size_t i1 = text.find(L"[", ii, 1);
+        if (i1 != std::wstring::npos && i1 >= ii)
+        {
+            size_t i2 = text.find(L"]", i1 + 1, 1);
+            if (i2 == std::wstring::npos)
                 ERROR_S(L"] not found");
             text2 = std::wstring{text.Get() + i1 + 1, static_cast<size_t>(i2 - i1 - 1)};
-            if (text2.IsEmpty()) {
+            if (text2.empty()) {
                 text.Replace(CWStr(L"[]"), CWStr(baserepl));
             }
             else {

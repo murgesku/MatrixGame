@@ -35,8 +35,8 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
         }
         CWStr tn(m_Name, g_CacheHeap);
         CFile::FileExist(tn, tn.Get(), CacheExtsTex);
-        int idx = tn.FindR('.');
-        if (idx < 0)
+        auto idx = tn.rfind('.');
+        if (idx == std::wstring::npos)
             goto autoload;
         tn.LowerCase(idx + 1);
         if (0 != memcmp(tn.Get() + idx + 1, L"png", sizeof(wchar) * 4))
@@ -109,7 +109,8 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
 
     if (CFile::FileExist(tstr, tstr.Get())) {
         bool proceed = true;
-        if (tstr.Find(L"pinguin.txt") >= 0 || tstr.Find(L"robotarget.txt") >= 0) {
+        if (tstr.find(L"pinguin.txt") != std::wstring::npos || tstr.find(L"robotarget.txt") != std::wstring::npos)
+        {
             proceed = false;
         }
 
