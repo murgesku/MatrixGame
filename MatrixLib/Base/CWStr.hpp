@@ -111,8 +111,6 @@ public:
 
     bool IsOnlyInt(void) const;
 
-    CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
-
     CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     // Функции для работы с параметрами

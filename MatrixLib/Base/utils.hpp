@@ -58,4 +58,12 @@ inline void to_lower(std::wstring& str, size_t offset = 0)
     }
 }
 
+inline std::wstring trim(const std::wstring& str)
+{
+    std::wstring tmp{str};
+    tmp.erase(0, tmp.find_first_not_of(L" \t\r\n"));
+    tmp.erase(tmp.find_last_not_of(L" \t\r\n") + 1);
+    return tmp;
+}
+
 } // namespace utils

@@ -272,7 +272,7 @@ void CMatrixMap::RobotPreload(void) {
 
             int cntp = tstr.GetCountPar(L",");
             for (int p = 0; p < cntp; p++) {
-                tstr2 = tstr.GetStrPar(p, L",").Trim();
+                tstr2 = utils::trim(tstr.GetStrPar(p, L","));
                 if (p == 0 && tstr2 != L"W")
                     break;
                 else if (p == 0) {
@@ -951,7 +951,7 @@ void CMatrixMap::MacrotextureInit(const CWStr &path) {
 
     int cnt = path.GetCountPar(L"?");
     for (int i = 1; i < cnt; i++) {
-        CWStr op(path.GetStrPar(i, L"?").Trim(), g_CacheHeap);
+        CWStr op = utils::trim(path.GetStrPar(i, L"?"));
         if (utils::starts_with(op, L"SIM"))
             m_MacrotextureSize = op.GetInt();
     }

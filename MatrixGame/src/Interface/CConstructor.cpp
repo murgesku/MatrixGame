@@ -1497,8 +1497,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
         for (k = 0; k < MAX_RESOURCES; k++)
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Resources[k] = 0;
 
-        str2 = str.GetStrPar(0, L",");
-        str2.Trim();
+        str2 = utils::trim(str.GetStrPar(0, L","));
         if (str2 == L"Pneumatic" || str2 == L"P")
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nKind = RUK_CHASSIS_PNEUMATIC;
         else if (str2 == L"Whell" || str2 == L"W")
@@ -1519,8 +1518,8 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Resources[k] +=
                     m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_Price.m_Resources[k];
 
-        str2 = str.GetStrPar(1, L",");
-        str2.Trim();
+        str2 = utils::trim(str.GetStrPar(1, L","));
+
         if (str2 == L"1")
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_6;
         else if (str2 == L"1S")
@@ -1548,8 +1547,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
                     m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_Price.m_Resources[k];
 
         if (str.GetCountPar(L",") >= 3) {
-            str2 = str.GetStrPar(2, L",");
-            str2.Trim();
+            str2 = utils::trim(str.GetStrPar(2, L","));
 
             if (str2.length() > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt +
                                         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxExtraWeaponCnt)
@@ -1622,8 +1620,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
         }
 
         if (str.GetCountPar(L",") >= 4) {
-            str2 = str.GetStrPar(3, L",");
-            str2.Trim();
+            str2 = utils::trim(str.GetStrPar(3, L","));
 
             if (str2 == L"Strength" || str2 == L"S")
                 m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nKind = RUK_HEAD_BLOCKER;
