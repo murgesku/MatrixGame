@@ -2814,7 +2814,7 @@ void CMatrixMapLogic::Takt(int step) {
                 if (su == GetPlayerSide())
                     temp = L"_p_";
                 else {
-                    temp = L"_" + CWStr(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id))[0]) + L"_";
+                    temp = utils::format(L"_%lc_", g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id))[0]);
                     utils::to_lower(temp);
                 }
 

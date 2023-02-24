@@ -38,7 +38,8 @@ public:
     {
     }
 
-    CWStr(const std::wstring& str) : CWStr(str.c_str())
+    CWStr(const std::wstring& str)
+    : std::wstring{str}
     {
     }
 
@@ -54,16 +55,6 @@ public:
 
     explicit CWStr(const wchar *s, int len, CHeap *heap = NULL)
     : std::wstring{s, static_cast<size_t>(len)}
-    {
-    }
-
-    explicit CWStr(wchar sim, CHeap *heap = NULL)
-    : std::wstring(size_t{1}, sim)
-    {
-    }
-
-    explicit CWStr(wchar sim, int count, CHeap *heap = NULL)
-    : std::wstring(static_cast<size_t>(count), sim)
     {
     }
 
