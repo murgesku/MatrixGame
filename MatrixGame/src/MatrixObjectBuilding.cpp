@@ -392,7 +392,7 @@ void CMatrixBuilding::Takt(int cms) {
             case BUILDING_BASE: {
                 int fu = g_MatrixMap->GetPlayerSide()->GetResourceForceUp();
                 int prihod = RESOURCES_INCOME_BASE * fu / 100;
-                CMatrixEffect::CreateBillboardScore((L"a" + CWStr(prihod)).c_str(), m_TopPoint, 0xFFFFFFFF);
+                CMatrixEffect::CreateBillboardScore(utils::format(L"a%d", prihod).c_str(), m_TopPoint, 0xFFFFFFFF);
                 // if(m_BaseRCycle == 0){
                 //    CMatrixEffect::CreateBillboardScore(L"t" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}else if(m_BaseRCycle == 1){
@@ -701,7 +701,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
             CWStr namet(OBJECT_PATH_BUILDINGS_RUINS);
             namet += L"b";
-            namet += CWStr(n);
+            namet += utils::format(L"%d", n);
             CWStr namev(namet);
             namev += L".vo";
 
@@ -718,7 +718,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
             n = IRND(30) + 20;
             for (int i = 0; i < n; ++i) {
                 CWStr type(L"1,1000,5000,");
-                type += CWStr(IRND(500) + 700);
+                type += utils::format(L"%d", IRND(500) + 700);
                 type += L",2400,60,false,0.03,78000000";
 
                 D3DXVECTOR3 dir, pos;

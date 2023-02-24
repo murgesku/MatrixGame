@@ -426,13 +426,13 @@ void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
         propkey->AddWStr(bp.BlockGetName(i));
 
         do {
-            uniq_s = CWStr(uniq);
+            uniq_s = utils::format(L"%d", uniq);
             uniq++;
         }
-        while (IsTablePresent(uniq_s.Get()));
+        while (IsTablePresent(uniq_s.c_str()));
 
         propval->AddWStr(uniq_s);
-        StoreBlockPar(uniq_s.Get(), *bp.BlockGet(i));
+        StoreBlockPar(uniq_s.c_str(), *bp.BlockGet(i));
     }
 }
 
@@ -449,7 +449,7 @@ void CStorage::RestoreBlockPar(const wchar *root, CBlockPar &bp) {
 
     for (DWORD i = 0; i < propkey->GetArraysCount(); ++i) {
         CBlockPar *bp1 = bp.BlockAdd(propkey->GetAsWStr(i));
-        RestoreBlockPar(propval->GetAsWStr(i).Get(), *bp1);
+        RestoreBlockPar(propval->GetAsWStr(i).c_str(), *bp1);
     }
 }
 

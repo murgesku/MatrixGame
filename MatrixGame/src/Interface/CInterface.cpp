@@ -1616,10 +1616,10 @@ void CInterface::Init(void) {
 
                         if (income != base_res_income) {
                             base_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
+                            CWStr suck(bp_tmp->ParGet(L"ResPer"));
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>", g_CacheHeap),
-                                    L"<Color=247,195,0>" + CWStr(base_res_income, g_CacheHeap) + L"</Color>");
+                                    CWStr(L"<resources>"),
+                                    utils::format(L"<Color=247,195,0>%d</Color>", base_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                     }
@@ -1629,10 +1629,10 @@ void CInterface::Init(void) {
                         }
                         if (income != factory_res_income) {
                             factory_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
+                            CWStr suck(bp_tmp->ParGet(L"ResPer"));
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>", g_CacheHeap),
-                                    L"<Color=247,195,0>" + CWStr(factory_res_income, g_CacheHeap) + L"</Color>");
+                                    CWStr(L"<resources>"),
+                                    utils::format(L"<Color=247,195,0>%d</Color>", factory_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                     }
@@ -1983,28 +1983,28 @@ void CInterface::Init(void) {
                 if (pElement->m_strName == IF_TITAN_LABEL) {
                     if (prev_titan != player_side->GetResourcesAmount(TITAN)) {
                         prev_titan = player_side->GetResourcesAmount(TITAN);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_titan);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_titan);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ELECTRO_LABEL) {
                     if (prev_electro != player_side->GetResourcesAmount(ELECTRONICS)) {
                         prev_electro = player_side->GetResourcesAmount(ELECTRONICS);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_electro);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_electro);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ENERGY_LABEL) {
                     if (prev_energy != player_side->GetResourcesAmount(ENERGY)) {
                         prev_energy = player_side->GetResourcesAmount(ENERGY);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_energy);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_energy);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_PLASMA_LABEL) {
                     if (prev_plasma != player_side->GetResourcesAmount(PLASMA)) {
                         prev_plasma = player_side->GetResourcesAmount(PLASMA);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(prev_plasma);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_plasma);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2463,7 +2463,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX + 25) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2483,7 +2483,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX + 25) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2501,7 +2501,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX + 19) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2519,7 +2519,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX + 24) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2537,7 +2537,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX + 25) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                         if (electronics_summ != 0) {
@@ -2549,7 +2549,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX + 25) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                         if (energy_summ != 0) {
@@ -2560,7 +2560,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX + 19) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                         if (plasma_summ != 0) {
@@ -2571,7 +2571,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX + 24) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                     }
@@ -2617,7 +2617,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_ftitX + 25) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2636,7 +2636,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_felecX + 25) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2655,7 +2655,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_fenerX + 19) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2674,7 +2674,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_fplasX + 24) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2689,7 +2689,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_ftitX + 25) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                         else {
@@ -2703,7 +2703,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_felecX + 25) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
@@ -2711,7 +2711,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_fenerX + 19) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
@@ -2719,7 +2719,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_fplasX + 24) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                     }
@@ -2728,7 +2728,7 @@ void CInterface::Init(void) {
                     pElement->SetVisibility(true);
                     if (structure != player_side->m_Constructor->GetConstructionStructure()) {
                         structure = player_side->m_Constructor->GetConstructionStructure();
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(structure);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", structure);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2744,12 +2744,12 @@ void CInterface::Init(void) {
                     }
                     if (wep == 0) {
                         damage = 0;
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     else if (damage != GetConstructionDamage(player_side->m_Constructor->GetRenderBot())) {
                         damage = GetConstructionDamage(player_side->m_Constructor->GetRenderBot());
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -5021,26 +5021,26 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
     if (element_name == L"thz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, TITAN);
-        repl->ParSetAdd(L"_titan_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_titan_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"enhz1" || element_name == L"enhz2") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ENERGY);
-        repl->ParSetAdd(L"_energy_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_energy_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"elhz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ELECTRONICS);
-        repl->ParSetAdd(L"_electronics_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_electronics_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"phz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, PLASMA);
-        repl->ParSetAdd(L"_plasma_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_plasma_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"rvhz") {
-        repl->ParSetAdd(L"_total_robots", CWStr(ps->GetRobotsCnt(), g_CacheHeap));
-        repl->ParSetAdd(L"_max_robots", CWStr(ps->GetMaxSideRobots(), g_CacheHeap));
+        repl->ParSetAdd(L"_total_robots", utils::format(L"%d", ps->GetRobotsCnt()));
+        repl->ParSetAdd(L"_max_robots", utils::format(L"%d", ps->GetMaxSideRobots()));
     }
     else if (element_name == IF_BUILD_TUR1) {
         int damage = Float2Int(1.0f / (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON0)] / 1000.0f)) *
@@ -5050,15 +5050,15 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Range"));
         repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[0].m_Hitpoint / 10);
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10) + L"+" + utils::format(L"%d", damage / 10));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[0].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[0].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[0].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5070,14 +5070,14 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Range"));
         repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[1].m_Hitpoint / 10);
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10));
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[1].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[1].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[1].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5089,14 +5089,14 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Range"));
         repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[2].m_Hitpoint / 10);
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10));
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[2].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[2].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[2].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5108,15 +5108,15 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Range"));
         repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[3].m_Hitpoint / 10);
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10) + L"+" + utils::format(L"%d", damage / 10));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[3].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[3].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[3].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5134,8 +5134,8 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                 int milliseconds = g_MatrixMap->BeforeMaintenanceTime();
                 int minutes = milliseconds / 60000;
                 int seconds = milliseconds / 1000 - minutes * 60;
-                repl->ParSetAdd(L"_ch_time_min", CWStr((minutes > 0 ? minutes : 0), g_CacheHeap));
-                repl->ParSetAdd(L"_ch_time_sec", CWStr((seconds > 0 ? seconds : 0), g_CacheHeap));
+                repl->ParSetAdd(L"_ch_time_min", utils::format(L"%d", (minutes > 0 ? minutes : 0)));
+                repl->ParSetAdd(L"_ch_time_sec", utils::format(L"%d", (seconds > 0 ? seconds : 0)));
             }
             else {
                 repl->ParSetAdd(L"_ch_can", L"1");

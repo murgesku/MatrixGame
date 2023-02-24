@@ -100,16 +100,16 @@ void CFormMatrixGame::Draw(void) {
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_DRAWFPS))
-        g_MatrixMap->m_DI.T(L"FPS", CWStr(g_DrawFPS).c_str());
+        g_MatrixMap->m_DI.T(L"FPS", utils::format(L"%d", g_DrawFPS).c_str());
     if (FLAG(g_Config.m_DIFlags, DI_TMEM)) {
-        g_MatrixMap->m_DI.T(L"Free Texture Mem", CWStr(g_AvailableTexMem).c_str());
+        g_MatrixMap->m_DI.T(L"Free Texture Mem", utils::format(L"%d", g_AvailableTexMem).c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
         CWStr txt;
-        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
         txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
         txt.insert(txt.length() - 1, L".");
         // txt += L", ";
         // txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
@@ -118,13 +118,13 @@ void CFormMatrixGame::Draw(void) {
     }
     if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
         CWStr txt;
-        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
         txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
         txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += CWStr(Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
         txt.insert(txt.length() - 1, L".");
         g_MatrixMap->m_DI.T(L"Frustum Center", txt.c_str());
 
@@ -426,15 +426,15 @@ static CMatrixEffectRepair *repair = 0;
 
 void selcallback(CMatrixMapStatic *ms, DWORD param) {
     if (ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Mesh", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Mesh", 1000);
     else if (ms->IsRobot())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Robot", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Robot", 1000);
     else if (ms->IsCannon())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Cannon", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Cannon", 1000);
     else if (ms->IsBuilding())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Building", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Building", 1000);
     else if (ms->GetObjectType() == OBJECT_TYPE_FLYER)
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Flyer", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Flyer", 1000);
     SideSelectionCallBack(ms, param);
 }
 #else

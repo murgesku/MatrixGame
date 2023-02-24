@@ -415,7 +415,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
         // InitMaxHitpoint(hp);
 
         CBlockPar *flb = g_MatrixData->BlockGet(L"Models")->BlockGet(L"Flyers");
-        flb = flb->BlockGetNE(CWStr((int)m_FlyerKind, g_CacheHeap).Get());
+        flb = flb->BlockGetNE(utils::format(L"%d", (int)m_FlyerKind).c_str());
 
         if (flb) {
             m_StreamsCount = flb->BlockCount(L"Fire");

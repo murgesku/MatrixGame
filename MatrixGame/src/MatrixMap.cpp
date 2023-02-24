@@ -1365,7 +1365,7 @@ void CMatrixMap::BeforeDraw(void) {
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_VISOBJ))
-        m_DI.T(L"Visible objects", CWStr(CMatrixMapStatic::GetVisObjCnt()).c_str());
+        m_DI.T(L"Visible objects", utils::format(L"%d", CMatrixMapStatic::GetVisObjCnt()).c_str());
 
     CMatrixMapStatic::SortEndBeforeDraw();
 

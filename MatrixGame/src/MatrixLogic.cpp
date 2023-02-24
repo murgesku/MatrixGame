@@ -2814,7 +2814,8 @@ void CMatrixMapLogic::Takt(int step) {
                 if (su == GetPlayerSide())
                     temp = L"_p_";
                 else {
-                    temp = utils::format(L"_%lc_", g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id))[0]);
+                    auto par = utils::format(L"%d", su->m_Id);
+                    temp = utils::format(L"_%lc_", g_MatrixData->BlockGet(L"Side")->ParGet(par)[0]);
                     utils::to_lower(temp);
                 }
 
@@ -2841,11 +2842,11 @@ void CMatrixMapLogic::Takt(int step) {
                         repl->ParSetAdd(temp + L"c6", time_str);
                     }
 
-                    repl->ParSetAdd(temp + L"c1", CWStr(su->GetStatValue(STAT_ROBOT_BUILD), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c2", CWStr(su->GetStatValue(STAT_ROBOT_KILL), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c3", CWStr(su->GetStatValue(STAT_TURRET_BUILD), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c4", CWStr(su->GetStatValue(STAT_TURRET_KILL), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c5", CWStr(su->GetStatValue(STAT_BUILDING_KILL), g_CacheHeap));
+                    repl->ParSetAdd(temp + L"c1", utils::format(L"%d", su->GetStatValue(STAT_ROBOT_BUILD)));
+                    repl->ParSetAdd(temp + L"c2", utils::format(L"%d", su->GetStatValue(STAT_ROBOT_KILL)));
+                    repl->ParSetAdd(temp + L"c3", utils::format(L"%d", su->GetStatValue(STAT_TURRET_BUILD)));
+                    repl->ParSetAdd(temp + L"c4", utils::format(L"%d", su->GetStatValue(STAT_TURRET_KILL)));
+                    repl->ParSetAdd(temp + L"c5", utils::format(L"%d", su->GetStatValue(STAT_BUILDING_KILL)));
                 }
             }
 

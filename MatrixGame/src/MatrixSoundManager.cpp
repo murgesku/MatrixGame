@@ -338,7 +338,7 @@ void CSound::Takt(void) {
                 }
             }
             // CDText::T("SND: ", sc);
-            g_MatrixMap->m_DI.T(L"Active sounds: ", CWStr(sc).c_str());
+            g_MatrixMap->m_DI.T(L"Active sounds: ", utils::format(L"%d", sc).c_str());
         }
     }
 }
@@ -989,7 +989,7 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                         ERROR_S2(L"Problem with sound: ", CSound::m_Sounds[sb->snd].Path().c_str());
                     }
                     else {
-                        ERROR_S2(L"Problem with sound: ", CWStr((int)sb->snd).c_str());
+                        ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)sb->snd).c_str());
                     }
                 }
 #endif
