@@ -560,11 +560,11 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             break;
         temp = str.GetStrPar(idx, L"|");
 
-        if (temp.CompareFirst(L"_ENDIF")) {
+        if (utils::starts_with(temp, L"_ENDIF")) {
             skip = false;
             continue;
         }
-        else if (temp.CompareFirst(L"_IF:")) {
+        else if (utils::starts_with(temp, L"_IF:")) {
             CWStr text(temp.Get() + 4, g_CacheHeap);
             if (repl)
                 Replace(text, baserepl, repl);
@@ -575,62 +575,62 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
         if (skip)
             continue;
 
-        if (temp.CompareFirst(L"_FONT:")) {
+        if (utils::starts_with(temp, L"_FONT:")) {
             font = (temp.Get() + 6);
         }
-        else if (temp.CompareFirst(L"_COLOR:")) {
+        else if (utils::starts_with(temp, L"_COLOR:")) {
             // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
             // color = BGR2RGB(c);
             color = temp.GetStrPar(1, L":").GetHexUnsigned();
         }
-        else if (temp.CompareFirst(L"_SOUNDIN:")) {
+        else if (utils::starts_with(temp, L"_SOUNDIN:")) {
             soundin = (temp.Get() + 9);
         }
-        else if (temp.CompareFirst(L"_SOUNDOUT:")) {
+        else if (utils::starts_with(temp, L"_SOUNDOUT:")) {
             soundout = (temp.Get() + 10);
         }
-        else if (temp.CompareFirst(L"_BORDER:")) {
+        else if (utils::starts_with(temp, L"_BORDER:")) {
             otstup = true;
             otstup_r.left = temp.GetStrPar(1, L":").GetInt();
             otstup_r.top = temp.GetStrPar(2, L":").GetInt();
             otstup_r.right = temp.GetStrPar(3, L":").GetInt();
             otstup_r.bottom = temp.GetStrPar(4, L":").GetInt();
         }
-        else if (temp.CompareFirst(L"_POS:")) {
+        else if (utils::starts_with(temp, L"_POS:")) {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].y = temp.GetStrPar(2, L":").GetInt();
             elems[nelem].hem = HEM_COORD;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_DOWN:")) {
+        else if (utils::starts_with(temp, L"_DOWN:")) {
             elems[nelem].y = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_DOWN;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_RIGHT:")) {
+        else if (utils::starts_with(temp, L"_RIGHT:")) {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_RIGHT;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_ALIGN:")) {
+        else if (utils::starts_with(temp, L"_ALIGN:")) {
             alignx = temp.GetStrPar(1, L":").GetInt();
             aligny = temp.GetStrPar(2, L":").GetInt();
         }
-        else if (temp.CompareFirst(L"_WIDTH:")) {
+        else if (utils::starts_with(temp, L"_WIDTH:")) {
             w = temp.GetInt();
         }
-        else if (temp.CompareFirst(L"_HEIGHT:")) {
+        else if (utils::starts_with(temp, L"_HEIGHT:")) {
             h = temp.GetInt();
         }
-        else if (temp.CompareFirst(L"_MOD:")) {
+        else if (utils::starts_with(temp, L"_MOD:")) {
             elems[nelem].bmp = NULL;
             elems[nelem].hem = Convert(bmpn, temp, 1);
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_TEXTP:")) {
+        else if (utils::starts_with(temp, L"_TEXTP:")) {
             modif = Convert(bmpn, temp, 1);
         }
-        else if (temp.CompareFirst(L"_BITMAP:")) {
+        else if (utils::starts_with(temp, L"_BITMAP:")) {
             bmpn = temp.GetStrPar(1, L":");
 
             if (repl)
@@ -649,7 +649,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_TEXT:")) {
+        else if (utils::starts_with(temp, L"_TEXT:")) {
             if (g_RangersInterface) {
                 CRect cr(0, 0, w, h);
                 // if (w == 0) w = g_ScreenX;

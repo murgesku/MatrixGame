@@ -904,13 +904,16 @@ void CMatrixMapObject::Init(int ids) {
     m_ShadowType = SHADOW_OFF;
 
     CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*"), g_CacheHeap);
-    if (temp.CompareFirst(L"Stencil")) {
+    if (utils::starts_with(temp, L"Stencil"))
+    {
         m_ShadowType = SHADOW_STENCIL;
     }
-    else if (temp.CompareFirst(L"Proj,")) {
+    else if (utils::starts_with(temp, L"Proj,"))
+    {
         m_ShadowType = SHADOW_PROJ_STATIC;
     }
-    else if (temp.CompareFirst(L"ProjEx,")) {
+    else if (utils::starts_with(temp, L"ProjEx,"))
+    {
         m_ShadowType = SHADOW_PROJ_DYNAMIC;
     }
 
@@ -934,7 +937,7 @@ void CMatrixMapObject::Init(int ids) {
         SETFLAG(m_ObjectState, OBJECT_STATE_SPECIAL);
     }
 
-    if (temp.CompareFirst(L"Burn")) {
+    if (utils::starts_with(temp, L"Burn")) {
         m_BehFlag = BEHF_BURN;
         m_NextTime = 0;
         m_BurnTimeTotal = 0;
@@ -950,7 +953,7 @@ void CMatrixMapObject::Init(int ids) {
                     GSP_ORDINAL);
         }
     }
-    else if (temp.CompareFirst(L"Break")) {
+    else if (utils::starts_with(temp, L"Break")) {
         m_BreakHitPoint = temp.GetIntPar(2, L",");
         m_BreakHitPointMax = m_BreakHitPoint;
 
@@ -965,7 +968,7 @@ void CMatrixMapObject::Init(int ids) {
             AddLT();
         }
     }
-    else if (temp.CompareFirst(L"Anim")) {
+    else if (utils::starts_with(temp, L"Anim")) {
         if (temp[5] == 'P') {
             m_BehFlag = BEHF_PORTRET;
             m_PrevStateRobotsInRadius = 0;
@@ -979,7 +982,7 @@ void CMatrixMapObject::Init(int ids) {
             AddLT();
         }
     }
-    else if (temp.CompareFirst(L"Sens")) {
+    else if (utils::starts_with(temp, L"Sens")) {
         m_BehFlag = BEHF_SENS;
         m_PrevStateRobotsInRadius = -1;
         m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");
@@ -987,7 +990,7 @@ void CMatrixMapObject::Init(int ids) {
         SetAblazeTTL(101);
         AddLT();
     }
-    else if (temp.CompareFirst(L"Spawn")) {
+    else if (utils::starts_with(temp, L"Spawn")) {
         m_BehFlag = BEHF_SPAWNER;
         m_PrevStateRobotsInRadius = -1;
         m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");

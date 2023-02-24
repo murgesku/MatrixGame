@@ -44,4 +44,10 @@ inline std::wstring to_wstring(const std::string& str)
     return converter.from_bytes(str);
 }
 
+// TODO: replace with string::starts_with from C++20
+inline bool starts_with(const std::wstring& src, const std::wstring& sub)
+{
+    return (src.find(sub) == 0);
+}
+
 } // namespace utils
