@@ -94,7 +94,7 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
     DWORD time2 = timeGetTime();
 
-    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1).c_str(), 5000);
+    g_MatrixMap->m_DI.T(L"Trace time (ms)", utils::format(L"%u", time2 - time1).c_str(), 5000);
 }
 
 static void hMusic(const Base::CWStr &cmd, const Base::CWStr &params) {
