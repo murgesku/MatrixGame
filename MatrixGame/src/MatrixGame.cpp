@@ -388,8 +388,8 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
         ERROR_S(L"Unable to load map. Error happens.");
     }
 
-    CWStr mn(g_MatrixMap->MapName(), g_MatrixHeap);
-    mn.LowerCase();
+    CWStr mn(g_MatrixMap->MapName());
+    utils::to_lower(mn);
     if (mn.find(L"demo") != std::wstring::npos)
     {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE | MMFLAG_FLYCAM | MMFLAG_FULLAUTO);
@@ -402,10 +402,12 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     g_LoadProgress->InitCurLP(701);
 
     CBlockPar bpi(1, g_CacheHeap);
-    if (stor_cfg_present) {
+    if (stor_cfg_present)
+    {
         stor_cfg.RestoreBlockPar(L"if", bpi);
     }
-    else {
+    else
+    {
         bpi.LoadFromTextFile(IF_PATH);
 
         // CStorage stor(g_CacheHeap);

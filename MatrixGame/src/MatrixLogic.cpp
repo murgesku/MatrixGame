@@ -2815,7 +2815,7 @@ void CMatrixMapLogic::Takt(int step) {
                     temp = L"_p_";
                 else {
                     temp = L"_" + CWStr(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id))[0]) + L"_";
-                    temp.LowerCase();
+                    utils::to_lower(temp);
                 }
 
                 if (su->GetStatValue(STAT_TIME) == 0) {
@@ -3019,8 +3019,8 @@ void CMatrixMapLogic::Takt(int step) {
 
     if ((GetTime() - m_PrevTimeCheckStatus) > 1001) {
         // check easter egg :)
-        CWStr mn(MapName(), g_CacheHeap);
-        mn.LowerCase();
+        CWStr mn(MapName());
+        utils::to_lower(mn);
         if (mn.find(L"terron") != std::wstring::npos) {
             int egg1 = 0, egg2 = 0;
             FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (DWORD)&egg1);

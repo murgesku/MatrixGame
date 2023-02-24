@@ -50,4 +50,12 @@ inline bool starts_with(const std::wstring& src, const std::wstring& sub)
     return (src.find(sub) == 0);
 }
 
+inline void to_lower(std::wstring& str, size_t offset = 0)
+{
+    for (size_t i = offset; i < str.length(); ++i)
+    {
+        str[i] = std::towlower(str[i]);
+    }
+}
+
 } // namespace utils
