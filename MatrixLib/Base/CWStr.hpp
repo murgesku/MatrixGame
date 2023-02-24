@@ -31,11 +31,10 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     return !std::wcscmp(s1, s2);
 }
 
-class BASE_API CWStr : public std::wstring, public CMain
+class BASE_API CWStr : public std::wstring
 {
 public:
     explicit CWStr(CHeap *heap = nullptr)
-    : CMain{}
     {
     }
 
@@ -44,50 +43,42 @@ public:
     }
 
     CWStr(const CWStr &s, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring(s)
+    : std::wstring(s)
     {
     }
 
     explicit CWStr(const wchar *s, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring{s}
+    : std::wstring{s}
     {
     }
 
     CWStr(const wchar *s, int len, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring{s, static_cast<size_t>(len)}
+    : std::wstring{s, static_cast<size_t>(len)}
     {
     }
 
     explicit CWStr(wchar sim, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring(size_t{1}, sim)
+    : std::wstring(size_t{1}, sim)
     {
     }
 
     CWStr(wchar sim, int count, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring(static_cast<size_t>(count), sim)
+    : std::wstring(static_cast<size_t>(count), sim)
     {
     }
 
     explicit CWStr(int zn, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring{utils::format(L"%d", zn)}
+    : std::wstring{utils::format(L"%d", zn)}
     {
     }
 
     explicit CWStr(DWORD zn, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring{utils::format(L"%u", zn)}
+    : std::wstring{utils::format(L"%u", zn)}
     {
     }
 
     explicit CWStr(double zn, int zpz = 8, CHeap *heap = NULL)
-    : CMain{}
-    , std::wstring{utils::format(L"%.*f", zpz, zn)}
+    : std::wstring{utils::format(L"%.*f", zpz, zn)}
     {
     }
 
