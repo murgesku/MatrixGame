@@ -115,10 +115,6 @@ public:
     DWORD GetHexUnsigned(void) const;
 
     bool IsOnlyInt(void) const;
-    bool IsEmpty(void) const
-    {
-        return this->empty();
-    }
 
     CWStr &Trim(void);      // Удаляет в начале и в конце символы 0x20,0x9,0x0d,0x0a
 

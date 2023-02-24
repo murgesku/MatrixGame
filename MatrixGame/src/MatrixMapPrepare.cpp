@@ -988,7 +988,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     if (ic >= 0) {
         CWStr mt(g_CacheHeap);
         mt = propval->GetAsWStr(ic);
-        if (mt.IsEmpty()) {
+        if (mt.empty()) {
             MacrotextureClear();
         }
         else {

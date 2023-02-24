@@ -404,17 +404,17 @@ void CMatrixMapObject::RNeed(dword need) {
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_GLOSS, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_BACK, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_MASK, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*" + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_SCROLL, L"*");
@@ -1249,7 +1249,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                     m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(5, L":"), 0);
 
                     CWStr snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"), g_CacheHeap);
-                    if (!snd.IsEmpty())
+                    if (!snd.empty())
                         CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 }
                 SetAblazeTTL(g_MatrixMap->GetTime() + addt);
@@ -1307,7 +1307,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(6, L":"), 0);
 
                 CWStr snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"), g_CacheHeap);
-                if (!snd.IsEmpty())
+                if (!snd.empty())
                     CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 2;
             }
@@ -1342,7 +1342,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(7, L":"), 0);
 
                 CWStr snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"), g_CacheHeap);
-                if (!snd.IsEmpty())
+                if (!snd.empty())
                     CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 3;
             }

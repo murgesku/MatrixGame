@@ -128,12 +128,12 @@ CMatrixMap::CMatrixMap()
     if (repl) {
         CWStr t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY), g_MatrixHeap);
 
-        if (!t1.IsEmpty()) {
+        if (!t1.empty()) {
             CBlockPar *dif = g_MatrixData->BlockGetNE(PAR_SOURCE_DIFFICULTY);
             if (dif) {
                 CWStr t2(g_MatrixHeap);
                 t2 = dif->ParGetNE(t1);
-                if (!t2.IsEmpty()) {
+                if (!t2.empty()) {
                     m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0, L",") / 100.0);
                     m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetDoublePar(1, L",") / 100.0);
                     m_Difficulty.k_friendly_fire = 1.0f + float(t2.GetDoublePar(2, L",") / 100.0);

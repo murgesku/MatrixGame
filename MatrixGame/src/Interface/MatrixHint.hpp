@@ -119,12 +119,12 @@ public:
     }
 
     void SoundIn(void) const {
-        if (!m_SoundIn.IsEmpty())
+        if (!m_SoundIn.empty())
             CSound::Play(m_SoundIn.Get());
     }
 
     void SoundOut(void) const {
-        if (!m_SoundOut.IsEmpty())
+        if (!m_SoundOut.empty())
             CSound::Play(m_SoundOut.Get());
     }
 

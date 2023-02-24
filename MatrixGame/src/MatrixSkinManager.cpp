@@ -52,7 +52,7 @@ static void SkinPreloadMaskBack(const SSkin *s) {
 }
 
 const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
-    CWStr t(textures, g_CacheHeap), temp(g_CacheHeap), temp_prev(g_CacheHeap);
+    CWStr t(textures), temp, temp_prev;
 
     ASSERT(gsp < GSP_COUNT);
 
@@ -75,7 +75,7 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
     for (int i = 0; i < n; ++i) {
         temp_prev = temp;
         temp = t.GetStrPar(i, L"*");
-        if (temp.IsEmpty())
+        if (temp.empty())
             continue;
 
         if (i == 0) {

@@ -2290,7 +2290,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         gu->m_Name = bp.BlockGetName(i);
 
         tstr = bp2.ParNE(L"Model");
-        if (!tstr.IsEmpty()) {
+        if (!tstr.empty()) {
             auto idx = tstr.find(L"?");
             if (idx != std::wstring::npos)
                 tstr.resize(idx);
@@ -2319,11 +2319,11 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         if (bp2.ParCount(L"Link"))
             gu->m_LinkMatrixName = bp2.Par(L"Link");
 
-        if (texture_mask.IsEmpty())
+        if (texture_mask.empty())
             texture_back.clear();
 
         CVectorObject *vo = (CVectorObject *)(g_Cache->Get(cc_VO, unit.Get()));
-        if (texture.IsEmpty() && texture_gloss.IsEmpty() && texture_mask.IsEmpty()) {
+        if (texture.empty() && texture_gloss.empty() && texture_mask.empty()) {
             vo->PrepareSpecial(OLF_AUTO, sg, gsp);
             gu->m_Obj->Init(vo, NULL);
         }
@@ -2331,7 +2331,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
             vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, sg, gsp);
 
             if (vo->IsNoSkin(0)) {
-                if (texture.IsEmpty()) {
+                if (texture.empty()) {
                     // oops....
                     texture = vo->GetSurfaceFileName(0);
                 }
@@ -2348,7 +2348,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
     gu = m_First;
     while (gu) {
-        if (!gu->m_LinkMatrixName.IsEmpty()) {
+        if (!gu->m_LinkMatrixName.empty()) {
             if (gu->m_LinkMatrixName.GetCountPar(L",") != 2)
                 ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, gu->m_LinkMatrixName.Get()));
 
