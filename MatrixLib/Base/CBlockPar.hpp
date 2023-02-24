@@ -140,6 +140,11 @@ public:
             ParAdd(name, zn);
     }
 
+    void ParSetAdd(const std::wstring& name, double value)
+    {
+        ParSetAdd(name, utils::format(L"%.8f", value));
+    }
+
     bool ParDeleteNE(const wchar *name, int namelen);
     void ParDelete(const CWStr &name) {
         if (!ParDeleteNE(name.c_str(), name.length()))
