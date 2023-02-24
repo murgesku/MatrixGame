@@ -926,7 +926,7 @@ void CMatrixConfig::ReadParams(void) {
 
     m_Labels = (CWStr*)HAlloc(sizeof(CWStr) * LABELS_LAST, g_MatrixHeap);
     for (int i = 0; i < LABELS_LAST; i++) {
-        new(&m_Labels[i]) CWStr(g_MatrixHeap);
+        new(&m_Labels[i]) CWStr();
     }
     m_Labels[W1_CHAR] = bp_tmp->Par(PAR_SOURCE_W1_CHAR);
     m_Labels[W2_CHAR] = bp_tmp->Par(PAR_SOURCE_W2_CHAR);
@@ -962,7 +962,7 @@ void CMatrixConfig::ReadParams(void) {
 
     m_Descriptions = (CWStr*)HAlloc(sizeof(CWStr) * DESCRIPTIONS_LAST, g_MatrixHeap);
     for (int i = 0; i < DESCRIPTIONS_LAST; i++) {
-        new(&m_Descriptions[i]) CWStr(g_MatrixHeap);
+        new(&m_Descriptions[i]) CWStr();
     }
     m_Descriptions[W1_DESCR] = bp_tmp->Par(PAR_SOURCE_W1_DESCR);
     m_Descriptions[W2_DESCR] = bp_tmp->Par(PAR_SOURCE_W2_DESCR);

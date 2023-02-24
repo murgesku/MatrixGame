@@ -21,10 +21,10 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &s
     CBitmap bmps(g_CacheHeap);
     CBlockPar *bph = NULL;
     if (border >= 0) {
-        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border, g_CacheHeap));
+        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border));
 
         if (bph) {
-            CWStr src(g_CacheHeap);
+            CWStr src;
             if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png")) {
                 // return NULL;
             }
@@ -417,7 +417,7 @@ void CMatrixHint::PreloadBitmaps(void) {
     CBlockPar *bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGet(PAR_SOURCE_HINTS_BITMAPS);
     m_BitmapsCnt = bph->ParCount();
     m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
-    CWStr src(g_CacheHeap);
+    CWStr src;
     for (int i = 0; i < m_BitmapsCnt; ++i) {
         if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
             ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
@@ -488,7 +488,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
 
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CBlockPar *bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
-    CWStr str(g_CacheHeap);
+    CWStr str;
 
     DCP();
 
@@ -507,7 +507,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
                 continue;
             DCP();
 
-            CWStr templ(g_CacheHeap);
+            CWStr templ;
 
             for (; ii < cnt; ++ii) {
                 DCP();
@@ -528,8 +528,8 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
 }
 
 CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl) {
-    CWStr soundin(g_MatrixHeap);
-    CWStr soundout(g_MatrixHeap);
+    CWStr soundin;
+    CWStr soundout;
 
     SHintElement elems[256];
 
@@ -543,9 +543,9 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     int border = str.GetIntPar(0, L"|");
     int cnt = str.GetCountPar(L"|");
     int idx = 1;
-    CWStr temp(g_CacheHeap);
-    CWStr bmpn(g_CacheHeap);
-    CWStr font(L"Font.2Normal", g_CacheHeap);
+    CWStr temp;
+    CWStr bmpn;
+    CWStr font(L"Font.2Normal");
     DWORD color = 0xFFFFFFFF;
     EHintElementModificator modif = HEM_BITMAP;
     int nelem = 0;

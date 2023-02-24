@@ -212,7 +212,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     CStorage stor_cfg(g_MatrixHeap);
     bool stor_cfg_present = false;
-    CWStr stor_cfg_name(g_MatrixHeap);
+    CWStr stor_cfg_name;
     std::wstring conf_file{FILE_CONFIGURATION_LOCATION};
     if (lang != NULL) {
         conf_file += lang;
@@ -366,7 +366,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CStorage stor(g_CacheHeap);
     DCP();
 
-    CWStr mapname(g_CacheHeap);
+    CWStr mapname;
 
     if (map) {
         if (wcschr(map, '\\') == NULL) {

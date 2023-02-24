@@ -25,7 +25,7 @@ struct SElementHint {
     int timer;
     int x;
     int y;
-    SElementHint() : HintTemplate(g_MatrixHeap) {
+    SElementHint() : HintTemplate{} {
         timer = 0;
         x = 0;
         y = 0;

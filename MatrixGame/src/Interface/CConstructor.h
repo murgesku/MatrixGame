@@ -244,7 +244,7 @@ public:
 
     void MakeItemReplacements(ERobotUnitType type, ERobotUnitKind kind);
 
-    CConstructorPanel() : m_FocusedLabel(g_MatrixHeap), m_FocusedDescription(g_MatrixHeap) {
+    CConstructorPanel() : m_FocusedLabel{}, m_FocusedDescription{} {
         m_CurrentConfig = 0;
         m_Active = 0;
         ZeroMemory(&m_Configs, sizeof(m_Configs));

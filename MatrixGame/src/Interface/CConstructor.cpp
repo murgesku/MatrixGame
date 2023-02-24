@@ -1458,7 +1458,7 @@ CMatrixRobotAI *SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id) {
 void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
     ClearAIRobotType();
 
-    CWStr str(g_MatrixHeap), str2(g_MatrixHeap);
+    CWStr str, str2;
 
     int k, u;
     int cnt = bp.ParCount();

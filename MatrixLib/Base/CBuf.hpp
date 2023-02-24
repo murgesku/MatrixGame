@@ -297,9 +297,9 @@ public:
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CWStr(abuf, len, m_Heap);
+            return CWStr(abuf, len);
         else
-            return CWStr(m_Heap);
+            return CWStr{};
     }
     void WStr(const CWStr &str) {
         int len = str.length();

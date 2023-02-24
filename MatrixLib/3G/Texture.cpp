@@ -89,7 +89,7 @@ autoload:
 
 void CBaseTexture::ParseFlags(const CWStr &name) {
     m_Flags = 0;
-    CWStr tstr(g_CacheHeap);
+    CWStr tstr;
     int cnt = name.GetCountPar(L"?");
     if (cnt > 1) {
         for (int i = 1; i < cnt; i++) {

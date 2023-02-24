@@ -196,21 +196,21 @@ void CTerSurface::LoadM(BYTE *raw) {
     m_Color = *(DWORD *)raw;
     raw += sizeof(DWORD);
 
-    CWStr name(g_CacheHeap);
+    CWStr name;
     name = g_MatrixMap->IdsGet(ids).GetStrPar(0, L"?");
 
     m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, name.Get());
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
     if (par > 1) {
-        CWStr parn(g_CacheHeap), park(g_CacheHeap), parv(g_CacheHeap);
+        CWStr parn, park, parv;
         for (int i = 1; i < par; ++i) {
             parn = g_MatrixMap->IdsGet(ids).GetStrPar(i, L"?");
             park = parn.GetStrPar(0, L"=");
             parv = parn.GetStrPar(1, L"=");
 
             if (g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park)) {
-                CWStr gloss_name(g_CacheHeap);
+                CWStr gloss_name;
                 CacheReplaceFileNameAndExt(gloss_name, name.Get(), parv.Get());
                 if (CFile::FileExist(name, gloss_name.Get(), L"png~dds")) {
                     m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name.c_str());

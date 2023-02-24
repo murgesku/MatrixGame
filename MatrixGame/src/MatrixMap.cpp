@@ -43,7 +43,7 @@
 CMatrixMap::CMatrixMap()
   : CMain(), m_Console(), m_Camera(), m_CurFrame(0), m_IntersectFlagTracer(0), m_IntersectFlagFindObjects(0),
     m_AllObjects(g_MatrixHeap, 1024), m_RN(g_MatrixHeap), m_EffectsFirst(NULL), m_EffectsLast(NULL),
-    m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName(g_MatrixHeap), m_SkyAngle(0), m_SkyDeltaAngle(0),
+    m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName{}, m_SkyAngle(0), m_SkyDeltaAngle(0),
     m_PrevTimeCheckStatus(-1500), m_Time(0), m_BeforeWinCount(0), m_PauseHint(NULL), m_DialogModeHints(g_MatrixHeap),
     m_DialogModeName(NULL), m_BeforeWinLooseDialogCount(0) {
     DTRACE();
@@ -126,12 +126,12 @@ CMatrixMap::CMatrixMap()
 
     CBlockPar *repl = g_MatrixData->BlockGetNE(PAR_REPLACE);
     if (repl) {
-        CWStr t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY), g_MatrixHeap);
+        CWStr t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY));
 
         if (!t1.empty()) {
             CBlockPar *dif = g_MatrixData->BlockGetNE(PAR_SOURCE_DIFFICULTY);
             if (dif) {
-                CWStr t2(g_MatrixHeap);
+                CWStr t2;
                 t2 = dif->ParGetNE(t1);
                 if (!t2.empty()) {
                     m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0, L",") / 100.0);
@@ -228,7 +228,7 @@ void CMatrixMap::RobotPreload(void) {
 
     ZeroMemory(m_RobotWeaponMatrix, sizeof(m_RobotWeaponMatrix));
 
-    CWStr tstr(g_MatrixHeap), tstr2(g_MatrixHeap);
+    CWStr tstr, tstr2;
 
     for (int i = 1; i <= ROBOT_HEAD_CNT; i++) {
         CVectorObject *vo =
@@ -3094,7 +3094,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
             props = &lightening;
             lightening.m_Type = EFFECT_LIGHTENING;
 
-            lightening.m_Tag = HNew(g_MatrixHeap) CWStr(g_MatrixHeap);
+            lightening.m_Tag = HNew(g_MatrixHeap) CWStr();
 
             *lightening.m_Tag = par.GetStrPar(idx++, L",");
 
@@ -3237,7 +3237,7 @@ static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler) {
 
     g_MatrixMap->m_DialogModeHints.Pointer(g_MatrixMap->m_DialogModeHints.Len());
 
-    CMatrixHint *h = CMatrixHint::Build(CWStr(hint, g_CacheHeap), hint);
+    CMatrixHint *h = CMatrixHint::Build(CWStr(hint), hint);
     int ww = (g_ScreenX - h->m_Width) / 2;
     int hh = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
     h->Show(ww, hh);
@@ -3266,7 +3266,7 @@ void ResetRequestHandler(void) {
 
 void HelpRequestHandler(void) {
     g_MatrixMap->LeaveDialogMode();
-    CWStr fn(g_CacheHeap);
+    CWStr fn;
     if (CFile::FileExist(fn, L"Manual.exe")) {
         PROCESS_INFORMATION pi0;
         STARTUPINFOA si0;
@@ -3318,8 +3318,8 @@ void CMatrixMap::EnterDialogMode(const wchar *hint_i) {
 
     for (int i = 0; i < cnt; ++i) {
         if (bp->ParGetName(i) == hint) {
-            CWStr templ(bp->ParGet(i), g_CacheHeap);
-            CWStr templ2(g_CacheHeap);
+            CWStr templ(bp->ParGet(i));
+            CWStr templ2;
             if (templ[0] == '|')
                 continue;
 

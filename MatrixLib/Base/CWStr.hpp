@@ -34,9 +34,8 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
 class BASE_API CWStr : public std::wstring
 {
 public:
-    explicit CWStr(CHeap *heap = nullptr)
-    {
-    }
+    CWStr() = default;
+    ~CWStr() = default;
 
     CWStr(const std::wstring& str)
     : std::wstring{str}
@@ -67,8 +66,6 @@ public:
     : std::wstring{utils::format(L"%u", zn)}
     {
     }
-
-    ~CWStr() = default;
 
     const wchar *Get(void) const
     {

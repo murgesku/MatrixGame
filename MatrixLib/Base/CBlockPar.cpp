@@ -18,7 +18,7 @@ namespace Base {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CBlockParUnit::CBlockParUnit(CHeap *heap) : CMain(), m_Name(heap), m_Com(heap) {
+CBlockParUnit::CBlockParUnit(CHeap *heap) : CMain(), m_Name{}, m_Com{} {
     DTRACE();
     m_Heap = heap;
 
@@ -72,7 +72,7 @@ void CBlockParUnit::ChangeType(int nt) {
     }
     m_Type = nt;
     if (nt == 1)
-        m_Par = HNew(m_Heap) CWStr(m_Heap);
+        m_Par = HNew(m_Heap) CWStr();
     else if (nt == 2)
         m_Block = HNew(m_Heap) CBlockPar(1, m_Heap);
 }

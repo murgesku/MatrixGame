@@ -35,8 +35,8 @@ SMenuItemText *g_PopupChassis;
 
 // Constructor destructor
 CInterface::CInterface()
-  : name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label1(g_MatrixHeap), item_label2(g_MatrixHeap),
-    rcname(g_MatrixHeap) {
+  : name{}, m_strName{}, item_label1{}, item_label2{}, rcname{}
+{
     factory_res_income = -1;
     base_res_income = -1;
     btype = -1;
@@ -182,7 +182,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         g_IFaceList->m_IFRadarPosY = Float2Int(m_yPos);
     }
 
-    CWStr labels_text(g_CacheHeap);
+    CWStr labels_text;
     CBlockPar *labels_file = NULL;
 
     labels_file = pbp1->BlockGetNE(L"LabelsText");
@@ -3257,7 +3257,7 @@ bool CInterface::FindElementByName(const CWStr &name) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-CIFaceList::CIFaceList() : m_CurrentHintControlName(g_MatrixHeap) {
+CIFaceList::CIFaceList() : m_CurrentHintControlName{} {
     m_First = NULL;
     m_Last = NULL;
     m_IfListFlags = 0;
@@ -3637,7 +3637,7 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                         }
                     }
 
-                    CWStr name(g_CacheHeap);
+                    CWStr name;
                     switch (bot->m_Unit[i].u1.s1.m_Kind) {
                         case RUK_WEAPON_MACHINEGUN:
                             name = CWStr(IF_WEAPON_MACHINEGUN_ON);
@@ -4861,7 +4861,7 @@ void CIFaceList::HideHintButtons() {
 void CIFaceList::HideHintButton(EHintButton butt) {
     CIFaceElement *els = m_Hints->m_FirstElement;
 
-    CWStr sname(g_CacheHeap);
+    CWStr sname;
     HintButtonId2Name(butt, sname);
 
     while (els) {

@@ -43,7 +43,7 @@ void CFile::ReleasePackFiles(void) {
 }
 #endif
 
-CFile::CFile(CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -51,16 +51,7 @@ CFile::CFile(CHeap *heap) : CMain(), m_FileName(heap) {
     m_Open = 0;
 }
 
-CFile::CFile(const CWStr &filename, CHeap *heap) : CMain(), m_FileName(heap) {
-#ifndef MAXEXP_EXPORTS
-    m_PackHandle = 0xFFFFFFFF;
-#endif
-    m_Handle = INVALID_HANDLE_VALUE;
-    m_Open = 0;
-    Init(filename);
-}
-
-CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(const CWStr &filename, CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -69,7 +60,16 @@ CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName(heap) {
     Init(filename);
 }
 
-CFile::CFile(const wchar *filename, int len, CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName{} {
+#ifndef MAXEXP_EXPORTS
+    m_PackHandle = 0xFFFFFFFF;
+#endif
+    m_Handle = INVALID_HANDLE_VALUE;
+    m_Open = 0;
+    Init(filename);
+}
+
+CFile::CFile(const wchar *filename, int len, CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
