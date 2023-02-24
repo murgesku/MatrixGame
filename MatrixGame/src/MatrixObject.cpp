@@ -429,7 +429,7 @@ void CMatrixMapObject::RNeed(dword need) {
                 tex += L"*" + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_SCROLL, L"*");
             }
             else {
-                tex = path + L"p" + CWStr(m_PrevStateRobotsInRadius);
+                tex = path + L"p" + utils::format(L"%d", m_PrevStateRobotsInRadius);
                 tex += L"**";
                 tex += path + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_BACK, L"*");
                 tex += L"*";
@@ -1265,7 +1265,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                                              temp.GetStrPar(1, L",").GetIntPar(3, L":"));
 
                 CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
-                CBlockPar *botpar = bpr->BlockGetNE(CWStr(robot, g_CacheHeap));
+                CBlockPar *botpar = bpr->BlockGetNE(utils::format(L"%d", robot));
                 if (botpar == NULL) {
                     botpar = bpr->BlockGet(g_MatrixMap->Rnd(0, bpr->BlockCount() - 1));
                 }

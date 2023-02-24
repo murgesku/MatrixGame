@@ -190,7 +190,7 @@ void CMatrixCannon::RNeed(DWORD need) {
         float hp = (float)g_Config.m_CannonsProps[m_Num - 1].m_Hitpoint;
         InitMaxHitpoint(hp);
 
-        CWStr ctype(m_Num);
+        CWStr ctype = utils::format(L"%d", m_Num);
 
         // basis
         m_Unit[0].m_Type = CUT_BASIS;

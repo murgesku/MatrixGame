@@ -328,7 +328,7 @@ void CMatrixRobot::RNeed(dword need) {
                     default:
                         ERROR_S(L"Unknown robot unit type");
                 }
-                path += CWStr(static_cast<int>(m_Unit[i].u1.s1.m_Kind));
+                path += utils::format(L"%d", static_cast<int>(m_Unit[i].u1.s1.m_Kind));
 
                 name = path.c_str();
 

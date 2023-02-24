@@ -9040,7 +9040,7 @@ void CMatrixSideUnit::PGOrderMoveTo(int no, const CPoint &tp) {
 
                 CBlockPar *rs = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)
                                         ->BlockGet(L"ChassisSounds")
-                                        ->BlockGetNE(CWStr(chassis, g_CacheHeap));
+                                        ->BlockGetNE(utils::format(L"%d", chassis));
                 if (rs) {
                     int cnt = rs->ParCount(L"MoveTo");
                     CSound::Play(rs->ParGet(L"MoveTo", IRND(cnt)).Get(), SL_ORDER);
@@ -9256,7 +9256,7 @@ void CMatrixSideUnit::PGOrderPatrol(int no, const CPoint &tp) {
 
                 CBlockPar *rs = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)
                                         ->BlockGet(L"ChassisSounds")
-                                        ->BlockGetNE(CWStr(chassis, g_CacheHeap));
+                                        ->BlockGetNE(utils::format(L"%d", chassis));
                 if (rs) {
                     int cnt = rs->ParCount(L"Patrol");
                     CSound::Play(rs->ParGet(L"Patrol", IRND(cnt)).Get(), SL_ORDER);

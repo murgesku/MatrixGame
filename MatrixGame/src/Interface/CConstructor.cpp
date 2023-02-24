@@ -1209,8 +1209,8 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         //    damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BOMB)].damage / wspeed;
         //}
 
-        CWStr colored_damage = color + CWStr(damage / 10) + L"</color>";
-        CWStr colored_adamage = color + CWStr(adamage / 10) + L"</color>";
+        CWStr colored_damage = color + utils::format(L"%d", damage / 10) + L"</color>";
+        CWStr colored_adamage = color + utils::format(L"%d", adamage / 10) + L"</color>";
 
         m_FocusedLabel.Replace(CWStr(L"<Damage>"), colored_damage);
         m_FocusedLabel.Replace(CWStr(L"<AddDamage>"), colored_adamage);
@@ -1272,7 +1272,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
                 int val = Double2Int(sign * bp->ParGet(i).GetDouble());
 
-                m_FocusedLabel.Replace(repl, color + CWStr(val) + L"</color>");
+                m_FocusedLabel.Replace(repl, color + utils::format(L"%d", val) + L"</color>");
             }
         }
     }
@@ -1281,9 +1281,9 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         int pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].common;
         int ext_pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].extra;
 
-        CWStr colored_size = color + CWStr(structure / 10) + L"</color>";
-        CWStr colored_pilons = color + CWStr(pilons) + L"</color>";
-        CWStr colored_epilons = color + CWStr(ext_pilons) + L"</color>";
+        CWStr colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
+        CWStr colored_pilons = color + utils::format(L"%d", pilons) + L"</color>";
+        CWStr colored_epilons = color + utils::format(L"%d", ext_pilons) + L"</color>";
 
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
         m_FocusedLabel.Replace(CWStr(L"<Pilons>"), colored_pilons);
@@ -1291,7 +1291,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
     }
     else if (type == MRT_CHASSIS) {
         int structure = (int)g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (kind - 1) * 6];
-        CWStr colored_size = color + CWStr(structure / 10) + L"</color>";
+        CWStr colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
         m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
     }
 }
@@ -1472,7 +1472,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor = bp.ParGetName(i).GetInt();
         if (m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor < 1)
-            ERROR_S2(L"LoadAIRobotType Pripor no=", CWStr(i).Get());
+            ERROR_S2(L"LoadAIRobotType Pripor no=", utils::format(L"%d", i).c_str());
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nType = MRT_CHASSIS;
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nKind = RUK_UNKNOWN;
@@ -1509,7 +1509,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
         else if (str2 == L"Antigravity" || str2 == L"A")
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
         else
-            ERROR_S2(L"LoadAIRobotType Chassis no=", CWStr(i).Get());
+            ERROR_S2(L"LoadAIRobotType Chassis no=", utils::format(L"%d", i).c_str());
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_Price.SetPrice(
                 m_AIRobotTypeList[m_AIRobotTypeCnt].m_Chassis.m_nType,
@@ -1533,7 +1533,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
         else if (str2 == L"4S")
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
         else
-            ERROR_S2(L"LoadAIRobotType Armor no=", CWStr(i).Get());
+            ERROR_S2(L"LoadAIRobotType Armor no=", utils::format(L"%d", i).c_str());
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt =
                 g_MatrixMap->m_RobotWeaponMatrix[m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind - 1].common;
@@ -1551,7 +1551,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
 
             if (str2.length() > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt +
                                         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxExtraWeaponCnt)
-                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", CWStr(i).c_str());
+                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", utils::format(L"%d", i).c_str());
 
             int cntnormal = 0;
             int cntextra = 0;
@@ -1601,7 +1601,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
                     m_AIRobotTypeList[m_AIRobotTypeCnt].m_HaveRepair = true;
                 }
                 else
-                    ERROR_S2(L"LoadAIRobotType WeaponType no=", CWStr(i).Get());
+                    ERROR_S2(L"LoadAIRobotType WeaponType no=", utils::format(L"%d", i).c_str());
 
                 m_AIRobotTypeList[m_AIRobotTypeCnt].m_Weapon[u].m_Unit.m_nType = MRT_WEAPON;
 
@@ -1614,9 +1614,9 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
             }
 
             if (cntnormal > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt)
-                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", CWStr(i).Get());
+                ERROR_S2(L"LoadAIRobotType WeaponCnt no=", utils::format(L"%d", i).c_str());
             if (cntextra > m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxExtraWeaponCnt)
-                ERROR_S2(L"LoadAIRobotType WeaponExtraCnt no=", CWStr(i).Get());
+                ERROR_S2(L"LoadAIRobotType WeaponExtraCnt no=", utils::format(L"%d", i).c_str());
         }
 
         if (str.GetCountPar(L",") >= 4) {
@@ -1635,7 +1635,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
             // m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nKind=RUK_HEAD_DESIGN; else if(str2==L"Speaker" ||
             // str2==L"P") m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nKind=RUK_HEAD_SPEAKER;
             else
-                ERROR_S2(L"LoadAIRobotType Head no=", CWStr(i).Get());
+                ERROR_S2(L"LoadAIRobotType Head no=", utils::format(L"%d", i).c_str());
 
             m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_Price.SetPrice(
                     m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nType,
@@ -1730,26 +1730,26 @@ void GetConstructionName(CMatrixRobotAI *robot) {
     robot->m_Name = L"";
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_ARMOR) {
-            robot->m_Name += bp_tmp->ParGet(L"Hull" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(utils::format(L"Hull%dKey", static_cast<int>(robot->m_Unit[i].u1.s1.m_Kind)));
             break;
         }
     }
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_CHASSIS) {
-            robot->m_Name += bp_tmp->ParGet(L"Chas" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(utils::format(L"Chas%dKey", static_cast<int>(robot->m_Unit[i].u1.s1.m_Kind)));
             break;
         }
     }
     for (int i = 0; i < robot->m_UnitCnt; i++) {
         if (robot->m_Unit[i].m_Type == MRT_HEAD) {
-            robot->m_Name += bp_tmp->ParGet(L"Head" + CWStr(int(robot->m_Unit[i].u1.s1.m_Kind), g_CacheHeap) + L"Key");
+            robot->m_Name += bp_tmp->ParGet(utils::format(L"Head%dKey", static_cast<int>(robot->m_Unit[i].u1.s1.m_Kind)));
             break;
         }
     }
 
     int dmg = GetConstructionDamage(robot);
     if (dmg) {
-        robot->m_Name += L"-" + CWStr(dmg, g_CacheHeap);
+        robot->m_Name += utils::format(L"-%d", dmg);
     }
 }
 

@@ -21,7 +21,7 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &s
     CBitmap bmps(g_CacheHeap);
     CBlockPar *bph = NULL;
     if (border >= 0) {
-        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border));
+        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(utils::format(L"%d", border));
 
         if (bph) {
             CWStr src;
