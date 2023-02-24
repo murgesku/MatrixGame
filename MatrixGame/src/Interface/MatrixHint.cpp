@@ -569,7 +569,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             CWStr text(temp.Get() + 4, g_CacheHeap);
             if (repl)
                 Replace(text, baserepl, repl);
-            skip = text.IsEmpty();
+            skip = text.empty();
             continue;
         }
 
@@ -638,7 +638,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 Replace(bmpn, baserepl, repl);
 
             elems[nelem].bmp = NULL;
-            if (!bmpn.IsEmpty()) {
+            if (!bmpn.empty()) {
                 for (int i = 0; i < m_BitmapsCnt; ++i) {
                     if (*m_Bitmaps[i].name == bmpn) {
                         elems[nelem].bmp = m_Bitmaps[i].bmp;

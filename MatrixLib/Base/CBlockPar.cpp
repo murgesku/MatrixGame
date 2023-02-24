@@ -1321,17 +1321,17 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         SaveLevel;
 
         if (unit->m_Type == 1) {
-            if (!unit->m_Name.IsEmpty()) {
+            if (!unit->m_Name.empty()) {
                 SaveStr(unit->m_Name.Get());
                 SaveStrConst("=");
             }
             SaveStr(unit->m_Par->Get());
-            if (!unit->m_Com.IsEmpty())
+            if (!unit->m_Com.empty())
                 SaveStr(unit->m_Com.Get());
         }
         else if (unit->m_Type == 2) {
             addspace = false;
-            if (!unit->m_Name.IsEmpty()) {
+            if (!unit->m_Name.empty()) {
                 SaveStr(unit->m_Name.Get());
                 addspace = true;
             }
@@ -1357,11 +1357,11 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 
                 if (unit->m_Block->AllCount() == 0) {
                     SaveStrConst("}");
-                    if (!unit->m_Com.IsEmpty())
+                    if (!unit->m_Com.empty())
                         SaveStr(unit->m_Com.Get());
                 }
                 else {
-                    if (!unit->m_Com.IsEmpty())
+                    if (!unit->m_Com.empty())
                         SaveStr(unit->m_Com.Get());
                     SaveNewLine;
 
@@ -1373,7 +1373,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
             }
         }
         else {
-            if (!unit->m_Com.IsEmpty())
+            if (!unit->m_Com.empty())
                 SaveStr(unit->m_Com.Get());
         }
 

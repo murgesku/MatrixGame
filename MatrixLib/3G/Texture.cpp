@@ -119,7 +119,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
             texi.LoadFromTextFile(tstr);
 
             tstr = texi.ParGetNE(L"AlphaTest");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_ALPHATEST);
                 }
@@ -128,7 +128,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
                 }
             }
             tstr = texi.ParGetNE(L"AlphaBlend");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_ALPHABLEND);
                 }
@@ -137,7 +137,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
                 }
             }
             tstr = texi.ParGetNE(L"Compressed");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_COMPRESSED);
                 }
