@@ -208,7 +208,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             CWStr mn;
             for (int i = 0; i < m_Geometry.m_MatrixsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
-                memcpy(m_Geometry.m_Matrixs[i].m_Name, mn.Get(), (mn.GetLen() + 1) * sizeof(wchar));
+                memcpy(m_Geometry.m_Matrixs[i].m_Name, mn.Get(), (mn.length() + 1) * sizeof(wchar));
 
                 m_Geometry.m_Matrixs[i].m_Id = id[i];
                 m_Geometry.m_Matrixs[i].m_MatrixStart = disp[i];
@@ -249,7 +249,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             CWStr mn;
             for (int i = 0; i < m_Geometry.m_AnimationsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
-                memcpy(m_Geometry.m_Animations[i].m_Name, mn.Get(), (mn.GetLen() + 1) * sizeof(wchar));
+                memcpy(m_Geometry.m_Animations[i].m_Name, mn.Get(), (mn.length() + 1) * sizeof(wchar));
 
                 m_Geometry.m_Animations[i].m_Id = id[i];
                 m_Geometry.m_Animations[i].m_FramesStart = disp[i];
@@ -403,8 +403,8 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
     //          CWStr outstr((materials + i)->tex_diffuse,g_CacheHeap);
     //          CacheReplaceFileExt(outstr, outstr.Get());
 
-    //          ASSERT(outstr.GetLen() > 0);
-    //          //if (outstr.GetLen() == 0) _asm int 3
+    //          ASSERT(outstr.length() > 0);
+    //          //if (outstr.length() == 0) _asm int 3
 
     //          CWStr temp(g_CacheHeap);
     //          if(!CFile::FileExist(temp,outstr.Get(),CacheExtsTex))

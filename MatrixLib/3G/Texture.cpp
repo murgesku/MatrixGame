@@ -456,7 +456,7 @@ void CTextureManaged::Load(void) {
 #ifdef USE_DX_MANAGED_TEXTURES
     if (m_Tex == NULL) {
 #ifdef _DEBUG
-        if (m_Name.GetLen() == 0)
+        if (m_Name.length() == 0)
             ERROR_E;
 #endif
         Init(false);
@@ -467,7 +467,7 @@ void CTextureManaged::Load(void) {
 
     if (m_TexFrom == NULL) {
 #ifdef _DEBUG
-        if (m_Name.GetLen() == 0)
+        if (m_Name.length() == 0)
             ERROR_E;
 #endif
         Init(false);

@@ -391,10 +391,10 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         while (true) {
             curname = utils::to_wstring(fd.cFileName);
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
-            if (sme > 0 && sme < curname.GetLen()) {
+            if (sme > 0 && sme < curname.length()) {
                 utils::to_lower(curname, sme);
                 const wchar *str = curname.c_str() + sme;
-                int len = curname.GetLen() - sme;
+                int len = curname.length() - sme;
 
                 const wchar *exts2 = exts;
                 int cntok = 0;
@@ -473,10 +473,10 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
         while (true) {
             curname = fd.cFileName;
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
-            if (sme > 0 && sme < curname.GetLen()) {
+            if (sme > 0 && sme < curname.length()) {
                 utils::to_lower(curname, sme);
                 const wchar *str = curname.c_str() + sme;
-                int len = curname.GetLen() - sme;
+                int len = curname.length() - sme;
 
                 const wchar *exts2 = exts;
                 int cntok = 0;
@@ -600,7 +600,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
 void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
     if (IS_UNICODE()) {
         CWStr fn(folderfrom);
-        if (fn.GetLen() > 0 && !(*(fn.Get() + fn.GetLen() - 1) == '\\' || (*(fn.Get() + fn.GetLen() - 1) == '/'))) {
+        if (fn.length() > 0 && !(*(fn.Get() + fn.length() - 1) == '\\' || (*(fn.Get() + fn.length() - 1) == '/'))) {
             fn += L"\\";
         }
         CWStr fnf(fn);
@@ -677,8 +677,8 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
 }
 
 BASE_API void CorrectFilePath(CWStr &filepath) {
-    if (filepath.GetLen() > 0 &&
-        (*(filepath.Get() + filepath.GetLen() - 1) == '\\' || (*(filepath.Get() + filepath.GetLen() - 1) == '/'))) {
+    if (filepath.length() > 0 &&
+        (*(filepath.Get() + filepath.length() - 1) == '\\' || (*(filepath.Get() + filepath.length() - 1) == '/'))) {
         filepath += L"\\";
     }
 }

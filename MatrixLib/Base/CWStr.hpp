@@ -98,10 +98,7 @@ public:
         return this->c_str();
     }
 
-    int GetLen(void) const
-    {
-        return this->length();
-    }
+    CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     int GetInt(void) const;
     DWORD GetDword(void) const;
@@ -111,7 +108,6 @@ public:
 
     bool IsOnlyInt(void) const;
 
-    CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
     // Функции для работы с параметрами
     // Примеры :

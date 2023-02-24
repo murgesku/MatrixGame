@@ -38,10 +38,10 @@ bool CCacheData::m_dip;
 //        {
 //			curname.Set(fd.cFileName);
 //			int sme=curname.FindR(L'.')+1;
-//			if(sme>0 && sme<curname.GetLen()) {
+//			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
 //				const wchar * str=curname.Get()+sme;
-//				int len = curname.GetLen()-sme;
+//				int len = curname.length()-sme;
 //
 //				const wchar * exts2=exts;
 //				int cntok=0;
@@ -102,10 +102,10 @@ bool CCacheData::m_dip;
 //        {
 //			curname.Set(fd.cFileName);
 //			int sme=curname.FindR(L'.')+1;
-//			if(sme>0 && sme<curname.GetLen()) {
+//			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
 //				const wchar * str=curname.Get()+sme;
-//				int len=curname.GetLen()-sme;
+//				int len=curname.length()-sme;
 //
 //				const wchar * exts2=exts;
 //				int cntok=0;

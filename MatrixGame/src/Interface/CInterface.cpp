@@ -521,7 +521,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             animation = pbp2->BlockGetNE(L"Animation");
             if (animation) {
                 CWStr par = animation->Par(L"Frames");
-                if (par.GetLen()) {
+                if (par.length()) {
                     int frames_cnt = par.GetIntPar(0, L",");
                     int period = par.GetIntPar(1, L",");
                     int width = par.GetIntPar(2, L",");
@@ -704,10 +704,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             if (labels) {
                 int labels_cnt = labels->BlockCount();
                 for (int bl_cnt = 0; bl_cnt < labels_cnt; bl_cnt++) {
-                    if (labels->BlockGetName(bl_cnt).GetLen()) {
+                    if (labels->BlockGetName(bl_cnt).length()) {
                         CBlockPar *label_block = labels->BlockGet(bl_cnt);
                         CWStr par = label_block->Par(IF_LABEL_PARAMS);
-                        if (par.GetLen()) {
+                        if (par.length()) {
                             int x = par.GetIntPar(0, L",");
                             int y = par.GetIntPar(1, L",");
 

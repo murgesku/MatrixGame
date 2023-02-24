@@ -161,11 +161,11 @@ public:
         return GetEndElement<D>(TableEntry(i));
     }
 
-    void SetWStr(DWORD idx, const CWStr &str) { SetArray<wchar>(idx, str.Get(), str.GetLen()); }
+    void SetWStr(DWORD idx, const CWStr &str) { SetArray<wchar>(idx, str.Get(), str.length()); }
 
     int AddWStr(const CWStr &str) {
         int r = AddArray();
-        AddToArray<wchar>(r, str.Get(), str.GetLen());
+        AddToArray<wchar>(r, str.Get(), str.length());
         return r;
     }
 
@@ -188,7 +188,7 @@ public:
         }
         return -1;
     }
-    int FindAsWStr(const CWStr &val) { return FindAsWStr(val.Get(), val.GetLen()); }
+    int FindAsWStr(const CWStr &val) { return FindAsWStr(val.Get(), val.length()); }
     int FindAsWStr(const wchar *val) { return FindAsWStr(val, Base::WStrLen(val)); }
 
     void Compact(void) {

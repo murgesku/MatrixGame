@@ -17,7 +17,7 @@ static void hHelp(const Base::CWStr &cmd, const Base::CWStr &params) {
 }
 
 static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
-    if (params.GetLen() == 2) {
+    if (params.length() == 2) {
         g_Config.m_ShowStencilShadows = params[0] == '1';
         g_Config.m_ShowProjShadows = params[1] == '1';
     }
@@ -26,7 +26,7 @@ static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
 }
 
 static void hCannon(const Base::CWStr &cmd, const Base::CWStr &params) {
-    if (params.GetLen() == 1) {
+    if (params.length() == 1) {
         g_Config.m_CannonsLogic = params[0] == '1';
     }
     g_MatrixMap->m_DI.T(L"Cannon's logic", g_Config.m_CannonsLogic ? L"ON" : L"OFF");
@@ -183,7 +183,7 @@ void CDevConsole::Takt(int ms) {
     }
     else {
     }
-    if (m_CurPos < m_Text.GetLen()) {
+    if (m_CurPos < m_Text.length()) {
         out += std::wstring{m_Text.Get() + m_CurPos};
     }
     else {
@@ -202,7 +202,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
         }
         else if (scan == KEY_DELETE) {
-            if (m_CurPos < m_Text.GetLen()) {
+            if (m_CurPos < m_Text.length()) {
                 m_Text.erase(m_CurPos, 1);
             }
         }
