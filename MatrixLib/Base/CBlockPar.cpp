@@ -52,8 +52,8 @@ void CBlockParUnit::Clear() {
         }
     }
     m_Type = 0;
-    m_Name.Clear();
-    m_Com.Clear();
+    m_Name.clear();
+    m_Com.clear();
 }
 
 void CBlockParUnit::ChangeType(int nt) {

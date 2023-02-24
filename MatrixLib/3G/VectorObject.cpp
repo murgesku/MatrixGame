@@ -2366,7 +2366,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
             if (gu->m_LinkMatrixName.IsOnlyInt()) {
                 gu->m_LinkMatrixId = gu->m_LinkMatrixName.GetInt();
-                gu->m_LinkMatrixName.Clear();
+                gu->m_LinkMatrixName.clear();
             }
             else {
                 gu->m_LinkMatrixId = -2;
