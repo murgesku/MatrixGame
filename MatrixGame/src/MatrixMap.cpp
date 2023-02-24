@@ -952,7 +952,7 @@ void CMatrixMap::MacrotextureInit(const CWStr &path) {
     int cnt = path.GetCountPar(L"?");
     for (int i = 1; i < cnt; i++) {
         CWStr op(path.GetStrPar(i, L"?").Trim(), g_CacheHeap);
-        if (op.CompareFirst(L"SIM"))
+        if (utils::starts_with(op, L"SIM"))
             m_MacrotextureSize = op.GetInt();
     }
 }

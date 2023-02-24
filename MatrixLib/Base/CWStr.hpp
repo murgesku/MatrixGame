@@ -165,11 +165,6 @@ public:
     double GetDoublePar(int np, const wchar *ogsim) const { return GetStrPar(np, ogsim).GetDouble(); }
     bool GetTrueFalsePar(int np, const wchar *ogsim) const;
 
-    bool CompareFirst(const CWStr &str) const;
-    bool CompareFirst(const wchar *str) const { return CompareFirst(CWStr(str)); }
-    int CompareSubstring(const CWStr &str) const;
-    int CompareSubstring(const wchar *str) const { return CompareSubstring(CWStr(str)); }
-
     CWStr &operator=(const wchar *s) {
         this->assign(s);
         return *this;
