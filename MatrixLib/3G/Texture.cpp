@@ -38,7 +38,7 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
         auto idx = tn.rfind('.');
         if (idx == std::wstring::npos)
             goto autoload;
-        tn.LowerCase(idx + 1);
+        utils::to_lower(tn, idx + 1);
         if (0 != memcmp(tn.Get() + idx + 1, L"png", sizeof(wchar) * 4))
             goto autoload;
 

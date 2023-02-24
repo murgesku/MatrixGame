@@ -213,30 +213,6 @@ CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
     return *this;
 }
 
-void CWStr::LowerCase(int sme, int len) {
-    if (len < 0)
-        len = GetLen() - sme;
-    if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
-        return;
-
-    for (size_t i = 0; i < len; ++i)
-    {
-        (*this)[sme + i] = std::towlower((*this)[sme + i]);
-    }
-}
-
-void CWStr::UpperCase(int sme, int len) {
-    if (len < 0)
-        len = GetLen() - sme;
-    if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
-        return;
-
-    for (int i = 0; i < len; ++i)
-    {
-        (*this)[sme + i] = std::towupper((*this)[sme + i]);
-    }
-}
-
 int CWStr::GetCountPar(const wchar *ogsim) const {
     int tlen = GetLen();
     if (tlen < 1)

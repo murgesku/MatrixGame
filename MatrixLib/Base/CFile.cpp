@@ -392,7 +392,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
             curname = utils::to_wstring(fd.cFileName);
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
             if (sme > 0 && sme < curname.GetLen()) {
-                curname.LowerCase(sme);
+                utils::to_lower(curname, sme);
                 const wchar *str = curname.c_str() + sme;
                 int len = curname.GetLen() - sme;
 
@@ -474,7 +474,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
             curname = fd.cFileName;
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
             if (sme > 0 && sme < curname.GetLen()) {
-                curname.LowerCase(sme);
+                utils::to_lower(curname, sme);
                 const wchar *str = curname.c_str() + sme;
                 int len = curname.GetLen() - sme;
 

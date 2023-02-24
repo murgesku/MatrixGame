@@ -115,9 +115,6 @@ public:
 
     CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
 
-    void LowerCase(int sme = 0, int len = -1);
-    void UpperCase(int sme = 0, int len = -1);
-
     // Функции для работы с параметрами
     // Примеры :
     //      Str="count=5,7"    GetCountPar("=,")      return 3
