@@ -949,10 +949,8 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
         {
             m_LastScans.clear();
             g_MatrixMap->m_DI.T(L"_____________________________", L"", 10000);
-            g_MatrixMap->m_DI.T(L"Sim textures",
-                                CWStr(g_D3DDCaps.MaxSimultaneousTextures, g_CacheHeap).Get(), 10000);
-            g_MatrixMap->m_DI.T(L"Stencil available",
-                                FLAG(g_Flags, GFLAG_STENCILAVAILABLE) ? L"Yes" : L"No", 10000);
+            g_MatrixMap->m_DI.T(L"Sim textures", utils::format(L"%u", g_D3DDCaps.MaxSimultaneousTextures).c_str(), 10000);
+            g_MatrixMap->m_DI.T(L"Stencil available", FLAG(g_Flags, GFLAG_STENCILAVAILABLE) ? L"Yes" : L"No", 10000);
 
             // vidmode
             D3DDISPLAYMODE d3ddm;

@@ -112,7 +112,7 @@ BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWS
                 str = utils::to_wstring((const char*)buf.Get());
         }
         else if (type == REG_DWORD && buf.Len() == 4) {
-            str = CWStr(*((dword *)buf.Get())).c_str();
+            str = utils::format(L"%u", *((dword*)buf.Get()));
         }
     }
 

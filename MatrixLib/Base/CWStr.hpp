@@ -62,11 +62,6 @@ public:
     {
     }
 
-    explicit CWStr(DWORD zn, CHeap *heap = NULL)
-    : std::wstring{utils::format(L"%u", zn)}
-    {
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
