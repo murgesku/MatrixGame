@@ -219,13 +219,9 @@ void CWStr::LowerCase(int sme, int len) {
     if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
         return;
 
-    if (GetVersion() < 0x80000000)
-        CharLowerBuffW(GetBuf() + sme, len);
-    else {
-        for (size_t i = 0; i < len; ++i)
-        {
-            GetBuf()[sme + i] = std::towlower(Get()[sme + i]);
-        }
+    for (size_t i = 0; i < len; ++i)
+    {
+        (*this)[sme + i] = std::towlower((*this)[sme + i]);
     }
 }
 
@@ -235,13 +231,9 @@ void CWStr::UpperCase(int sme, int len) {
     if ((sme < 0) || (len <= 0) || ((sme + len) > GetLen()))
         return;
 
-    if (GetVersion() < 0x80000000)
-        CharUpperBuffW(GetBuf() + sme, len);
-    else {
-        for (int i = 0; i < len; ++i)
-        {
-            GetBuf()[sme + i] = std::towupper(Get()[sme + i]);
-        }
+    for (int i = 0; i < len; ++i)
+    {
+        (*this)[sme + i] = std::towupper((*this)[sme + i]);
     }
 }
 

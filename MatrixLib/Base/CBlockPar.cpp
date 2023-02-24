@@ -1255,19 +1255,16 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     if (fs > 0) {
         if (fansi) {
             std::string astr(fs, ' '); // TODO: maybe not spaces?
-            CWStr wstr;
 
             fi.Read(&astr[0], fs);
-            wstr = utils::to_wstring(astr.c_str());
+            std::wstring wstr = utils::to_wstring(astr.c_str());
 
             LoadFromText(wstr.c_str(), wstr.length());
         }
         else {
-            CWStr wstr;
-
-            wstr.resize(fs >> 1);
-            fi.Read(wstr.GetBuf(), (fs >> 1) << 1);
-
+            std::wstring wstr;
+            wstr.resize(fs / 2);
+            fi.Read(&wstr[0], (fs / 2) * 2); // TODO: wtf?
             LoadFromText(wstr.c_str(), wstr.length());
         }
     }

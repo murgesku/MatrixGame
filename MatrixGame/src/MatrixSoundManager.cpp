@@ -526,7 +526,7 @@ DWORD CSound::Play(const wchar *name, ESoundLayer sl, ESoundInterruptFlag interr
     return Play(S_SPECIAL_SLOT, sl, interrupt);
 }
 
-DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name) {
+DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
     DTRACE();
 
     if (!g_RangersInterface)
@@ -540,7 +540,9 @@ DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, f
     if (vol < 0.00001f)
         return SOUND_ID_EMPTY;
 
-    m_AllSounds[si].id_internal = snd_create(name, m_LastGroup++, 0);
+    // TODO: non-const pointer is required here for no reason
+    wchar_t* raw_name = const_cast<wchar_t*>(name);
+    m_AllSounds[si].id_internal = snd_create(raw_name, m_LastGroup++, 0);
     m_AllSounds[si].id = m_LastID++;
 
     snd_pan(m_AllSounds[si].id_internal, pan);
@@ -620,8 +622,10 @@ DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESo
         }
 
         si = FindSlotForSound();
+        // TODO: non-const pointer is required here for no reason
+        wchar_t* path = const_cast<wchar_t*>(m_Sounds[snd].Path().c_str());
         m_AllSounds[si].id_internal =
-                snd_create(m_Sounds[snd].Path().GetBuf(), m_LastGroup++, FLAG(m_Sounds[snd].flags, SSoundItem::LOOPED));
+                snd_create(path, m_LastGroup++, FLAG(m_Sounds[snd].flags, SSoundItem::LOOPED));
         m_AllSounds[si].id = newid;
 
         m_AllSounds[si].curpan = pan;
@@ -846,10 +850,10 @@ void CSound::AddSound(const wchar *name, const D3DXVECTOR3 &pos) {
     SureLoaded(S_SPECIAL_SLOT);
 
     AddSound(pos, m_Sounds[S_SPECIAL_SLOT].attn, m_Sounds[S_SPECIAL_SLOT].pan0, m_Sounds[S_SPECIAL_SLOT].pan1,
-             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].Path().GetBuf());
+             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].Path().c_str());
 }
 
-void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name) {
+void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
     DTRACE();
 
     if (!g_RangersInterface)

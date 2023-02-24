@@ -98,11 +98,6 @@ public:
         return this->c_str();
     }
 
-    wchar *GetBuf(void)
-    {
-        return const_cast<wchar*>(this->data());
-    }
-
     int GetLen(void) const
     {
         return this->length();
