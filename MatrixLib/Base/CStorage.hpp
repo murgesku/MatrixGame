@@ -227,9 +227,9 @@ class CStorageRecordItem : public CMain {
 
 public:
     CStorageRecordItem(const CStorageRecordItem &item)
-      : m_Name(item.m_Name, item.m_Name.GetHeap()), m_Type(item.m_Type), m_Buf(NULL) {}
+      : m_Name(item.m_Name), m_Type(item.m_Type), m_Buf(NULL) {}
     CStorageRecordItem(const CWStr &name, EStorageType type)
-      : m_Name(name, name.GetHeap()), m_Type(type), m_Buf(NULL) {}
+      : m_Name(name), m_Type(type), m_Buf(NULL) {}
     CStorageRecordItem(CHeap *heap) : m_Name(heap), m_Buf(NULL) { InitBuf(heap); }
     ~CStorageRecordItem();
 
@@ -255,7 +255,7 @@ class CStorageRecord : public CMain {
 public:
     CStorageRecord(const CStorageRecord &rec);
     CStorageRecord(CWStr name, CHeap *heap = NULL)
-      : m_Heap(heap), m_Name(name, name.GetHeap()), m_Items(NULL), m_ItemsCount(0) {}
+      : m_Heap(heap), m_Name(name), m_Items(NULL), m_ItemsCount(0) {}
     CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name(heap), m_Items(NULL), m_ItemsCount(0) {}
     ~CStorageRecord();
 

@@ -93,11 +93,6 @@ public:
 
     ~CWStr() = default;
 
-    CHeap* GetHeap() const
-    {
-        return nullptr;
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
@@ -143,7 +138,7 @@ public:
     void GetStrPar(CWStr &str, int np, const wchar *ogsim) const;
     CWStr GetStrPar(int np, const wchar *ogsim) const {
         int sme = GetSmePar(np, ogsim);
-        return CWStr(Get() + sme, GetLenPar(sme, ogsim), GetHeap());
+        return CWStr(Get() + sme, GetLenPar(sme, ogsim));
     }
 
     void GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const;

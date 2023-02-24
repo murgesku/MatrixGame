@@ -387,7 +387,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname(outname.GetHeap());
+        CWStr curname;
         while (true) {
             curname = utils::to_wstring(fd.cFileName);
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
@@ -452,7 +452,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile, outname.GetHeap());
+    CWStr filename(str, lenfile);
 
     WIN32_FIND_DATAW fd;
     HANDLE fh = FindFirstFileW(filename.c_str(), &fd);
