@@ -3082,11 +3082,11 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
             // sound.m_looped = par.GetTrueFalsePar(idx++,L",");
 
             CWStr nam(par.GetStrPar(idx++, L","), g_CacheHeap);
-            if (nam.GetLen() > (sizeof(sound.m_name) / sizeof(sound.m_name[0]))) {
+            if (nam.length() > (sizeof(sound.m_name) / sizeof(sound.m_name[0]))) {
                 ERROR_S(L"Effect spawner: sound name too long!");
             }
 
-            memcpy(sound.m_name, nam.Get(), (nam.GetLen() + 1) * sizeof(wchar));
+            memcpy(sound.m_name, nam.Get(), (nam.length() + 1) * sizeof(wchar));
 
             break;
         }

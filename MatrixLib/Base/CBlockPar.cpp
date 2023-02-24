@@ -835,7 +835,7 @@ CBlockPar *CBlockPar::BlockPathAdd(const wchar *path, int pathlen) {
     }
     el = cd->UnitAdd();
     el->ChangeType(2);
-    el->m_Name = std::wstring{name.Get(), static_cast<size_t>(name.GetLen())};
+    el->m_Name = name;
     if (m_Sort)
         ArrayAdd(el);
     m_CntBlock++;

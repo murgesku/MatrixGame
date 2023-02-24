@@ -48,7 +48,7 @@ int CWStr::GetInt() const
 }
 
 DWORD CWStr::GetDword() const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = Get();
@@ -65,7 +65,7 @@ DWORD CWStr::GetDword() const {
 }
 
 double CWStr::GetDouble() const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = Get();
@@ -100,7 +100,7 @@ double CWStr::GetDouble() const {
 }
 
 int CWStr::GetHex() const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = Get();
@@ -127,7 +127,7 @@ int CWStr::GetHex() const {
 }
 
 DWORD CWStr::GetHexUnsigned(void) const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = Get();
@@ -148,7 +148,7 @@ DWORD CWStr::GetHexUnsigned(void) const {
 }
 
 bool CWStr::IsOnlyInt() const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = Get();
@@ -178,7 +178,7 @@ CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
 }
 
 int CWStr::GetCountPar(const wchar *ogsim) const {
-    int tlen = GetLen();
+    int tlen = length();
     if (tlen < 1)
         return 0;
 
@@ -202,7 +202,7 @@ int CWStr::GetCountPar(const wchar *ogsim) const {
 
 int CWStr::GetSmePar(int np, const wchar *ogsim) const {
     int lenogsim = WStrLen(ogsim);
-    int tlen = GetLen();
+    int tlen = length();
     // if(tlen<1 || lenogsim<1 || np<0) ERROR_OK("Data in CWStr::GetSmePar()");
     //  if((tlen<1 || lenogsim<1 || np<0))
     //        ASSERT(1);
@@ -236,7 +236,7 @@ int CWStr::GetSmePar(int np, const wchar *ogsim) const {
 
 int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
     int i;
-    int tlen = GetLen();
+    int tlen = length();
     int lenogsim = WStrLen(ogsim);
     if (tlen < 1 || lenogsim < 1 || smepar > tlen)
         ERROR_E;

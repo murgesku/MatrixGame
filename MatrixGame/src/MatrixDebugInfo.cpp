@@ -57,12 +57,12 @@ void CMatrixDebugInfo::Draw(void) {
             DWORD color = (a << 24) | 0xFFFFFF;
 
             // DWORD noclip = DT_END_ELLIPSIS;
-            // if (m_Items[i].val->GetLen() == 0) noclip = DT_NOCLIP;
+            // if (m_Items[i].val->length() == 0) noclip = DT_NOCLIP;
 #if D3DX_SDK_VERSION >= 21
-            m_Font->DrawTextW(NULL, m_Items[i].key->Get(), m_Items[i].key->GetLen(), (LPRECT)&r,
+            m_Font->DrawTextW(NULL, m_Items[i].key->Get(), m_Items[i].key->length(), (LPRECT)&r,
                               DT_NOCLIP | DT_LEFT | DT_VCENTER | DT_SINGLELINE, color);
 #else
-            m_Font->DrawTextW(m_Items[i].key->Get(), m_Items[i].key->GetLen(), (LPRECT)&r,
+            m_Font->DrawTextW(m_Items[i].key->Get(), m_Items[i].key->length(), (LPRECT)&r,
                               DT_NOCLIP | DT_LEFT | DT_VCENTER | DT_SINGLELINE, color);
 #endif
 
@@ -70,10 +70,10 @@ void CMatrixDebugInfo::Draw(void) {
             r.right = r.left + DI_VAL_W;
 
 #if D3DX_SDK_VERSION >= 21
-            m_Font->DrawTextW(NULL, m_Items[i].val->Get(), m_Items[i].val->GetLen(), (LPRECT)&r,
+            m_Font->DrawTextW(NULL, m_Items[i].val->Get(), m_Items[i].val->length(), (LPRECT)&r,
                               DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP, color);
 #else
-            m_Font->DrawTextW(m_Items[i].val->Get(), m_Items[i].val->GetLen(), (LPRECT)&r,
+            m_Font->DrawTextW(m_Items[i].val->Get(), m_Items[i].val->length(), (LPRECT)&r,
                               DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP, color);
 #endif
 
