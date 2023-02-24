@@ -93,8 +93,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
     int cnt = name.GetCountPar(L"?");
     if (cnt > 1) {
         for (int i = 1; i < cnt; i++) {
-            tstr = name.GetStrPar(i, L"?");
-            tstr.Trim();
+            tstr = utils::trim(name.GetStrPar(i, L"?"));
             if (tstr == L"Trans") {
                 SETFLAG(m_Flags, TF_ALPHATEST);
             }

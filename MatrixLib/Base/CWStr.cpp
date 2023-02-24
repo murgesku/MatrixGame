@@ -159,42 +159,6 @@ bool CWStr::IsOnlyInt() const {
     return 1;
 }
 
-CWStr &CWStr::Trim() {
-    int tlen = GetLen();
-    if (tlen < 1)
-        return *this;
-    const wchar *tstr = Get();
-
-    int i;
-    for (i = 0; i < tlen; i++) {
-        if (tstr[i] != ' ' && tstr[i] != 0x9 && tstr[i] != 0x0d && tstr[i] != 0x0a)
-            break;
-    }
-    if (i == tlen) {
-        this->clear();
-        return *this;
-    }
-    int u;
-    for (u = tlen - 1; u >= 0; u--) {
-        if (tstr[u] != ' ' && tstr[u] != 0x9 && tstr[u] != 0x0d && tstr[u] != 0x0a)
-            break;
-    }
-    tlen = u - i + 1;
-    if (tlen < 1)
-    {
-        this->clear();
-        return *this;
-    }
-
-    this->resize(tlen);
-    if (i == 0) {
-        return *this;
-    }
-
-    *this = this->substr(i, tlen);
-    return *this;
-}
-
 CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
     int tlen = length();
     if (tlen < 1 || tlen < substr.length())
