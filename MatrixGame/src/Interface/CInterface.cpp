@@ -219,7 +219,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             pButton->m_nId = pbp2->Par(L"id").GetInt();
             pButton->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"", g_CacheHeap);
+            CWStr hint_par(L"");
             hint_par = pbp2->ParNE(L"Hint");
             if (hint_par != L"") {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
@@ -570,7 +570,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
 
             pStatic->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"", g_CacheHeap);
+            CWStr hint_par(L"");
             hint_par = pbp2->ParNE(L"Hint");
             if (hint_par != L"") {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
@@ -1023,7 +1023,7 @@ bool CInterface::OnMouseMove(CPoint mouse) {
     bool MiniMapFocused = false;
     bool static_have_hint = false;
     g_IFaceList->m_FocusedElement = NULL;
-    CWStr static_name(L"", g_CacheHeap);
+    CWStr static_name(L"");
 
     if (m_VisibleAlpha) {
         CIFaceElement *pObjectsList = m_FirstElement;
@@ -5190,16 +5190,16 @@ void CIFaceList::CreateDynamicTurrets(CMatrixBuilding *building) {
             for (int i = 0; i < tur_sheme; i++) {
                 image = NULL;
                 if (building->m_TurretsPlaces[i].m_CannonType == 1) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT1_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT1_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 2) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT2_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT2_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 3) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT3_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT3_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 4) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT4_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT4_ICON});
                 }
                 if (image) {
                     float x = 0;

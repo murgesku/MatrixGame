@@ -46,7 +46,7 @@ inline void snd_play(DWORD s) {
 }
 
 CSound::SSoundItem::SSoundItem(const wchar *sndname) : vol0(1), vol1(1), pan0(0), pan1(0), flags(0) {
-    new(&Path()) CWStr(sndname, g_MatrixHeap);
+    new(&Path()) CWStr(sndname);
 }
 
 void CSound::Init(void) {
@@ -364,8 +364,7 @@ void CSound::SureLoaded(ESound snd) {
             // load sound
             CBlockPar *bps = g_MatrixData->BlockGet(L"Sounds");
 
-            CWStr temp(m_Sounds[snd].Path().Get(), g_CacheHeap);
-            CBlockPar *bp = bps->BlockGetNE(temp);
+            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].Path().c_str());
             if (bp == NULL) {
                 bp = bps->BlockGetNE(L"dummy");
             }

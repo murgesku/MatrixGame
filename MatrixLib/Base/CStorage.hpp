@@ -174,7 +174,7 @@ public:
         wchar *str = GetFirst<wchar>(i);
         int l = GetArrayLength(i);
 
-        return CWStr(str, l, m_Heap);
+        return std::wstring{str, static_cast<size_t>(l)};
     }
 
     int FindAsWStr(const wchar *val, int len) {

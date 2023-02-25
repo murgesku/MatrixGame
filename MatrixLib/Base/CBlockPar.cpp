@@ -737,7 +737,7 @@ void CBlockPar::ParPathAdd(const wchar *path, int pathlen, const wchar *zn, int 
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    CWStr name(path, pathlen);
+    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -792,7 +792,7 @@ int CBlockPar::ParPathCount(const wchar *path, int pathlen) {
     DTRACE();
     CBlockPar *cd;
 
-    CWStr name(path, pathlen, m_Heap);
+    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -822,7 +822,7 @@ CBlockPar *CBlockPar::BlockPathAdd(const wchar *path, int pathlen) {
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    CWStr name(path, pathlen, m_Heap);
+    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -1185,7 +1185,7 @@ public:
                 if (m_FileBegin >= 0) {
                     unit->m_Block->LoadFromTextFile(m_Text + m_FileBegin, m_FileEnd - m_FileBegin);
                     unit->m_Block->m_FromFile = HNew(unit->m_Block->m_Heap)
-                            CWStr(m_Text + m_FileBegin, m_FileEnd - m_FileBegin, unit->m_Block->m_Heap);
+                            CWStr(std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)});
                 }
             }
             else if (FindPar()) {
@@ -1239,7 +1239,7 @@ int CBlockPar::LoadFromText(const wchar *text, int textlen) {
 
 void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
     DTRACE();
-    CFile fi(CWStr(filename, filenamelen), m_Heap);
+    CFile fi(std::wstring{filename, static_cast<size_t>(filenamelen)});
     fi.OpenRead();
 
     word zn;
@@ -1388,7 +1388,7 @@ void CBlockPar::SaveInTextFile(const wchar *filename, int filenamelen, bool ansi
         buf.Word(0x0feff);
     SaveInText(buf, ansi);
 
-    CFile fi(CWStr(filename, filenamelen), m_Heap);
+    CFile fi(std::wstring{filename, static_cast<size_t>(filenamelen)}, m_Heap);
     fi.Create();
     fi.Write(buf.Get(), buf.Len());
     fi.Close();

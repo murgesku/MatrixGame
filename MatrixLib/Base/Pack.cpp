@@ -1501,7 +1501,7 @@ int CHsFolder::FindNext(SSearchRec &S) {
 //***************** КЛАСС -ПАКЕТНЫЙ ФАЙЛ *******************************
 //**********************************************************************
 
-CPackFile::CPackFile(CHeap *heap, const wchar *name) : m_Heap(heap), m_FileName(name, heap) {
+CPackFile::CPackFile(CHeap *heap, const wchar *name) : m_Heap(heap), m_FileName{name} {
     m_Handle = 0xFFFFFFFF;
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     RESETFLAG(m_Flags, PFFLAG_EMPTY);

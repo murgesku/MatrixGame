@@ -29,7 +29,7 @@
 #pragma warning(disable : 4355)
 
 CMatrixBuilding::CMatrixBuilding()
-  : CMatrixMapStatic(), m_Name(L"FACTORY", g_MatrixHeap), m_BS(this), m_UnderAttackTime(0) {
+  : CMatrixMapStatic(), m_Name{L"FACTORY"}, m_BS(this), m_UnderAttackTime(0) {
     DTRACE();
     m_GGraph = NULL;
     //	m_ShadowStencil=NULL;

@@ -24,7 +24,7 @@
 D3D_VB CMatrixFlyer::m_VB;
 int CMatrixFlyer::m_VB_ref;
 
-CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(nullptr), m_Name(L"FLYER", g_MatrixHeap) {
+CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(nullptr), m_Name{L"FLYER"} {
     DTRACE();
 
     m_Core->m_Type = OBJECT_TYPE_FLYER;

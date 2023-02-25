@@ -106,8 +106,8 @@ void CMatrixDebugInfo::T(const wchar *key, const wchar *val, int ttl, int bttl, 
     if (m_ItemsCnt >= MAX_DEBUG_INFO_ITEMS)
         return;
 
-    m_Items[m_ItemsCnt].key = HNew(g_MatrixHeap) CWStr(key, g_MatrixHeap);
-    m_Items[m_ItemsCnt].val = HNew(g_MatrixHeap) CWStr(val, g_MatrixHeap);
+    m_Items[m_ItemsCnt].key = HNew(g_MatrixHeap) CWStr(key);
+    m_Items[m_ItemsCnt].val = HNew(g_MatrixHeap) CWStr(val);
     m_Items[m_ItemsCnt].ttl = ttl;
     m_Items[m_ItemsCnt].bttl = bttl;
     ++m_ItemsCnt;
