@@ -69,15 +69,17 @@ public:
     //      Str="count=5,7"    GetStrPar(str,1,"=")   str="5,7"
     //      Str="count=5,7"    GetIntPar(2,"=,")      return 7
     int GetCountPar(const wchar *ogsim) const;
+
+private:
     int GetSmePar(int np, const wchar *ogsim) const;
     int GetLenPar(int smepar, const wchar *ogsim) const;
-    void GetStrPar(CWStr &str, int np, const wchar *ogsim) const;
+
+public:
     CWStr GetStrPar(int np, const wchar *ogsim) const {
         int sme = GetSmePar(np, ogsim);
         return std::wstring(c_str() + sme, GetLenPar(sme, ogsim));
     }
 
-    void GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const;
     CWStr GetStrPar(int nps, int npe, const wchar *ogsim) const;
     int GetIntPar(int np, const wchar *ogsim) const { return GetStrPar(np, ogsim).GetInt(); }
     double GetDoublePar(int np, const wchar *ogsim) const { return GetStrPar(np, ogsim).GetDouble(); }

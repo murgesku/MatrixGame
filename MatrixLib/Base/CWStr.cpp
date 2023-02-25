@@ -254,19 +254,6 @@ int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
     return i - smepar;
 }
 
-void CWStr::GetStrPar(CWStr &str, int np, const wchar *ogsim) const {
-    int sme = GetSmePar(np, ogsim);
-    int len = GetLenPar(sme, ogsim);
-    str = std::wstring{c_str() + sme, static_cast<size_t>(len)};
-}
-
-void CWStr::GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const {
-    int sme1 = GetSmePar(nps, ogsim);
-    int sme2 = GetSmePar(npe, ogsim);
-    sme2 += GetLenPar(sme2, ogsim);
-    str = std::wstring{c_str() + sme1, static_cast<size_t>(sme2 - sme1)};
-}
-
 CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
@@ -275,8 +262,7 @@ CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
 }
 
 bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {
-    CWStr tstr(*this);
-    GetStrPar(tstr, np, ogsim);
+    CWStr tstr = GetStrPar(np, ogsim);
 
     if (tstr == L"true" || tstr == L"True" || tstr == L"TRUE")
         return 1;
