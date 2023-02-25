@@ -252,8 +252,8 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
         if (txt_start) {
             if (txt_start[0] >= '1' && txt_start[0] <= '6') {
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start, 1).c_str());
-                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start + 1, 2).c_str());
+                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, std::wstring{txt_start, 1});
+                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, std::wstring{txt_start + 1, 2});
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
             }
             else {

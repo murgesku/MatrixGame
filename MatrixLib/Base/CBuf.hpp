@@ -297,9 +297,9 @@ public:
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CWStr(abuf, len);
+            return std::wstring(abuf, len);
         else
-            return CWStr{};
+            return {};
     }
     void WStr(const CWStr &str) {
         int len = str.length();
@@ -380,9 +380,9 @@ public:
             }
         }
         if (len > 0)
-            return CWStr(abuf, len);
+            return std::wstring(abuf, len);
         else
-            return CWStr();
+            return {};
     }
     void WStrText(CWStr &str) {
         int len = str.length();

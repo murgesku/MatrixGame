@@ -2868,7 +2868,7 @@ void CMatrixMapLogic::Takt(int step) {
 
     if (IsPaused()) {
         if (m_PauseHint == NULL && g_RangersInterface && !FLAG(m_Flags, MMFLAG_DIALOG_MODE)) {
-            m_PauseHint = CMatrixHint::Build(CWStr(TEMPLATE_PAUSE, g_CacheHeap));
+            m_PauseHint = CMatrixHint::Build(std::wstring{TEMPLATE_PAUSE});
             m_PauseHint->Show(14, 62);
         }
 

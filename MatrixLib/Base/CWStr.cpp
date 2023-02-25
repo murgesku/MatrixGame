@@ -51,7 +51,7 @@ DWORD CWStr::GetDword() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     DWORD zn = 0;
     wchar ch;
@@ -68,7 +68,7 @@ double CWStr::GetDouble() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     int i;
     double zn = 0.0;
@@ -103,7 +103,7 @@ int CWStr::GetHex() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     int zn = 0;
     int i;
@@ -130,7 +130,7 @@ DWORD CWStr::GetHexUnsigned(void) const {
     int tlen = length();
     if (tlen < 1)
         return 0;
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     DWORD zn = 0;
     int i;
@@ -151,7 +151,7 @@ bool CWStr::IsOnlyInt() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     for (int i = 0; i < tlen; i++)
         if (tstr[i] < L'0' || tstr[i] > L'9' && tstr[i] != L'-')
@@ -187,7 +187,7 @@ int CWStr::GetCountPar(const wchar *ogsim) const {
     if (lenogsim < 1)
         return 0;
 
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     for (int i = 0; i < tlen; i++) {
         int u;
@@ -210,7 +210,7 @@ int CWStr::GetSmePar(int np, const wchar *ogsim) const {
     int smepar = 0;
     int tekpar = 0;
 
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     if (np > 0) {
         int i;
@@ -241,7 +241,7 @@ int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
     if (tlen < 1 || lenogsim < 1 || smepar > tlen)
         ERROR_E;
 
-    const wchar *tstr = Get();
+    const wchar *tstr = c_str();
 
     for (i = smepar; i < tlen; i++) {
         int u;
@@ -257,21 +257,21 @@ int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
 void CWStr::GetStrPar(CWStr &str, int np, const wchar *ogsim) const {
     int sme = GetSmePar(np, ogsim);
     int len = GetLenPar(sme, ogsim);
-    str = std::wstring{Get() + sme, static_cast<size_t>(len)};
+    str = std::wstring{c_str() + sme, static_cast<size_t>(len)};
 }
 
 void CWStr::GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
-    str = std::wstring{Get() + sme1, static_cast<size_t>(sme2 - sme1)};
+    str = std::wstring{c_str() + sme1, static_cast<size_t>(sme2 - sme1)};
 }
 
 CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
-    return CWStr(Get() + sme1, sme2 - sme1);
+    return std::wstring(c_str() + sme1, sme2 - sme1);
 }
 
 bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {

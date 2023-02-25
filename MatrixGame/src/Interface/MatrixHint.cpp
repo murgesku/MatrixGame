@@ -566,7 +566,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             continue;
         }
         else if (utils::starts_with(temp, L"_IF:")) {
-            CWStr text(temp.Get() + 4, g_CacheHeap);
+            CWStr text(temp.c_str() + 4);
             if (repl)
                 Replace(text, baserepl, repl);
             skip = text.empty();
@@ -577,7 +577,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             continue;
 
         if (utils::starts_with(temp, L"_FONT:")) {
-            font = (temp.Get() + 6);
+            font = (temp.c_str() + 6);
         }
         else if (utils::starts_with(temp, L"_COLOR:")) {
             // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
@@ -585,10 +585,10 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             color = temp.GetStrPar(1, L":").GetHexUnsigned();
         }
         else if (utils::starts_with(temp, L"_SOUNDIN:")) {
-            soundin = (temp.Get() + 9);
+            soundin = (temp.c_str() + 9);
         }
         else if (utils::starts_with(temp, L"_SOUNDOUT:")) {
-            soundout = (temp.Get() + 10);
+            soundout = (temp.c_str() + 10);
         }
         else if (utils::starts_with(temp, L"_BORDER:")) {
             otstup = true;
@@ -656,7 +656,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 // if (w == 0) w = g_ScreenX;
                 // if (h == 0) h = 200;
 
-                CWStr text(temp.Get() + 6, g_CacheHeap);
+                CWStr text(temp.c_str() + 6);
 
                 if (repl)
                     Replace(text, baserepl, repl);
@@ -664,11 +664,11 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
                 //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
 
-                text.Replace(CWStr(L"<br>", g_CacheHeap), CWStr(L"\r\n", g_CacheHeap));
+                text.Replace(CWStr(L"<br>"), CWStr(L"\r\n"));
 
                 SMGDRangersInterfaceText *it =
                         (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
-                g_RangersInterface->m_RangersText((wchar *)text.Get(), (wchar *)font.Get(), color, w, h, alignx, aligny,
+                g_RangersInterface->m_RangersText((wchar*)text.c_str(), (wchar*)font.c_str(), color, w, h, alignx, aligny,
                                                   (w == 0) ? 0 : 1, 0, 0, &cr, it);
 
                 CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);

@@ -363,14 +363,14 @@ void CFile::Write(void *buf, DWORD kolbyte) {
 static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    size_t len = WStrLen(mname);
     const wchar *str = mname;
 
-    int lenfile = 0;
+    size_t lenfile = 0;
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile);
+    std::wstring filename(str, lenfile);
 
     WIN32_FIND_DATAA fd;
     HANDLE fh = FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(), &fd);
@@ -383,7 +383,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileA(utils::from_wstring(CWStr(str, lenfile) + L".*").c_str(), &fd);
+    fh = FindFirstFileA(utils::from_wstring(std::wstring(str, lenfile) + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
@@ -452,7 +452,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile);
+    std::wstring filename{str, static_cast<size_t>(lenfile)};
 
     WIN32_FIND_DATAW fd;
     HANDLE fh = FindFirstFileW(filename.c_str(), &fd);
@@ -465,7 +465,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileW((CWStr(str, lenfile) + L".*").c_str(), &fd);
+    fh = FindFirstFileW((std::wstring{str, static_cast<size_t>(lenfile)} + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
@@ -552,9 +552,9 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile);
+    std::wstring filename{str, static_cast<size_t>(lenfile)};
 
-    if (m_Packs->FileExists(utils::from_wstring(filename.Get()).c_str())) {
+    if (m_Packs->FileExists(utils::from_wstring(filename.c_str()).c_str())) {
         if (withpar)
             outname = mname;
         else
@@ -576,7 +576,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
             if (sm0 != sm1) {
                 fn = utils::format(
                         "%s.%s",
-                        utils::from_wstring(filename.Get()).c_str(),
+                        utils::from_wstring(filename.c_str()).c_str(),
                         utils::from_wstring(exts + sm0).c_str());
 
                 fn.resize(fn.length() - (l - sm1));
@@ -674,23 +674,6 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
             FindClose(h);
         }
     }
-}
-
-BASE_API void CorrectFilePath(CWStr &filepath) {
-    if (filepath.length() > 0 &&
-        (*(filepath.Get() + filepath.length() - 1) == '\\' || (*(filepath.Get() + filepath.length() - 1) == '/'))) {
-        filepath += L"\\";
-    }
-}
-
-BASE_API CWStr GetFilePath(const CWStr &filepath) {
-    int cnt = filepath.GetCountPar(L"\\/");
-    if (cnt > 1) {
-        cnt = filepath.GetSmePar(cnt - 1, L"\\/");
-        return CWStr(filepath.Get(), cnt);
-    }
-    else
-        return CWStr();
 }
 
 }  // namespace Base

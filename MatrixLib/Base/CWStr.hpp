@@ -47,16 +47,6 @@ public:
     {
     }
 
-    explicit CWStr(const wchar *s, CHeap *heap = NULL)
-    : std::wstring{s}
-    {
-    }
-
-    explicit CWStr(const wchar *s, int len, CHeap *heap = NULL)
-    : std::wstring{s, static_cast<size_t>(len)}
-    {
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();
@@ -84,7 +74,7 @@ public:
     void GetStrPar(CWStr &str, int np, const wchar *ogsim) const;
     CWStr GetStrPar(int np, const wchar *ogsim) const {
         int sme = GetSmePar(np, ogsim);
-        return CWStr(Get() + sme, GetLenPar(sme, ogsim));
+        return std::wstring(c_str() + sme, GetLenPar(sme, ogsim));
     }
 
     void GetStrPar(CWStr &str, int nps, int npe, const wchar *ogsim) const;
@@ -97,7 +87,6 @@ public:
         this->assign(s);
         return *this;
     }
-
 };
 
 }  // namespace Base

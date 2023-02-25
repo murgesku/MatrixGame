@@ -85,9 +85,4 @@ public:
     static bool FileExist(CWStr &outname, const wchar *mname, const wchar *exts = NULL, bool withpar = false);
 };
 
-// У пути всегда наконце символ "\"
-// Пустой путь без символа "\" (пустая строка)
-BASE_API void CorrectFilePath(CWStr &filepath);  // Если нужно добовляет в конец символ "\"
-BASE_API CWStr GetFilePath(const CWStr &filepath);
-
 }  // namespace Base
