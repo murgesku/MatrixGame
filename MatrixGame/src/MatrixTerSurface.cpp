@@ -108,11 +108,10 @@ void CTerSurface::Load(BYTE *raw) {
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
     if (par > 1) {
-        CWStr parn, park, parv;
         for (int i = 1; i < par; ++i) {
-            parn = g_MatrixMap->IdsGet(ids).GetStrPar(i, L"?");
-            park = parn.GetStrPar(0, L"=");
-            parv = parn.GetStrPar(1, L"=");
+            auto parn = g_MatrixMap->IdsGet(ids).GetStrPar(i, L"?");
+            auto park = parn.GetStrPar(0, L"=");
+            auto parv = parn.GetStrPar(1, L"=");
 
             if (g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park)) {
                 CWStr gloss_name;
@@ -203,11 +202,10 @@ void CTerSurface::LoadM(BYTE *raw) {
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
     if (par > 1) {
-        CWStr parn, park, parv;
         for (int i = 1; i < par; ++i) {
-            parn = g_MatrixMap->IdsGet(ids).GetStrPar(i, L"?");
-            park = parn.GetStrPar(0, L"=");
-            parv = parn.GetStrPar(1, L"=");
+            auto parn = g_MatrixMap->IdsGet(ids).GetStrPar(i, L"?");
+            auto park = parn.GetStrPar(0, L"=");
+            auto parv = parn.GetStrPar(1, L"=");
 
             if (g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park)) {
                 CWStr gloss_name;

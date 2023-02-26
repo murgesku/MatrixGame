@@ -422,7 +422,7 @@ void CMatrixHint::PreloadBitmaps(void) {
         if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
             ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
         }
-        m_Bitmaps[i].name = &bph->ParGetName(i);
+        m_Bitmaps[i].name = new CWStr(bph->ParGetName(i));
         m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
         m_Bitmaps[i].bmp->LoadFromPNG(src.c_str());
         m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
@@ -431,19 +431,19 @@ void CMatrixHint::PreloadBitmaps(void) {
 }
 
 static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index) {
-    bmph = temp.GetStrPar(index, L":");
+    bmph = ParamParser{temp}.GetStrPar(index, L":");
     if (bmph == L"C")
         return HEM_CENTER;
     else if (bmph == L"L")
         return HEM_LAST_ON_LINE;
     else if (bmph == L"CR") {
-        return (EHintElementModificator)(HEM_TAB_LARGEST + temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_TAB_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"CL") {
-        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"T") {
-        return (EHintElementModificator)(temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"COPY") {
         return HEM_COPY;
@@ -540,10 +540,9 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     bool otstup = false;
     CRect otstup_r;
 
-    int border = str.GetIntPar(0, L"|");
-    int cnt = str.GetCountPar(L"|");
+    int border = ParamParser{str}.GetIntPar(0, L"|");
+    int cnt = ParamParser{str}.GetCountPar(L"|");
     int idx = 1;
-    CWStr temp;
     CWStr bmpn;
     CWStr font(L"Font.2Normal");
     DWORD color = 0xFFFFFFFF;
@@ -559,7 +558,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     for (; idx < cnt; ++idx) {
         if (nelem >= 255)
             break;
-        temp = str.GetStrPar(idx, L"|");
+        auto temp = ParamParser{str}.GetStrPar(idx, L"|");
 
         if (utils::starts_with(temp, L"_ENDIF")) {
             skip = false;
@@ -800,7 +799,7 @@ void CMatrixHint::ClearAll(void) {
     if (m_Bitmaps) {
         for (int i = 0; i < m_BitmapsCnt; ++i) {
             HDelete(CBitmap, m_Bitmaps[i].bmp, g_MatrixHeap);
-            // HDelete(CWStr, m_Bitmaps[i].name, g_MatrixHeap);
+            delete(m_Bitmaps[i].name);
         }
         HFree(m_Bitmaps, g_MatrixHeap);
         m_Bitmaps = NULL;

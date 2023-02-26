@@ -126,7 +126,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
 
     int cntpar = bpcfg.Par(L"FullScreen").GetCountPar(L",");
 
-    CWStr str(bpcfg.Par(L"Resolution"));
+    ParamParser str(bpcfg.Par(L"Resolution"));
     if (str.GetCountPar(L",") < 2)
         ERROR_E;
     g_ScreenX = str.GetIntPar(0, L",");

@@ -87,7 +87,7 @@ autoload:
     return ret;
 }
 
-void CBaseTexture::ParseFlags(const CWStr &name) {
+void CBaseTexture::ParseFlags(const ParamParser& name) {
     m_Flags = 0;
     CWStr tstr;
     int cnt = name.GetCountPar(L"?");

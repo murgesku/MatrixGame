@@ -64,7 +64,7 @@ public:
 
     LPDIRECT3DTEXTURE9 DX(void) { return m_Tex; }
     LPDIRECT3DTEXTURE9 LoadTextureFromFile(bool to16bit, D3DPOOL pool = D3DPOOL_DEFAULT);
-    void ParseFlags(const CWStr &name);
+    void ParseFlags(const ParamParser& name);
 
     bool IsTextureManaged(void) const { return m_Type == cc_TextureManaged; };
     void MipmapOff(void) { SETFLAG(m_Flags, TF_NOMIPMAP); }

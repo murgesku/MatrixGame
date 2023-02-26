@@ -156,28 +156,18 @@ public:
     }
     void ParDelete(int no);
 
-    const CWStr *ParGetNE_(const wchar *name, int namelen, int index) const;
-    const CWStr &ParGet(const CWStr &name, int index = 0) const {
+    const CWStr* ParGetNE_(const wchar *name, int namelen, int index) const;
+
+    ParamParser ParGet(const std::wstring& name, int index = 0) const
+    {
         const CWStr *str = ParGetNE_(name.c_str(), name.length(), index);
         if (str == NULL)
             ERROR_S2(L"Not found: ", name.c_str());
         return *str;
     }
-    const CWStr &ParGet(const wchar *name, int index = 0) const {
-        const CWStr *str = ParGetNE_(name, WStrLen(name), index);
-        if (str == NULL)
-            ERROR_S2(L"Not found: ", name);
-        return *str;
-    }
-    CWStr ParGetNE(const CWStr &name, int index = 0) const {
+
+    ParamParser ParGetNE(const std::wstring& name, int index = 0) const {
         const CWStr *str = ParGetNE_(name.c_str(), name.length(), index);
-        if (str != NULL)
-            return *str;
-        else
-            return CWStr();
-    }
-    CWStr ParGetNE(const wchar *name, int index = 0) const {
-        const CWStr *str = ParGetNE_(name, WStrLen(name), index);
         if (str != NULL)
             return *str;
         else
@@ -188,21 +178,19 @@ public:
     void Par(const CWStr &name, const wchar *zn) { ParSetAdd(name, zn); }
     void Par(const wchar *name, const CWStr &zn) { ParSetAdd(name, WStrLen(name), zn.c_str(), zn.length()); }
     void Par(const wchar *name, const wchar *zn) { ParSetAdd(name, WStrLen(name), zn, WStrLen(zn)); }
-    const CWStr &Par(const CWStr &name) { return ParGet(name); }
-    const CWStr &Par(const wchar *name) { return ParGet(name); }
-    CWStr ParNE(const CWStr &name) { return ParGetNE(name); }
-    CWStr ParNE(const wchar *name) { return ParGetNE(name); }
+    ParamParser Par(const std::wstring& name) { return ParGet(name); }
+    ParamParser ParNE(const std::wstring& name) { return ParGetNE(name); }
 
     int ParCount(void) const { return m_CntPar; }
     int ParCount(const wchar *name, int namelen) const;
     int ParCount(const CWStr &name) const { return ParCount(name.c_str(), name.length()); }
     int ParCount(const wchar *name) const { return ParCount(name, WStrLen(name)); }
 
-    const CWStr &ParGet(int no) const;
+    ParamParser ParGet(int no) const;
     void ParSet(int no, const wchar *zn, int znlen);
     void ParSet(int no, const wchar *zn) { ParSet(no, zn, WStrLen(zn)); }
     void ParSet(int no, const CWStr &zn) { ParSet(no, zn.c_str(), zn.length()); }
-    const CWStr &ParGetName(int no) const;
+    ParamParser ParGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
     CBlockPar *BlockAdd(const wchar *name, int namelen);
@@ -259,7 +247,7 @@ public:
 
     CBlockPar *BlockGet(int no);
     const CBlockPar *BlockGet(int no) const;
-    const CWStr &BlockGetName(int no) const;
+    ParamParser BlockGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
     const CWStr &ParPathGet(const wchar *path, int pathlen);

@@ -465,7 +465,7 @@ void CMatrixConfig::ReadParams(void) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             m_CannonDamages[idx].damage = par.GetIntPar(0, L",");
             if (nn > 1)
@@ -488,7 +488,7 @@ void CMatrixConfig::ReadParams(void) {
     for (int i = 0; i < n; ++i) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         if (WStrCmp(name, PAR_SOURCE_DAMAGES_HITPOINT)) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             for (int j = 0; j < nn; ++j) {
                 m_BuildingHitPoints[j] = par.GetIntPar(j, L",");
@@ -497,7 +497,7 @@ void CMatrixConfig::ReadParams(void) {
         else {
             int idx = WeapName2Index(name);
             if (idx >= 0) {
-                const CWStr &par = bp_tmp->ParGet(i);
+                auto par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
                 m_BuildingDamages[idx].damage = par.GetIntPar(0, L",");
                 if (nn > 1)
@@ -532,7 +532,7 @@ void CMatrixConfig::ReadParams(void) {
         {
             int idx = WeapName2Index(name);
             if (idx >= 0) {
-                const CWStr &par = bp_tmp->ParGet(i);
+                auto par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
                 m_FlyerDamages[idx].damage = par.GetIntPar(0, L",");
                 if (nn > 1)
@@ -557,7 +557,7 @@ void CMatrixConfig::ReadParams(void) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             m_RobotDamages[idx].damage = par.GetIntPar(0, L",");
             if (nn > 1)
@@ -581,7 +581,7 @@ void CMatrixConfig::ReadParams(void) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             m_ObjectDamages[idx].damage = par.GetIntPar(0, L",");
             if (nn > 1)
@@ -598,7 +598,7 @@ void CMatrixConfig::ReadParams(void) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             m_WeaponRadius[idx] = (float)par.GetDouble();
         }
     }
@@ -612,7 +612,7 @@ void CMatrixConfig::ReadParams(void) {
         const wchar *name = bp_tmp->ParGetName(i).c_str();
         int idx = WeapName2Index(name);
         if (idx >= 0) {
-            const CWStr &par = bp_tmp->ParGet(i);
+            auto par = bp_tmp->ParGet(i);
             m_WeaponCooldown[idx] = par.GetInt();
         }
     }

@@ -219,9 +219,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             pButton->m_nId = pbp2->Par(L"id").GetInt();
             pButton->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"");
-            hint_par = pbp2->ParNE(L"Hint");
-            if (hint_par != L"") {
+            auto hint_par = pbp2->ParNE(L"Hint");
+            if (!hint_par.empty()) {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pButton->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pButton->m_Hint.y = hint_par.GetIntPar(2, L",");
@@ -520,7 +519,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             CBlockPar *animation = NULL;
             animation = pbp2->BlockGetNE(L"Animation");
             if (animation) {
-                CWStr par = animation->Par(L"Frames");
+                auto par = animation->Par(L"Frames");
                 if (par.length()) {
                     int frames_cnt = par.GetIntPar(0, L",");
                     int period = par.GetIntPar(1, L",");
@@ -570,8 +569,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
 
             pStatic->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"");
-            hint_par = pbp2->ParNE(L"Hint");
+            auto hint_par = pbp2->ParNE(L"Hint");
             if (hint_par != L"") {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
@@ -664,7 +662,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 else {
                     pStatic->SetClearRect();
 
-                    CWStr rect(pbp2->Par(L"ClearRect"));
+                    auto rect(pbp2->Par(L"ClearRect"));
 
                     // element position relative
                     pStatic->m_ClearRect.left = rect.GetIntPar(0, L",");
@@ -706,7 +704,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 for (int bl_cnt = 0; bl_cnt < labels_cnt; bl_cnt++) {
                     if (labels->BlockGetName(bl_cnt).length()) {
                         CBlockPar *label_block = labels->BlockGet(bl_cnt);
-                        CWStr par = label_block->Par(IF_LABEL_PARAMS);
+                        auto par = label_block->Par(IF_LABEL_PARAMS);
                         if (par.length()) {
                             int x = par.GetIntPar(0, L",");
                             int y = par.GetIntPar(1, L",");
@@ -727,7 +725,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             const CWStr &state = label_block->Par(L"State");
                             const CWStr &font = label_block->Par(L"Font");
 
-                            const CWStr &color_par = label_block->Par(L"Color");
+                            const auto color_par = label_block->Par(L"Color");
 
                             DWORD color = 0;
 

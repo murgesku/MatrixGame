@@ -1645,7 +1645,7 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
         for (int m = 0; m < m_VO->GetMatrixCount(); ++m) {
             const wchar *mn = m_VO->GetMatrixName(m);
             if (mn[0] == '$') {
-                CWStr li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)));
+                ParamParser li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)));
                 float ra = (float)li_info.GetDoublePar(0, L",");
 
                 int pars = li_info.GetCountPar(L",");
@@ -2348,15 +2348,16 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
     gu = m_First;
     while (gu) {
-        if (!gu->m_LinkMatrixName.empty()) {
-            if (gu->m_LinkMatrixName.GetCountPar(L",") != 2)
-                ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, gu->m_LinkMatrixName.c_str()));
+        ParamParser LinkMatrixName{gu->m_LinkMatrixName};
+        if (!LinkMatrixName.empty()) {
+            if (LinkMatrixName.GetCountPar(L",") != 2)
+                ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, LinkMatrixName.c_str()));
 
-            tstr = gu->m_LinkMatrixName.GetStrPar(0, L",");
-            gu->m_LinkMatrixName = gu->m_LinkMatrixName.GetStrPar(1, L",");
+            tstr = LinkMatrixName.GetStrPar(0, L",");
+            LinkMatrixName = LinkMatrixName.GetStrPar(1, L",");
 
-            if (tstr.IsOnlyInt()) {
-                gu->m_Link = GetByIdNE(tstr.GetInt());
+            if (ParamParser{tstr}.IsOnlyInt()) {
+                gu->m_Link = GetByIdNE(ParamParser{tstr}.GetInt());
             }
             else {
                 gu->m_Link = GetByNameNE(tstr.c_str());
@@ -2364,8 +2365,8 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
             if (gu->m_Link == NULL)
                 ERROR_S(utils::format(L"In file: %ls   Not found link: %ls", filename, tstr.c_str()));
 
-            if (gu->m_LinkMatrixName.IsOnlyInt()) {
-                gu->m_LinkMatrixId = gu->m_LinkMatrixName.GetInt();
+            if (LinkMatrixName.IsOnlyInt()) {
+                gu->m_LinkMatrixId = LinkMatrixName.GetInt();
                 gu->m_LinkMatrixName.clear();
             }
             else {
