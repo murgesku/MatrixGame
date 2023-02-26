@@ -1617,8 +1617,10 @@ void CInterface::Init(void) {
                         if (income != base_res_income) {
                             base_res_income = income;
                             CWStr suck(bp_tmp->ParGet(L"ResPer"));
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>"),
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption =
+                                utils::replace(
+                                    suck,
+                                    L"<resources>",
                                     utils::format(L"<Color=247,195,0>%d</Color>", base_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
@@ -1630,8 +1632,10 @@ void CInterface::Init(void) {
                         if (income != factory_res_income) {
                             factory_res_income = income;
                             CWStr suck(bp_tmp->ParGet(L"ResPer"));
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>"),
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption =
+                                utils::replace(
+                                    suck,
+                                    L"<resources>",
                                     utils::format(L"<Color=247,195,0>%d</Color>", factory_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }

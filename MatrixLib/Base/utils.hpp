@@ -66,4 +66,27 @@ inline std::wstring trim(const std::wstring& str)
     return tmp;
 }
 
+inline std::wstring& replace(std::wstring& str, const std::wstring& from, const std::wstring& to)
+{
+    int tlen = str.length();
+    if (tlen < 1 || tlen < from.length())
+    {
+        return str;
+    }
+
+    size_t offset = 0;
+    while (true)
+    {
+        offset = str.find(from, offset);
+        if (offset == std::wstring::npos)
+        {
+            break;
+        }
+        str.replace(offset, from.length(), to);
+        offset += to.length();
+    }
+
+    return str;
+}
+
 } // namespace utils
