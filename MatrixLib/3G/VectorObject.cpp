@@ -437,10 +437,10 @@ int CVectorObject::GetAnimById(DWORD id) {
     return -1;
 }
 
-int CVectorObject::GetAnimByName(const wchar *name) {
+int CVectorObject::GetAnimByName(const std::wstring& name) {
     DTRACE();
     for (int i = 0; i < m_Geometry.m_AnimationsCnt; i++) {
-        if (WStrCmp((m_Geometry.m_Animations + i)->m_Name, name))
+        if (name == (m_Geometry.m_Animations + i)->m_Name)
             return i;
     }
     return -1;
@@ -466,10 +466,10 @@ const wchar *CVectorObject::GetMatrixNameById(DWORD id) const {
     return NULL;
 }
 
-const D3DXMATRIX *CVectorObject::GetMatrixByName(int frame, const wchar *name) const {
+const D3DXMATRIX *CVectorObject::GetMatrixByName(int frame, const std::wstring& name) const {
     DTRACE();
     for (int i = 0; i < m_Geometry.m_MatrixsCnt; i++) {
-        if (WStrCmp((m_Geometry.m_Matrixs + i)->m_Name, name)) {
+        if (name == (m_Geometry.m_Matrixs + i)->m_Name) {
             return m_Geometry.m_AllMatrixs + (m_Geometry.m_Matrixs + i)->m_MatrixStart + frame;
         }
     }

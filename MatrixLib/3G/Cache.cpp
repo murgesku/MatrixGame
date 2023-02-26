@@ -18,7 +18,7 @@ bool CCacheData::m_dip;
 //{
 //    DTRACE();
 //
-//	int len=WStrLen(mname);
+//	int len=std::wcslen(mname);
 //	const wchar * str=mname;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
@@ -82,7 +82,7 @@ bool CCacheData::m_dip;
 //{
 //    DTRACE();
 //
-//	int len=WStrLen(mname);
+//	int len=std::wcslen(mname);
 //	const wchar * str=mname;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
@@ -150,7 +150,7 @@ bool CCacheData::m_dip;
 void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
@@ -181,7 +181,7 @@ void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
 void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar *replname) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;

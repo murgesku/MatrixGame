@@ -363,7 +363,7 @@ void CFile::Write(void *buf, DWORD kolbyte) {
 static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
-    size_t len = WStrLen(mname);
+    size_t len = std::wcslen(mname);
     const wchar *str = mname;
 
     size_t lenfile = 0;
@@ -445,7 +445,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
 static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
@@ -545,7 +545,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     if (!m_Packs)
         return false;
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
@@ -568,7 +568,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     int sm0 = 0;
     int sm1 = 0;
 
-    int l = WStrLen(exts);
+    int l = std::wcslen(exts);
 
     std::string fn;
     for (; sm1 <= l; ++sm1) {

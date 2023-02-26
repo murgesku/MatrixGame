@@ -266,12 +266,12 @@ public:
 
     void SaveInBMP(Base::CBuf &buf) const;
     void SaveInBMP(const wchar *filename, int filenamelen) const;
-    void SaveInBMP(const wchar *filename) const { SaveInBMP(filename, Base::WStrLen(filename)); }
+    void SaveInBMP(const wchar *filename) const { SaveInBMP(filename, std::wcslen(filename)); }
 
     void SaveInDDSUncompressed(Base::CBuf &buf) const;
     void SaveInDDSUncompressed(const wchar *filename, int filenamelen) const;
     void SaveInDDSUncompressed(const wchar *filename) const {
-        SaveInDDSUncompressed(filename, Base::WStrLen(filename));
+        SaveInDDSUncompressed(filename, std::wcslen(filename));
     }
 
 #ifdef USE_PNGLIB
@@ -280,6 +280,6 @@ public:
     int SaveInPNG(void *buf, int buflen);
     bool SaveInPNG(Base::CBuf &buf);
     bool SaveInPNG(const wchar *filename, int filenamelen);
-    bool SaveInPNG(const wchar *filename) { return SaveInPNG(filename, Base::WStrLen(filename)); }
+    bool SaveInPNG(const wchar *filename) { return SaveInPNG(filename, std::wcslen(filename)); }
 #endif
 };

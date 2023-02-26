@@ -163,7 +163,7 @@ bool ParamParser::IsOnlyInt() const {
 }
 
 int ParamParser::GetSmePar(int np, const wchar *ogsim) const {
-    int lenogsim = WStrLen(ogsim);
+    int lenogsim = std::wcslen(ogsim);
     int tlen = length();
     // if(tlen<1 || lenogsim<1 || np<0) ERROR_OK("Data in CWStr::GetSmePar()");
     //  if((tlen<1 || lenogsim<1 || np<0))
@@ -199,7 +199,7 @@ int ParamParser::GetSmePar(int np, const wchar *ogsim) const {
 int ParamParser::GetLenPar(int smepar, const wchar *ogsim) const {
     int i;
     int tlen = length();
-    int lenogsim = WStrLen(ogsim);
+    int lenogsim = std::wcslen(ogsim);
     if (tlen < 1 || lenogsim < 1 || smepar > tlen)
         ERROR_E;
 
@@ -251,7 +251,7 @@ int ParamParser::GetCountPar(const wchar *ogsim) const {
         return 0;
 
     int c = 1;
-    int lenogsim = WStrLen(ogsim);
+    int lenogsim = std::wcslen(ogsim);
     if (lenogsim < 1)
         return 0;
 
@@ -442,7 +442,7 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
     int name_sme, name_len, name_next;
 
     if (path_len < 0)
-        path_len = WStrLen(path);
+        path_len = std::wcslen(path);
     name_next = 0;
 
     CBlockPar *us = this;

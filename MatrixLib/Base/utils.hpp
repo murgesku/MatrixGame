@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <locale>
 #include <codecvt>
+#include <cwchar>
 
 namespace utils {
 
@@ -54,7 +55,7 @@ inline void to_lower(std::wstring& str, size_t offset = 0)
 {
     for (size_t i = offset; i < str.length(); ++i)
     {
-        str[i] = std::towlower(str[i]);
+        str[i] = towlower(str[i]);
     }
 }
 
@@ -68,7 +69,7 @@ inline std::wstring trim(const std::wstring& str)
 
 inline std::wstring& replace(std::wstring& str, const std::wstring& from, const std::wstring& to)
 {
-    int tlen = str.length();
+    size_t tlen = str.length();
     if (tlen < 1 || tlen < from.length())
     {
         return str;
