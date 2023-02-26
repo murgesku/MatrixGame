@@ -34,21 +34,6 @@ inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
     return !std::wcscmp(s1, s2);
 }
 
-class CWStr : public std::wstring
-{
-public:
-    CWStr() = default;
-    ~CWStr() = default;
-
-    CWStr(const std::wstring& str)
-    : std::wstring{str}
-    {
-    }
-
-    CWStr &operator=(const wchar *s) {
-        this->assign(s);
-        return *this;
-    }
-};
+using CWStr = std::wstring;
 
 }  // namespace Base

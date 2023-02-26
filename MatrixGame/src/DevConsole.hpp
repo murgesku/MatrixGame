@@ -6,8 +6,6 @@
 #ifndef DEV_CONSOLE_INCLUDE
 #define DEV_CONSOLE_INCLUDE
 
-// class CWStr;
-
 typedef void (*CMD_HANDLER)(const Base::CWStr &cmd, const Base::CWStr &params);
 
 struct SCmdItem {
