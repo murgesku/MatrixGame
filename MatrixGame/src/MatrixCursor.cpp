@@ -57,7 +57,7 @@ void CMatrixCursor::Select(const wchar *name) {
 
     m_Frame = 0;
 
-    CWStr n;
+    ParamParser n;
     DCP();
     int idx;
     for (idx = 0; idx < g_Config.m_CursorsCnt; ++idx) {

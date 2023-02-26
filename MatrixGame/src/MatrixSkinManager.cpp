@@ -52,7 +52,7 @@ static void SkinPreloadMaskBack(const SSkin *s) {
 }
 
 const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
-    CWStr t(textures), temp, temp_prev;
+    ParamParser t(textures), temp, temp_prev;
 
     ASSERT(gsp < GSP_COUNT);
 
@@ -108,7 +108,8 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
 
     if (!gloss_off && g_Config.m_ObjTexturesGloss && sk.m_TexGloss == NULL && gspp == GSP_SIDE) {
         temp_prev += GLOSS_TEXTURE_SUFFIX;
-        if (CFile::FileExist(temp, temp_prev.c_str(), L"dds~png")) {
+        CWStr dummy;
+        if (CFile::FileExist(dummy, temp_prev.c_str(), L"dds~png")) {
             sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp_prev.c_str());
         }
     }

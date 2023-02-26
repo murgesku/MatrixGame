@@ -454,7 +454,7 @@ void CBlockPar::ParDelete(int no)  // нужно оптимизировать
     ERROR_E;
 }
 
-const CWStr *CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
+const CWStr* CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
     DTRACE();
     if (m_Sort) {
         int i = ArrayFind(name, namelen);
@@ -505,7 +505,7 @@ int CBlockPar::ParCount(const wchar *name, int namelen) const {
     return rv;
 }
 
-const CWStr &CBlockPar::ParGet(int no) const {
+ParamParser CBlockPar::ParGet(int no) const {
     DTRACE();
     if (m_Sort && (m_Cnt == m_CntPar)) {
         return *m_Array[no]->m_Par;
@@ -547,7 +547,7 @@ void CBlockPar::ParSet(int no, const wchar *zn, int znlen) {
     }
 }
 
-const CWStr &CBlockPar::ParGetName(int no) const {
+ParamParser CBlockPar::ParGetName(int no) const {
     DTRACE();
     if (m_Sort && (m_Cnt == m_CntPar)) {
         return m_Array[no]->m_Name;
@@ -702,7 +702,7 @@ const CBlockPar *CBlockPar::BlockGet(int no) const {
     }
 }
 
-const CWStr &CBlockPar::BlockGetName(int no) const {
+ParamParser CBlockPar::BlockGetName(int no) const {
     DTRACE();
     if (m_Sort && (m_Cnt == m_CntBlock)) {
         return m_Array[no]->m_Name;
@@ -737,7 +737,7 @@ void CBlockPar::ParPathAdd(const wchar *path, int pathlen, const wchar *zn, int 
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
+    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -792,7 +792,7 @@ int CBlockPar::ParPathCount(const wchar *path, int pathlen) {
     DTRACE();
     CBlockPar *cd;
 
-    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
+    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -822,7 +822,7 @@ CBlockPar *CBlockPar::BlockPathAdd(const wchar *path, int pathlen) {
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    CWStr name(std::wstring{path, static_cast<size_t>(pathlen)});
+    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {

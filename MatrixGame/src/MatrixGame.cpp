@@ -387,6 +387,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     if (0 > g_MatrixMap->PrepareMap(stor, mapname)) {
         ERROR_S(L"Unable to load map. Error happens.");
     }
+    DCP();
 
     CWStr mn(g_MatrixMap->MapName());
     utils::to_lower(mn);
@@ -394,6 +395,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE | MMFLAG_FLYCAM | MMFLAG_FULLAUTO);
     }
+    DCP();
 
     g_MatrixMap->CalcCannonPlace();
     SSpecialBot::LoadAIRobotType(*g_MatrixData->BlockGet(L"AIRobotType"));
@@ -401,6 +403,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     g_LoadProgress->SetCurLP(LP_PREPARININTERFACE);
     g_LoadProgress->InitCurLP(701);
 
+    DCP();
     CBlockPar bpi(1, g_CacheHeap);
     if (stor_cfg_present)
     {

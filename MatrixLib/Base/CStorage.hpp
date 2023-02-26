@@ -177,6 +177,15 @@ public:
         return std::wstring{str, static_cast<size_t>(l)};
     }
 
+    ParamParser GetAsParamParser(int i)
+    {
+        DTRACE();
+        wchar *str = GetFirst<wchar>(i);
+        int l = GetArrayLength(i);
+
+        return std::wstring{str, static_cast<size_t>(l)};
+    }
+
     int FindAsWStr(const wchar *val, int len) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
         for (DWORD i = 0; i < header->arrays_count; ++i) {

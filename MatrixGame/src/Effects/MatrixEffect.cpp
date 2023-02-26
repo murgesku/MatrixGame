@@ -394,9 +394,8 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
 
     CBillboard::SetSortTexture(ts);
 
-    CWStr texp;
     for (int i = 0; i < BBT_LAST; ++i) {
-        texp = tex.ParGet(bb2tn[i].name);
+        auto texp = tex.ParGet(bb2tn[i].name);
         SBillboardTextureArrayElement *e = m_BBTextures + bb2tn[i].id;
         if (texp.GetIntPar(0, L",") == 0) {
             RESETFLAG(e->flags, BBT_FLAG_INTENSE);

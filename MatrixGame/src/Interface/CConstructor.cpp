@@ -1455,10 +1455,9 @@ CMatrixRobotAI *SSpecialBot::GetRobot(const D3DXVECTOR3 &pos, int side_id) {
     return robot;
 }
 
-void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
+void SSpecialBot::LoadAIRobotType(CBlockPar &bp)
+{
     ClearAIRobotType();
-
-    CWStr str, str2;
 
     int k, u;
     int cnt = bp.ParCount();
@@ -1466,9 +1465,11 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp) {
 
     int i;
     for (i = 0; i < cnt; i++) {
-        str = bp.ParGet(i);
+        auto str = bp.ParGet(i);
         if (str.GetCountPar(L",") < 2)
             continue;
+
+        CWStr str2;
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor = bp.ParGetName(i).GetInt();
         if (m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor < 1)

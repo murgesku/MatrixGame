@@ -126,13 +126,12 @@ CMatrixMap::CMatrixMap()
 
     CBlockPar *repl = g_MatrixData->BlockGetNE(PAR_REPLACE);
     if (repl) {
-        CWStr t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY));
+        auto t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY));
 
         if (!t1.empty()) {
             CBlockPar *dif = g_MatrixData->BlockGetNE(PAR_SOURCE_DIFFICULTY);
             if (dif) {
-                CWStr t2;
-                t2 = dif->ParGetNE(t1);
+                auto t2 = dif->ParGetNE(t1);
                 if (!t2.empty()) {
                     m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0, L",") / 100.0);
                     m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetDoublePar(1, L",") / 100.0);
@@ -270,9 +269,9 @@ void CMatrixMap::RobotPreload(void) {
                 continue;
             tstr = vo->GetMatrixName(u);
 
-            int cntp = tstr.GetCountPar(L",");
+            int cntp = ParamParser{tstr}.GetCountPar(L",");
             for (int p = 0; p < cntp; p++) {
-                tstr2 = utils::trim(tstr.GetStrPar(p, L","));
+                ParamParser tstr2 = utils::trim(ParamParser{tstr}.GetStrPar(p, L","));
                 if (p == 0 && tstr2 != L"W")
                     break;
                 else if (p == 0) {
@@ -949,9 +948,9 @@ void CMatrixMap::MacrotextureInit(const CWStr &path) {
 
     m_Macrotexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, path.c_str());
 
-    int cnt = path.GetCountPar(L"?");
+    int cnt = ParamParser{path}.GetCountPar(L"?");
     for (int i = 1; i < cnt; i++) {
-        CWStr op = utils::trim(path.GetStrPar(i, L"?"));
+        ParamParser op = utils::trim(ParamParser{path}.GetStrPar(i, L"?"));
         if (utils::starts_with(op, L"SIM"))
             m_MacrotextureSize = op.GetInt();
     }
@@ -999,11 +998,11 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
     int idx = 0;
     for (int i = 0; i < cnt; i++) {
         int id = bp.ParGetName(i).GetInt();
-        const CWStr *name = &bp.ParGet(i);
-        DWORD color = (DWORD(name->GetIntPar(1, L",") & 255) << 16) | (DWORD(name->GetIntPar(2, L",") & 255) << 8) |
-                      DWORD(name->GetIntPar(3, L",") & 255);
-        DWORD colorMM = (DWORD(name->GetIntPar(5, L",") & 255) << 16) | (DWORD(name->GetIntPar(6, L",") & 255) << 8) |
-                        DWORD(name->GetIntPar(7, L",") & 255);
+        const auto name = bp.ParGet(i);
+        DWORD color = (DWORD(name.GetIntPar(1, L",") & 255) << 16) | (DWORD(name.GetIntPar(2, L",") & 255) << 8) |
+                      DWORD(name.GetIntPar(3, L",") & 255);
+        DWORD colorMM = (DWORD(name.GetIntPar(5, L",") & 255) << 16) | (DWORD(name.GetIntPar(6, L",") & 255) << 8) |
+                        DWORD(name.GetIntPar(7, L",") & 255);
 
         if (id == 0) {
             m_NeutralSideColor = color;
@@ -1017,7 +1016,7 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
         m_Side[idx].m_Color = color;
         m_Side[idx].m_ColorMM = colorMM;
         m_Side[idx].m_ColorTexture = NULL;
-        m_Side[idx].m_Name = name->GetStrPar(0, L",");
+        m_Side[idx].m_Name = name.GetStrPar(0, L",");
         ++idx;
 
         if (id == PLAYER_SIDE) {
@@ -3017,7 +3016,7 @@ void CMatrixMap::RemoveEffectSpawnerByTime(void) {
     m_EffectSpawners[i] = m_EffectSpawners[m_EffectSpawnersCnt];
 }
 
-void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &par) {
+void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &in_par) {
     SpawnEffectSmoke smoke;
     SpawnEffectFire fire;
     SpawnEffectSound sound;
@@ -3025,6 +3024,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
 
     SpawnEffectProps *props = &smoke;
 
+    ParamParser par{in_par};
     int parcnt = par.GetCountPar(L",");
     if (parcnt < 3)
         return;

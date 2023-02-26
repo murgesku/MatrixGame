@@ -440,7 +440,7 @@ public:
 
     void IdsClear(void);
     inline const CWStr &MapName(void) { return m_Ids[m_IdsCnt - 1]; }
-    inline const CWStr &IdsGet(int no) { return m_Ids[no]; }
+    inline ParamParser IdsGet(int no) { return m_Ids[no]; }
     inline int IdsGetCount(void) const { return m_IdsCnt; }
 
     void UnitClear(void);

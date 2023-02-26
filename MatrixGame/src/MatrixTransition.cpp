@@ -55,7 +55,7 @@ void CTransition::BuildTexture(void) {
 
     m_Geom = (SGeom *)HAllocClear(sizeof(SGeom) * m_GeomCnt, g_MatrixHeap);
     for (int i = 0; i < m_GeomCnt; ++i) {
-        const CWStr &da = tra->ParGet(i);
+        const auto da = tra->ParGet(i);
 
         m_Geom[i].verts[0].p.x = (float)da.GetStrPar(0, L"|").GetDoublePar(0, L",");
         m_Geom[i].verts[0].p.y = (float)da.GetStrPar(0, L"|").GetDoublePar(1, L",");

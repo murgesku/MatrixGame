@@ -3,10 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include <cwchar>
 #include <cwctype>
+#include <algorithm>
 
 #include "CWStr.hpp"
 #include "CException.hpp"
@@ -15,7 +14,7 @@
 
 namespace Base {
 
-int CWStr::GetInt() const
+int ParamParser::GetInt() const
 {
     if (this->empty())
     {
@@ -27,7 +26,7 @@ int CWStr::GetInt() const
 
     // the original algorithm skips all the non-digit chars and treats
     // '-' at any position as a number sign.
-    // needless to say - it's a bullshit, but as other code expectes it
+    // needless to say - it's a bullshit, but other code expects it
     // to work like this, so...
     for (const auto sym : *this)
     {
@@ -47,7 +46,7 @@ int CWStr::GetInt() const
     return sign ? -value : value;
 }
 
-DWORD CWStr::GetDword() const {
+DWORD ParamParser::GetDword() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
@@ -64,7 +63,7 @@ DWORD CWStr::GetDword() const {
     return zn;
 }
 
-double CWStr::GetDouble() const {
+double ParamParser::GetDouble() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
@@ -99,7 +98,7 @@ double CWStr::GetDouble() const {
     return zn;
 }
 
-int CWStr::GetHex() const {
+int ParamParser::GetHex() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
@@ -126,7 +125,7 @@ int CWStr::GetHex() const {
     return zn;
 }
 
-DWORD CWStr::GetHexUnsigned(void) const {
+DWORD ParamParser::GetHexUnsigned(void) const {
     int tlen = length();
     if (tlen < 1)
         return 0;
@@ -147,7 +146,7 @@ DWORD CWStr::GetHexUnsigned(void) const {
     return zn;
 }
 
-bool CWStr::IsOnlyInt() const {
+bool ParamParser::IsOnlyInt() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
@@ -159,30 +158,7 @@ bool CWStr::IsOnlyInt() const {
     return 1;
 }
 
-int CWStr::GetCountPar(const wchar *ogsim) const {
-    int tlen = length();
-    if (tlen < 1)
-        return 0;
-
-    int c = 1;
-    int lenogsim = WStrLen(ogsim);
-    if (lenogsim < 1)
-        return 0;
-
-    const wchar *tstr = c_str();
-
-    for (int i = 0; i < tlen; i++) {
-        int u;
-        for (u = 0; u < lenogsim; u++)
-            if (tstr[i] == ogsim[u])
-                break;
-        if (u < lenogsim)
-            c++;
-    }
-    return c;
-}
-
-int CWStr::GetSmePar(int np, const wchar *ogsim) const {
+int ParamParser::GetSmePar(int np, const wchar *ogsim) const {
     int lenogsim = WStrLen(ogsim);
     int tlen = length();
     // if(tlen<1 || lenogsim<1 || np<0) ERROR_OK("Data in CWStr::GetSmePar()");
@@ -216,7 +192,7 @@ int CWStr::GetSmePar(int np, const wchar *ogsim) const {
     return smepar;
 }
 
-int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
+int ParamParser::GetLenPar(int smepar, const wchar *ogsim) const {
     int i;
     int tlen = length();
     int lenogsim = WStrLen(ogsim);
@@ -236,14 +212,14 @@ int CWStr::GetLenPar(int smepar, const wchar *ogsim) const {
     return i - smepar;
 }
 
-CWStr CWStr::GetStrPar(int nps, int npe, const wchar *ogsim) const {
+ParamParser ParamParser::GetStrPar(int nps, int npe, const wchar *ogsim) const {
     int sme1 = GetSmePar(nps, ogsim);
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
     return std::wstring(c_str() + sme1, sme2 - sme1);
 }
 
-bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {
+bool ParamParser::GetTrueFalsePar(int np, const wchar *ogsim) const {
     CWStr tstr = GetStrPar(np, ogsim);
 
     if (tstr == L"true" || tstr == L"True" || tstr == L"TRUE")
@@ -263,6 +239,29 @@ bool CWStr::GetTrueFalsePar(int np, const wchar *ogsim) const {
 
     ERROR_E;
     return 0;
+}
+
+int ParamParser::GetCountPar(const wchar *ogsim) const {
+    int tlen = length();
+    if (tlen < 1)
+        return 0;
+
+    int c = 1;
+    int lenogsim = WStrLen(ogsim);
+    if (lenogsim < 1)
+        return 0;
+
+    const wchar *tstr = c_str();
+
+    for (int i = 0; i < tlen; i++) {
+        int u;
+        for (u = 0; u < lenogsim; u++)
+            if (tstr[i] == ogsim[u])
+                break;
+        if (u < lenogsim)
+            c++;
+    }
+    return c;
 }
 
 }  // namespace Base
