@@ -42,11 +42,6 @@ public:
     {
     }
 
-    CWStr(const CWStr &s, CHeap *heap = NULL)
-    : std::wstring(s)
-    {
-    }
-
     const wchar *Get(void) const
     {
         return this->c_str();

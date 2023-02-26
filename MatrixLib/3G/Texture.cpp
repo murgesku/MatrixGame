@@ -33,18 +33,18 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
         if (FLAG(m_Flags, TF_COMPRESSED)) {
             goto autoload;
         }
-        CWStr tn(m_Name, g_CacheHeap);
-        CFile::FileExist(tn, tn.Get(), CacheExtsTex);
+        CWStr tn(m_Name);
+        CFile::FileExist(tn, tn.c_str(), CacheExtsTex);
         auto idx = tn.rfind('.');
         if (idx == std::wstring::npos)
             goto autoload;
         utils::to_lower(tn, idx + 1);
-        if (0 != memcmp(tn.Get() + idx + 1, L"png", sizeof(wchar) * 4))
+        if (0 != memcmp(tn.c_str() + idx + 1, L"png", sizeof(wchar) * 4))
             goto autoload;
 
         CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
         CBitmap bm(g_CacheHeap);
-        bm.LoadFromPNG(tn.Get());
+        bm.LoadFromPNG(tn.c_str());
         tex->LoadFromBitmap(bm, true, FLAG(m_Flags, TF_NOMIPMAP) ? 1 : 0);
 
 #ifdef USE_DX_MANAGED_TEXTURES

@@ -664,7 +664,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 else {
                     pStatic->SetClearRect();
 
-                    CWStr rect(pbp2->Par(L"ClearRect"), g_CacheHeap);
+                    CWStr rect(pbp2->Par(L"ClearRect"));
 
                     // element position relative
                     pStatic->m_ClearRect.left = rect.GetIntPar(0, L",");

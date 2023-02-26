@@ -1645,7 +1645,7 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
         for (int m = 0; m < m_VO->GetMatrixCount(); ++m) {
             const wchar *mn = m_VO->GetMatrixName(m);
             if (mn[0] == '$') {
-                CWStr li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)), g_CacheHeap);
+                CWStr li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)));
                 float ra = (float)li_info.GetDoublePar(0, L",");
 
                 int pars = li_info.GetCountPar(L",");

@@ -177,7 +177,7 @@ void CStorageRecord::AddItem(const CStorageRecordItem &item) {
     // m_Items[m_ItemsCount-1].InitBuf(m_Heap);
 }
 
-CStorageRecord::CStorageRecord(const CStorageRecord &rec) : m_Heap(rec.m_Heap), m_Name(rec.m_Name, rec.m_Heap) {
+CStorageRecord::CStorageRecord(const CStorageRecord &rec) : m_Heap(rec.m_Heap), m_Name{rec.m_Name} {
     m_ItemsCount = rec.m_ItemsCount;
     m_Items = (CStorageRecordItem *)HAlloc(sizeof(CStorageRecordItem) * m_ItemsCount, m_Heap);
     for (int i = 0; i < m_ItemsCount; ++i) {
