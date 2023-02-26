@@ -52,8 +52,6 @@ public:
         return this->c_str();
     }
 
-    CWStr &Replace(const CWStr &substr, const CWStr &strreplace);  // Заменить часть строки ну другую
-
     int GetInt(void) const;
     DWORD GetDword(void) const;
     double GetDouble(void) const;

@@ -159,24 +159,6 @@ bool CWStr::IsOnlyInt() const {
     return 1;
 }
 
-CWStr &CWStr::Replace(const CWStr &substr, const CWStr &strreplace) {
-    int tlen = length();
-    if (tlen < 1 || tlen < substr.length())
-        return *this;
-
-    size_t sme = 0;
-    for (;;) {
-        //      int ff;
-        if ((sme = this->find(substr, sme)) == std::wstring::npos)
-            break;
-        //      sme+=ff;
-        this->erase(sme, substr.length());
-        this->insert(sme, strreplace);
-        sme += strreplace.length();
-    }
-    return *this;
-}
-
 int CWStr::GetCountPar(const wchar *ogsim) const {
     int tlen = length();
     if (tlen < 1)

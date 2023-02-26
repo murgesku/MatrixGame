@@ -1184,7 +1184,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
     if (type == MRT_EMPTY || kind == RUK_UNKNOWN)
         return;
 
-    m_FocusedLabel.Replace(CWStr(L"<br>"), CWStr(L"\r\n"));
+    utils::replace(m_FocusedLabel, L"<br>", L"\r\n");
 
     CWStr color(L"<Color=247,195,0>");
     if (type == MRT_WEAPON) {
@@ -1212,8 +1212,8 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         CWStr colored_damage = color + utils::format(L"%d", damage / 10) + L"</color>";
         CWStr colored_adamage = color + utils::format(L"%d", adamage / 10) + L"</color>";
 
-        m_FocusedLabel.Replace(CWStr(L"<Damage>"), colored_damage);
-        m_FocusedLabel.Replace(CWStr(L"<AddDamage>"), colored_adamage);
+        utils::replace(m_FocusedLabel, L"<Damage>", colored_damage);
+        utils::replace(m_FocusedLabel, L"<AddDamage>", colored_adamage);
     }
     else if (type == MRT_HEAD) {
         CBlockPar *bp = g_MatrixData->BlockGet(PAR_SOURCE_CHARS)->BlockGet(L"Heads");
@@ -1272,7 +1272,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
                 int val = Double2Int(sign * bp->ParGet(i).GetDouble());
 
-                m_FocusedLabel.Replace(repl, color + utils::format(L"%d", val) + L"</color>");
+                utils::replace(m_FocusedLabel, repl, color + utils::format(L"%d", val) + L"</color>");
             }
         }
     }
@@ -1285,14 +1285,14 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         CWStr colored_pilons = color + utils::format(L"%d", pilons) + L"</color>";
         CWStr colored_epilons = color + utils::format(L"%d", ext_pilons) + L"</color>";
 
-        m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
-        m_FocusedLabel.Replace(CWStr(L"<Pilons>"), colored_pilons);
-        m_FocusedLabel.Replace(CWStr(L"<AddPilons>"), colored_epilons);
+        utils::replace(m_FocusedLabel, L"<Size>", colored_size);
+        utils::replace(m_FocusedLabel, L"<Pilons>", colored_pilons);
+        utils::replace(m_FocusedLabel, L"<AddPilons>", colored_epilons);
     }
     else if (type == MRT_CHASSIS) {
         int structure = (int)g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (kind - 1) * 6];
         CWStr colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
-        m_FocusedLabel.Replace(CWStr(L"<Size>"), colored_size);
+        utils::replace(m_FocusedLabel, L"<Size>", colored_size);
     }
 }
 

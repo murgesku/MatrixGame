@@ -465,14 +465,14 @@ static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
                 ERROR_S(L"] not found");
             text2 = std::wstring{text.Get() + i1 + 1, static_cast<size_t>(i2 - i1 - 1)};
             if (text2.empty()) {
-                text.Replace(CWStr(L"[]"), CWStr(baserepl));
+                utils::replace(text, L"[]", baserepl);
             }
             else {
                 // int cnt = repl->ParCount(text2);
                 // repl->Par
                 // CWStr text3(g_CacheHeap);
                 // for (int k=0;k<cnt;++k)
-                text.Replace(L"[" + text2 + L"]", repl->ParGetNE(text2));
+                utils::replace(text, L"[" + text2 + L"]", repl->ParGetNE(text2));
             }
             ii = i1;
         }
@@ -664,7 +664,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
                 //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
 
-                text.Replace(CWStr(L"<br>"), CWStr(L"\r\n"));
+                utils::replace(text, L"<br>", L"\r\n");
 
                 SMGDRangersInterfaceText *it =
                         (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
