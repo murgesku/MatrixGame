@@ -1257,9 +1257,9 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
         m_Ids = (CWStr *)HAlloc(m_IdsCnt * sizeof(CWStr), g_MatrixHeap);
         int cnt = (m_IdsCnt - 1);
         for (int i = 0; i < cnt; i++) {
-            new(&m_Ids[i]) CWStr(strc->GetAsWStr(i), g_MatrixHeap);
+            new(&m_Ids[i]) CWStr(strc->GetAsWStr(i));
         }
-        new(&m_Ids[cnt]) CWStr(mapname, g_MatrixHeap);
+        new(&m_Ids[cnt]) CWStr(mapname);
     }
 
     g_LoadProgress->SetCurLPPos(2000);

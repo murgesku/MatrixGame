@@ -76,8 +76,8 @@ class CMatrixHint : public CMain {
     int m_CopyPosCnt;
 
     CMatrixHint(CTextureManaged *tex, int w, int h, const CWStr &si, const CWStr &so)
-      : m_Texture(tex), m_Width(w), m_Height(h), m_CopyPos(NULL), m_CopyPosCnt(0), m_SoundIn(si, g_MatrixHeap),
-        m_SoundOut(so, g_MatrixHeap), m_Flags(0) {
+      : m_Texture(tex), m_Width(w), m_Height(h), m_CopyPos(NULL), m_CopyPosCnt(0), m_SoundIn{si},
+        m_SoundOut(so), m_Flags(0) {
         SetVisible(false);
         m_PosX = 0;
         m_PosY = 0;

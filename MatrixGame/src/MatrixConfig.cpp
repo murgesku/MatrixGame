@@ -346,8 +346,8 @@ void CMatrixConfig::ReadParams(void) {
 
     m_Cursors = (SStringPair *)HAlloc(sizeof(SStringPair) * m_CursorsCnt, g_CacheHeap);
     for (int i = 0; i < m_CursorsCnt; ++i) {
-        new(&m_Cursors[i].key) CWStr(bp_tmp->ParGetName(i), g_CacheHeap);
-        new(&m_Cursors[i].val) CWStr(bp_tmp->ParGet(i), g_CacheHeap);
+        new(&m_Cursors[i].key) CWStr(bp_tmp->ParGetName(i));
+        new(&m_Cursors[i].val) CWStr(bp_tmp->ParGet(i));
     }
 
     // top size
