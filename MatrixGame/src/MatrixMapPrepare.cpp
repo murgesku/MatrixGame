@@ -168,7 +168,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
                 if (srcb[*bot] == NULL) {
                     // source bitmap not yet loaded
                     srcb[*bot] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
-                    srcb[*bot]->LoadFromPNG(g_MatrixMap->IdsGet(*bot).Get());
+                    srcb[*bot]->LoadFromPNG(g_MatrixMap->IdsGet(*bot).c_str());
                 }
                 bmp.Copy(CPoint(xx, yy), CPoint(TEX_BOTTOM_SIZE, TEX_BOTTOM_SIZE), *srcb[*bot], CPoint(0, 0));
                 --bc;
@@ -189,7 +189,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
                         if (srcb[ids] == NULL) {
                             // source bitmap not yet loaded
                             srcb[ids] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
-                            srcb[ids]->LoadFromPNG(g_MatrixMap->IdsGet(ids).Get());
+                            srcb[ids]->LoadFromPNG(g_MatrixMap->IdsGet(ids).c_str());
                         }
 
                         bmp.MergeByMask(CPoint(xx, yy), CPoint(TEX_BOTTOM_SIZE, TEX_BOTTOM_SIZE), bmp, CPoint(xx, yy),
@@ -272,7 +272,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
             }
         }
 
-        // bmp.SaveInPNG((CWStr(L"bla_") + i + L".png").Get());
+        // bmp.SaveInPNG((CWStr(L"bla_") + i + L".png").c_str());
         CBottomTextureUnion::Get(i).MakeFromBitmap(bmp);
     }
 
@@ -1101,7 +1101,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
                 if (g_Config.m_SkyBox == 2)
                     texname += L"_high";
 
-                m_SkyTex[idx].tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texname.Get());
+                m_SkyTex[idx].tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texname.c_str());
                 CTextureManaged *tex = m_SkyTex[idx].tex;
                 tex->MipmapOff();
                 tex->Prepare();

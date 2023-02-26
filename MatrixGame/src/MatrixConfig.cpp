@@ -1055,7 +1055,7 @@ void CMatrixConfig::ReadParams(void) {
                     GRAD2RAD((float)bp->ParGet(PAR_SOURCE_CANNONS_MAX_BOTTOM_ANGLE).GetDouble());
             m_CannonsProps[i].seek_radius = (float)bp->ParGet(PAR_SOURCE_CANNONS_RADIUS).GetDouble();
             m_CannonsProps[i].max_da = GRAD2RAD((float)bp->ParGet(PAR_SOURCE_CANNONS_ROTATION).GetDouble());
-            m_CannonsProps[i].weapon = WeapName2Weap(bp->ParGet(PAR_SOURCE_CANNONS_WEAPON).Get());
+            m_CannonsProps[i].weapon = WeapName2Weap(bp->ParGet(PAR_SOURCE_CANNONS_WEAPON).c_str());
             // m_CannonsProps[i].cooldown = bp->ParGet(PAR_SOURCE_CANNONS_COOLDOWN).GetInt();
             m_CannonsProps[i].m_Resources[TITAN] = bp->ParGet(L"Titan").GetInt();
             m_CannonsProps[i].m_Resources[ENERGY] = bp->ParGet(L"Energy").GetInt();

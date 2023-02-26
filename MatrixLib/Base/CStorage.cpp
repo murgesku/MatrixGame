@@ -114,7 +114,7 @@ void CStorageRecordItem::ReleaseBuf(CHeap *heap) {
 }
 
 DWORD CStorageRecordItem::CalcUniqID(DWORD xi) {
-    DWORD x = CalcCRC32_Buf(xi, m_Name.Get(), m_Name.length() * sizeof(wchar));
+    DWORD x = CalcCRC32_Buf(xi, m_Name.c_str(), m_Name.length() * sizeof(wchar));
     x = CalcCRC32_Buf(x, m_Buf->Get(), m_Buf->Len());
     x = CalcCRC32_Buf(x, &m_Type, sizeof(m_Type));
     return x;
@@ -203,7 +203,7 @@ void CStorageRecord::Save(CBuf &buf, bool compression) {
 }
 
 DWORD CStorageRecord::CalcUniqID(DWORD xi) {
-    DWORD x = CalcCRC32_Buf(xi, m_Name.Get(), m_Name.length() * sizeof(wchar));
+    DWORD x = CalcCRC32_Buf(xi, m_Name.c_str(), m_Name.length() * sizeof(wchar));
     for (int i = 0; i < m_ItemsCount; ++i) {
         x = m_Items[i].CalcUniqID(x);
     }

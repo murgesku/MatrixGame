@@ -304,7 +304,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     for (int i = 0; i < m_DebrisCnt; ++i) {
         new(&m_Debris[i]) CDebris();
 
-        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).Get());
+        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).c_str());
         vo->PrepareSpecial(OLF_AUTO, CSkinManager::GetSkin, GSP_ORDINAL);
         m_Debris[i].Init(vo, NULL);
 
@@ -416,7 +416,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
         else {
             SETFLAG(e->flags, BBT_FLAG_INTENSE);
 
-            e->tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texp.GetStrPar(1, L",").Get());
+            e->tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texp.GetStrPar(1, L",").c_str());
             // e->tex->Preload();
         }
     }

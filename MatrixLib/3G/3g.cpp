@@ -414,7 +414,7 @@ void L3GDeinit() {
             DestroyWindow(g_Wnd);
             g_Wnd = 0;
         }
-        UnregisterClass(utils::from_wstring(g_WndClassName->Get()).c_str(), g_HInst);
+        UnregisterClass(utils::from_wstring(g_WndClassName->c_str()).c_str(), g_HInst);
         g_WndA = 0;
 
         HDelete(CWStr, g_WndClassName, g_CacheHeap);
@@ -537,7 +537,7 @@ int L3GRun() {
                 g_DrawFPSCur = 0;
 
                 g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024 * 1024);
-                //				DM(L"MatrixGame.FPS",CWStr(g_DrawFPS).Get());
+                //				DM(L"MatrixGame.FPS",CWStr(g_DrawFPS).c_str());
             }
 
             //			Sleep(10);

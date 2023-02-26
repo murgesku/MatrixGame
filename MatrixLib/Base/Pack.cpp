@@ -1544,17 +1544,17 @@ bool CPackFile::OpenPacketFile(void) {
 
     // Открываем файл для записи/чтения
     if (IS_UNICODE()) {
-        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        m_Handle = (DWORD)CreateFileW(m_FileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
     if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).c_str());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
@@ -1563,7 +1563,7 @@ bool CPackFile::OpenPacketFile(void) {
     DWORD temp = 0;
     if (!::ReadFile((HANDLE)m_Handle, &m_RootOffset, 4, &temp, NULL)) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).c_str());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
@@ -1575,7 +1575,7 @@ bool CPackFile::OpenPacketFile(void) {
         m_RootFolder = NULL;
         ClosePacketFile();
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error reading file system of the package file: " + m_FileName).Get());
+        ERROR_S((L"Error reading file system of the package file: " + m_FileName).c_str());
 #endif
         return false;
     }
@@ -1617,18 +1617,18 @@ bool CPackFile::ClosePacketFile(void) {
 //    // Открываем файл для записи/чтения
 //    if (IS_UNICODE())
 //    {
-//        m_Handle = (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL,
+//        m_Handle = (DWORD)CreateFileW(m_FileName.c_str(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ, NULL,
 //        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    } else
 //    {
-//        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
+//        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ|GENERIC_WRITE, FILE_SHARE_READ,
 //        NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 //    }
 //
 //    if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE)
 //    {
 //#ifdef RAISE_ALL_EXCEPTIONS
-//        ERROR_S((L"Error creating package file [READ|WRITE]:"+m_FileName).Get());
+//        ERROR_S((L"Error creating package file [READ|WRITE]:"+m_FileName).c_str());
 //#endif
 //        m_Handle = 0xFFFFFFFF;
 //        return false;
@@ -1656,18 +1656,18 @@ bool CPackFile::OpenPacketFileEx() {
     // Открываем файл для записи/чтения
     if (IS_UNICODE()) {
         m_Handle =
-                (DWORD)CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                (DWORD)CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+                (DWORD)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
     if ((HANDLE)m_Handle == INVALID_HANDLE_VALUE) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ|WRITE]:" + m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ|WRITE]:" + m_FileName).c_str());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
@@ -1676,7 +1676,7 @@ bool CPackFile::OpenPacketFileEx() {
     DWORD temp = 0;
     if (!::ReadFile((HANDLE)m_Handle, &m_RootOffset, 4, &temp, NULL)) {
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error openning package file [READ]:" + m_FileName).Get());
+        ERROR_S((L"Error openning package file [READ]:" + m_FileName).c_str());
 #endif
         m_Handle = 0xFFFFFFFF;
         return false;
@@ -1688,7 +1688,7 @@ bool CPackFile::OpenPacketFileEx() {
         m_RootFolder = NULL;
         ClosePacketFile();
 #ifdef RAISE_ALL_EXCEPTIONS
-        ERROR_S((L"Error reading file system of the package file: " + m_FileName).Get());
+        ERROR_S((L"Error reading file system of the package file: " + m_FileName).c_str());
 #endif
         return false;
     }

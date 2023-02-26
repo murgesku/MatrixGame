@@ -99,8 +99,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         {
             {
                 std::ofstream out("calcvis.log", std::ios::app);
-                std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
-                out << name.c_str() << " ...";
+                std::string name = utils::from_wstring(g_MatrixMap->MapName());
+                out << name << " ...";
             }
 
             g_MatrixMap->CalcVis();
@@ -140,7 +140,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         }
         L3GDeinit();
 
-        MessageBox(NULL, utils::from_wstring(ex.Info().Get()).c_str(), "Exception:", MB_OK);
+        MessageBox(NULL, utils::from_wstring(ex.Info().c_str()).c_str(), "Exception:", MB_OK);
     }
     catch (const std::exception& e)
     {

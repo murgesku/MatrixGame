@@ -26,11 +26,11 @@ bool CCacheData::m_dip;
 //	CWStr filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAA fd;
-//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.Get()).c_str(),&fd);
+//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(),&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).Get()).c_str(),&fd);
+//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).c_str()).c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
 //		CWStr curname(outname.GetHeap());
@@ -40,7 +40,7 @@ bool CCacheData::m_dip;
 //			int sme=curname.FindR(L'.')+1;
 //			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
-//				const wchar * str=curname.Get()+sme;
+//				const wchar * str=curname.c_str()+sme;
 //				int len = curname.length()-sme;
 //
 //				const wchar * exts2=exts;
@@ -94,7 +94,7 @@ bool CCacheData::m_dip;
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileW((CWStr(str,lenfile,outname.GetHeap())+L".*").Get(),&fd);
+//	fh=FindFirstFileW((CWStr(str,lenfile,outname.GetHeap())+L".*").c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
 //		CWStr curname(outname.GetHeap());
@@ -104,7 +104,7 @@ bool CCacheData::m_dip;
 //			int sme=curname.FindR(L'.')+1;
 //			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
-//				const wchar * str=curname.Get()+sme;
+//				const wchar * str=curname.c_str()+sme;
 //				int len=curname.length()-sme;
 //
 //				const wchar * exts2=exts;
@@ -241,16 +241,16 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
 
     tname = m_Name.GetStrPar(0, L"?");
 
-    if (!CFile::FileExist(tstr, tname.Get(), exts, false)) {
-        ERROR_S(utils::format(L"File not found: %ls   Exts: %ls", tname.Get(), exts));
+    if (!CFile::FileExist(tstr, tname.c_str(), exts, false)) {
+        ERROR_S(utils::format(L"File not found: %ls   Exts: %ls", tname.c_str(), exts));
     }
 
-    buf.LoadFromFile(tstr.Get());
+    buf.LoadFromFile(tstr.c_str());
 
     /*	ASSERT(m_Name.Len()>0);
 
         int len=m_Name.Len();
-        wchar * str=m_Name.Get();
+        wchar * str=m_Name.c_str();
 
         int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
         ASSERT(lenfile>0);
@@ -259,14 +259,14 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         fi.Init(str,lenfile);
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());
-            fi.Read(buf.Get(),buf.Len());
+            fi.Read(buf.c_str(),buf.Len());
             buf.Pointer(0);
             return;
         }
 
         WIN32_FIND_DATA fd;
-        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").Get()).c_str(),&fd);
-        if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.Get());
+        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").c_str()).c_str(),&fd);
+        if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.c_str());
         FindClose(fh);
 
         int lenpath=lenfile; while(lenpath>0 && str[lenpath-1]!='\\' && str[lenpath-1]!='/') lenpath--;
@@ -276,12 +276,12 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
 
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());
-            fi.Read(buf.Get(),buf.Len());
+            fi.Read(buf.c_str(),buf.Len());
             buf.Pointer(0);
             return;
         }
 
-        ERROR_S2(L"Error open file: ",m_Name.Get());*/
+        ERROR_S2(L"Error open file: ",m_Name.c_str());*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        std::string name{(cd->m_Name.empty()) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
+        std::string name{(cd->m_Name.empty()) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.c_str())};
 
         const char* loaded;
         if (cd->IsLoaded())

@@ -304,7 +304,7 @@ public:
     void WStr(const CWStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), (len + 1) << 1);
+            BufAdd(str.c_str(), (len + 1) << 1);
         else
             Word(0);
     }
@@ -323,7 +323,7 @@ public:
     void WStrNZ(const CWStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len << 1);
+            BufAdd(str.c_str(), len << 1);
     }
     void WStrNZ(const wchar *str, int len) {
         if (len > 0)
@@ -387,16 +387,16 @@ public:
     void WStrText(CWStr &str) {
         int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len << 1);
+            BufAdd(str.c_str(), len << 1);
         Dword(0x000a000d);
     }
 
     void LoadFromFile(const wchar *filename, int len);
     void LoadFromFile(const wchar *filename) { LoadFromFile(filename, Base::WStrLen(filename)); }
-    void LoadFromFile(const CWStr &filename) { LoadFromFile(filename.Get(), filename.length()); }
+    void LoadFromFile(const CWStr &filename) { LoadFromFile(filename.c_str(), filename.length()); }
     void SaveInFile(const wchar *filename, int len) const;
     void SaveInFile(const wchar *filename) const { SaveInFile(filename, Base::WStrLen(filename)); }
-    void SaveInFile(const CWStr &filename) const { SaveInFile(filename.Get(), filename.length()); }
+    void SaveInFile(const CWStr &filename) const { SaveInFile(filename.c_str(), filename.length()); }
 };
 
 }  // namespace Base

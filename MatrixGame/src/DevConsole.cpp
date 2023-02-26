@@ -176,7 +176,7 @@ void CDevConsole::Takt(int ms) {
         INVERTFLAG(m_Flags, DCON_CURSOR);
     }
 
-    std::wstring out{m_Text.Get(), static_cast<size_t>(m_CurPos)};
+    std::wstring out{m_Text.c_str(), static_cast<size_t>(m_CurPos)};
 
     if (FLAG(m_Flags, DCON_CURSOR)) {
         out += L"|";
@@ -184,7 +184,7 @@ void CDevConsole::Takt(int ms) {
     else {
     }
     if (m_CurPos < m_Text.length()) {
-        out += std::wstring{m_Text.Get() + m_CurPos};
+        out += std::wstring{m_Text.c_str() + m_CurPos};
     }
     else {
         out += L" ";
@@ -231,9 +231,9 @@ void CDevConsole::Keyboard(int scan, bool down) {
                     break;
                 ++i;
             }
-            cmd = std::wstring{m_Text.Get(), static_cast<size_t>(i)};
+            cmd = std::wstring{m_Text.c_str(), static_cast<size_t>(i)};
             if (i < m_Text.length())
-                params = (m_Text.Get() + i + 1);
+                params = (m_Text.c_str() + i + 1);
 
             for (auto& sym : cmd)
             {

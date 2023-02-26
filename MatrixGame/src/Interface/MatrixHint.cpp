@@ -463,7 +463,7 @@ static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
             size_t i2 = text.find(L"]", i1 + 1, 1);
             if (i2 == std::wstring::npos)
                 ERROR_S(L"] not found");
-            text2 = std::wstring{text.Get() + i1 + 1, static_cast<size_t>(i2 - i1 - 1)};
+            text2 = std::wstring{text.c_str() + i1 + 1, static_cast<size_t>(i2 - i1 - 1)};
             if (text2.empty()) {
                 utils::replace(text, L"[]", baserepl);
             }

@@ -128,11 +128,11 @@ void CFile::OpenRead(DWORD shareMode) {
             // so, real file not found. may be it is in packet?
 
             if (m_Packs) {
-                m_PackHandle = m_Packs->Open(utils::from_wstring(m_FileName.Get()));
+                m_PackHandle = m_Packs->Open(utils::from_wstring(m_FileName.c_str()));
             }
 
             if (m_PackHandle == 0xFFFFFFFF) {
-                ERROR_S2(L"Error open file: ", m_FileName.Get());
+                ERROR_S2(L"Error open file: ", m_FileName.c_str());
             }
             else {
                 ++m_PacksRef;
@@ -146,11 +146,11 @@ void CFile::OpenRead(DWORD shareMode) {
 bool CFile::OpenReadNE(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, shareMode, NULL,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -164,15 +164,15 @@ bool CFile::OpenReadNE(DWORD shareMode) {
 void CFile::Create(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
-            ERROR_S2(L"Error creating file: ", m_FileName.Get());
+            ERROR_S2(L"Error creating file: ", m_FileName.c_str());
         }
     }
     m_Open++;
@@ -181,11 +181,11 @@ void CFile::Create(DWORD shareMode) {
 bool CFile::CreateNE(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -343,7 +343,7 @@ void CFile::Read(void *buf, DWORD kolbyte) {
     }
 
     if (!ok) {
-        ERROR_S(utils::format(L"Error read file: %ls cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error read file: %ls cnt=%d", m_FileName.c_str(), kolbyte));
     }
 }
 
@@ -356,7 +356,7 @@ void CFile::Write(void *buf, DWORD kolbyte) {
     DWORD temp;
 
     if (WriteFile(m_Handle, buf, kolbyte, &temp, NULL) == FALSE || temp != kolbyte) {
-        ERROR_S(utils::format(L"Error write file: %ls cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error write file: %ls cnt=%d", m_FileName.c_str(), kolbyte));
     }
 }
 
@@ -600,7 +600,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
 void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
     if (IS_UNICODE()) {
         CWStr fn(folderfrom);
-        if (fn.length() > 0 && !(*(fn.Get() + fn.length() - 1) == '\\' || (*(fn.Get() + fn.length() - 1) == '/'))) {
+        if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
             fn += L"\\";
         }
         CWStr fnf(fn);
@@ -609,7 +609,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
 
         // seek files
         fnf += files;
-        HANDLE h = FindFirstFileW(fnf.Get(), &fd);
+        HANDLE h = FindFirstFileW(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -622,7 +622,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
 
         fnf = fn + L"*.*";
-        h = FindFirstFileW(fnf.Get(), &fd);
+        h = FindFirstFileW(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
@@ -637,7 +637,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
     }
     else {
-        std::string fn{utils::from_wstring(folderfrom.Get())};
+        std::string fn{utils::from_wstring(folderfrom.c_str())};
         if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
             fn +=  "\\";
         }

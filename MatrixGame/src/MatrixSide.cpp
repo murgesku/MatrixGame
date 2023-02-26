@@ -9043,7 +9043,7 @@ void CMatrixSideUnit::PGOrderMoveTo(int no, const CPoint &tp) {
                                         ->BlockGetNE(utils::format(L"%d", chassis));
                 if (rs) {
                     int cnt = rs->ParCount(L"MoveTo");
-                    CSound::Play(rs->ParGet(L"MoveTo", IRND(cnt)).Get(), SL_ORDER);
+                    CSound::Play(rs->ParGet(L"MoveTo", IRND(cnt)).c_str(), SL_ORDER);
                 }
             }
         }
@@ -9259,7 +9259,7 @@ void CMatrixSideUnit::PGOrderPatrol(int no, const CPoint &tp) {
                                         ->BlockGetNE(utils::format(L"%d", chassis));
                 if (rs) {
                     int cnt = rs->ParCount(L"Patrol");
-                    CSound::Play(rs->ParGet(L"Patrol", IRND(cnt)).Get(), SL_ORDER);
+                    CSound::Play(rs->ParGet(L"Patrol", IRND(cnt)).c_str(), SL_ORDER);
                 }
             }
         }
@@ -10850,15 +10850,15 @@ void CMatrixSideUnit::DMTeam(int team, EMatrixLogicActionType ot, int state, con
 
     va_list marker;
     va_start(marker, format);
-    // DM( CWStr().Format(L"Size.<i>.Team.<i>",m_Id,team).Get(),
-    //    CWStr().Format(L"[<s><s>] <s>",ots[ot],sstate,CWStr().Format(format,marker).Get()).Get()
+    // DM( CWStr().Format(L"Size.<i>.Team.<i>",m_Id,team).c_str(),
+    //    CWStr().Format(L"[<s><s>] <s>",ots[ot],sstate,CWStr().Format(format,marker).c_str()).c_str()
     //    );
 }
 
 void CMatrixSideUnit::DMSide(const wchar *format, ...) {
     va_list marker;
     va_start(marker, format);
-    // DM( CWStr().Format(L"Size.<i>",m_Id).Get(),
-    //    CWStr().Format(format,marker).Get()
+    // DM( CWStr().Format(L"Size.<i>",m_Id).c_str(),
+    //    CWStr().Format(format,marker).c_str()
     //    );
 }
