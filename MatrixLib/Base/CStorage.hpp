@@ -198,7 +198,7 @@ public:
         return -1;
     }
     int FindAsWStr(const CWStr &val) { return FindAsWStr(val.c_str(), val.length()); }
-    int FindAsWStr(const wchar *val) { return FindAsWStr(val, Base::WStrLen(val)); }
+    int FindAsWStr(const wchar *val) { return FindAsWStr(val, std::wcslen(val)); }
 
     void Compact(void) {
         SDataBufHeader *header = Buff<SDataBufHeader>();

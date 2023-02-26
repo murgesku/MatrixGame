@@ -16,7 +16,7 @@
 namespace Base {
 
 HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
-    int len = WStrLen(path);
+    int len = std::wcslen(path);
     if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
@@ -44,7 +44,7 @@ HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
 }
 
 HKEY Reg_CreateKey(HKEY key, const wchar *path, dword access) {
-    int len = WStrLen(path);
+    int len = std::wcslen(path);
     if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
@@ -134,9 +134,9 @@ BASE_API void Reg_SetString(HKEY pkey, const wchar *path, const wchar *name, con
         return;
 
     if (GetVersion() < 0x80000000)
-        RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, WStrLen(str) * 2 + 2);
+        RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, std::wcslen(str) * 2 + 2);
     else
-        RegSetValueExA(kkey, utils::from_wstring(name).c_str(), 0, REG_SZ, (byte*)utils::from_wstring(str).c_str(), WStrLen(str) + 1);
+        RegSetValueExA(kkey, utils::from_wstring(name).c_str(), 0, REG_SZ, (byte*)utils::from_wstring(str).c_str(), std::wcslen(str) + 1);
 
     RegCloseKey(kkey);
 }

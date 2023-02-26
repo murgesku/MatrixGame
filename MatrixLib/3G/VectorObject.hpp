@@ -372,7 +372,7 @@ public:
 
     int GetAnimCount(void) const { return m_Geometry.m_AnimationsCnt; }
     int GetAnimById(DWORD id);
-    int GetAnimByName(const wchar *name);
+    int GetAnimByName(const std::wstring& name);
     int GetAnimFramesCount(int no) const { return m_Geometry.m_Animations[no].m_FramesCnt; }
     int GetAnimFrameTime(int anim, int frame) const {
         return abs(m_Geometry.m_FramesIdx[m_Geometry.m_Animations[anim].m_FramesStart + frame].time);
@@ -390,7 +390,7 @@ public:
 
     int GetMatrixCount(void) const { return m_Geometry.m_MatrixsCnt; }
     const D3DXMATRIX *GetMatrixById(int frame, DWORD id) const;
-    const D3DXMATRIX *GetMatrixByName(int frame, const wchar *name) const;
+    const D3DXMATRIX *GetMatrixByName(int frame, const std::wstring& name) const;
     const D3DXMATRIX *GetMatrix(int frame, int matrix) const {
         return m_Geometry.m_AllMatrixs + (m_Geometry.m_Matrixs + matrix)->m_MatrixStart + frame;
     }

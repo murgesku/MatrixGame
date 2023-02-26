@@ -27,7 +27,7 @@ void CMatrixCursor::SetVisible(bool flag) {
                     ++cntTry;
                 if (cntTry > 100) {
                     g_Config.m_SoftwareCursor = true;
-                    m_CurCursor = 0;
+                    m_CurCursor.clear();
                     Select(CURSOR_ARROW);
                     INITFLAG(m_CursorFlags, CURSOR_VISIBLE, flag);
                     return;
@@ -42,12 +42,12 @@ void CMatrixCursor::SetVisible(bool flag) {
     INITFLAG(m_CursorFlags, CURSOR_VISIBLE, flag);
 }
 
-void CMatrixCursor::Select(const wchar *name) {
+void CMatrixCursor::Select(const std::wstring& name) {
     DTRACE();
 
-    if (m_CurCursor) {
-        if (WStrCmp(name, m_CurCursor))
-            return;
+    if (m_CurCursor == name)
+    {
+        return;
     }
     DCP();
     m_CurCursor = name;

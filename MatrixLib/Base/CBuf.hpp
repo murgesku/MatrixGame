@@ -314,7 +314,7 @@ public:
         Word(0);
     }
     void WStr(const wchar *str) {
-        int len = Base::WStrLen(str);
+        int len = std::wcslen(str);
         if (len > 0)
             BufAdd(str, (len + 1) << 1);
         else
@@ -330,7 +330,7 @@ public:
             BufAdd(str, len << 1);
     }
     void WStrNZ(const wchar *str) {
-        int len = Base::WStrLen(str);
+        int len = std::wcslen(str);
         if (len > 0)
             BufAdd(str, len << 1);
     }
@@ -392,10 +392,10 @@ public:
     }
 
     void LoadFromFile(const wchar *filename, int len);
-    void LoadFromFile(const wchar *filename) { LoadFromFile(filename, Base::WStrLen(filename)); }
+    void LoadFromFile(const wchar *filename) { LoadFromFile(filename, std::wcslen(filename)); }
     void LoadFromFile(const CWStr &filename) { LoadFromFile(filename.c_str(), filename.length()); }
     void SaveInFile(const wchar *filename, int len) const;
-    void SaveInFile(const wchar *filename) const { SaveInFile(filename, Base::WStrLen(filename)); }
+    void SaveInFile(const wchar *filename) const { SaveInFile(filename, std::wcslen(filename)); }
     void SaveInFile(const CWStr &filename) const { SaveInFile(filename.c_str(), filename.length()); }
 };
 

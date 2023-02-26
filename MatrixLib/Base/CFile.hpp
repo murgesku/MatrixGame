@@ -57,7 +57,7 @@ public:
     void Clear(void);
 
     void Init(const wchar *filename, int len);
-    void Init(const wchar *filename) { Init(filename, WStrLen(filename)); }
+    void Init(const wchar *filename) { Init(filename, std::wcslen(filename)); }
     void Init(const CWStr &filename) { Init(filename.c_str(), filename.length()); }
 
     bool IsOpen(void) { return m_Open > 0; }

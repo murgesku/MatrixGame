@@ -25,15 +25,6 @@ using dword = unsigned long;
 
 namespace Base {
 
-// TODO: replace with plain std func calls
-inline int WStrLen(const wchar *str) {
-    return std::wcslen(str);
-}
-
-inline bool WStrCmp(const wchar_t *s1, const wchar_t *s2) {
-    return !std::wcscmp(s1, s2);
-}
-
 using CWStr = std::wstring;
 
 }  // namespace Base

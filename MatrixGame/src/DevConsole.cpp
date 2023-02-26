@@ -237,7 +237,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
 
             for (auto& sym : cmd)
             {
-                sym = std::towupper(sym);
+                sym = towupper(sym);
             }
 
             i = 0;
