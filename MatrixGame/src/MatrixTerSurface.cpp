@@ -199,7 +199,7 @@ void CTerSurface::LoadM(BYTE *raw) {
     CWStr name;
     name = g_MatrixMap->IdsGet(ids).GetStrPar(0, L"?");
 
-    m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, name.Get());
+    m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, name.c_str());
 
     int par = g_MatrixMap->IdsGet(ids).GetCountPar(L"?");
     if (par > 1) {
@@ -211,8 +211,8 @@ void CTerSurface::LoadM(BYTE *raw) {
 
             if (g_Config.m_LandTexturesGloss && (PAR_TOP_TEX_GLOSS == park)) {
                 CWStr gloss_name;
-                CacheReplaceFileNameAndExt(gloss_name, name.Get(), parv.Get());
-                if (CFile::FileExist(name, gloss_name.Get(), L"png~dds")) {
+                CacheReplaceFileNameAndExt(gloss_name, name.c_str(), parv.c_str());
+                if (CFile::FileExist(name, gloss_name.c_str(), L"png~dds")) {
                     m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, gloss_name.c_str());
                     SETFLAG(m_Flags, SURFF_GLOSS);
                 }

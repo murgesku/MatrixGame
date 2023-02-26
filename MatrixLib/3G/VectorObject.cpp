@@ -208,7 +208,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             CWStr mn;
             for (int i = 0; i < m_Geometry.m_MatrixsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
-                memcpy(m_Geometry.m_Matrixs[i].m_Name, mn.Get(), (mn.length() + 1) * sizeof(wchar));
+                memcpy(m_Geometry.m_Matrixs[i].m_Name, mn.c_str(), (mn.length() + 1) * sizeof(wchar));
 
                 m_Geometry.m_Matrixs[i].m_Id = id[i];
                 m_Geometry.m_Matrixs[i].m_MatrixStart = disp[i];
@@ -249,7 +249,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             CWStr mn;
             for (int i = 0; i < m_Geometry.m_AnimationsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
-                memcpy(m_Geometry.m_Animations[i].m_Name, mn.Get(), (mn.length() + 1) * sizeof(wchar));
+                memcpy(m_Geometry.m_Animations[i].m_Name, mn.c_str(), (mn.length() + 1) * sizeof(wchar));
 
                 m_Geometry.m_Animations[i].m_Id = id[i];
                 m_Geometry.m_Animations[i].m_FramesStart = disp[i];
@@ -401,16 +401,16 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
     //    SVOSurface * s = m_Geometry.m_Surfaces + i;
 
     //          CWStr outstr((materials + i)->tex_diffuse,g_CacheHeap);
-    //          CacheReplaceFileExt(outstr, outstr.Get());
+    //          CacheReplaceFileExt(outstr, outstr.c_str());
 
     //          ASSERT(outstr.length() > 0);
     //          //if (outstr.length() == 0) _asm int 3
 
     //          CWStr temp(g_CacheHeap);
-    //          if(!CFile::FileExist(temp,outstr.Get(),CacheExtsTex))
+    //          if(!CFile::FileExist(temp,outstr.c_str(),CacheExtsTex))
     //          {
     //              CacheReplaceFileNameAndExt(outstr, m_Name, (materials + i)->tex_diffuse);
-    //              CacheReplaceFileExt(outstr, outstr.Get());
+    //              CacheReplaceFileExt(outstr, outstr.c_str());
     //          }
 
     //          s->texname = outstr;
@@ -424,7 +424,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
 
     for (int i = 0; i < m_Geometry.m_SurfacesCnt; ++i) {
         SVOSurface *s = m_Geometry.m_Surfaces + i;
-        s->skin = sg(s->texname.Get(), gsp);
+        s->skin = sg(s->texname.c_str(), gsp);
     }
 }
 
@@ -994,7 +994,7 @@ void CVectorObject::SortIndexForAlpha(D3DXMATRIX & ma)
 //				}
 //				if(cntff>=2) {
 //					ERROR_S(CWStr().Format(L"More 2 triangles on edge. Face: <i> Cnt: <i>  Model:
-//<s>",i+1,cntff,m_Name.Get()).Get());
+//<s>",i+1,cntff,m_Name.c_str()).c_str());
 //				}
 //			}
 //		}
@@ -1912,7 +1912,7 @@ void CVectorObjectGroupUnit::RNeed(dword need) {
             if (m_LinkMatrixId >= 0)
                 um = m_Link->m_Obj->GetMatrixById(m_LinkMatrixId);
             else
-                um = m_Link->m_Obj->GetMatrixByName(m_LinkMatrixName.Get());
+                um = m_Link->m_Obj->GetMatrixByName(m_LinkMatrixName.c_str());
 
             if (FLAG(m_Flags, VOUF_MATRIX_USE)) {
                 m_MatrixWorld = m_Matrix * (*um) * m_Link->m_MatrixWorld;
@@ -2258,9 +2258,9 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     //	if(!m_Obj)
     //       {
     //		m_Obj=HNew(g_CacheHeap) CVectorObjectAnim;
-    //		m_Obj->Init((CVectorObject *)(g_Cache->Get(cc_VO,m_Model.Get(), m_Reminder)), &m_Skin);
+    //		m_Obj->Init((CVectorObject *)(g_Cache->Get(cc_VO,m_Model.c_str(), m_Reminder)), &m_Skin);
 
-    //		m_Obj->VO()->AddName(m_Texture.IsEmpty()?m_Parent->m_Name.Get():m_Texture.Get());
+    //		m_Obj->VO()->AddName(m_Texture.IsEmpty()?m_Parent->m_Name.c_str():m_Texture.c_str());
     //		m_Obj->VO()->Prepare();
     //           m_Obj->SetAnimDefault();
     //	}
@@ -2294,23 +2294,23 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
             auto idx = tstr.find(L"?");
             if (idx != std::wstring::npos)
                 tstr.resize(idx);
-            CacheReplaceFileNameAndExt(unit, filename, tstr.Get());
+            CacheReplaceFileNameAndExt(unit, filename, tstr.c_str());
         }
 
         if (bp2.ParCount(L"Id") > 0)
             gu->m_Id = bp2.Par(L"Id").GetInt();
 
         if (bp2.ParCount(L"Texture")) {
-            CacheReplaceFileNameAndExt(texture, filename, bp2.Par(L"Texture").Get());
+            CacheReplaceFileNameAndExt(texture, filename, bp2.Par(L"Texture").c_str());
         }
         if (bp2.ParCount(L"TextureGloss")) {
-            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.Par(L"TextureGloss").Get());
+            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.Par(L"TextureGloss").c_str());
         }
         if (bp2.ParCount(L"TextureBack")) {
-            CacheReplaceFileNameAndExt(texture_back, filename, bp2.Par(L"TextureBack").Get());
+            CacheReplaceFileNameAndExt(texture_back, filename, bp2.Par(L"TextureBack").c_str());
         }
         if (bp2.ParCount(L"TextureMask")) {
-            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.Par(L"TextureMask").Get());
+            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.Par(L"TextureMask").c_str());
         }
         if (bp2.ParCount(L"TextureBackScroll")) {
             bs = bp2.Par(L"TextureBackScroll");
@@ -2322,7 +2322,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         if (texture_mask.empty())
             texture_back.clear();
 
-        CVectorObject *vo = (CVectorObject *)(g_Cache->Get(cc_VO, unit.Get()));
+        CVectorObject *vo = (CVectorObject *)(g_Cache->Get(cc_VO, unit.c_str()));
         if (texture.empty() && texture_gloss.empty() && texture_mask.empty()) {
             vo->PrepareSpecial(OLF_AUTO, sg, gsp);
             gu->m_Obj->Init(vo, NULL);
@@ -2337,7 +2337,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
                 }
 
                 tstr2 = texture + L"*" + texture_gloss + L"*" + texture_back + L"*" + texture_mask + L"*" + bs;
-                const SSkin *skin = sg(tstr2.Get(), gsp);
+                const SSkin *skin = sg(tstr2.c_str(), gsp);
                 gu->m_Obj->Init(vo, lt, skin);
             }
             else {
@@ -2350,7 +2350,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     while (gu) {
         if (!gu->m_LinkMatrixName.empty()) {
             if (gu->m_LinkMatrixName.GetCountPar(L",") != 2)
-                ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, gu->m_LinkMatrixName.Get()));
+                ERROR_S(utils::format(L"In file: %ls   Unknown format link: %ls", filename, gu->m_LinkMatrixName.c_str()));
 
             tstr = gu->m_LinkMatrixName.GetStrPar(0, L",");
             gu->m_LinkMatrixName = gu->m_LinkMatrixName.GetStrPar(1, L",");
@@ -2359,10 +2359,10 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
                 gu->m_Link = GetByIdNE(tstr.GetInt());
             }
             else {
-                gu->m_Link = GetByNameNE(tstr.Get());
+                gu->m_Link = GetByNameNE(tstr.c_str());
             }
             if (gu->m_Link == NULL)
-                ERROR_S(utils::format(L"In file: %ls   Not found link: %ls", filename, tstr.Get()));
+                ERROR_S(utils::format(L"In file: %ls   Not found link: %ls", filename, tstr.c_str()));
 
             if (gu->m_LinkMatrixName.IsOnlyInt()) {
                 gu->m_LinkMatrixId = gu->m_LinkMatrixName.GetInt();

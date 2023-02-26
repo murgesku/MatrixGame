@@ -120,12 +120,12 @@ public:
 
     void SoundIn(void) const {
         if (!m_SoundIn.empty())
-            CSound::Play(m_SoundIn.Get());
+            CSound::Play(m_SoundIn.c_str());
     }
 
     void SoundOut(void) const {
         if (!m_SoundOut.empty())
-            CSound::Play(m_SoundOut.Get());
+            CSound::Play(m_SoundOut.c_str());
     }
 
     bool IsVisible(void) const { return m_Flags != 0; }

@@ -1319,26 +1319,26 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 
         if (unit->m_Type == 1) {
             if (!unit->m_Name.empty()) {
-                SaveStr(unit->m_Name.Get());
+                SaveStr(unit->m_Name.c_str());
                 SaveStrConst("=");
             }
-            SaveStr(unit->m_Par->Get());
+            SaveStr(unit->m_Par->c_str());
             if (!unit->m_Com.empty())
-                SaveStr(unit->m_Com.Get());
+                SaveStr(unit->m_Com.c_str());
         }
         else if (unit->m_Type == 2) {
             addspace = false;
             if (!unit->m_Name.empty()) {
-                SaveStr(unit->m_Name.Get());
+                SaveStr(unit->m_Name.c_str());
                 addspace = true;
             }
 
             if (unit->m_Block->m_FromFile) {
                 SaveStrConst("=");
-                SaveStr(unit->m_Block->m_FromFile->Get());
+                SaveStr(unit->m_Block->m_FromFile->c_str());
                 SaveStrConst(" {}");
 
-                unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile->Get(), ansi);
+                unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile->c_str(), ansi);
             }
             else {
                 if (!unit->m_Block->m_Sort) {
@@ -1355,11 +1355,11 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
                 if (unit->m_Block->AllCount() == 0) {
                     SaveStrConst("}");
                     if (!unit->m_Com.empty())
-                        SaveStr(unit->m_Com.Get());
+                        SaveStr(unit->m_Com.c_str());
                 }
                 else {
                     if (!unit->m_Com.empty())
-                        SaveStr(unit->m_Com.Get());
+                        SaveStr(unit->m_Com.c_str());
                     SaveNewLine;
 
                     unit->m_Block->SaveInText(buf, ansi, level + 1);
@@ -1371,7 +1371,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         }
         else {
             if (!unit->m_Com.empty())
-                SaveStr(unit->m_Com.Get());
+                SaveStr(unit->m_Com.c_str());
         }
 
         SaveNewLine;

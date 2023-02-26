@@ -42,11 +42,6 @@ public:
     {
     }
 
-    const wchar *Get(void) const
-    {
-        return this->c_str();
-    }
-
     int GetInt(void) const;
     DWORD GetDword(void) const;
     double GetDouble(void) const;

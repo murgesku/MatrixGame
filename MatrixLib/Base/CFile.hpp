@@ -58,7 +58,7 @@ public:
 
     void Init(const wchar *filename, int len);
     void Init(const wchar *filename) { Init(filename, WStrLen(filename)); }
-    void Init(const CWStr &filename) { Init(filename.Get(), filename.length()); }
+    void Init(const CWStr &filename) { Init(filename.c_str(), filename.length()); }
 
     bool IsOpen(void) { return m_Open > 0; }
 

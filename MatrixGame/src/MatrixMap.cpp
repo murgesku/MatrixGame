@@ -947,7 +947,7 @@ void CMatrixMap::MacrotextureInit(const CWStr &path) {
 
     MacrotextureClear();
 
-    m_Macrotexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, path.Get());
+    m_Macrotexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, path.c_str());
 
     int cnt = path.GetCountPar(L"?");
     for (int i = 1; i < cnt; i++) {
@@ -3086,7 +3086,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
                 ERROR_S(L"Effect spawner: sound name too long!");
             }
 
-            memcpy(sound.m_name, nam.Get(), (nam.length() + 1) * sizeof(wchar));
+            memcpy(sound.m_name, nam.c_str(), (nam.length() + 1) * sizeof(wchar));
 
             break;
         }

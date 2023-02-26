@@ -104,9 +104,9 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
     }
 
     tstr = name.GetStrPar(0, L"?");
-    CacheReplaceFileExt(tstr, tstr.Get(), L".txt");
+    CacheReplaceFileExt(tstr, tstr.c_str(), L".txt");
 
-    if (CFile::FileExist(tstr, tstr.Get())) {
+    if (CFile::FileExist(tstr, tstr.c_str())) {
         bool proceed = true;
         if (tstr.find(L"pinguin.txt") != std::wstring::npos || tstr.find(L"robotarget.txt") != std::wstring::npos)
         {

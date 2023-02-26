@@ -448,7 +448,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                 if (bp->ParCount(L"Model") == 0 && bn == L"Weapon") {
                     m_Units[uindex].m_Type = FLYER_UNIT_WEAPON_HOLLOW;
 
-                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").Get());
+                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").c_str());
                     if (w == WEAPON_NONE) {
                     off_weapon:;
                         m_Units[uindex].Release();
@@ -498,7 +498,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                 model = bp->ParGet(L"Model");
                 texture = bp->ParGet(L"Texture");
 
-                m_Units[uindex].m_Graph = LoadObject(model.Get(), g_MatrixHeap, true, texture.Get());
+                m_Units[uindex].m_Graph = LoadObject(model.c_str(), g_MatrixHeap, true, texture.c_str());
 
                 if (bn == L"Body") {
                     m_Units[uindex].m_Type = FLYER_UNIT_BODY;
@@ -526,7 +526,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     m_Units[uindex].m_Vint.m_Tex = NULL;
                     if (bp->ParCount(L"TextureVint")) {
                         m_Units[uindex].m_Vint.m_Tex =
-                                (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bp->ParGet(L"TextureVint").Get());
+                                (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bp->ParGet(L"TextureVint").c_str());
                     }
                 }
                 else if (bn == L"Engine") {
@@ -547,7 +547,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     m_Units[uindex].m_Weapon.m_DownAngle =
                             GRAD2RAD((float)bp->ParGet(L"RotationX").GetDoublePar(1, L","));
 
-                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").Get());
+                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").c_str());
                     if (w == WEAPON_NONE) {
                         m_Units[uindex].Release();
                         --m_UnitCnt;

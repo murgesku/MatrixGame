@@ -90,7 +90,7 @@ void CMatrixCursor::Select(const wchar *name) {
     DCP();
 
     if (g_Config.m_SoftwareCursor) {
-        m_CursorTexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, n.Get());
+        m_CursorTexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, n.c_str());
         m_CursorTexture->MipmapOff();
         m_CursorTexture->Load();
         m_CursorInTexLine = m_CursorTexture->GetSizeX() / m_CursorSize;
@@ -111,7 +111,7 @@ void CMatrixCursor::Select(const wchar *name) {
         CWStr tn;
         DCP();
 
-        CFile::FileExist(tn, n.Get(), CacheExtsTex);
+        CFile::FileExist(tn, n.c_str(), CacheExtsTex);
         DCP();
 
         bm.LoadFromPNG(tn.c_str());

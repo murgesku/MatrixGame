@@ -80,7 +80,7 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
 
         if (i == 0) {
             temp_prev = temp;
-            sk.m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
 
             sk.m_Tex->Preload();
             if ((sk.m_Tex->Flags() & TF_ALPHABLEND) == 0) {
@@ -93,13 +93,13 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
                 gloss_off = true;
             }
             else {
-                sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+                sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
             }
         }
         else if (i == 2)
-            sk.m_TexBack = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_TexBack = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
         else if (i == 3)
-            sk.m_TexMask = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_TexMask = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
         else if (i == 4) {
             sk.m_dtu = float(temp.GetStrPar(0, L",").GetDouble());
             sk.m_dtv = float(temp.GetStrPar(1, L",").GetDouble());
@@ -108,8 +108,8 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
 
     if (!gloss_off && g_Config.m_ObjTexturesGloss && sk.m_TexGloss == NULL && gspp == GSP_SIDE) {
         temp_prev += GLOSS_TEXTURE_SUFFIX;
-        if (CFile::FileExist(temp, temp_prev.Get(), L"dds~png")) {
-            sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp_prev.Get());
+        if (CFile::FileExist(temp, temp_prev.c_str(), L"dds~png")) {
+            sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp_prev.c_str());
         }
     }
 

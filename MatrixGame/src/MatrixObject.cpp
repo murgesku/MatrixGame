@@ -441,7 +441,7 @@ void CMatrixMapObject::RNeed(dword need) {
 
         vo = path + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_VO, L"*") + L".vo";
 
-        m_Graph = LoadObject(vo.Get(), g_MatrixHeap, false, tex.Get());
+        m_Graph = LoadObject(vo.c_str(), g_MatrixHeap, false, tex.c_str());
 
         // if (FLAG(m_ObjectState,OBJECT_STATE_BURNED))
         //{
@@ -452,14 +452,14 @@ void CMatrixMapObject::RNeed(dword need) {
         //            UnloadObject(m_Graph,g_MatrixHeap);
         //        }
 
-        //        CWStr name(g_MatrixMap->IdsGet(m_iName).Get() + m_BurnNameDisp, g_CacheHeap);
+        //        CWStr name(g_MatrixMap->IdsGet(m_iName).c_str() + m_BurnNameDisp, g_CacheHeap);
         //        int idx = name.Find(L"?",1,0);
         //        if (idx >=0) name.SetLen(idx);
         //        name.Add(L".vo");
 
         //        CWStr nameo(g_CacheHeap);
 
-        //        CacheReplaceFileNameAndExt(nameo, g_MatrixMap->IdsGet(m_iName).Get(), name);
+        //        CacheReplaceFileNameAndExt(nameo, g_MatrixMap->IdsGet(m_iName).c_str(), name);
 
         //        //idx = nameo.Find(L"?",1,0);
         //        //if (idx >=0) nameo.SetLen(idx);
@@ -473,7 +473,7 @@ void CMatrixMapObject::RNeed(dword need) {
 
         //        if(!m_Graph)
         //        {
-        //            m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).Get(), g_MatrixHeap);
+        //            m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).c_str(), g_MatrixHeap);
         //        }
         //        //m_Graph->VO()->ReleaseTextures();
 
@@ -483,7 +483,7 @@ void CMatrixMapObject::RNeed(dword need) {
         //{
         //    if(!m_Graph)
         //    {
-        //        m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).Get(), g_MatrixHeap);
+        //        m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).c_str(), g_MatrixHeap);
         //    }
         //}
 
@@ -1036,7 +1036,7 @@ void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const 
 
     m_RChange &= ~MR_Graph;
 
-    m_Graph = LoadObject(namev.Get(), g_MatrixHeap, false, namet.Get());
+    m_Graph = LoadObject(namev.c_str(), g_MatrixHeap, false, namet.c_str());
     m_Graph->FirstFrame();
 
     RNeed(MR_Matrix);
@@ -1250,7 +1250,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                     CWStr snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"));
                     if (!snd.empty())
-                        CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                        CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 }
                 SetAblazeTTL(g_MatrixMap->GetTime() + addt);
             }
@@ -1308,7 +1308,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 CWStr snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"));
                 if (!snd.empty())
-                    CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                    CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 2;
             }
         }
@@ -1343,7 +1343,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 CWStr snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"));
                 if (!snd.empty())
-                    CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                    CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 3;
             }
         }
@@ -1376,8 +1376,8 @@ void CMatrixMapObject::LogicTakt(int ms) {
                     m_PrevStateRobotsInRadius = 1;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 5) {
-                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(4, L":").Get(), GetGeoCenter());
-                        // CSound::Play(temp.GetStrPar(1,L",").GetStrPar(4,L":").Get(), GetGeoCenter());
+                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(4, L":").c_str(), GetGeoCenter());
+                        // CSound::Play(temp.GetStrPar(1,L",").GetStrPar(4,L":").c_str(), GetGeoCenter());
                     }
                 }
             }

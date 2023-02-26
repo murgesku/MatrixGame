@@ -874,7 +874,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
     std::string mmname =
         utils::format("%s\\%s.",
             PathToOutputFiles(FOLDER_NAME_CACHE),
-            utils::from_wstring(name.Get()).c_str());
+            utils::from_wstring(name).c_str());
     {
         mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
@@ -910,7 +910,7 @@ void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
         HANDLE ff = FindFirstFile(mmname.c_str(), &fd);
         if (ff != INVALID_HANDLE_VALUE) {
             CBitmap bm(g_CacheHeap);
-            bm.LoadFromPNG(CWStr(utils::to_wstring(mmname)).Get());
+            bm.LoadFromPNG(utils::to_wstring(mmname).c_str());
             if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
                 goto render;
 
@@ -1177,7 +1177,7 @@ render:
         // seek files
         auto n = utils::format("%s\\%s.*",
             PathToOutputFiles(FOLDER_NAME_CACHE),
-            utils::from_wstring(name.Get()).c_str());
+            utils::from_wstring(name).c_str());
 
         HANDLE ff;
         for (;;) {
@@ -1217,7 +1217,7 @@ render:
         //*(des)=*(sou+2);
         //*(des+2)=*(sou+0);
 
-        bm2.SaveInPNG(CWStr(utils::to_wstring(mmname)).Get());
+        bm2.SaveInPNG(utils::to_wstring(mmname).c_str());
 
         outtgt->UnlockRect();
 
