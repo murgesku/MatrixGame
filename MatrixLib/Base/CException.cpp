@@ -6,7 +6,6 @@
 #include "Base.pch"
 
 #include "CException.hpp"
-#include "CWStr.hpp"
 #include <stdio.h>
 
 #include "Tracer.hpp"

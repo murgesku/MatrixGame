@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "CWStr.hpp"
 #include "CIFaceElement.h"
 #include "Interface.h"
 #include "CConstructor.h"

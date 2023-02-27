@@ -8,7 +8,6 @@
 #include "Base.pch"
 
 #include "CMain.hpp"
-#include "CWStr.hpp"
 
 #include <windows.h>
 
