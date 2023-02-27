@@ -63,7 +63,7 @@ enum EMenuParent {
     MENU_PARENT_CHASSIS = 8,
 };
 struct SMenuItemText {
-    CWStr text;
+    std::wstring text;
     DWORD color;
     SMenuItemText(CHeap *heap) : text{} { color = DEFAULT_LABELS_COLOR; }
 };

@@ -224,7 +224,7 @@ ParamParser ParamParser::GetStrPar(int nps, int npe, const wchar *ogsim) const {
 }
 
 bool ParamParser::GetTrueFalsePar(int np, const wchar *ogsim) const {
-    CWStr tstr = GetStrPar(np, ogsim);
+    std::wstring tstr = GetStrPar(np, ogsim);
 
     if (tstr == L"true" || tstr == L"True" || tstr == L"TRUE")
         return 1;
@@ -292,7 +292,8 @@ void CBlockParUnit::Clear() {
     DTRACE();
     if (m_Type == 1) {
         if (m_Par != NULL) {
-            HDelete(CWStr, m_Par, m_Heap);
+            using std::wstring;
+            HDelete(wstring, m_Par, m_Heap);
             m_Par = NULL;
         }
     }
@@ -311,7 +312,8 @@ void CBlockParUnit::ChangeType(int nt) {
     DTRACE();
     if (m_Type == 1) {
         if (m_Par != NULL) {
-            HDelete(CWStr, m_Par, m_Heap);
+            using std::wstring;
+            HDelete(wstring, m_Par, m_Heap);
             m_Par = NULL;
         }
     }
@@ -323,7 +325,7 @@ void CBlockParUnit::ChangeType(int nt) {
     }
     m_Type = nt;
     if (nt == 1)
-        m_Par = HNew(m_Heap) CWStr();
+        m_Par = HNew(m_Heap) std::wstring();
     else if (nt == 2)
         m_Block = HNew(m_Heap) CBlockPar(1, m_Heap);
 }
@@ -388,7 +390,8 @@ void CBlockPar::Clear() {
     m_ArrayCnt = 0;
 
     if (m_FromFile) {
-        HDelete(CWStr, m_FromFile, m_Heap);
+        using std::wstring;
+        HDelete(wstring, m_FromFile, m_Heap);
         m_FromFile = NULL;
     }
 }
@@ -705,7 +708,7 @@ void CBlockPar::ParDelete(int no)  // нужно оптимизировать
     ERROR_E;
 }
 
-const CWStr* CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
+const std::wstring* CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
     DTRACE();
     if (m_Sort) {
         int i = ArrayFind(name, namelen);
@@ -975,7 +978,7 @@ ParamParser CBlockPar::BlockGetName(int no) const {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-const CWStr &CBlockPar::ParPathGet(const wchar *path, int pathlen) {
+const std::wstring &CBlockPar::ParPathGet(const wchar *path, int pathlen) {
     DTRACE();
     CBlockParUnit *el = UnitGet(path, pathlen);
     if (el->m_Type != 1)
@@ -1147,7 +1150,7 @@ CBlockPar *CBlockPar::AllGetBlock(int no) {
     }
 }
 
-const CWStr &CBlockPar::AllGetPar(int no) {
+const std::wstring &CBlockPar::AllGetPar(int no) {
     DTRACE();
     CBlockParUnit *el;
     if (m_Sort && (m_Cnt == m_ArrayCnt)) {
@@ -1171,7 +1174,7 @@ const CWStr &CBlockPar::AllGetPar(int no) {
     }
 }
 
-const CWStr &CBlockPar::AllGetName(int no) {
+const std::wstring &CBlockPar::AllGetName(int no) {
     DTRACE();
     CBlockParUnit *el;
     if (m_Sort && (m_Cnt == m_ArrayCnt)) {
@@ -1436,7 +1439,7 @@ public:
                 if (m_FileBegin >= 0) {
                     unit->m_Block->LoadFromTextFile(m_Text + m_FileBegin, m_FileEnd - m_FileBegin);
                     unit->m_Block->m_FromFile = HNew(unit->m_Block->m_Heap)
-                            CWStr(std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)});
+                            std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)};
                 }
             }
             else if (FindPar()) {

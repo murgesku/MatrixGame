@@ -96,7 +96,7 @@ bool Reg_GetData(HKEY key, const wchar *name, dword *ltype, CBuf *buf) {
     return true;
 }
 
-BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWStr &str) {
+BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, std::wstring &str) {
     HKEY kkey;
     dword type;
 
@@ -119,8 +119,8 @@ BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWS
     RegCloseKey(kkey);
 }
 
-BASE_API CWStr Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *) {
-    CWStr str;
+BASE_API std::wstring Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *) {
+    std::wstring str;
 
     Reg_GetString(pkey, path, name, str);
 

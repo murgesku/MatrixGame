@@ -16,7 +16,7 @@ CMatrixHint *CMatrixHint::m_Last;
 SHintBitmap *CMatrixHint::m_Bitmaps;
 int CMatrixHint::m_BitmapsCnt;
 
-CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &soundout, SHintElement *elems,
+CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const std::wstring &soundout, SHintElement *elems,
                                 CRect *otstup) {
     CBitmap bmps(g_CacheHeap);
     CBlockPar *bph = NULL;
@@ -24,7 +24,7 @@ CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &s
         bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(utils::format(L"%d", border));
 
         if (bph) {
-            CWStr src;
+            std::wstring src;
             if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png")) {
                 // return NULL;
             }
@@ -417,12 +417,12 @@ void CMatrixHint::PreloadBitmaps(void) {
     CBlockPar *bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGet(PAR_SOURCE_HINTS_BITMAPS);
     m_BitmapsCnt = bph->ParCount();
     m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
-    CWStr src;
+    std::wstring src;
     for (int i = 0; i < m_BitmapsCnt; ++i) {
         if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
             ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
         }
-        m_Bitmaps[i].name = new CWStr(bph->ParGetName(i));
+        m_Bitmaps[i].name = new std::wstring(bph->ParGetName(i));
         m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
         m_Bitmaps[i].bmp->LoadFromPNG(src.c_str());
         m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
@@ -430,7 +430,7 @@ void CMatrixHint::PreloadBitmaps(void) {
     }
 }
 
-static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index) {
+static EHintElementModificator Convert(std::wstring &bmph, const std::wstring &temp, int index) {
     bmph = ParamParser{temp}.GetStrPar(index, L":");
     if (bmph == L"C")
         return HEM_CENTER;
@@ -453,8 +453,8 @@ static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index
     }
 }
 
-static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
-    CWStr text2;
+static void Replace(std::wstring &text, const wchar *baserepl, CBlockPar *repl) {
+    std::wstring text2;
     size_t ii = 0;
     for (;;) {
         size_t i1 = text.find(L"[", ii, 1);
@@ -470,7 +470,7 @@ static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
             else {
                 // int cnt = repl->ParCount(text2);
                 // repl->Par
-                // CWStr text3(g_CacheHeap);
+                // std::wstring text3;
                 // for (int k=0;k<cnt;++k)
                 utils::replace(text, L"[" + text2 + L"]", repl->ParGetNE(text2));
             }
@@ -483,12 +483,12 @@ static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
 
 //#define BGR2RGB(c) (((c & 255) << 16) | (c & 0x0000FF00) | ((c >> 16) & 255) | c&0xFF000000)
 
-CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl) {
+CMatrixHint *CMatrixHint::Build(const std::wstring &templatename, const wchar *baserepl) {
     DTRACE();
 
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CBlockPar *bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
-    CWStr str;
+    std::wstring str;
 
     DCP();
 
@@ -507,7 +507,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
                 continue;
             DCP();
 
-            CWStr templ;
+            std::wstring templ;
 
             for (; ii < cnt; ++ii) {
                 DCP();
@@ -527,9 +527,9 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
     return Build(str, repl, baserepl);
 }
 
-CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl) {
-    CWStr soundin;
-    CWStr soundout;
+CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const wchar *baserepl) {
+    std::wstring soundin;
+    std::wstring soundout;
 
     SHintElement elems[256];
 
@@ -543,8 +543,8 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     int border = ParamParser{str}.GetIntPar(0, L"|");
     int cnt = ParamParser{str}.GetCountPar(L"|");
     int idx = 1;
-    CWStr bmpn;
-    CWStr font(L"Font.2Normal");
+    std::wstring bmpn;
+    std::wstring font(L"Font.2Normal");
     DWORD color = 0xFFFFFFFF;
     EHintElementModificator modif = HEM_BITMAP;
     int nelem = 0;
@@ -565,7 +565,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             continue;
         }
         else if (utils::starts_with(temp, L"_IF:")) {
-            CWStr text(temp.c_str() + 4);
+            std::wstring text(temp.c_str() + 4);
             if (repl)
                 Replace(text, baserepl, repl);
             skip = text.empty();
@@ -655,7 +655,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 // if (w == 0) w = g_ScreenX;
                 // if (h == 0) h = 200;
 
-                CWStr text(temp.c_str() + 6);
+                std::wstring text(temp.c_str() + 6);
 
                 if (repl)
                     Replace(text, baserepl, repl);

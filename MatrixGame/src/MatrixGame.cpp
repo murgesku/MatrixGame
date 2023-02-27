@@ -212,7 +212,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     CStorage stor_cfg(g_MatrixHeap);
     bool stor_cfg_present = false;
-    CWStr stor_cfg_name;
+    std::wstring stor_cfg_name;
     std::wstring conf_file{FILE_CONFIGURATION_LOCATION};
     if (lang != NULL) {
         conf_file += lang;
@@ -366,7 +366,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CStorage stor(g_CacheHeap);
     DCP();
 
-    CWStr mapname;
+    std::wstring mapname;
 
     if (map) {
         if (wcschr(map, '\\') == NULL) {
@@ -389,7 +389,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     }
     DCP();
 
-    CWStr mn(g_MatrixMap->MapName());
+    std::wstring mn(g_MatrixMap->MapName());
     utils::to_lower(mn);
     if (mn.find(L"demo") != std::wstring::npos)
     {
@@ -731,7 +731,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupHead) {
         for (int i = 0; i < MENU_HEAD_ITEMS; i++) {
-            g_PopupHead[i].text.CWStr::~CWStr();
+            g_PopupHead[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupHead, g_MatrixHeap);
@@ -740,7 +740,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupHull) {
         for (int i = 0; i < MENU_HULL_ITEMS; i++) {
-            g_PopupHull[i].text.CWStr::~CWStr();
+            g_PopupHull[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupHull, g_MatrixHeap);
@@ -749,7 +749,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupWeaponNormal) {
         for (int i = 0; i < MENU_WEAPONNORM_ITEMS; i++) {
-            g_PopupWeaponNormal[i].text.CWStr::~CWStr();
+            g_PopupWeaponNormal[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupWeaponNormal, g_MatrixHeap);
@@ -758,7 +758,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupWeaponExtern) {
         for (int i = 0; i < MENU_WEAPONEXTERN_ITEMS; i++) {
-            g_PopupWeaponExtern[i].text.CWStr::~CWStr();
+            g_PopupWeaponExtern[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupWeaponExtern, g_MatrixHeap);
@@ -767,7 +767,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupChassis) {
         for (int i = 0; i < MENU_CHASSIS_ITEMS; i++) {
-            g_PopupChassis[i].text.CWStr::~CWStr();
+            g_PopupChassis[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupChassis, g_MatrixHeap);
@@ -776,7 +776,7 @@ void MatrixGameDeinit(void) {
 
     if (g_Config.m_Labels) {
         for (int i = 0; i < LABELS_LAST; i++) {
-            g_Config.m_Labels[i].CWStr::~CWStr();
+            g_Config.m_Labels[i].std::wstring::~wstring();
         }
         HFree(g_Config.m_Labels, g_MatrixHeap);
         g_Config.m_Labels = NULL;
@@ -784,7 +784,7 @@ void MatrixGameDeinit(void) {
 
     if (g_Config.m_Descriptions) {
         for (int i = 0; i < DESCRIPTIONS_LAST; i++) {
-            g_Config.m_Descriptions[i].CWStr::~CWStr();
+            g_Config.m_Descriptions[i].std::wstring::~wstring();
         }
         HFree(g_Config.m_Descriptions, g_MatrixHeap);
         g_Config.m_Descriptions = NULL;

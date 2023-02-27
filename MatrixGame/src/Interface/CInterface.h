@@ -152,10 +152,10 @@ class CInterface : public CMain {
     float max_lives;
     float spd;
     float wght;
-    CWStr name;
-    CWStr item_label1;
-    CWStr item_label2;
-    CWStr rcname;
+    std::wstring name;
+    std::wstring item_label1;
+    std::wstring item_label2;
+    std::wstring rcname;
 
     ESelection cur_sel;
 
@@ -198,7 +198,7 @@ public:
     DWORD m_AlwaysOnTop;  // it is boolean var. used DWORD only align reasons
 
     int m_nId;
-    CWStr m_strName;
+    std::wstring m_strName;
     float m_xPos, m_yPos, m_zPos;
     CIFaceElement *m_FirstElement, *m_LastElement;
     CIFaceImage *m_FirstImage, *m_LastImage;
@@ -213,7 +213,7 @@ public:
     void SortElementsByZ();
     void Reset();
 
-    CIFaceImage *FindImageByName(CWStr name);
+    CIFaceImage *FindImageByName(std::wstring name);
     CIFaceStatic *CreateStaticFromImage(float x, float y, float z, const CIFaceImage &image, bool fullsize = false);
 
     BYTE GetAlpha() { return m_VisibleAlpha; }
@@ -221,7 +221,7 @@ public:
     void BeforeRender(void);
     void Render();
 
-    bool FindElementByName(const CWStr &name);
+    bool FindElementByName(const std::wstring &name);
 
     static void CopyElements(CIFaceElement *el1, CIFaceElement *el2);
 
@@ -278,7 +278,7 @@ public:
     int m_Pilons[5 * 6];  // 5 pilons max, 6 armors
 
     CMatrixHint *m_CurrentHint;
-    CWStr m_CurrentHintControlName;
+    std::wstring m_CurrentHintControlName;
 
     DWORD m_IfListFlags;
     Focus m_InFocus;
@@ -369,13 +369,13 @@ public:
     void HideHintButton(EHintButton butt);
     void DisableMainMenuButton(EHintButton butt);
     void EnableMainMenuButton(EHintButton butt);
-    void HintButtonId2Name(EHintButton butt, CWStr &name);
+    void HintButtonId2Name(EHintButton butt, std::wstring &name);
     void PressHintButton(EHintButton butt);
 
     bool CorrectCoordinates(int screen_width, int screen_height, int &posx, int &posy, int width, int height,
-                            const CWStr &name);
-    void AddHintReplacements(const CWStr &element_name);
-    bool CheckShowHintLogic(const CWStr &element_name);
+                            const std::wstring &name);
+    void AddHintReplacements(const std::wstring &element_name);
+    bool CheckShowHintLogic(const std::wstring &element_name);
     void LiveRobot(void);
     void EnterRobot(bool pos = false);
     void BeginBuildTurret(int no);

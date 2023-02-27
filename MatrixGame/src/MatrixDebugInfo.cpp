@@ -23,8 +23,9 @@ CMatrixDebugInfo::CMatrixDebugInfo(void) {
 
 void CMatrixDebugInfo::Clear(void) {
     for (int i = 0; i < m_ItemsCnt; ++i) {
-        HDelete(CWStr, m_Items[i].key, g_MatrixHeap);
-        HDelete(CWStr, m_Items[i].val, g_MatrixHeap);
+        using std::wstring;
+        HDelete(wstring, m_Items[i].key, g_MatrixHeap);
+        HDelete(wstring, m_Items[i].val, g_MatrixHeap);
     }
     m_ItemsCnt = 0;
 
@@ -106,8 +107,8 @@ void CMatrixDebugInfo::T(const wchar *key, const wchar *val, int ttl, int bttl, 
     if (m_ItemsCnt >= MAX_DEBUG_INFO_ITEMS)
         return;
 
-    m_Items[m_ItemsCnt].key = HNew(g_MatrixHeap) CWStr(key);
-    m_Items[m_ItemsCnt].val = HNew(g_MatrixHeap) CWStr(val);
+    m_Items[m_ItemsCnt].key = HNew(g_MatrixHeap) std::wstring(key);
+    m_Items[m_ItemsCnt].val = HNew(g_MatrixHeap) std::wstring(val);
     m_Items[m_ItemsCnt].ttl = ttl;
     m_Items[m_ItemsCnt].bttl = bttl;
     ++m_ItemsCnt;
@@ -128,8 +129,9 @@ void CMatrixDebugInfo::Takt(int ms) {
         m_Items[i].ttl -= ms;
         if (m_Items[i].ttl <= 0) {
             --m_ItemsCnt;
-            HDelete(CWStr, m_Items[i].key, g_MatrixHeap);
-            HDelete(CWStr, m_Items[i].val, g_MatrixHeap);
+            using std::wstring;
+            HDelete(wstring, m_Items[i].key, g_MatrixHeap);
+            HDelete(wstring, m_Items[i].val, g_MatrixHeap);
             if (i < m_ItemsCnt) {
                 memcpy(m_Items + i, m_Items + i + 1, sizeof(SDIItem) * (m_ItemsCnt - i));
             }

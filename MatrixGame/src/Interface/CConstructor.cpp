@@ -1035,8 +1035,8 @@ void CConstructorPanel::UnFocusElement(CIFaceElement *element) {
     if (m_FocusedElement == element) {
         g_IFaceList->DeleteItemPrice();
         m_FocusedElement = NULL;
-        m_FocusedLabel = CWStr(L"");
-        m_FocusedDescription = CWStr(L"");
+        m_FocusedLabel = std::wstring(L"");
+        m_FocusedDescription = std::wstring(L"");
     }
 }
 
@@ -1186,7 +1186,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 
     utils::replace(m_FocusedLabel, L"<br>", L"\r\n");
 
-    CWStr color(L"<Color=247,195,0>");
+    std::wstring color(L"<Color=247,195,0>");
     if (type == MRT_WEAPON) {
         int wspeed = g_Config.m_WeaponCooldown[WeapKind2Index(kind)];
         int damage = g_Config.m_RobotDamages[WeapKind2Index(kind)].damage;
@@ -1209,8 +1209,8 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         //    damage = g_Config.m_RobotDamages[Weap2Index(WEAPON_BOMB)].damage / wspeed;
         //}
 
-        CWStr colored_damage = color + utils::format(L"%d", damage / 10) + L"</color>";
-        CWStr colored_adamage = color + utils::format(L"%d", adamage / 10) + L"</color>";
+        std::wstring colored_damage = color + utils::format(L"%d", damage / 10) + L"</color>";
+        std::wstring colored_adamage = color + utils::format(L"%d", adamage / 10) + L"</color>";
 
         utils::replace(m_FocusedLabel, L"<Damage>", colored_damage);
         utils::replace(m_FocusedLabel, L"<AddDamage>", colored_adamage);
@@ -1235,7 +1235,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         bp = bp->BlockGetNE(hn);
         if (bp) {
             int ccc = bp->ParCount();
-            CWStr repl;
+            std::wstring repl;
             for (int i = 0; i < ccc; ++i) {
                 double sign = 1;
 
@@ -1281,9 +1281,9 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
         int pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].common;
         int ext_pilons = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].extra;
 
-        CWStr colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
-        CWStr colored_pilons = color + utils::format(L"%d", pilons) + L"</color>";
-        CWStr colored_epilons = color + utils::format(L"%d", ext_pilons) + L"</color>";
+        std::wstring colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
+        std::wstring colored_pilons = color + utils::format(L"%d", pilons) + L"</color>";
+        std::wstring colored_epilons = color + utils::format(L"%d", ext_pilons) + L"</color>";
 
         utils::replace(m_FocusedLabel, L"<Size>", colored_size);
         utils::replace(m_FocusedLabel, L"<Pilons>", colored_pilons);
@@ -1291,7 +1291,7 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
     }
     else if (type == MRT_CHASSIS) {
         int structure = (int)g_Config.m_ItemChars[CHASSIS1_STRUCTURE + (kind - 1) * 6];
-        CWStr colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
+        std::wstring colored_size = color + utils::format(L"%d", structure / 10) + L"</color>";
         utils::replace(m_FocusedLabel, L"<Size>", colored_size);
     }
 }
@@ -1299,8 +1299,8 @@ void CConstructorPanel::MakeItemReplacements(ERobotUnitType type, ERobotUnitKind
 void CConstructorPanel::SetLabelsAndPrice(ERobotUnitType type, ERobotUnitKind kind) {
     g_IFaceList->DeleteItemPrice();
     if (kind == RUK_UNKNOWN) {
-        m_FocusedLabel = CWStr(L"");
-        m_FocusedDescription = CWStr(L"");
+        m_FocusedLabel = std::wstring(L"");
+        m_FocusedDescription = std::wstring(L"");
         return;
     }
 
@@ -1469,7 +1469,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp)
         if (str.GetCountPar(L",") < 2)
             continue;
 
-        CWStr str2;
+        std::wstring str2;
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor = bp.ParGetName(i).GetInt();
         if (m_AIRobotTypeList[m_AIRobotTypeCnt].m_Pripor < 1)

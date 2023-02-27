@@ -630,7 +630,7 @@ struct SpawnEffectLightening : public SpawnEffectProps {
 
     union {
         SpawnEffectLightening *m_Pair;
-        CWStr *m_Tag;
+        std::wstring *m_Tag;
     };
 
     float m_ttl;

@@ -46,7 +46,7 @@ inline void snd_play(DWORD s) {
 }
 
 CSound::SSoundItem::SSoundItem(const wchar *sndname) : vol0(1), vol1(1), pan0(0), pan1(0), flags(0) {
-    new(&Path()) CWStr(sndname);
+    new(&Path()) std::wstring(sndname);
 }
 
 void CSound::Init(void) {
@@ -239,7 +239,7 @@ void CSound::Init(void) {
 #ifdef _DEBUG
     for (int i = 0; i < S_COUNT; ++i) {
         if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED)) {
-            // ERROR_S((CWStr(L"Sound ") + i + L" not initialized!").Get());
+            // ERROR_S((std::wstring(L"Sound ") + i + L" not initialized!").Get());
             MessageBoxW(NULL, utils::format(L"Sound %d not initialized!", i).c_str(), L"Error", MB_ICONERROR);
             debugbreak();
         }
@@ -556,7 +556,7 @@ DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, f
 #if defined _TRACE || defined _DEBUG
     }
     catch (...) {
-        ERROR_S2(L"Problem with sound: ", CWStr(name).c_str());
+        ERROR_S2(L"Problem with sound: ", std::wstring(name).c_str());
     }
 #endif
 
@@ -778,7 +778,7 @@ void CSound::StopPlay(DWORD id) {
     if (id == SOUND_ID_EMPTY)
         return;
     if (g_RangersInterface) {
-        // g_MatrixMap->m_DI.T(CWStr(L"sndoff") + (int)id, L"");
+        // g_MatrixMap->m_DI.T(std::wstring(L"sndoff") + (int)id, L"");
 
         int idx = FindSoundSlotPlayedOnly(id);
         if (idx >= 0) {
@@ -997,7 +997,7 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                 CSound::m_AllSounds[idx].curpan = pan;
                 CSound::m_AllSounds[idx].curvol = vol;
 
-                // g_MatrixMap->m_DI.T(CWStr(vol).Get(), L"1212");
+                // g_MatrixMap->m_DI.T(std::wstring(vol).Get(), L"1212");
             }
             else {
             dele:;

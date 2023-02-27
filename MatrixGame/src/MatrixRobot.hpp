@@ -344,7 +344,7 @@ public:
     int GetOrdersInPool() { return m_OrdersInPool; }
     SOrder *GetOrder(int no) { return m_OrdersList + no; }
     CMatrixEffectSelection *GetSelection() { return m_Selection; }
-    // CWStr      &GetName()                                           { return m_Name; }
+    // std::wstring      &GetName()                                           { return m_Name; }
     const SBotWeapon &GetWeapon(int i) const { return m_Weapons[i]; }
     float GetMaxFireDist() { return m_MaxFireDist; }
     float GetMinFireDist() { return m_MinFireDist; }

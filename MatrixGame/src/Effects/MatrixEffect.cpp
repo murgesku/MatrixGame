@@ -602,7 +602,7 @@ void CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &p
         //
         //            for (;ef;ef = ef->m_TypeNext)
         //            {
-        //                CWStr hex;
+        //                std::wstring hex;
         //                hex.AddHex(BYTE((DWORD(ef) >> 24) & 0xFF));
         //                hex.AddHex(BYTE((DWORD(ef) >> 16) & 0xFF));
         //                hex.AddHex(BYTE((DWORD(ef) >> 8) & 0xFF));
@@ -1026,7 +1026,7 @@ void CMatrixEffect::DrawEnd(void) {
     //    for (int i=0; i<16;++i)
     //    {
     //        if (pri[i] == -1) break;
-    //        g_MatrixMap->m_DI.T(L"ls:" + CWStr(pri[i]), CWStr(pric[i]), 1000);
+    //        g_MatrixMap->m_DI.T(L"ls:" + std::wstring(pri[i]), std::wstring(pric[i]), 1000);
     //
     //
     //    }

@@ -265,7 +265,7 @@ void CMatrixBuilding::RNeed(dword need) {
                             }
                             so=so->m_Next;
                         }
-        //				(CWStr(L"SB_")+CWStr(m_ShadowSize)+CWStr(L"_")+CWStr(m_Kind)).Get()
+        //				(std::wstring(L"SB_")+std::wstring(m_ShadowSize)+std::wstring(L"_")+std::wstring(m_Kind)).Get()
                         ShadowProjBuild(*m_ShadowProj,*(m_Graph->VO()),tex,0,m_Matrix,g_MatrixMap->m_LightMain,10,m_ShadowSize,false);
                     }
                     if(!(m_ShadowProj->IsProjected())) {
@@ -394,13 +394,13 @@ void CMatrixBuilding::Takt(int cms) {
                 int prihod = RESOURCES_INCOME_BASE * fu / 100;
                 CMatrixEffect::CreateBillboardScore(utils::format(L"a%d", prihod).c_str(), m_TopPoint, 0xFFFFFFFF);
                 // if(m_BaseRCycle == 0){
-                //    CMatrixEffect::CreateBillboardScore(L"t" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                //    CMatrixEffect::CreateBillboardScore(L"t" + std::wstring(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}else if(m_BaseRCycle == 1){
-                //    CMatrixEffect::CreateBillboardScore(L"e" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                //    CMatrixEffect::CreateBillboardScore(L"e" + std::wstring(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}else if(m_BaseRCycle == 2){
-                //    CMatrixEffect::CreateBillboardScore(L"b" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                //    CMatrixEffect::CreateBillboardScore(L"b" + std::wstring(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}else if(m_BaseRCycle == 3){
-                //    CMatrixEffect::CreateBillboardScore(L"p" + CWStr(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
+                //    CMatrixEffect::CreateBillboardScore(L"p" + std::wstring(prihod, g_CacheHeap), m_TopPoint, 0xFFFFFF00);
                 //}
 
             } break;
@@ -699,10 +699,10 @@ void CMatrixBuilding::LogicTakt(int cms) {
             // replace geometry
             int n = (int)m_Kind;
 
-            CWStr namet(OBJECT_PATH_BUILDINGS_RUINS);
+            std::wstring namet(OBJECT_PATH_BUILDINGS_RUINS);
             namet += L"b";
             namet += utils::format(L"%d", n);
-            CWStr namev(namet);
+            std::wstring namev(namet);
             namev += L".vo";
 
             CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
@@ -717,7 +717,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
 
             n = IRND(30) + 20;
             for (int i = 0; i < n; ++i) {
-                CWStr type(L"1,1000,5000,");
+                std::wstring type(L"1,1000,5000,");
                 type += utils::format(L"%d", IRND(500) + 700);
                 type += L",2400,60,false,0.03,78000000";
 

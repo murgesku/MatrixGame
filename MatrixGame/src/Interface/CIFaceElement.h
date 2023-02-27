@@ -21,7 +21,7 @@ class CAnimation;
 #define IFEF_CLEARRECT SETBIT(1)
 
 struct SElementHint {
-    CWStr HintTemplate;
+    std::wstring HintTemplate;
     int timer;
     int x;
     int y;
@@ -52,7 +52,7 @@ public:
     CAnimation *m_Animation;
     byte m_VisibleAlpha;
     SStateImages m_StateImages[MAX_STATES];
-    CWStr m_strName;
+    std::wstring m_strName;
     float m_Param1;
     float m_Param2;
     int m_iParam;

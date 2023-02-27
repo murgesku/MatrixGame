@@ -74,8 +74,8 @@ enum ERobotUnitKind : unsigned int {
 };
 
 struct SStringPair {
-    CWStr key;
-    CWStr val;
+    std::wstring key;
+    std::wstring val;
 };
 
 enum EKeyAction {
@@ -617,8 +617,8 @@ public:
     int m_Overheat[OVERHEAT_LAST];
     float m_ItemChars[CHARS_LAST];
 
-    CWStr *m_Labels;
-    CWStr *m_Descriptions;
+    std::wstring* m_Labels;
+    std::wstring* m_Descriptions;
 
     float m_RobotRadarR;
     float m_FlyerRadarR;

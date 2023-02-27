@@ -435,7 +435,7 @@ public:
     SMatrixTeam *GetTeam(int no) { return m_Team + no; }
 
     int m_Id;
-    CWStr m_Name;
+    std::wstring m_Name;
 
     DWORD m_Color;
     DWORD m_ColorMM;
@@ -455,7 +455,7 @@ public:
     // Player
     CConstructorPanel *m_ConstructPanel;
     void InitPlayerSide();
-    CWStr m_PlayerName;
+    std::wstring m_PlayerName;
     EPlayerActions m_CurrentAction;
     int m_nCurrRobotPos;
     ESelection m_CurrSel;

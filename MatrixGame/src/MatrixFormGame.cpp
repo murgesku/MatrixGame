@@ -105,7 +105,7 @@ void CFormMatrixGame::Draw(void) {
         g_MatrixMap->m_DI.T(L"Free Texture Mem", utils::format(L"%d", g_AvailableTexMem).c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
-        CWStr txt;
+        std::wstring txt;
         txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
         txt.insert(txt.length() - 1, L".");
         txt += L", ";
@@ -117,7 +117,7 @@ void CFormMatrixGame::Draw(void) {
         g_MatrixMap->m_DI.T(L"Camera target", txt.c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
-        CWStr txt;
+        std::wstring txt;
         txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
         txt.insert(txt.length() - 1, L".");
         txt += L", ";
@@ -132,7 +132,7 @@ void CFormMatrixGame::Draw(void) {
         // Float2Int(D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter()-(g_MatrixMap->m_Camera.GetTarget()+D3DXVECTOR3(0,0,g_MatrixMap->m_Camera.GetZRel()))))
         // * 10.0f); txt.Insert(txt.length()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
 
-        // g_MatrixMap->m_DI.T(L"Z rel",CWStr(g_MatrixMap->m_Camera.GetZRel()));
+        // g_MatrixMap->m_DI.T(L"Z rel",std::wstring(g_MatrixMap->m_Camera.GetZRel()));
     }
 
     g_MatrixMap->BeforeDraw();

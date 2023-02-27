@@ -51,7 +51,7 @@ CFile::CFile(CHeap *heap) : CMain(), m_FileName{} {
     m_Open = 0;
 }
 
-CFile::CFile(const CWStr &filename, CHeap *heap) : CMain(), m_FileName{} {
+CFile::CFile(const std::wstring &filename, CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -360,7 +360,7 @@ void CFile::Write(void *buf, DWORD kolbyte) {
     }
 }
 
-static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+static bool FileExistA(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
     size_t len = std::wcslen(mname);
@@ -387,7 +387,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname;
+        std::wstring curname;
         while (true) {
             curname = utils::to_wstring(fd.cFileName);
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
@@ -442,7 +442,7 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
     return true;
 }
 
-static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+static bool FileExistW(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
     int len = std::wcslen(mname);
@@ -469,7 +469,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname;
+        std::wstring curname;
         while (true) {
             curname = fd.cFileName;
             int sme = curname.rfind(L'.') + 1; // TODO: pay attention
@@ -524,7 +524,7 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
     return true;
 }
 
-bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+bool CFile::FileExist(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
     if (mname[0] == '.' && (mname[1] == '\\' || mname[1] == '/'))
@@ -597,13 +597,13 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     return false;
 }
 
-void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
+void CFile::FindFiles(const std::wstring &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
     if (IS_UNICODE()) {
-        CWStr fn(folderfrom);
+        std::wstring fn(folderfrom);
         if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
             fn += L"\\";
         }
-        CWStr fnf(fn);
+        std::wstring fnf(fn);
 
         WIN32_FIND_DATAW fd;
 
@@ -613,7 +613,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(fd.cFileName);
+                    std::wstring found(fd.cFileName);
                     ef(fn + found, user);
                 }
             }
@@ -626,7 +626,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(fd.cFileName);
+                    std::wstring found(fd.cFileName);
                     if (found != L"." && found != L"..") {
                         FindFiles(fn + found, files, ef, user);
                     }
@@ -651,7 +651,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(utils::to_wstring(fn + fd.cFileName));
+                    std::wstring found(utils::to_wstring(fn + fd.cFileName));
                     ef(found, user);
                 }
             }
@@ -664,9 +664,9 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(utils::to_wstring(fd.cFileName));
+                    std::wstring found(utils::to_wstring(fd.cFileName));
                     if (found != L"." && found != L"..") {
-                        FindFiles(CWStr(utils::to_wstring(fn)) + found, files, ef, user);
+                        FindFiles(utils::to_wstring(fn) + found, files, ef, user);
                     }
                 }
             }

@@ -181,7 +181,7 @@ public:
 class CPackFile : public CMain {
 public:
     CHeap *m_Heap;
-    CWStr m_FileName;  // Имя пакетного файла
+    std::wstring m_FileName;  // Имя пакетного файла
 
 #ifdef SUPPORT_IN_MEMORY_STRUCTURES
     DWORD m_Flags;
@@ -206,7 +206,7 @@ public:
     CPackFile(CHeap *heap, const wchar *name);
     ~CPackFile(void);
 
-    const CWStr GetName(void) const { return m_FileName; }
+    const std::wstring GetName(void) const { return m_FileName; }
 
     // ******* Процедуры работы с пакетным файлом ******** //
     bool OpenPacketFile(void);  // Открывает пакетный файл и считывает данные чтение

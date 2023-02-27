@@ -272,7 +272,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
             }
         }
 
-        // bmp.SaveInPNG((CWStr(L"bla_") + i + L".png").c_str());
+        // bmp.SaveInPNG((std::wstring(L"bla_") + i + L".png").c_str());
         CBottomTextureUnion::Get(i).MakeFromBitmap(bmp);
     }
 
@@ -624,8 +624,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 // replace geometry
                 int n = (int)kind[i];
 
-                CWStr namet = utils::format(L"%lsb%d", OBJECT_PATH_BUILDINGS_RUINS, n);
-                CWStr namev = namet + L".vo";
+                std::wstring namet = utils::format(L"%lsb%d", OBJECT_PATH_BUILDINGS_RUINS, n);
+                std::wstring namev = namet + L".vo";
 
                 CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
                 mo->InitAsBaseRuins(D3DXVECTOR2(xf[i], yf[i]), ang[i], namev, namet, true);
@@ -934,7 +934,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 DWORD uniq;
 CBuf *robots_buf;
 
-int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
+int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     DTRACE();
 
     robots_buf = NULL;
@@ -982,7 +982,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_MACROTEXTURE);
     if (ic >= 0) {
-        CWStr mt;
+        std::wstring mt;
         mt = propval->GetAsParamParser(ic);
         if (mt.empty()) {
             MacrotextureClear();
@@ -1011,7 +1011,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     m_TexUnionDim = 16;
     m_TexUnionSize = m_TexUnionDim * m_TexUnionDim;
 
-    ic = propkey->FindAsWStr(CWStr(DATA_TEXUNIONDIM));
+    ic = propkey->FindAsWStr(std::wstring(DATA_TEXUNIONDIM));
     if (ic >= 0) {
         m_TexUnionDim = propval->GetAsParamParser(ic).GetInt();
         m_TexUnionSize = m_TexUnionDim * m_TexUnionDim;
@@ -1070,7 +1070,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_SKYNAME);
     if (ic >= 0) {
-        CWStr skyname;
+        std::wstring skyname;
         skyname = propval->GetAsWStr(ic);
 
         CBlockPar *skbp = g_MatrixData->BlockGet(L"Sky")->BlockGet(skyname);
@@ -1092,7 +1092,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
                     skyname = L"Right";
                 // else if (idx == 4) skyname = L"Up";
 
-                CWStr texname(skbp->ParGet(skyname).GetStrPar(0, L","));
+                std::wstring texname(skbp->ParGet(skyname).GetStrPar(0, L","));
 
                 if (g_Config.m_SkyBox == 2)
                     texname += L"_high";
@@ -1250,12 +1250,12 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     {
         CDataBuf *strc = stor.GetBuf(DATA_STRINGS, DATA_STRINGS_STRING, ST_WCHAR);
         m_IdsCnt = strc->GetArraysCount() + 1;
-        m_Ids = (CWStr *)HAlloc(m_IdsCnt * sizeof(CWStr), g_MatrixHeap);
+        m_Ids = (std::wstring *)HAlloc(m_IdsCnt * sizeof(std::wstring), g_MatrixHeap);
         int cnt = (m_IdsCnt - 1);
         for (int i = 0; i < cnt; i++) {
-            new(&m_Ids[i]) CWStr(strc->GetAsWStr(i));
+            new(&m_Ids[i]) std::wstring(strc->GetAsWStr(i));
         }
-        new(&m_Ids[cnt]) CWStr(mapname);
+        new(&m_Ids[cnt]) std::wstring(mapname);
     }
 
     g_LoadProgress->SetCurLPPos(2000);
@@ -1889,7 +1889,7 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
         robots_buf = NULL;
 
         m_Minimap.Init();
-        CWStr nnn(MapName());
+        std::wstring nnn(MapName());
         size_t pos1 = nnn.rfind('\\');
         size_t pos2 = nnn.rfind('/');
 

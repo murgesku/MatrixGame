@@ -232,13 +232,13 @@ class CSound : public CMain {
         float radius;
         float ttl;       // valid only for looped pos sounds
         float fadetime;  // valid only for looped pos sounds
-        BYTE path[sizeof(CWStr)];
+        BYTE path[sizeof(std::wstring)];
 
         SSoundItem(void){};
         SSoundItem(const wchar *sndname);
         ~SSoundItem(){};
-        void Release(void) { Path().~CWStr(); }
-        CWStr &Path(void) { return *((CWStr *)&path); }
+        void Release(void) { Path().std::wstring::~wstring(); }
+        std::wstring &Path(void) { return *((std::wstring *)&path); }
 
         static const DWORD LOOPED = SETBIT(0);
         static const DWORD LOADED = SETBIT(1);

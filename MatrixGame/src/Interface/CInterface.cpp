@@ -154,7 +154,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
     DTRACE();
     bool need2save = false;
     int nElementNum = 0;
-    CWStr tmpStr;
+    std::wstring tmpStr;
     CBlockPar *pbp1 = NULL, *pbp2 = NULL;
 
     // Loading interface file
@@ -182,7 +182,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         g_IFaceList->m_IFRadarPosY = Float2Int(m_yPos);
     }
 
-    CWStr labels_text;
+    std::wstring labels_text;
     CBlockPar *labels_file = NULL;
 
     labels_file = pbp1->BlockGetNE(L"LabelsText");
@@ -649,7 +649,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 if (pbp2->ParCount(L"ClearRect") == 0) {
                     // pStatic->GenerateClearRect();
 
-                    // CWStr   rect(g_CacheHeap);
+                    // std::wstring   rect(g_CacheHeap);
                     // rect = pStatic->m_ClearRect.left; rect += L",";
                     // rect += pStatic->m_ClearRect.top; rect += L",";
                     // rect += pStatic->m_ClearRect.right; rect += L",";
@@ -722,8 +722,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             int clip_ex = par.GetIntPar(9, L",");
                             int clip_ey = par.GetIntPar(10, L",");
 
-                            const CWStr &state = label_block->Par(L"State");
-                            const CWStr &font = label_block->Par(L"Font");
+                            const std::wstring &state = label_block->Par(L"State");
+                            const std::wstring &font = label_block->Par(L"Font");
 
                             const auto color_par = label_block->Par(L"Color");
 
@@ -751,9 +751,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 st = IFACE_PRESSED_UNFOCUSED;
                             }
                             if (labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL) {
-                                CWStr t_code = if_elem->m_strName;
+                                std::wstring t_code = if_elem->m_strName;
                                 t_code += L"_" + state;
-                                CWStr text = labels_file->Par(t_code);
+                                std::wstring text = labels_file->Par(t_code);
 
                                 if (t_code == L"iw1text_sNormal") {
                                     g_PopupWeaponNormal[1].text = text;
@@ -878,7 +878,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 if_elem->m_StateImages[st].SetStateLabelParams(
                                         x, y, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x,
                                         align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey),
-                                        CWStr(L""), font, color);
+                                        std::wstring(L""), font, color);
                             }
                         }
                     }
@@ -1021,7 +1021,7 @@ bool CInterface::OnMouseMove(CPoint mouse) {
     bool MiniMapFocused = false;
     bool static_have_hint = false;
     g_IFaceList->m_FocusedElement = NULL;
-    CWStr static_name(L"");
+    std::wstring static_name(L"");
 
     if (m_VisibleAlpha) {
         CIFaceElement *pObjectsList = m_FirstElement;
@@ -1614,7 +1614,7 @@ void CInterface::Init(void) {
 
                         if (income != base_res_income) {
                             base_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"));
+                            std::wstring suck(bp_tmp->ParGet(L"ResPer"));
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption =
                                 utils::replace(
                                     suck,
@@ -1629,7 +1629,7 @@ void CInterface::Init(void) {
                         }
                         if (income != factory_res_income) {
                             factory_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"));
+                            std::wstring suck(bp_tmp->ParGet(L"ResPer"));
                             pElement->m_StateImages[IFACE_NORMAL].m_Caption =
                                 utils::replace(
                                     suck,
@@ -2697,7 +2697,7 @@ void CInterface::Init(void) {
                         else {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = 0;
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = std::wstring(L"");
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
 
@@ -3084,7 +3084,7 @@ void CInterface::CopyElements(CIFaceElement *el_src, CIFaceElement *el_dest) {
     );
 }
 
-CIFaceImage *CInterface::FindImageByName(CWStr name) {
+CIFaceImage *CInterface::FindImageByName(std::wstring name) {
     CIFaceImage *images = m_FirstImage;
     while (images) {
         if (images->m_strName == name)
@@ -3246,7 +3246,7 @@ void CInterface::SlideStep() {
     }
 }
 
-bool CInterface::FindElementByName(const CWStr &name) {
+bool CInterface::FindElementByName(const std::wstring &name) {
     CIFaceElement *elements = m_FirstElement;
     while (elements) {
         if (elements->m_strName == name) {
@@ -3629,7 +3629,7 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                 return;
             hu = hu - 1;
 
-            CIFaceImage overheat_image = *interfaces->FindImageByName(CWStr(IF_OVER_HEAT));
+            CIFaceImage overheat_image = *interfaces->FindImageByName(std::wstring(IF_OVER_HEAT));
             for (int i = 0; i < MR_MAXUNIT; i++) {
                 if (bot->m_Unit[i].m_Type == MRT_WEAPON) {
                     int pos;
@@ -3639,37 +3639,37 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                         }
                     }
 
-                    CWStr name;
+                    std::wstring name;
                     switch (bot->m_Unit[i].u1.s1.m_Kind) {
                         case RUK_WEAPON_MACHINEGUN:
-                            name = CWStr(IF_WEAPON_MACHINEGUN_ON);
+                            name = std::wstring(IF_WEAPON_MACHINEGUN_ON);
                             break;
                         case RUK_WEAPON_CANNON:
-                            name = CWStr(IF_WEAPON_CANNON_ON);
+                            name = std::wstring(IF_WEAPON_CANNON_ON);
                             break;
                         case RUK_WEAPON_LASER:
-                            name = CWStr(IF_WEAPON_LASER_ON);
+                            name = std::wstring(IF_WEAPON_LASER_ON);
                             break;
                         case RUK_WEAPON_PLASMA:
-                            name = CWStr(IF_WEAPON_PLASMA_ON);
+                            name = std::wstring(IF_WEAPON_PLASMA_ON);
                             break;
                         case RUK_WEAPON_FLAMETHROWER:
-                            name = CWStr(IF_WEAPON_FIRE_ON);
+                            name = std::wstring(IF_WEAPON_FIRE_ON);
                             break;
                         case RUK_WEAPON_MISSILE:
-                            name = CWStr(IF_WEAPON_ROCKET_ON);
+                            name = std::wstring(IF_WEAPON_ROCKET_ON);
                             break;
                         case RUK_WEAPON_ELECTRIC:
-                            name = CWStr(IF_WEAPON_ELECTRO_ON);
+                            name = std::wstring(IF_WEAPON_ELECTRO_ON);
                             break;
                         case RUK_WEAPON_REPAIR:
-                            name = CWStr(IF_WEAPON_REPAIR_ON);
+                            name = std::wstring(IF_WEAPON_REPAIR_ON);
                             break;
                         case RUK_WEAPON_BOMB:
-                            name = CWStr(IF_WEAPON_BOOM_ON);
+                            name = std::wstring(IF_WEAPON_BOOM_ON);
                             break;
                         case RUK_WEAPON_MORTAR:
-                            name = CWStr(IF_WEAPON_MINOMET_ON);
+                            name = std::wstring(IF_WEAPON_MINOMET_ON);
                             break;
                     }
 
@@ -3733,10 +3733,10 @@ void CIFaceList::CreateItemPrice(int *price) {
     while (interfaces) {
         if (interfaces->m_strName == IF_BASE) {
             float x = 22, y = 243, z = 0.00001f;
-            CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
-            CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
-            CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
-            CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
+            CIFaceImage titan_image = *interfaces->FindImageByName(std::wstring(IF_BASE_TITAN_IMAGE));
+            CIFaceImage electronics_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ELECTRONICS_IMAGE));
+            CIFaceImage energy_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ENERGY_IMAGE));
+            CIFaceImage plasma_image = *interfaces->FindImageByName(std::wstring(IF_BASE_PLASMA_IMAGE));
 
             for (int cnt = 0; cnt < MAX_RESOURCES; cnt++) {
                 if (res[cnt] != 0) {
@@ -3825,11 +3825,11 @@ void CIFaceList::CreateSummPrice(int multiplier) {
             else if (fuck == 2) {
                 x = 250;
             }
-            CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
-            CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
-            CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
-            CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
-            CIFaceImage warning_image = *interfaces->FindImageByName(CWStr(IF_BASE_WARNING));
+            CIFaceImage titan_image = *interfaces->FindImageByName(std::wstring(IF_BASE_TITAN_IMAGE));
+            CIFaceImage electronics_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ELECTRONICS_IMAGE));
+            CIFaceImage energy_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ENERGY_IMAGE));
+            CIFaceImage plasma_image = *interfaces->FindImageByName(std::wstring(IF_BASE_PLASMA_IMAGE));
+            CIFaceImage warning_image = *interfaces->FindImageByName(std::wstring(IF_BASE_WARNING));
 
             for (int cnt = 0; cnt < MAX_RESOURCES; cnt++) {
                 if (res[cnt] != 0) {
@@ -3886,7 +3886,7 @@ void CIFaceList::DeleteSummPrice() {
             CIFaceElement *elements = interfaces->m_FirstElement;
             while (elements) {
                 /*                if(elements->m_strName == IF_BASE_SUMM_PANEL){
-                                    elements->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
+                                    elements->m_StateImages[IFACE_NORMAL].m_Caption = std::wstring(L"");
                                     elements->m_StateImages[IFACE_NORMAL].SetStateText(true);
                                 }else */
                 if (elements->m_Type == IFACE_DYNAMIC_STATIC &&
@@ -4149,7 +4149,7 @@ void CIFaceList::CreateGroupSelection(CInterface *iface) {
     int sel_objs = 9;
 
     float x = 225, y = 49, z = 0.000001f;
-    CIFaceImage ramka_image = *iface->FindImageByName(CWStr(IF_GROUP_RAMKA));
+    CIFaceImage ramka_image = *iface->FindImageByName(std::wstring(IF_GROUP_RAMKA));
     for (int i = 0; i < sel_objs; i++) {
         float pos = (i + 1.0f) / 3.0f;
 
@@ -4396,25 +4396,25 @@ void CIFaceList::CreatePersonal() {
                 robot = true;
             } /*else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
                  if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_SPEED){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_TRANSPORT){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_BOMB){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_ATTACK){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_yTexPos;
                  }
                  flyer = true;
              }*/
@@ -4521,7 +4521,7 @@ void CIFaceList::CreateOrdersGlow(CInterface *iface) {
             y = 47 + 49;
         }
 
-        CIFaceStatic *s = iface->CreateStaticFromImage(x, y, z, *iface->FindImageByName(CWStr(IF_ORDER_GLOW)));
+        CIFaceStatic *s = iface->CreateStaticFromImage(x, y, z, *iface->FindImageByName(std::wstring(IF_ORDER_GLOW)));
         if (s) {
             s->SetVisibility(false);
             s->m_nId = ORDERS_GLOW_ID + i;
@@ -4568,76 +4568,76 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding *base, CMatrixMapStati
                 robot = true;
             } /*else if(object->GetObjectType() == OBJECT_TYPE_FLYER){
                  if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_SPEED){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_TRANSPORT){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_BOMB){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_ATTACK){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_yTexPos;
                  }
                  flyer = true;
              }*/
             else if (object->IsCannon()) {
                 if (((CMatrixCannon *)object)->m_Num == 1) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 2) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 3) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 4) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_yTexPos;
                 }
                 turret = true;
             }
@@ -4863,7 +4863,7 @@ void CIFaceList::HideHintButtons() {
 void CIFaceList::HideHintButton(EHintButton butt) {
     CIFaceElement *els = m_Hints->m_FirstElement;
 
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     while (els) {
@@ -4875,7 +4875,7 @@ void CIFaceList::HideHintButton(EHintButton butt) {
 }
 
 void CIFaceList::DisableMainMenuButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4888,7 +4888,7 @@ void CIFaceList::DisableMainMenuButton(EHintButton butt) {
 }
 
 void CIFaceList::EnableMainMenuButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4901,7 +4901,7 @@ void CIFaceList::EnableMainMenuButton(EHintButton butt) {
     }
 }
 void CIFaceList::PressHintButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4914,7 +4914,7 @@ void CIFaceList::PressHintButton(EHintButton butt) {
     }
 }
 
-void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname) {
+void CIFaceList::HintButtonId2Name(EHintButton butt, std::wstring &sname) {
     switch (butt) {
         case HINT_OK:
             sname = IF_HINTS_OK;
@@ -4944,7 +4944,7 @@ void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname) {
 }
 
 bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &posx, int &posy, int width, int height,
-                                    const CWStr &element_name) {
+                                    const std::wstring &element_name) {
     if (element_name == L"buro" || element_name == L"buca" || element_name == IF_ORDER_STOP ||
         element_name == IF_ORDER_MOVE || element_name == IF_ORDER_PATROL || element_name == IF_ORDER_FIRE ||
         element_name == IF_ORDER_CAPTURE || element_name == IF_ORDER_CANCEL || element_name == IF_ORDER_REPAIR ||
@@ -5016,7 +5016,7 @@ bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &po
     return true;
 }
 
-void CIFaceList::AddHintReplacements(const CWStr &element_name) {
+void CIFaceList::AddHintReplacements(const std::wstring &element_name) {
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
@@ -5146,7 +5146,7 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
     }
 }
 
-bool CIFaceList::CheckShowHintLogic(const CWStr &element_name) {
+bool CIFaceList::CheckShowHintLogic(const std::wstring &element_name) {
     if (element_name == IF_BASE_COUNTHZ) {
         if (FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)) {
             return false;
@@ -5281,7 +5281,7 @@ void CIFaceList::BeginBuildTurret(int no) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void SStateImages::SetStateLabelParams(int x, int y, int bound_x, int bound_y, int xAlign, int yAlign, int perenos,
-                                       int smeX, int smeY, CRect clipRect, CWStr t, CWStr font, DWORD color) {
+                                       int smeX, int smeY, CRect clipRect, std::wstring t, std::wstring font, DWORD color) {
     m_Caption = t;
     m_x = x;
     m_y = y;

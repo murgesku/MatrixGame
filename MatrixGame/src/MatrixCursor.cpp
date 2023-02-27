@@ -108,7 +108,7 @@ void CMatrixCursor::Select(const std::wstring& name) {
         CBitmap bm(g_CacheHeap);
         DCP();
 
-        CWStr tn;
+        std::wstring tn;
         DCP();
 
         CFile::FileExist(tn, n.c_str(), CacheExtsTex);

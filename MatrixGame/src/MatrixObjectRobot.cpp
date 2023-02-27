@@ -307,8 +307,8 @@ void CMatrixRobot::RNeed(dword need) {
         // float hp = (float)g_Config.m_RobotHitPoint;
         // InitMaxHitpoint(hp);
 
-        CWStr name, name_e;
-        CWStr path;
+        std::wstring name, name_e;
+        std::wstring path;
 
         for (int i = 0; i < m_UnitCnt; i++) {
             if (!m_Unit[i].m_Graph) {
