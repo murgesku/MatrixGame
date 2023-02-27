@@ -176,7 +176,7 @@ public:
     EShadowType m_ShadowType;  // 0-off 1-proj 2-proj with anim 3-stencil
     int m_ShadowSize;          // texture size for proj
 
-    CWStr m_Name;
+    std::wstring m_Name;
     int m_defHitPoint;
 
     float m_Speed;

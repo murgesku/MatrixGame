@@ -44,7 +44,6 @@ set(BASE_SOURCES
     Base/CRC32.cpp
     Base/CReminder.cpp
     Base/CStorage.cpp
-    Base/CWStr.cpp
     # Base/Mem.cpp
     Base/Pack.cpp
     Base/Registry.cpp
@@ -64,7 +63,6 @@ set(BASE_HEADERS
     Base/CRC32.hpp
     Base/CReminder.hpp
     Base/CStorage.hpp
-    Base/CWStr.hpp
     Base/Mem.hpp
     Base/Pack.hpp
     Base/Registry.hpp

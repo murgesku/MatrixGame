@@ -52,7 +52,7 @@ static void SkinPreloadMaskBack(const SSkin *s) {
 }
 
 const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
-    CWStr t(textures, g_CacheHeap), temp(g_CacheHeap), temp_prev(g_CacheHeap);
+    ParamParser t(textures), temp, temp_prev;
 
     ASSERT(gsp < GSP_COUNT);
 
@@ -75,12 +75,12 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
     for (int i = 0; i < n; ++i) {
         temp_prev = temp;
         temp = t.GetStrPar(i, L"*");
-        if (temp.IsEmpty())
+        if (temp.empty())
             continue;
 
         if (i == 0) {
             temp_prev = temp;
-            sk.m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
 
             sk.m_Tex->Preload();
             if ((sk.m_Tex->Flags() & TF_ALPHABLEND) == 0) {
@@ -89,17 +89,17 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
             }
         }
         else if (i == 1 && g_Config.m_ObjTexturesGloss) {
-            if (temp.Equal(L".")) {
+            if (temp == L".") {
                 gloss_off = true;
             }
             else {
-                sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+                sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
             }
         }
         else if (i == 2)
-            sk.m_TexBack = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_TexBack = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
         else if (i == 3)
-            sk.m_TexMask = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.Get());
+            sk.m_TexMask = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp.c_str());
         else if (i == 4) {
             sk.m_dtu = float(temp.GetStrPar(0, L",").GetDouble());
             sk.m_dtv = float(temp.GetStrPar(1, L",").GetDouble());
@@ -108,8 +108,9 @@ const SSkin *CSkinManager::GetSkin(const wchar *textures, DWORD gsp) {
 
     if (!gloss_off && g_Config.m_ObjTexturesGloss && sk.m_TexGloss == NULL && gspp == GSP_SIDE) {
         temp_prev += GLOSS_TEXTURE_SUFFIX;
-        if (CFile::FileExist(temp, temp_prev.Get(), L"dds~png")) {
-            sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp_prev.Get());
+        std::wstring dummy;
+        if (CFile::FileExist(dummy, temp_prev.c_str(), L"dds~png")) {
+            sk.m_TexGloss = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, temp_prev.c_str());
         }
     }
 
@@ -661,7 +662,7 @@ static bool obj_side4NA(const SSkin *sk, DWORD, int pass) {
             mmm._31 = ms->m_tu;
             mmm._32 = ms->m_tv;
 
-            // g_MatrixMap->m_DI.T(L"tutv", CWStr(ms->m_tu) + L"," + CWStr(ms->m_tv));
+            // g_MatrixMap->m_DI.T(L"tutv", std::wstring(ms->m_tu) + L"," + std::wstring(ms->m_tv));
 
             g_D3DD->SetTransform(D3DTS_TEXTURE2, &mmm);
 

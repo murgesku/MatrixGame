@@ -12,7 +12,7 @@
 class CIFaceImage : public CMain {
 public:
     CTextureManaged *m_Image;
-    CWStr m_strName;
+    std::wstring m_strName;
     float m_xTexPos;
     float m_yTexPos;
     float m_TexWidth;

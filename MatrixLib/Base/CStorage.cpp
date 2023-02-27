@@ -114,7 +114,7 @@ void CStorageRecordItem::ReleaseBuf(CHeap *heap) {
 }
 
 DWORD CStorageRecordItem::CalcUniqID(DWORD xi) {
-    DWORD x = CalcCRC32_Buf(xi, m_Name.Get(), m_Name.GetLen() * sizeof(wchar));
+    DWORD x = CalcCRC32_Buf(xi, m_Name.c_str(), m_Name.length() * sizeof(wchar));
     x = CalcCRC32_Buf(x, m_Buf->Get(), m_Buf->Len());
     x = CalcCRC32_Buf(x, &m_Type, sizeof(m_Type));
     return x;
@@ -177,7 +177,7 @@ void CStorageRecord::AddItem(const CStorageRecordItem &item) {
     // m_Items[m_ItemsCount-1].InitBuf(m_Heap);
 }
 
-CStorageRecord::CStorageRecord(const CStorageRecord &rec) : m_Heap(rec.m_Heap), m_Name(rec.m_Name, rec.m_Heap) {
+CStorageRecord::CStorageRecord(const CStorageRecord &rec) : m_Heap(rec.m_Heap), m_Name{rec.m_Name} {
     m_ItemsCount = rec.m_ItemsCount;
     m_Items = (CStorageRecordItem *)HAlloc(sizeof(CStorageRecordItem) * m_ItemsCount, m_Heap);
     for (int i = 0; i < m_ItemsCount; ++i) {
@@ -203,7 +203,7 @@ void CStorageRecord::Save(CBuf &buf, bool compression) {
 }
 
 DWORD CStorageRecord::CalcUniqID(DWORD xi) {
-    DWORD x = CalcCRC32_Buf(xi, m_Name.Get(), m_Name.GetLen() * sizeof(wchar));
+    DWORD x = CalcCRC32_Buf(xi, m_Name.c_str(), m_Name.length() * sizeof(wchar));
     for (int i = 0; i < m_ItemsCount; ++i) {
         x = m_Items[i].CalcUniqID(x);
     }
@@ -397,13 +397,13 @@ bool CStorage::Load(CBuf &buf_in) {
 void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
     DTRACE();
 
-    CWStr root_name(root, m_Heap);
+    std::wstring root_name(root);
 
     CStorageRecord sr(root_name, m_Heap);
-    sr.AddItem(CStorageRecordItem(CWStr(L"0", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"1", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"2", m_Heap), ST_WCHAR));
-    sr.AddItem(CStorageRecordItem(CWStr(L"3", m_Heap), ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(L"0", ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(L"1", ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(L"2", ST_WCHAR));
+    sr.AddItem(CStorageRecordItem(L"3", ST_WCHAR));
     AddRecord(sr);
 
     CDataBuf *propkey = GetBuf(root, L"0", ST_WCHAR);
@@ -421,18 +421,18 @@ void CStorage::StoreBlockPar(const wchar *root, const CBlockPar &bp) {
     propval = GetBuf(root, L"3", ST_WCHAR);
     cnt = bp.BlockCount();
 
-    CWStr uniq_s(m_Heap);
+    std::wstring uniq_s;
     for (int i = 0; i < cnt; ++i) {
         propkey->AddWStr(bp.BlockGetName(i));
 
         do {
-            uniq_s.Set(uniq);
+            uniq_s = utils::format(L"%d", uniq);
             uniq++;
         }
-        while (IsTablePresent(uniq_s.Get()));
+        while (IsTablePresent(uniq_s.c_str()));
 
         propval->AddWStr(uniq_s);
-        StoreBlockPar(uniq_s.Get(), *bp.BlockGet(i));
+        StoreBlockPar(uniq_s.c_str(), *bp.BlockGet(i));
     }
 }
 
@@ -449,7 +449,7 @@ void CStorage::RestoreBlockPar(const wchar *root, CBlockPar &bp) {
 
     for (DWORD i = 0; i < propkey->GetArraysCount(); ++i) {
         CBlockPar *bp1 = bp.BlockAdd(propkey->GetAsWStr(i));
-        RestoreBlockPar(propval->GetAsWStr(i).Get(), *bp1);
+        RestoreBlockPar(propval->GetAsWStr(i).c_str(), *bp1);
     }
 }
 

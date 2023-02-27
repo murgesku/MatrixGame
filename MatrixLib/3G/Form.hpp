@@ -24,7 +24,7 @@ private:
     CForm *m_FormNext;
 
 protected:
-    CWStr m_Name;  // Нужно всегда задавать имя для дочерних классов
+    std::wstring m_Name;  // Нужно всегда задавать имя для дочерних классов
 
 public:
     static void StaticInit(void);

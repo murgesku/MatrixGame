@@ -8,7 +8,6 @@
 #include "Base.pch"
 
 #include "CMain.hpp"
-#include "CWStr.hpp"
 
 #include <windows.h>
 
@@ -18,7 +17,7 @@ namespace Base {
 class CPackCollection;
 #endif
 
-typedef void (*ENUM_FILES)(const CWStr &name, DWORD user);
+typedef void (*ENUM_FILES)(const std::wstring &name, DWORD user);
 
 class BASE_API CFile : public CMain {
 #ifndef MAXEXP_EXPORTS
@@ -29,12 +28,12 @@ class BASE_API CFile : public CMain {
 #endif
 
     HANDLE m_Handle;   // Handle файла
-    CWStr m_FileName;  // Имя файла
+    std::wstring m_FileName;  // Имя файла
     int m_Open;        // Кол-во вызовов Open
 
 public:
     CFile(CHeap *heap = NULL);
-    CFile(const CWStr &filename, CHeap *heap = NULL);
+    CFile(const std::wstring &filename, CHeap *heap = NULL);
     CFile(const wchar *filename, CHeap *heap = NULL);
     CFile(const wchar *filename, int len, CHeap *heap = NULL);
     ~CFile();
@@ -52,13 +51,13 @@ public:
     static void ReleasePackFiles(void);
 #endif
 
-    static void FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user);
+    static void FindFiles(const std::wstring &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user);
 
     void Clear(void);
 
     void Init(const wchar *filename, int len);
-    void Init(const wchar *filename) { Init(filename, WStrLen(filename)); }
-    void Init(const CWStr &filename) { Init(filename.Get(), filename.GetLen()); }
+    void Init(const wchar *filename) { Init(filename, std::wcslen(filename)); }
+    void Init(const std::wstring &filename) { Init(filename.c_str(), filename.length()); }
 
     bool IsOpen(void) { return m_Open > 0; }
 
@@ -82,12 +81,7 @@ public:
     void Read(void *buf, DWORD kolbyte);
     void Write(void *buf, DWORD kolbyte);
 
-    static bool FileExist(CWStr &outname, const wchar *mname, const wchar *exts = NULL, bool withpar = false);
+    static bool FileExist(std::wstring &outname, const wchar *mname, const wchar *exts = NULL, bool withpar = false);
 };
-
-// У пути всегда наконце символ "\"
-// Пустой путь без символа "\" (пустая строка)
-BASE_API void CorrectFilePath(CWStr &filepath);  // Если нужно добовляет в конец символ "\"
-BASE_API CWStr GetFilePath(const CWStr &filepath);
 
 }  // namespace Base

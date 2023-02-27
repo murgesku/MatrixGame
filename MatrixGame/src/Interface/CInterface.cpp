@@ -35,8 +35,8 @@ SMenuItemText *g_PopupChassis;
 
 // Constructor destructor
 CInterface::CInterface()
-  : name(g_MatrixHeap), m_strName(g_MatrixHeap), item_label1(g_MatrixHeap), item_label2(g_MatrixHeap),
-    rcname(g_MatrixHeap) {
+  : name{}, m_strName{}, item_label1{}, item_label2{}, rcname{}
+{
     factory_res_income = -1;
     base_res_income = -1;
     btype = -1;
@@ -154,7 +154,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
     DTRACE();
     bool need2save = false;
     int nElementNum = 0;
-    CWStr tmpStr;
+    std::wstring tmpStr;
     CBlockPar *pbp1 = NULL, *pbp2 = NULL;
 
     // Loading interface file
@@ -182,7 +182,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         g_IFaceList->m_IFRadarPosY = Float2Int(m_yPos);
     }
 
-    CWStr labels_text(g_CacheHeap);
+    std::wstring labels_text;
     CBlockPar *labels_file = NULL;
 
     labels_file = pbp1->BlockGetNE(L"LabelsText");
@@ -219,9 +219,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             pButton->m_nId = pbp2->Par(L"id").GetInt();
             pButton->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"", g_CacheHeap);
-            hint_par = pbp2->ParNE(L"Hint");
-            if (hint_par != L"") {
+            auto hint_par = pbp2->ParNE(L"Hint");
+            if (!hint_par.empty()) {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pButton->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pButton->m_Hint.y = hint_par.GetIntPar(2, L",");
@@ -486,22 +485,22 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             }
 
             pButton->SetStateImage(
-                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").Get()),
+                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str()),
                     (float)pbp2->Par(L"sNormalX").GetDouble(), (float)pbp2->Par(L"sNormalY").GetDouble(),
                     (float)pbp2->Par(L"sNormalWidth").GetDouble(), (float)pbp2->Par(L"sNormalHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_FOCUSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sFocused").Get()),
+                    IFACE_FOCUSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sFocused").c_str()),
                     (float)pbp2->Par(L"sFocusedX").GetDouble(), (float)pbp2->Par(L"sFocusedY").GetDouble(),
                     (float)pbp2->Par(L"sFocusedWidth").GetDouble(), (float)pbp2->Par(L"sFocusedHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_PRESSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressed").Get()),
+                    IFACE_PRESSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressed").c_str()),
                     (float)pbp2->Par(L"sPressedX").GetDouble(), (float)pbp2->Par(L"sPressedY").GetDouble(),
                     (float)pbp2->Par(L"sPressedWidth").GetDouble(), (float)pbp2->Par(L"sPressedHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_DISABLED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sDisabled").Get()),
+                    IFACE_DISABLED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sDisabled").c_str()),
                     (float)pbp2->Par(L"sDisabledX").GetDouble(), (float)pbp2->Par(L"sDisabledY").GetDouble(),
                     (float)pbp2->Par(L"sDisabledWidth").GetDouble(), (float)pbp2->Par(L"sDisabledHeight").GetDouble());
 
@@ -509,7 +508,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 pButton->m_Type == IFACE_CHECK_PUSH_BUTTON) {
                 pButton->SetStateImage(
                         IFACE_PRESSED_UNFOCUSED,
-                        (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressedUnFocused").Get()),
+                        (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressedUnFocused").c_str()),
                         (float)pbp2->Par(L"sPressedUnFocusedX").GetDouble(),
                         (float)pbp2->Par(L"sPressedUnFocusedY").GetDouble(),
                         (float)pbp2->Par(L"sPressedUnFocusedWidth").GetDouble(),
@@ -520,8 +519,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             CBlockPar *animation = NULL;
             animation = pbp2->BlockGetNE(L"Animation");
             if (animation) {
-                CWStr par = animation->Par(L"Frames");
-                if (par.GetLen()) {
+                auto par = animation->Par(L"Frames");
+                if (par.length()) {
                     int frames_cnt = par.GetIntPar(0, L",");
                     int period = par.GetIntPar(1, L",");
                     int width = par.GetIntPar(2, L",");
@@ -536,7 +535,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                     frame.pos_x = pButton->m_xPos + 1;
                     frame.pos_y = pButton->m_yPos;
                     frame.pos_z = 0 /*pButton->m_zPos*/;
-                    frame.tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").Get());
+                    frame.tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str());
                     frame.tex_width = (float)pbp2->Par(L"sNormalWidth").GetDouble();
                     frame.tex_height = (float)pbp2->Par(L"sNormalHeight").GetDouble();
                     frame.ipos_x = m_xPos;
@@ -570,8 +569,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
 
             pStatic->m_strName = pbp2->Par(L"Name");
 
-            CWStr hint_par(L"", g_CacheHeap);
-            hint_par = pbp2->ParNE(L"Hint");
+            auto hint_par = pbp2->ParNE(L"Hint");
             if (hint_par != L"") {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
@@ -640,7 +638,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             }
 
             pStatic->SetStateImage(
-                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").Get()),
+                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str()),
                     (float)pbp2->Par(L"sNormalX").GetDouble(), (float)pbp2->Par(L"sNormalY").GetDouble(),
                     (float)pbp2->Par(L"sNormalWidth").GetDouble(), (float)pbp2->Par(L"sNormalHeight").GetDouble());
 
@@ -651,7 +649,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 if (pbp2->ParCount(L"ClearRect") == 0) {
                     // pStatic->GenerateClearRect();
 
-                    // CWStr   rect(g_CacheHeap);
+                    // std::wstring   rect(g_CacheHeap);
                     // rect = pStatic->m_ClearRect.left; rect += L",";
                     // rect += pStatic->m_ClearRect.top; rect += L",";
                     // rect += pStatic->m_ClearRect.right; rect += L",";
@@ -664,7 +662,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 else {
                     pStatic->SetClearRect();
 
-                    CWStr rect(pbp2->Par(L"ClearRect"), g_CacheHeap);
+                    auto rect(pbp2->Par(L"ClearRect"));
 
                     // element position relative
                     pStatic->m_ClearRect.left = rect.GetIntPar(0, L",");
@@ -681,7 +679,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             CIFaceImage *image = HNew(g_MatrixHeap) CIFaceImage;
             image->m_strName = pbp2->Par(L"Name");
 
-            image->m_Image = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"TextureFile").Get());
+            image->m_Image = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"TextureFile").c_str());
 
             image->m_xTexPos = (float)pbp2->Par(L"TexPosX").GetDouble();
             image->m_yTexPos = (float)pbp2->Par(L"TexPosY").GetDouble();
@@ -704,10 +702,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             if (labels) {
                 int labels_cnt = labels->BlockCount();
                 for (int bl_cnt = 0; bl_cnt < labels_cnt; bl_cnt++) {
-                    if (labels->BlockGetName(bl_cnt).GetLen()) {
+                    if (labels->BlockGetName(bl_cnt).length()) {
                         CBlockPar *label_block = labels->BlockGet(bl_cnt);
-                        CWStr par = label_block->Par(IF_LABEL_PARAMS);
-                        if (par.GetLen()) {
+                        auto par = label_block->Par(IF_LABEL_PARAMS);
+                        if (par.length()) {
                             int x = par.GetIntPar(0, L",");
                             int y = par.GetIntPar(1, L",");
 
@@ -724,10 +722,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             int clip_ex = par.GetIntPar(9, L",");
                             int clip_ey = par.GetIntPar(10, L",");
 
-                            const CWStr &state = label_block->Par(L"State");
-                            const CWStr &font = label_block->Par(L"Font");
+                            const std::wstring &state = label_block->Par(L"State");
+                            const std::wstring &font = label_block->Par(L"Font");
 
-                            const CWStr &color_par = label_block->Par(L"Color");
+                            const auto color_par = label_block->Par(L"Color");
 
                             DWORD color = 0;
 
@@ -753,9 +751,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 st = IFACE_PRESSED_UNFOCUSED;
                             }
                             if (labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL) {
-                                CWStr t_code;
-                                t_code.Add(if_elem->m_strName).Add(L"_").Add(state);
-                                CWStr text = labels_file->Par(t_code);
+                                std::wstring t_code = if_elem->m_strName;
+                                t_code += L"_" + state;
+                                std::wstring text = labels_file->Par(t_code);
 
                                 if (t_code == L"iw1text_sNormal") {
                                     g_PopupWeaponNormal[1].text = text;
@@ -880,7 +878,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 if_elem->m_StateImages[st].SetStateLabelParams(
                                         x, y, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize), align_x,
                                         align_y, perenos, sme_x, sme_y, CRect(clip_sx, clip_sy, clip_ex, clip_ey),
-                                        CWStr(L""), font, color);
+                                        std::wstring(L""), font, color);
                             }
                         }
                     }
@@ -1023,7 +1021,7 @@ bool CInterface::OnMouseMove(CPoint mouse) {
     bool MiniMapFocused = false;
     bool static_have_hint = false;
     g_IFaceList->m_FocusedElement = NULL;
-    CWStr static_name(L"", g_CacheHeap);
+    std::wstring static_name(L"");
 
     if (m_VisibleAlpha) {
         CIFaceElement *pObjectsList = m_FirstElement;
@@ -1616,10 +1614,12 @@ void CInterface::Init(void) {
 
                         if (income != base_res_income) {
                             base_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>", g_CacheHeap),
-                                    L"<Color=247,195,0>" + CWStr(base_res_income, g_CacheHeap) + L"</Color>");
+                            std::wstring suck(bp_tmp->ParGet(L"ResPer"));
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption =
+                                utils::replace(
+                                    suck,
+                                    L"<resources>",
+                                    utils::format(L"<Color=247,195,0>%d</Color>", base_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                     }
@@ -1629,10 +1629,12 @@ void CInterface::Init(void) {
                         }
                         if (income != factory_res_income) {
                             factory_res_income = income;
-                            CWStr suck(bp_tmp->ParGet(L"ResPer"), g_CacheHeap);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = suck.Replace(
-                                    CWStr(L"<resources>", g_CacheHeap),
-                                    L"<Color=247,195,0>" + CWStr(factory_res_income, g_CacheHeap) + L"</Color>");
+                            std::wstring suck(bp_tmp->ParGet(L"ResPer"));
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption =
+                                utils::replace(
+                                    suck,
+                                    L"<resources>",
+                                    utils::format(L"<Color=247,195,0>%d</Color>", factory_res_income));
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                     }
@@ -1640,7 +1642,7 @@ void CInterface::Init(void) {
                 if (pElement->m_strName == IF_LIVES_LABEL && player_side->m_CurrSel != NOTHING_SELECTED) {
                     if (new_lives) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Caption =
-                                CWStr(Float2Int(lives)).Add(L"/").Add(CWStr(Float2Int(max_lives)));
+                            utils::format(L"%d/%d", Float2Int(lives), Float2Int(max_lives));
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     pElement->SetVisibility(true);
@@ -1983,28 +1985,28 @@ void CInterface::Init(void) {
                 if (pElement->m_strName == IF_TITAN_LABEL) {
                     if (prev_titan != player_side->GetResourcesAmount(TITAN)) {
                         prev_titan = player_side->GetResourcesAmount(TITAN);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_titan);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_titan);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ELECTRO_LABEL) {
                     if (prev_electro != player_side->GetResourcesAmount(ELECTRONICS)) {
                         prev_electro = player_side->GetResourcesAmount(ELECTRONICS);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_electro);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_electro);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_ENERGY_LABEL) {
                     if (prev_energy != player_side->GetResourcesAmount(ENERGY)) {
                         prev_energy = player_side->GetResourcesAmount(ENERGY);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_energy);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_energy);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
                 else if (pElement->m_strName == IF_PLASMA_LABEL) {
                     if (prev_plasma != player_side->GetResourcesAmount(PLASMA)) {
                         prev_plasma = player_side->GetResourcesAmount(PLASMA);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(prev_plasma);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", prev_plasma);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2013,8 +2015,7 @@ void CInterface::Init(void) {
                         /*максимальное количество изменилось*/ max_robots != player_side->GetMaxSideRobots()) {
                         robots = player_side->GetSideRobots();
                         max_robots = player_side->GetMaxSideRobots();
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Set(robots);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption.Add(L"/").Add(max_robots);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d/%d", robots, max_robots);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2464,7 +2465,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX + 25) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2484,7 +2485,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX + 25) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2502,7 +2503,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX + 19) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2520,7 +2521,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX + 24) -
                                 Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_summ);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_summ);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2538,7 +2539,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_titX + 25) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                         if (electronics_summ != 0) {
@@ -2550,7 +2551,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_elecX + 25) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                         if (energy_summ != 0) {
@@ -2561,7 +2562,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_enerX + 19) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                         if (plasma_summ != 0) {
@@ -2572,7 +2573,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_Configs[cfg_num].m_plasX + 24) -
                                     Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_summ);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_summ);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                     }
@@ -2618,7 +2619,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_ftitX + 25) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2637,7 +2638,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_felecX + 25) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2656,7 +2657,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_fenerX + 19) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2675,7 +2676,7 @@ void CInterface::Init(void) {
                         pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                         pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                 (player_side->m_ConstructPanel->m_fplasX + 24) - Float2Int(pElement->m_xPos);
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_unit);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                     }
 
@@ -2690,13 +2691,13 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_ftitX + 25) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(titan_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", titan_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
                         else {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = titan_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX = 0;
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = std::wstring(L"");
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                         }
 
@@ -2704,7 +2705,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = electronics_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_felecX + 25) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(electronics_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", electronics_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
@@ -2712,7 +2713,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = energy_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_fenerX + 19) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(energy_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", energy_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
 
@@ -2720,7 +2721,7 @@ void CInterface::Init(void) {
                             pElement->m_StateImages[IFACE_NORMAL].m_Color = plasm_unit_color;
                             pElement->m_StateImages[IFACE_NORMAL].m_SmeX =
                                     (player_side->m_ConstructPanel->m_fplasX + 24) - Float2Int(pElement->m_xPos);
-                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(plasma_unit);
+                            pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", plasma_unit);
                             pElement->m_StateImages[IFACE_NORMAL].SetStateText(false);
                         }
                     }
@@ -2729,7 +2730,7 @@ void CInterface::Init(void) {
                     pElement->SetVisibility(true);
                     if (structure != player_side->m_Constructor->GetConstructionStructure()) {
                         structure = player_side->m_Constructor->GetConstructionStructure();
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(structure);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", structure);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -2745,12 +2746,12 @@ void CInterface::Init(void) {
                     }
                     if (wep == 0) {
                         damage = 0;
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                     else if (damage != GetConstructionDamage(player_side->m_Constructor->GetRenderBot())) {
                         damage = GetConstructionDamage(player_side->m_Constructor->GetRenderBot());
-                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(damage);
+                        pElement->m_StateImages[IFACE_NORMAL].m_Caption = utils::format(L"%d", damage);
                         pElement->m_StateImages[IFACE_NORMAL].SetStateText(true);
                     }
                 }
@@ -3083,7 +3084,7 @@ void CInterface::CopyElements(CIFaceElement *el_src, CIFaceElement *el_dest) {
     );
 }
 
-CIFaceImage *CInterface::FindImageByName(CWStr name) {
+CIFaceImage *CInterface::FindImageByName(std::wstring name) {
     CIFaceImage *images = m_FirstImage;
     while (images) {
         if (images->m_strName == name)
@@ -3245,7 +3246,7 @@ void CInterface::SlideStep() {
     }
 }
 
-bool CInterface::FindElementByName(const CWStr &name) {
+bool CInterface::FindElementByName(const std::wstring &name) {
     CIFaceElement *elements = m_FirstElement;
     while (elements) {
         if (elements->m_strName == name) {
@@ -3258,7 +3259,7 @@ bool CInterface::FindElementByName(const CWStr &name) {
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-CIFaceList::CIFaceList() : m_CurrentHintControlName(g_MatrixHeap) {
+CIFaceList::CIFaceList() : m_CurrentHintControlName{} {
     m_First = NULL;
     m_Last = NULL;
     m_IfListFlags = 0;
@@ -3628,7 +3629,7 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                 return;
             hu = hu - 1;
 
-            CIFaceImage overheat_image = *interfaces->FindImageByName(CWStr(IF_OVER_HEAT));
+            CIFaceImage overheat_image = *interfaces->FindImageByName(std::wstring(IF_OVER_HEAT));
             for (int i = 0; i < MR_MAXUNIT; i++) {
                 if (bot->m_Unit[i].m_Type == MRT_WEAPON) {
                     int pos;
@@ -3638,37 +3639,37 @@ void CIFaceList::CreateWeaponDynamicStatics() {
                         }
                     }
 
-                    CWStr name(g_CacheHeap);
+                    std::wstring name;
                     switch (bot->m_Unit[i].u1.s1.m_Kind) {
                         case RUK_WEAPON_MACHINEGUN:
-                            name = CWStr(IF_WEAPON_MACHINEGUN_ON);
+                            name = std::wstring(IF_WEAPON_MACHINEGUN_ON);
                             break;
                         case RUK_WEAPON_CANNON:
-                            name = CWStr(IF_WEAPON_CANNON_ON);
+                            name = std::wstring(IF_WEAPON_CANNON_ON);
                             break;
                         case RUK_WEAPON_LASER:
-                            name = CWStr(IF_WEAPON_LASER_ON);
+                            name = std::wstring(IF_WEAPON_LASER_ON);
                             break;
                         case RUK_WEAPON_PLASMA:
-                            name = CWStr(IF_WEAPON_PLASMA_ON);
+                            name = std::wstring(IF_WEAPON_PLASMA_ON);
                             break;
                         case RUK_WEAPON_FLAMETHROWER:
-                            name = CWStr(IF_WEAPON_FIRE_ON);
+                            name = std::wstring(IF_WEAPON_FIRE_ON);
                             break;
                         case RUK_WEAPON_MISSILE:
-                            name = CWStr(IF_WEAPON_ROCKET_ON);
+                            name = std::wstring(IF_WEAPON_ROCKET_ON);
                             break;
                         case RUK_WEAPON_ELECTRIC:
-                            name = CWStr(IF_WEAPON_ELECTRO_ON);
+                            name = std::wstring(IF_WEAPON_ELECTRO_ON);
                             break;
                         case RUK_WEAPON_REPAIR:
-                            name = CWStr(IF_WEAPON_REPAIR_ON);
+                            name = std::wstring(IF_WEAPON_REPAIR_ON);
                             break;
                         case RUK_WEAPON_BOMB:
-                            name = CWStr(IF_WEAPON_BOOM_ON);
+                            name = std::wstring(IF_WEAPON_BOOM_ON);
                             break;
                         case RUK_WEAPON_MORTAR:
-                            name = CWStr(IF_WEAPON_MINOMET_ON);
+                            name = std::wstring(IF_WEAPON_MINOMET_ON);
                             break;
                     }
 
@@ -3732,10 +3733,10 @@ void CIFaceList::CreateItemPrice(int *price) {
     while (interfaces) {
         if (interfaces->m_strName == IF_BASE) {
             float x = 22, y = 243, z = 0.00001f;
-            CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
-            CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
-            CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
-            CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
+            CIFaceImage titan_image = *interfaces->FindImageByName(std::wstring(IF_BASE_TITAN_IMAGE));
+            CIFaceImage electronics_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ELECTRONICS_IMAGE));
+            CIFaceImage energy_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ENERGY_IMAGE));
+            CIFaceImage plasma_image = *interfaces->FindImageByName(std::wstring(IF_BASE_PLASMA_IMAGE));
 
             for (int cnt = 0; cnt < MAX_RESOURCES; cnt++) {
                 if (res[cnt] != 0) {
@@ -3824,11 +3825,11 @@ void CIFaceList::CreateSummPrice(int multiplier) {
             else if (fuck == 2) {
                 x = 250;
             }
-            CIFaceImage titan_image = *interfaces->FindImageByName(CWStr(IF_BASE_TITAN_IMAGE));
-            CIFaceImage electronics_image = *interfaces->FindImageByName(CWStr(IF_BASE_ELECTRONICS_IMAGE));
-            CIFaceImage energy_image = *interfaces->FindImageByName(CWStr(IF_BASE_ENERGY_IMAGE));
-            CIFaceImage plasma_image = *interfaces->FindImageByName(CWStr(IF_BASE_PLASMA_IMAGE));
-            CIFaceImage warning_image = *interfaces->FindImageByName(CWStr(IF_BASE_WARNING));
+            CIFaceImage titan_image = *interfaces->FindImageByName(std::wstring(IF_BASE_TITAN_IMAGE));
+            CIFaceImage electronics_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ELECTRONICS_IMAGE));
+            CIFaceImage energy_image = *interfaces->FindImageByName(std::wstring(IF_BASE_ENERGY_IMAGE));
+            CIFaceImage plasma_image = *interfaces->FindImageByName(std::wstring(IF_BASE_PLASMA_IMAGE));
+            CIFaceImage warning_image = *interfaces->FindImageByName(std::wstring(IF_BASE_WARNING));
 
             for (int cnt = 0; cnt < MAX_RESOURCES; cnt++) {
                 if (res[cnt] != 0) {
@@ -3885,7 +3886,7 @@ void CIFaceList::DeleteSummPrice() {
             CIFaceElement *elements = interfaces->m_FirstElement;
             while (elements) {
                 /*                if(elements->m_strName == IF_BASE_SUMM_PANEL){
-                                    elements->m_StateImages[IFACE_NORMAL].m_Caption = CWStr(L"");
+                                    elements->m_StateImages[IFACE_NORMAL].m_Caption = std::wstring(L"");
                                     elements->m_StateImages[IFACE_NORMAL].SetStateText(true);
                                 }else */
                 if (elements->m_Type == IFACE_DYNAMIC_STATIC &&
@@ -4148,7 +4149,7 @@ void CIFaceList::CreateGroupSelection(CInterface *iface) {
     int sel_objs = 9;
 
     float x = 225, y = 49, z = 0.000001f;
-    CIFaceImage ramka_image = *iface->FindImageByName(CWStr(IF_GROUP_RAMKA));
+    CIFaceImage ramka_image = *iface->FindImageByName(std::wstring(IF_GROUP_RAMKA));
     for (int i = 0; i < sel_objs; i++) {
         float pos = (i + 1.0f) / 3.0f;
 
@@ -4395,25 +4396,25 @@ void CIFaceList::CreatePersonal() {
                 robot = true;
             } /*else if(go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER){
                  if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_SPEED){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG1))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG1))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_TRANSPORT){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG2))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG2))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_BOMB){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG3))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG3))->m_yTexPos;
                  }else if(((CMatrixFlyer*)go->GetObject())->m_FlyerKind == FLYER_ATTACK){
-                     tex = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_Image;
+                     tex = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_Image;
 
-                     xbig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_xTexPos;
-                     ybig = interfaces->FindImageByName(CWStr(IF_FLYER_BIG4))->m_yTexPos;
+                     xbig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_xTexPos;
+                     ybig = interfaces->FindImageByName(std::wstring(IF_FLYER_BIG4))->m_yTexPos;
                  }
                  flyer = true;
              }*/
@@ -4520,7 +4521,7 @@ void CIFaceList::CreateOrdersGlow(CInterface *iface) {
             y = 47 + 49;
         }
 
-        CIFaceStatic *s = iface->CreateStaticFromImage(x, y, z, *iface->FindImageByName(CWStr(IF_ORDER_GLOW)));
+        CIFaceStatic *s = iface->CreateStaticFromImage(x, y, z, *iface->FindImageByName(std::wstring(IF_ORDER_GLOW)));
         if (s) {
             s->SetVisibility(false);
             s->m_nId = ORDERS_GLOW_ID + i;
@@ -4567,76 +4568,76 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding *base, CMatrixMapStati
                 robot = true;
             } /*else if(object->GetObjectType() == OBJECT_TYPE_FLYER){
                  if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_SPEED){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED1))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL1))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED1))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL1))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_TRANSPORT){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED2))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL2))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED2))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL2))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_BOMB){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED3))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL3))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED3))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL3))->m_yTexPos;
                  }else if(((CMatrixFlyer*)object)->m_FlyerKind == FLYER_ATTACK){
-                     tex_med = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_Image;
-                     tex_small = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_Image;
+                     tex_med = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_Image;
+                     tex_small = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_Image;
 
-                     xmed = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_xTexPos;
-                     ymed = ifs->FindImageByName(CWStr(IF_FLYER_MED4))->m_yTexPos;
-                     xsmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_xTexPos;
-                     ysmall = ifs->FindImageByName(CWStr(IF_FLYER_SMALL4))->m_yTexPos;
+                     xmed = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_xTexPos;
+                     ymed = ifs->FindImageByName(std::wstring(IF_FLYER_MED4))->m_yTexPos;
+                     xsmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_xTexPos;
+                     ysmall = ifs->FindImageByName(std::wstring(IF_FLYER_SMALL4))->m_yTexPos;
                  }
                  flyer = true;
              }*/
             else if (object->IsCannon()) {
                 if (((CMatrixCannon *)object)->m_Num == 1) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED1))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL1))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED1))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL1))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 2) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED2))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL2))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED2))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL2))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 3) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED3))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL3))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED3))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL3))->m_yTexPos;
                 }
                 else if (((CMatrixCannon *)object)->m_Num == 4) {
-                    tex_med = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_Image;
-                    tex_small = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_Image;
+                    tex_med = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_Image;
+                    tex_small = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_Image;
 
-                    xmed = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_xTexPos;
-                    ymed = ifs->FindImageByName(CWStr(IF_TURRET_MED4))->m_yTexPos;
-                    xsmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_xTexPos;
-                    ysmall = ifs->FindImageByName(CWStr(IF_TURRET_SMALL4))->m_yTexPos;
+                    xmed = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_xTexPos;
+                    ymed = ifs->FindImageByName(std::wstring(IF_TURRET_MED4))->m_yTexPos;
+                    xsmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_xTexPos;
+                    ysmall = ifs->FindImageByName(std::wstring(IF_TURRET_SMALL4))->m_yTexPos;
                 }
                 turret = true;
             }
@@ -4862,7 +4863,7 @@ void CIFaceList::HideHintButtons() {
 void CIFaceList::HideHintButton(EHintButton butt) {
     CIFaceElement *els = m_Hints->m_FirstElement;
 
-    CWStr sname(g_CacheHeap);
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     while (els) {
@@ -4874,7 +4875,7 @@ void CIFaceList::HideHintButton(EHintButton butt) {
 }
 
 void CIFaceList::DisableMainMenuButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4887,7 +4888,7 @@ void CIFaceList::DisableMainMenuButton(EHintButton butt) {
 }
 
 void CIFaceList::EnableMainMenuButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4900,7 +4901,7 @@ void CIFaceList::EnableMainMenuButton(EHintButton butt) {
     }
 }
 void CIFaceList::PressHintButton(EHintButton butt) {
-    CWStr sname;
+    std::wstring sname;
     HintButtonId2Name(butt, sname);
 
     CIFaceElement *els = m_Hints->m_FirstElement;
@@ -4913,7 +4914,7 @@ void CIFaceList::PressHintButton(EHintButton butt) {
     }
 }
 
-void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname) {
+void CIFaceList::HintButtonId2Name(EHintButton butt, std::wstring &sname) {
     switch (butt) {
         case HINT_OK:
             sname = IF_HINTS_OK;
@@ -4943,7 +4944,7 @@ void CIFaceList::HintButtonId2Name(EHintButton butt, CWStr &sname) {
 }
 
 bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &posx, int &posy, int width, int height,
-                                    const CWStr &element_name) {
+                                    const std::wstring &element_name) {
     if (element_name == L"buro" || element_name == L"buca" || element_name == IF_ORDER_STOP ||
         element_name == IF_ORDER_MOVE || element_name == IF_ORDER_PATROL || element_name == IF_ORDER_FIRE ||
         element_name == IF_ORDER_CAPTURE || element_name == IF_ORDER_CANCEL || element_name == IF_ORDER_REPAIR ||
@@ -5015,33 +5016,33 @@ bool CIFaceList::CorrectCoordinates(int screen_width, int screen_height, int &po
     return true;
 }
 
-void CIFaceList::AddHintReplacements(const CWStr &element_name) {
+void CIFaceList::AddHintReplacements(const std::wstring &element_name) {
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
     if (element_name == L"thz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, TITAN);
-        repl->ParSetAdd(L"_titan_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_titan_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"enhz1" || element_name == L"enhz2") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ENERGY);
-        repl->ParSetAdd(L"_energy_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_energy_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"elhz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, ELECTRONICS);
-        repl->ParSetAdd(L"_electronics_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_electronics_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"phz") {
         int base_i, fa_i;
         ps->GetResourceIncome(base_i, fa_i, PLASMA);
-        repl->ParSetAdd(L"_plasma_income", CWStr(base_i + fa_i, g_CacheHeap));
+        repl->ParSetAdd(L"_plasma_income", utils::format(L"%d", base_i + fa_i));
     }
     else if (element_name == L"rvhz") {
-        repl->ParSetAdd(L"_total_robots", CWStr(ps->GetRobotsCnt(), g_CacheHeap));
-        repl->ParSetAdd(L"_max_robots", CWStr(ps->GetMaxSideRobots(), g_CacheHeap));
+        repl->ParSetAdd(L"_total_robots", utils::format(L"%d", ps->GetRobotsCnt()));
+        repl->ParSetAdd(L"_max_robots", utils::format(L"%d", ps->GetMaxSideRobots()));
     }
     else if (element_name == IF_BUILD_TUR1) {
         int damage = Float2Int(1.0f / (g_Config.m_WeaponCooldown[Weap2Index(WEAPON_CANNON0)] / 1000.0f)) *
@@ -5050,16 +5051,16 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur1_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[0].m_Hitpoint / 10));
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[0].m_Hitpoint / 10);
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10) + L"+" + utils::format(L"%d", damage / 10));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[0].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[0].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[0].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5070,15 +5071,15 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur2_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[1].m_Hitpoint / 10));
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[1].m_Hitpoint / 10);
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10));
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[1].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[1].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[1].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5089,16 +5090,15 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur3_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[2].m_Hitpoint / 10));
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap));
-
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[2].m_Hitpoint / 10);
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10));
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[2].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[2].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[2].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5109,16 +5109,16 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Name"));
         repl->ParSetAdd(L"_turret_range",
                         g_MatrixData->BlockGet(IF_LABELS_BLOCKPAR)->BlockGet(L"Turrets")->ParGet(L"Tur4_Range"));
-        repl->ParSetAdd(L"_turret_structure", CWStr(g_Config.m_CannonsProps[3].m_Hitpoint / 10));
-        repl->ParSetAdd(L"_turret_damage", CWStr(damage / 10, g_CacheHeap) + L"+" + CWStr(damage / 10, g_CacheHeap));
+        repl->ParSetAdd(L"_turret_structure", g_Config.m_CannonsProps[3].m_Hitpoint / 10);
+        repl->ParSetAdd(L"_turret_damage", utils::format(L"%d", damage / 10) + L"+" + utils::format(L"%d", damage / 10));
 
         for (int i = 0; i < MAX_RESOURCES; i++) {
             if (g_Config.m_CannonsProps[3].m_Resources[i]) {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap),
-                                CWStr(g_Config.m_CannonsProps[3].m_Resources[i], g_CacheHeap));
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1),
+                                utils::format(L"%d", g_Config.m_CannonsProps[3].m_Resources[i]));
             }
             else {
-                repl->ParSetAdd(L"_turret_res" + CWStr(i + 1, g_CacheHeap), L"");
+                repl->ParSetAdd(L"_turret_res" + utils::format(L"%d", i + 1), L"");
             }
         }
     }
@@ -5136,8 +5136,8 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
                 int milliseconds = g_MatrixMap->BeforeMaintenanceTime();
                 int minutes = milliseconds / 60000;
                 int seconds = milliseconds / 1000 - minutes * 60;
-                repl->ParSetAdd(L"_ch_time_min", CWStr((minutes > 0 ? minutes : 0), g_CacheHeap));
-                repl->ParSetAdd(L"_ch_time_sec", CWStr((seconds > 0 ? seconds : 0), g_CacheHeap));
+                repl->ParSetAdd(L"_ch_time_min", utils::format(L"%d", (minutes > 0 ? minutes : 0)));
+                repl->ParSetAdd(L"_ch_time_sec", utils::format(L"%d", (seconds > 0 ? seconds : 0)));
             }
             else {
                 repl->ParSetAdd(L"_ch_can", L"1");
@@ -5146,7 +5146,7 @@ void CIFaceList::AddHintReplacements(const CWStr &element_name) {
     }
 }
 
-bool CIFaceList::CheckShowHintLogic(const CWStr &element_name) {
+bool CIFaceList::CheckShowHintLogic(const std::wstring &element_name) {
     if (element_name == IF_BASE_COUNTHZ) {
         if (FLAG(g_IFaceList->m_IfListFlags, POPUP_MENU_ACTIVE)) {
             return false;
@@ -5192,16 +5192,16 @@ void CIFaceList::CreateDynamicTurrets(CMatrixBuilding *building) {
             for (int i = 0; i < tur_sheme; i++) {
                 image = NULL;
                 if (building->m_TurretsPlaces[i].m_CannonType == 1) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT1_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT1_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 2) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT2_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT2_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 3) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT3_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT3_ICON});
                 }
                 else if (building->m_TurretsPlaces[i].m_CannonType == 4) {
-                    image = interfaces->FindImageByName(CWStr(IF_BT4_ICON, g_CacheHeap));
+                    image = interfaces->FindImageByName(std::wstring{IF_BT4_ICON});
                 }
                 if (image) {
                     float x = 0;
@@ -5281,7 +5281,7 @@ void CIFaceList::BeginBuildTurret(int no) {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void SStateImages::SetStateLabelParams(int x, int y, int bound_x, int bound_y, int xAlign, int yAlign, int perenos,
-                                       int smeX, int smeY, CRect clipRect, CWStr t, CWStr font, DWORD color) {
+                                       int smeX, int smeY, CRect clipRect, std::wstring t, std::wstring font, DWORD color) {
     m_Caption = t;
     m_x = x;
     m_y = y;
@@ -5302,7 +5302,7 @@ void SStateImages::SetStateText(bool copy) {
 
     if (g_RangersInterface) {
         SMGDRangersInterfaceText it;
-        g_RangersInterface->m_RangersText((wchar *)m_Caption.Get(), (wchar *)m_Font.Get(), m_Color, m_boundX, m_boundY,
+        g_RangersInterface->m_RangersText((wchar *)m_Caption.c_str(), (wchar *)m_Font.c_str(), m_Color, m_boundX, m_boundY,
                                           m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, &m_ClipRect, &it);
 
         texture->LockRect(lr, 0);

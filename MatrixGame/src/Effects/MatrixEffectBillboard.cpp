@@ -275,7 +275,7 @@ CMatrixEffectBillboardScore::CMatrixEffectBillboardScore(const wchar *n, const D
   : m_Pos(pos), m_Color(color) {
     m_EffectType = EFFECT_SCORE;
 
-    m_bbs_count = WStrLen(n);
+    m_bbs_count = std::wcslen(n);
     m_bbs = (SBB *)HAlloc(sizeof(SBB) * m_bbs_count, m_Heap);
 
     m_TTL = BBS_TTL;

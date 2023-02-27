@@ -27,7 +27,7 @@ void CMatrixCursor::SetVisible(bool flag) {
                     ++cntTry;
                 if (cntTry > 100) {
                     g_Config.m_SoftwareCursor = true;
-                    m_CurCursor = 0;
+                    m_CurCursor.clear();
                     Select(CURSOR_ARROW);
                     INITFLAG(m_CursorFlags, CURSOR_VISIBLE, flag);
                     return;
@@ -42,12 +42,12 @@ void CMatrixCursor::SetVisible(bool flag) {
     INITFLAG(m_CursorFlags, CURSOR_VISIBLE, flag);
 }
 
-void CMatrixCursor::Select(const wchar *name) {
+void CMatrixCursor::Select(const std::wstring& name) {
     DTRACE();
 
-    if (m_CurCursor) {
-        if (WStrCmp(name, m_CurCursor))
-            return;
+    if (m_CurCursor == name)
+    {
+        return;
     }
     DCP();
     m_CurCursor = name;
@@ -57,12 +57,12 @@ void CMatrixCursor::Select(const wchar *name) {
 
     m_Frame = 0;
 
-    CWStr n(g_CacheHeap);
+    ParamParser n;
     DCP();
     int idx;
     for (idx = 0; idx < g_Config.m_CursorsCnt; ++idx) {
         if (g_Config.m_Cursors[idx].key == name) {
-            n.Set(g_Config.m_Cursors[idx].val);
+            n = g_Config.m_Cursors[idx].val;
 
             m_HotSpot.x = n.GetStrPar(1, L"?").GetIntPar(0, L",");
             m_HotSpot.y = n.GetStrPar(1, L"?").GetIntPar(1, L",");
@@ -82,7 +82,7 @@ void CMatrixCursor::Select(const wchar *name) {
 
             m_FrameInc = 1;
 
-            n.Set(n.GetStrPar(0, L"?"));
+            n = n.GetStrPar(0, L"?");
 
             break;
         }
@@ -90,7 +90,7 @@ void CMatrixCursor::Select(const wchar *name) {
     DCP();
 
     if (g_Config.m_SoftwareCursor) {
-        m_CursorTexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, n.Get());
+        m_CursorTexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, n.c_str());
         m_CursorTexture->MipmapOff();
         m_CursorTexture->Load();
         m_CursorInTexLine = m_CursorTexture->GetSizeX() / m_CursorSize;
@@ -108,13 +108,13 @@ void CMatrixCursor::Select(const wchar *name) {
         CBitmap bm(g_CacheHeap);
         DCP();
 
-        CWStr tn(g_CacheHeap);
+        std::wstring tn;
         DCP();
 
-        CFile::FileExist(tn, n.Get(), CacheExtsTex);
+        CFile::FileExist(tn, n.c_str(), CacheExtsTex);
         DCP();
 
-        bm.LoadFromPNG(tn);
+        bm.LoadFromPNG(tn.c_str());
         DCP();
 
         int i = 0, x = 0, y = 0;

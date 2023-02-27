@@ -8,7 +8,6 @@
 // #pragma once
 
 #include "CMain.hpp"
-#include "CWStr.hpp"
 #include "Mem.hpp"
 #include "Tracer.hpp"
 
@@ -290,21 +289,21 @@ public:
     }
 
     int WStrLen(void);
-    CWStr WStr(void) {
+    std::wstring WStr(void) {
         int len = WStrLen();
         wchar *abuf = (wchar *)(m_Buf + m_Pointer);
         m_Pointer += ((len + 1) << 1);
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
         if (len > 0)
-            return CWStr(abuf, len, m_Heap);
+            return std::wstring(abuf, len);
         else
-            return CWStr(m_Heap);
+            return {};
     }
-    void WStr(const CWStr &str) {
-        int len = str.GetLen();
+    void WStr(const std::wstring &str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), (len + 1) << 1);
+            BufAdd(str.c_str(), (len + 1) << 1);
         else
             Word(0);
     }
@@ -314,23 +313,23 @@ public:
         Word(0);
     }
     void WStr(const wchar *str) {
-        int len = Base::WStrLen(str);
+        int len = std::wcslen(str);
         if (len > 0)
             BufAdd(str, (len + 1) << 1);
         else
             Word(0);
     }
-    void WStrNZ(const CWStr &str) {
-        int len = str.GetLen();
+    void WStrNZ(const std::wstring &str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len << 1);
+            BufAdd(str.c_str(), len << 1);
     }
     void WStrNZ(const wchar *str, int len) {
         if (len > 0)
             BufAdd(str, len << 1);
     }
     void WStrNZ(const wchar *str) {
-        int len = Base::WStrLen(str);
+        int len = std::wcslen(str);
         if (len > 0)
             BufAdd(str, len << 1);
     }
@@ -364,7 +363,7 @@ public:
     }
 
     int WStrTextLen(void);
-    CWStr WStrText(void) {
+    std::wstring WStrText(void) {
         wchar ch;
         int len = WStrTextLen();
         wchar *abuf = (wchar *)(m_Buf + m_Pointer);
@@ -380,23 +379,23 @@ public:
             }
         }
         if (len > 0)
-            return CWStr(abuf, len);
+            return std::wstring(abuf, len);
         else
-            return CWStr();
+            return {};
     }
-    void WStrText(CWStr &str) {
-        int len = str.GetLen();
+    void WStrText(std::wstring &str) {
+        int len = str.length();
         if (len > 0)
-            BufAdd(str.Get(), len << 1);
+            BufAdd(str.c_str(), len << 1);
         Dword(0x000a000d);
     }
 
     void LoadFromFile(const wchar *filename, int len);
-    void LoadFromFile(const wchar *filename) { LoadFromFile(filename, Base::WStrLen(filename)); }
-    void LoadFromFile(const CWStr &filename) { LoadFromFile(filename.Get(), filename.GetLen()); }
+    void LoadFromFile(const wchar *filename) { LoadFromFile(filename, std::wcslen(filename)); }
+    void LoadFromFile(const std::wstring &filename) { LoadFromFile(filename.c_str(), filename.length()); }
     void SaveInFile(const wchar *filename, int len) const;
-    void SaveInFile(const wchar *filename) const { SaveInFile(filename, Base::WStrLen(filename)); }
-    void SaveInFile(const CWStr &filename) const { SaveInFile(filename.Get(), filename.GetLen()); }
+    void SaveInFile(const wchar *filename) const { SaveInFile(filename, std::wcslen(filename)); }
+    void SaveInFile(const std::wstring &filename) const { SaveInFile(filename.c_str(), filename.length()); }
 };
 
 }  // namespace Base

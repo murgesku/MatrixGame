@@ -14,34 +14,34 @@
 
 bool CCacheData::m_dip;
 
-// bool CacheFileGetA(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGetA(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
-//	int len=WStrLen(mname);
+//	int len=std::wcslen(mname);
 //	const wchar * str=mname;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
 //
-//	CWStr filename(str,lenfile,outname.GetHeap());
+//	std::wstring filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAA fd;
-//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.Get()).c_str(),&fd);
+//	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(),&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).Get()).c_str(),&fd);
+//	fh=FindFirstFileA(utils::from_wstring(std::wstring(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).c_str()).c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
-//		CWStr curname(outname.GetHeap());
+//		std::wstring curname(outname.GetHeap());
 //		for(;;)
 //        {
 //			curname.Set(fd.cFileName);
 //			int sme=curname.FindR(L'.')+1;
-//			if(sme>0 && sme<curname.GetLen()) {
+//			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
-//				const wchar * str=curname.Get()+sme;
-//				int len = curname.GetLen()-sme;
+//				const wchar * str=curname.c_str()+sme;
+//				int len = curname.length()-sme;
 //
 //				const wchar * exts2=exts;
 //				int cntok=0;
@@ -70,7 +70,7 @@ bool CCacheData::m_dip;
 //	if(lenpath>0)
 //    {
 //        outname.Set(str,lenpath);
-//        outname.Add(CWStr(fd.cFileName));
+//        outname.Add(std::wstring(fd.cFileName));
 //    } else outname.Set(fd.cFileName);
 //
 //	if(withpar && lenfile<len) outname.Add(str+lenfile,len-lenfile);
@@ -78,34 +78,34 @@ bool CCacheData::m_dip;
 //	return true;
 //}
 //
-// bool CacheFileGetW(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGetW(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
-//	int len=WStrLen(mname);
+//	int len=std::wcslen(mname);
 //	const wchar * str=mname;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
 //
-//	CWStr filename(str,lenfile,outname.GetHeap());
+//	std::wstring filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAW fd;
 //	HANDLE fh=FindFirstFileW(filename,&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileW((CWStr(str,lenfile,outname.GetHeap())+L".*").Get(),&fd);
+//	fh=FindFirstFileW((std::wstring(str,lenfile,outname.GetHeap())+L".*").c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
-//		CWStr curname(outname.GetHeap());
+//		std::wstring curname(outname.GetHeap());
 //		for(;;)
 //        {
 //			curname.Set(fd.cFileName);
 //			int sme=curname.FindR(L'.')+1;
-//			if(sme>0 && sme<curname.GetLen()) {
+//			if(sme>0 && sme<curname.length()) {
 //				curname.LowerCase(sme);
-//				const wchar * str=curname.Get()+sme;
-//				int len=curname.GetLen()-sme;
+//				const wchar * str=curname.c_str()+sme;
+//				int len=curname.length()-sme;
 //
 //				const wchar * exts2=exts;
 //				int cntok=0;
@@ -139,7 +139,7 @@ bool CCacheData::m_dip;
 //	return true;
 //}
 //
-// bool CacheFileGet(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGet(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
@@ -147,10 +147,10 @@ bool CCacheData::m_dip;
 //	else return CacheFileGetA(outname,mname,exts,withpar);
 //}
 
-void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
+void CacheReplaceFileExt(std::wstring &outname, const wchar *mname, const wchar *ext) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
@@ -171,17 +171,17 @@ void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
         smeext = lenfile;
     }
 
-    outname.Set(mname, smeext);
+    outname = std::wstring{mname, static_cast<size_t>(smeext)};
     if (ext)
-        outname.Add(ext);
+        outname += ext;
     if (lenfile < len)
-        outname.Add(mname + lenfile, len - lenfile);
+        outname += std::wstring{mname + lenfile, static_cast<size_t>(len - lenfile)};
 }
 
-void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar *replname) {
+void CacheReplaceFileNameAndExt(std::wstring &outname, const wchar *mname, const wchar *replname) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
@@ -200,17 +200,17 @@ void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar 
         smefile = 0; /*outname=mname; return;*/
     }
 
-    outname.Set(mname, smefile);
+    outname = std::wstring{mname, static_cast<size_t>(smefile)};
     if (replname)
-        outname.Add(replname);
+        outname += replname;
     if (lenfile < len)
-        outname.Add(mname + lenfile, len - lenfile);
+        outname += std::wstring{mname + lenfile, static_cast<size_t>(len - lenfile)};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CCacheData::CCacheData() : CMain(), m_Name(g_CacheHeap) {
+CCacheData::CCacheData() : CMain(), m_Name{} {
     DTRACE();
 
     m_Prev = NULL;
@@ -237,20 +237,20 @@ void CCacheData::Prepare() {
 void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
     DTRACE();
 
-    CWStr tstr, tname;
+    std::wstring tstr, tname;
 
-    tname = m_Name.GetStrPar(0, L"?");
+    tname = ParamParser{m_Name}.GetStrPar(0, L"?");
 
-    if (!CFile::FileExist(tstr, tname.Get(), exts, false)) {
-        ERROR_S(utils::format(L"File not found: %s   Exts: %s", tname.Get(), exts));
+    if (!CFile::FileExist(tstr, tname.c_str(), exts, false)) {
+        ERROR_S(utils::format(L"File not found: %ls   Exts: %ls", tname.c_str(), exts));
     }
 
-    buf.LoadFromFile(tstr.Get());
+    buf.LoadFromFile(tstr.c_str());
 
     /*	ASSERT(m_Name.Len()>0);
 
         int len=m_Name.Len();
-        wchar * str=m_Name.Get();
+        wchar * str=m_Name.c_str();
 
         int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
         ASSERT(lenfile>0);
@@ -259,29 +259,29 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         fi.Init(str,lenfile);
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());
-            fi.Read(buf.Get(),buf.Len());
+            fi.Read(buf.c_str(),buf.Len());
             buf.Pointer(0);
             return;
         }
 
         WIN32_FIND_DATA fd;
-        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").Get()).c_str(),&fd);
-        if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.Get());
+        HANDLE fh=FindFirstFile(utils::from_wstring(std::wstring(str,lenfile,g_CacheHeap)+L".*").c_str()).c_str(),&fd);
+        if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.c_str());
         FindClose(fh);
 
         int lenpath=lenfile; while(lenpath>0 && str[lenpath-1]!='\\' && str[lenpath-1]!='/') lenpath--;
 
-        if(lenpath>0) fi.Init(CWStr(str,lenpath)+CWStr(fd.cFileName),g_CacheHeap));
-        else fi.Init(CWStr(fd.cFileName),g_CacheHeap));
+        if(lenpath>0) fi.Init(std::wstring(str,lenpath)+std::wstring(fd.cFileName),g_CacheHeap));
+        else fi.Init(std::wstring(fd.cFileName),g_CacheHeap));
 
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());
-            fi.Read(buf.Get(),buf.Len());
+            fi.Read(buf.c_str(),buf.Len());
             buf.Pointer(0);
             return;
         }
 
-        ERROR_S2(L"Error open file: ",m_Name.Get());*/
+        ERROR_S2(L"Error open file: ",m_Name.c_str());*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ void CCache::Dump(void) {
         if (cd->m_Type == cc_VO)
             type = "Object        ";
 
-        std::string name{(cd->m_Name == NULL) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.Get())};
+        std::string name{(cd->m_Name.empty()) ? std::string{"NULL"} : utils::from_wstring(cd->m_Name.c_str())};
 
         const char* loaded;
         if (cd->IsLoaded())

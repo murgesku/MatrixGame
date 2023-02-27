@@ -6,7 +6,6 @@
 #include "Base.pch"
 
 #include "CException.hpp"
-#include "CWStr.hpp"
 #include <stdio.h>
 
 #include "Tracer.hpp"
@@ -22,16 +21,14 @@ CException::CException(const char *file, int line)
 {
 }
 
-CWStr CException::Info() const
+std::wstring CException::Info() const
 {
-    auto str =
+    return
         utils::format(
             L"%sFile=%s\nLine=%d\n",
             utils::to_wstring(call_trace).c_str(),
             utils::to_wstring(m_File).c_str(),
             m_Line);
-
-    return CWStr(str.c_str());
 }
 
 CExceptionStr::CExceptionStr(
@@ -45,7 +42,7 @@ CExceptionStr::CExceptionStr(
     m_str += str2;
 }
 
-CWStr CExceptionStr::Info() const
+std::wstring CExceptionStr::Info() const
 {
     return CException::Info() + L"Text: " + m_str.c_str();
 }

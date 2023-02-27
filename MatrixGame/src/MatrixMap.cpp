@@ -43,7 +43,7 @@
 CMatrixMap::CMatrixMap()
   : CMain(), m_Console(), m_Camera(), m_CurFrame(0), m_IntersectFlagTracer(0), m_IntersectFlagFindObjects(0),
     m_AllObjects(g_MatrixHeap, 1024), m_RN(g_MatrixHeap), m_EffectsFirst(NULL), m_EffectsLast(NULL),
-    m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName(g_MatrixHeap), m_SkyAngle(0), m_SkyDeltaAngle(0),
+    m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName{}, m_SkyAngle(0), m_SkyDeltaAngle(0),
     m_PrevTimeCheckStatus(-1500), m_Time(0), m_BeforeWinCount(0), m_PauseHint(NULL), m_DialogModeHints(g_MatrixHeap),
     m_DialogModeName(NULL), m_BeforeWinLooseDialogCount(0) {
     DTRACE();
@@ -126,14 +126,13 @@ CMatrixMap::CMatrixMap()
 
     CBlockPar *repl = g_MatrixData->BlockGetNE(PAR_REPLACE);
     if (repl) {
-        CWStr t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY), g_MatrixHeap);
+        auto t1(repl->ParGetNE(PAR_REPLACE_DIFFICULTY));
 
-        if (!t1.IsEmpty()) {
+        if (!t1.empty()) {
             CBlockPar *dif = g_MatrixData->BlockGetNE(PAR_SOURCE_DIFFICULTY);
             if (dif) {
-                CWStr t2(g_MatrixHeap);
-                t2 = dif->ParGetNE(t1);
-                if (!t2.IsEmpty()) {
+                auto t2 = dif->ParGetNE(t1);
+                if (!t2.empty()) {
                     m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0, L",") / 100.0);
                     m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetDoublePar(1, L",") / 100.0);
                     m_Difficulty.k_friendly_fire = 1.0f + float(t2.GetDoublePar(2, L",") / 100.0);
@@ -213,7 +212,7 @@ void CMatrixMap::IdsClear() {
 
     if (m_Ids) {
         for (int i = 0; i < m_IdsCnt; i++) {
-            m_Ids[i].~CWStr();
+            m_Ids[i].std::wstring::~wstring();
         }
         HFree(m_Ids, g_MatrixHeap);
         m_Ids = NULL;
@@ -228,11 +227,11 @@ void CMatrixMap::RobotPreload(void) {
 
     ZeroMemory(m_RobotWeaponMatrix, sizeof(m_RobotWeaponMatrix));
 
-    CWStr tstr(g_MatrixHeap), tstr2(g_MatrixHeap);
+    std::wstring tstr, tstr2;
 
     for (int i = 1; i <= ROBOT_HEAD_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_HEAD).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_HEAD, i).c_str());
 
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
@@ -240,7 +239,7 @@ void CMatrixMap::RobotPreload(void) {
     }
     for (int i = 1; i <= ROBOT_CHASSIS_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_CHASSIS).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_CHASSIS, i).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         if (i == RUK_CHASSIS_PNEUMATIC) {
@@ -251,7 +250,7 @@ void CMatrixMap::RobotPreload(void) {
     }
     for (int i = 1; i <= ROBOT_WEAPON_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_WEAPON).Add(i).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_WEAPON, i).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
 
         g_LoadProgress->SetCurLPPos(curlp++);
@@ -259,7 +258,7 @@ void CMatrixMap::RobotPreload(void) {
 
     for (int i = 0; i < ROBOT_ARMOR_CNT; i++) {
         CVectorObject *vo =
-                (CVectorObject *)g_Cache->Get(cc_VO, CWStr(OBJECT_PATH_ROBOT_ARMOR).Add(i + 1).Add(L".vo").Get());
+                (CVectorObject *)g_Cache->Get(cc_VO, utils::format(L"%ls%d.vo", OBJECT_PATH_ROBOT_ARMOR, i + 1).c_str());
         vo->PrepareSpecial(OLF_MULTIMATERIAL_ONLY, CSkinManager::GetSkin, GSP_SIDE);
         g_LoadProgress->SetCurLPPos(curlp++);
 
@@ -268,11 +267,11 @@ void CMatrixMap::RobotPreload(void) {
         for (int u = 0; u < n; u++) {
             if (vo->GetMatrixId(u) < 20)
                 continue;
-            tstr.Set(vo->GetMatrixName(u));
+            tstr = vo->GetMatrixName(u);
 
-            int cntp = tstr.GetCountPar(L",");
+            int cntp = ParamParser{tstr}.GetCountPar(L",");
             for (int p = 0; p < cntp; p++) {
-                tstr2 = tstr.GetStrPar(p, L",").Trim();
+                ParamParser tstr2 = utils::trim(ParamParser{tstr}.GetStrPar(p, L","));
                 if (p == 0 && tstr2 != L"W")
                     break;
                 else if (p == 0) {
@@ -867,7 +866,7 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic *ms) {
     m_AllObjects.SetLenNoShrink(m_AllObjects.Len() - sizeof(CMatrixMapStatic *));
 
     //#ifdef _DEBUG
-    //    CWStr c(L"Del obj ");
+    //    std::wstring c(L"Del obj ");
     //    if (ms->GetObjectType()==OBJECT_TYPE_MAPOBJECT) c+=L" mapobj: ";
     //	else if(ms->GetObjectType()==OBJECT_TYPE_ROBOTAI) c+=L" robot: ";
     //	else if(ms->GetObjectType()==OBJECT_TYPE_BUILDING) c+=L" build: ";
@@ -910,7 +909,7 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic *ms) {
 //	else ERROR_E;
 //
 ////#ifdef _DEBUG
-////    CWStr c(L"New obj ");
+////    std::wstring c(L"New obj ");
 ////    if (type==OBJECT_TYPE_MAPOBJECT) c+=L" mapobj: ";
 ////	else if(type==OBJECT_TYPE_ROBOTAI) c+=L" robot: ";
 ////	else if(type==OBJECT_TYPE_BUILDING) c+=L" build: ";
@@ -942,17 +941,17 @@ void CMatrixMap::MacrotextureClear() {
     }
 }
 
-void CMatrixMap::MacrotextureInit(const CWStr &path) {
+void CMatrixMap::MacrotextureInit(const std::wstring &path) {
     DTRACE();
 
     MacrotextureClear();
 
-    m_Macrotexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, path.Get());
+    m_Macrotexture = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, path.c_str());
 
-    int cnt = path.GetCountPar(L"?");
+    int cnt = ParamParser{path}.GetCountPar(L"?");
     for (int i = 1; i < cnt; i++) {
-        CWStr op(path.GetStrPar(i, L"?").Trim(), g_CacheHeap);
-        if (op.CompareFirst(L"SIM"))
+        ParamParser op = utils::trim(ParamParser{path}.GetStrPar(i, L"?"));
+        if (utils::starts_with(op, L"SIM"))
             m_MacrotextureSize = op.GetInt();
     }
 }
@@ -999,11 +998,11 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
     int idx = 0;
     for (int i = 0; i < cnt; i++) {
         int id = bp.ParGetName(i).GetInt();
-        const CWStr *name = &bp.ParGet(i);
-        DWORD color = (DWORD(name->GetIntPar(1, L",") & 255) << 16) | (DWORD(name->GetIntPar(2, L",") & 255) << 8) |
-                      DWORD(name->GetIntPar(3, L",") & 255);
-        DWORD colorMM = (DWORD(name->GetIntPar(5, L",") & 255) << 16) | (DWORD(name->GetIntPar(6, L",") & 255) << 8) |
-                        DWORD(name->GetIntPar(7, L",") & 255);
+        const auto name = bp.ParGet(i);
+        DWORD color = (DWORD(name.GetIntPar(1, L",") & 255) << 16) | (DWORD(name.GetIntPar(2, L",") & 255) << 8) |
+                      DWORD(name.GetIntPar(3, L",") & 255);
+        DWORD colorMM = (DWORD(name.GetIntPar(5, L",") & 255) << 16) | (DWORD(name.GetIntPar(6, L",") & 255) << 8) |
+                        DWORD(name.GetIntPar(7, L",") & 255);
 
         if (id == 0) {
             m_NeutralSideColor = color;
@@ -1017,7 +1016,7 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
         m_Side[idx].m_Color = color;
         m_Side[idx].m_ColorMM = colorMM;
         m_Side[idx].m_ColorTexture = NULL;
-        m_Side[idx].m_Name = name->GetStrPar(0, L",");
+        m_Side[idx].m_Name = name.GetStrPar(0, L",");
         ++idx;
 
         if (id == PLAYER_SIDE) {
@@ -1141,7 +1140,7 @@ void CMatrixMap::BeforeDraw(void) {
             //    CMatrixMapGroup *g =  m_TraceStopObj->GetGroup(i);
             //    g->DrawBBox();
 
-            //    m_DI.T(L"Group"+CWStr(i), CWStr(g->GetPos0().x) + L", " + CWStr(g->GetPos0().y));
+            //    m_DI.T(L"Group"+std::wstring(i), std::wstring(g->GetPos0().x) + L", " + std::wstring(g->GetPos0().y));
             //}
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER) {
@@ -1164,7 +1163,7 @@ void CMatrixMap::BeforeDraw(void) {
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
             m_DI.T(L"Under cursor", L"Cannon", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING) {
-            m_DI.T(L"Under cursor", CWStr(L"Building: 0x", g_CacheHeap).AddHex((void *)m_TraceStopObj).Get(), 1000);
+            m_DI.T(L"Under cursor", utils::format(L"Building: 0x%X", reinterpret_cast<dword>((void*)m_TraceStopObj)).c_str(), 1000);
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
             m_DI.T(L"Under cursor", L"Flyer", 1000);
@@ -1299,7 +1298,7 @@ void CMatrixMap::BeforeDraw(void) {
 
     // if (mu)
     //{
-    //    CWStr str;
+    //    std::wstring str;
     //    if (mu->IsBridge()) str += L"Bridge,";
     //    if (mu->IsFlat()) str += L"Flat,";
     //    if (mu->IsInshore()) str += L"Inshore,";
@@ -1317,7 +1316,7 @@ void CMatrixMap::BeforeDraw(void) {
     // int gx = int(m_TraceStopPos.x / (GLOBAL_SCALE*MATRIX_MAP_GROUP_SIZE));
     // int gy = int(m_TraceStopPos.y / (GLOBAL_SCALE*MATRIX_MAP_GROUP_SIZE));
 
-    // m_DI.T(L"group", CWStr(gx) + L"," + CWStr(gy));
+    // m_DI.T(L"group", std::wstring(gx) + L"," + std::wstring(gy));
     // GetGroupByIndex(gx,gy)->DrawBBox();
 
     /*
@@ -1365,7 +1364,7 @@ void CMatrixMap::BeforeDraw(void) {
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_VISOBJ))
-        m_DI.T(L"Visible objects", CWStr(CMatrixMapStatic::GetVisObjCnt(), g_MatrixHeap));
+        m_DI.T(L"Visible objects", utils::format(L"%d", CMatrixMapStatic::GetVisObjCnt()).c_str());
 
     CMatrixMapStatic::SortEndBeforeDraw();
 
@@ -3017,7 +3016,7 @@ void CMatrixMap::RemoveEffectSpawnerByTime(void) {
     m_EffectSpawners[i] = m_EffectSpawners[m_EffectSpawnersCnt];
 }
 
-void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &par) {
+void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std::wstring &in_par) {
     SpawnEffectSmoke smoke;
     SpawnEffectFire fire;
     SpawnEffectSound sound;
@@ -3025,6 +3024,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
 
     SpawnEffectProps *props = &smoke;
 
+    ParamParser par{in_par};
     int parcnt = par.GetCountPar(L",");
     if (parcnt < 3)
         return;
@@ -3081,12 +3081,12 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
             sound.m_attn = (float)par.GetDoublePar(idx++, L",");
             // sound.m_looped = par.GetTrueFalsePar(idx++,L",");
 
-            CWStr nam(par.GetStrPar(idx++, L","), g_CacheHeap);
-            if (nam.GetLen() > (sizeof(sound.m_name) / sizeof(sound.m_name[0]))) {
+            std::wstring nam(par.GetStrPar(idx++, L","));
+            if (nam.length() > (sizeof(sound.m_name) / sizeof(sound.m_name[0]))) {
                 ERROR_S(L"Effect spawner: sound name too long!");
             }
 
-            memcpy(sound.m_name, nam.Get(), (nam.GetLen() + 1) * sizeof(wchar));
+            memcpy(sound.m_name, nam.c_str(), (nam.length() + 1) * sizeof(wchar));
 
             break;
         }
@@ -3094,7 +3094,7 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
             props = &lightening;
             lightening.m_Type = EFFECT_LIGHTENING;
 
-            lightening.m_Tag = HNew(g_MatrixHeap) CWStr(g_MatrixHeap);
+            lightening.m_Tag = HNew(g_MatrixHeap) std::wstring();
 
             *lightening.m_Tag = par.GetStrPar(idx++, L",");
 
@@ -3114,8 +3114,9 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const CWSt
                             NEG_FLOAT(l->m_Width);
                             NEG_FLOAT(lightening.m_Width);
 
-                            HDelete(CWStr, l->m_Tag, g_MatrixHeap);
-                            HDelete(CWStr, lightening.m_Tag, g_MatrixHeap);
+                            using std::wstring;
+                            HDelete(wstring, l->m_Tag, g_MatrixHeap);
+                            HDelete(wstring, lightening.m_Tag, g_MatrixHeap);
                             lightening.m_Pair = l;
 
                             lightening.m_Dispers = -1;  // me - non host
@@ -3237,7 +3238,7 @@ static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler) {
 
     g_MatrixMap->m_DialogModeHints.Pointer(g_MatrixMap->m_DialogModeHints.Len());
 
-    CMatrixHint *h = CMatrixHint::Build(CWStr(hint, g_CacheHeap), hint);
+    CMatrixHint *h = CMatrixHint::Build(std::wstring(hint), hint);
     int ww = (g_ScreenX - h->m_Width) / 2;
     int hh = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
     h->Show(ww, hh);
@@ -3266,7 +3267,7 @@ void ResetRequestHandler(void) {
 
 void HelpRequestHandler(void) {
     g_MatrixMap->LeaveDialogMode();
-    CWStr fn(g_CacheHeap);
+    std::wstring fn;
     if (CFile::FileExist(fn, L"Manual.exe")) {
         PROCESS_INFORMATION pi0;
         STARTUPINFOA si0;
@@ -3318,8 +3319,8 @@ void CMatrixMap::EnterDialogMode(const wchar *hint_i) {
 
     for (int i = 0; i < cnt; ++i) {
         if (bp->ParGetName(i) == hint) {
-            CWStr templ(bp->ParGet(i), g_CacheHeap);
-            CWStr templ2(g_CacheHeap);
+            std::wstring templ(bp->ParGet(i));
+            std::wstring templ2;
             if (templ[0] == '|')
                 continue;
 

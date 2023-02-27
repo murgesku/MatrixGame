@@ -322,7 +322,7 @@ void CMatrixMapStatic::ProceedLogic(int takts) {
     }
     //__int64 freq;
     // QueryPerformanceFrequency((LARGE_INTEGER *)(&freq));
-    // DM(L"ProceedLogic",CWStr().Format(L"E=<p=6><d>(<i>) O=<d>(<i>) R=<d>(<i>) B=<d>(<i>) C=<d>(<i>) F=<d>(<i>)",
+    // DM(L"ProceedLogic",std::wstring().Format(L"E=<p=6><d>(<i>) O=<d>(<i>) R=<d>(<i>) B=<d>(<i>) C=<d>(<i>) F=<d>(<i>)",
     //        double(((long double)(tv[0]))/((long double)(freq))),tc[0],
     //        double(((long double)(tv[2]))/((long double)(freq))),tc[2],
     //        double(((long double)(tv[3]))/((long double)(freq))),tc[3],

@@ -70,17 +70,17 @@ struct SStateImages {
     int m_SmeX;
     int m_SmeY;
     CRect m_ClipRect;
-    CWStr m_Caption;
-    CWStr m_Font;
+    std::wstring m_Caption;
+    std::wstring m_Font;
     DWORD m_Color;
 
     DWORD Set;  // This is boolean var. Used DWORD becouse align!
 
     void SetStateText(bool copy);
     void SetStateLabelParams(int x, int y, int bound_x, int bound_y, int xAlign, int yAlign, int perenos, int smeX,
-                             int smeY, CRect clipRect, CWStr t, CWStr font, DWORD color);
+                             int smeY, CRect clipRect, std::wstring t, std::wstring font, DWORD color);
 
-    SStateImages() : m_Caption(g_MatrixHeap), m_Font(g_MatrixHeap) {
+    SStateImages() : m_Caption{}, m_Font{} {
         xTexPos = yTexPos = TexWidth = TexHeight = 0;
         m_x = m_y = m_boundX = m_boundY = m_xAlign = m_yAlign = m_Perenos = m_SmeX = m_SmeY = 0;
         m_Color = 0;

@@ -320,7 +320,7 @@ public:
     CMatrixWater *m_Water;
 
     int m_IdsCnt;
-    CWStr *m_Ids;
+    std::wstring *m_Ids;
 
     CMatrixSideUnit *m_PlayerSide;
     CMatrixSideUnit *m_Side;
@@ -337,7 +337,7 @@ public:
 
     CMatrixMapStatic *m_NextLogicObject;
 
-    CWStr m_WaterName;
+    std::wstring m_WaterName;
 
     float m_BiasCannons;
     float m_BiasRobots;
@@ -439,8 +439,8 @@ public:
     void Clear(void);
 
     void IdsClear(void);
-    inline const CWStr &MapName(void) { return m_Ids[m_IdsCnt - 1]; }
-    inline const CWStr &IdsGet(int no) { return m_Ids[no]; }
+    inline const std::wstring &MapName(void) { return m_Ids[m_IdsCnt - 1]; }
+    inline ParamParser IdsGet(int no) { return m_Ids[no]; }
     inline int IdsGetCount(void) const { return m_IdsCnt; }
 
     void UnitClear(void);
@@ -544,12 +544,12 @@ public:
         return o;
     }
 
-    void AddEffectSpawner(float x, float y, float z, int ttl, const CWStr &type);
+    void AddEffectSpawner(float x, float y, float z, int ttl, const std::wstring &type);
     void RemoveEffectSpawnerByObject(CMatrixMapStatic *ms);
     void RemoveEffectSpawnerByTime(void);
 
     void MacrotextureClear(void);
-    void MacrotextureInit(const CWStr &path);
+    void MacrotextureInit(const std::wstring &path);
 
     // side funcs
     DWORD GetSideColor(int id);
@@ -589,7 +589,7 @@ public:
 
     int ReloadDynamics(CStorage &stor, EReloadStep step, CBuf *robots = NULL);
 
-    int PrepareMap(CStorage &stor, const CWStr &mapname);
+    int PrepareMap(CStorage &stor, const std::wstring &mapname);
     void StaticPrepare(int n, bool skip_progress = false);
     void StaticPrepare2(CBuf *robots);
 

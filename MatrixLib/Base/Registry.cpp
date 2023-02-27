@@ -7,7 +7,6 @@
 
 #include <cwchar>
 
-#include "CWStr.hpp"
 #include "CException.hpp"
 #include "CBuf.hpp"
 
@@ -16,7 +15,7 @@
 namespace Base {
 
 HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
-    int len = WStrLen(path);
+    int len = std::wcslen(path);
     if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
@@ -44,7 +43,7 @@ HKEY Reg_OpenKey(HKEY key, const wchar *path, dword access) {
 }
 
 HKEY Reg_CreateKey(HKEY key, const wchar *path, dword access) {
-    int len = WStrLen(path);
+    int len = std::wcslen(path);
     if (len > 5 && !std::wmemcmp(path, L"HKCR\\", 5)) {
         key = HKEY_CLASSES_ROOT;
         path += 5;
@@ -96,7 +95,7 @@ bool Reg_GetData(HKEY key, const wchar *name, dword *ltype, CBuf *buf) {
     return true;
 }
 
-BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWStr &str) {
+BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, std::wstring &str) {
     HKEY kkey;
     dword type;
 
@@ -107,20 +106,20 @@ BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, CWS
     if (Reg_GetData(kkey, name, &type, &buf)) {
         if (type == REG_SZ || type == REG_MULTI_SZ) {
             if (GetVersion() < 0x80000000)
-                str.Set((wchar *)buf.Get(), buf.Len() / 2 - 1);
+                str = std::wstring{(wchar*)buf.Get(), static_cast<size_t>(buf.Len() / 2 - 1)};
             else
-                str.Set(utils::to_wstring((const char*)buf.Get()));
+                str = utils::to_wstring((const char*)buf.Get());
         }
         else if (type == REG_DWORD && buf.Len() == 4) {
-            str.Set(*((dword *)buf.Get()));
+            str = utils::format(L"%u", *((dword*)buf.Get()));
         }
     }
 
     RegCloseKey(kkey);
 }
 
-BASE_API CWStr Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *) {
-    CWStr str;
+BASE_API std::wstring Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *) {
+    std::wstring str;
 
     Reg_GetString(pkey, path, name, str);
 
@@ -134,9 +133,9 @@ BASE_API void Reg_SetString(HKEY pkey, const wchar *path, const wchar *name, con
         return;
 
     if (GetVersion() < 0x80000000)
-        RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, WStrLen(str) * 2 + 2);
+        RegSetValueExW(kkey, name, 0, REG_SZ, (byte *)str, std::wcslen(str) * 2 + 2);
     else
-        RegSetValueExA(kkey, utils::from_wstring(name).c_str(), 0, REG_SZ, (byte*)utils::from_wstring(str).c_str(), WStrLen(str) + 1);
+        RegSetValueExA(kkey, utils::from_wstring(name).c_str(), 0, REG_SZ, (byte*)utils::from_wstring(str).c_str(), std::wcslen(str) + 1);
 
     RegCloseKey(kkey);
 }

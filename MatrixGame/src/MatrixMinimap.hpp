@@ -182,7 +182,7 @@ public:
 
     void AddEvent(float x, float y, DWORD color1, DWORD color2);
 
-    void RenderBackground(const CWStr &name, DWORD uniq);
+    void RenderBackground(const std::wstring &name, DWORD uniq);
     void RenderObjectToBackground(CMatrixMapStatic *s);
 
     void Init(void);

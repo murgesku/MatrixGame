@@ -107,7 +107,7 @@ class CConstructor : public CMain {
 
     CMatrixBuilding *m_Base;
     SNewBorn *m_NewBorn;
-    CWStr m_ConstructionName;
+    std::wstring m_ConstructionName;
     void InsertUnits();
     void ResetConstruction();
 
@@ -218,8 +218,8 @@ public:
     int m_fenerX;
     int m_fplasX;
     int m_CurrentConfig;
-    CWStr m_FocusedLabel;
-    CWStr m_FocusedDescription;
+    std::wstring m_FocusedLabel;
+    std::wstring m_FocusedDescription;
     byte m_Active;
 
     SRobotConfig m_Configs[PRESETS];
@@ -244,7 +244,7 @@ public:
 
     void MakeItemReplacements(ERobotUnitType type, ERobotUnitKind kind);
 
-    CConstructorPanel() : m_FocusedLabel(g_MatrixHeap), m_FocusedDescription(g_MatrixHeap) {
+    CConstructorPanel() : m_FocusedLabel{}, m_FocusedDescription{} {
         m_CurrentConfig = 0;
         m_Active = 0;
         ZeroMemory(&m_Configs, sizeof(m_Configs));

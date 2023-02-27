@@ -43,7 +43,7 @@ void CFile::ReleasePackFiles(void) {
 }
 #endif
 
-CFile::CFile(CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -51,16 +51,7 @@ CFile::CFile(CHeap *heap) : CMain(), m_FileName(heap) {
     m_Open = 0;
 }
 
-CFile::CFile(const CWStr &filename, CHeap *heap) : CMain(), m_FileName(heap) {
-#ifndef MAXEXP_EXPORTS
-    m_PackHandle = 0xFFFFFFFF;
-#endif
-    m_Handle = INVALID_HANDLE_VALUE;
-    m_Open = 0;
-    Init(filename);
-}
-
-CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(const std::wstring &filename, CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -69,7 +60,16 @@ CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName(heap) {
     Init(filename);
 }
 
-CFile::CFile(const wchar *filename, int len, CHeap *heap) : CMain(), m_FileName(heap) {
+CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName{} {
+#ifndef MAXEXP_EXPORTS
+    m_PackHandle = 0xFFFFFFFF;
+#endif
+    m_Handle = INVALID_HANDLE_VALUE;
+    m_Open = 0;
+    Init(filename);
+}
+
+CFile::CFile(const wchar *filename, int len, CHeap *heap) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -85,28 +85,28 @@ CFile::~CFile() {
 void CFile::Clear(void) {
     m_Open = 0;
     Close();
-    m_FileName.Clear();
+    m_FileName.clear();
 }
 
 void CFile::Init(const wchar *filename, int len) {
     Clear();
-    m_FileName.Set(filename, len);
+    m_FileName = std::wstring{filename, static_cast<size_t>(len)};
 }
 
 void CFile::Open(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW((const wchar *)m_FileName, GENERIC_READ | GENERIC_WRITE, shareMode, NULL,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
             // only real files can be opened for read/WRITE mode
 
-            ERROR_S2(L"Error open file: ", m_FileName.Get());
+            ERROR_S2(L"Error open file: ", m_FileName.c_str());
         }
     }
     m_Open++;
@@ -115,11 +115,11 @@ void CFile::Open(DWORD shareMode) {
 void CFile::OpenRead(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, shareMode, NULL,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName).c_str(), GENERIC_READ, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
 
@@ -128,11 +128,11 @@ void CFile::OpenRead(DWORD shareMode) {
             // so, real file not found. may be it is in packet?
 
             if (m_Packs) {
-                m_PackHandle = m_Packs->Open(utils::from_wstring(m_FileName.Get()));
+                m_PackHandle = m_Packs->Open(utils::from_wstring(m_FileName.c_str()));
             }
 
             if (m_PackHandle == 0xFFFFFFFF) {
-                ERROR_S2(L"Error open file: ", m_FileName.Get());
+                ERROR_S2(L"Error open file: ", m_FileName.c_str());
             }
             else {
                 ++m_PacksRef;
@@ -146,11 +146,11 @@ void CFile::OpenRead(DWORD shareMode) {
 bool CFile::OpenReadNE(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ, shareMode, NULL, OPEN_EXISTING,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ, shareMode, NULL,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ, shareMode, NULL,
                                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -164,15 +164,15 @@ bool CFile::OpenReadNE(DWORD shareMode) {
 void CFile::Create(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
-            ERROR_S2(L"Error creating file: ", m_FileName.Get());
+            ERROR_S2(L"Error creating file: ", m_FileName.c_str());
         }
     }
     m_Open++;
@@ -181,11 +181,11 @@ void CFile::Create(DWORD shareMode) {
 bool CFile::CreateNE(DWORD shareMode) {
     if (m_Open == 0) {
         if (IS_UNICODE()) {
-            m_Handle = CreateFileW(m_FileName.Get(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
+            m_Handle = CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, shareMode, NULL, CREATE_ALWAYS,
                                    FILE_ATTRIBUTE_NORMAL, NULL);
         }
         else {
-            m_Handle = CreateFileA(utils::from_wstring(m_FileName.Get()).c_str(), GENERIC_READ | GENERIC_WRITE,
+            m_Handle = CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    shareMode, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
         }
         if (m_Handle == INVALID_HANDLE_VALUE) {
@@ -343,7 +343,7 @@ void CFile::Read(void *buf, DWORD kolbyte) {
     }
 
     if (!ok) {
-        ERROR_S(utils::format(L"Error read file: %s cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error read file: %ls cnt=%d", m_FileName.c_str(), kolbyte));
     }
 }
 
@@ -356,24 +356,24 @@ void CFile::Write(void *buf, DWORD kolbyte) {
     DWORD temp;
 
     if (WriteFile(m_Handle, buf, kolbyte, &temp, NULL) == FALSE || temp != kolbyte) {
-        ERROR_S(utils::format(L"Error write file: %s cnt=%d", m_FileName.Get(), kolbyte));
+        ERROR_S(utils::format(L"Error write file: %ls cnt=%d", m_FileName.c_str(), kolbyte));
     }
 }
 
-static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+static bool FileExistA(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    size_t len = std::wcslen(mname);
     const wchar *str = mname;
 
-    int lenfile = 0;
+    size_t lenfile = 0;
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile, outname.GetHeap());
+    std::wstring filename(str, lenfile);
 
     WIN32_FIND_DATAA fd;
-    HANDLE fh = FindFirstFileA(utils::from_wstring(filename.Get()).c_str(), &fd);
+    HANDLE fh = FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(), &fd);
     if (fh != INVALID_HANDLE_VALUE) {
         FindClose(fh);
         if (withpar)
@@ -383,18 +383,18 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileA(utils::from_wstring((CWStr(str, lenfile) + L".*").Get()).c_str(), &fd);
+    fh = FindFirstFileA(utils::from_wstring(std::wstring(str, lenfile) + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname(outname.GetHeap());
+        std::wstring curname;
         while (true) {
-            curname.Set(utils::to_wstring(fd.cFileName));
-            int sme = curname.FindR(L'.') + 1;
-            if (sme > 0 && sme < curname.GetLen()) {
-                curname.LowerCase(sme);
-                const wchar *str = curname.Get() + sme;
-                int len = curname.GetLen() - sme;
+            curname = utils::to_wstring(fd.cFileName);
+            int sme = curname.rfind(L'.') + 1; // TODO: pay attention
+            if (sme > 0 && sme < curname.length()) {
+                utils::to_lower(curname, sme);
+                const wchar *str = curname.c_str() + sme;
+                int len = curname.length() - sme;
 
                 const wchar *exts2 = exts;
                 int cntok = 0;
@@ -430,32 +430,32 @@ static bool FileExistA(CWStr &outname, const wchar *mname, const wchar *exts, bo
         lenpath--;
 
     if (lenpath > 0) {
-        outname.Set(str, lenpath);
-        outname.Add(CWStr(utils::to_wstring(fd.cFileName)));
+        outname = std::wstring{str, static_cast<size_t>(lenpath)};
+        outname += utils::to_wstring(fd.cFileName);
     }
     else
-        outname.Set(utils::to_wstring(fd.cFileName));
+        outname = utils::to_wstring(fd.cFileName);
 
     if (withpar && lenfile < len)
-        outname.Add(str + lenfile, len - lenfile);
+        outname += std::wstring{str + lenfile, static_cast<size_t>(len - lenfile)};
 
     return true;
 }
 
-static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+static bool FileExistW(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile, outname.GetHeap());
+    std::wstring filename{str, static_cast<size_t>(lenfile)};
 
     WIN32_FIND_DATAW fd;
-    HANDLE fh = FindFirstFileW(filename, &fd);
+    HANDLE fh = FindFirstFileW(filename.c_str(), &fd);
     if (fh != INVALID_HANDLE_VALUE) {
         FindClose(fh);
         if (withpar)
@@ -465,18 +465,18 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
         return true;
     }
 
-    fh = FindFirstFileW((CWStr(str, lenfile, outname.GetHeap()) + L".*").Get(), &fd);
+    fh = FindFirstFileW((std::wstring{str, static_cast<size_t>(lenfile)} + L".*").c_str(), &fd);
     if (fh == INVALID_HANDLE_VALUE)
         return false;
     if (exts != NULL) {
-        CWStr curname(outname.GetHeap());
+        std::wstring curname;
         while (true) {
-            curname.Set(fd.cFileName);
-            int sme = curname.FindR(L'.') + 1;
-            if (sme > 0 && sme < curname.GetLen()) {
-                curname.LowerCase(sme);
-                const wchar *str = curname.Get() + sme;
-                int len = curname.GetLen() - sme;
+            curname = fd.cFileName;
+            int sme = curname.rfind(L'.') + 1; // TODO: pay attention
+            if (sme > 0 && sme < curname.length()) {
+                utils::to_lower(curname, sme);
+                const wchar *str = curname.c_str() + sme;
+                int len = curname.length() - sme;
 
                 const wchar *exts2 = exts;
                 int cntok = 0;
@@ -512,19 +512,19 @@ static bool FileExistW(CWStr &outname, const wchar *mname, const wchar *exts, bo
         lenpath--;
 
     if (lenpath > 0) {
-        outname.Set(str, lenpath);
-        outname.Add(fd.cFileName);
+        outname = std::wstring{str, static_cast<size_t>(lenpath)};
+        outname += fd.cFileName;
     }
     else
-        outname.Set(fd.cFileName);
+        outname = fd.cFileName;
 
     if (withpar && lenfile < len)
-        outname.Add(str + lenfile, len - lenfile);
+        outname += std::wstring{str + lenfile, static_cast<size_t>(len - lenfile)};
 
     return true;
 }
 
-bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, bool withpar) {
+bool CFile::FileExist(std::wstring &outname, const wchar *mname, const wchar *exts, bool withpar) {
     DTRACE();
 
     if (mname[0] == '.' && (mname[1] == '\\' || mname[1] == '/'))
@@ -545,16 +545,16 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     if (!m_Packs)
         return false;
 
-    int len = WStrLen(mname);
+    int len = std::wcslen(mname);
     const wchar *str = mname;
 
     int lenfile = 0;
     while (lenfile < len && str[lenfile] != '?')
         lenfile++;
 
-    CWStr filename(str, lenfile);
+    std::wstring filename{str, static_cast<size_t>(lenfile)};
 
-    if (m_Packs->FileExists(utils::from_wstring(filename.Get()).c_str())) {
+    if (m_Packs->FileExists(utils::from_wstring(filename.c_str()).c_str())) {
         if (withpar)
             outname = mname;
         else
@@ -568,7 +568,7 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     int sm0 = 0;
     int sm1 = 0;
 
-    int l = WStrLen(exts);
+    int l = std::wcslen(exts);
 
     std::string fn;
     for (; sm1 <= l; ++sm1) {
@@ -576,13 +576,13 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
             if (sm0 != sm1) {
                 fn = utils::format(
                         "%s.%s",
-                        utils::from_wstring(filename.Get()).c_str(),
+                        utils::from_wstring(filename.c_str()).c_str(),
                         utils::from_wstring(exts + sm0).c_str());
 
                 fn.resize(fn.length() - (l - sm1));
 
                 if (m_Packs->FileExists(fn)) {
-                    outname.Set(utils::to_wstring(fn));
+                    outname = utils::to_wstring(fn);
                     if (withpar)
                         outname += (mname + lenfile);
                     return true;
@@ -597,23 +597,23 @@ bool CFile::FileExist(CWStr &outname, const wchar *mname, const wchar *exts, boo
     return false;
 }
 
-void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
+void CFile::FindFiles(const std::wstring &folderfrom, const wchar *files, ENUM_FILES ef, DWORD user) {
     if (IS_UNICODE()) {
-        CWStr fn(folderfrom);
-        if (fn.GetLen() > 0 && !(*(fn.Get() + fn.GetLen() - 1) == '\\' || (*(fn.Get() + fn.GetLen() - 1) == '/'))) {
-            fn.Add(L"\\");
+        std::wstring fn(folderfrom);
+        if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
+            fn += L"\\";
         }
-        CWStr fnf(fn);
+        std::wstring fnf(fn);
 
         WIN32_FIND_DATAW fd;
 
         // seek files
         fnf += files;
-        HANDLE h = FindFirstFileW(fnf.Get(), &fd);
+        HANDLE h = FindFirstFileW(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(fd.cFileName);
+                    std::wstring found(fd.cFileName);
                     ef(fn + found, user);
                 }
             }
@@ -622,11 +622,11 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
 
         fnf = fn + L"*.*";
-        h = FindFirstFileW(fnf.Get(), &fd);
+        h = FindFirstFileW(fnf.c_str(), &fd);
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(fd.cFileName);
+                    std::wstring found(fd.cFileName);
                     if (found != L"." && found != L"..") {
                         FindFiles(fn + found, files, ef, user);
                     }
@@ -637,7 +637,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         }
     }
     else {
-        std::string fn{utils::from_wstring(folderfrom.Get())};
+        std::string fn{utils::from_wstring(folderfrom.c_str())};
         if (fn.length() > 0 && !(*(fn.c_str() + fn.length() - 1) == '\\' || (*(fn.c_str() + fn.length() - 1) == '/'))) {
             fn +=  "\\";
         }
@@ -651,7 +651,7 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(utils::to_wstring(fn + fd.cFileName));
+                    std::wstring found(utils::to_wstring(fn + fd.cFileName));
                     ef(found, user);
                 }
             }
@@ -664,9 +664,9 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
         if (h != INVALID_HANDLE_VALUE) {
             do {
                 if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-                    CWStr found(utils::to_wstring(fd.cFileName));
+                    std::wstring found(utils::to_wstring(fd.cFileName));
                     if (found != L"." && found != L"..") {
-                        FindFiles(CWStr(utils::to_wstring(fn)) + found, files, ef, user);
+                        FindFiles(utils::to_wstring(fn) + found, files, ef, user);
                     }
                 }
             }
@@ -674,23 +674,6 @@ void CFile::FindFiles(const CWStr &folderfrom, const wchar *files, ENUM_FILES ef
             FindClose(h);
         }
     }
-}
-
-BASE_API void CorrectFilePath(CWStr &filepath) {
-    if (filepath.GetLen() > 0 &&
-        (*(filepath.Get() + filepath.GetLen() - 1) == '\\' || (*(filepath.Get() + filepath.GetLen() - 1) == '/'))) {
-        filepath.Add(L"\\");
-    }
-}
-
-BASE_API CWStr GetFilePath(const CWStr &filepath) {
-    int cnt = filepath.GetCountPar(L"\\/");
-    if (cnt > 1) {
-        cnt = filepath.GetSmePar(cnt - 1, L"\\/");
-        return CWStr(filepath.Get(), cnt);
-    }
-    else
-        return CWStr();
 }
 
 }  // namespace Base

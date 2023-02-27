@@ -14,7 +14,7 @@ class CMatrixCursor : public CMain {
     DWORD m_CursorFlags;
     CPoint m_Pos;
     CPoint m_HotSpot;
-    const wchar *m_CurCursor;
+    std::wstring m_CurCursor;
     CTextureManaged *m_CursorTexture;
     int m_CursorSize;
     HICON *m_CursorIcons;
@@ -40,7 +40,7 @@ public:
 
     void Draw(void);
 
-    void Select(const wchar *name);
+    void Select(const std::wstring& name);
     void Takt(int ms);
     void Clear(void);
     void SetVisible(bool flag);

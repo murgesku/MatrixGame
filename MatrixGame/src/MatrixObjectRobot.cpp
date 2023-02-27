@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CMatrixRobot::CMatrixRobot() : CMatrixMapStatic(), m_Animation(ANIMATION_OFF), m_Name(L"ROBOT", g_MatrixHeap) {
+CMatrixRobot::CMatrixRobot() : CMatrixMapStatic(), m_Animation(ANIMATION_OFF), m_Name{L"ROBOT"} {
     DTRACE();
     m_Core->m_Type = OBJECT_TYPE_ROBOTAI;
 
@@ -307,8 +307,8 @@ void CMatrixRobot::RNeed(dword need) {
         // float hp = (float)g_Config.m_RobotHitPoint;
         // InitMaxHitpoint(hp);
 
-        CWStr name(g_CacheHeap), name_e(g_CacheHeap);
-        CWStr path(g_CacheHeap);
+        std::wstring name, name_e;
+        std::wstring path;
 
         for (int i = 0; i < m_UnitCnt; i++) {
             if (!m_Unit[i].m_Graph) {
@@ -328,24 +328,24 @@ void CMatrixRobot::RNeed(dword need) {
                     default:
                         ERROR_S(L"Unknown robot unit type");
                 }
-                path += static_cast<int>(m_Unit[i].u1.s1.m_Kind);
+                path += utils::format(L"%d", static_cast<int>(m_Unit[i].u1.s1.m_Kind));
 
-                name = path.Get();
+                name = path.c_str();
 
                 if (m_Side != PLAYER_SIDE) {
                     name_e = path + L"_e";
-                    if (CFile::FileExist(name_e, name_e.Get(), L"dds~png")) {
+                    if (CFile::FileExist(name_e, name_e.c_str(), L"dds~png")) {
                         name = name_e;
                     }
-                    if (CFile::FileExist(name_e, (name + GLOSS_TEXTURE_SUFFIX).Get(), L"dds~png")) {
+                    if (CFile::FileExist(name_e, (name + GLOSS_TEXTURE_SUFFIX).c_str(), L"dds~png")) {
                         name += L"*" + name_e;
                     }
-                    else if (CFile::FileExist(name_e, (path + GLOSS_TEXTURE_SUFFIX).Get(), L"dds~png")) {
+                    else if (CFile::FileExist(name_e, (path + GLOSS_TEXTURE_SUFFIX).c_str(), L"dds~png")) {
                         name += L"*" + name_e;
                     }
                 }
 
-                m_Unit[i].m_Graph = LoadObject((path + L".vo").Get(), g_MatrixHeap, true, name);
+                m_Unit[i].m_Graph = LoadObject((path + L".vo").c_str(), g_MatrixHeap, true, name.c_str());
 
                 m_Unit[i].m_Graph->SetAnimByName(ANIMATION_NAME_IDLE);
             }

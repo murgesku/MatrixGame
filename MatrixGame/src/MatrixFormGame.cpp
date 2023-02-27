@@ -100,40 +100,39 @@ void CFormMatrixGame::Draw(void) {
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_DRAWFPS))
-        g_MatrixMap->m_DI.T(L"FPS", CWStr(g_DrawFPS, g_MatrixHeap).Get());
+        g_MatrixMap->m_DI.T(L"FPS", utils::format(L"%d", g_DrawFPS).c_str());
     if (FLAG(g_Config.m_DIFlags, DI_TMEM)) {
-        g_MatrixMap->m_DI.T(L"Free Texture Mem", CWStr(g_AvailableTexMem, g_MatrixHeap).Get());
+        g_MatrixMap->m_DI.T(L"Free Texture Mem", utils::format(L"%d", g_AvailableTexMem).c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
-        CWStr txt(g_MatrixHeap);
-        txt = Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f);
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        std::wstring txt;
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f);
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
+        txt.insert(txt.length() - 1, L".");
         // txt += L", ";
         // txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
-        // txt.Insert(txt.GetLen()-1,L".",1);
-        g_MatrixMap->m_DI.T(L"Camera target", txt.Get());
+        // txt.Insert(txt.length()-1,L".",1);
+        g_MatrixMap->m_DI.T(L"Camera target", txt.c_str());
     }
     if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
-        CWStr txt(g_MatrixHeap);
-
-        txt = Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f);
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        std::wstring txt;
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f);
-        txt.Insert(txt.GetLen() - 1, L".", 1);
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
+        txt.insert(txt.length() - 1, L".");
         txt += L", ";
-        txt += Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f);
-        txt.Insert(txt.GetLen() - 1, L".", 1);
-        g_MatrixMap->m_DI.T(L"Frustum Center", txt.Get());
+        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
+        txt.insert(txt.length() - 1, L".");
+        g_MatrixMap->m_DI.T(L"Frustum Center", txt.c_str());
 
         // txt =
         // Float2Int(D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter()-(g_MatrixMap->m_Camera.GetTarget()+D3DXVECTOR3(0,0,g_MatrixMap->m_Camera.GetZRel()))))
-        // * 10.0f); txt.Insert(txt.GetLen()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
+        // * 10.0f); txt.Insert(txt.length()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
 
-        // g_MatrixMap->m_DI.T(L"Z rel",CWStr(g_MatrixMap->m_Camera.GetZRel()));
+        // g_MatrixMap->m_DI.T(L"Z rel",std::wstring(g_MatrixMap->m_Camera.GetZRel()));
     }
 
     g_MatrixMap->BeforeDraw();
@@ -427,15 +426,15 @@ static CMatrixEffectRepair *repair = 0;
 
 void selcallback(CMatrixMapStatic *ms, DWORD param) {
     if (ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Mesh", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Mesh", 1000);
     else if (ms->IsRobot())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Robot", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Robot", 1000);
     else if (ms->IsCannon())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Cannon", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Cannon", 1000);
     else if (ms->IsBuilding())
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Building", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Building", 1000);
     else if (ms->GetObjectType() == OBJECT_TYPE_FLYER)
-        g_MatrixMap->m_DI.T(CWStr((int)ms).Get(), L"Flyer", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Flyer", 1000);
     SideSelectionCallBack(ms, param);
 }
 #else
@@ -950,20 +949,15 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
         {
             m_LastScans.clear();
             g_MatrixMap->m_DI.T(L"_____________________________", L"", 10000);
-            g_MatrixMap->m_DI.T(L"Sim textures",
-                                CWStr(g_D3DDCaps.MaxSimultaneousTextures, g_CacheHeap).Get(), 10000);
-            g_MatrixMap->m_DI.T(L"Stencil available",
-                                FLAG(g_Flags, GFLAG_STENCILAVAILABLE) ? L"Yes" : L"No", 10000);
+            g_MatrixMap->m_DI.T(L"Sim textures", utils::format(L"%u", g_D3DDCaps.MaxSimultaneousTextures).c_str(), 10000);
+            g_MatrixMap->m_DI.T(L"Stencil available", FLAG(g_Flags, GFLAG_STENCILAVAILABLE) ? L"Yes" : L"No", 10000);
 
             // vidmode
             D3DDISPLAYMODE d3ddm;
-
-            CWStr modet(g_CacheHeap);
-            CWStr modev(g_CacheHeap);
-            for (int i = 0; i < 2; ++i) {
-                modet.Set(L"Buffer ");
-                modet += i;
-                modet += L" mode";
+            for (int i = 0; i < 2; ++i)
+            {
+                std::wstring modet = utils::format(L"Buffer %d mode", i);
+                std::wstring modev;
                 ASSERT_DX(g_D3DD->GetDisplayMode(0, &d3ddm));
                 if (d3ddm.Format == D3DFMT_X8R8G8B8) {
                     modev = L"X8R8G8B8";
@@ -978,9 +972,9 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                     modev = L"R5G6B5";
                 }
                 else {
-                    modev.Set(static_cast<int>(d3ddm.Format));
+                    modev = utils::format(L"%d", d3ddm.Format);
                 }
-                g_MatrixMap->m_DI.T(modet.Get(), modev.Get(), 10000);
+                g_MatrixMap->m_DI.T(modet.c_str(), modev.c_str(), 10000);
             }
 
             return;

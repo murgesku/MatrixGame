@@ -208,7 +208,7 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
                 m_PB = NULL;
             }
 
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+            auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
             if (temp.GetStrPar(3, L",") == STR_BREAK_TYPE_EXPLODE) {
                 CMatrixEffect::CreateExplosion(m_Core->m_GeoCenter, ExplosionObject, true);
             }
@@ -246,12 +246,11 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
                 m_PB = NULL;
             }
 
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","), g_CacheHeap);
-            CWStr temp1(g_CacheHeap);
+            auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","));
 
             int cnt = temp.GetCountPar(L"#");
             for (int i = 0; i < cnt; ++i) {
-                temp1 = temp.GetStrPar(i, L"#");
+                auto temp1 = temp.GetStrPar(i, L"#");
                 if (temp1.GetIntPar(0, L":") == m_AnimState) {
                     // found
                     int newstate = temp1.GetIntPar(3, L":");
@@ -270,12 +269,11 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
 void CMatrixMapObject::ApplyAnimState(int anims) {
     m_AnimState = anims;
 
-    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","), g_CacheHeap);
-    CWStr temp1(g_CacheHeap);
+    auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*").GetStrPar(1, L","));
 
     int cnt = temp.GetCountPar(L"#");
     for (int i = 0; i < cnt; ++i) {
-        temp1 = temp.GetStrPar(i, L"#");
+        auto temp1 = temp.GetStrPar(i, L"#");
         if (temp1.GetIntPar(0, L":") == anims) {
             // found
             if (m_Graph)
@@ -396,7 +394,7 @@ void CMatrixMapObject::RNeed(dword need) {
             UnloadObject(m_Graph, g_MatrixHeap);
 
         // prepare texture
-        CWStr path(g_CacheHeap), tex(g_CacheHeap), vo(g_CacheHeap), temp(g_CacheHeap);
+        std::wstring path, tex, vo, temp;
         path = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*");
 
         if (m_BehFlag != BEHF_PORTRET) {
@@ -404,17 +402,17 @@ void CMatrixMapObject::RNeed(dword need) {
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_GLOSS, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_BACK, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*";
             temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_MASK, L"*");
-            if (!temp.IsEmpty())
+            if (!temp.empty())
                 tex += path + temp;
 
             tex += L"*" + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_SCROLL, L"*");
@@ -429,7 +427,7 @@ void CMatrixMapObject::RNeed(dword need) {
                 tex += L"*" + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_SCROLL, L"*");
             }
             else {
-                tex = path + L"p" + CWStr(m_PrevStateRobotsInRadius, g_CacheHeap);
+                tex = path + L"p" + utils::format(L"%d", m_PrevStateRobotsInRadius);
                 tex += L"**";
                 tex += path + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE_BACK, L"*");
                 tex += L"*";
@@ -441,7 +439,7 @@ void CMatrixMapObject::RNeed(dword need) {
 
         vo = path + g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_VO, L"*") + L".vo";
 
-        m_Graph = LoadObject(vo.Get(), g_MatrixHeap, false, tex.Get());
+        m_Graph = LoadObject(vo.c_str(), g_MatrixHeap, false, tex.c_str());
 
         // if (FLAG(m_ObjectState,OBJECT_STATE_BURNED))
         //{
@@ -452,14 +450,14 @@ void CMatrixMapObject::RNeed(dword need) {
         //            UnloadObject(m_Graph,g_MatrixHeap);
         //        }
 
-        //        CWStr name(g_MatrixMap->IdsGet(m_iName).Get() + m_BurnNameDisp, g_CacheHeap);
+        //        std::wstring name(g_MatrixMap->IdsGet(m_iName).c_str() + m_BurnNameDisp, g_CacheHeap);
         //        int idx = name.Find(L"?",1,0);
         //        if (idx >=0) name.SetLen(idx);
         //        name.Add(L".vo");
 
-        //        CWStr nameo(g_CacheHeap);
+        //        std::wstring nameo(g_CacheHeap);
 
-        //        CacheReplaceFileNameAndExt(nameo, g_MatrixMap->IdsGet(m_iName).Get(), name);
+        //        CacheReplaceFileNameAndExt(nameo, g_MatrixMap->IdsGet(m_iName).c_str(), name);
 
         //        //idx = nameo.Find(L"?",1,0);
         //        //if (idx >=0) nameo.SetLen(idx);
@@ -473,7 +471,7 @@ void CMatrixMapObject::RNeed(dword need) {
 
         //        if(!m_Graph)
         //        {
-        //            m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).Get(), g_MatrixHeap);
+        //            m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).c_str(), g_MatrixHeap);
         //        }
         //        //m_Graph->VO()->ReleaseTextures();
 
@@ -483,7 +481,7 @@ void CMatrixMapObject::RNeed(dword need) {
         //{
         //    if(!m_Graph)
         //    {
-        //        m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).Get(), g_MatrixHeap);
+        //        m_Graph = LoadObject(g_MatrixMap->IdsGet(m_iName).c_str(), g_MatrixHeap);
         //    }
         //}
 
@@ -652,12 +650,11 @@ void CMatrixMapObject::Takt(int cms) {
 
             if (m_BehFlag == BEHF_ANIM) {
                 if (m_Graph->IsAnimEnd()) {
-                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
-                    CWStr temp1(g_CacheHeap);
+                    auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
 
                     int cnt = temp.GetCountPar(L"#");
                     for (int i = 0; i < cnt; ++i) {
-                        temp1 = temp.GetStrPar(i, L"#");
+                        auto temp1 = temp.GetStrPar(i, L"#");
                         if (temp1.GetIntPar(0, L":") == m_AnimState) {
                             // found
                             int newstate = temp1.GetIntPar(4, L":");
@@ -903,14 +900,17 @@ void CMatrixMapObject::Init(int ids) {
     m_BehFlag = BEHF_STATIC;
     m_ShadowType = SHADOW_OFF;
 
-    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*"), g_CacheHeap);
-    if (temp.CompareFirst(L"Stencil")) {
+    ParamParser temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*"));
+    if (utils::starts_with(temp, L"Stencil"))
+    {
         m_ShadowType = SHADOW_STENCIL;
     }
-    else if (temp.CompareFirst(L"Proj,")) {
+    else if (utils::starts_with(temp, L"Proj,"))
+    {
         m_ShadowType = SHADOW_PROJ_STATIC;
     }
-    else if (temp.CompareFirst(L"ProjEx,")) {
+    else if (utils::starts_with(temp, L"ProjEx,"))
+    {
         m_ShadowType = SHADOW_PROJ_DYNAMIC;
     }
 
@@ -928,29 +928,29 @@ void CMatrixMapObject::Init(int ids) {
     temp = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*");
 
     if (temp[0] == '+') {
-        temp.Del(0, 1);
+        temp.erase(0, 1);
         ++g_MatrixMap->m_BeforeWinCount;
 
         SETFLAG(m_ObjectState, OBJECT_STATE_SPECIAL);
     }
 
-    if (temp.CompareFirst(L"Burn")) {
+    if (utils::starts_with(temp, L"Burn")) {
         m_BehFlag = BEHF_BURN;
         m_NextTime = 0;
         m_BurnTimeTotal = 0;
         m_BurnSkinVis = 0;
 
         if (temp.GetStrPar(2, L",") == L"Tex") {
-            // CWStr trans(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE,L"*"), g_CacheHeap);
+            // std::wstring trans(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE,L"*"), g_CacheHeap);
             // int idx = trans.Find(L"?Trans");
             // if (idx >= 0) trans = L"?Trans"; else trans.SetLen(0);
 
             m_BurnSkin = (SMatrixSkin *)CSkinManager::GetSkin(
-                    (g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*") + temp.GetStrPar(1, L",")).Get(),
+                    (g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*") + temp.GetStrPar(1, L",")).c_str(),
                     GSP_ORDINAL);
         }
     }
-    else if (temp.CompareFirst(L"Break")) {
+    else if (utils::starts_with(temp, L"Break")) {
         m_BreakHitPoint = temp.GetIntPar(2, L",");
         m_BreakHitPointMax = m_BreakHitPoint;
 
@@ -965,7 +965,7 @@ void CMatrixMapObject::Init(int ids) {
             AddLT();
         }
     }
-    else if (temp.CompareFirst(L"Anim")) {
+    else if (utils::starts_with(temp, L"Anim")) {
         if (temp[5] == 'P') {
             m_BehFlag = BEHF_PORTRET;
             m_PrevStateRobotsInRadius = 0;
@@ -979,7 +979,7 @@ void CMatrixMapObject::Init(int ids) {
             AddLT();
         }
     }
-    else if (temp.CompareFirst(L"Sens")) {
+    else if (utils::starts_with(temp, L"Sens")) {
         m_BehFlag = BEHF_SENS;
         m_PrevStateRobotsInRadius = -1;
         m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");
@@ -987,7 +987,7 @@ void CMatrixMapObject::Init(int ids) {
         SetAblazeTTL(101);
         AddLT();
     }
-    else if (temp.CompareFirst(L"Spawn")) {
+    else if (utils::starts_with(temp, L"Spawn")) {
         m_BehFlag = BEHF_SPAWNER;
         m_PrevStateRobotsInRadius = -1;
         m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");
@@ -1006,8 +1006,8 @@ void CMatrixMapObject::OnLoad(void) {
     }
 }
 
-// void CMatrixMapObject::InitAsBaseRuins(CMatrixBuilding *b, const CWStr &namev, const CWStr &namet, bool shadow)
-void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const CWStr &namev, const CWStr &namet,
+// void CMatrixMapObject::InitAsBaseRuins(CMatrixBuilding *b, const std::wstring &namev, const std::wstring &namet, bool shadow)
+void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const std::wstring &namev, const std::wstring &namet,
                                        bool shadow) {
     // m_Core->m_Matrix._41 = b->m_Pos.x;
     // m_Core->m_Matrix._42 = b->m_Pos.y;
@@ -1033,7 +1033,7 @@ void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const 
 
     m_RChange &= ~MR_Graph;
 
-    m_Graph = LoadObject(namev.Get(), g_MatrixHeap, false, namet.Get());
+    m_Graph = LoadObject(namev.c_str(), g_MatrixHeap, false, namet.c_str());
     m_Graph->FirstFrame();
 
     RNeed(MR_Matrix);
@@ -1142,7 +1142,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                     { g_MatrixMap->GetPlayerSide()->SetStatus(SS_JUST_WIN); }
                 }
 
-                CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                 Init(temp.GetIntPar(1, L","));
             }
             else if (GetAblazeTTL() < 100 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2)) {
@@ -1229,7 +1229,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
     else if (m_BehFlag == BEHF_SPAWNER) {
         if (m_PrevStateRobotsInRadius < 0) {
             m_PrevStateRobotsInRadius = 0;
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+            auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
             m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(4, L":"));
         }
         else if (m_PrevStateRobotsInRadius == 0) {
@@ -1239,15 +1239,15 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, m_SensRadius, 1, TRACE_ROBOT, NULL,
                                          FindOnlyPlayerRobots, (DWORD)&found);
                 if (found) {
-                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                    auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                     m_PrevStateRobotsInRadius = 1;
                     addt = temp.GetStrPar(1, L",").GetIntPar(1, L":");
 
                     m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(5, L":"), 0);
 
-                    CWStr snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"), g_CacheHeap);
-                    if (!snd.IsEmpty())
-                        CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                    std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"));
+                    if (!snd.empty())
+                        CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 }
                 SetAblazeTTL(g_MatrixMap->GetTime() + addt);
             }
@@ -1256,13 +1256,13 @@ void CMatrixMapObject::LogicTakt(int ms) {
             // waiting before spawn
             if (m_Graph->IsAnimEnd()) {
                 // spawn robot!
-                CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
 
                 int robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetIntPar(2, L":"),
                                              temp.GetStrPar(1, L",").GetIntPar(3, L":"));
 
                 CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
-                CBlockPar *botpar = bpr->BlockGetNE(CWStr(robot, g_CacheHeap));
+                CBlockPar *botpar = bpr->BlockGetNE(utils::format(L"%d", robot));
                 if (botpar == NULL) {
                     botpar = bpr->BlockGet(g_MatrixMap->Rnd(0, bpr->BlockCount() - 1));
                 }
@@ -1303,9 +1303,9 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(6, L":"), 0);
 
-                CWStr snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"), g_CacheHeap);
-                if (!snd.IsEmpty())
-                    CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"));
+                if (!snd.empty())
+                    CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 2;
             }
         }
@@ -1335,18 +1335,18 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 m_SpawnRobotCore->Release();
                 m_SpawnRobotCore = NULL;
 
-                CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(7, L":"), 0);
 
-                CWStr snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"), g_CacheHeap);
-                if (!snd.IsEmpty())
-                    CSound::AddSound(snd.Get(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
+                std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"));
+                if (!snd.empty())
+                    CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 3;
             }
         }
         else if (m_PrevStateRobotsInRadius == 3) {
             if (m_Graph->IsAnimEnd()) {
-                CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(4, L":"));
                 m_PrevStateRobotsInRadius = 0;
             }
@@ -1356,7 +1356,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
     else if (m_BehFlag == BEHF_SENS) {
         if (m_PrevStateRobotsInRadius < 0) {
             m_PrevStateRobotsInRadius = 0;
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+            auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
             m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(1, L":"));
         }
 
@@ -1368,24 +1368,24 @@ void CMatrixMapObject::LogicTakt(int ms) {
             if (g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, m_SensRadius, 1, TRACE_ROBOT, NULL,
                                          NULL, 0)) {
                 if (m_PrevStateRobotsInRadius == 0) {
-                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                    auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                     m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(2, L":"));
                     m_PrevStateRobotsInRadius = 1;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 5) {
-                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(4, L":").Get(), GetGeoCenter());
-                        // CSound::Play(temp.GetStrPar(1,L",").GetStrPar(4,L":").Get(), GetGeoCenter());
+                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(4, L":").c_str(), GetGeoCenter());
+                        // CSound::Play(temp.GetStrPar(1,L",").GetStrPar(4,L":").c_str(), GetGeoCenter());
                     }
                 }
             }
             else {
                 if (m_PrevStateRobotsInRadius != 0) {
-                    CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
+                    auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                     m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(3, L":"));
                     m_PrevStateRobotsInRadius = 0;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 6) {
-                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(5, L":"), GetGeoCenter());
+                        CSound::AddSound(temp.GetStrPar(1, L",").GetStrPar(5, L":").c_str(), GetGeoCenter());
                     }
                 }
             }
@@ -1434,8 +1434,8 @@ void CMatrixMapObject::LogicTakt(int ms) {
         }
 
         if (!FLAG(m_ObjectState, OBJECT_STATE_BURNED)) {
-            CWStr temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"), g_CacheHeap);
-            CWStr bt(temp.GetStrPar(2, L","), g_CacheHeap);
+            auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
+            std::wstring bt(temp.GetStrPar(2, L","));
             if (m_BurnTimeTotal > 5000) {
                 SETFLAG(m_ObjectState, OBJECT_STATE_BURNED);
 

@@ -168,7 +168,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
                 if (srcb[*bot] == NULL) {
                     // source bitmap not yet loaded
                     srcb[*bot] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
-                    srcb[*bot]->LoadFromPNG(g_MatrixMap->IdsGet(*bot).Get());
+                    srcb[*bot]->LoadFromPNG(g_MatrixMap->IdsGet(*bot).c_str());
                 }
                 bmp.Copy(CPoint(xx, yy), CPoint(TEX_BOTTOM_SIZE, TEX_BOTTOM_SIZE), *srcb[*bot], CPoint(0, 0));
                 --bc;
@@ -189,7 +189,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
                         if (srcb[ids] == NULL) {
                             // source bitmap not yet loaded
                             srcb[ids] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
-                            srcb[ids]->LoadFromPNG(g_MatrixMap->IdsGet(ids).Get());
+                            srcb[ids]->LoadFromPNG(g_MatrixMap->IdsGet(ids).c_str());
                         }
 
                         bmp.MergeByMask(CPoint(xx, yy), CPoint(TEX_BOTTOM_SIZE, TEX_BOTTOM_SIZE), bmp, CPoint(xx, yy),
@@ -272,7 +272,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
             }
         }
 
-        // bmp.SaveInPNG((CWStr(L"bla_") + i + L".png").Get());
+        // bmp.SaveInPNG((std::wstring(L"bla_") + i + L".png").c_str());
         CBottomTextureUnion::Get(i).MakeFromBitmap(bmp);
     }
 
@@ -393,32 +393,31 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
         m_MaintenancePRC = 100;
         ic = propkey->FindAsWStr(DATA_MAINTENANCETIME);
         if (ic >= 0) {
-            m_MaintenancePRC = propval->GetAsWStr(ic).GetInt();
+            m_MaintenancePRC = propval->GetAsParamParser(ic).GetInt();
         }
         InitMaintenanceTime();
 
         ic = propkey->FindAsWStr(DATA_SIDEAIINFO);
         if (ic >= 0) {
-            CWStr sideaiinfo(propval->GetAsWStr(ic), g_CacheHeap);
-            CWStr inf(g_CacheHeap), na(g_CacheHeap), da(g_CacheHeap), data(g_CacheHeap);
+            auto sideaiinfo(propval->GetAsParamParser(ic));
 
             CBlockPar *bps = g_MatrixData->BlockGet(L"Side");
             int sc = bps->ParCount();
 
             int cnt = sideaiinfo.GetCountPar(L"|");
             for (int i = 0; i < cnt; ++i) {
-                inf = sideaiinfo.GetStrPar(i, L"|");
-                na = inf.GetStrPar(0, L":");
-                da = inf.GetStrPar(1, L":");
+                auto inf = sideaiinfo.GetStrPar(i, L"|");
+                auto na = inf.GetStrPar(0, L":");
+                auto da = inf.GetStrPar(1, L":");
                 for (int s = 0; s < sc; ++s) {
                     if (bps->ParGet(s).GetStrPar(0, L",") == na) {
                         CMatrixSideUnit *su = g_MatrixMap->GetSideById(bps->ParGetName(s).GetInt());
 
                         int cd = da.GetCountPar(L"/");
-                        data = da;
+                        auto data = da;
                         for (int d = 0; d < cd; d += 2) {
-                            na.Set(data.GetStrPar(d, L"/"));
-                            da.Set(data.GetStrPar(d + 1, L"/"));
+                            na = data.GetStrPar(d, L"/");
+                            da = data.GetStrPar(d + 1, L"/");
 
                             if (na == L"TBB")
                                 su->m_TimeNextBomb = g_MatrixMap->GetTime() + da.GetInt();
@@ -444,12 +443,10 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
     if (step == RS_RESOURCES) {
         ic = propkey->FindAsWStr(DATA_SIDERESINFO);
         if (ic >= 0) {
-            CWStr sideresinfo(g_CacheHeap);
-            CWStr def(g_CacheHeap);
-            sideresinfo = propval->GetAsWStr(ic);
+            auto sideresinfo = propval->GetAsParamParser(ic);
             int cnt = sideresinfo.GetCountPar(L"|");
             for (int i = 0; i < cnt; ++i) {
-                def = sideresinfo.GetStrPar(i, L"|");
+                auto def = sideresinfo.GetStrPar(i, L"|");
 
                 int id = def.GetIntPar(0, L",");
 
@@ -481,7 +478,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
         int n = 0;
         ic = propkey->FindAsWStr(DATA_SHADOWTAGCOUNT);
         if (ic >= 0)
-            n = propval->GetAsWStr(ic).GetInt();
+            n = propval->GetAsParamParser(ic).GetInt();
         CMatrixMapObject::InitTextures(n);
 
         // load objects
@@ -627,11 +624,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 // replace geometry
                 int n = (int)kind[i];
 
-                CWStr namet(OBJECT_PATH_BUILDINGS_RUINS, g_MatrixHeap);
-                namet += L"b";
-                namet += n;
-                CWStr namev(namet, g_CacheHeap);
-                namev += L".vo";
+                std::wstring namet = utils::format(L"%lsb%d", OBJECT_PATH_BUILDINGS_RUINS, n);
+                std::wstring namev = namet + L".vo";
 
                 CMatrixMapObject *mo = g_MatrixMap->StaticAdd<CMatrixMapObject>(false);
                 mo->InitAsBaseRuins(D3DXVECTOR2(xf[i], yf[i]), ang[i], namev, namet, true);
@@ -694,14 +688,13 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 SPreRobot sb;
                 memset(&sb, 0, sizeof(sb));
 
-                CWStr units(g_CacheHeap);
-                units = c6->GetAsWStr(i);
+                auto units = c6->GetAsParamParser(i);
 
                 int cc = units.GetCountPar(L"|");
 
                 int wi = 0;
                 for (int k = 0; k < cc; k++) {
-                    CWStr unit(units.GetStrPar(k, L"|"), g_CacheHeap);
+                    auto unit(units.GetStrPar(k, L"|"));
 
                     ERobotUnitType type = (ERobotUnitType)unit.GetIntPar(0, L",");
                     ERobotUnitKind kind = (ERobotUnitKind)unit.GetIntPar(1, L",");
@@ -886,7 +879,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
         m_CameraAngle = 0;
         ic = propkey->FindAsWStr(DATA_CAMANGLE);
         if (ic >= 0)
-            m_CameraAngle = (float)propval->GetAsWStr(ic).GetDouble();
+            m_CameraAngle = (float)propval->GetAsParamParser(ic).GetDouble();
 
         m_Camera.InitStrategyAngle(m_CameraAngle);
 
@@ -894,9 +887,9 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 
         ic = propkey->FindAsWStr(DATA_CAMPOSX);
         if (ic >= 0) {
-            cpp.x = (float)propval->GetAsWStr(ic).GetDouble();
+            cpp.x = (float)propval->GetAsParamParser(ic).GetDouble();
             ic = propkey->FindAsWStr(DATA_CAMPOSY);
-            cpp.y = (float)propval->GetAsWStr(ic).GetDouble();
+            cpp.y = (float)propval->GetAsParamParser(ic).GetDouble();
 
             g_MatrixMap->m_Camera.SetXYStrategy(cpp);
         }
@@ -941,7 +934,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 DWORD uniq;
 CBuf *robots_buf;
 
-int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
+int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     DTRACE();
 
     robots_buf = NULL;
@@ -980,18 +973,18 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     ic = propkey->FindAsWStr(DATA_SIZEX);
     if (ic < 0)
         return -1;
-    int sizex = propval->GetAsWStr(ic).GetInt();
+    int sizex = propval->GetAsParamParser(ic).GetInt();
 
     ic = propkey->FindAsWStr(DATA_SIZEY);
     if (ic < 0)
         return -1;
-    int sizey = propval->GetAsWStr(ic).GetInt();
+    int sizey = propval->GetAsParamParser(ic).GetInt();
 
     ic = propkey->FindAsWStr(DATA_MACROTEXTURE);
     if (ic >= 0) {
-        CWStr mt(g_CacheHeap);
-        mt = propval->GetAsWStr(ic);
-        if (mt.IsEmpty()) {
+        std::wstring mt;
+        mt = propval->GetAsParamParser(ic);
+        if (mt.empty()) {
             MacrotextureClear();
         }
         else {
@@ -1013,48 +1006,48 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     uniq = 0;
     ic = propkey->FindAsWStr(DATA_UNIQID);
     if (ic >= 0)
-        uniq = propval->GetAsWStr(ic).GetDword();
+        uniq = propval->GetAsParamParser(ic).GetDword();
 
     m_TexUnionDim = 16;
     m_TexUnionSize = m_TexUnionDim * m_TexUnionDim;
 
-    ic = propkey->FindAsWStr(CWStr(DATA_TEXUNIONDIM));
+    ic = propkey->FindAsWStr(std::wstring(DATA_TEXUNIONDIM));
     if (ic >= 0) {
-        m_TexUnionDim = propval->GetAsWStr(ic).GetInt();
+        m_TexUnionDim = propval->GetAsParamParser(ic).GetInt();
         m_TexUnionSize = m_TexUnionDim * m_TexUnionDim;
     }
 
     m_WaterNormalLen = 1;
     ic = propkey->FindAsWStr(DATA_WATERNORMLEN);
     if (ic >= 0)
-        m_WaterNormalLen = (float)propval->GetAsWStr(ic).GetDouble();
+        m_WaterNormalLen = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_BIASTER);
     if (ic >= 0)
-        m_BiasTer = (float)propval->GetAsWStr(ic).GetDouble();
+        m_BiasTer = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_BIASWATER);
     if (ic >= 0)
-        m_BiasWater = (float)propval->GetAsWStr(ic).GetDouble();
+        m_BiasWater = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_BIASCANNONS);
     if (ic >= 0)
-        m_BiasCannons = (float)propval->GetAsWStr(ic).GetDouble();
+        m_BiasCannons = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_BIASROBOTS);
     if (ic >= 0)
-        m_BiasRobots = (float)propval->GetAsWStr(ic).GetDouble();
+        m_BiasRobots = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_BIASBUILDINGS);
     if (ic >= 0)
-        m_BiasBuildings = (float)propval->GetAsWStr(ic).GetDouble();
+        m_BiasBuildings = (float)propval->GetAsParamParser(ic).GetDouble();
 
     m_Terrain2ObjectInfluence = 0;
     m_Terrain2ObjectTargetColor = 0;
 
     ic = propkey->FindAsWStr(DATA_INFLUENCE);
     if (ic >= 0) {
-        m_Terrain2ObjectInfluence = (float)propval->GetAsWStr(ic).GetDouble();
+        m_Terrain2ObjectInfluence = (float)propval->GetAsParamParser(ic).GetDouble();
         if (m_Terrain2ObjectInfluence > 0) {
             m_Terrain2ObjectTargetColor = 0xFFFFFFFF;
         }
@@ -1068,16 +1061,16 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_WATERCOLOR);
     if (ic >= 0)
-        m_WaterColor = propval->GetAsWStr(ic).GetDword();
+        m_WaterColor = propval->GetAsParamParser(ic).GetDword();
 
     m_SkyColor = DEF_SKY_COLOR | 0xFF000000;
     ic = propkey->FindAsWStr(DATA_SKYCOLOR);
     if (ic >= 0)
-        m_SkyColor = propval->GetAsWStr(ic).GetDword() | 0xFF000000;
+        m_SkyColor = propval->GetAsParamParser(ic).GetDword() | 0xFF000000;
 
     ic = propkey->FindAsWStr(DATA_SKYNAME);
     if (ic >= 0) {
-        CWStr skyname(g_CacheHeap);
+        std::wstring skyname;
         skyname = propval->GetAsWStr(ic);
 
         CBlockPar *skbp = g_MatrixData->BlockGet(L"Sky")->BlockGet(skyname);
@@ -1085,7 +1078,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
         m_SkyAngle = GRAD2RAD((float)skbp->ParGet(L"Angle").GetDouble());
         m_SkyDeltaAngle = GRAD2RAD((float)skbp->ParGet(L"DeltaAngle").GetDouble());
 
-        m_Reflection = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, skbp->ParGet(L"Reflection"));
+        m_Reflection = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, skbp->ParGet(L"Reflection").c_str());
 
         if (g_Config.m_SkyBox != 0) {
             for (int idx = 0; idx < 4; ++idx) {
@@ -1099,12 +1092,12 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
                     skyname = L"Right";
                 // else if (idx == 4) skyname = L"Up";
 
-                CWStr texname(skbp->ParGet(skyname).GetStrPar(0, L","), g_CacheHeap);
+                std::wstring texname(skbp->ParGet(skyname).GetStrPar(0, L","));
 
                 if (g_Config.m_SkyBox == 2)
                     texname += L"_high";
 
-                m_SkyTex[idx].tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texname.Get());
+                m_SkyTex[idx].tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texname.c_str());
                 CTextureManaged *tex = m_SkyTex[idx].tex;
                 tex->MipmapOff();
                 tex->Prepare();
@@ -1119,7 +1112,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_SKYANGLE);
     if (ic >= 0) {
-        m_SkyAngle += (float)propval->GetAsWStr(ic).GetDouble();
+        m_SkyAngle += (float)propval->GetAsParamParser(ic).GetDouble();
     }
 
     if (m_Reflection == NULL) {
@@ -1129,40 +1122,40 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_INSHOREWAVECOLOR);
     if (ic >= 0)
-        m_InshorewaveColor = propval->GetAsWStr(ic).GetDword();
+        m_InshorewaveColor = propval->GetAsParamParser(ic).GetDword();
 
     ic = propkey->FindAsWStr(DATA_AMBIENTCOLOROBJ);
     if (ic >= 0)
-        m_AmbientColorObj = propval->GetAsWStr(ic).GetDword();
+        m_AmbientColorObj = propval->GetAsParamParser(ic).GetDword();
 
     ic = propkey->FindAsWStr(DATA_AMBIENTCOLOR);
     if (ic >= 0)
-        m_AmbientColor = propval->GetAsWStr(ic).GetDword();
+        m_AmbientColor = propval->GetAsParamParser(ic).GetDword();
 
     ic = propkey->FindAsWStr(DATA_LIGHTMAINCOLOR);
     if (ic >= 0)
-        m_LightMainColor = propval->GetAsWStr(ic).GetDword();
+        m_LightMainColor = propval->GetAsParamParser(ic).GetDword();
 
     ic = propkey->FindAsWStr(DATA_LIGHTMAINCOLOROBJ);
     if (ic >= 0)
-        m_LightMainColorObj = propval->GetAsWStr(ic).GetDword();
+        m_LightMainColorObj = propval->GetAsParamParser(ic).GetDword();
 
     ic = propkey->FindAsWStr(DATA_LIGHTMAINANGLEX);
     if (ic >= 0)
-        m_LightMainAngleX = (float)propval->GetAsWStr(ic).GetDouble();
+        m_LightMainAngleX = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_LIGHTMAINANGLEZ);
     if (ic >= 0)
-        m_LightMainAngleZ = (float)propval->GetAsWStr(ic).GetDouble();
+        m_LightMainAngleZ = (float)propval->GetAsParamParser(ic).GetDouble();
 
     ic = propkey->FindAsWStr(DATA_SHADOWCOLOR);
     if (ic >= 0)
-        m_ShadowColor = propval->GetAsWStr(ic).GetDword();
+        m_ShadowColor = propval->GetAsParamParser(ic).GetDword();
 
     m_WaterName = L"water_blue";
     ic = propkey->FindAsWStr(DATA_WATERNAME);
     if (ic >= 0) {
-        m_WaterName = propval->GetAsWStr(ic);
+        m_WaterName = propval->GetAsParamParser(ic);
     }
     if (g_MatrixData->BlockCount(PAR_SOURCE_WATER) > 0) {
         if (g_MatrixData->BlockGet(PAR_SOURCE_WATER)->BlockCount(m_WaterName) == 0) {
@@ -1257,12 +1250,12 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
     {
         CDataBuf *strc = stor.GetBuf(DATA_STRINGS, DATA_STRINGS_STRING, ST_WCHAR);
         m_IdsCnt = strc->GetArraysCount() + 1;
-        m_Ids = (CWStr *)HAlloc(m_IdsCnt * sizeof(CWStr), g_MatrixHeap);
+        m_Ids = (std::wstring *)HAlloc(m_IdsCnt * sizeof(std::wstring), g_MatrixHeap);
         int cnt = (m_IdsCnt - 1);
         for (int i = 0; i < cnt; i++) {
-            new(&m_Ids[i]) CWStr(strc->GetAsWStr(i), g_MatrixHeap);
+            new(&m_Ids[i]) std::wstring(strc->GetAsWStr(i));
         }
-        new(&m_Ids[cnt]) CWStr(mapname, g_MatrixHeap);
+        new(&m_Ids[cnt]) std::wstring(mapname);
     }
 
     g_LoadProgress->SetCurLPPos(2000);
@@ -1322,7 +1315,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const CWStr &mapname) {
 
     ic = propkey->FindAsWStr(DATA_DISABLEINSHORE);
     if (ic >= 0) {
-        INITFLAG(m_Flags, MMFLAG_DISABLEINSHORE_BUILD, propval->GetAsWStr(ic).GetInt() != 0);
+        INITFLAG(m_Flags, MMFLAG_DISABLEINSHORE_BUILD, propval->GetAsParamParser(ic).GetInt() != 0);
     }
 
     // building water
@@ -1778,7 +1771,7 @@ void CMatrixMap::Restart(void) {
 
     CStorage stor(g_CacheHeap);
 
-    stor.Load(MapName());
+    stor.Load(MapName().c_str());
 
     ReloadDynamics(stor, RS_SIDEAI);
     ReloadDynamics(stor, RS_RESOURCES);
@@ -1896,10 +1889,23 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
         robots_buf = NULL;
 
         m_Minimap.Init();
-        CWStr nnn(MapName(), g_CacheHeap);
-        int iii = std::max(nnn.FindR('\\'), nnn.FindR('/'));
-        if (iii >= 0)
-            nnn.Del(0, iii + 1);
+        std::wstring nnn(MapName());
+        size_t pos1 = nnn.rfind('\\');
+        size_t pos2 = nnn.rfind('/');
+
+        size_t iii{std::wstring::npos};
+        if (pos1 != std::wstring::npos)
+        {
+            iii = pos1;
+        }
+        if (pos2 != std::wstring::npos && pos2 > iii)
+        {
+            iii = pos2;
+        }
+        if (iii != std::wstring::npos)
+        {
+            nnn.erase(0, iii + 1);
+        }
 
         m_Minimap.RenderBackground(nnn, uniq);
 

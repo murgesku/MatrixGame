@@ -24,7 +24,7 @@ ATOM g_WndA = 0;
 HWND g_Wnd = 0;
 bool g_WndExtern = false;
 DWORD g_WndOldProg = 0;
-CWStr *g_WndClassName;
+std::wstring *g_WndClassName;
 int g_ScreenX = 0, g_ScreenY = 0;
 D3DPRESENT_PARAMETERS g_D3Dpp;
 // CReminder *g_Reminder;
@@ -101,10 +101,10 @@ void D3DResource::Dump(D3DResType t) {
 }
 #endif
 
-CWStr CExceptionD3D::Info() {
+std::wstring CExceptionD3D::Info() {
     return CException::Info() +
            utils::format(
-               L"Text: {%s} %s",
+               L"Text: {%ls} %s",
                DXGetErrorStringW(m_Error),
                DXGetErrorDescriptionW(m_Error)).c_str();
 }
@@ -126,7 +126,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
 
     int cntpar = bpcfg.Par(L"FullScreen").GetCountPar(L",");
 
-    CWStr str(bpcfg.Par(L"Resolution"), g_CacheHeap);
+    ParamParser str(bpcfg.Par(L"Resolution"));
     if (str.GetCountPar(L",") < 2)
         ERROR_E;
     g_ScreenX = str.GetIntPar(0, L",");
@@ -157,9 +157,9 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     else
         refresh = bpcfg.Par(L"FullScreen").GetIntPar(2, L",");
 
-    g_WndClassName = HNew(g_CacheHeap) CWStr(sysname, g_CacheHeap);
+    g_WndClassName = HNew(g_CacheHeap) std::wstring(sysname);
     *g_WndClassName += L"_wc";
-    std::string classname{utils::from_wstring(g_WndClassName->Get())};
+    std::string classname{utils::from_wstring(g_WndClassName->c_str())};
 
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -414,10 +414,11 @@ void L3GDeinit() {
             DestroyWindow(g_Wnd);
             g_Wnd = 0;
         }
-        UnregisterClass(utils::from_wstring(g_WndClassName->Get()).c_str(), g_HInst);
+        UnregisterClass(utils::from_wstring(g_WndClassName->c_str()).c_str(), g_HInst);
         g_WndA = 0;
 
-        HDelete(CWStr, g_WndClassName, g_CacheHeap);
+        using std::wstring;
+        HDelete(wstring, g_WndClassName, g_CacheHeap);
     }
     if (g_WndExtern) {
         SetWindowLong(g_Wnd, GWL_WNDPROC, g_WndOldProg);
@@ -537,7 +538,7 @@ int L3GRun() {
                 g_DrawFPSCur = 0;
 
                 g_AvailableTexMem = g_D3DD->GetAvailableTextureMem() / (1024 * 1024);
-                //				DM(L"MatrixGame.FPS",CWStr(g_DrawFPS).Get());
+                //				DM(L"MatrixGame.FPS",CWStr(g_DrawFPS).c_str());
             }
 
             //			Sleep(10);

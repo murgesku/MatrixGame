@@ -16,20 +16,20 @@ CMatrixHint *CMatrixHint::m_Last;
 SHintBitmap *CMatrixHint::m_Bitmaps;
 int CMatrixHint::m_BitmapsCnt;
 
-CMatrixHint *CMatrixHint::Build(int border, const CWStr &soundin, const CWStr &soundout, SHintElement *elems,
+CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const std::wstring &soundout, SHintElement *elems,
                                 CRect *otstup) {
     CBitmap bmps(g_CacheHeap);
     CBlockPar *bph = NULL;
     if (border >= 0) {
-        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(CWStr(border, g_CacheHeap));
+        bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(utils::format(L"%d", border));
 
         if (bph) {
-            CWStr src(g_CacheHeap);
-            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE), L"png")) {
+            std::wstring src;
+            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png")) {
                 // return NULL;
             }
             else {
-                bmps.LoadFromPNG(src);
+                bmps.LoadFromPNG(src.c_str());
                 bmps.SwapByte(CPoint(0, 0), bmps.Size(), 0, 2);
             }
         }
@@ -417,33 +417,33 @@ void CMatrixHint::PreloadBitmaps(void) {
     CBlockPar *bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGet(PAR_SOURCE_HINTS_BITMAPS);
     m_BitmapsCnt = bph->ParCount();
     m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
-    CWStr src(g_CacheHeap);
+    std::wstring src;
     for (int i = 0; i < m_BitmapsCnt; ++i) {
-        if (!CFile::FileExist(src, bph->ParGet(i), L"png")) {
-            ERROR_S(L"Hint bitmap not found:" + *m_Bitmaps[i].name);
+        if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
+            ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
         }
-        m_Bitmaps[i].name = &bph->ParGetName(i);
+        m_Bitmaps[i].name = new std::wstring(bph->ParGetName(i));
         m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
-        m_Bitmaps[i].bmp->LoadFromPNG(src);
+        m_Bitmaps[i].bmp->LoadFromPNG(src.c_str());
         m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
                                    2);  // store format should be [A]RGB, not [A]BGR
     }
 }
 
-static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index) {
-    bmph = temp.GetStrPar(index, L":");
+static EHintElementModificator Convert(std::wstring &bmph, const std::wstring &temp, int index) {
+    bmph = ParamParser{temp}.GetStrPar(index, L":");
     if (bmph == L"C")
         return HEM_CENTER;
     else if (bmph == L"L")
         return HEM_LAST_ON_LINE;
     else if (bmph == L"CR") {
-        return (EHintElementModificator)(HEM_TAB_LARGEST + temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_TAB_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"CL") {
-        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"T") {
-        return (EHintElementModificator)(temp.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(ParamParser{temp}.GetIntPar(index + 1, L":"));
     }
     else if (bmph == L"COPY") {
         return HEM_COPY;
@@ -453,25 +453,26 @@ static EHintElementModificator Convert(CWStr &bmph, const CWStr &temp, int index
     }
 }
 
-static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
-    CWStr text2(g_CacheHeap);
-    int ii = 0;
+static void Replace(std::wstring &text, const wchar *baserepl, CBlockPar *repl) {
+    std::wstring text2;
+    size_t ii = 0;
     for (;;) {
-        int i1 = text.Find(L"[", 1, ii);
-        if (i1 >= ii) {
-            int i2 = text.Find(L"]", 1, i1 + 1);
-            if (i2 < 0)
+        size_t i1 = text.find(L"[", ii, 1);
+        if (i1 != std::wstring::npos && i1 >= ii)
+        {
+            size_t i2 = text.find(L"]", i1 + 1, 1);
+            if (i2 == std::wstring::npos)
                 ERROR_S(L"] not found");
-            text2.Set(text.Get() + i1 + 1, i2 - i1 - 1);
-            if (text2.IsEmpty()) {
-                text.Replace(CWStr(L"[]", text2.GetHeap()), CWStr(baserepl, text2.GetHeap()));
+            text2 = std::wstring{text.c_str() + i1 + 1, static_cast<size_t>(i2 - i1 - 1)};
+            if (text2.empty()) {
+                utils::replace(text, L"[]", baserepl);
             }
             else {
                 // int cnt = repl->ParCount(text2);
                 // repl->Par
-                // CWStr text3(g_CacheHeap);
+                // std::wstring text3;
                 // for (int k=0;k<cnt;++k)
-                text.Replace(L"[" + text2 + L"]", repl->ParGetNE(text2));
+                utils::replace(text, L"[" + text2 + L"]", repl->ParGetNE(text2));
             }
             ii = i1;
         }
@@ -482,12 +483,12 @@ static void Replace(CWStr &text, const wchar *baserepl, CBlockPar *repl) {
 
 //#define BGR2RGB(c) (((c & 255) << 16) | (c & 0x0000FF00) | ((c >> 16) & 255) | c&0xFF000000)
 
-CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl) {
+CMatrixHint *CMatrixHint::Build(const std::wstring &templatename, const wchar *baserepl) {
     DTRACE();
 
     CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
     CBlockPar *bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
-    CWStr str(g_CacheHeap);
+    std::wstring str;
 
     DCP();
 
@@ -506,7 +507,7 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
                 continue;
             DCP();
 
-            CWStr templ(g_CacheHeap);
+            std::wstring templ;
 
             for (; ii < cnt; ++ii) {
                 DCP();
@@ -526,9 +527,9 @@ CMatrixHint *CMatrixHint::Build(const CWStr &templatename, const wchar *baserepl
     return Build(str, repl, baserepl);
 }
 
-CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl) {
-    CWStr soundin(g_MatrixHeap);
-    CWStr soundout(g_MatrixHeap);
+CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const wchar *baserepl) {
+    std::wstring soundin;
+    std::wstring soundout;
 
     SHintElement elems[256];
 
@@ -539,12 +540,11 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     bool otstup = false;
     CRect otstup_r;
 
-    int border = str.GetIntPar(0, L"|");
-    int cnt = str.GetCountPar(L"|");
+    int border = ParamParser{str}.GetIntPar(0, L"|");
+    int cnt = ParamParser{str}.GetCountPar(L"|");
     int idx = 1;
-    CWStr temp(g_CacheHeap);
-    CWStr bmpn(g_CacheHeap);
-    CWStr font(L"Font.2Normal", g_CacheHeap);
+    std::wstring bmpn;
+    std::wstring font(L"Font.2Normal");
     DWORD color = 0xFFFFFFFF;
     EHintElementModificator modif = HEM_BITMAP;
     int nelem = 0;
@@ -558,86 +558,86 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
     for (; idx < cnt; ++idx) {
         if (nelem >= 255)
             break;
-        temp = str.GetStrPar(idx, L"|");
+        auto temp = ParamParser{str}.GetStrPar(idx, L"|");
 
-        if (temp.CompareFirst(L"_ENDIF")) {
+        if (utils::starts_with(temp, L"_ENDIF")) {
             skip = false;
             continue;
         }
-        else if (temp.CompareFirst(L"_IF:")) {
-            CWStr text(temp.Get() + 4, g_CacheHeap);
+        else if (utils::starts_with(temp, L"_IF:")) {
+            std::wstring text(temp.c_str() + 4);
             if (repl)
                 Replace(text, baserepl, repl);
-            skip = text.IsEmpty();
+            skip = text.empty();
             continue;
         }
 
         if (skip)
             continue;
 
-        if (temp.CompareFirst(L"_FONT:")) {
-            font.Set(temp.Get() + 6);
+        if (utils::starts_with(temp, L"_FONT:")) {
+            font = (temp.c_str() + 6);
         }
-        else if (temp.CompareFirst(L"_COLOR:")) {
+        else if (utils::starts_with(temp, L"_COLOR:")) {
             // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
             // color = BGR2RGB(c);
             color = temp.GetStrPar(1, L":").GetHexUnsigned();
         }
-        else if (temp.CompareFirst(L"_SOUNDIN:")) {
-            soundin.Set(temp.Get() + 9);
+        else if (utils::starts_with(temp, L"_SOUNDIN:")) {
+            soundin = (temp.c_str() + 9);
         }
-        else if (temp.CompareFirst(L"_SOUNDOUT:")) {
-            soundout.Set(temp.Get() + 10);
+        else if (utils::starts_with(temp, L"_SOUNDOUT:")) {
+            soundout = (temp.c_str() + 10);
         }
-        else if (temp.CompareFirst(L"_BORDER:")) {
+        else if (utils::starts_with(temp, L"_BORDER:")) {
             otstup = true;
             otstup_r.left = temp.GetStrPar(1, L":").GetInt();
             otstup_r.top = temp.GetStrPar(2, L":").GetInt();
             otstup_r.right = temp.GetStrPar(3, L":").GetInt();
             otstup_r.bottom = temp.GetStrPar(4, L":").GetInt();
         }
-        else if (temp.CompareFirst(L"_POS:")) {
+        else if (utils::starts_with(temp, L"_POS:")) {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].y = temp.GetStrPar(2, L":").GetInt();
             elems[nelem].hem = HEM_COORD;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_DOWN:")) {
+        else if (utils::starts_with(temp, L"_DOWN:")) {
             elems[nelem].y = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_DOWN;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_RIGHT:")) {
+        else if (utils::starts_with(temp, L"_RIGHT:")) {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_RIGHT;
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_ALIGN:")) {
+        else if (utils::starts_with(temp, L"_ALIGN:")) {
             alignx = temp.GetStrPar(1, L":").GetInt();
             aligny = temp.GetStrPar(2, L":").GetInt();
         }
-        else if (temp.CompareFirst(L"_WIDTH:")) {
+        else if (utils::starts_with(temp, L"_WIDTH:")) {
             w = temp.GetInt();
         }
-        else if (temp.CompareFirst(L"_HEIGHT:")) {
+        else if (utils::starts_with(temp, L"_HEIGHT:")) {
             h = temp.GetInt();
         }
-        else if (temp.CompareFirst(L"_MOD:")) {
+        else if (utils::starts_with(temp, L"_MOD:")) {
             elems[nelem].bmp = NULL;
             elems[nelem].hem = Convert(bmpn, temp, 1);
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_TEXTP:")) {
+        else if (utils::starts_with(temp, L"_TEXTP:")) {
             modif = Convert(bmpn, temp, 1);
         }
-        else if (temp.CompareFirst(L"_BITMAP:")) {
+        else if (utils::starts_with(temp, L"_BITMAP:")) {
             bmpn = temp.GetStrPar(1, L":");
 
             if (repl)
                 Replace(bmpn, baserepl, repl);
 
             elems[nelem].bmp = NULL;
-            if (!bmpn.IsEmpty()) {
+            if (!bmpn.empty()) {
                 for (int i = 0; i < m_BitmapsCnt; ++i) {
                     if (*m_Bitmaps[i].name == bmpn) {
                         elems[nelem].bmp = m_Bitmaps[i].bmp;
@@ -649,13 +649,13 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
         }
-        else if (temp.CompareFirst(L"_TEXT:")) {
+        else if (utils::starts_with(temp, L"_TEXT:")) {
             if (g_RangersInterface) {
                 CRect cr(0, 0, w, h);
                 // if (w == 0) w = g_ScreenX;
                 // if (h == 0) h = 200;
 
-                CWStr text(temp.Get() + 6, g_CacheHeap);
+                std::wstring text(temp.c_str() + 6);
 
                 if (repl)
                     Replace(text, baserepl, repl);
@@ -663,11 +663,11 @@ CMatrixHint *CMatrixHint::Build(const CWStr &str, CBlockPar *repl, const wchar *
                 //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
                 //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
 
-                text.Replace(CWStr(L"<br>", g_CacheHeap), CWStr(L"\r\n", g_CacheHeap));
+                utils::replace(text, L"<br>", L"\r\n");
 
                 SMGDRangersInterfaceText *it =
                         (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
-                g_RangersInterface->m_RangersText((wchar *)text.Get(), (wchar *)font.Get(), color, w, h, alignx, aligny,
+                g_RangersInterface->m_RangersText((wchar*)text.c_str(), (wchar*)font.c_str(), color, w, h, alignx, aligny,
                                                   (w == 0) ? 0 : 1, 0, 0, &cr, it);
 
                 CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
@@ -799,7 +799,7 @@ void CMatrixHint::ClearAll(void) {
     if (m_Bitmaps) {
         for (int i = 0; i < m_BitmapsCnt; ++i) {
             HDelete(CBitmap, m_Bitmaps[i].bmp, g_MatrixHeap);
-            // HDelete(CWStr, m_Bitmaps[i].name, g_MatrixHeap);
+            delete(m_Bitmaps[i].name);
         }
         HFree(m_Bitmaps, g_MatrixHeap);
         m_Bitmaps = NULL;

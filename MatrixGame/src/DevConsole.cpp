@@ -7,17 +7,16 @@
 
 #include "MatrixMap.hpp"
 #include "DevConsole.hpp"
-#include "CWStr.hpp"
 #include "MatrixSoundManager.hpp"
 
 #include <utils.hpp>
 
-static void hHelp(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hHelp(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->m_Console.ShowHelp();
 }
 
-static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
-    if (params.GetLen() == 2) {
+static void hShadows(const std::wstring& cmd, const std::wstring& params) {
+    if (params.length() == 2) {
         g_Config.m_ShowStencilShadows = params[0] == '1';
         g_Config.m_ShowProjShadows = params[1] == '1';
     }
@@ -25,14 +24,14 @@ static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
     g_MatrixMap->m_DI.T(L"Proj shadows", g_Config.m_ShowProjShadows ? L"ON" : L"OFF");
 }
 
-static void hCannon(const Base::CWStr &cmd, const Base::CWStr &params) {
-    if (params.GetLen() == 1) {
+static void hCannon(const std::wstring& cmd, const std::wstring& params) {
+    if (params.length() == 1) {
         g_Config.m_CannonsLogic = params[0] == '1';
     }
     g_MatrixMap->m_DI.T(L"Cannon's logic", g_Config.m_CannonsLogic ? L"ON" : L"OFF");
 }
 
-static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hLog(const std::wstring& cmd, const std::wstring& params) {
     if (params == L"s") {
         CSound::SaveSoundLog();
     }
@@ -57,7 +56,7 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
 }
 
-static void hBuildCFG(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hBuildCFG(const std::wstring& cmd, const std::wstring& params) {
     CBlockPar bpi(1, g_CacheHeap);
     bpi.LoadFromTextFile(IF_PATH);
 
@@ -73,7 +72,7 @@ static void hBuildCFG(const Base::CWStr &cmd, const Base::CWStr &params) {
     stor.Save(FILE_CONFIGURATION, true);
 }
 
-static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hTestSpdTrace(const std::wstring& cmd, const std::wstring& params) {
     srand(1);
     D3DXVECTOR3 pos1, pos2;
 
@@ -94,38 +93,38 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
     DWORD time2 = timeGetTime();
 
-    g_MatrixMap->m_DI.T(L"Trace time (ms)", CWStr(time2 - time1, g_CacheHeap), 5000);
+    g_MatrixMap->m_DI.T(L"Trace time (ms)", utils::format(L"%u", time2 - time1).c_str(), 5000);
 }
 
-static void hMusic(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hMusic(const std::wstring& cmd, const std::wstring& params) {
     if (params == L"1")
         g_MatrixMap->RestoreMusicVolume();
     else if (params == L"0")
         g_MatrixMap->SetMusicVolume(0);
 }
 
-static void hCalcVis(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hCalcVis(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->CalcVis();
 }
 
-static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params) {
-    CWStr name(g_CacheHeap);
-    if (CFile::FileExist(name, params)) {
+static void hCompress(const std::wstring& cmd, const std::wstring& params) {
+    std::wstring name;
+    if (CFile::FileExist(name, params.c_str())) {
         CBuf fil(g_CacheHeap);
         CStorage out(g_CacheHeap);
         fil.LoadFromFile(params);
 
-        CStorageRecord sr(CWStr(L"0", g_CacheHeap), g_CacheHeap);
-        sr.AddItem(CStorageRecordItem(CWStr(L"0", g_CacheHeap), ST_BYTE));
+        CStorageRecord sr(L"0", g_CacheHeap);
+        sr.AddItem(CStorageRecordItem(L"0", ST_BYTE));
         out.AddRecord(sr);
 
         CDataBuf *b = out.GetBuf(L"0", L"0", ST_BYTE);
         b->AddArray();
         b->AddToArray<BYTE>(0, (BYTE *)fil.Get(), fil.Len());
 
-        CacheReplaceFileExt(name, params, L".strg");
+        CacheReplaceFileExt(name, params.c_str(), L".strg");
 
-        out.Save(name, true);
+        out.Save(name.c_str(), true);
     }
 }
 
@@ -137,7 +136,7 @@ SCmdItem CDevConsole::m_Commands[] = {
         {NULL, NULL}  // last
 };
 
-CDevConsole::CDevConsole(void) : m_Flags(0), m_Text(g_MatrixHeap), m_CurPos(0) {
+CDevConsole::CDevConsole(void) : m_Flags(0), m_Text{}, m_CurPos(0) {
     m_Time = 0;
     m_NextTime = 0;
 }
@@ -147,7 +146,7 @@ CDevConsole::~CDevConsole() {}
 void CDevConsole::ShowHelp(void) {
     int i = 0;
     while (m_Commands[i].cmd != NULL) {
-        CWStr desc(g_MatrixHeap);
+        std::wstring desc;
 
         if (i == 0)
             desc = L"Shows help";
@@ -156,7 +155,7 @@ void CDevConsole::ShowHelp(void) {
         else if (i == 2)
             desc = L"Switch cannons logic : [0|1]";
 
-        g_MatrixMap->m_DI.T(m_Commands[i].cmd, desc, 5000);
+        g_MatrixMap->m_DI.T(m_Commands[i].cmd, desc.c_str(), 5000);
 
         ++i;
     }
@@ -176,23 +175,21 @@ void CDevConsole::Takt(int ms) {
         INVERTFLAG(m_Flags, DCON_CURSOR);
     }
 
-    CWStr out(g_MatrixHeap);
-    out.Set(m_Text.Get(), m_CurPos);
+    std::wstring out{m_Text.c_str(), static_cast<size_t>(m_CurPos)};
 
     if (FLAG(m_Flags, DCON_CURSOR)) {
-        // out.Add(L"&");
-        out.Add(L"|");
+        out += L"|";
     }
     else {
     }
-    if (m_CurPos < m_Text.GetLen()) {
-        out.Add(m_Text.Get() + m_CurPos);
+    if (m_CurPos < m_Text.length()) {
+        out += std::wstring{m_Text.c_str() + m_CurPos};
     }
     else {
-        out.Add(L" ");
+        out += L" ";
     }
 
-    g_MatrixMap->m_DI.T(L"Console", out.Get(), 1000);
+    g_MatrixMap->m_DI.T(L"Console", out.c_str(), 1000);
 }
 void CDevConsole::Keyboard(int scan, bool down) {
     if (down) {
@@ -200,12 +197,12 @@ void CDevConsole::Keyboard(int scan, bool down) {
         if (scan == KEY_BACKSPACE) {
             if (m_CurPos > 0) {
                 --m_CurPos;
-                m_Text.Del(m_CurPos, 1);
+                m_Text.erase(m_CurPos, 1);
             }
         }
         else if (scan == KEY_DELETE) {
-            if (m_CurPos < m_Text.GetLen()) {
-                m_Text.Del(m_CurPos, 1);
+            if (m_CurPos < m_Text.length()) {
+                m_Text.erase(m_CurPos, 1);
             }
         }
         else if (scan == KEY_LEFT) {
@@ -214,7 +211,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
         }
         else if (scan == KEY_RIGHT) {
-            if (m_CurPos < m_Text.GetLen()) {
+            if (m_CurPos < m_Text.length()) {
                 ++m_CurPos;
             }
         }
@@ -222,27 +219,31 @@ void CDevConsole::Keyboard(int scan, bool down) {
             m_CurPos = 0;
         }
         else if (scan == KEY_END) {
-            m_CurPos = m_Text.GetLen();
+            m_CurPos = m_Text.length();
         }
         else if (scan == KEY_ENTER) {
-            CWStr cmd(g_MatrixHeap);
-            CWStr params(g_MatrixHeap);
+            std::wstring cmd;
+            std::wstring params;
             int i = 0;
-            while (i < m_Text.GetLen()) {
+            while (i < m_Text.length()) {
                 if (m_Text[i] == ' ')
                     break;
                 ++i;
             }
-            cmd.Set(m_Text.Get(), i);
-            if (i < m_Text.GetLen())
-                params.Set(m_Text.Get() + i + 1);
-            cmd.UpperCase();
+            cmd = std::wstring{m_Text.c_str(), static_cast<size_t>(i)};
+            if (i < m_Text.length())
+                params = (m_Text.c_str() + i + 1);
+
+            for (auto& sym : cmd)
+            {
+                sym = towupper(sym);
+            }
 
             i = 0;
             while (m_Commands[i].cmd != NULL) {
                 if (m_Commands[i].cmd == cmd) {
                     m_Commands[i].handler(cmd, params);
-                    m_Text.SetLen(0);
+                    m_Text.clear();
                     m_CurPos = 0;
                     break;
                 }
@@ -250,10 +251,10 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
         }
         else if (scan == KEY_ESC) {
-            if (m_Text.GetLen() == 0)
+            if (m_Text.length() == 0)
                 SetActive(false);
             else {
-                m_Text.SetLen(0);
+                m_Text.clear();
                 m_CurPos = 0;
             }
         }
@@ -267,7 +268,7 @@ void CDevConsole::Keyboard(int scan, bool down) {
                     if (c >= 'A' && c <= 'Z')
                         c |= 32;
                 }
-                m_Text.Insert(m_CurPos, CWStr(c, g_MatrixHeap));
+                m_Text.insert(m_CurPos, 1, c);
                 ++m_CurPos;
             }
         }

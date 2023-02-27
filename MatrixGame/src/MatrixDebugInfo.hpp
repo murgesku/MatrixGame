@@ -17,8 +17,8 @@
 #define DI_FRUSTUMCENTER SETBIT(6)
 
 struct SDIItem {
-    CWStr *key;
-    CWStr *val;
+    std::wstring* key;
+    std::wstring* val;
     int ttl;
     int bttl;
 };

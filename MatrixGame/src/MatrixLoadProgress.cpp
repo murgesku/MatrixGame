@@ -37,7 +37,7 @@ void CLoadProgress::SetCurLP(int lp) {
     m_CurLoadProcess = lp;
 
 #ifdef _DEBUG
-    OutputDebugStringW(L"\n" + CWStr(lp_props[lp].description));
+    OutputDebugStringW(utils::format(L"\n%ls", lp_props[lp].description).c_str());
 #endif
 }
 void CLoadProgress::SetCurLPPos(int i) {
@@ -49,7 +49,7 @@ void CLoadProgress::SetCurLPPos(int i) {
             g_RangersInterface->m_ProgressBar(float(ac) / LPACCURACY);
 
 #ifdef _DEBUG
-        OutputDebugStringW(L"\n" + CWStr(ac));
+        OutputDebugStringW(utils::format(L"\n%d", ac).c_str());
 #endif
 
         m_lastacc = ac;

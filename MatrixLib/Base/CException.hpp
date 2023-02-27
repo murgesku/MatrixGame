@@ -6,10 +6,9 @@
 #pragma once
 
 #include <string>
+#include "BaseDef.hpp"
 
 namespace Base {
-
-class CWStr;
 
 #define ERROR_E         throw Base::CException(__FILE__, __LINE__)
 #define ERROR_S(s)      throw Base::CExceptionStr(__FILE__, __LINE__, s)
@@ -46,7 +45,7 @@ public:
 
     virtual ~CException() = default;
 
-    virtual CWStr Info(void) const;
+    virtual std::wstring Info(void) const;
 };
 
 class BASE_API CExceptionStr : public CException
@@ -60,7 +59,7 @@ public:
         :CExceptionStr(file, line, str.c_str())
     {}
 
-    virtual CWStr Info(void) const;
+    virtual std::wstring Info(void) const;
 };
 // lint +e1712
 }  // namespace Base

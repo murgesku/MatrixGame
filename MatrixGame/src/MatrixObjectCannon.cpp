@@ -190,12 +190,12 @@ void CMatrixCannon::RNeed(DWORD need) {
         float hp = (float)g_Config.m_CannonsProps[m_Num - 1].m_Hitpoint;
         InitMaxHitpoint(hp);
 
-        CWStr ctype(m_Num, g_CacheHeap);
+        std::wstring ctype = utils::format(L"%d", m_Num);
 
         // basis
         m_Unit[0].m_Type = CUT_BASIS;
         m_Unit[0].m_Graph =
-                LoadObject((CWStr(OBJECT_PATH_CANNONS, g_CacheHeap) + L"Basis.vo").Get(), g_MatrixHeap, true);
+                LoadObject((std::wstring(OBJECT_PATH_CANNONS) + L"Basis.vo").c_str(), g_MatrixHeap, true);
 
         m_UnitCnt = 0;
         for (;;) {
@@ -217,7 +217,7 @@ void CMatrixCannon::RNeed(DWORD need) {
             m_Unit[m_UnitCnt].m_Type = type;
 
             m_Unit[m_UnitCnt].m_Graph = LoadObject(
-                    (CWStr(OBJECT_PATH_CANNONS, g_CacheHeap) + nam + ctype + L".vo").Get(), g_MatrixHeap, true);
+                    (std::wstring(OBJECT_PATH_CANNONS) + nam + ctype + L".vo").c_str(), g_MatrixHeap, true);
 
             if (type == CUT_SHAFT) {
                 SCannonProps *props = &g_Config.m_CannonsProps[m_Num - 1];

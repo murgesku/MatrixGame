@@ -209,7 +209,7 @@ class CMatrixFlyer : public CMatrixMapStatic {
 
     int m_TgtUpdateCount;
 
-    CWStr m_Name;
+    std::wstring m_Name;
 
     // hitpoint
     CMatrixProgressBar m_PB;
@@ -266,8 +266,8 @@ public:
     bool CreateSelection();
     void KillSelection();
     void MoveSelection();
-    CWStr GetName() { return m_Name; }
-    void SetName(const CWStr &name) { m_Name = name; }
+    std::wstring GetName() { return m_Name; }
+    void SetName(const std::wstring &name) { m_Name = name; }
     int GetCtrlGroup() { return m_CtrlGroup; }
     void SetCtrlGroup(int group) { m_CtrlGroup = group; }
 

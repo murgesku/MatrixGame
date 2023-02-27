@@ -46,7 +46,7 @@ inline void snd_play(DWORD s) {
 }
 
 CSound::SSoundItem::SSoundItem(const wchar *sndname) : vol0(1), vol1(1), pan0(0), pan1(0), flags(0) {
-    new(&Path()) CWStr(sndname, g_MatrixHeap);
+    new(&Path()) std::wstring(sndname);
 }
 
 void CSound::Init(void) {
@@ -239,8 +239,8 @@ void CSound::Init(void) {
 #ifdef _DEBUG
     for (int i = 0; i < S_COUNT; ++i) {
         if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED)) {
-            // ERROR_S((CWStr(L"Sound ") + i + L" not initialized!").Get());
-            MessageBoxW(NULL, (CWStr(L"Sound ") + i + L" not initialized!").Get(), L"Error", MB_ICONERROR);
+            // ERROR_S((std::wstring(L"Sound ") + i + L" not initialized!").Get());
+            MessageBoxW(NULL, utils::format(L"Sound %d not initialized!", i).c_str(), L"Error", MB_ICONERROR);
             debugbreak();
         }
     }
@@ -338,7 +338,7 @@ void CSound::Takt(void) {
                 }
             }
             // CDText::T("SND: ", sc);
-            g_MatrixMap->m_DI.T(L"Active sounds: ", CWStr(sc));
+            g_MatrixMap->m_DI.T(L"Active sounds: ", utils::format(L"%d", sc).c_str());
         }
     }
 }
@@ -364,8 +364,7 @@ void CSound::SureLoaded(ESound snd) {
             // load sound
             CBlockPar *bps = g_MatrixData->BlockGet(L"Sounds");
 
-            CWStr temp(m_Sounds[snd].Path().Get(), g_CacheHeap);
-            CBlockPar *bp = bps->BlockGetNE(temp);
+            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].Path().c_str());
             if (bp == NULL) {
                 bp = bps->BlockGetNE(L"dummy");
             }
@@ -509,7 +508,7 @@ DWORD CSound::Play(const wchar *name, const D3DXVECTOR3 &pos, ESoundLayer sl, ES
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
 
     return Play(S_SPECIAL_SLOT, pos, sl, interrupt);
 }
@@ -521,12 +520,12 @@ DWORD CSound::Play(const wchar *name, ESoundLayer sl, ESoundInterruptFlag interr
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
 
     return Play(S_SPECIAL_SLOT, sl, interrupt);
 }
 
-DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name) {
+DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
     DTRACE();
 
     if (!g_RangersInterface)
@@ -540,7 +539,9 @@ DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, f
     if (vol < 0.00001f)
         return SOUND_ID_EMPTY;
 
-    m_AllSounds[si].id_internal = snd_create(name, m_LastGroup++, 0);
+    // TODO: non-const pointer is required here for no reason
+    wchar_t* raw_name = const_cast<wchar_t*>(name);
+    m_AllSounds[si].id_internal = snd_create(raw_name, m_LastGroup++, 0);
     m_AllSounds[si].id = m_LastID++;
 
     snd_pan(m_AllSounds[si].id_internal, pan);
@@ -555,7 +556,7 @@ DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, f
 #if defined _TRACE || defined _DEBUG
     }
     catch (...) {
-        ERROR_S(L"Problem with sound: " + CWStr(name));
+        ERROR_S2(L"Problem with sound: ", std::wstring(name).c_str());
     }
 #endif
 
@@ -620,8 +621,10 @@ DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESo
         }
 
         si = FindSlotForSound();
+        // TODO: non-const pointer is required here for no reason
+        wchar_t* path = const_cast<wchar_t*>(m_Sounds[snd].Path().c_str());
         m_AllSounds[si].id_internal =
-                snd_create(m_Sounds[snd].Path().GetBuf(), m_LastGroup++, FLAG(m_Sounds[snd].flags, SSoundItem::LOOPED));
+                snd_create(path, m_LastGroup++, FLAG(m_Sounds[snd].flags, SSoundItem::LOOPED));
         m_AllSounds[si].id = newid;
 
         m_AllSounds[si].curpan = pan;
@@ -775,7 +778,7 @@ void CSound::StopPlay(DWORD id) {
     if (id == SOUND_ID_EMPTY)
         return;
     if (g_RangersInterface) {
-        // g_MatrixMap->m_DI.T(CWStr(L"sndoff") + (int)id, L"");
+        // g_MatrixMap->m_DI.T(std::wstring(L"sndoff") + (int)id, L"");
 
         int idx = FindSoundSlotPlayedOnly(id);
         if (idx >= 0) {
@@ -842,14 +845,14 @@ void CSound::AddSound(const wchar *name, const D3DXVECTOR3 &pos) {
         return;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path().Set(name);
+    m_Sounds[S_SPECIAL_SLOT].Path() = name;
     SureLoaded(S_SPECIAL_SLOT);
 
     AddSound(pos, m_Sounds[S_SPECIAL_SLOT].attn, m_Sounds[S_SPECIAL_SLOT].pan0, m_Sounds[S_SPECIAL_SLOT].pan1,
-             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].Path().GetBuf());
+             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].Path().c_str());
 }
 
-void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name) {
+void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
     DTRACE();
 
     if (!g_RangersInterface)
@@ -982,10 +985,10 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                 }
                 catch (...) {
                     if (sb->snd < S_COUNT && (int)sb->snd >= 0) {
-                        ERROR_S(L"Problem with sound: " + CSound::m_Sounds[sb->snd].Path());
+                        ERROR_S2(L"Problem with sound: ", CSound::m_Sounds[sb->snd].Path().c_str());
                     }
                     else {
-                        ERROR_S(L"Problem with sound: " + CWStr((int)sb->snd));
+                        ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)sb->snd).c_str());
                     }
                 }
 #endif
@@ -994,7 +997,7 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                 CSound::m_AllSounds[idx].curpan = pan;
                 CSound::m_AllSounds[idx].curvol = vol;
 
-                // g_MatrixMap->m_DI.T(CWStr(vol).Get(), L"1212");
+                // g_MatrixMap->m_DI.T(std::wstring(vol).Get(), L"1212");
             }
             else {
             dele:;

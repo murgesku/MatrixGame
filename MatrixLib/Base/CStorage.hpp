@@ -161,20 +161,29 @@ public:
         return GetEndElement<D>(TableEntry(i));
     }
 
-    void SetWStr(DWORD idx, const CWStr &str) { SetArray<wchar>(idx, str.Get(), str.GetLen()); }
+    void SetWStr(DWORD idx, const std::wstring &str) { SetArray<wchar>(idx, str.c_str(), str.length()); }
 
-    int AddWStr(const CWStr &str) {
+    int AddWStr(const std::wstring &str) {
         int r = AddArray();
-        AddToArray<wchar>(r, str.Get(), str.GetLen());
+        AddToArray<wchar>(r, str.c_str(), str.length());
         return r;
     }
 
-    CWStr GetAsWStr(int i) {
+    std::wstring GetAsWStr(int i) {
         DTRACE();
         wchar *str = GetFirst<wchar>(i);
         int l = GetArrayLength(i);
 
-        return CWStr(str, l, m_Heap);
+        return std::wstring{str, static_cast<size_t>(l)};
+    }
+
+    ParamParser GetAsParamParser(int i)
+    {
+        DTRACE();
+        wchar *str = GetFirst<wchar>(i);
+        int l = GetArrayLength(i);
+
+        return std::wstring{str, static_cast<size_t>(l)};
     }
 
     int FindAsWStr(const wchar *val, int len) {
@@ -188,8 +197,8 @@ public:
         }
         return -1;
     }
-    int FindAsWStr(const CWStr &val) { return FindAsWStr(val.Get(), val.GetLen()); }
-    int FindAsWStr(const wchar *val) { return FindAsWStr(val, Base::WStrLen(val)); }
+    int FindAsWStr(const std::wstring &val) { return FindAsWStr(val.c_str(), val.length()); }
+    int FindAsWStr(const wchar *val) { return FindAsWStr(val, std::wcslen(val)); }
 
     void Compact(void) {
         SDataBufHeader *header = Buff<SDataBufHeader>();
@@ -220,22 +229,22 @@ public:
 };
 
 class CStorageRecordItem : public CMain {
-    CWStr m_Name;
+    std::wstring m_Name;
     EStorageType m_Type;
 
     CDataBuf *m_Buf;
 
 public:
     CStorageRecordItem(const CStorageRecordItem &item)
-      : m_Name(item.m_Name, item.m_Name.GetHeap()), m_Type(item.m_Type), m_Buf(NULL) {}
-    CStorageRecordItem(const CWStr &name, EStorageType type)
-      : m_Name(name, name.GetHeap()), m_Type(type), m_Buf(NULL) {}
-    CStorageRecordItem(CHeap *heap) : m_Name(heap), m_Buf(NULL) { InitBuf(heap); }
+      : m_Name(item.m_Name), m_Type(item.m_Type), m_Buf(NULL) {}
+    CStorageRecordItem(const std::wstring &name, EStorageType type)
+      : m_Name(name), m_Type(type), m_Buf(NULL) {}
+    CStorageRecordItem(CHeap *heap) : m_Name{}, m_Buf(NULL) { InitBuf(heap); }
     ~CStorageRecordItem();
 
     void InitBuf(CHeap *heap);
     void ReleaseBuf(CHeap *heap);
-    const CWStr &GetName(void) const { return m_Name; }
+    const std::wstring &GetName(void) const { return m_Name; }
 
     CDataBuf *GetBuf(EStorageType st) { return (st == m_Type) ? m_Buf : NULL; }
 
@@ -248,18 +257,18 @@ public:
 class CStorageRecord : public CMain {
     CHeap *m_Heap;
 
-    CWStr m_Name;  // record name (table name)
+    std::wstring m_Name;  // record name (table name)
     CStorageRecordItem *m_Items;
     int m_ItemsCount;
 
 public:
     CStorageRecord(const CStorageRecord &rec);
-    CStorageRecord(CWStr name, CHeap *heap = NULL)
-      : m_Heap(heap), m_Name(name, name.GetHeap()), m_Items(NULL), m_ItemsCount(0) {}
-    CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name(heap), m_Items(NULL), m_ItemsCount(0) {}
+    CStorageRecord(std::wstring name, CHeap *heap = NULL)
+      : m_Heap(heap), m_Name(name), m_Items(NULL), m_ItemsCount(0) {}
+    CStorageRecord(CHeap *heap) : m_Heap(heap), m_Name{}, m_Items(NULL), m_ItemsCount(0) {}
     ~CStorageRecord();
 
-    const CWStr &GetName(void) const { return m_Name; }
+    const std::wstring &GetName(void) const { return m_Name; }
 
     void AddItem(const CStorageRecordItem &item);
     CDataBuf *GetBuf(const wchar *column, EStorageType st);

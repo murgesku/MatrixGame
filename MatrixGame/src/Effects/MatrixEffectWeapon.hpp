@@ -66,75 +66,77 @@ enum EWeapon : unsigned int {
     EWeapon_FORCE_DWORD = 0x7FFFFFFF
 };
 
-inline int WeapName2Index(const wchar *w) {
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_PLASMA))
+inline int WeapName2Index(const std::wstring& w)
+{
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_PLASMA)
         return 0;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_VOLCANO))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_VOLCANO)
         return 1;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_HOMING_MISSILE))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_HOMING_MISSILE)
         return 2;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_BOMB))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_BOMB)
         return 3;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_FLAMETHROWER))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_FLAMETHROWER)
         return 4;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_BIGBOOM))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_BIGBOOM)
         return 5;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_LIGHTENING))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_LIGHTENING)
         return 6;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_LASER))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_LASER)
         return 7;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_GUN))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_GUN)
         return 8;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_ABLAZE))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_ABLAZE)
         return 9;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_SHORTED))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_SHORTED)
         return 10;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_DEBRIS))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_DEBRIS)
         return 11;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_REPAIR))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_REPAIR)
         return 12;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON0))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON0)
         return 13;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON1))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON1)
         return 14;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON2))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON2)
         return 15;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON3))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON3)
         return 16;
     return -1;
 }
 
-inline EWeapon WeapName2Weap(const wchar *w) {
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_PLASMA))
+inline EWeapon WeapName2Weap(const std::wstring& w)
+{
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_PLASMA)
         return WEAPON_PLASMA;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_VOLCANO))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_VOLCANO)
         return WEAPON_VOLCANO;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_HOMING_MISSILE))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_HOMING_MISSILE)
         return WEAPON_HOMING_MISSILE;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_BOMB))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_BOMB)
         return WEAPON_BOMB;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_FLAMETHROWER))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_FLAMETHROWER)
         return WEAPON_FLAMETHROWER;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_BIGBOOM))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_BIGBOOM)
         return WEAPON_BIGBOOM;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_LIGHTENING))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_LIGHTENING)
         return WEAPON_LIGHTENING;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_LASER))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_LASER)
         return WEAPON_LASER;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_GUN))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_GUN)
         return WEAPON_GUN;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_REPAIR))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_REPAIR)
         return WEAPON_REPAIR;
-    // if (WStrCmp(w,PAR_SOURCE_DAMAGES_WEAPON_ABLAZE)) return WEAPON_ABLAZE;
-    // if (WStrCmp(w,PAR_SOURCE_DAMAGES_WEAPON_SHORTED)) return WEAPON_SHORTED;
-    // if (WStrCmp(w,PAR_SOURCE_DAMAGES_WEAPON_DEBRIS)) return WEAPON_DEBRIS;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON0))
+    // if (w == PAR_SOURCE_DAMAGES_WEAPON_ABLAZE) return WEAPON_ABLAZE;
+    // if (w == PAR_SOURCE_DAMAGES_WEAPON_SHORTED) return WEAPON_SHORTED;
+    // if (w == PAR_SOURCE_DAMAGES_WEAPON_DEBRIS) return WEAPON_DEBRIS;
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON0)
         return WEAPON_CANNON0;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON1))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON1)
         return WEAPON_CANNON1;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON2))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON2)
         return WEAPON_CANNON2;
-    if (WStrCmp(w, PAR_SOURCE_DAMAGES_WEAPON_CANNON3))
+    if (w == PAR_SOURCE_DAMAGES_WEAPON_CANNON3)
         return WEAPON_CANNON3;
     return WEAPON_NONE;
 }

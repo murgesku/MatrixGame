@@ -755,10 +755,10 @@ void CMatrixCamera::BeforeDraw(void) {
 
     // D3DXVECTOR3 dir(m_LinkPoint - m_FrustumCenter);
 
-    // g_MatrixMap->m_DI.T(L"...1",CWStr(m_AngleZ));
-    // g_MatrixMap->m_DI.T(L"...2",CWStr(az));
-    // g_MatrixMap->m_DI.T(L"dist",CWStr(m_Dist));
-    // g_MatrixMap->m_DI.T(L"land z",CWStr(m_LandRelativeZ));
+    // g_MatrixMap->m_DI.T(L"...1",std::wstring(m_AngleZ));
+    // g_MatrixMap->m_DI.T(L"...2",std::wstring(az));
+    // g_MatrixMap->m_DI.T(L"dist",std::wstring(m_Dist));
+    // g_MatrixMap->m_DI.T(L"land z",std::wstring(m_LandRelativeZ));
 }
 
 float CMatrixCamera::GetFrustPlaneDist(EFrustumPlane plane, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir) {
@@ -934,7 +934,7 @@ void CMatrixCamera::Takt(float ms) {
     DCP();
 
     //#ifdef _DEBUG
-    //    g_MatrixMap->m_DI.T(L"dist", CWStr(D3DXVec3Length(&(newlp-m_LinkPoint))).Get());
+    //    g_MatrixMap->m_DI.T(L"dist", std::wstring(D3DXVec3Length(&(newlp-m_LinkPoint))).Get());
     //#endif
 
     if (FLAG(m_Flags, CAM_LINK_POINT_CHANGED)) {

@@ -2718,10 +2718,10 @@ float NORM(D3DXVECTOR3 &vo, const D3DXVECTOR3 &v) {
     return vo.y;
 }
 
-// CWStr hhh(const CWStr &tex)
+// std::wstring hhh(const std::wstring &tex)
 //{
-//    if (tex == L"bla") return CWStr(L"yo!");
-//    return CWStr(L"---");
+//    if (tex == L"bla") return std::wstring(L"yo!");
+//    return std::wstring(L"---");
 //}
 
 static bool Egg1(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
@@ -2807,17 +2807,16 @@ void CMatrixMapLogic::Takt(int step) {
         if (FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG | MMFLAG_STAT_DIALOG_D)) {
             // stat
             CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
-            CWStr temp(g_CacheHeap);
+            std::wstring temp;
             for (int i = 0; i < m_SideCnt; ++i) {
                 CMatrixSideUnit *su = m_Side + i;
 
                 if (su == GetPlayerSide())
                     temp = L"_p_";
                 else {
-                    temp.Set(g_MatrixData->BlockGet(L"Side")->ParGet(CWStr(su->m_Id, g_CacheHeap))[0]);
-                    temp.LowerCase();
-                    temp.Insert(0, L"_");
-                    temp += L"_";
+                    auto par = utils::format(L"%d", su->m_Id);
+                    temp = utils::format(L"_%lc_", g_MatrixData->BlockGet(L"Side")->ParGet(par)[0]);
+                    utils::to_lower(temp);
                 }
 
                 if (su->GetStatValue(STAT_TIME) == 0) {
@@ -2834,28 +2833,20 @@ void CMatrixMapLogic::Takt(int step) {
                     int mins = (time - hours * 3600) / 60;
                     int secs = (time - hours * 3600 - mins * 60);
 
-                    CWStr h(hours, g_CacheHeap);
-                    CWStr m(mins, g_CacheHeap);
-                    CWStr s(secs, g_CacheHeap);
-                    if (h.GetLen() < 2)
-                        h.Insert(0, L"0");
-                    if (m.GetLen() < 2)
-                        m.Insert(0, L"0");
-                    if (s.GetLen() < 2)
-                        s.Insert(0, L"0");
+                    auto time_str = utils::format(L"%02d:%02d:%02d", hours, mins, secs);
 
                     if (winer) {
-                        repl->ParSetAdd(temp + L"c6", L"<color=0,255,0>" + h + L":" + m + L":" + s + L"</color>");
+                        repl->ParSetAdd(temp + L"c6", L"<color=0,255,0>" + time_str + L"</color>");
                     }
                     else {
-                        repl->ParSetAdd(temp + L"c6", h + L":" + m + L":" + s);
+                        repl->ParSetAdd(temp + L"c6", time_str);
                     }
 
-                    repl->ParSetAdd(temp + L"c1", CWStr(su->GetStatValue(STAT_ROBOT_BUILD), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c2", CWStr(su->GetStatValue(STAT_ROBOT_KILL), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c3", CWStr(su->GetStatValue(STAT_TURRET_BUILD), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c4", CWStr(su->GetStatValue(STAT_TURRET_KILL), g_CacheHeap));
-                    repl->ParSetAdd(temp + L"c5", CWStr(su->GetStatValue(STAT_BUILDING_KILL), g_CacheHeap));
+                    repl->ParSetAdd(temp + L"c1", utils::format(L"%d", su->GetStatValue(STAT_ROBOT_BUILD)));
+                    repl->ParSetAdd(temp + L"c2", utils::format(L"%d", su->GetStatValue(STAT_ROBOT_KILL)));
+                    repl->ParSetAdd(temp + L"c3", utils::format(L"%d", su->GetStatValue(STAT_TURRET_BUILD)));
+                    repl->ParSetAdd(temp + L"c4", utils::format(L"%d", su->GetStatValue(STAT_TURRET_KILL)));
+                    repl->ParSetAdd(temp + L"c5", utils::format(L"%d", su->GetStatValue(STAT_BUILDING_KILL)));
                 }
             }
 
@@ -2877,7 +2868,7 @@ void CMatrixMapLogic::Takt(int step) {
 
     if (IsPaused()) {
         if (m_PauseHint == NULL && g_RangersInterface && !FLAG(m_Flags, MMFLAG_DIALOG_MODE)) {
-            m_PauseHint = CMatrixHint::Build(CWStr(TEMPLATE_PAUSE, g_CacheHeap));
+            m_PauseHint = CMatrixHint::Build(std::wstring{TEMPLATE_PAUSE});
             m_PauseHint->Show(14, 62);
         }
 
@@ -3029,9 +3020,9 @@ void CMatrixMapLogic::Takt(int step) {
 
     if ((GetTime() - m_PrevTimeCheckStatus) > 1001) {
         // check easter egg :)
-        CWStr mn(MapName(), g_CacheHeap);
-        mn.LowerCase();
-        if (mn.Find(L"terron") >= 0) {
+        std::wstring mn(MapName());
+        utils::to_lower(mn);
+        if (mn.find(L"terron") != std::wstring::npos) {
             int egg1 = 0, egg2 = 0;
             FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (DWORD)&egg1);
             if (egg1 == 1) {

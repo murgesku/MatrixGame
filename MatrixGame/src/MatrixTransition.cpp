@@ -36,7 +36,8 @@ void CTransition::BuildTexture(void) {
     CBlockPar *tra = g_MatrixData->BlockGetNE(L"Transitions");
     if (tra == NULL)
         return;
-    tra = tra->BlockGetNE(CWStr(m_ScreenX, g_CacheHeap).Add(L".").Add(m_ScreenY).Get());
+    tra = tra->BlockGetNE(utils::format(L"%d.%d", m_ScreenX, m_ScreenY).c_str());
+
     if (tra == NULL)
         return;
 
@@ -54,7 +55,7 @@ void CTransition::BuildTexture(void) {
 
     m_Geom = (SGeom *)HAllocClear(sizeof(SGeom) * m_GeomCnt, g_MatrixHeap);
     for (int i = 0; i < m_GeomCnt; ++i) {
-        const CWStr &da = tra->ParGet(i);
+        const auto da = tra->ParGet(i);
 
         m_Geom[i].verts[0].p.x = (float)da.GetStrPar(0, L"|").GetDoublePar(0, L",");
         m_Geom[i].verts[0].p.y = (float)da.GetStrPar(0, L"|").GetDoublePar(1, L",");
@@ -84,13 +85,13 @@ void CTransition::BuildTexture(void) {
         m_Geom[i].verts[3].tu = m_Geom[i].verts[3].p.x / float(bmout.SizeX());
         m_Geom[i].verts[3].tv = m_Geom[i].verts[3].p.y / float(bmout.SizeY());
 
-        if (tra->ParGetName(i).CompareFirst(L"Up,"))
+        if (utils::starts_with(tra->ParGetName(i), L"Up,"))
             m_Geom[i].dir.y = -1;
-        else if (tra->ParGetName(i).CompareFirst(L"Down,"))
+        else if (utils::starts_with(tra->ParGetName(i), L"Down,"))
             m_Geom[i].dir.y = 1;
-        else if (tra->ParGetName(i).CompareFirst(L"Left,"))
+        else if (utils::starts_with(tra->ParGetName(i), L"Left,"))
             m_Geom[i].dir.x = -1;
-        else if (tra->ParGetName(i).CompareFirst(L"Right,"))
+        else if (utils::starts_with(tra->ParGetName(i), L"Right,"))
             m_Geom[i].dir.x = 1;
 
         m_Geom[i].dir *= (float)tra->ParGetName(i).GetDoublePar(1, L",");

@@ -24,7 +24,7 @@
 D3D_VB CMatrixFlyer::m_VB;
 int CMatrixFlyer::m_VB_ref;
 
-CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(nullptr), m_Name(L"FLYER", g_MatrixHeap) {
+CMatrixFlyer::CMatrixFlyer(void) : CMatrixMapStatic(), m_Trajectory(nullptr), m_Name{L"FLYER"} {
     DTRACE();
 
     m_Core->m_Type = OBJECT_TYPE_FLYER;
@@ -415,7 +415,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
         // InitMaxHitpoint(hp);
 
         CBlockPar *flb = g_MatrixData->BlockGet(L"Models")->BlockGet(L"Flyers");
-        flb = flb->BlockGetNE(CWStr((int)m_FlyerKind, g_CacheHeap).Get());
+        flb = flb->BlockGetNE(utils::format(L"%d", (int)m_FlyerKind).c_str());
 
         if (flb) {
             m_StreamsCount = flb->BlockCount(L"Fire");
@@ -432,13 +432,13 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
             int index = 0;
             int uindex = 0;
-            CWStr model(g_CacheHeap), texture(g_CacheHeap);
+            std::wstring model, texture;
 
-            CWStr busy(g_CacheHeap);
+            std::wstring busy;
 
             for (; bcnt > 0; ++index, --bcnt) {
                 CBlockPar *bp = flb->BlockGet(index);
-                CWStr bn(flb->BlockGetName(index), g_CacheHeap);
+                std::wstring bn(flb->BlockGetName(index));
                 if (bn == L"Fire") {
                     m_Streams[findex++].bp = bp;
                     continue;
@@ -448,7 +448,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                 if (bp->ParCount(L"Model") == 0 && bn == L"Weapon") {
                     m_Units[uindex].m_Type = FLYER_UNIT_WEAPON_HOLLOW;
 
-                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").Get());
+                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").c_str());
                     if (w == WEAPON_NONE) {
                     off_weapon:;
                         m_Units[uindex].Release();
@@ -462,7 +462,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     m_Units[uindex].m_Weapon.m_MatrixID = bp->ParGet(L"Matrix").GetIntPar(1, L",");
 
-                    CWStr unit(g_CacheHeap);
+                    std::wstring unit;
                     unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");
 
                     EFlyerUnitType seekfor = FLYER_UNIT_BODY;
@@ -475,15 +475,10 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     for (int k = 0; k < uindex; ++k) {
                         if (m_Units[k].m_Type == seekfor) {
-                            CWStr bt(L"|", g_CacheHeap);
-                            bt += unit;
-                            bt += L"_";
-                            bt += m_Units[uindex].m_Weapon.m_MatrixID;
-                            bt += L"_";
-                            bt += k;
-                            bt += L"|";
+                               auto bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Units[uindex].m_Weapon.m_MatrixID, k);
 
-                            if (busy.Find(bt) < 0) {
+                            if (busy.find(bt) == std::wstring::npos)
+                            {
                                 // found
                                 m_Units[uindex].m_Weapon.m_Unit = k;
                                 busy += bt;
@@ -503,7 +498,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                 model = bp->ParGet(L"Model");
                 texture = bp->ParGet(L"Texture");
 
-                m_Units[uindex].m_Graph = LoadObject(model.Get(), g_MatrixHeap, true, texture.Get());
+                m_Units[uindex].m_Graph = LoadObject(model.c_str(), g_MatrixHeap, true, texture.c_str());
 
                 if (bn == L"Body") {
                     m_Units[uindex].m_Type = FLYER_UNIT_BODY;
@@ -531,7 +526,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     m_Units[uindex].m_Vint.m_Tex = NULL;
                     if (bp->ParCount(L"TextureVint")) {
                         m_Units[uindex].m_Vint.m_Tex =
-                                (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bp->ParGet(L"TextureVint").Get());
+                                (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bp->ParGet(L"TextureVint").c_str());
                     }
                 }
                 else if (bn == L"Engine") {
@@ -552,7 +547,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     m_Units[uindex].m_Weapon.m_DownAngle =
                             GRAD2RAD((float)bp->ParGet(L"RotationX").GetDoublePar(1, L","));
 
-                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").Get());
+                    EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").c_str());
                     if (w == WEAPON_NONE) {
                         m_Units[uindex].Release();
                         --m_UnitCnt;
@@ -573,7 +568,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                 m_Streams[i].matrix = bp->ParGet(L"Matrix").GetIntPar(1, L",");
 
-                CWStr unit(g_CacheHeap);
+                std::wstring unit;
                 unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");
 
                 EFlyerUnitType seekfor = FLYER_UNIT_BODY;
@@ -586,15 +581,9 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                 for (int k = 0; k < m_UnitCnt; ++k) {
                     if (m_Units[k].m_Type == seekfor) {
-                        CWStr bt(L"|", g_CacheHeap);
-                        bt += unit;
-                        bt += L"_";
-                        bt += m_Streams[i].matrix;
-                        bt += L"_";
-                        bt += k;
-                        bt += L"|";
+                        std::wstring bt = utils::format(L"|%ls_%d_%d|", unit.c_str(), m_Streams[i].matrix, k);
 
-                        if (busy.Find(bt) < 0) {
+                        if (busy.find(bt) == std::wstring::npos) {
                             // found
                             m_Streams[i].unit = k;
                             busy += bt;

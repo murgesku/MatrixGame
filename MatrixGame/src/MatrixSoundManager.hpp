@@ -232,13 +232,13 @@ class CSound : public CMain {
         float radius;
         float ttl;       // valid only for looped pos sounds
         float fadetime;  // valid only for looped pos sounds
-        BYTE path[sizeof(CWStr)];
+        BYTE path[sizeof(std::wstring)];
 
         SSoundItem(void){};
         SSoundItem(const wchar *sndname);
         ~SSoundItem(){};
-        void Release(void) { Path().~CWStr(); }
-        CWStr &Path(void) { return *((CWStr *)&path); }
+        void Release(void) { Path().std::wstring::~wstring(); }
+        std::wstring &Path(void) { return *((std::wstring *)&path); }
 
         static const DWORD LOOPED = SETBIT(0);
         static const DWORD LOADED = SETBIT(1);
@@ -298,7 +298,7 @@ public:
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);  // name - robots sound
     static DWORD Play(const wchar *name, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);  // name - robots sound
-    static DWORD Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name);
+    static DWORD Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name);
     static DWORD Play(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);
     static DWORD Play(DWORD id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
@@ -321,7 +321,7 @@ public:
 
     static void AddSound(const wchar *name, const D3DXVECTOR3 &pos);  // automatic position
     static void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1,
-                         wchar *name);
+                         const wchar *name);
 
     static inline DWORD Pos2Key(const D3DXVECTOR3 &pos);
 
@@ -342,7 +342,7 @@ public:
     CSoundArray(CHeap *heap) : CBuf(heap){};
 
     void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL, ESoundInterruptFlag ifl = SEF_INTERRUPT);
-    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, wchar *name) {
+    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
         DWORD id = CSound::Play(pos, attn, pan0, pan1, vol0, vol1, name);
         if (id == SOUND_ID_EMPTY)
             return;

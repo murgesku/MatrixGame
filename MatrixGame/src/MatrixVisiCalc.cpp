@@ -380,14 +380,14 @@ void CMatrixMap::CalcVis(void) {
     HFree(visibilityGroup, g_MatrixHeap);
 
     CStorage stor(g_MatrixHeap);
-    stor.Load(MapName());
+    stor.Load(MapName().c_str());
 
     stor.DelRecord(DATA_GROUPS_VIS);
 
-    CStorageRecord storageRecord(CWStr(DATA_GROUPS_VIS, g_MatrixHeap), g_MatrixHeap);
-    storageRecord.AddItem(CStorageRecordItem(CWStr(DATA_GROUPS_VIS_LEVELS, g_MatrixHeap), ST_INT32));
-    storageRecord.AddItem(CStorageRecordItem(CWStr(DATA_GROUPS_VIS_GROUPS, g_MatrixHeap), ST_INT32));
-    storageRecord.AddItem(CStorageRecordItem(CWStr(DATA_GROUPS_VIS_ZFROM, g_MatrixHeap), ST_FLOAT));
+    CStorageRecord storageRecord(std::wstring{DATA_GROUPS_VIS}, g_MatrixHeap);
+    storageRecord.AddItem(CStorageRecordItem(std::wstring{DATA_GROUPS_VIS_LEVELS}, ST_INT32));
+    storageRecord.AddItem(CStorageRecordItem(std::wstring{DATA_GROUPS_VIS_GROUPS}, ST_INT32));
+    storageRecord.AddItem(CStorageRecordItem(std::wstring{DATA_GROUPS_VIS_ZFROM}, ST_FLOAT));
     stor.AddRecord(storageRecord);
 
     CDataBuf *levelsDataBuffer = stor.GetBuf(DATA_GROUPS_VIS, DATA_GROUPS_VIS_LEVELS, ST_INT32);

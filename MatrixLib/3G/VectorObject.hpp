@@ -176,7 +176,7 @@ struct SVOIndices32 {
 
 struct SVOSurface {
     const SSkin *skin;
-    CWStr texname;
+    std::wstring texname;
 
     //   float dr,dg,db,da;
     // float ar,ag,ab,aa;
@@ -372,7 +372,7 @@ public:
 
     int GetAnimCount(void) const { return m_Geometry.m_AnimationsCnt; }
     int GetAnimById(DWORD id);
-    int GetAnimByName(const wchar *name);
+    int GetAnimByName(const std::wstring& name);
     int GetAnimFramesCount(int no) const { return m_Geometry.m_Animations[no].m_FramesCnt; }
     int GetAnimFrameTime(int anim, int frame) const {
         return abs(m_Geometry.m_FramesIdx[m_Geometry.m_Animations[anim].m_FramesStart + frame].time);
@@ -384,13 +384,13 @@ public:
         return m_Geometry.m_FramesIdx[m_Geometry.m_Animations[anim].m_FramesStart + frame].frame;
     }
 
-    CWStr GetPropValue(const wchar *name) const { return m_Props.ParGetNE(name); }
+    std::wstring GetPropValue(const wchar *name) const { return m_Props.ParGetNE(name); }
 
     const D3DXVECTOR3 &GetFrameGeoCenter(int frame) const { return m_Geometry.m_Frames[frame].m_GeoCenter; }
 
     int GetMatrixCount(void) const { return m_Geometry.m_MatrixsCnt; }
     const D3DXMATRIX *GetMatrixById(int frame, DWORD id) const;
-    const D3DXMATRIX *GetMatrixByName(int frame, const wchar *name) const;
+    const D3DXMATRIX *GetMatrixByName(int frame, const std::wstring& name) const;
     const D3DXMATRIX *GetMatrix(int frame, int matrix) const {
         return m_Geometry.m_AllMatrixs + (m_Geometry.m_Matrixs + matrix)->m_MatrixStart + frame;
     }
@@ -405,7 +405,7 @@ public:
 
     void EnumFrameVerts(int noframe, ENUM_VERTS_HANDLER evh, DWORD data) const;
 
-    const CWStr &GetSurfaceFileName(int i) const { return m_Geometry.m_Surfaces[i].texname; }
+    const std::wstring &GetSurfaceFileName(int i) const { return m_Geometry.m_Surfaces[i].texname; }
 
     // void EdgeClear(void);
     // void EdgeBuild(void);
@@ -661,13 +661,13 @@ public:
 
     int m_Id;
 
-    CWStr m_Name;
+    std::wstring m_Name;
 
     CVectorObjectAnim *m_Obj;
 
     CVectorObjectGroupUnit *m_Link;
     int m_LinkMatrixId;  // -1-center -2-by name >=0-by id
-    CWStr m_LinkMatrixName;
+    std::wstring m_LinkMatrixName;
 
     D3DXMATRIX m_Matrix;  // Дополнительная матрица позиционирования в локальных координатах.
 
@@ -693,7 +693,7 @@ public:
 
     D3DXMATRIX *m_GroupToWorldMatrix;  // Матрица позиционирования группы в мировом пространстве.
 
-    CWStr m_Name;  // Имя файла
+    std::wstring m_Name;  // Имя файла
 
     D3DXVECTOR3 m_ShadowStencilLight;
     // D3DXPLANE m_ShadowStencilCutPlane;

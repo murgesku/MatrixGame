@@ -99,8 +99,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         {
             {
                 std::ofstream out("calcvis.log", std::ios::app);
-                std::string name = utils::from_wstring(g_MatrixMap->MapName().Get());
-                out << name.c_str() << " ...";
+                std::string name = utils::from_wstring(g_MatrixMap->MapName());
+                out << name << " ...";
             }
 
             g_MatrixMap->CalcVis();
@@ -140,7 +140,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         }
         L3GDeinit();
 
-        MessageBox(NULL, utils::from_wstring(ex.Info().Get()).c_str(), "Exception:", MB_OK);
+        MessageBox(NULL, utils::from_wstring(ex.Info().c_str()).c_str(), "Exception:", MB_OK);
+    }
+    catch (const std::exception& e)
+    {
+        MessageBox(NULL, e.what(), "Exception:", MB_OK);
     }
     catch (...) {
 #ifdef ENABLE_HISTORY
@@ -208,7 +212,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     CStorage stor_cfg(g_MatrixHeap);
     bool stor_cfg_present = false;
-    CWStr stor_cfg_name(g_MatrixHeap);
+    std::wstring stor_cfg_name;
     std::wstring conf_file{FILE_CONFIGURATION_LOCATION};
     if (lang != NULL) {
         conf_file += lang;
@@ -248,8 +252,8 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
         if (txt_start) {
             if (txt_start[0] >= '1' && txt_start[0] <= '6') {
-                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, CWStr(txt_start, 1, g_MatrixHeap));
-                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, CWStr(txt_start + 1, 2, g_MatrixHeap));
+                repl->ParSetAdd(PAR_REPLACE_BEGIN_ICON_RACE, std::wstring{txt_start, 1});
+                repl->ParSetAdd(PAR_REPLACE_DIFFICULTY, std::wstring{txt_start + 1, 2});
                 repl->ParSetAdd(PAR_REPLACE_BEGIN_TEXT, txt_start + 3);
             }
             else {
@@ -362,33 +366,36 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     CStorage stor(g_CacheHeap);
     DCP();
 
-    CWStr mapname(g_CacheHeap);
+    std::wstring mapname;
 
     if (map) {
         if (wcschr(map, '\\') == NULL) {
-            mapname.Set(L"Matrix\\Map\\");
-            mapname.Add(map);
+            mapname = L"Matrix\\Map\\";
+            mapname += map;
         }
         else {
-            mapname.Set(map);
+            mapname = map;
         }
     }
     else {
         mapname = g_MatrixData->BlockGet(L"Config")->Par(L"Map");
     }
 
-    stor.Load(mapname);
+    stor.Load(mapname.c_str());
     DCP();
 
     if (0 > g_MatrixMap->PrepareMap(stor, mapname)) {
         ERROR_S(L"Unable to load map. Error happens.");
     }
+    DCP();
 
-    CWStr mn(g_MatrixMap->MapName(), g_MatrixHeap);
-    mn.LowerCase();
-    if (mn.Find(L"demo") >= 0) {
+    std::wstring mn(g_MatrixMap->MapName());
+    utils::to_lower(mn);
+    if (mn.find(L"demo") != std::wstring::npos)
+    {
         SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE | MMFLAG_FLYCAM | MMFLAG_FULLAUTO);
     }
+    DCP();
 
     g_MatrixMap->CalcCannonPlace();
     SSpecialBot::LoadAIRobotType(*g_MatrixData->BlockGet(L"AIRobotType"));
@@ -396,11 +403,14 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     g_LoadProgress->SetCurLP(LP_PREPARININTERFACE);
     g_LoadProgress->InitCurLP(701);
 
+    DCP();
     CBlockPar bpi(1, g_CacheHeap);
-    if (stor_cfg_present) {
+    if (stor_cfg_present)
+    {
         stor_cfg.RestoreBlockPar(L"if", bpi);
     }
-    else {
+    else
+    {
         bpi.LoadFromTextFile(IF_PATH);
 
         // CStorage stor(g_CacheHeap);
@@ -721,7 +731,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupHead) {
         for (int i = 0; i < MENU_HEAD_ITEMS; i++) {
-            g_PopupHead[i].text.CWStr::~CWStr();
+            g_PopupHead[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupHead, g_MatrixHeap);
@@ -730,7 +740,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupHull) {
         for (int i = 0; i < MENU_HULL_ITEMS; i++) {
-            g_PopupHull[i].text.CWStr::~CWStr();
+            g_PopupHull[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupHull, g_MatrixHeap);
@@ -739,7 +749,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupWeaponNormal) {
         for (int i = 0; i < MENU_WEAPONNORM_ITEMS; i++) {
-            g_PopupWeaponNormal[i].text.CWStr::~CWStr();
+            g_PopupWeaponNormal[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupWeaponNormal, g_MatrixHeap);
@@ -748,7 +758,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupWeaponExtern) {
         for (int i = 0; i < MENU_WEAPONEXTERN_ITEMS; i++) {
-            g_PopupWeaponExtern[i].text.CWStr::~CWStr();
+            g_PopupWeaponExtern[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupWeaponExtern, g_MatrixHeap);
@@ -757,7 +767,7 @@ void MatrixGameDeinit(void) {
 
     if (g_PopupChassis) {
         for (int i = 0; i < MENU_CHASSIS_ITEMS; i++) {
-            g_PopupChassis[i].text.CWStr::~CWStr();
+            g_PopupChassis[i].text.std::wstring::~wstring();
         }
 
         HFree(g_PopupChassis, g_MatrixHeap);
@@ -766,7 +776,7 @@ void MatrixGameDeinit(void) {
 
     if (g_Config.m_Labels) {
         for (int i = 0; i < LABELS_LAST; i++) {
-            g_Config.m_Labels[i].CWStr::~CWStr();
+            g_Config.m_Labels[i].std::wstring::~wstring();
         }
         HFree(g_Config.m_Labels, g_MatrixHeap);
         g_Config.m_Labels = NULL;
@@ -774,7 +784,7 @@ void MatrixGameDeinit(void) {
 
     if (g_Config.m_Descriptions) {
         for (int i = 0; i < DESCRIPTIONS_LAST; i++) {
-            g_Config.m_Descriptions[i].CWStr::~CWStr();
+            g_Config.m_Descriptions[i].std::wstring::~wstring();
         }
         HFree(g_Config.m_Descriptions, g_MatrixHeap);
         g_Config.m_Descriptions = NULL;

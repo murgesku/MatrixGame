@@ -304,7 +304,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     for (int i = 0; i < m_DebrisCnt; ++i) {
         new(&m_Debris[i]) CDebris();
 
-        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).Get());
+        CVectorObject *vo = (CVectorObject *)g_Cache->Get(cc_VO, bp.ParGet(i).c_str());
         vo->PrepareSpecial(OLF_AUTO, CSkinManager::GetSkin, GSP_ORDINAL);
         m_Debris[i].Init(vo, NULL);
 
@@ -386,7 +386,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     CBlockPar &bb = *bp_in.BlockGet(PAR_SOURCE_BILLBOARDS);
     CBlockPar &tex = *bb.BlockGet(PAR_SOURCE_BILLBOARDS_TEXTURES);
 
-    CTextureManaged *ts = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXSORT));
+    CTextureManaged *ts = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXSORT).c_str());
     // CTextureManaged *ti = (CTextureManaged *)g_Cache->Get(cc_TextureManaged,
     // bb.ParGet(PAR_SOURCE_BILLBOARDS_TEXINTENSE));
     ts->Preload();
@@ -394,9 +394,8 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
 
     CBillboard::SetSortTexture(ts);
 
-    CWStr texp(m_Heap);
     for (int i = 0; i < BBT_LAST; ++i) {
-        texp = tex.ParGet(bb2tn[i].name);
+        auto texp = tex.ParGet(bb2tn[i].name);
         SBillboardTextureArrayElement *e = m_BBTextures + bb2tn[i].id;
         if (texp.GetIntPar(0, L",") == 0) {
             RESETFLAG(e->flags, BBT_FLAG_INTENSE);
@@ -416,7 +415,7 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
         else {
             SETFLAG(e->flags, BBT_FLAG_INTENSE);
 
-            e->tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texp.GetStrPar(1, L",").Get());
+            e->tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, texp.GetStrPar(1, L",").c_str());
             // e->tex->Preload();
         }
     }
@@ -603,7 +602,7 @@ void CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &p
         //
         //            for (;ef;ef = ef->m_TypeNext)
         //            {
-        //                CWStr hex;
+        //                std::wstring hex;
         //                hex.AddHex(BYTE((DWORD(ef) >> 24) & 0xFF));
         //                hex.AddHex(BYTE((DWORD(ef) >> 16) & 0xFF));
         //                hex.AddHex(BYTE((DWORD(ef) >> 8) & 0xFF));
@@ -1027,7 +1026,7 @@ void CMatrixEffect::DrawEnd(void) {
     //    for (int i=0; i<16;++i)
     //    {
     //        if (pri[i] == -1) break;
-    //        g_MatrixMap->m_DI.T(L"ls:" + CWStr(pri[i]), CWStr(pric[i]), 1000);
+    //        g_MatrixMap->m_DI.T(L"ls:" + std::wstring(pri[i]), std::wstring(pric[i]), 1000);
     //
     //
     //    }

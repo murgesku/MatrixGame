@@ -33,18 +33,18 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
         if (FLAG(m_Flags, TF_COMPRESSED)) {
             goto autoload;
         }
-        CWStr tn(m_Name, g_CacheHeap);
-        CFile::FileExist(tn, tn.Get(), CacheExtsTex);
-        int idx = tn.FindR('.');
-        if (idx < 0)
+        std::wstring tn(m_Name);
+        CFile::FileExist(tn, tn.c_str(), CacheExtsTex);
+        auto idx = tn.rfind('.');
+        if (idx == std::wstring::npos)
             goto autoload;
-        tn.LowerCase(idx + 1);
-        if (0 != memcmp(tn.Get() + idx + 1, L"png", sizeof(wchar) * 4))
+        utils::to_lower(tn, idx + 1);
+        if (0 != memcmp(tn.c_str() + idx + 1, L"png", sizeof(wchar) * 4))
             goto autoload;
 
         CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
         CBitmap bm(g_CacheHeap);
-        bm.LoadFromPNG(tn.Get());
+        bm.LoadFromPNG(tn.c_str());
         tex->LoadFromBitmap(bm, true, FLAG(m_Flags, TF_NOMIPMAP) ? 1 : 0);
 
 #ifdef USE_DX_MANAGED_TEXTURES
@@ -87,14 +87,13 @@ autoload:
     return ret;
 }
 
-void CBaseTexture::ParseFlags(const CWStr &name) {
+void CBaseTexture::ParseFlags(const ParamParser& name) {
     m_Flags = 0;
-    CWStr tstr(g_CacheHeap);
+    std::wstring tstr;
     int cnt = name.GetCountPar(L"?");
     if (cnt > 1) {
         for (int i = 1; i < cnt; i++) {
-            tstr = name.GetStrPar(i, L"?");
-            tstr.Trim();
+            tstr = utils::trim(name.GetStrPar(i, L"?"));
             if (tstr == L"Trans") {
                 SETFLAG(m_Flags, TF_ALPHATEST);
             }
@@ -105,11 +104,12 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
     }
 
     tstr = name.GetStrPar(0, L"?");
-    CacheReplaceFileExt(tstr, tstr.Get(), L".txt");
+    CacheReplaceFileExt(tstr, tstr.c_str(), L".txt");
 
-    if (CFile::FileExist(tstr, tstr.Get())) {
+    if (CFile::FileExist(tstr, tstr.c_str())) {
         bool proceed = true;
-        if (tstr.Find(L"pinguin.txt") >= 0 || tstr.Find(L"robotarget.txt") >= 0) {
+        if (tstr.find(L"pinguin.txt") != std::wstring::npos || tstr.find(L"robotarget.txt") != std::wstring::npos)
+        {
             proceed = false;
         }
 
@@ -118,7 +118,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
             texi.LoadFromTextFile(tstr);
 
             tstr = texi.ParGetNE(L"AlphaTest");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_ALPHATEST);
                 }
@@ -127,7 +127,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
                 }
             }
             tstr = texi.ParGetNE(L"AlphaBlend");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_ALPHABLEND);
                 }
@@ -136,7 +136,7 @@ void CBaseTexture::ParseFlags(const CWStr &name) {
                 }
             }
             tstr = texi.ParGetNE(L"Compressed");
-            if (!tstr.IsEmpty()) {
+            if (!tstr.empty()) {
                 if (tstr == L"0") {
                     RESETFLAG(m_Flags, TF_COMPRESSED);
                 }
@@ -456,7 +456,7 @@ void CTextureManaged::Load(void) {
 #ifdef USE_DX_MANAGED_TEXTURES
     if (m_Tex == NULL) {
 #ifdef _DEBUG
-        if (m_Name.GetLen() == 0)
+        if (m_Name.length() == 0)
             ERROR_E;
 #endif
         Init(false);
@@ -467,7 +467,7 @@ void CTextureManaged::Load(void) {
 
     if (m_TexFrom == NULL) {
 #ifdef _DEBUG
-        if (m_Name.GetLen() == 0)
+        if (m_Name.length() == 0)
             ERROR_E;
 #endif
         Init(false);
