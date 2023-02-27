@@ -7,7 +7,6 @@
 
 #include <cwchar>
 
-#include "CWStr.hpp"
 #include "CException.hpp"
 #include "CBuf.hpp"
 

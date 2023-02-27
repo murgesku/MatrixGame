@@ -9,7 +9,6 @@
 #include "CException.hpp"
 #include "CMain.hpp"
 #include "CHeap.hpp"
-#include "CWStr.hpp"
 #include "CFile.hpp"
 #include "CBuf.hpp"
 #include "CBlockPar.hpp"
@@ -24,5 +23,16 @@
 #endif
 
 #include "Tracer.hpp"
+
+// it's a total shit that we have to do this...
+#ifdef MSVC7
+    #undef min
+    #undef max
+#endif
+
+//////////////////////////
+using wchar = wchar_t;
+using dword = unsigned long;
+//////////////////////////
 
 #define IS_UNICODE() (GetVersion() < 0x80000000)

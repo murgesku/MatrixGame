@@ -7,7 +7,6 @@
 
 #include "MatrixMap.hpp"
 #include "DevConsole.hpp"
-#include "CWStr.hpp"
 #include "MatrixSoundManager.hpp"
 
 #include <utils.hpp>

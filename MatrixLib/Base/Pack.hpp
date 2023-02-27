@@ -10,7 +10,6 @@
 
 #include "Base.pch"
 
-#include "CWStr.hpp"
 #include "CException.hpp"
 #include "CMain.hpp"
 #include "CHeap.hpp"
