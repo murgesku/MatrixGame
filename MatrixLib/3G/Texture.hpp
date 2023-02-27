@@ -306,7 +306,7 @@ public:
 inline CTextureManaged *CTextureManaged::Get(const wchar *name, bool c16) {
     CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
     CBitmap bm(g_CacheHeap);
-    CWStr tn(name, g_CacheHeap);
+    std::wstring tn(name);
     CFile::FileExist(tn, tn.Get(), CacheExtsTex);
     bm.LoadFromPNG(tn.Get());
     tex->LoadFromBitmap(bm, c16, 1);

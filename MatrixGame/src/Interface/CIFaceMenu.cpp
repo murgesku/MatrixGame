@@ -331,7 +331,7 @@ void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, 
         if (labels) {
             catcher->m_StateImages[IFACE_NORMAL].SetStateLabelParams(
                     LEFT_SPACE + 6, -3, text_zone_width, text_zone_height, 0, 1, 0, 0, 0,
-                    CRect(0, 0, text_zone_width, text_zone_height), labels->text, CWStr(L"Font.2Ranger"),
+                    CRect(0, 0, text_zone_width, text_zone_height), labels->text, std::wstring(L"Font.2Ranger"),
                     labels->color);
             catcher->m_StateImages[IFACE_NORMAL].SetStateText(true);
             labels++;

@@ -12,11 +12,11 @@
 
 #include <utils.hpp>
 
-static void hHelp(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hHelp(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->m_Console.ShowHelp();
 }
 
-static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hShadows(const std::wstring& cmd, const std::wstring& params) {
     if (params.length() == 2) {
         g_Config.m_ShowStencilShadows = params[0] == '1';
         g_Config.m_ShowProjShadows = params[1] == '1';
@@ -25,14 +25,14 @@ static void hShadows(const Base::CWStr &cmd, const Base::CWStr &params) {
     g_MatrixMap->m_DI.T(L"Proj shadows", g_Config.m_ShowProjShadows ? L"ON" : L"OFF");
 }
 
-static void hCannon(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hCannon(const std::wstring& cmd, const std::wstring& params) {
     if (params.length() == 1) {
         g_Config.m_CannonsLogic = params[0] == '1';
     }
     g_MatrixMap->m_DI.T(L"Cannon's logic", g_Config.m_CannonsLogic ? L"ON" : L"OFF");
 }
 
-static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hLog(const std::wstring& cmd, const std::wstring& params) {
     if (params == L"s") {
         CSound::SaveSoundLog();
     }
@@ -57,7 +57,7 @@ static void hLog(const Base::CWStr &cmd, const Base::CWStr &params) {
     }
 }
 
-static void hBuildCFG(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hBuildCFG(const std::wstring& cmd, const std::wstring& params) {
     CBlockPar bpi(1, g_CacheHeap);
     bpi.LoadFromTextFile(IF_PATH);
 
@@ -73,7 +73,7 @@ static void hBuildCFG(const Base::CWStr &cmd, const Base::CWStr &params) {
     stor.Save(FILE_CONFIGURATION, true);
 }
 
-static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hTestSpdTrace(const std::wstring& cmd, const std::wstring& params) {
     srand(1);
     D3DXVECTOR3 pos1, pos2;
 
@@ -97,26 +97,26 @@ static void hTestSpdTrace(const Base::CWStr &cmd, const Base::CWStr &params) {
     g_MatrixMap->m_DI.T(L"Trace time (ms)", utils::format(L"%u", time2 - time1).c_str(), 5000);
 }
 
-static void hMusic(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hMusic(const std::wstring& cmd, const std::wstring& params) {
     if (params == L"1")
         g_MatrixMap->RestoreMusicVolume();
     else if (params == L"0")
         g_MatrixMap->SetMusicVolume(0);
 }
 
-static void hCalcVis(const Base::CWStr &cmd, const Base::CWStr &params) {
+static void hCalcVis(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->CalcVis();
 }
 
-static void hCompress(const Base::CWStr &cmd, const Base::CWStr &params) {
-    CWStr name;
+static void hCompress(const std::wstring& cmd, const std::wstring& params) {
+    std::wstring name;
     if (CFile::FileExist(name, params.c_str())) {
         CBuf fil(g_CacheHeap);
         CStorage out(g_CacheHeap);
         fil.LoadFromFile(params);
 
-        CStorageRecord sr(CWStr(L"0"), g_CacheHeap);
-        sr.AddItem(CStorageRecordItem(CWStr(L"0"), ST_BYTE));
+        CStorageRecord sr(L"0", g_CacheHeap);
+        sr.AddItem(CStorageRecordItem(L"0", ST_BYTE));
         out.AddRecord(sr);
 
         CDataBuf *b = out.GetBuf(L"0", L"0", ST_BYTE);
@@ -147,7 +147,7 @@ CDevConsole::~CDevConsole() {}
 void CDevConsole::ShowHelp(void) {
     int i = 0;
     while (m_Commands[i].cmd != NULL) {
-        CWStr desc;
+        std::wstring desc;
 
         if (i == 0)
             desc = L"Shows help";
@@ -223,8 +223,8 @@ void CDevConsole::Keyboard(int scan, bool down) {
             m_CurPos = m_Text.length();
         }
         else if (scan == KEY_ENTER) {
-            CWStr cmd;
-            CWStr params;
+            std::wstring cmd;
+            std::wstring params;
             int i = 0;
             while (i < m_Text.length()) {
                 if (m_Text[i] == ' ')

@@ -867,7 +867,7 @@ void CMinimap::Draw(void) {
     ASSERT_DX(g_D3DD->SetViewport(&wp));
 }
 
-void CMinimap::RenderBackground(const CWStr &name, DWORD uniq) {
+void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
     DTRACE();
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 

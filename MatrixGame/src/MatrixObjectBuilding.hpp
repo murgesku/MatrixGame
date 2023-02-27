@@ -167,7 +167,7 @@ class CMatrixBuilding : public CMatrixMapStatic {
 
 public:
     D3DXVECTOR3 m_TopPoint;
-    CWStr m_Name;
+    std::wstring m_Name;
     int m_defHitPoint;
     CBuildStack m_BS;
 

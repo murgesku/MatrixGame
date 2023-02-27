@@ -24,7 +24,7 @@ ATOM g_WndA = 0;
 HWND g_Wnd = 0;
 bool g_WndExtern = false;
 DWORD g_WndOldProg = 0;
-CWStr *g_WndClassName;
+std::wstring *g_WndClassName;
 int g_ScreenX = 0, g_ScreenY = 0;
 D3DPRESENT_PARAMETERS g_D3Dpp;
 // CReminder *g_Reminder;
@@ -101,7 +101,7 @@ void D3DResource::Dump(D3DResType t) {
 }
 #endif
 
-CWStr CExceptionD3D::Info() {
+std::wstring CExceptionD3D::Info() {
     return CException::Info() +
            utils::format(
                L"Text: {%ls} %s",
@@ -157,7 +157,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     else
         refresh = bpcfg.Par(L"FullScreen").GetIntPar(2, L",");
 
-    g_WndClassName = HNew(g_CacheHeap) CWStr(sysname);
+    g_WndClassName = HNew(g_CacheHeap) std::wstring(sysname);
     *g_WndClassName += L"_wc";
     std::string classname{utils::from_wstring(g_WndClassName->c_str())};
 
@@ -417,7 +417,8 @@ void L3GDeinit() {
         UnregisterClass(utils::from_wstring(g_WndClassName->c_str()).c_str(), g_HInst);
         g_WndA = 0;
 
-        HDelete(CWStr, g_WndClassName, g_CacheHeap);
+        using std::wstring;
+        HDelete(wstring, g_WndClassName, g_CacheHeap);
     }
     if (g_WndExtern) {
         SetWindowLong(g_Wnd, GWL_WNDPROC, g_WndOldProg);

@@ -14,7 +14,7 @@
 
 bool CCacheData::m_dip;
 
-// bool CacheFileGetA(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGetA(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
@@ -23,17 +23,17 @@ bool CCacheData::m_dip;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
 //
-//	CWStr filename(str,lenfile,outname.GetHeap());
+//	std::wstring filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAA fd;
 //	HANDLE fh=FindFirstFileA(utils::from_wstring(filename.c_str()).c_str(),&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileA(utils::from_wstring(CWStr(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).c_str()).c_str(),&fd);
+//	fh=FindFirstFileA(utils::from_wstring(std::wstring(str,lenfile,outname.GetHeap())+L".*",outname.GetHeap()).c_str()).c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
-//		CWStr curname(outname.GetHeap());
+//		std::wstring curname(outname.GetHeap());
 //		for(;;)
 //        {
 //			curname.Set(fd.cFileName);
@@ -70,7 +70,7 @@ bool CCacheData::m_dip;
 //	if(lenpath>0)
 //    {
 //        outname.Set(str,lenpath);
-//        outname.Add(CWStr(fd.cFileName));
+//        outname.Add(std::wstring(fd.cFileName));
 //    } else outname.Set(fd.cFileName);
 //
 //	if(withpar && lenfile<len) outname.Add(str+lenfile,len-lenfile);
@@ -78,7 +78,7 @@ bool CCacheData::m_dip;
 //	return true;
 //}
 //
-// bool CacheFileGetW(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGetW(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
@@ -87,17 +87,17 @@ bool CCacheData::m_dip;
 //
 //	int lenfile=0; while(lenfile<len && str[lenfile]!='?') lenfile++;
 //
-//	CWStr filename(str,lenfile,outname.GetHeap());
+//	std::wstring filename(str,lenfile,outname.GetHeap());
 //
 //	WIN32_FIND_DATAW fd;
 //	HANDLE fh=FindFirstFileW(filename,&fd);
 //	if(fh!=INVALID_HANDLE_VALUE) { FindClose(fh); if(withpar) outname=mname; else outname=filename; return true; }
 //
 //
-//	fh=FindFirstFileW((CWStr(str,lenfile,outname.GetHeap())+L".*").c_str(),&fd);
+//	fh=FindFirstFileW((std::wstring(str,lenfile,outname.GetHeap())+L".*").c_str(),&fd);
 //	if(fh==INVALID_HANDLE_VALUE) return false;
 //	if(exts!=NULL) {
-//		CWStr curname(outname.GetHeap());
+//		std::wstring curname(outname.GetHeap());
 //		for(;;)
 //        {
 //			curname.Set(fd.cFileName);
@@ -139,7 +139,7 @@ bool CCacheData::m_dip;
 //	return true;
 //}
 //
-// bool CacheFileGet(CWStr & outname,const wchar * mname,const wchar * exts,bool withpar)
+// bool CacheFileGet(std::wstring & outname,const wchar * mname,const wchar * exts,bool withpar)
 //{
 //    DTRACE();
 //
@@ -147,7 +147,7 @@ bool CCacheData::m_dip;
 //	else return CacheFileGetA(outname,mname,exts,withpar);
 //}
 
-void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
+void CacheReplaceFileExt(std::wstring &outname, const wchar *mname, const wchar *ext) {
     DTRACE();
 
     int len = std::wcslen(mname);
@@ -178,7 +178,7 @@ void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext) {
         outname += std::wstring{mname + lenfile, static_cast<size_t>(len - lenfile)};
 }
 
-void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar *replname) {
+void CacheReplaceFileNameAndExt(std::wstring &outname, const wchar *mname, const wchar *replname) {
     DTRACE();
 
     int len = std::wcslen(mname);
@@ -237,7 +237,7 @@ void CCacheData::Prepare() {
 void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
     DTRACE();
 
-    CWStr tstr, tname;
+    std::wstring tstr, tname;
 
     tname = ParamParser{m_Name}.GetStrPar(0, L"?");
 
@@ -265,14 +265,14 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         }
 
         WIN32_FIND_DATA fd;
-        HANDLE fh=FindFirstFile(utils::from_wstring(CWStr(str,lenfile,g_CacheHeap)+L".*").c_str()).c_str(),&fd);
+        HANDLE fh=FindFirstFile(utils::from_wstring(std::wstring(str,lenfile,g_CacheHeap)+L".*").c_str()).c_str(),&fd);
         if(fh==INVALID_HANDLE_VALUE) ERROR_S2(L"File not found: ",m_Name.c_str());
         FindClose(fh);
 
         int lenpath=lenfile; while(lenpath>0 && str[lenpath-1]!='\\' && str[lenpath-1]!='/') lenpath--;
 
-        if(lenpath>0) fi.Init(CWStr(str,lenpath)+CWStr(fd.cFileName),g_CacheHeap));
-        else fi.Init(CWStr(fd.cFileName),g_CacheHeap));
+        if(lenpath>0) fi.Init(std::wstring(str,lenpath)+std::wstring(fd.cFileName),g_CacheHeap));
+        else fi.Init(std::wstring(fd.cFileName),g_CacheHeap));
 
         if(fi.OpenReadNE()) {
             buf.Len(fi.Size());

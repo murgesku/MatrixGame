@@ -6,7 +6,7 @@
 #ifndef DEV_CONSOLE_INCLUDE
 #define DEV_CONSOLE_INCLUDE
 
-typedef void (*CMD_HANDLER)(const Base::CWStr &cmd, const Base::CWStr &params);
+typedef void (*CMD_HANDLER)(const std::wstring& cmd, const std::wstring& params);
 
 struct SCmdItem {
     const wchar *cmd;
@@ -24,7 +24,7 @@ class CDevConsole : public CMain {
 
     static SCmdItem m_Commands[];
 
-    CWStr m_Text;
+    std::wstring m_Text;
     int m_CurPos;
 
     int m_NextTime;

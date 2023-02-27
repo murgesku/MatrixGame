@@ -465,7 +465,7 @@ void CMatrixSideUnit::LogicTakt(int ms) {
         TaktTL();
         DCP();
         //        dword t3=timeGetTime();
-        //        DM(L"TaktTL",CWStr().Format(L"<i>",t3-t2).Get());
+        //        DM(L"TaktTL",std::wstring().Format(L"<i>",t3-t2).Get());
     }
     else {
         DCP();
@@ -489,7 +489,7 @@ void CMatrixSideUnit::LogicTakt(int ms) {
         //        dword t1=timeGetTime();
         TaktPL();
         //        dword t2=timeGetTime();
-        //        DM(L"TaktPL",CWStr().Format(L"<i>",t2-t1).Get());
+        //        DM(L"TaktPL",std::wstring().Format(L"<i>",t2-t1).Get());
     }
     DCP();
     CalcMaxSpeed();
@@ -2610,7 +2610,7 @@ void CMatrixSideUnit::TaktHL() {
 
     // dword it1=timeGetTime();
 
-    // DM(CWStr().Format(L"Res1 Side=<i>",m_Id).Get(),CWStr().Format(L"<i> <i> <i>
+    // DM(std::wstring().Format(L"Res1 Side=<i>",m_Id).Get(),std::wstring().Format(L"<i> <i> <i>
     // <i>",m_Resources[0],m_Resources[1],m_Resources[2],m_Resources[3]).Get());
 
     /*    if(g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
@@ -4376,10 +4376,10 @@ void CMatrixSideUnit::TaktHL() {
         }
 
         // dword it2=timeGetTime();
-        // DM(L"TaktHL",CWStr().Format(L"<i>",it2-it1).Get());
+        // DM(L"TaktHL",std::wstring().Format(L"<i>",it2-it1).Get());
 
         //#if (defined _DEBUG) &&  !(defined _RELDEBUG)
-        // if(m_RobotsCnt>0) DM(CWStr().Format(L"Res2 Side=<i>",m_Id).Get(),CWStr().Format(L"<i> <i> <i>
+        // if(m_RobotsCnt>0) DM(std::wstring().Format(L"Res2 Side=<i>",m_Id).Get(),std::wstring().Format(L"<i> <i> <i>
         // <i>",m_Resources[0],m_Resources[1],m_Resources[2],m_Resources[3]).Get()); #endif
 
         // Отображаем
@@ -5395,7 +5395,7 @@ void CMatrixSideUnit::WarTL(int group) {
                                            rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE));
         }
 
-        // DM(L"RadiusSeek",CWStr().Format(L"<i>   <i>",radius,radiusrobot).Get());
+        // DM(L"RadiusSeek",std::wstring().Format(L"<i>   <i>",radius,radiusrobot).Get());
 
         bool cplr = true;
 
@@ -6222,7 +6222,7 @@ void CMatrixSideUnit::SortRobotList(CMatrixRobotAI **rl, int rlcnt) {
     }
 
     /*#if (defined _DEBUG) &&  !(defined _RELDEBUG)
-        CWStr tstr;
+        std::wstring tstr;
         for(i=0;i<rlcnt;i++) {
             if(rl[i]->HaveBomb()) tstr+=L"B";
             else if(rl[i]->HaveRepair()) tstr+=L"R";
@@ -6230,7 +6230,7 @@ void CMatrixSideUnit::SortRobotList(CMatrixRobotAI **rl, int rlcnt) {
         }
         tstr+=L"    ";
         for(i=0;i<rlcnt;i++) {
-            tstr+=CWStr().Format(L"(<i>)",Float2Int(rl[i]->GetStrength()));
+            tstr+=std::wstring().Format(L"(<i>)",Float2Int(rl[i]->GetStrength()));
         }
         DM(L"SortRobot",tstr.Get());
     #endif*/
@@ -8437,7 +8437,7 @@ void CMatrixSideUnit::WarPL(int group) {
                                            rl[i]->GetMaxFireDist() / GLOBAL_SCALE_MOVE + ROBOT_MOVECELLS_PER_SIZE));
         }
 
-        // DM(L"RadiusSeek",CWStr().Format(L"<i>   <i>",radius,radiusrobot).Get());
+        // DM(L"RadiusSeek",std::wstring().Format(L"<i>   <i>",radius,radiusrobot).Get());
 
         bool cplr = true;
 
@@ -10850,15 +10850,15 @@ void CMatrixSideUnit::DMTeam(int team, EMatrixLogicActionType ot, int state, con
 
     va_list marker;
     va_start(marker, format);
-    // DM( CWStr().Format(L"Size.<i>.Team.<i>",m_Id,team).c_str(),
-    //    CWStr().Format(L"[<s><s>] <s>",ots[ot],sstate,CWStr().Format(format,marker).c_str()).c_str()
+    // DM( std::wstring().Format(L"Size.<i>.Team.<i>",m_Id,team).c_str(),
+    //    std::wstring().Format(L"[<s><s>] <s>",ots[ot],sstate,std::wstring().Format(format,marker).c_str()).c_str()
     //    );
 }
 
 void CMatrixSideUnit::DMSide(const wchar *format, ...) {
     va_list marker;
     va_start(marker, format);
-    // DM( CWStr().Format(L"Size.<i>",m_Id).c_str(),
-    //    CWStr().Format(format,marker).c_str()
+    // DM( std::wstring().Format(L"Size.<i>",m_Id).c_str(),
+    //    std::wstring().Format(format,marker).c_str()
     //    );
 }

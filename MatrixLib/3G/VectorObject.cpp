@@ -118,7 +118,7 @@ void CVectorObject::Unload() {
         }
 
         for (int i = 0; i < m_Geometry.m_SurfacesCnt; ++i) {
-            m_Geometry.m_Surfaces[i].texname.~CWStr();
+            m_Geometry.m_Surfaces[i].texname.std::wstring::~wstring();
         }
         if (m_Geometry.m_Surfaces != NULL) {
             HFree(m_Geometry.m_Surfaces, g_CacheHeap);
@@ -205,7 +205,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             DWORD *id = c1->GetFirst<DWORD>(0);
             DWORD *disp = c2->GetFirst<DWORD>(0);
 
-            CWStr mn;
+            std::wstring mn;
             for (int i = 0; i < m_Geometry.m_MatrixsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
                 memcpy(m_Geometry.m_Matrixs[i].m_Name, mn.c_str(), (mn.length() + 1) * sizeof(wchar));
@@ -246,7 +246,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             DWORD *disp = c2->GetFirst<DWORD>(0);
             DWORD *cnt = c3->GetFirst<DWORD>(0);
 
-            CWStr mn;
+            std::wstring mn;
             for (int i = 0; i < m_Geometry.m_AnimationsCnt; ++i) {
                 mn = c0->GetAsWStr(i);
                 memcpy(m_Geometry.m_Animations[i].m_Name, mn.c_str(), (mn.length() + 1) * sizeof(wchar));
@@ -374,7 +374,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
             m_Geometry.m_SurfacesCnt = c->GetArraysCount();
             m_Geometry.m_Surfaces = (SVOSurface *)HAlloc(sizeof(SVOSurface) * m_Geometry.m_SurfacesCnt, g_CacheHeap);
             for (int i = 0; i < m_Geometry.m_SurfacesCnt; ++i) {
-                new(&m_Geometry.m_Surfaces[i].texname) CWStr(c->GetAsWStr(i));
+                new(&m_Geometry.m_Surfaces[i].texname) std::wstring(c->GetAsWStr(i));
                 m_Geometry.m_Surfaces[i].skin = NULL;
             }
         }
@@ -386,7 +386,7 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
     //      {
     //    SVOSurface * s = m_Geometry.m_Surfaces + i;
 
-    //          CWStr outstr(g_CacheHeap);
+    //          std::wstring outstr(g_CacheHeap);
     //    CacheReplaceFileExt(outstr,m_Name);
 
     //          // load textures
@@ -400,13 +400,13 @@ void CVectorObject::LoadSpecial(EObjectLoad olf, SKIN_GET sg, DWORD gsp) {
     //      {
     //    SVOSurface * s = m_Geometry.m_Surfaces + i;
 
-    //          CWStr outstr((materials + i)->tex_diffuse,g_CacheHeap);
+    //          std::wstring outstr((materials + i)->tex_diffuse,g_CacheHeap);
     //          CacheReplaceFileExt(outstr, outstr.c_str());
 
     //          ASSERT(outstr.length() > 0);
     //          //if (outstr.length() == 0) _asm int 3
 
-    //          CWStr temp(g_CacheHeap);
+    //          std::wstring temp(g_CacheHeap);
     //          if(!CFile::FileExist(temp,outstr.c_str(),CacheExtsTex))
     //          {
     //              CacheReplaceFileNameAndExt(outstr, m_Name, (materials + i)->tex_diffuse);
@@ -2268,8 +2268,8 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
 
     m_Name = filename;
 
-    CWStr tstr, tstr2, unit, bs;
-    CWStr texture, texture_gloss, texture_back, texture_mask;
+    std::wstring tstr, tstr2, unit, bs;
+    std::wstring texture, texture_gloss, texture_back, texture_mask;
 
     CBlockPar bp(true, g_CacheHeap);
     CVectorObjectGroupUnit *gu;

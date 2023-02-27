@@ -33,7 +33,7 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
         if (FLAG(m_Flags, TF_COMPRESSED)) {
             goto autoload;
         }
-        CWStr tn(m_Name);
+        std::wstring tn(m_Name);
         CFile::FileExist(tn, tn.c_str(), CacheExtsTex);
         auto idx = tn.rfind('.');
         if (idx == std::wstring::npos)
@@ -89,7 +89,7 @@ autoload:
 
 void CBaseTexture::ParseFlags(const ParamParser& name) {
     m_Flags = 0;
-    CWStr tstr;
+    std::wstring tstr;
     int cnt = name.GetCountPar(L"?");
     if (cnt > 1) {
         for (int i = 1; i < cnt; i++) {

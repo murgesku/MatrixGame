@@ -2718,10 +2718,10 @@ float NORM(D3DXVECTOR3 &vo, const D3DXVECTOR3 &v) {
     return vo.y;
 }
 
-// CWStr hhh(const CWStr &tex)
+// std::wstring hhh(const std::wstring &tex)
 //{
-//    if (tex == L"bla") return CWStr(L"yo!");
-//    return CWStr(L"---");
+//    if (tex == L"bla") return std::wstring(L"yo!");
+//    return std::wstring(L"---");
 //}
 
 static bool Egg1(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
@@ -2807,7 +2807,7 @@ void CMatrixMapLogic::Takt(int step) {
         if (FLAG(g_MatrixMap->m_Flags, MMFLAG_STAT_DIALOG | MMFLAG_STAT_DIALOG_D)) {
             // stat
             CBlockPar *repl = g_MatrixData->BlockGet(PAR_REPLACE);
-            CWStr temp;
+            std::wstring temp;
             for (int i = 0; i < m_SideCnt; ++i) {
                 CMatrixSideUnit *su = m_Side + i;
 
@@ -3020,7 +3020,7 @@ void CMatrixMapLogic::Takt(int step) {
 
     if ((GetTime() - m_PrevTimeCheckStatus) > 1001) {
         // check easter egg :)
-        CWStr mn(MapName());
+        std::wstring mn(MapName());
         utils::to_lower(mn);
         if (mn.find(L"terron") != std::wstring::npos) {
             int egg1 = 0, egg2 = 0;

@@ -12,7 +12,7 @@
 
 struct SHintBitmap {
     CBitmap *bmp;
-    const CWStr *name;
+    const std::wstring *name;
 };
 
 enum EHintElementModificator {
@@ -66,8 +66,8 @@ class CMatrixHint : public CMain {
     CMatrixHint *m_Next;
     CMatrixHint *m_Prev;
 
-    CWStr m_SoundIn;
-    CWStr m_SoundOut;
+    std::wstring m_SoundIn;
+    std::wstring m_SoundOut;
 
     DWORD m_Flags;
     CTextureManaged *m_Texture;
@@ -75,7 +75,7 @@ class CMatrixHint : public CMain {
     CPoint *m_CopyPos;
     int m_CopyPosCnt;
 
-    CMatrixHint(CTextureManaged *tex, int w, int h, const CWStr &si, const CWStr &so)
+    CMatrixHint(CTextureManaged *tex, int w, int h, const std::wstring &si, const std::wstring &so)
       : m_Texture(tex), m_Width(w), m_Height(h), m_CopyPos(NULL), m_CopyPosCnt(0), m_SoundIn{si},
         m_SoundOut(so), m_Flags(0) {
         SetVisible(false);
@@ -109,10 +109,10 @@ public:
 
     static void PreloadBitmaps(void);
 
-    static CMatrixHint *Build(int border, const CWStr &soundin, const CWStr &soundout, SHintElement *elems,
+    static CMatrixHint *Build(int border, const std::wstring &soundin, const std::wstring &soundout, SHintElement *elems,
                               CRect *otstup = nullptr);
-    static CMatrixHint *Build(const CWStr &templatename, const wchar *baserepl = nullptr);
-    static CMatrixHint *Build(const CWStr &str, CBlockPar *repl, const wchar *baserepl = nullptr);
+    static CMatrixHint *Build(const std::wstring &templatename, const wchar *baserepl = nullptr);
+    static CMatrixHint *Build(const std::wstring &str, CBlockPar *repl, const wchar *baserepl = nullptr);
     void Release(void) {
         SetVisible(false);
         HDelete(CMatrixHint, this, g_MatrixHeap);

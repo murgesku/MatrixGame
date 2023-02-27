@@ -22,7 +22,7 @@ public:
 #endif
 
     CacheClass m_Type;
-    CWStr m_Name;
+    std::wstring m_Name;
 
     int m_Ref;  // Кол-во ссылок на эти данные. (Для временных данных)
 
@@ -105,6 +105,6 @@ extern const wchar *CacheExtsTex;
 void CacheInit(void);
 void CacheDeinit(void);
 
-// bool CacheFileGet(CWStr & outname,const wchar * mname,const wchar * exts=NULL,bool withpar=false);
-void CacheReplaceFileExt(CWStr &outname, const wchar *mname, const wchar *ext = NULL);
-void CacheReplaceFileNameAndExt(CWStr &outname, const wchar *mname, const wchar *replname);
+// bool CacheFileGet(std::wstring & outname,const wchar * mname,const wchar * exts=NULL,bool withpar=false);
+void CacheReplaceFileExt(std::wstring &outname, const wchar *mname, const wchar *ext = NULL);
+void CacheReplaceFileNameAndExt(std::wstring &outname, const wchar *mname, const wchar *replname);

@@ -107,7 +107,7 @@ class CConstructor : public CMain {
 
     CMatrixBuilding *m_Base;
     SNewBorn *m_NewBorn;
-    CWStr m_ConstructionName;
+    std::wstring m_ConstructionName;
     void InsertUnits();
     void ResetConstruction();
 
@@ -218,8 +218,8 @@ public:
     int m_fenerX;
     int m_fplasX;
     int m_CurrentConfig;
-    CWStr m_FocusedLabel;
-    CWStr m_FocusedDescription;
+    std::wstring m_FocusedLabel;
+    std::wstring m_FocusedDescription;
     byte m_Active;
 
     SRobotConfig m_Configs[PRESETS];

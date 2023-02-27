@@ -106,8 +106,8 @@ public:
     void SetupMatricesForShadowTextureCalc(void);
     void MarkSpecialShadow(void) { SETFLAG(m_ObjectState, OBJECT_STATE_SHADOW_SPECIAL); }
     void Init(int ids);
-    // void         InitAsBaseRuins(CMatrixBuilding *b, const CWStr &namev, const CWStr &namet, bool shadow);
-    void InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const CWStr &namev, const CWStr &namet, bool shadow);
+    // void         InitAsBaseRuins(CMatrixBuilding *b, const std::wstring &namev, const std::wstring &namet, bool shadow);
+    void InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const std::wstring &namev, const std::wstring &namet, bool shadow);
 
     virtual void RNeed(dword need);
 

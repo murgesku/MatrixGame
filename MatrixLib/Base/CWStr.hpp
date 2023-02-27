@@ -22,9 +22,3 @@
 using wchar = wchar_t;
 using dword = unsigned long;
 //////////////////////////
-
-namespace Base {
-
-using CWStr = std::wstring;
-
-}  // namespace Base

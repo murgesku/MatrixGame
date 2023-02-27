@@ -394,7 +394,7 @@ void CMatrixMapObject::RNeed(dword need) {
             UnloadObject(m_Graph, g_MatrixHeap);
 
         // prepare texture
-        CWStr path, tex, vo, temp;
+        std::wstring path, tex, vo, temp;
         path = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_PATH, L"*");
 
         if (m_BehFlag != BEHF_PORTRET) {
@@ -450,12 +450,12 @@ void CMatrixMapObject::RNeed(dword need) {
         //            UnloadObject(m_Graph,g_MatrixHeap);
         //        }
 
-        //        CWStr name(g_MatrixMap->IdsGet(m_iName).c_str() + m_BurnNameDisp, g_CacheHeap);
+        //        std::wstring name(g_MatrixMap->IdsGet(m_iName).c_str() + m_BurnNameDisp, g_CacheHeap);
         //        int idx = name.Find(L"?",1,0);
         //        if (idx >=0) name.SetLen(idx);
         //        name.Add(L".vo");
 
-        //        CWStr nameo(g_CacheHeap);
+        //        std::wstring nameo(g_CacheHeap);
 
         //        CacheReplaceFileNameAndExt(nameo, g_MatrixMap->IdsGet(m_iName).c_str(), name);
 
@@ -941,7 +941,7 @@ void CMatrixMapObject::Init(int ids) {
         m_BurnSkinVis = 0;
 
         if (temp.GetStrPar(2, L",") == L"Tex") {
-            // CWStr trans(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE,L"*"), g_CacheHeap);
+            // std::wstring trans(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_TEXTURE,L"*"), g_CacheHeap);
             // int idx = trans.Find(L"?Trans");
             // if (idx >= 0) trans = L"?Trans"; else trans.SetLen(0);
 
@@ -1006,8 +1006,8 @@ void CMatrixMapObject::OnLoad(void) {
     }
 }
 
-// void CMatrixMapObject::InitAsBaseRuins(CMatrixBuilding *b, const CWStr &namev, const CWStr &namet, bool shadow)
-void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const CWStr &namev, const CWStr &namet,
+// void CMatrixMapObject::InitAsBaseRuins(CMatrixBuilding *b, const std::wstring &namev, const std::wstring &namet, bool shadow)
+void CMatrixMapObject::InitAsBaseRuins(const D3DXVECTOR2 &pos, int angle, const std::wstring &namev, const std::wstring &namet,
                                        bool shadow) {
     // m_Core->m_Matrix._41 = b->m_Pos.x;
     // m_Core->m_Matrix._42 = b->m_Pos.y;
@@ -1245,7 +1245,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                     m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(5, L":"), 0);
 
-                    CWStr snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"));
+                    std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"));
                     if (!snd.empty())
                         CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 }
@@ -1303,7 +1303,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(6, L":"), 0);
 
-                CWStr snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"));
+                std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"));
                 if (!snd.empty())
                     CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 2;
@@ -1338,7 +1338,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                 m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(7, L":"), 0);
 
-                CWStr snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"));
+                std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"));
                 if (!snd.empty())
                     CSound::AddSound(snd.c_str(), *(D3DXVECTOR3 *)&m_Core->m_Matrix._41);
                 m_PrevStateRobotsInRadius = 3;
@@ -1435,7 +1435,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
         if (!FLAG(m_ObjectState, OBJECT_STATE_BURNED)) {
             auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-            CWStr bt(temp.GetStrPar(2, L","));
+            std::wstring bt(temp.GetStrPar(2, L","));
             if (m_BurnTimeTotal > 5000) {
                 SETFLAG(m_ObjectState, OBJECT_STATE_BURNED);
 

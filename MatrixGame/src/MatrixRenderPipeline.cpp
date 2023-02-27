@@ -2478,7 +2478,7 @@ CRenderPipeline::CRenderPipeline(void) {
     //    if (D3D_OK !=  D3DXAssembleShader( cube_map_shader , sizeof(cube_map_shader) -1, NULL, NULL, dwFlags , &pVS ,
     //    &pErr ))
     //    {
-    //        ERROR_S(CWStr((const char*)pErr->GetBufferPointer()));
+    //        ERROR_S(std::wstring((const char*)pErr->GetBufferPointer()));
     //    }
     //
     //    DWORD *dd = (DWORD*)pVS->GetBufferPointer();

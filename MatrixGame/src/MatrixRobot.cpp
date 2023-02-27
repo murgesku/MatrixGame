@@ -369,7 +369,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
 
 #ifdef _SUB_BUG
     if (this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
-        g_MatrixMap->m_DI.T(L"ms", CWStr(ms));
+        g_MatrixMap->m_DI.T(L"ms", std::wstring(ms));
     }
 #endif
 
@@ -1425,9 +1425,9 @@ void CMatrixRobotAI::LogicTakt(int ms) {
                 // Common weapons handler
                 // Angle checkride
 
-                // g_MatrixMap->m_DI.T(L"d",CWStr(fire_dist));
-                // g_MatrixMap->m_DI.T(L"d1",CWStr(D3DXVec3Length(&vDir)));
-                // g_MatrixMap->m_DI.T(L"d2",CWStr(D3DXVec3Length(&D3DXVECTOR3(vPosNorm.x, vPosNorm.y, vDir.z))));
+                // g_MatrixMap->m_DI.T(L"d",std::wstring(fire_dist));
+                // g_MatrixMap->m_DI.T(L"d1",std::wstring(D3DXVec3Length(&vDir)));
+                // g_MatrixMap->m_DI.T(L"d2",std::wstring(D3DXVec3Length(&D3DXVECTOR3(vPosNorm.x, vPosNorm.y, vDir.z))));
 
                 // CHelper::Create(1, 0)->Line(vPos, vPos + vDir * (float)fire_dist, 0xffff0000, 0xffff0000);
                 // CHelper::Create(1, 0)->Line(vPos, vPos + D3DXVECTOR3(vPosNorm.x, vPosNorm.y, vDir.z) *
@@ -2316,7 +2316,7 @@ bool CMatrixRobotAI::RotateRobot(const D3DXVECTOR3 &dest, float *rotateangle) {
         cos1 = -1.0f;
     float angle1 = (float)acos(cos1);
 
-    // DM(L"Rotate",CWStr().Format(L"cos1=<f> angle1=<f>",cos1,angle1).Get());
+    // DM(L"Rotate",std::wstring().Format(L"cos1=<f> angle1=<f>",cos1,angle1).Get());
 
     if (rotateangle)
         *rotateangle = angle1;
@@ -2378,7 +2378,7 @@ bool CMatrixRobotAI::RotateRobot(const D3DXVECTOR3 &dest, float *rotateangle) {
     // if(a == 0)
     //    a = 360;
 
-    // g_MatrixMap->m_DI.T(L"angle", CWStr(a));
+    // g_MatrixMap->m_DI.T(L"angle", std::wstring(a));
 
     //    if(angle1*ToGrad <= 1/* && rotDir < 1*/){
     //        return true;
@@ -2532,7 +2532,7 @@ bool CMatrixRobotAI::Seek(const D3DXVECTOR3 &dest, bool &rotate, bool end_path, 
 ////if(rangle<-pi || rangle>pi) {
 ////    ASSERT(1);
 ////}
-////DM(L"Velocity",CWStr().Format(L"mul=<f> Vel=<f>,<f>,<f>",rangle,m_Velocity.x,m_Velocity.y,m_Velocity.z).Get());
+////DM(L"Velocity",std::wstring().Format(L"mul=<f> Vel=<f>,<f>,<f>",rangle,m_Velocity.x,m_Velocity.y,m_Velocity.z).Get());
 //                rangle=1.0f+(fabs(rangle)/pi)*2.0f;
 //                m_Velocity = Vec3Truncate(m_Velocity + accel,
 //                max(0.1f,m_GroupSpeed*min(1.0f,destLength/(GLOBAL_SCALE_MOVE*2.0f*rangle))));
@@ -2600,13 +2600,13 @@ void CMatrixRobotAI::LowLevelMove(int ms, const D3DXVECTOR3 &dest, bool robot_co
 
 #ifdef _SUB_BUG
     if (this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
-        g_MatrixMap->m_DI.T(L"pos_x", CWStr(m_PosX));
-        g_MatrixMap->m_DI.T(L"pos_y", CWStr(m_PosY));
-        g_MatrixMap->m_DI.T(L"geo_x", CWStr(m_Core->m_GeoCenter.x));
-        g_MatrixMap->m_DI.T(L"geo_y", CWStr(m_Core->m_GeoCenter.y));
-        g_MatrixMap->m_DI.T(L"m_Velocity", CWStr(D3DXVec3Length(&m_Velocity)));
-        //        g_MatrixMap->m_DI.T(L"genetic_mutated_velocity", CWStr(D3DXVec3Length(&genetic_mutated_velocity)));
-        g_MatrixMap->m_DI.T(L"result_coll", CWStr(D3DXVec3Length(&result_coll)));
+        g_MatrixMap->m_DI.T(L"pos_x", std::wstring(m_PosX));
+        g_MatrixMap->m_DI.T(L"pos_y", std::wstring(m_PosY));
+        g_MatrixMap->m_DI.T(L"geo_x", std::wstring(m_Core->m_GeoCenter.x));
+        g_MatrixMap->m_DI.T(L"geo_y", std::wstring(m_Core->m_GeoCenter.y));
+        g_MatrixMap->m_DI.T(L"m_Velocity", std::wstring(D3DXVec3Length(&m_Velocity)));
+        //        g_MatrixMap->m_DI.T(L"genetic_mutated_velocity", std::wstring(D3DXVec3Length(&genetic_mutated_velocity)));
+        g_MatrixMap->m_DI.T(L"result_coll", std::wstring(D3DXVec3Length(&result_coll)));
     }
     CHelper::Create(1, 0)->Line(
             D3DXVECTOR3(m_PosX, m_PosY, 50),
@@ -2641,7 +2641,7 @@ void CMatrixRobotAI::LowLevelMove(int ms, const D3DXVECTOR3 &dest, bool robot_co
         }
     }
 
-    // DM(L"RC",CWStr().Format(L"rotate=<i> result_coll=<i> GetColsWeight2=<i> end_path=<i> ROBOT_FLAG_COLLISION=<i>",
+    // DM(L"RC",std::wstring().Format(L"rotate=<i> result_coll=<i> GetColsWeight2=<i> end_path=<i> ROBOT_FLAG_COLLISION=<i>",
     //        int(rotate),
     //        int(result_coll.x != 0 || result_coll.y != 0),
     //        int(GetColsWeight2()),
@@ -2805,7 +2805,7 @@ D3DXVECTOR3 CMatrixRobotAI::SphereRobotToAABBObstacleCollision(D3DXVECTOR3 &corr
 
     //#ifdef _SUB_BUG
     // if(this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()){
-    //    g_MatrixMap->m_DI.T(L"col_cnt", CWStr(col_cnt + m_Cols));
+    //    g_MatrixMap->m_DI.T(L"col_cnt", std::wstring(col_cnt + m_Cols));
     //}
     //#endif
 
@@ -2942,7 +2942,7 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
 #ifdef _SUB_BUG
                 g_MatrixMap->m_DI.T(
                         L"ColsWeight",
-                        CWStr().Format(L"<i>    <i>", data->robot->GetColsWeight(), data->robot->GetColsWeight2())
+                        std::wstring().Format(L"<i>    <i>", data->robot->GetColsWeight(), data->robot->GetColsWeight2())
                                 .Get(),
                         1000);
 #endif
@@ -3052,13 +3052,13 @@ static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject
         //#ifdef _SUB_BUG
         //                CHelper::Create(1,1)->Cone(D3DXVECTOR3(cannon->m_Pos.x, cannon->m_Pos.y, 5.9f),
         //                D3DXVECTOR3(cannon->m_Pos.x, cannon->m_Pos.y, 7),  CANNON_COLLIDE_R,  CANNON_COLLIDE_R,
-        //                0xffffffff, 0xffffffff,  12); g_MatrixMap->m_DI.T(L"CAN_DIST", CWStr(dist));
+        //                0xffffffff, 0xffffffff,  12); g_MatrixMap->m_DI.T(L"CAN_DIST", std::wstring(dist));
         //#endif
 
         if (dist < (COLLIDE_BOT_R + CANNON_COLLIDE_R) /**(COLLIDE_BOT_R + CANNON_COLLIDE_R)*/) {
             float correction = float(COLLIDE_BOT_R + CANNON_COLLIDE_R - /*sqrt*/ (dist));
             //#ifdef _SUB_BUG
-            //                    g_MatrixMap->m_DI.T(L"correction", CWStr(correction));
+            //                    g_MatrixMap->m_DI.T(L"correction", std::wstring(correction));
             //#endif
             D3DXVec2Normalize(&vDist, &vDist);
             vDist *= correction;
