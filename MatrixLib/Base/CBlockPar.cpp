@@ -634,12 +634,12 @@ void CBlockPar::ArrayDel(CBlockParUnit *el) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CBlockParUnit *CBlockPar::ParAdd(const wchar *name, int namelen, const wchar *zn, int znlen) {
+CBlockParUnit *CBlockPar::ParAdd(const std::wstring& name, const std::wstring& zn) {
     DTRACE();
     CBlockParUnit *el = UnitAdd();
     el->ChangeType(1);
-    el->m_Name = std::wstring{name, static_cast<size_t>(namelen)};
-    *(el->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+    el->m_Name = name;
+    *(el->m_Par) = zn;
     if (m_Sort)
         ArrayAdd(el);
     m_CntPar++;
@@ -1592,7 +1592,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
                 SaveStr(unit->m_Block->m_FromFile->c_str());
                 SaveStrConst(" {}");
 
-                unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile->c_str(), ansi);
+                unit->m_Block->SaveInTextFile(*unit->m_Block->m_FromFile, ansi);
             }
             else {
                 if (!unit->m_Block->m_Sort) {
