@@ -338,7 +338,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
         }
     }
     else {
-        mapname = g_MatrixData->BlockGet(L"Config")->Par(L"Map");
+        mapname = g_MatrixData->BlockGet(L"Config")->ParGet(L"Map");
     }
 
     stor.Load(mapname.c_str());

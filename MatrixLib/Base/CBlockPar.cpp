@@ -610,9 +610,10 @@ void CBlockPar::ArrayAdd(CBlockParUnit *el) {
 
 void CBlockPar::ArrayDel(CBlockParUnit *el) {
     DTRACE();
-    int no = 0;
-    while (no < m_ArrayCnt) {
-        if (m_Array[no] == el) {
+    for (int no = 0; no < m_ArrayCnt; no++)
+    {
+        if (m_Array[no] == el)
+        {
             CBlockParUnit *el2 = m_Array[no - el->m_FastFirst];
             for (int i = no + 1; i < no - el->m_FastFirst + el2->m_FastCnt; m_Array[i]->m_FastFirst--)
                 ;
@@ -627,7 +628,6 @@ void CBlockPar::ArrayDel(CBlockParUnit *el) {
             m_Array = (CBlockParUnit **)HAllocEx(m_Array, m_ArrayCnt * sizeof(CBlockParUnit *), m_Heap);
             return;
         }
-        no++;
     }
 }
 
@@ -823,11 +823,12 @@ ParamParser CBlockPar::ParGetName(int no) const {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CBlockPar *CBlockPar::BlockAdd(const wchar *name, int namelen) {
+CBlockPar *CBlockPar::BlockAdd(const std::wstring& name)
+{
     DTRACE();
     CBlockParUnit *el = UnitAdd();
     el->ChangeType(2);
-    el->m_Name = std::wstring{name, static_cast<size_t>(namelen)};
+    el->m_Name = name;
     if (m_Sort)
         ArrayAdd(el);
     m_CntBlock++;
@@ -835,10 +836,11 @@ CBlockPar *CBlockPar::BlockAdd(const wchar *name, int namelen) {
     return el->m_Block;
 }
 
-CBlockPar *CBlockPar::BlockGetNE(const wchar *name, int namelen) {
+CBlockPar *CBlockPar::BlockGetNE(const std::wstring& name)
+{
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(name, namelen);
+        int i = ArrayFind(name.c_str(), name.length());
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 2)
@@ -849,7 +851,7 @@ CBlockPar *CBlockPar::BlockGetNE(const wchar *name, int namelen) {
     else {
         CBlockParUnit *el = m_First;
         while (el != NULL) {
-            if ((el->m_Type == 2) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)}))
+            if ((el->m_Type == 2) && (el->m_Name == name))
                 return el->m_Block;
             el = el->m_Next;
         }
@@ -857,23 +859,46 @@ CBlockPar *CBlockPar::BlockGetNE(const wchar *name, int namelen) {
     return NULL;
 }
 
-bool CBlockPar::BlockDeleteNE(const wchar *name, int namelen) {
+CBlockPar* CBlockPar::BlockGet(const std::wstring &name)
+{
+    CBlockPar *bp = BlockGetNE(name);
+    if (!bp)
+        ERROR_S2(L"Block not found: ", name.c_str());
+    return bp;
+}
+
+CBlockPar* CBlockPar::BlockGetAdd(const std::wstring &name)
+{
+    CBlockPar *bp = BlockGetNE(name);
+    if (bp)
+        return bp;
+    else
+        return BlockAdd(name);
+}
+
+void CBlockPar::BlockDelete(const std::wstring &name)
+{
     DTRACE();
     CBlockParUnit *el = m_First;
-    while (el != NULL) {
-        if ((el->m_Type == 2) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)}))
+    while (el != NULL)
+    {
+        if ((el->m_Type == 2) && (el->m_Name == name))
         {
             if (m_Sort)
+            {
                 ArrayDel(el);
+            }
             UnitDel(el);
-            return true;
+            return;
         }
         el = el->m_Next;
     }
-    return false;
+
+    ERROR_E;
 }
 
-void CBlockPar::BlockDelete(int no) {
+void CBlockPar::BlockDelete(int no)
+{
     DTRACE();
     CBlockParUnit *el = m_First;
     while (el != NULL) {
@@ -891,12 +916,13 @@ void CBlockPar::BlockDelete(int no) {
     ERROR_E;
 }
 
-int CBlockPar::BlockCount(const wchar *name, int namelen) const {
+int CBlockPar::BlockCount(const std::wstring& name) const
+{
     DTRACE();
     int rv = 0;
 
     if (m_Sort) {
-        int i = ArrayFind(name, namelen);
+        int i = ArrayFind(name.c_str(), name.length());
         if (i >= 0) {
             int li = i + m_Array[i]->m_FastCnt;
             while (i < li) {
@@ -909,7 +935,7 @@ int CBlockPar::BlockCount(const wchar *name, int namelen) const {
     else {
         CBlockParUnit *el = m_First;
         while (el != NULL) {
-            if ((el->m_Type == 2) && (el->m_Name == std::wstring(name, namelen)))
+            if ((el->m_Type == 2) && (el->m_Name == name))
                 rv++;
             el = el->m_Next;
         }
@@ -978,20 +1004,22 @@ ParamParser CBlockPar::BlockGetName(int no) const {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-const std::wstring &CBlockPar::ParPathGet(const wchar *path, int pathlen) {
+const std::wstring &CBlockPar::ParPathGet(const std::wstring &path)
+{
     DTRACE();
-    CBlockParUnit *el = UnitGet(path, pathlen);
+    CBlockParUnit *el = UnitGet(path.c_str(), path.length());
     if (el->m_Type != 1)
         ERROR_E;
     return *el->m_Par;
 }
 
-void CBlockPar::ParPathAdd(const wchar *path, int pathlen, const wchar *zn, int znlen) {
+void CBlockPar::ParPathAdd(const std::wstring &path, const std::wstring &zn)
+{
     DTRACE();
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
+    ParamParser name{path};
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -1005,36 +1033,39 @@ void CBlockPar::ParPathAdd(const wchar *path, int pathlen, const wchar *zn, int 
     el = cd->UnitAdd();
     el->ChangeType(1);
     el->m_Name = name;
-    *(el->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+    *(el->m_Par) = zn;
     if (m_Sort)
         ArrayAdd(el);
     m_CntPar++;
 }
 
-void CBlockPar::ParPathSet(const wchar *path, int pathlen, const wchar *zn, int znlen) {
+void CBlockPar::ParPathSet(const std::wstring &path, const std::wstring &zn)
+{
     DTRACE();
-    CBlockParUnit *te = UnitGet(path, pathlen);
+    CBlockParUnit *te = UnitGet(path.c_str(), path.length());
     if (te->m_Type != 1)
         ERROR_E;
-    *(te->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+    *(te->m_Par) = zn;
 }
 
-void CBlockPar::ParPathSetAdd(const wchar *path, int pathlen, const wchar *zn, int znlen) {
+void CBlockPar::ParPathSetAdd(const std::wstring &path, const std::wstring &zn)
+{
     DTRACE();
     try {
-        CBlockParUnit *te = UnitGet(path, pathlen);
+        CBlockParUnit *te = UnitGet(path.c_str(), path.length());
         if (te->m_Type != 1)
             ERROR_E;
-        *(te->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+        *(te->m_Par) = zn;
     }
     catch (const CException& ex) {
-        ParPathAdd(path, pathlen, zn, znlen);
+        ParPathAdd(path, zn);
     }
 }
 
-void CBlockPar::ParPathDelete(const wchar *path, int pathlen) {
+void CBlockPar::ParPathDelete(const std::wstring &path)
+{
     DTRACE();
-    CBlockParUnit *te = UnitGet(path, pathlen);
+    CBlockParUnit *te = UnitGet(path.c_str(), path.length());
     if (te->m_Type != 1)
         ERROR_E;
     if (te->m_Parent->m_Sort)
@@ -1042,41 +1073,25 @@ void CBlockPar::ParPathDelete(const wchar *path, int pathlen) {
     te->m_Parent->UnitDel(te);
 }
 
-int CBlockPar::ParPathCount(const wchar *path, int pathlen) {
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+CBlockPar *CBlockPar::BlockPathGet(const std::wstring &path)
+{
     DTRACE();
-    CBlockPar *cd;
-
-    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
-    int countep = name.GetCountPar(L"./\\");
-
-    if (countep > 1) {
-        cd = BlockPathGetAdd(name.GetStrPar(0, countep - 2, L"./\\"));
-        name = name.GetStrPar(countep - 1, L"./\\");
-    }
-    else {
-        //        name:=name;
-        cd = this;
-    }
-    return cd->ParCount(name);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-CBlockPar *CBlockPar::BlockPathGet(const wchar *path, int pathlen) {
-    DTRACE();
-    CBlockParUnit *el = UnitGet(path, pathlen);
+    CBlockParUnit *el = UnitGet(path.c_str(), path.length());
     if (el->m_Type != 2)
         ERROR_E;
     return el->m_Block;
 }
 
-CBlockPar *CBlockPar::BlockPathAdd(const wchar *path, int pathlen) {
+CBlockPar *CBlockPar::BlockPathAdd(const std::wstring &path)
+{
     DTRACE();
     CBlockPar *cd;
     CBlockParUnit *el;
 
-    ParamParser name(std::wstring{path, static_cast<size_t>(pathlen)});
+    ParamParser name(path);
     int countep = name.GetCountPar(L"./\\");
 
     if (countep > 1) {
@@ -1096,13 +1111,14 @@ CBlockPar *CBlockPar::BlockPathAdd(const wchar *path, int pathlen) {
     return el->m_Block;
 }
 
-CBlockPar *CBlockPar::BlockPathGetAdd(const wchar *path, int pathlen) {
+CBlockPar *CBlockPar::BlockPathGetAdd(const std::wstring &path)
+{
     DTRACE();
     try {
-        return BlockPathGet(path, pathlen);
+        return BlockPathGet(path);
     }
     catch (const CException& ex) {
-        return BlockPathAdd(path, pathlen);
+        return BlockPathAdd(path);
     }
 }
 
@@ -1418,7 +1434,7 @@ public:
                         if (!CalcNextLine())
                             break;
 
-                        m_Line = unit->m_Block->LoadFromText(m_Text + m_Line, m_TextLen - m_Line) + m_Line;
+                        m_Line = unit->m_Block->LoadFromText(std::wstring{m_Text + m_Line, static_cast<size_t>(m_TextLen - m_Line)}) + m_Line;
                     }
                     else {
                         m_Line = m_Block + 1;
@@ -1428,7 +1444,7 @@ public:
                         if (m_Line < m_TextLen && (m_Text[m_Line] == 0x0a))
                             m_Line++;
 
-                        m_Line = unit->m_Block->LoadFromText(m_Text + m_Line, m_TextLen - m_Line) + m_Line;
+                        m_Line = unit->m_Block->LoadFromText(std::wstring{m_Text + m_Line, static_cast<size_t>(m_TextLen - m_Line)}) + m_Line;
                     }
                     CalcSkipSpace();
                     CalcEndLine();
@@ -1437,7 +1453,7 @@ public:
                         continue;
                 }
                 if (m_FileBegin >= 0) {
-                    unit->m_Block->LoadFromTextFile(m_Text + m_FileBegin, m_FileEnd - m_FileBegin);
+                    unit->m_Block->LoadFromTextFile(std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)});
                     unit->m_Block->m_FromFile = HNew(unit->m_Block->m_Heap)
                             std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)};
                 }
@@ -1482,18 +1498,17 @@ public:
     }
 };
 
-int CBlockPar::LoadFromText(const wchar *text, int textlen) {
+int CBlockPar::LoadFromText(const std::wstring &text) {
     DTRACE();
     Clear();
 
-    BPCompiler co(this, text, textlen);
-    textlen = co.Run();
-    return textlen;
+    BPCompiler co(this, text.c_str(), text.length());
+    return co.Run();
 }
 
-void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
+void CBlockPar::LoadFromTextFile(const std::wstring &filename) {
     DTRACE();
-    CFile fi(std::wstring{filename, static_cast<size_t>(filenamelen)});
+    CFile fi(filename);
     fi.OpenRead();
 
     word zn;
@@ -1513,13 +1528,13 @@ void CBlockPar::LoadFromTextFile(const wchar *filename, int filenamelen) {
             fi.Read(&astr[0], fs);
             std::wstring wstr = utils::to_wstring(astr.c_str());
 
-            LoadFromText(wstr.c_str(), wstr.length());
+            LoadFromText(wstr);
         }
         else {
             std::wstring wstr;
             wstr.resize(fs / 2);
             fi.Read(&wstr[0], (fs / 2) * 2); // TODO: wtf?
-            LoadFromText(wstr.c_str(), wstr.length());
+            LoadFromText(wstr);
         }
     }
 
@@ -1634,7 +1649,8 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
     }
 }
 
-void CBlockPar::SaveInTextFile(const wchar *filename, int filenamelen, bool ansi) {
+void CBlockPar::SaveInTextFile(const std::wstring &filename, bool ansi)
+{
     DTRACE();
 
     CBuf buf(m_Heap);
@@ -1642,7 +1658,7 @@ void CBlockPar::SaveInTextFile(const wchar *filename, int filenamelen, bool ansi
         buf.Word(0x0feff);
     SaveInText(buf, ansi);
 
-    CFile fi(std::wstring{filename, static_cast<size_t>(filenamelen)}, m_Heap);
+    CFile fi(filename, m_Heap);
     fi.Create();
     fi.Write(buf.Get(), buf.Len());
     fi.Close();

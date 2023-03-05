@@ -2289,7 +2289,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         gu = Add();
         gu->m_Name = bp.BlockGetName(i);
 
-        tstr = bp2.ParNE(L"Model");
+        tstr = bp2.ParGetNE(L"Model");
         if (!tstr.empty()) {
             auto idx = tstr.find(L"?");
             if (idx != std::wstring::npos)
@@ -2298,26 +2298,26 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         }
 
         if (bp2.ParCount(L"Id") > 0)
-            gu->m_Id = bp2.Par(L"Id").GetInt();
+            gu->m_Id = bp2.ParGet(L"Id").GetInt();
 
         if (bp2.ParCount(L"Texture")) {
-            CacheReplaceFileNameAndExt(texture, filename, bp2.Par(L"Texture").c_str());
+            CacheReplaceFileNameAndExt(texture, filename, bp2.ParGet(L"Texture").c_str());
         }
         if (bp2.ParCount(L"TextureGloss")) {
-            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.Par(L"TextureGloss").c_str());
+            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.ParGet(L"TextureGloss").c_str());
         }
         if (bp2.ParCount(L"TextureBack")) {
-            CacheReplaceFileNameAndExt(texture_back, filename, bp2.Par(L"TextureBack").c_str());
+            CacheReplaceFileNameAndExt(texture_back, filename, bp2.ParGet(L"TextureBack").c_str());
         }
         if (bp2.ParCount(L"TextureMask")) {
-            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.Par(L"TextureMask").c_str());
+            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.ParGet(L"TextureMask").c_str());
         }
         if (bp2.ParCount(L"TextureBackScroll")) {
-            bs = bp2.Par(L"TextureBackScroll");
+            bs = bp2.ParGet(L"TextureBackScroll");
         }
 
         if (bp2.ParCount(L"Link"))
-            gu->m_LinkMatrixName = bp2.Par(L"Link");
+            gu->m_LinkMatrixName = bp2.ParGet(L"Link");
 
         if (texture_mask.empty())
             texture_back.clear();

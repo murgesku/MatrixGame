@@ -124,9 +124,9 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     g_Wnd = NULL;
     g_WndExtern = false;
 
-    int cntpar = bpcfg.Par(L"FullScreen").GetCountPar(L",");
+    int cntpar = bpcfg.ParGet(L"FullScreen").GetCountPar(L",");
 
-    ParamParser str(bpcfg.Par(L"Resolution"));
+    ParamParser str(bpcfg.ParGet(L"Resolution"));
     if (str.GetCountPar(L",") < 2)
         ERROR_E;
     g_ScreenX = str.GetIntPar(0, L",");
@@ -139,13 +139,13 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     if (cntpar < 1)
         SETFLAG(g_Flags, GFLAG_FULLSCREEN);
     else
-        INITFLAG(g_Flags, GFLAG_FULLSCREEN, bpcfg.Par(L"FullScreen").GetIntPar(0, L",") == 1);
+        INITFLAG(g_Flags, GFLAG_FULLSCREEN, bpcfg.ParGet(L"FullScreen").GetIntPar(0, L",") == 1);
 
     int bpp;
     if (cntpar < 2)
         bpp = 32;
     else {
-        bpp = bpcfg.Par(L"FullScreen").GetIntPar(1, L",");
+        bpp = bpcfg.ParGet(L"FullScreen").GetIntPar(1, L",");
         if (bpp != 16 && bpp != 32)
             bpp = 32;
     }
@@ -155,7 +155,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     if (cntpar < 3)
         refresh = 0;
     else
-        refresh = bpcfg.Par(L"FullScreen").GetIntPar(2, L",");
+        refresh = bpcfg.ParGet(L"FullScreen").GetIntPar(2, L",");
 
     g_WndClassName = HNew(g_CacheHeap) std::wstring(sysname);
     *g_WndClassName += L"_wc";

@@ -132,9 +132,16 @@ private:
 
 public:
     //////////////////////////////////////////////////////////////
+private:
+    bool ParSetNE(const wchar *name, int namelen, const wchar *zn, int znlen);
+    bool ParDeleteNE(const wchar *name, int namelen);
+    const std::wstring* ParGetNE_(const wchar *name, int namelen, int index) const;
+    int ParCount(const wchar *name, int namelen) const;
+    void ParSet(int no, const wchar *zn, int znlen);
+
+public:
     CBlockParUnit *ParAdd(const std::wstring& name, const std::wstring& zn);
 
-    bool ParSetNE(const wchar *name, int namelen, const wchar *zn, int znlen);
     void ParSet(const std::wstring &name, const std::wstring &zn) {
         if (!ParSetNE(name.c_str(), name.length(), zn.c_str(), zn.length()))
             ERROR_E;
@@ -150,11 +157,9 @@ public:
         ParSetAdd(name, utils::format(L"%.8f", value));
     }
 
-    bool ParDeleteNE(const wchar *name, int namelen);
 
     void ParDelete(int no);
 
-    const std::wstring* ParGetNE_(const wchar *name, int namelen, int index) const;
 
     ParamParser ParGet(const std::wstring& name, int index = 0) const
     {
@@ -172,102 +177,44 @@ public:
             return std::wstring();
     }
 
-    void Par(const std::wstring &name, const std::wstring &zn) { ParSetAdd(name, zn); }
-
-    ParamParser Par(const std::wstring& name) { return ParGet(name); }
-    ParamParser ParNE(const std::wstring& name) { return ParGetNE(name); }
-
     int ParCount(void) const { return m_CntPar; }
-    int ParCount(const wchar *name, int namelen) const;
     int ParCount(const std::wstring &name) const { return ParCount(name.c_str(), name.length()); }
-    int ParCount(const wchar *name) const { return ParCount(name, std::wcslen(name)); }
 
     ParamParser ParGet(int no) const;
-    void ParSet(int no, const wchar *zn, int znlen);
-    void ParSet(int no, const wchar *zn) { ParSet(no, zn, std::wcslen(zn)); }
     void ParSet(int no, const std::wstring &zn) { ParSet(no, zn.c_str(), zn.length()); }
     ParamParser ParGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
-    CBlockPar *BlockAdd(const wchar *name, int namelen);
-    CBlockPar *BlockAdd(const std::wstring &name) { return BlockAdd(name.c_str(), name.length()); }
-    CBlockPar *BlockAdd(const wchar *name) { return BlockAdd(name, std::wcslen(name)); }
+public:
+    CBlockPar *BlockAdd(const std::wstring& name);
+    CBlockPar *BlockGetNE(const std::wstring &name);
+    CBlockPar *BlockGet(const std::wstring &name);
 
-    CBlockPar *BlockGetNE(const wchar *name, int namelen);
-    CBlockPar *BlockGetNE(const std::wstring &name) { return BlockGetNE(name.c_str(), name.length()); }
-    CBlockPar *BlockGetNE(const wchar *name) { return BlockGetNE(name, std::wcslen(name)); }
+    CBlockPar *BlockGetAdd(const std::wstring &name);
 
-    CBlockPar *BlockGet(const std::wstring &name) {
-        CBlockPar *bp = BlockGetNE(name.c_str(), name.length());
-        if (!bp)
-            ERROR_S2(L"Block not found: ", name.c_str());
-        return bp;
-    }
-    CBlockPar *BlockGet(const wchar *name) {
-        CBlockPar *bp = BlockGetNE(name, std::wcslen(name));
-        if (!bp)
-            ERROR_S2(L"Block not found: ", name);
-        return bp;
-    }
-
-    CBlockPar *BlockGetAdd(const std::wstring &name) {
-        CBlockPar *bp = BlockGetNE(name.c_str(), name.length());
-        if (bp)
-            return bp;
-        else
-            return BlockAdd(name.c_str(), name.length());
-    }
-
-    bool BlockDeleteNE(const wchar *name, int namelen);
-    void BlockDelete(const std::wstring &name) {
-        if (!BlockDeleteNE(name.c_str(), name.length()))
-            ERROR_E;
-    }
+    void BlockDelete(const std::wstring &name);
     void BlockDelete(int no);
 
     int BlockCount(void) const { return m_CntBlock; }
-    int BlockCount(const wchar *name, int namelen) const;
-    int BlockCount(const std::wstring &name) const { return BlockCount(name.c_str(), name.length()); }
+    int BlockCount(const std::wstring &name) const;
 
     CBlockPar *BlockGet(int no);
     const CBlockPar *BlockGet(int no) const;
     ParamParser BlockGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
-    const std::wstring &ParPathGet(const wchar *path, int pathlen);
-    const std::wstring &ParPathGet(const std::wstring &path) { return ParPathGet(path.c_str(), path.length()); }
-
-    void ParPathAdd(const wchar *path, int pathlen, const wchar *zn, int znlen);
-    void ParPathAdd(const std::wstring &path, const std::wstring &zn) {
-        ParPathAdd(path.c_str(), path.length(), zn.c_str(), zn.length());
-    }
-
-    void ParPathSet(const wchar *path, int pathlen, const wchar *zn, int znlen);
-    void ParPathSet(const std::wstring &path, const std::wstring &zn) {
-        ParPathSet(path.c_str(), path.length(), zn.c_str(), zn.length());
-    }
-
-    void ParPathSetAdd(const wchar *path, int pathlen, const wchar *zn, int znlen);
-    void ParPathSetAdd(const std::wstring &path, const std::wstring &zn) {
-        ParPathSetAdd(path.c_str(), path.length(), zn.c_str(), zn.length());
-    }
-
-    void ParPathDelete(const wchar *path, int pathlen);
-    void ParPathDelete(const std::wstring &path) { ParPathDelete(path.c_str(), path.length()); }
-
-    int ParPathCount(const wchar *path, int pathlen);
+public:
+    const std::wstring &ParPathGet(const std::wstring &path);
+    void ParPathAdd(const std::wstring &path, const std::wstring &zn);
+    void ParPathSet(const std::wstring &path, const std::wstring &zn);
+    void ParPathSetAdd(const std::wstring &path, const std::wstring &zn);
+    void ParPathDelete(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
-    CBlockPar *BlockPathGet(const wchar *path, int pathlen);
-    CBlockPar *BlockPathGet(const std::wstring &path) { return BlockPathGet(path.c_str(), path.length()); }
-
-    CBlockPar *BlockPathAdd(const wchar *path, int pathlen);
-    CBlockPar *BlockPathAdd(const std::wstring &path) { return BlockPathAdd(path.c_str(), path.length()); }
-
-    CBlockPar *BlockPathGetAdd(const wchar *path, int pathlen);
-    CBlockPar *BlockPathGetAdd(const std::wstring &path) { return BlockPathGetAdd(path.c_str(), path.length()); }
-
-    CBlockPar *BlockPath(const std::wstring &path) { return BlockPathGet(path.c_str(), path.length()); }
+public:
+    CBlockPar *BlockPathGet(const std::wstring &path);
+    CBlockPar *BlockPathAdd(const std::wstring &path);
+    CBlockPar *BlockPathGetAdd(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
     int AllCount(void) { return m_Cnt; }
@@ -279,18 +226,12 @@ public:
     //////////////////////////////////////////////////////////////
 
 private:
-    int LoadFromText(const wchar *text, int textlen);
-    void LoadFromTextFile(const wchar *filename, int filenamelen);
-    void SaveInTextFile(const wchar *filename, int filenamelen, bool ansi = false);
-
     void SaveInText(CBuf &buf, bool ansi = false, int level = 0);
 
 public:
-    int LoadFromText(const std::wstring &text) { return LoadFromText(text.c_str(), text.length()); }
-    void LoadFromTextFile(const std::wstring &filename) { LoadFromTextFile(filename.c_str(), filename.length()); }
-    void SaveInTextFile(const std::wstring &filename, bool ansi = false) {
-        SaveInTextFile(filename.c_str(), filename.length(), ansi);
-    }
+    int LoadFromText(const std::wstring &text);
+    void LoadFromTextFile(const std::wstring &filename);
+    void SaveInTextFile(const std::wstring &filename, bool ansi = false);
 };
 
 }  // namespace Base
