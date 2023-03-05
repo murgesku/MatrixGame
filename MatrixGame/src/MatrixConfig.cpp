@@ -352,62 +352,62 @@ void CMatrixConfig::ReadParams(void) {
 
     // top size
     // if (g_MatrixCfg->ParCount(CFG_TOPSIZE) != 0)
-    //    m_TexTopMinSize = g_MatrixCfg->Par(CFG_TOPSIZE).GetInt();
+    //    m_TexTopMinSize = g_MatrixCfg->ParGet(CFG_TOPSIZE).GetInt();
 
     // if (g_MatrixCfg->ParCount(CFG_TOPSCALE) != 0)
-    //    m_TexTopDownScalefactor = g_MatrixCfg->Par(CFG_TOPSCALE).GetInt();
+    //    m_TexTopDownScalefactor = g_MatrixCfg->ParGet(CFG_TOPSCALE).GetInt();
 
     // if (m_TexTopMinSize < 32) m_TexTopMinSize = 32;
 
     // bottom size
     // if (g_MatrixCfg->ParCount(CFG_BOTSIZE) != 0)
-    //    m_TexBotMinSize = g_MatrixCfg->Par(CFG_BOTSIZE).GetInt();
+    //    m_TexBotMinSize = g_MatrixCfg->ParGet(CFG_BOTSIZE).GetInt();
 
     // if (g_MatrixCfg->ParCount(CFG_BOTSCALE) != 0)
-    //    m_TexBotDownScalefactor = g_MatrixCfg->Par(CFG_BOTSCALE).GetInt();
+    //    m_TexBotDownScalefactor = g_MatrixCfg->ParGet(CFG_BOTSCALE).GetInt();
 
     // if (m_TexBotMinSize < 32) m_TexBotMinSize = 32;
     // if (m_TexBotMinSize < 16) m_TexBotMinSize = 16;
 
     // if (g_MatrixCfg->ParCount(CFG_LANDTEXTURES16) != 0)
-    //    m_LandTextures16 = g_MatrixCfg->Par(CFG_LANDTEXTURES16).GetInt() == 1;
+    //    m_LandTextures16 = g_MatrixCfg->ParGet(CFG_LANDTEXTURES16).GetInt() == 1;
 
     if (cfg_par->ParCount(CFG_SOFTWARECURSOR) != 0)
-        m_SoftwareCursor = cfg_par->Par(CFG_SOFTWARECURSOR).GetInt() == 1;
+        m_SoftwareCursor = cfg_par->ParGet(CFG_SOFTWARECURSOR).GetInt() == 1;
 
     if (cfg_par->ParCount(CFG_GLOSSLAND) != 0)
-        m_LandTexturesGloss = cfg_par->Par(CFG_GLOSSLAND).GetInt() == 1;
+        m_LandTexturesGloss = cfg_par->ParGet(CFG_GLOSSLAND).GetInt() == 1;
 
     if (cfg_par->ParCount(CFG_GLOSSOBJECT) != 0) {
-        m_ObjTexturesGloss = cfg_par->Par(CFG_GLOSSOBJECT).GetInt() == 1;
+        m_ObjTexturesGloss = cfg_par->ParGet(CFG_GLOSSOBJECT).GetInt() == 1;
     }
     // if (g_MatrixCfg->ParCount(CFG_OBJECTTEX16) != 0)
     //{
-    //    m_ObjTextures16 = g_MatrixCfg->Par(CFG_OBJECTTEX16).GetInt() == 1;
+    //    m_ObjTextures16 = g_MatrixCfg->ParGet(CFG_OBJECTTEX16).GetInt() == 1;
     //}
 
     if (cfg_par->ParCount(CFG_IZVRATMS) != 0) {
-        m_IzvratMS = cfg_par->Par(CFG_IZVRATMS).GetInt() == 1;
+        m_IzvratMS = cfg_par->ParGet(CFG_IZVRATMS).GetInt() == 1;
     }
 
     if (cfg_par->ParCount(CFG_SKYBOX) != 0) {
-        m_SkyBox = (byte)(cfg_par->Par(CFG_SKYBOX).GetInt() & 0xFF);
+        m_SkyBox = (byte)(cfg_par->ParGet(CFG_SKYBOX).GetInt() & 0xFF);
     }
 
     if (cfg_par->ParCount(CFG_MAXFPS) != 0) {
-        g_MaxFPS = cfg_par->Par(CFG_MAXFPS).GetInt();
+        g_MaxFPS = cfg_par->ParGet(CFG_MAXFPS).GetInt();
     }
 
     if (cfg_par->ParCount(CFG_OBJECTTOMINIMAP) != 0) {
-        m_DrawAllObjectsToMinimap = (byte)(cfg_par->Par(CFG_OBJECTTOMINIMAP).GetInt() & 0xFF);
+        m_DrawAllObjectsToMinimap = (byte)(cfg_par->ParGet(CFG_OBJECTTOMINIMAP).GetInt() & 0xFF);
     }
 
     if (cfg_par->ParCount(CFG_DEBUGINFO) != 0) {
-        m_DIFlags = cfg_par->Par(CFG_DEBUGINFO).GetHexUnsigned();
+        m_DIFlags = cfg_par->ParGet(CFG_DEBUGINFO).GetHexUnsigned();
     }
 
     if (cfg_par->ParCount(CFG_VERTEXLIGHT) != 0) {
-        m_VertexLight = cfg_par->Par(CFG_VERTEXLIGHT).GetInt() == 1;
+        m_VertexLight = cfg_par->ParGet(CFG_VERTEXLIGHT).GetInt() == 1;
     }
 
     if (cfg_par->BlockCount(CFG_GAMMARAMP) != 0) {
@@ -442,7 +442,7 @@ void CMatrixConfig::ReadParams(void) {
     }
 
     if (cfg_par->ParCount(CFG_ROBOTSHADOW) != 0) {
-        int sh = cfg_par->Par(CFG_ROBOTSHADOW).GetInt();
+        int sh = cfg_par->ParGet(CFG_ROBOTSHADOW).GetInt();
 
         if (sh == 0)
             m_RobotShadow = SHADOW_OFF;
@@ -929,34 +929,34 @@ void CMatrixConfig::ReadParams(void) {
     for (int i = 0; i < LABELS_LAST; i++) {
         new(&m_Labels[i]) std::wstring();
     }
-    m_Labels[W1_CHAR] = bp_tmp->Par(PAR_SOURCE_W1_CHAR);
-    m_Labels[W2_CHAR] = bp_tmp->Par(PAR_SOURCE_W2_CHAR);
-    m_Labels[W3_CHAR] = bp_tmp->Par(PAR_SOURCE_W3_CHAR);
-    m_Labels[W4_CHAR] = bp_tmp->Par(PAR_SOURCE_W4_CHAR);
-    m_Labels[W5_CHAR] = bp_tmp->Par(PAR_SOURCE_W5_CHAR);
-    m_Labels[W6_CHAR] = bp_tmp->Par(PAR_SOURCE_W6_CHAR);
-    m_Labels[W7_CHAR] = bp_tmp->Par(PAR_SOURCE_W7_CHAR);
-    m_Labels[W8_CHAR] = bp_tmp->Par(PAR_SOURCE_W8_CHAR);
-    m_Labels[W9_CHAR] = bp_tmp->Par(PAR_SOURCE_W9_CHAR);
-    m_Labels[W10_CHAR] = bp_tmp->Par(PAR_SOURCE_W10_CHAR);
+    m_Labels[W1_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W1_CHAR);
+    m_Labels[W2_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W2_CHAR);
+    m_Labels[W3_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W3_CHAR);
+    m_Labels[W4_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W4_CHAR);
+    m_Labels[W5_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W5_CHAR);
+    m_Labels[W6_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W6_CHAR);
+    m_Labels[W7_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W7_CHAR);
+    m_Labels[W8_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W8_CHAR);
+    m_Labels[W9_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W9_CHAR);
+    m_Labels[W10_CHAR] = bp_tmp->ParGet(PAR_SOURCE_W10_CHAR);
 
-    m_Labels[HE1_CHAR] = bp_tmp->Par(PAR_SOURCE_HE1_CHAR);
-    m_Labels[HE2_CHAR] = bp_tmp->Par(PAR_SOURCE_HE2_CHAR);
-    m_Labels[HE3_CHAR] = bp_tmp->Par(PAR_SOURCE_HE3_CHAR);
-    m_Labels[HE4_CHAR] = bp_tmp->Par(PAR_SOURCE_HE4_CHAR);
+    m_Labels[HE1_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HE1_CHAR);
+    m_Labels[HE2_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HE2_CHAR);
+    m_Labels[HE3_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HE3_CHAR);
+    m_Labels[HE4_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HE4_CHAR);
 
-    m_Labels[HU1_CHAR] = bp_tmp->Par(PAR_SOURCE_HU1_CHAR);
-    m_Labels[HU2_CHAR] = bp_tmp->Par(PAR_SOURCE_HU2_CHAR);
-    m_Labels[HU3_CHAR] = bp_tmp->Par(PAR_SOURCE_HU3_CHAR);
-    m_Labels[HU4_CHAR] = bp_tmp->Par(PAR_SOURCE_HU4_CHAR);
-    m_Labels[HU5_CHAR] = bp_tmp->Par(PAR_SOURCE_HU5_CHAR);
-    m_Labels[HU6_CHAR] = bp_tmp->Par(PAR_SOURCE_HU6_CHAR);
+    m_Labels[HU1_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU1_CHAR);
+    m_Labels[HU2_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU2_CHAR);
+    m_Labels[HU3_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU3_CHAR);
+    m_Labels[HU4_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU4_CHAR);
+    m_Labels[HU5_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU5_CHAR);
+    m_Labels[HU6_CHAR] = bp_tmp->ParGet(PAR_SOURCE_HU6_CHAR);
 
-    m_Labels[CH1_CHAR] = bp_tmp->Par(PAR_SOURCE_CH1_CHAR);
-    m_Labels[CH2_CHAR] = bp_tmp->Par(PAR_SOURCE_CH2_CHAR);
-    m_Labels[CH3_CHAR] = bp_tmp->Par(PAR_SOURCE_CH3_CHAR);
-    m_Labels[CH4_CHAR] = bp_tmp->Par(PAR_SOURCE_CH4_CHAR);
-    m_Labels[CH5_CHAR] = bp_tmp->Par(PAR_SOURCE_CH5_CHAR);
+    m_Labels[CH1_CHAR] = bp_tmp->ParGet(PAR_SOURCE_CH1_CHAR);
+    m_Labels[CH2_CHAR] = bp_tmp->ParGet(PAR_SOURCE_CH2_CHAR);
+    m_Labels[CH3_CHAR] = bp_tmp->ParGet(PAR_SOURCE_CH3_CHAR);
+    m_Labels[CH4_CHAR] = bp_tmp->ParGet(PAR_SOURCE_CH4_CHAR);
+    m_Labels[CH5_CHAR] = bp_tmp->ParGet(PAR_SOURCE_CH5_CHAR);
 
     // Items descriptions
     bp_tmp = bpl->BlockGetNE(PAR_SOURCE_ITEMS_DESCRIPTIONS);
@@ -965,34 +965,34 @@ void CMatrixConfig::ReadParams(void) {
     for (int i = 0; i < DESCRIPTIONS_LAST; i++) {
         new(&m_Descriptions[i]) std::wstring();
     }
-    m_Descriptions[W1_DESCR] = bp_tmp->Par(PAR_SOURCE_W1_DESCR);
-    m_Descriptions[W2_DESCR] = bp_tmp->Par(PAR_SOURCE_W2_DESCR);
-    m_Descriptions[W3_DESCR] = bp_tmp->Par(PAR_SOURCE_W3_DESCR);
-    m_Descriptions[W4_DESCR] = bp_tmp->Par(PAR_SOURCE_W4_DESCR);
-    m_Descriptions[W5_DESCR] = bp_tmp->Par(PAR_SOURCE_W5_DESCR);
-    m_Descriptions[W6_DESCR] = bp_tmp->Par(PAR_SOURCE_W6_DESCR);
-    m_Descriptions[W7_DESCR] = bp_tmp->Par(PAR_SOURCE_W7_DESCR);
-    m_Descriptions[W8_DESCR] = bp_tmp->Par(PAR_SOURCE_W8_DESCR);
-    m_Descriptions[W9_DESCR] = bp_tmp->Par(PAR_SOURCE_W9_DESCR);
-    m_Descriptions[W10_DESCR] = bp_tmp->Par(PAR_SOURCE_W10_DESCR);
+    m_Descriptions[W1_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W1_DESCR);
+    m_Descriptions[W2_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W2_DESCR);
+    m_Descriptions[W3_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W3_DESCR);
+    m_Descriptions[W4_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W4_DESCR);
+    m_Descriptions[W5_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W5_DESCR);
+    m_Descriptions[W6_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W6_DESCR);
+    m_Descriptions[W7_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W7_DESCR);
+    m_Descriptions[W8_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W8_DESCR);
+    m_Descriptions[W9_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W9_DESCR);
+    m_Descriptions[W10_DESCR] = bp_tmp->ParGet(PAR_SOURCE_W10_DESCR);
 
-    m_Descriptions[HE1_DESCR] = bp_tmp->Par(PAR_SOURCE_HE1_DESCR);
-    m_Descriptions[HE2_DESCR] = bp_tmp->Par(PAR_SOURCE_HE2_DESCR);
-    m_Descriptions[HE3_DESCR] = bp_tmp->Par(PAR_SOURCE_HE3_DESCR);
-    m_Descriptions[HE4_DESCR] = bp_tmp->Par(PAR_SOURCE_HE4_DESCR);
+    m_Descriptions[HE1_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HE1_DESCR);
+    m_Descriptions[HE2_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HE2_DESCR);
+    m_Descriptions[HE3_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HE3_DESCR);
+    m_Descriptions[HE4_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HE4_DESCR);
 
-    m_Descriptions[HU1_DESCR] = bp_tmp->Par(PAR_SOURCE_HU1_DESCR);
-    m_Descriptions[HU2_DESCR] = bp_tmp->Par(PAR_SOURCE_HU2_DESCR);
-    m_Descriptions[HU3_DESCR] = bp_tmp->Par(PAR_SOURCE_HU3_DESCR);
-    m_Descriptions[HU4_DESCR] = bp_tmp->Par(PAR_SOURCE_HU4_DESCR);
-    m_Descriptions[HU5_DESCR] = bp_tmp->Par(PAR_SOURCE_HU5_DESCR);
-    m_Descriptions[HU6_DESCR] = bp_tmp->Par(PAR_SOURCE_HU6_DESCR);
+    m_Descriptions[HU1_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU1_DESCR);
+    m_Descriptions[HU2_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU2_DESCR);
+    m_Descriptions[HU3_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU3_DESCR);
+    m_Descriptions[HU4_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU4_DESCR);
+    m_Descriptions[HU5_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU5_DESCR);
+    m_Descriptions[HU6_DESCR] = bp_tmp->ParGet(PAR_SOURCE_HU6_DESCR);
 
-    m_Descriptions[CH1_DESCR] = bp_tmp->Par(PAR_SOURCE_CH1_DESCR);
-    m_Descriptions[CH2_DESCR] = bp_tmp->Par(PAR_SOURCE_CH2_DESCR);
-    m_Descriptions[CH3_DESCR] = bp_tmp->Par(PAR_SOURCE_CH3_DESCR);
-    m_Descriptions[CH4_DESCR] = bp_tmp->Par(PAR_SOURCE_CH4_DESCR);
-    m_Descriptions[CH5_DESCR] = bp_tmp->Par(PAR_SOURCE_CH5_DESCR);
+    m_Descriptions[CH1_DESCR] = bp_tmp->ParGet(PAR_SOURCE_CH1_DESCR);
+    m_Descriptions[CH2_DESCR] = bp_tmp->ParGet(PAR_SOURCE_CH2_DESCR);
+    m_Descriptions[CH3_DESCR] = bp_tmp->ParGet(PAR_SOURCE_CH3_DESCR);
+    m_Descriptions[CH4_DESCR] = bp_tmp->ParGet(PAR_SOURCE_CH4_DESCR);
+    m_Descriptions[CH5_DESCR] = bp_tmp->ParGet(PAR_SOURCE_CH5_DESCR);
 
     // camera properties
     bp_tmp = g_MatrixData->BlockGetNE(PAR_SOURCE_CAMERA);

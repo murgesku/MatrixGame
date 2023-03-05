@@ -162,11 +162,11 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
 
     // Interface members initialisation
     m_strName = name;
-    m_nTotalElements = pbp1->Par(L"eTotal").GetInt();
-    m_nId = pbp1->Par(L"id").GetInt();
-    m_xPos = (float)pbp1->Par(L"xPos").GetDouble();
-    m_yPos = (float)pbp1->Par(L"yPos").GetDouble();
-    m_zPos = (float)pbp1->Par(L"zPos").GetDouble();
+    m_nTotalElements = pbp1->ParGet(L"eTotal").GetInt();
+    m_nId = pbp1->ParGet(L"id").GetInt();
+    m_xPos = (float)pbp1->ParGet(L"xPos").GetDouble();
+    m_yPos = (float)pbp1->ParGet(L"yPos").GetDouble();
+    m_zPos = (float)pbp1->ParGet(L"zPos").GetDouble();
 
     if (m_xPos != 0) {
         int width = 1024 - Float2Int(m_xPos);
@@ -190,7 +190,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         labels_file = labels_file->BlockGetNE(name);
     }
 
-    if (pbp1->Par(L"OnTop").GetInt()) {
+    if (pbp1->ParGet(L"OnTop").GetInt()) {
         m_AlwaysOnTop = TRUE;
         m_VisibleAlpha = 255;
     }
@@ -198,12 +198,12 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         m_AlwaysOnTop = FALSE;
 
     int Const = 0;
-    Const = pbp1->Par(L"ConstPresent").GetInt();
+    Const = pbp1->ParGet(L"ConstPresent").GetInt();
 
     if (Const) {
         g_MatrixMap->GetPlayerSide()->m_Constructor->SetRenderProps(
-                (float)pbp1->Par(L"ConstX").GetDouble() + m_xPos, (float)pbp1->Par(L"ConstY").GetDouble() + m_yPos,
-                pbp1->Par(L"ConstWidth").GetInt(), pbp1->Par(L"ConstHeight").GetInt());
+                (float)pbp1->ParGet(L"ConstX").GetDouble() + m_xPos, (float)pbp1->ParGet(L"ConstY").GetDouble() + m_yPos,
+                pbp1->ParGet(L"ConstWidth").GetInt(), pbp1->ParGet(L"ConstHeight").GetInt());
     }
 
     CIFaceElement *if_elem = NULL;
@@ -216,26 +216,26 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             CIFaceButton *pButton = HNew(g_MatrixHeap) CIFaceButton;
             if_elem = (CIFaceElement *)pButton;
 
-            pButton->m_nId = pbp2->Par(L"id").GetInt();
-            pButton->m_strName = pbp2->Par(L"Name");
+            pButton->m_nId = pbp2->ParGet(L"id").GetInt();
+            pButton->m_strName = pbp2->ParGet(L"Name");
 
-            auto hint_par = pbp2->ParNE(L"Hint");
+            auto hint_par = pbp2->ParGetNE(L"Hint");
             if (!hint_par.empty()) {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pButton->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pButton->m_Hint.y = hint_par.GetIntPar(2, L",");
             }
 
-            pButton->m_Type = (IFaceElementType)pbp2->Par(L"type").GetInt();
-            pButton->m_nGroup = pbp2->Par(L"group").GetInt();
-            pButton->m_xPos = (float)pbp2->Par(L"xPos").GetDouble();
-            pButton->m_yPos = (float)pbp2->Par(L"yPos").GetDouble();
-            pButton->m_zPos = (float)pbp2->Par(L"zPos").GetDouble();
-            pButton->m_xSize = (float)pbp2->Par(L"xSize").GetDouble();
-            pButton->m_ySize = (float)pbp2->Par(L"ySize").GetDouble();
-            pButton->m_Param1 = (float)pbp2->Par(L"Param1").GetDouble();
-            pButton->m_Param2 = (float)pbp2->Par(L"Param2").GetDouble();
-            pButton->m_DefState = (IFaceElementState)pbp2->Par(L"dState").GetInt();
+            pButton->m_Type = (IFaceElementType)pbp2->ParGet(L"type").GetInt();
+            pButton->m_nGroup = pbp2->ParGet(L"group").GetInt();
+            pButton->m_xPos = (float)pbp2->ParGet(L"xPos").GetDouble();
+            pButton->m_yPos = (float)pbp2->ParGet(L"yPos").GetDouble();
+            pButton->m_zPos = (float)pbp2->ParGet(L"zPos").GetDouble();
+            pButton->m_xSize = (float)pbp2->ParGet(L"xSize").GetDouble();
+            pButton->m_ySize = (float)pbp2->ParGet(L"ySize").GetDouble();
+            pButton->m_Param1 = (float)pbp2->ParGet(L"Param1").GetDouble();
+            pButton->m_Param2 = (float)pbp2->ParGet(L"Param2").GetDouble();
+            pButton->m_DefState = (IFaceElementState)pbp2->ParGet(L"dState").GetInt();
 
             // FSET(pButton->m_Action, m_Constructor, CConstructor::OperateUnit);
 
@@ -485,41 +485,41 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             }
 
             pButton->SetStateImage(
-                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str()),
-                    (float)pbp2->Par(L"sNormalX").GetDouble(), (float)pbp2->Par(L"sNormalY").GetDouble(),
-                    (float)pbp2->Par(L"sNormalWidth").GetDouble(), (float)pbp2->Par(L"sNormalHeight").GetDouble());
+                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sNormal").c_str()),
+                    (float)pbp2->ParGet(L"sNormalX").GetDouble(), (float)pbp2->ParGet(L"sNormalY").GetDouble(),
+                    (float)pbp2->ParGet(L"sNormalWidth").GetDouble(), (float)pbp2->ParGet(L"sNormalHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_FOCUSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sFocused").c_str()),
-                    (float)pbp2->Par(L"sFocusedX").GetDouble(), (float)pbp2->Par(L"sFocusedY").GetDouble(),
-                    (float)pbp2->Par(L"sFocusedWidth").GetDouble(), (float)pbp2->Par(L"sFocusedHeight").GetDouble());
+                    IFACE_FOCUSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sFocused").c_str()),
+                    (float)pbp2->ParGet(L"sFocusedX").GetDouble(), (float)pbp2->ParGet(L"sFocusedY").GetDouble(),
+                    (float)pbp2->ParGet(L"sFocusedWidth").GetDouble(), (float)pbp2->ParGet(L"sFocusedHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_PRESSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressed").c_str()),
-                    (float)pbp2->Par(L"sPressedX").GetDouble(), (float)pbp2->Par(L"sPressedY").GetDouble(),
-                    (float)pbp2->Par(L"sPressedWidth").GetDouble(), (float)pbp2->Par(L"sPressedHeight").GetDouble());
+                    IFACE_PRESSED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sPressed").c_str()),
+                    (float)pbp2->ParGet(L"sPressedX").GetDouble(), (float)pbp2->ParGet(L"sPressedY").GetDouble(),
+                    (float)pbp2->ParGet(L"sPressedWidth").GetDouble(), (float)pbp2->ParGet(L"sPressedHeight").GetDouble());
 
             pButton->SetStateImage(
-                    IFACE_DISABLED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sDisabled").c_str()),
-                    (float)pbp2->Par(L"sDisabledX").GetDouble(), (float)pbp2->Par(L"sDisabledY").GetDouble(),
-                    (float)pbp2->Par(L"sDisabledWidth").GetDouble(), (float)pbp2->Par(L"sDisabledHeight").GetDouble());
+                    IFACE_DISABLED, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sDisabled").c_str()),
+                    (float)pbp2->ParGet(L"sDisabledX").GetDouble(), (float)pbp2->ParGet(L"sDisabledY").GetDouble(),
+                    (float)pbp2->ParGet(L"sDisabledWidth").GetDouble(), (float)pbp2->ParGet(L"sDisabledHeight").GetDouble());
 
             if (pButton->m_Type == IFACE_CHECK_BUTTON || pButton->m_Type == IFACE_CHECK_BUTTON_SPECIAL ||
                 pButton->m_Type == IFACE_CHECK_PUSH_BUTTON) {
                 pButton->SetStateImage(
                         IFACE_PRESSED_UNFOCUSED,
-                        (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sPressedUnFocused").c_str()),
-                        (float)pbp2->Par(L"sPressedUnFocusedX").GetDouble(),
-                        (float)pbp2->Par(L"sPressedUnFocusedY").GetDouble(),
-                        (float)pbp2->Par(L"sPressedUnFocusedWidth").GetDouble(),
-                        (float)pbp2->Par(L"sPressedUnFocusedHeight").GetDouble());
+                        (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sPressedUnFocused").c_str()),
+                        (float)pbp2->ParGet(L"sPressedUnFocusedX").GetDouble(),
+                        (float)pbp2->ParGet(L"sPressedUnFocusedY").GetDouble(),
+                        (float)pbp2->ParGet(L"sPressedUnFocusedWidth").GetDouble(),
+                        (float)pbp2->ParGet(L"sPressedUnFocusedHeight").GetDouble());
             }
 
             // Animation
             CBlockPar *animation = NULL;
             animation = pbp2->BlockGetNE(L"Animation");
             if (animation) {
-                auto par = animation->Par(L"Frames");
+                auto par = animation->ParGet(L"Frames");
                 if (par.length()) {
                     int frames_cnt = par.GetIntPar(0, L",");
                     int period = par.GetIntPar(1, L",");
@@ -535,9 +535,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                     frame.pos_x = pButton->m_xPos + 1;
                     frame.pos_y = pButton->m_yPos;
                     frame.pos_z = 0 /*pButton->m_zPos*/;
-                    frame.tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str());
-                    frame.tex_width = (float)pbp2->Par(L"sNormalWidth").GetDouble();
-                    frame.tex_height = (float)pbp2->Par(L"sNormalHeight").GetDouble();
+                    frame.tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sNormal").c_str());
+                    frame.tex_width = (float)pbp2->ParGet(L"sNormalWidth").GetDouble();
+                    frame.tex_height = (float)pbp2->ParGet(L"sNormalHeight").GetDouble();
                     frame.ipos_x = m_xPos;
                     frame.ipos_y = m_yPos;
 
@@ -567,21 +567,21 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             CIFaceStatic *pStatic = HNew(g_MatrixHeap) CIFaceStatic;
             if_elem = (CIFaceElement *)pStatic;
 
-            pStatic->m_strName = pbp2->Par(L"Name");
+            pStatic->m_strName = pbp2->ParGet(L"Name");
 
-            auto hint_par = pbp2->ParNE(L"Hint");
+            auto hint_par = pbp2->ParGetNE(L"Hint");
             if (hint_par != L"") {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
                 pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
                 pStatic->m_Hint.y = hint_par.GetIntPar(2, L",");
             }
 
-            pStatic->m_xPos = (float)pbp2->Par(L"xPos").GetDouble();
-            pStatic->m_yPos = (float)pbp2->Par(L"yPos").GetDouble();
-            pStatic->m_zPos = (float)pbp2->Par(L"zPos").GetDouble();
-            pStatic->m_xSize = (float)pbp2->Par(L"xSize").GetDouble();
-            pStatic->m_ySize = (float)pbp2->Par(L"ySize").GetDouble();
-            pStatic->m_DefState = (IFaceElementState)pbp2->Par(L"dState").GetInt();
+            pStatic->m_xPos = (float)pbp2->ParGet(L"xPos").GetDouble();
+            pStatic->m_yPos = (float)pbp2->ParGet(L"yPos").GetDouble();
+            pStatic->m_zPos = (float)pbp2->ParGet(L"zPos").GetDouble();
+            pStatic->m_xSize = (float)pbp2->ParGet(L"xSize").GetDouble();
+            pStatic->m_ySize = (float)pbp2->ParGet(L"ySize").GetDouble();
+            pStatic->m_DefState = (IFaceElementState)pbp2->ParGet(L"dState").GetInt();
 
             // pStatic->m_Hint. = pbp2->ParNE(L"Hint");
 
@@ -638,9 +638,9 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             }
 
             pStatic->SetStateImage(
-                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"sNormal").c_str()),
-                    (float)pbp2->Par(L"sNormalX").GetDouble(), (float)pbp2->Par(L"sNormalY").GetDouble(),
-                    (float)pbp2->Par(L"sNormalWidth").GetDouble(), (float)pbp2->Par(L"sNormalHeight").GetDouble());
+                    IFACE_NORMAL, (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"sNormal").c_str()),
+                    (float)pbp2->ParGet(L"sNormalX").GetDouble(), (float)pbp2->ParGet(L"sNormalY").GetDouble(),
+                    (float)pbp2->ParGet(L"sNormalWidth").GetDouble(), (float)pbp2->ParGet(L"sNormalHeight").GetDouble());
 
             pStatic->ElementGeomInit((void *)pStatic);
 
@@ -662,7 +662,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 else {
                     pStatic->SetClearRect();
 
-                    auto rect(pbp2->Par(L"ClearRect"));
+                    auto rect(pbp2->ParGet(L"ClearRect"));
 
                     // element position relative
                     pStatic->m_ClearRect.left = rect.GetIntPar(0, L",");
@@ -677,16 +677,16 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
         }
         else if (tmpStr == L"Image") {
             CIFaceImage *image = HNew(g_MatrixHeap) CIFaceImage;
-            image->m_strName = pbp2->Par(L"Name");
+            image->m_strName = pbp2->ParGet(L"Name");
 
-            image->m_Image = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->Par(L"TextureFile").c_str());
+            image->m_Image = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, pbp2->ParGet(L"TextureFile").c_str());
 
-            image->m_xTexPos = (float)pbp2->Par(L"TexPosX").GetDouble();
-            image->m_yTexPos = (float)pbp2->Par(L"TexPosY").GetDouble();
-            image->m_TexWidth = (float)pbp2->Par(L"TextureWidth").GetDouble();
-            image->m_TexHeight = (float)pbp2->Par(L"TextureHeight").GetDouble();
-            image->m_Width = (float)pbp2->Par(L"Width").GetDouble();
-            image->m_Height = (float)pbp2->Par(L"Height").GetDouble();
+            image->m_xTexPos = (float)pbp2->ParGet(L"TexPosX").GetDouble();
+            image->m_yTexPos = (float)pbp2->ParGet(L"TexPosY").GetDouble();
+            image->m_TexWidth = (float)pbp2->ParGet(L"TextureWidth").GetDouble();
+            image->m_TexHeight = (float)pbp2->ParGet(L"TextureHeight").GetDouble();
+            image->m_Width = (float)pbp2->ParGet(L"Width").GetDouble();
+            image->m_Height = (float)pbp2->ParGet(L"Height").GetDouble();
 
             LIST_ADD(image, m_FirstImage, m_LastImage, m_PrevImage, m_NextImage);
             nElementNum++;
@@ -704,7 +704,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                 for (int bl_cnt = 0; bl_cnt < labels_cnt; bl_cnt++) {
                     if (labels->BlockGetName(bl_cnt).length()) {
                         CBlockPar *label_block = labels->BlockGet(bl_cnt);
-                        auto par = label_block->Par(IF_LABEL_PARAMS);
+                        auto par = label_block->ParGet(IF_LABEL_PARAMS);
                         if (par.length()) {
                             int x = par.GetIntPar(0, L",");
                             int y = par.GetIntPar(1, L",");
@@ -722,10 +722,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             int clip_ex = par.GetIntPar(9, L",");
                             int clip_ey = par.GetIntPar(10, L",");
 
-                            const std::wstring &state = label_block->Par(L"State");
-                            const std::wstring &font = label_block->Par(L"Font");
+                            const std::wstring &state = label_block->ParGet(L"State");
+                            const std::wstring &font = label_block->ParGet(L"Font");
 
-                            const auto color_par = label_block->Par(L"Color");
+                            const auto color_par = label_block->ParGet(L"Color");
 
                             DWORD color = 0;
 
@@ -753,7 +753,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             if (labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL) {
                                 std::wstring t_code = if_elem->m_strName;
                                 t_code += L"_" + state;
-                                std::wstring text = labels_file->Par(t_code);
+                                std::wstring text = labels_file->ParGet(t_code);
 
                                 if (t_code == L"iw1text_sNormal") {
                                     g_PopupWeaponNormal[1].text = text;
@@ -859,7 +859,7 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                                 if_elem->m_StateImages[st].SetStateText(false);
 
                                 if (if_elem->m_strName == IF_ENTER_ROBOT) {
-                                    text = labels_file->Par(L"inro_part2");
+                                    text = labels_file->ParGet(L"inro_part2");
 
                                     if_elem->m_StateImages[st].SetStateLabelParams(
                                             x - 1, y + 8, Float2Int(if_elem->m_xSize), Float2Int(if_elem->m_ySize),
