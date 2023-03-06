@@ -660,8 +660,8 @@
 #define CURSOR_CROSS_YELLOW L"cross_yellow"
 #define CURSOR_STAR         L"star"
 
-#define FOLDER_NAME_CACHE       "Cache"
-#define FOLDER_NAME_SCREENSHOTS "Screenshots"
+#define FOLDER_NAME_CACHE       L"Cache"
+#define FOLDER_NAME_SCREENSHOTS L"Screenshots"
 #define FILE_NAME_SCREENSHOT    "Shot"
 
 // interface

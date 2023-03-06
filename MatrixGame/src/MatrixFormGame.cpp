@@ -276,27 +276,27 @@ void CFormMatrixGame::Takt(int step) {
     }
 
     if (GetAsyncKeyState(/*VK_SNAPSHOT*/ VK_F9) != 0) {
-        const std::string screenshots_dir{PathToOutputFiles(FOLDER_NAME_SCREENSHOTS)};
+        const std::wstring screenshots_dir{PathToOutputFiles(FOLDER_NAME_SCREENSHOTS)};
 
         static uint16_t index = 0;
         index++;
 
-        CreateDirectory(screenshots_dir.c_str(), NULL);
+        CreateDirectoryW(screenshots_dir.c_str(), NULL);
 
         time_t cur_time = time(NULL);
         struct tm tstruct = *localtime(&cur_time);
-        char time_str[20];
-        strftime(time_str, sizeof(time_str), "%Y-%m-%d-%H-%M-%S", &tstruct);
+        wchar_t time_str[40];
+        wcsftime(time_str, sizeof(time_str), L"%Y-%m-%d-%H-%M-%S", &tstruct);
 
-        std::string filename =
+        std::wstring filename =
             utils::format(
-                "%s\\%s-%s-%03d.png",
+                L"%s\\%s-%s-%03d.png",
                 screenshots_dir.c_str(),
                 FILE_NAME_SCREENSHOT,
                 time_str,
                 index);
 
-        DeleteFile(filename.c_str());
+        DeleteFileW(filename.c_str());
 
         if (!g_D3Dpp.Windowed) {
             IDirect3DSurface9 *pTargetSurface = NULL;
@@ -351,8 +351,8 @@ void CFormMatrixGame::Takt(int step) {
 
                                 pSurface->UnlockRect();
 
-                                bm.SaveInPNG(utils::to_wstring(filename).c_str());
-                                g_MatrixMap->m_DI.T((L"Screen shot has been saved into " + utils::to_wstring(filename)).c_str(), L"");
+                                bm.SaveInPNG(filename.c_str());
+                                g_MatrixMap->m_DI.T((L"Screen shot has been saved into " + filename).c_str(), L"");
                             }
                             else {
                                 // LockRect fail
@@ -407,7 +407,7 @@ void CFormMatrixGame::Takt(int step) {
         bm.WBM_Save(true);
 
         bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
-        bmout.SaveInPNG(utils::to_wstring(filename).c_str());
+        bmout.SaveInPNG(filename.c_str());
 
         // HFree(data, g_CacheHeap);
 
