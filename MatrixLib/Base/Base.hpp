@@ -35,4 +35,4 @@ using wchar = wchar_t;
 using dword = unsigned long;
 //////////////////////////
 
-#define IS_UNICODE() (GetVersion() < 0x80000000)
+#define IS_UNICODE() true
