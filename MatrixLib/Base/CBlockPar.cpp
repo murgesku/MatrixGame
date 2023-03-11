@@ -224,25 +224,21 @@ ParamParser ParamParser::GetStrPar(int nps, int npe, const wchar *ogsim) const {
 }
 
 bool ParamParser::GetTrueFalsePar(int np, const wchar *ogsim) const {
-    std::wstring tstr = GetStrPar(np, ogsim);
+    std::wstring str = GetStrPar(np, ogsim);
+    utils::to_lower(str);
 
-    if (tstr == L"true" || tstr == L"True" || tstr == L"TRUE")
-        return 1;
-    if (tstr == L"false" || tstr == L"False" || tstr == L"FALSE")
-        return 0;
+    if(str == L"true" || str == L"yes" || str == L"on")
+    {
+        return true;
+    }
 
-    if (tstr == L"yes" || tstr == L"Yes" || tstr == L"YES")
-        return 1;
-    if (tstr == L"no" || tstr == L"No" || tstr == L"NO")
-        return 0;
-
-    if (tstr == L"on" || tstr == L"On" || tstr == L"ON")
-        return 1;
-    if (tstr == L"off" || tstr == L"Off" || tstr == L"OFF")
-        return 0;
+    if(str == L"false" || str == L"no" || str == L"off")
+    {
+        return false;
+    }
 
     ERROR_E;
-    return 0;
+    return false;
 }
 
 int ParamParser::GetCountPar(const wchar *ogsim) const {
