@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  windows:
-    name: Build on Windows
+  msvc:
+    name: Build with MSVC
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -26,6 +26,23 @@ jobs:
             rm -fR _DX*_ _DX*_.exe
             echo "DXSDK_DIR=$DXDIR" >> $GITHUB_ENV
       shell: bash
+    - name: Compile with MSVC
+      run: |
+        cmake -A Win32 . -B build_msvc
+        cmake --build build_msvc
+      shell: bash
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dll_msvc
+        path: |
+          ${{ github.workspace }}/build_msvc/MatrixGame/Debug/MatrixGame.dll
+
+  gcc:
+    name: Build with GCC
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
     - name: Get MinGW
       run: |
            MINGW_DIR=$TEMP/mingw
@@ -42,11 +59,6 @@ jobs:
            rm ninja.zip
            echo "PATH=$NINJA_DIR:$PATH" >> $GITHUB_ENV
       shell: bash
-    - name: Compile with MSVC
-      run: |
-        cmake -A Win32 . -B build_msvc
-        cmake --build build_msvc
-      shell: bash
     - name: Compile with GCC
       run: |
         # ninja wants cmd.exe to be in the path
@@ -57,7 +69,6 @@ jobs:
     - name: Store artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Libraries
+        name: dll_gcc
         path: |
-          ${{ github.workspace }}/build_msvc/MatrixGame/Debug/MatrixGame.dll
           ${{ github.workspace }}/build_gcc/MatrixGame/MatrixGame.dll
