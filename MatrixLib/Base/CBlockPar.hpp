@@ -110,7 +110,7 @@ private:
 
     std::wstring m_FromFile;
 
-    DWORD m_Sort;  // bool
+    bool m_Sort;  // bool
 public:
     CBlockPar(bool sort = true, CHeap *heap = NULL);
     ~CBlockPar();
