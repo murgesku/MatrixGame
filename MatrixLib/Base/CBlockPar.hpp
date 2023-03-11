@@ -131,22 +131,19 @@ private:
 public:
     //////////////////////////////////////////////////////////////
 private:
-    bool ParSetNE(const wchar *name, int namelen, const wchar *zn, int znlen);
-    bool ParDeleteNE(const wchar *name, int namelen);
-    const std::wstring* ParGetNE_(const wchar *name, int namelen, int index) const;
-    int ParCount(const wchar *name, int namelen) const;
-    void ParSet(int no, const wchar *zn, int znlen);
+    bool ParSetNE(const std::wstring& name, const std::wstring& zn);
+    const std::wstring* ParGetNE_(const std::wstring& name, int index) const;
 
 public:
     CBlockParUnit *ParAdd(const std::wstring& name, const std::wstring& zn);
 
     void ParSet(const std::wstring &name, const std::wstring &zn) {
-        if (!ParSetNE(name.c_str(), name.length(), zn.c_str(), zn.length()))
+        if (!ParSetNE(name, zn))
             ERROR_E;
     }
 
     void ParSetAdd(const std::wstring &name, const std::wstring &zn) {
-        if (!ParSetNE(name.c_str(), name.length(), zn.c_str(), zn.length()))
+        if (!ParSetNE(name, zn))
             ParAdd(name, zn);
     }
 
@@ -161,14 +158,14 @@ public:
 
     ParamParser ParGet(const std::wstring& name, int index = 0) const
     {
-        const std::wstring *str = ParGetNE_(name.c_str(), name.length(), index);
+        const std::wstring *str = ParGetNE_(name, index);
         if (str == NULL)
             ERROR_S2(L"Not found: ", name.c_str());
         return *str;
     }
 
     ParamParser ParGetNE(const std::wstring& name, int index = 0) const {
-        const std::wstring *str = ParGetNE_(name.c_str(), name.length(), index);
+        const std::wstring *str = ParGetNE_(name, index);
         if (str != NULL)
             return *str;
         else
@@ -176,10 +173,10 @@ public:
     }
 
     int ParCount(void) const { return m_CntPar; }
-    int ParCount(const std::wstring &name) const { return ParCount(name.c_str(), name.length()); }
+    int ParCount(const std::wstring &name) const;
 
     ParamParser ParGet(int no) const;
-    void ParSet(int no, const std::wstring &zn) { ParSet(no, zn.c_str(), zn.length()); }
+    void ParSet(int no, const std::wstring &zn);
     ParamParser ParGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
