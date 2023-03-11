@@ -871,25 +871,9 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
     DTRACE();
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
-    std::string mmname =
-        utils::format("%s\\%s.",
-            PathToOutputFiles(FOLDER_NAME_CACHE),
-            utils::from_wstring(name).c_str());
-    {
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
+    std::wstring mmname = PathToOutputFiles(FOLDER_NAME_CACHE) + L"\\" + name + L".";
+
+    for (int i = 0; i < 8; i++) {
         mmname += (char)('A' + (uniq & 0x0F));
         uniq >>= 4;
     }
@@ -906,11 +890,11 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
     ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
 
     {
-        WIN32_FIND_DATA fd;
-        HANDLE ff = FindFirstFile(mmname.c_str(), &fd);
+        WIN32_FIND_DATAW fd;
+        HANDLE ff = FindFirstFileW(mmname.c_str(), &fd);
         if (ff != INVALID_HANDLE_VALUE) {
             CBitmap bm(g_CacheHeap);
-            bm.LoadFromPNG(utils::to_wstring(mmname).c_str());
+            bm.LoadFromPNG(mmname.c_str());
             if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
                 goto render;
 
@@ -1172,7 +1156,7 @@ render:
     }
 
     {
-        CreateDirectory(PathToOutputFiles(FOLDER_NAME_CACHE), NULL);
+        CreateDirectoryW(PathToOutputFiles(FOLDER_NAME_CACHE).c_str(), NULL);
 
         // seek files
         auto n = utils::format("%s\\%s.*",
@@ -1217,7 +1201,7 @@ render:
         //*(des)=*(sou+2);
         //*(des+2)=*(sou+0);
 
-        bm2.SaveInPNG(utils::to_wstring(mmname).c_str());
+        bm2.SaveInPNG(mmname.c_str());
 
         outtgt->UnlockRect();
 

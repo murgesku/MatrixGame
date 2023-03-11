@@ -800,8 +800,8 @@ void MatrixGameDeinit(void) {
     }
 }
 
-LPCSTR PathToOutputFiles(LPCSTR dest) {
-    static std::string path{};
+std::wstring PathToOutputFiles(const wchar_t* dest) {
+    static std::wstring path{};
 
     if (path.empty())
     {
@@ -810,18 +810,18 @@ LPCSTR PathToOutputFiles(LPCSTR dest) {
         HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
         if (hRes == NOERROR)
         {
-            char lpPath[MAX_PATH];
-            SHGetPathFromIDList(pidl, lpPath);
+            wchar_t lpPath[MAX_PATH];
+            SHGetPathFromIDListW(pidl, lpPath);
 
-            path = utils::format("%s\\SpaceRangersHD", lpPath);
-            CreateDirectory(path.c_str(), NULL);
-            path += "\\";
+            path = utils::format(L"%s\\SpaceRangersHD", lpPath);
+            CreateDirectoryW(path.c_str(), NULL);
+            path += L"\\";
             path += dest;
         }
         else {
-            path = utils::format(".\\%s", dest);
+            path = utils::format(L".\\%s", dest);
         }
     }
 
-    return path.c_str();
+    return path;
 }
