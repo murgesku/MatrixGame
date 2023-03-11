@@ -108,7 +108,7 @@ private:
     CBlockParUnit **m_Array;
     int m_ArrayCnt;
 
-    std::wstring *m_FromFile;
+    std::wstring m_FromFile;
 
     DWORD m_Sort;  // bool
 public:
