@@ -222,8 +222,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             auto hint_par = pbp2->ParGetNE(L"Hint");
             if (!hint_par.empty()) {
                 pButton->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
-                pButton->m_Hint.x = hint_par.GetIntPar(1, L",");
-                pButton->m_Hint.y = hint_par.GetIntPar(2, L",");
+                pButton->m_Hint.x = hint_par.GetStrPar(1, L",").GetInt();
+                pButton->m_Hint.y = hint_par.GetStrPar(2, L",").GetInt();
             }
 
             pButton->m_Type = (IFaceElementType)pbp2->ParGet(L"type").GetInt();
@@ -521,10 +521,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             if (animation) {
                 auto par = animation->ParGet(L"Frames");
                 if (par.length()) {
-                    int frames_cnt = par.GetIntPar(0, L",");
-                    int period = par.GetIntPar(1, L",");
-                    int width = par.GetIntPar(2, L",");
-                    int height = par.GetIntPar(3, L",");
+                    int frames_cnt = par.GetStrPar(0, L",").GetInt();
+                    int period = par.GetStrPar(1, L",").GetInt();
+                    int width = par.GetStrPar(2, L",").GetInt();
+                    int height = par.GetStrPar(3, L",").GetInt();
 
                     pButton->m_Animation = HNew(g_MatrixHeap) CAnimation(frames_cnt, period);
                     SFrame frame;
@@ -542,8 +542,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                     frame.ipos_y = m_yPos;
 
                     for (int i = 0; i < frames_cnt * 2; i += 2) {
-                        int x = par.GetIntPar(3 + 1 + i, L",");
-                        int y = par.GetIntPar(3 + 1 + i + 1, L",");
+                        int x = par.GetStrPar(3 + 1 + i, L",").GetInt();
+                        int y = par.GetStrPar(3 + 1 + i + 1, L",").GetInt();
                         frame.tex_pos_x = (float)x;
                         frame.tex_pos_y = (float)y;
                         // Load Next Frame here
@@ -572,8 +572,8 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
             auto hint_par = pbp2->ParGetNE(L"Hint");
             if (hint_par != L"") {
                 pStatic->m_Hint.HintTemplate = hint_par.GetStrPar(0, L",");
-                pStatic->m_Hint.x = hint_par.GetIntPar(1, L",");
-                pStatic->m_Hint.y = hint_par.GetIntPar(2, L",");
+                pStatic->m_Hint.x = hint_par.GetStrPar(1, L",").GetInt();
+                pStatic->m_Hint.y = hint_par.GetStrPar(2, L",").GetInt();
             }
 
             pStatic->m_xPos = (float)pbp2->ParGet(L"xPos").GetDouble();
@@ -665,10 +665,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                     auto rect(pbp2->ParGet(L"ClearRect"));
 
                     // element position relative
-                    pStatic->m_ClearRect.left = rect.GetIntPar(0, L",");
-                    pStatic->m_ClearRect.top = rect.GetIntPar(1, L",");
-                    pStatic->m_ClearRect.right = rect.GetIntPar(2, L",");
-                    pStatic->m_ClearRect.bottom = rect.GetIntPar(3, L",");
+                    pStatic->m_ClearRect.left = rect.GetStrPar(0, L",").GetInt();
+                    pStatic->m_ClearRect.top = rect.GetStrPar(1, L",").GetInt();
+                    pStatic->m_ClearRect.right = rect.GetStrPar(2, L",").GetInt();
+                    pStatic->m_ClearRect.bottom = rect.GetStrPar(3, L",").GetInt();
                 }
             }
 
@@ -706,21 +706,21 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                         CBlockPar *label_block = labels->BlockGet(bl_cnt);
                         auto par = label_block->ParGet(IF_LABEL_PARAMS);
                         if (par.length()) {
-                            int x = par.GetIntPar(0, L",");
-                            int y = par.GetIntPar(1, L",");
+                            int x = par.GetStrPar(0, L",").GetInt();
+                            int y = par.GetStrPar(1, L",").GetInt();
 
-                            int sme_x = par.GetIntPar(2, L",");
-                            int sme_y = par.GetIntPar(3, L",");
+                            int sme_x = par.GetStrPar(2, L",").GetInt();
+                            int sme_y = par.GetStrPar(3, L",").GetInt();
 
-                            int align_x = par.GetIntPar(4, L",");
-                            int align_y = par.GetIntPar(5, L",");
+                            int align_x = par.GetStrPar(4, L",").GetInt();
+                            int align_y = par.GetStrPar(5, L",").GetInt();
 
-                            int perenos = par.GetIntPar(6, L",");
+                            int perenos = par.GetStrPar(6, L",").GetInt();
 
-                            int clip_sx = par.GetIntPar(7, L",");
-                            int clip_sy = par.GetIntPar(8, L",");
-                            int clip_ex = par.GetIntPar(9, L",");
-                            int clip_ey = par.GetIntPar(10, L",");
+                            int clip_sx = par.GetStrPar(7, L",").GetInt();
+                            int clip_sy = par.GetStrPar(8, L",").GetInt();
+                            int clip_ex = par.GetStrPar(9, L",").GetInt();
+                            int clip_ey = par.GetStrPar(10, L",").GetInt();
 
                             const std::wstring &state = label_block->ParGet(L"State");
                             const std::wstring &font = label_block->ParGet(L"Font");
@@ -729,10 +729,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
 
                             DWORD color = 0;
 
-                            color |= color_par.GetIntPar(0, L",") << 24;
-                            color |= color_par.GetIntPar(1, L",") << 16;
-                            color |= color_par.GetIntPar(2, L",") << 8;
-                            color |= color_par.GetIntPar(3, L",");
+                            color |= color_par.GetStrPar(0, L",").GetInt() << 24;
+                            color |= color_par.GetStrPar(1, L",").GetInt() << 16;
+                            color |= color_par.GetStrPar(2, L",").GetInt() << 8;
+                            color |= color_par.GetStrPar(3, L",").GetInt();
 
                             IFaceElementState st;
                             if (state == IF_STATE_NORMAL) {

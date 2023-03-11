@@ -437,13 +437,13 @@ static EHintElementModificator Convert(std::wstring &bmph, const std::wstring &t
     else if (bmph == L"L")
         return HEM_LAST_ON_LINE;
     else if (bmph == L"CR") {
-        return (EHintElementModificator)(HEM_TAB_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_TAB_LARGEST + ParamParser{temp}.GetStrPar(index + 1, L":").GetInt());
     }
     else if (bmph == L"CL") {
-        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + ParamParser{temp}.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(HEM_CENTER_RIGHT_LARGEST + ParamParser{temp}.GetStrPar(index + 1, L":").GetInt());
     }
     else if (bmph == L"T") {
-        return (EHintElementModificator)(ParamParser{temp}.GetIntPar(index + 1, L":"));
+        return (EHintElementModificator)(ParamParser{temp}.GetStrPar(index + 1, L":").GetInt());
     }
     else if (bmph == L"COPY") {
         return HEM_COPY;
@@ -540,7 +540,7 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
     bool otstup = false;
     CRect otstup_r;
 
-    int border = ParamParser{str}.GetIntPar(0, L"|");
+    int border = ParamParser{str}.GetStrPar(0, L"|").GetInt();
     int cnt = ParamParser{str}.GetCountPar(L"|");
     int idx = 1;
     std::wstring bmpn;

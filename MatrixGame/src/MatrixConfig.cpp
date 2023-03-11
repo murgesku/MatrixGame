@@ -412,17 +412,17 @@ void CMatrixConfig::ReadParams(void) {
 
     if (cfg_par->BlockCount(CFG_GAMMARAMP) != 0) {
         CBlockPar *g = cfg_par->BlockGet(CFG_GAMMARAMP);
-        m_GammaR.brightness = (float)g->ParGet(L"R").GetDoublePar(0, L",");
-        m_GammaR.contrast = (float)g->ParGet(L"R").GetDoublePar(1, L",");
-        m_GammaR.gamma = (float)g->ParGet(L"R").GetDoublePar(2, L",");
+        m_GammaR.brightness = (float)g->ParGet(L"R").GetStrPar(0, L",").GetDouble();
+        m_GammaR.contrast = (float)g->ParGet(L"R").GetStrPar(1, L",").GetDouble();
+        m_GammaR.gamma = (float)g->ParGet(L"R").GetStrPar(2, L",").GetDouble();
 
-        m_GammaG.brightness = (float)g->ParGet(L"G").GetDoublePar(0, L",");
-        m_GammaG.contrast = (float)g->ParGet(L"G").GetDoublePar(1, L",");
-        m_GammaG.gamma = (float)g->ParGet(L"G").GetDoublePar(2, L",");
+        m_GammaG.brightness = (float)g->ParGet(L"G").GetStrPar(0, L",").GetDouble();
+        m_GammaG.contrast = (float)g->ParGet(L"G").GetStrPar(1, L",").GetDouble();
+        m_GammaG.gamma = (float)g->ParGet(L"G").GetStrPar(2, L",").GetDouble();
 
-        m_GammaB.brightness = (float)g->ParGet(L"B").GetDoublePar(0, L",");
-        m_GammaB.contrast = (float)g->ParGet(L"B").GetDoublePar(1, L",");
-        m_GammaB.gamma = (float)g->ParGet(L"B").GetDoublePar(2, L",");
+        m_GammaB.brightness = (float)g->ParGet(L"B").GetStrPar(0, L",").GetDouble();
+        m_GammaB.contrast = (float)g->ParGet(L"B").GetStrPar(1, L",").GetDouble();
+        m_GammaB.gamma = (float)g->ParGet(L"B").GetStrPar(2, L",").GetDouble();
     }
 
     ApplyGammaRamp();
@@ -467,11 +467,11 @@ void CMatrixConfig::ReadParams(void) {
         if (idx >= 0) {
             auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
-            m_CannonDamages[idx].damage = par.GetIntPar(0, L",");
+            m_CannonDamages[idx].damage = par.GetStrPar(0, L",").GetInt();
             if (nn > 1)
-                m_CannonDamages[idx].mindamage = par.GetIntPar(1, L",");
+                m_CannonDamages[idx].mindamage = par.GetStrPar(1, L",").GetInt();
             if (nn > 2)
-                m_CannonDamages[idx].friend_damage = par.GetIntPar(2, L",");
+                m_CannonDamages[idx].friend_damage = par.GetStrPar(2, L",").GetInt();
             else
                 m_CannonDamages[idx].friend_damage = m_CannonDamages[idx].damage;
         }
@@ -492,7 +492,7 @@ void CMatrixConfig::ReadParams(void) {
             auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
             for (int j = 0; j < nn; ++j) {
-                m_BuildingHitPoints[j] = par.GetIntPar(j, L",");
+                m_BuildingHitPoints[j] = par.GetStrPar(j, L",").GetInt();
             }
         }
         else {
@@ -500,11 +500,11 @@ void CMatrixConfig::ReadParams(void) {
             if (idx >= 0) {
                 auto par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
-                m_BuildingDamages[idx].damage = par.GetIntPar(0, L",");
+                m_BuildingDamages[idx].damage = par.GetStrPar(0, L",").GetInt();
                 if (nn > 1)
-                    m_BuildingDamages[idx].mindamage = par.GetIntPar(1, L",");
+                    m_BuildingDamages[idx].mindamage = par.GetStrPar(1, L",").GetInt();
                 if (nn > 2)
-                    m_BuildingDamages[idx].friend_damage = par.GetIntPar(2, L",");
+                    m_BuildingDamages[idx].friend_damage = par.GetStrPar(2, L",").GetInt();
                 else
                     m_BuildingDamages[idx].friend_damage = m_BuildingDamages[idx].damage;
             }
@@ -527,7 +527,7 @@ void CMatrixConfig::ReadParams(void) {
         //    int nn = par.GetCountPar(L",");
         //    for (int j=0;j<nn;++j)
         //    {
-        //        m_FlyerHitPoints[j] = par.GetIntPar(j, L",");
+        //        m_FlyerHitPoints[j] = par.GetStrPar(j, L",").GetInt();
         //    }
         //} else
         {
@@ -535,11 +535,11 @@ void CMatrixConfig::ReadParams(void) {
             if (idx >= 0) {
                 auto par = bp_tmp->ParGet(i);
                 int nn = par.GetCountPar(L",");
-                m_FlyerDamages[idx].damage = par.GetIntPar(0, L",");
+                m_FlyerDamages[idx].damage = par.GetStrPar(0, L",").GetInt();
                 if (nn > 1)
-                    m_FlyerDamages[idx].mindamage = par.GetIntPar(1, L",");
+                    m_FlyerDamages[idx].mindamage = par.GetStrPar(1, L",").GetInt();
                 if (nn > 2)
-                    m_FlyerDamages[idx].friend_damage = par.GetIntPar(2, L",");
+                    m_FlyerDamages[idx].friend_damage = par.GetStrPar(2, L",").GetInt();
                 else
                     m_FlyerDamages[idx].friend_damage = m_FlyerDamages[idx].damage;
             }
@@ -560,11 +560,11 @@ void CMatrixConfig::ReadParams(void) {
         if (idx >= 0) {
             auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
-            m_RobotDamages[idx].damage = par.GetIntPar(0, L",");
+            m_RobotDamages[idx].damage = par.GetStrPar(0, L",").GetInt();
             if (nn > 1)
-                m_RobotDamages[idx].mindamage = par.GetIntPar(1, L",");
+                m_RobotDamages[idx].mindamage = par.GetStrPar(1, L",").GetInt();
             if (nn > 2)
-                m_RobotDamages[idx].friend_damage = par.GetIntPar(2, L",");
+                m_RobotDamages[idx].friend_damage = par.GetStrPar(2, L",").GetInt();
             else
                 m_RobotDamages[idx].friend_damage = m_RobotDamages[idx].damage;
         }
@@ -584,9 +584,9 @@ void CMatrixConfig::ReadParams(void) {
         if (idx >= 0) {
             auto par = bp_tmp->ParGet(i);
             int nn = par.GetCountPar(L",");
-            m_ObjectDamages[idx].damage = par.GetIntPar(0, L",");
+            m_ObjectDamages[idx].damage = par.GetStrPar(0, L",").GetInt();
             if (nn > 1)
-                m_ObjectDamages[idx].mindamage = par.GetIntPar(1, L",");
+                m_ObjectDamages[idx].mindamage = par.GetStrPar(1, L",").GetInt();
         }
     }
 

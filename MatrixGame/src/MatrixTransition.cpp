@@ -57,29 +57,29 @@ void CTransition::BuildTexture(void) {
     for (int i = 0; i < m_GeomCnt; ++i) {
         const auto da = tra->ParGet(i);
 
-        m_Geom[i].verts[0].p.x = (float)da.GetStrPar(0, L"|").GetDoublePar(0, L",");
-        m_Geom[i].verts[0].p.y = (float)da.GetStrPar(0, L"|").GetDoublePar(1, L",");
+        m_Geom[i].verts[0].p.x = (float)da.GetStrPar(0, L"|").GetStrPar(0, L",").GetDouble();
+        m_Geom[i].verts[0].p.y = (float)da.GetStrPar(0, L"|").GetStrPar(1, L",").GetDouble();
         m_Geom[i].verts[0].p.z = 0;
         m_Geom[i].verts[0].p.w = 1;
         m_Geom[i].verts[0].tu = m_Geom[i].verts[0].p.x / float(bmout.SizeX());
         m_Geom[i].verts[0].tv = m_Geom[i].verts[0].p.y / float(bmout.SizeY());
 
-        m_Geom[i].verts[1].p.x = (float)da.GetStrPar(1, L"|").GetDoublePar(0, L",");
-        m_Geom[i].verts[1].p.y = (float)da.GetStrPar(1, L"|").GetDoublePar(1, L",");
+        m_Geom[i].verts[1].p.x = (float)da.GetStrPar(1, L"|").GetStrPar(0, L",").GetDouble();
+        m_Geom[i].verts[1].p.y = (float)da.GetStrPar(1, L"|").GetStrPar(1, L",").GetDouble();
         m_Geom[i].verts[1].p.z = 0;
         m_Geom[i].verts[1].p.w = 1;
         m_Geom[i].verts[1].tu = m_Geom[i].verts[1].p.x / float(bmout.SizeX());
         m_Geom[i].verts[1].tv = m_Geom[i].verts[1].p.y / float(bmout.SizeY());
 
-        m_Geom[i].verts[2].p.x = (float)da.GetStrPar(3, L"|").GetDoublePar(0, L",");
-        m_Geom[i].verts[2].p.y = (float)da.GetStrPar(3, L"|").GetDoublePar(1, L",");
+        m_Geom[i].verts[2].p.x = (float)da.GetStrPar(3, L"|").GetStrPar(0, L",").GetDouble();
+        m_Geom[i].verts[2].p.y = (float)da.GetStrPar(3, L"|").GetStrPar(1, L",").GetDouble();
         m_Geom[i].verts[2].p.z = 0;
         m_Geom[i].verts[2].p.w = 1;
         m_Geom[i].verts[2].tu = m_Geom[i].verts[2].p.x / float(bmout.SizeX());
         m_Geom[i].verts[2].tv = m_Geom[i].verts[2].p.y / float(bmout.SizeY());
 
-        m_Geom[i].verts[3].p.x = (float)da.GetStrPar(2, L"|").GetDoublePar(0, L",");
-        m_Geom[i].verts[3].p.y = (float)da.GetStrPar(2, L"|").GetDoublePar(1, L",");
+        m_Geom[i].verts[3].p.x = (float)da.GetStrPar(2, L"|").GetStrPar(0, L",").GetDouble();
+        m_Geom[i].verts[3].p.y = (float)da.GetStrPar(2, L"|").GetStrPar(1, L",").GetDouble();
         m_Geom[i].verts[3].p.z = 0;
         m_Geom[i].verts[3].p.w = 1;
         m_Geom[i].verts[3].tu = m_Geom[i].verts[3].p.x / float(bmout.SizeX());
@@ -94,7 +94,7 @@ void CTransition::BuildTexture(void) {
         else if (utils::starts_with(tra->ParGetName(i), L"Right,"))
             m_Geom[i].dir.x = 1;
 
-        m_Geom[i].dir *= (float)tra->ParGetName(i).GetDoublePar(1, L",");
+        m_Geom[i].dir *= (float)tra->ParGetName(i).GetStrPar(1, L",").GetDouble();
     }
 
     bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, r.right, r.bottom));

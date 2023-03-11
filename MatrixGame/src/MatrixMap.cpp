@@ -133,9 +133,9 @@ CMatrixMap::CMatrixMap()
             if (dif) {
                 auto t2 = dif->ParGetNE(t1);
                 if (!t2.empty()) {
-                    m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetDoublePar(0, L",") / 100.0);
-                    m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetDoublePar(1, L",") / 100.0);
-                    m_Difficulty.k_friendly_fire = 1.0f + float(t2.GetDoublePar(2, L",") / 100.0);
+                    m_Difficulty.k_damage_enemy_to_player = 1.0f + float(t2.GetStrPar(0, L",").GetDouble() / 100.0);
+                    m_Difficulty.k_time_before_maintenance = 1.0f + float(t2.GetStrPar(1, L",").GetDouble() / 100.0);
+                    m_Difficulty.k_friendly_fire = 1.0f + float(t2.GetStrPar(2, L",").GetDouble() / 100.0);
                     if (m_Difficulty.k_damage_enemy_to_player < 0.01f)
                         m_Difficulty.k_damage_enemy_to_player = 0.01f;
                     if (m_Difficulty.k_time_before_maintenance < 0.01f)
@@ -999,10 +999,10 @@ void CMatrixMap::LoadSide(CBlockPar &bp) {
     for (int i = 0; i < cnt; i++) {
         int id = bp.ParGetName(i).GetInt();
         const auto name = bp.ParGet(i);
-        DWORD color = (DWORD(name.GetIntPar(1, L",") & 255) << 16) | (DWORD(name.GetIntPar(2, L",") & 255) << 8) |
-                      DWORD(name.GetIntPar(3, L",") & 255);
-        DWORD colorMM = (DWORD(name.GetIntPar(5, L",") & 255) << 16) | (DWORD(name.GetIntPar(6, L",") & 255) << 8) |
-                        DWORD(name.GetIntPar(7, L",") & 255);
+        DWORD color = (DWORD(name.GetStrPar(1, L",").GetInt() & 255) << 16) | (DWORD(name.GetStrPar(2, L",").GetInt() & 255) << 8) |
+                      DWORD(name.GetStrPar(3, L",").GetInt() & 255);
+        DWORD colorMM = (DWORD(name.GetStrPar(5, L",").GetInt() & 255) << 16) | (DWORD(name.GetStrPar(6, L",").GetInt() & 255) << 8) |
+                        DWORD(name.GetStrPar(7, L",").GetInt() & 255);
 
         if (id == 0) {
             m_NeutralSideColor = color;
@@ -3030,15 +3030,15 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std:
         return;
     parcnt -= 3;
 
-    int minper = par.GetIntPar(1, L",");
-    int maxper = par.GetIntPar(2, L",");
+    int minper = par.GetStrPar(1, L",").GetInt();
+    int maxper = par.GetStrPar(2, L",").GetInt();
 
     int idx = 3;
 
     m_EffectSpawners = (CEffectSpawner *)HAllocEx(m_EffectSpawners, sizeof(CEffectSpawner) * (m_EffectSpawnersCnt + 1),
                                                   g_MatrixHeap);
 
-    EEffectSpawnerType type = (EEffectSpawnerType)par.GetIntPar(0, L",");
+    EEffectSpawnerType type = (EEffectSpawnerType)par.GetStrPar(0, L",").GetInt();
 
     bool light_need_action = false;
 
@@ -3046,11 +3046,11 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std:
         case EST_SMOKE: {
             smoke.m_Type = EFFECT_SMOKE;
 
-            smoke.m_ttl = (float)par.GetDoublePar(idx++, L",");
-            smoke.m_puffttl = (float)par.GetDoublePar(idx++, L",");
-            smoke.m_spawntime = (float)par.GetDoublePar(idx++, L",");
-            smoke.m_intense = par.GetTrueFalsePar(idx++, L",");
-            smoke.m_speed = (float)par.GetDoublePar(idx++, L",");
+            smoke.m_ttl = (float)par.GetStrPar(idx++, L",").GetDouble();
+            smoke.m_puffttl = (float)par.GetStrPar(idx++, L",").GetDouble();
+            smoke.m_spawntime = (float)par.GetStrPar(idx++, L",").GetDouble();
+            smoke.m_intense = par.GetStrPar(idx++, L",").GetBool();
+            smoke.m_speed = (float)par.GetStrPar(idx++, L",").GetDouble();
             smoke.m_color = par.GetStrPar(idx++, L",").GetHexUnsigned();
 
             break;
@@ -3060,12 +3060,12 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std:
 
             fire.m_Type = EFFECT_FIRE;
 
-            fire.m_ttl = (float)par.GetDoublePar(idx++, L",");
-            fire.m_puffttl = (float)par.GetDoublePar(idx++, L",");
-            fire.m_spawntime = (float)par.GetDoublePar(idx++, L",");
-            fire.m_intense = par.GetTrueFalsePar(idx++, L",");
-            fire.m_speed = (float)par.GetDoublePar(idx++, L",");
-            fire.m_dispfactor = (float)par.GetDoublePar(idx++, L",");
+            fire.m_ttl = (float)par.GetStrPar(idx++, L",").GetDouble();
+            fire.m_puffttl = (float)par.GetStrPar(idx++, L",").GetDouble();
+            fire.m_spawntime = (float)par.GetStrPar(idx++, L",").GetDouble();
+            fire.m_intense = par.GetStrPar(idx++, L",").GetBool();
+            fire.m_speed = (float)par.GetStrPar(idx++, L",").GetDouble();
+            fire.m_dispfactor = (float)par.GetStrPar(idx++, L",").GetDouble();
 
             break;
         }
@@ -3074,12 +3074,12 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std:
 
             sound.m_Type = EFFECT_UNDEFINED;
 
-            sound.m_vol0 = (float)par.GetDoublePar(idx++, L",");
-            sound.m_vol1 = (float)par.GetDoublePar(idx++, L",");
-            sound.m_pan0 = (float)par.GetDoublePar(idx++, L",");
-            sound.m_pan1 = (float)par.GetDoublePar(idx++, L",");
-            sound.m_attn = (float)par.GetDoublePar(idx++, L",");
-            // sound.m_looped = par.GetTrueFalsePar(idx++,L",");
+            sound.m_vol0 = (float)par.GetStrPar(idx++, L",").GetDouble();
+            sound.m_vol1 = (float)par.GetStrPar(idx++, L",").GetDouble();
+            sound.m_pan0 = (float)par.GetStrPar(idx++, L",").GetDouble();
+            sound.m_pan1 = (float)par.GetStrPar(idx++, L",").GetDouble();
+            sound.m_attn = (float)par.GetStrPar(idx++, L",").GetDouble();
+            // sound.m_looped = par.GetStrPar(idx++,L",").GetBool();
 
             std::wstring nam(par.GetStrPar(idx++, L","));
             if (nam.length() > (sizeof(sound.m_name) / sizeof(sound.m_name[0]))) {
@@ -3098,11 +3098,12 @@ void CMatrixMap::AddEffectSpawner(float x, float y, float z, int ttl, const std:
 
             *lightening.m_Tag = par.GetStrPar(idx++, L",");
 
-            lightening.m_ttl = (float)par.GetDoublePar(idx++, L",");
+            lightening.m_ttl = (float)par.GetStrPar(idx++, L",").GetDouble();
             lightening.m_Color = par.GetStrPar(idx++, L",").GetHexUnsigned();
-            lightening.m_Width = -(float)par.GetDoublePar(
-                    idx++, L",");  // set negative width. it means that m_Tag used instead of m_Pair;
-            lightening.m_Dispers = (float)par.GetDoublePar(idx++, L",");
+
+            // set negative width. it means that m_Tag used instead of m_Pair;
+            lightening.m_Width = -(float)par.GetStrPar(idx++, L",").GetDouble();
+            lightening.m_Dispers = (float)par.GetStrPar(idx++, L",").GetDouble();
 
             // seek tag
             int bla = m_EffectSpawnersCnt - 1;
