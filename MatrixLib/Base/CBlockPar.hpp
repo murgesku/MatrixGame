@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "CMain.hpp"
 #include "CHeap.hpp"
 #include "CException.hpp"
@@ -105,8 +107,7 @@ private:
     int m_CntPar;
     int m_CntBlock;
 
-    CBlockParUnit **m_Array;
-    int m_ArrayCnt;
+    std::vector<CBlockParUnit*> m_Array;
 
     std::wstring m_FromFile;
 
@@ -124,9 +125,8 @@ private:
     void UnitDel(CBlockParUnit *el);
     CBlockParUnit *UnitGet(const wchar *path, int path_len = -1);
 
-    int ArrayFind(const wchar *name, int namelen) const;  // -1-не найден   >=0-Первый юнит с этим названием
-    int ArrayFind(const std::wstring &name) const { return ArrayFind(name.c_str(), name.length()); }
-    int ArrayFindInsertIndex(CBlockParUnit *ael);  // А также инициализирует ael->m_Fast*
+    int ArrayFind(const std::wstring &name) const; // -1-не найден   >=0-Первый юнит с этим названием
+    int ArrayFindInsertIndex(CBlockParUnit *ael) const;  // А также инициализирует ael->m_Fast*
     void ArrayAdd(CBlockParUnit *el);
     void ArrayDel(CBlockParUnit *el);
 
