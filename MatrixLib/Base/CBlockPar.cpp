@@ -628,14 +628,15 @@ CBlockParUnit *CBlockPar::ParAdd(const std::wstring& name, const std::wstring& z
     return el;
 }
 
-bool CBlockPar::ParSetNE(const wchar *name, int namelen, const wchar *zn, int znlen) {
+bool CBlockPar::ParSetNE(const std::wstring& name, const std::wstring& zn)
+{
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
+        int i = ArrayFind(name);
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 1) {
-                    *(m_Array[i]->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+                    *(m_Array[i]->m_Par) = zn;
                     return true;
                 }
             }
@@ -644,28 +645,12 @@ bool CBlockPar::ParSetNE(const wchar *name, int namelen, const wchar *zn, int zn
     else {
         CBlockParUnit *el = m_First;
         while (el != NULL) {
-            if ((el->m_Type == 1) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)})) {
-                *(el->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+            if ((el->m_Type == 1) && (el->m_Name == name)) {
+                *(el->m_Par) = zn;
                 return true;
             }
             el = el->m_Next;
         }
-    }
-    return false;
-}
-
-bool CBlockPar::ParDeleteNE(const wchar *name, int namelen)  // нужно оптимизировать
-{
-    DTRACE();
-    CBlockParUnit *el = m_First;
-    while (el != NULL) {
-        if ((el->m_Type == 1) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)})) {
-            if (m_Sort)
-                ArrayDel(el);
-            UnitDel(el);
-            return true;
-        }
-        el = el->m_Next;
     }
     return false;
 }
@@ -689,10 +674,10 @@ void CBlockPar::ParDelete(int no)  // нужно оптимизировать
     ERROR_E;
 }
 
-const std::wstring* CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
+const std::wstring* CBlockPar::ParGetNE_(const std::wstring& name, int index) const {
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
+        int i = ArrayFind(name);
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 1 && index <= 0)
@@ -704,7 +689,7 @@ const std::wstring* CBlockPar::ParGetNE_(const wchar *name, int namelen, int ind
     else {
         CBlockParUnit *el = m_First;
         while (el != NULL) {
-            if ((el->m_Type == 1) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)}) && index <= 0)
+            if ((el->m_Type == 1) && (el->m_Name == name) && index <= 0)
                 return el->m_Par;
             --index;
             el = el->m_Next;
@@ -713,12 +698,13 @@ const std::wstring* CBlockPar::ParGetNE_(const wchar *name, int namelen, int ind
     return NULL;
 }
 
-int CBlockPar::ParCount(const wchar *name, int namelen) const {
+int CBlockPar::ParCount(const std::wstring& name) const
+{
     DTRACE();
     int rv = 0;
 
     if (m_Sort) {
-        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
+        int i = ArrayFind(name);
         if (i >= 0) {
             int li = i + m_Array[i]->m_FastCnt;
             while (i < li) {
@@ -731,7 +717,7 @@ int CBlockPar::ParCount(const wchar *name, int namelen) const {
     else {
         CBlockParUnit *el = m_First;
         while (el != NULL) {
-            if ((el->m_Type == 1) && (el->m_Name == std::wstring{name, static_cast<size_t>(namelen)}))
+            if ((el->m_Type == 1) && (el->m_Name == name))
                 rv++;
             el = el->m_Next;
         }
@@ -759,10 +745,11 @@ ParamParser CBlockPar::ParGet(int no) const {
     }
 }
 
-void CBlockPar::ParSet(int no, const wchar *zn, int znlen) {
+void CBlockPar::ParSet(int no, const std::wstring& zn)
+{
     DTRACE();
     if (m_Sort && (m_Cnt == m_CntPar)) {
-        *(m_Array[no]->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+        *(m_Array[no]->m_Par) = zn;
         return;
     }
     else {
@@ -771,7 +758,7 @@ void CBlockPar::ParSet(int no, const wchar *zn, int znlen) {
             if (el->m_Type == 1) {
                 if (no == 0)
                 {
-                    *(el->m_Par) = std::wstring{zn, static_cast<size_t>(znlen)};
+                    *(el->m_Par) = zn;
                     return;
                 }
                 no--;
