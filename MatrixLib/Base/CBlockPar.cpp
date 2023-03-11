@@ -353,8 +353,6 @@ CBlockPar::CBlockPar(bool sort, CHeap *heap) : CMain() {
     m_CntBlock = 0;
 
     m_Sort = sort;
-    m_Array = NULL;
-    m_ArrayCnt = 0;
 }
 
 CBlockPar::~CBlockPar() {
@@ -377,12 +375,7 @@ void CBlockPar::Clear() {
     m_CntPar = 0;
     m_CntBlock = 0;
 
-    if (m_Array != NULL) {
-        HFree(m_Array, m_Heap);
-        m_Array = NULL;
-    }
-    m_ArrayCnt = 0;
-
+    m_Array.clear();
     m_FromFile.clear();
 }
 
@@ -479,7 +472,7 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
 
         if (us->m_Sort) {
             ne = NULL;
-            i = us->ArrayFind((wchar *)path + name_sme, name_len);
+            i = us->ArrayFind(std::wstring{(wchar*)path + name_sme, static_cast<size_t>(name_len)});
             if (i >= 0) {
                 ne = us->m_Array[i];
                 if (no == 0)
@@ -519,16 +512,17 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
     return ne;
 }
 
-int CBlockPar::ArrayFind(const wchar *name, int namelen) const {
+int CBlockPar::ArrayFind(const std::wstring& name) const
+{
     DTRACE();
-    if (m_ArrayCnt < 1)
+    if (m_Array.empty())
         return -1;
     int istart = 0;
-    int iend = m_ArrayCnt - 1;
+    int iend = m_Array.size() - 1;
     for (;;) {
         int icur = istart + ((iend - istart) / 2);
-        CBlockParUnit *el = *(m_Array + icur);
-        int cz = std::wstring{name, static_cast<size_t>(namelen)}.compare(el->m_Name);
+        CBlockParUnit *el = m_Array[icur];
+        int cz = name.compare(el->m_Name);
         if (cz == 0)
             return icur - el->m_FastFirst;
         else if (cz < 0)
@@ -543,21 +537,22 @@ int CBlockPar::ArrayFind(const wchar *name, int namelen) const {
 int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) {
     DTRACE();
     int rv;
-    if (m_ArrayCnt <= 0) {
+    if (m_Array.empty())
+    {
         ael->m_FastFirst = 0;
         ael->m_FastCnt = 1;
         return 0;
     }
     int istart = 0;
-    int iend = m_ArrayCnt - 1;
+    int iend = m_Array.size() - 1;
     for (;;) {
         int icur = istart + ((iend - istart) / 2);
-        CBlockParUnit *el = *(m_Array + icur);
+        CBlockParUnit *el = m_Array[icur];
         int cz = ael->m_Name.compare(el->m_Name);
         if (cz == 0) {
             if (el->m_FastFirst != 0) {
                 rv = icur - el->m_FastFirst;
-                el = *(m_Array + rv);
+                el = m_Array[rv];
             }
             else
                 rv = icur;
@@ -584,23 +579,21 @@ int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) {
 
 void CBlockPar::ArrayAdd(CBlockParUnit *el) {
     DTRACE();
-    m_Array = (CBlockParUnit **)HAllocEx(m_Array, (m_ArrayCnt + 1) * sizeof(CBlockParUnit *), m_Heap);
 
     int no = ArrayFindInsertIndex(el);
-    if (no >= m_ArrayCnt) {
-        m_Array[m_ArrayCnt] = el;
-        m_ArrayCnt++;
+    if (no >= m_Array.size())
+    {
+        m_Array.push_back(el);
     }
-    else {
-        MoveMemory(m_Array + no + 1, m_Array + no, (m_ArrayCnt - no) * sizeof(CBlockParUnit *));
-        m_Array[no] = el;
-        m_ArrayCnt++;
+    else
+    {
+        m_Array.insert(m_Array.begin() + no, el);
     }
 }
 
 void CBlockPar::ArrayDel(CBlockParUnit *el) {
     DTRACE();
-    for (int no = 0; no < m_ArrayCnt; no++)
+    for (int no = 0; no < m_Array.size(); no++)
     {
         if (m_Array[no] == el)
         {
@@ -612,10 +605,7 @@ void CBlockPar::ArrayDel(CBlockParUnit *el) {
                 m_Array[no + 1]->m_FastCnt = el->m_FastCnt;
             }
 
-            if (no < (m_ArrayCnt - 1))
-                MoveMemory(m_Array + no, m_Array + no + 1, (m_ArrayCnt - no - 1) * sizeof(CBlockParUnit *));
-            m_ArrayCnt--;
-            m_Array = (CBlockParUnit **)HAllocEx(m_Array, m_ArrayCnt * sizeof(CBlockParUnit *), m_Heap);
+            m_Array.erase(m_Array.begin() + no);
             return;
         }
     }
@@ -640,7 +630,7 @@ CBlockParUnit *CBlockPar::ParAdd(const std::wstring& name, const std::wstring& z
 bool CBlockPar::ParSetNE(const wchar *name, int namelen, const wchar *zn, int znlen) {
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(name, namelen);
+        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 1) {
@@ -701,7 +691,7 @@ void CBlockPar::ParDelete(int no)  // нужно оптимизировать
 const std::wstring* CBlockPar::ParGetNE_(const wchar *name, int namelen, int index) const {
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(name, namelen);
+        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 1 && index <= 0)
@@ -727,7 +717,7 @@ int CBlockPar::ParCount(const wchar *name, int namelen) const {
     int rv = 0;
 
     if (m_Sort) {
-        int i = ArrayFind(name, namelen);
+        int i = ArrayFind(std::wstring{name, static_cast<size_t>(namelen)});
         if (i >= 0) {
             int li = i + m_Array[i]->m_FastCnt;
             while (i < li) {
@@ -830,7 +820,7 @@ CBlockPar *CBlockPar::BlockGetNE(const std::wstring& name)
 {
     DTRACE();
     if (m_Sort) {
-        int i = ArrayFind(name.c_str(), name.length());
+        int i = ArrayFind(name);
         if (i >= 0) {
             for (int li = i + m_Array[i]->m_FastCnt; i < li; i++) {
                 if (m_Array[i]->m_Type == 2)
@@ -912,7 +902,7 @@ int CBlockPar::BlockCount(const std::wstring& name) const
     int rv = 0;
 
     if (m_Sort) {
-        int i = ArrayFind(name.c_str(), name.length());
+        int i = ArrayFind(name);
         if (i >= 0) {
             int li = i + m_Array[i]->m_FastCnt;
             while (i < li) {
@@ -1117,7 +1107,7 @@ CBlockPar *CBlockPar::BlockPathGetAdd(const std::wstring &path)
 ////////////////////////////////////////////////////////////////////////////////
 int CBlockPar::AllGetType(int no) {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_ArrayCnt)) {
+    if (m_Sort && (m_Cnt == m_Array.size())) {
         return m_Array[no]->m_Type;
     }
     else {
@@ -1135,7 +1125,7 @@ int CBlockPar::AllGetType(int no) {
 CBlockPar *CBlockPar::AllGetBlock(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_ArrayCnt)) {
+    if (m_Sort && (m_Cnt == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 2)
             ERROR_E;
@@ -1159,7 +1149,7 @@ CBlockPar *CBlockPar::AllGetBlock(int no) {
 const std::wstring &CBlockPar::AllGetPar(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_ArrayCnt)) {
+    if (m_Sort && (m_Cnt == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 1)
             ERROR_E;
@@ -1183,7 +1173,7 @@ const std::wstring &CBlockPar::AllGetPar(int no) {
 const std::wstring &CBlockPar::AllGetName(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_ArrayCnt)) {
+    if (m_Sort && (m_Cnt == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 1 && el->m_Type != 2)
             ERROR_E;
