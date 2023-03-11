@@ -448,17 +448,17 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
             for (int i = 0; i < cnt; ++i) {
                 auto def = sideresinfo.GetStrPar(i, L"|");
 
-                int id = def.GetIntPar(0, L",");
+                int id = def.GetStrPar(0, L",").GetInt();
 
                 for (int j = 0; j < m_SideCnt; ++j) {
                     CMatrixSideUnit *su = m_Side + j;
                     if (su->m_Id == id) {
                         for (int k = 0; k < MAX_RESOURCES; ++k) {
-                            su->SetResourceAmount((ERes)k, def.GetIntPar(1 + k, L","));
+                            su->SetResourceAmount((ERes)k, def.GetStrPar(1 + k, L",").GetInt());
                         }
 
                         if (def.GetCountPar(L",") > 5) {
-                            su->SetResourceForceUp(def.GetIntPar(5, L","));
+                            su->SetResourceForceUp(def.GetStrPar(5, L",").GetInt());
                         }
                         else {
                             su->SetResourceForceUp(100);
@@ -696,13 +696,13 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 for (int k = 0; k < cc; k++) {
                     auto unit(units.GetStrPar(k, L"|"));
 
-                    ERobotUnitType type = (ERobotUnitType)unit.GetIntPar(0, L",");
-                    ERobotUnitKind kind = (ERobotUnitKind)unit.GetIntPar(1, L",");
+                    ERobotUnitType type = (ERobotUnitType)unit.GetStrPar(0, L",").GetInt();
+                    ERobotUnitKind kind = (ERobotUnitKind)unit.GetStrPar(1, L",").GetInt();
                     if (type == MRT_CHASSIS) {
                         sb.sb.m_Chassis.m_nKind = kind;
                         sb.sb.m_Chassis.m_nType = type;
 
-                        sb.angle = (float)unit.GetDoublePar(2, L",");
+                        sb.angle = (float)unit.GetStrPar(2, L",").GetDouble();
                     }
                     else if (type == MRT_ARMOR) {
                         sb.sb.m_Armor.m_Unit.m_nKind = kind;
@@ -1102,10 +1102,10 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
                 tex->MipmapOff();
                 tex->Prepare();
 
-                m_SkyTex[idx].u0 = float(skbp->ParGet(skyname).GetIntPar(1, L",")) / float(tex->GetSizeX());
-                m_SkyTex[idx].v0 = float(skbp->ParGet(skyname).GetIntPar(2, L",")) / float(tex->GetSizeY());
-                m_SkyTex[idx].u1 = float(skbp->ParGet(skyname).GetIntPar(3, L",")) / float(tex->GetSizeX());
-                m_SkyTex[idx].v1 = float(skbp->ParGet(skyname).GetIntPar(4, L",")) / float(tex->GetSizeY());
+                m_SkyTex[idx].u0 = float(skbp->ParGet(skyname).GetStrPar(1, L",").GetInt()) / float(tex->GetSizeX());
+                m_SkyTex[idx].v0 = float(skbp->ParGet(skyname).GetStrPar(2, L",").GetInt()) / float(tex->GetSizeY());
+                m_SkyTex[idx].u1 = float(skbp->ParGet(skyname).GetStrPar(3, L",").GetInt()) / float(tex->GetSizeX());
+                m_SkyTex[idx].v1 = float(skbp->ParGet(skyname).GetStrPar(4, L",").GetInt()) / float(tex->GetSizeY());
             }
         }
     }

@@ -461,8 +461,8 @@ static bool m_InitOk=false;
 
             tstr=Base::Reg_GetString(0,L"HKCU\\Software\\Elemental Games\\MaxExp",L"DlgGroupPos",L"");
             if(tstr.GetCountPar(L",")>=2) {
-                int x=tstr.GetIntPar(0,L",");
-                int y=tstr.GetIntPar(1,L",");
+                int x=tstr.GetStrPar(0,L",").GetInt();
+                int y=tstr.GetStrPar(1,L",").GetInt();
 
                 SetWindowPos(hWnd,0,x,y,0,0,SWP_NOACTIVATE || SWP_NOCOPYBITS || SWP_NOOWNERZORDER || SWP_NOSIZE || SWP_NOZORDER);
             }

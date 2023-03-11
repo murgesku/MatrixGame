@@ -1646,14 +1646,14 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
             const wchar *mn = m_VO->GetMatrixName(m);
             if (mn[0] == '$') {
                 ParamParser li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)));
-                float ra = (float)li_info.GetDoublePar(0, L",");
+                float ra = (float)li_info.GetStrPar(0, L",").GetDouble();
 
                 int pars = li_info.GetCountPar(L",");
                 m_Lights[l].intervals_cnt = pars - 2;
                 if (m_Lights[l].intervals_cnt == 0) {
                     m_Lights[l].intervals = (SColorInterval *)HAlloc(sizeof(SColorInterval), g_CacheHeap);
                     m_Lights[l].intervals_cnt = 1;
-                    m_Lights[l].intervals[0].time1 = li_info.GetStrPar(1, L",").GetIntPar(0, L":");
+                    m_Lights[l].intervals[0].time1 = li_info.GetStrPar(1, L",").GetStrPar(0, L":").GetInt();
                     m_Lights[l].intervals[0].time2 = m_Lights[l].intervals[0].time1;
                     m_Lights[l].intervals[0].c1 =
                             0xFF000000 | li_info.GetStrPar(1, L",").GetStrPar(1, L":").GetHexUnsigned();
@@ -1669,7 +1669,7 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
                     DWORD *colors = (DWORD *)(times + (pars - 1));
 
                     for (int pa = 1; pa < pars; ++pa) {
-                        times[pa - 1] = li_info.GetStrPar(pa, L",").GetIntPar(0, L":");
+                        times[pa - 1] = li_info.GetStrPar(pa, L",").GetStrPar(0, L":").GetInt();
                         colors[pa - 1] = 0xFF000000 | li_info.GetStrPar(pa, L",").GetStrPar(1, L":").GetHexUnsigned();
                     }
 

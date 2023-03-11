@@ -18,6 +18,25 @@ namespace Base {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+bool ParamParser::GetBool() const
+{
+    std::wstring str = *this;
+    utils::to_lower(str);
+
+    if(str == L"true" || str == L"yes" || str == L"on")
+    {
+        return true;
+    }
+
+    if(str == L"false" || str == L"no" || str == L"off")
+    {
+        return false;
+    }
+
+    ERROR_E;
+    return false;
+}
+
 int ParamParser::GetInt() const
 {
     if (this->empty())
@@ -221,24 +240,6 @@ ParamParser ParamParser::GetStrPar(int nps, int npe, const wchar *ogsim) const {
     int sme2 = GetSmePar(npe, ogsim);
     sme2 += GetLenPar(sme2, ogsim);
     return std::wstring(c_str() + sme1, sme2 - sme1);
-}
-
-bool ParamParser::GetTrueFalsePar(int np, const wchar *ogsim) const {
-    std::wstring str = GetStrPar(np, ogsim);
-    utils::to_lower(str);
-
-    if(str == L"true" || str == L"yes" || str == L"on")
-    {
-        return true;
-    }
-
-    if(str == L"false" || str == L"no" || str == L"off")
-    {
-        return false;
-    }
-
-    ERROR_E;
-    return false;
 }
 
 int ParamParser::GetCountPar(const wchar *ogsim) const {
@@ -534,7 +535,7 @@ int CBlockPar::ArrayFind(const std::wstring& name) const
     }
 }
 
-int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) {
+int CBlockPar::ArrayFindInsertIndex(CBlockParUnit *ael) const {
     DTRACE();
     int rv;
     if (m_Array.empty())

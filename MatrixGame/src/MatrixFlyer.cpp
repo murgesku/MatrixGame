@@ -460,7 +460,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                     m_Units[uindex].m_Weapon.m_Weapon->SetOwner(this);
                     m_Units[uindex].m_Weapon.m_Unit = -1;
 
-                    m_Units[uindex].m_Weapon.m_MatrixID = bp->ParGet(L"Matrix").GetIntPar(1, L",");
+                    m_Units[uindex].m_Weapon.m_MatrixID = bp->ParGet(L"Matrix").GetStrPar(1, L",").GetInt();
 
                     std::wstring unit;
                     unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");
@@ -543,9 +543,9 @@ void CMatrixFlyer::RNeed(DWORD need) {
 
                     m_Units[uindex].m_Weapon.m_HFOV = GRAD2RAD(float(bp->ParGet(L"RotationZ").GetDouble() * 0.5));
                     m_Units[uindex].m_Weapon.m_UpAngle =
-                            GRAD2RAD((float)bp->ParGet(L"RotationX").GetDoublePar(0, L","));
+                            GRAD2RAD((float)bp->ParGet(L"RotationX").GetStrPar(0, L",").GetDouble());
                     m_Units[uindex].m_Weapon.m_DownAngle =
-                            GRAD2RAD((float)bp->ParGet(L"RotationX").GetDoublePar(1, L","));
+                            GRAD2RAD((float)bp->ParGet(L"RotationX").GetStrPar(1, L",").GetDouble());
 
                     EWeapon w = WeapName2Weap(bp->ParGet(L"Weapon").c_str());
                     if (w == WEAPON_NONE) {
@@ -566,7 +566,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
             for (int i = 0; i < m_StreamsCount; ++i) {
                 CBlockPar *bp = m_Streams[i].bp;
 
-                m_Streams[i].matrix = bp->ParGet(L"Matrix").GetIntPar(1, L",");
+                m_Streams[i].matrix = bp->ParGet(L"Matrix").GetStrPar(1, L",").GetInt();
 
                 std::wstring unit;
                 unit = bp->ParGet(L"Matrix").GetStrPar(0, L",");

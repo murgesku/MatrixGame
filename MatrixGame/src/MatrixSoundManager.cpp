@@ -376,12 +376,12 @@ void CSound::SureLoaded(ESound snd) {
             m_Sounds[snd].vol0 = 1;
             m_Sounds[snd].vol1 = 1;
             if (bp->ParCount(L"pan")) {
-                m_Sounds[snd].pan0 = (float)bp->ParGet(L"pan").GetDoublePar(0, L",");
-                m_Sounds[snd].pan1 = (float)bp->ParGet(L"pan").GetDoublePar(1, L",");
+                m_Sounds[snd].pan0 = (float)bp->ParGet(L"pan").GetStrPar(0, L",").GetDouble();
+                m_Sounds[snd].pan1 = (float)bp->ParGet(L"pan").GetStrPar(1, L",").GetDouble();
             }
             if (bp->ParCount(L"vol")) {
-                m_Sounds[snd].vol0 = (float)bp->ParGet(L"vol").GetDoublePar(0, L",");
-                m_Sounds[snd].vol1 = (float)bp->ParGet(L"vol").GetDoublePar(1, L",");
+                m_Sounds[snd].vol0 = (float)bp->ParGet(L"vol").GetStrPar(0, L",").GetDouble();
+                m_Sounds[snd].vol1 = (float)bp->ParGet(L"vol").GetStrPar(1, L",").GetDouble();
             }
             if (bp->ParCount(L"looped")) {
                 bool looped = 0 != bp->ParGet(L"looped").GetInt();
@@ -391,8 +391,8 @@ void CSound::SureLoaded(ESound snd) {
                 RESETFLAG(m_Sounds[snd].flags, SSoundItem::LOOPED);
             }
             if (bp->ParCount(L"ttl")) {
-                m_Sounds[snd].ttl = (float)bp->ParGet(L"ttl").GetDoublePar(0, L",");
-                m_Sounds[snd].fadetime = (float)bp->ParGet(L"ttl").GetDoublePar(1, L",");
+                m_Sounds[snd].ttl = (float)bp->ParGet(L"ttl").GetStrPar(0, L",").GetDouble();
+                m_Sounds[snd].fadetime = (float)bp->ParGet(L"ttl").GetStrPar(1, L",").GetDouble();
             }
             if (bp->ParCount(L"attn")) {
                 m_Sounds[snd].attn = (float)(0.002 * bp->ParGet(L"attn").GetDouble());

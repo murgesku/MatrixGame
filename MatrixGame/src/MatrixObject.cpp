@@ -216,7 +216,7 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
             // RChange(MR_ShadowProjGeom|MR_ShadowProjTex|MR_ShadowStencil);
             // RNeed(MR_ShadowProjGeom|MR_ShadowProjTex|MR_ShadowStencil);
             RESETFLAG(m_ObjectState, OBJECT_STATE_SHADOW_SPECIAL);
-            Init(temp.GetIntPar(1, L","));
+            Init(temp.GetStrPar(1, L",").GetInt());
         }
     }
     else if (m_BehFlag == BEHF_ANIM) {
@@ -251,9 +251,9 @@ bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTO
             int cnt = temp.GetCountPar(L"#");
             for (int i = 0; i < cnt; ++i) {
                 auto temp1 = temp.GetStrPar(i, L"#");
-                if (temp1.GetIntPar(0, L":") == m_AnimState) {
+                if (temp1.GetStrPar(0, L":").GetInt() == m_AnimState) {
                     // found
-                    int newstate = temp1.GetIntPar(3, L":");
+                    int newstate = temp1.GetStrPar(3, L":").GetInt();
                     if (newstate >= 0) {
                         ApplyAnimState(newstate);
                         break;
@@ -274,11 +274,11 @@ void CMatrixMapObject::ApplyAnimState(int anims) {
     int cnt = temp.GetCountPar(L"#");
     for (int i = 0; i < cnt; ++i) {
         auto temp1 = temp.GetStrPar(i, L"#");
-        if (temp1.GetIntPar(0, L":") == anims) {
+        if (temp1.GetStrPar(0, L":").GetInt() == anims) {
             // found
             if (m_Graph)
-                m_Graph->SetAnimById(temp1.GetIntPar(1, L":"));
-            m_BreakHitPoint = temp1.GetIntPar(2, L":");
+                m_Graph->SetAnimById(temp1.GetStrPar(1, L":").GetInt());
+            m_BreakHitPoint = temp1.GetStrPar(2, L":").GetInt();
             if (m_BreakHitPoint == 0) {
                 m_BreakHitPoint = 2000000000;
             }
@@ -564,7 +564,7 @@ void CMatrixMapObject::RNeed(dword need) {
 
                 const SSkin *store = NULL;
 
-                int st = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetIntPar(2, L",");
+                int st = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetStrPar(2, L",").GetInt();
                 ASSERT(st < m_ShadowTexturesCount);
                 if (FLAG(m_ObjectState, OBJECT_STATE_BURNED)) {
                     tex = m_ShadowTextures[st].tex_burn;
@@ -582,7 +582,7 @@ void CMatrixMapObject::RNeed(dword need) {
                     m_ShadowProj->SetTexture(tex);
                 }
                 else {
-                    int ss = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetIntPar(1, L",");
+                    int ss = g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetStrPar(1, L",").GetInt();
 
                     if (FLAG(m_ObjectState, OBJECT_STATE_SHADOW_SPECIAL)) {
                         ShadowProjBuildTexture(this, *m_ShadowProj, *m_Graph, m_Graph->GetVOFrame(), m_Core->m_IMatrix,
@@ -605,7 +605,7 @@ void CMatrixMapObject::RNeed(dword need) {
                 }
             }
             else {
-                int ss = (m_Type >= 0) ? g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetIntPar(1, L",")
+                int ss = (m_Type >= 0) ? g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_SHADOW, L"*").GetStrPar(1, L",").GetInt()
                                        : 128;
 
                 if (FLAG(m_ObjectState, OBJECT_STATE_SHADOW_SPECIAL)) {
@@ -655,9 +655,9 @@ void CMatrixMapObject::Takt(int cms) {
                     int cnt = temp.GetCountPar(L"#");
                     for (int i = 0; i < cnt; ++i) {
                         auto temp1 = temp.GetStrPar(i, L"#");
-                        if (temp1.GetIntPar(0, L":") == m_AnimState) {
+                        if (temp1.GetStrPar(0, L":").GetInt() == m_AnimState) {
                             // found
-                            int newstate = temp1.GetIntPar(4, L":");
+                            int newstate = temp1.GetStrPar(4, L":").GetInt();
                             if (newstate >= 0) {
                                 ApplyAnimState(newstate);
                                 break;
@@ -894,7 +894,7 @@ void CMatrixMapObject::Init(int ids) {
     m_Type = ids;
     RChange(MR_Graph | MR_ShadowStencil | MR_ShadowProjGeom | MR_ShadowProjTex);
 
-    m_TexBias = (float)g_MatrixMap->IdsGet(m_Type).GetDoublePar(OTP_BIAS, L"*");
+    m_TexBias = (float)g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BIAS, L"*").GetDouble();
 
     // temp
     m_BehFlag = BEHF_STATIC;
@@ -951,7 +951,7 @@ void CMatrixMapObject::Init(int ids) {
         }
     }
     else if (utils::starts_with(temp, L"Break")) {
-        m_BreakHitPoint = temp.GetIntPar(2, L",");
+        m_BreakHitPoint = temp.GetStrPar(2, L",").GetInt();
         m_BreakHitPointMax = m_BreakHitPoint;
 
         if (temp.GetStrPar(3, L",") == STR_BREAK_TYPE_TERRON) {
@@ -982,7 +982,7 @@ void CMatrixMapObject::Init(int ids) {
     else if (utils::starts_with(temp, L"Sens")) {
         m_BehFlag = BEHF_SENS;
         m_PrevStateRobotsInRadius = -1;
-        m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");
+        m_SensRadius = (float)temp.GetStrPar(1, L",").GetStrPar(0, L":").GetDouble();
 
         SetAblazeTTL(101);
         AddLT();
@@ -990,7 +990,7 @@ void CMatrixMapObject::Init(int ids) {
     else if (utils::starts_with(temp, L"Spawn")) {
         m_BehFlag = BEHF_SPAWNER;
         m_PrevStateRobotsInRadius = -1;
-        m_SensRadius = (float)temp.GetStrPar(1, L",").GetDoublePar(0, L":");
+        m_SensRadius = (float)temp.GetStrPar(1, L",").GetStrPar(0, L":").GetDouble();
 
         SetAblazeTTL(101 + g_MatrixMap->GetTime());
         m_SpawnRobotCore = NULL;
@@ -1143,7 +1143,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 }
 
                 auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-                Init(temp.GetIntPar(1, L","));
+                Init(temp.GetStrPar(1, L",").GetInt());
             }
             else if (GetAblazeTTL() < 100 && !FLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2)) {
                 SETFLAG(m_ObjectState, OBJECT_STATE_TERRON_EXPL2);
@@ -1230,7 +1230,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
         if (m_PrevStateRobotsInRadius < 0) {
             m_PrevStateRobotsInRadius = 0;
             auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-            m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(4, L":"));
+            m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(4, L":").GetInt());
         }
         else if (m_PrevStateRobotsInRadius == 0) {
             if (g_MatrixMap->GetTime() > GetAblazeTTL()) {
@@ -1241,9 +1241,9 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 if (found) {
                     auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                     m_PrevStateRobotsInRadius = 1;
-                    addt = temp.GetStrPar(1, L",").GetIntPar(1, L":");
+                    addt = temp.GetStrPar(1, L",").GetStrPar(1, L":").GetInt();
 
-                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(5, L":"), 0);
+                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(5, L":").GetInt(), 0);
 
                     std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(8, L":"));
                     if (!snd.empty())
@@ -1258,8 +1258,8 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 // spawn robot!
                 auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
 
-                int robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetIntPar(2, L":"),
-                                             temp.GetStrPar(1, L",").GetIntPar(3, L":"));
+                int robot = g_MatrixMap->Rnd(temp.GetStrPar(1, L",").GetStrPar(2, L":").GetInt(),
+                                             temp.GetStrPar(1, L",").GetStrPar(3, L":").GetInt());
 
                 CBlockPar *bpr = g_MatrixData->BlockGet(L"RobotSpawn");
                 CBlockPar *botpar = bpr->BlockGetNE(utils::format(L"%d", robot));
@@ -1301,7 +1301,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 r->InitMaxHitpoint((float)botpar->ParGet(L"BotHitpoint").GetDouble());
 
-                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(6, L":"), 0);
+                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(6, L":").GetInt(), 0);
 
                 std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(9, L":"));
                 if (!snd.empty())
@@ -1336,7 +1336,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 m_SpawnRobotCore = NULL;
 
                 auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(7, L":"), 0);
+                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(7, L":").GetInt(), 0);
 
                 std::wstring snd(temp.GetStrPar(1, L",").GetStrPar(10, L":"));
                 if (!snd.empty())
@@ -1347,7 +1347,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
         else if (m_PrevStateRobotsInRadius == 3) {
             if (m_Graph->IsAnimEnd()) {
                 auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(4, L":"));
+                m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(4, L":").GetInt());
                 m_PrevStateRobotsInRadius = 0;
             }
         }
@@ -1357,7 +1357,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
         if (m_PrevStateRobotsInRadius < 0) {
             m_PrevStateRobotsInRadius = 0;
             auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-            m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(1, L":"));
+            m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(1, L":").GetInt());
         }
 
         SetAblazeTTL(GetAblazeTTL() - ms);
@@ -1369,7 +1369,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                                          NULL, 0)) {
                 if (m_PrevStateRobotsInRadius == 0) {
                     auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(2, L":"));
+                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(2, L":").GetInt());
                     m_PrevStateRobotsInRadius = 1;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 5) {
@@ -1381,7 +1381,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
             else {
                 if (m_PrevStateRobotsInRadius != 0) {
                     auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
-                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetIntPar(3, L":"));
+                    m_Graph->SetAnimById(temp.GetStrPar(1, L",").GetStrPar(3, L":").GetInt());
                     m_PrevStateRobotsInRadius = 0;
 
                     if (temp.GetStrPar(1, L",").GetCountPar(L":") >= 6) {
@@ -1441,7 +1441,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                 if (bt == L"Type") {
                     // replace object
-                    Init(temp.GetIntPar(1, L","));
+                    Init(temp.GetStrPar(1, L",").GetInt());
                     m_BehFlag = BEHF_STATIC;  // сгорела :(
                 }
                 else {
