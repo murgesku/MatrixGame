@@ -813,13 +813,13 @@ std::wstring PathToOutputFiles(const wchar_t* dest) {
             wchar_t lpPath[MAX_PATH];
             SHGetPathFromIDListW(pidl, lpPath);
 
-            path = utils::format(L"%s\\SpaceRangersHD", lpPath);
+            path = utils::format(L"%ls\\SpaceRangersHD", lpPath);
             CreateDirectoryW(path.c_str(), NULL);
             path += L"\\";
             path += dest;
         }
         else {
-            path = utils::format(L".\\%s", dest);
+            path = utils::format(L".\\%ls", dest);
         }
     }
 

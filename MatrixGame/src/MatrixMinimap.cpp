@@ -1159,17 +1159,21 @@ render:
         CreateDirectoryW(PathToOutputFiles(FOLDER_NAME_CACHE).c_str(), NULL);
 
         // seek files
-        auto n = utils::format("%s\\%s.*",
+        auto n = utils::format(L"%ls\\%ls.*",
             PathToOutputFiles(FOLDER_NAME_CACHE),
-            utils::from_wstring(name).c_str());
+            name.c_str());
 
         HANDLE ff;
         for (;;) {
-            WIN32_FIND_DATA fd;
-            ff = FindFirstFile(n.c_str(), &fd);
+            WIN32_FIND_DATAW fd;
+            ff = FindFirstFileW(n.c_str(), &fd);
             if (ff != INVALID_HANDLE_VALUE) {
-                auto nn = utils::format("%s\\%s", PathToOutputFiles(FOLDER_NAME_CACHE), fd.cFileName);
-                DeleteFile(nn.c_str());
+                auto nn =
+                    utils::format(
+                        L"%ls\\%ls",
+                        PathToOutputFiles(FOLDER_NAME_CACHE),
+                        fd.cFileName);
+                DeleteFileW(nn.c_str());
             }
             else {
                 break;

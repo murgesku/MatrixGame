@@ -285,12 +285,12 @@ void CFormMatrixGame::Takt(int step) {
 
         time_t cur_time = time(NULL);
         struct tm tstruct = *localtime(&cur_time);
-        wchar_t time_str[40];
+        wchar_t time_str[20];
         wcsftime(time_str, sizeof(time_str), L"%Y-%m-%d-%H-%M-%S", &tstruct);
 
         std::wstring filename =
             utils::format(
-                L"%s\\%s-%s-%03d.png",
+                L"%ls\\%ls-%ls-%03d.png",
                 screenshots_dir.c_str(),
                 FILE_NAME_SCREENSHOT,
                 time_str,
