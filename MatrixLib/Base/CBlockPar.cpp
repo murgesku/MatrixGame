@@ -359,8 +359,6 @@ CBlockPar::CBlockPar(bool sort, CHeap *heap) : CMain() {
     m_Sort = sort;
     m_Array = NULL;
     m_ArrayCnt = 0;
-
-    m_FromFile = NULL;
 }
 
 CBlockPar::~CBlockPar() {
@@ -389,11 +387,7 @@ void CBlockPar::Clear() {
     }
     m_ArrayCnt = 0;
 
-    if (m_FromFile) {
-        using std::wstring;
-        HDelete(wstring, m_FromFile, m_Heap);
-        m_FromFile = NULL;
-    }
+    m_FromFile.clear();
 }
 
 void CBlockPar::CopyFrom(CBlockPar &bp) {
@@ -1454,8 +1448,7 @@ public:
                 }
                 if (m_FileBegin >= 0) {
                     unit->m_Block->LoadFromTextFile(std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)});
-                    unit->m_Block->m_FromFile = HNew(unit->m_Block->m_Heap)
-                            std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)};
+                    unit->m_Block->m_FromFile = std::wstring{m_Text + m_FileBegin, static_cast<size_t>(m_FileEnd - m_FileBegin)};
                 }
             }
             else if (FindPar()) {
@@ -1602,12 +1595,13 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
                 addspace = true;
             }
 
-            if (unit->m_Block->m_FromFile) {
+            if (!unit->m_Block->m_FromFile.empty())
+            {
                 SaveStrConst("=");
-                SaveStr(unit->m_Block->m_FromFile->c_str());
+                SaveStr(unit->m_Block->m_FromFile.c_str());
                 SaveStrConst(" {}");
 
-                unit->m_Block->SaveInTextFile(*unit->m_Block->m_FromFile, ansi);
+                unit->m_Block->SaveInTextFile(unit->m_Block->m_FromFile, ansi);
             }
             else {
                 if (!unit->m_Block->m_Sort) {
