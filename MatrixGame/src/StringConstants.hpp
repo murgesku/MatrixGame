@@ -662,7 +662,7 @@
 
 #define FOLDER_NAME_CACHE       L"Cache"
 #define FOLDER_NAME_SCREENSHOTS L"Screenshots"
-#define FILE_NAME_SCREENSHOT    "Shot"
+#define FILE_NAME_SCREENSHOT    L"Shot"
 
 // interface
 
