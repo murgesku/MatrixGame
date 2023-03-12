@@ -94,20 +94,14 @@ class BASE_API CBlockPar : public CMain {
     friend BPCompiler;
 
 private:
-    CHeap *m_Heap;
-
     std::list<CBlockParUnit*> m_Units;
 
     int m_CntPar;
     int m_CntBlock;
 
-    std::vector<CBlockParUnit*> m_Array;
-
     std::wstring m_FromFile;
-
-    bool m_Sort;  // bool
 public:
-    CBlockPar(bool sort = true, CHeap *heap = NULL);
+    CBlockPar();
     ~CBlockPar();
 
     void Clear(void);
@@ -118,11 +112,6 @@ private:
     CBlockParUnit *UnitAdd(void);
     void UnitDel(CBlockParUnit *el);
     CBlockParUnit *UnitGet(const wchar *path, int path_len = -1);
-
-    int ArrayFind(const std::wstring &name) const; // -1-не найден   >=0-Первый юнит с этим названием
-    int ArrayFindInsertIndex(CBlockParUnit *ael) const;  // А также инициализирует ael->m_Fast*
-    void ArrayAdd(CBlockParUnit *el);
-    void ArrayDel(CBlockParUnit *el);
 
     //////////////////////////////////////////////////////////////
 private:

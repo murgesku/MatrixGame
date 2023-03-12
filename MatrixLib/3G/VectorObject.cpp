@@ -34,7 +34,7 @@ static bool FreeObjectResources(uintptr_t user) {
 
 #pragma warning(disable : 4355)
 CVectorObject::CVectorObject(void)
-  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)), m_Props(true, g_CacheHeap) {
+  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)) {
     DTRACE();
     m_Type = cc_VO;
 
@@ -2271,7 +2271,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     std::wstring tstr, tstr2, unit, bs;
     std::wstring texture, texture_gloss, texture_back, texture_mask;
 
-    CBlockPar bp(true, g_CacheHeap);
+    CBlockPar bp;
     CVectorObjectGroupUnit *gu;
 
     bp.LoadFromTextFile(filename);

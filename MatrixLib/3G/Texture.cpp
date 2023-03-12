@@ -114,7 +114,7 @@ void CBaseTexture::ParseFlags(const ParamParser& name) {
         }
 
         if (proceed) {
-            CBlockPar texi(1, g_CacheHeap);
+            CBlockPar texi;
             texi.LoadFromTextFile(tstr);
 
             tstr = texi.ParGetNE(L"AlphaTest");

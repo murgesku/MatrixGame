@@ -182,7 +182,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
         stor_cfg_present = true;
     }
 
-    g_MatrixData = HNew(g_MatrixHeap) CBlockPar(1, g_MatrixHeap);
+    g_MatrixData = HNew(g_MatrixHeap) CBlockPar{};
     if (stor_cfg_present) {
         stor_cfg.RestoreBlockPar(L"da", *g_MatrixData);
         // stor_cfg.RestoreBlockPar(L"if", *g_MatrixData);
@@ -364,7 +364,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     g_LoadProgress->InitCurLP(701);
 
     DCP();
-    CBlockPar bpi(1, g_CacheHeap);
+    CBlockPar bpi;
     if (stor_cfg_present)
     {
         stor_cfg.RestoreBlockPar(L"if", bpi);
