@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CONFIGURATION_TYPES Release Debug)
 
 project(MatrixGame)
@@ -38,6 +38,11 @@ if(MSVC)
     )
 
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
+
+    # TODO: <codecvt> is deprecated since C++17. in future we should
+    # use std::string everywhere and not cast string <-> wstring.
+    # till then - here is a hotfix to suppress warnings
+    list(APPEND COMPILE_DEFINITIONS _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 else()
     list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Debug>:_DEBUG>)
 
