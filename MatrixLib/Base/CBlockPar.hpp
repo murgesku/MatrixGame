@@ -6,6 +6,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 
 #include "CMain.hpp"
 #include "CHeap.hpp"
@@ -39,7 +40,6 @@ public:
 
     bool IsOnlyInt(void) const;
 
-
     // Функции для работы с параметрами
     // Примеры :
     //      Str="count=5,7"    GetCountPar("=,")           return 3
@@ -67,8 +67,6 @@ class BASE_API CBlockParUnit : public CMain {
 private:
     CHeap *m_Heap;
 
-    CBlockParUnit *m_Prev;
-    CBlockParUnit *m_Next;
     CBlockPar *m_Parent;
 
     int m_Type;  // 0-empty 1-par 2-block
@@ -98,10 +96,8 @@ class BASE_API CBlockPar : public CMain {
 private:
     CHeap *m_Heap;
 
-    CBlockParUnit *m_First;
-    CBlockParUnit *m_Last;
+    std::list<CBlockParUnit*> m_Units;
 
-    int m_Cnt;
     int m_CntPar;
     int m_CntBlock;
 
@@ -128,7 +124,6 @@ private:
     void ArrayAdd(CBlockParUnit *el);
     void ArrayDel(CBlockParUnit *el);
 
-public:
     //////////////////////////////////////////////////////////////
 private:
     bool ParSetNE(const std::wstring& name, const std::wstring& zn);
@@ -212,7 +207,7 @@ public:
     CBlockPar *BlockPathGetAdd(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
-    int AllCount(void) { return m_Cnt; }
+    int AllCount(void) { return m_Units.size(); }
     int AllGetType(int no);
     CBlockPar *AllGetBlock(int no);
     const std::wstring &AllGetPar(int no);
