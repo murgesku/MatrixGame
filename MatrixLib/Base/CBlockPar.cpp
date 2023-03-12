@@ -13,6 +13,7 @@
 
 #include <utils.hpp>
 
+
 namespace Base {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -270,8 +271,6 @@ CBlockParUnit::CBlockParUnit(CHeap *heap) : CMain(), m_Name{}, m_Com{} {
     DTRACE();
     m_Heap = heap;
 
-    m_Prev = NULL;
-    m_Next = NULL;
     m_Parent = NULL;
 
     m_Type = 0;
@@ -346,10 +345,6 @@ CBlockPar::CBlockPar(bool sort, CHeap *heap) : CMain() {
     DTRACE();
     m_Heap = heap;
 
-    m_First = NULL;
-    m_Last = NULL;
-
-    m_Cnt = 0;
     m_CntPar = 0;
     m_CntBlock = 0;
 
@@ -363,16 +358,11 @@ CBlockPar::~CBlockPar() {
 
 void CBlockPar::Clear() {
     DTRACE();
-    CBlockParUnit *tt, *t = m_First;
-    while (t != NULL) {
-        tt = t;
-        t = t->m_Next;
-        HDelete(CBlockParUnit, tt, m_Heap);
+    for(CBlockParUnit *el : m_Units)
+    {
+        HDelete(CBlockParUnit, el, m_Heap);
     }
-    m_First = NULL;
-    m_Last = NULL;
 
-    m_Cnt = 0;
     m_CntPar = 0;
     m_CntBlock = 0;
 
@@ -384,9 +374,9 @@ void CBlockPar::CopyFrom(CBlockPar &bp) {
     DTRACE();
     Clear();
     m_Sort = bp.m_Sort;
-    CBlockParUnit *el2, *el = bp.m_First;
-    while (el != NULL) {
-        el2 = UnitAdd();
+    for(CBlockParUnit *el : m_Units)
+    {
+        CBlockParUnit* el2 = UnitAdd();
         el2->CopyFrom(*el);
         if (m_Sort)
             ArrayAdd(el2);
@@ -394,7 +384,6 @@ void CBlockPar::CopyFrom(CBlockPar &bp) {
             m_CntPar++;
         else if (el->m_Type == 2)
             m_CntBlock++;
-        el = el->m_Next;
     }
 }
 
@@ -403,17 +392,15 @@ CBlockParUnit *CBlockPar::UnitAdd() {
     CBlockParUnit *el = HNew(m_Heap) CBlockParUnit(m_Heap);
     el->m_Parent = this;
 
-    LIST_ADD(el, m_First, m_Last, m_Prev, m_Next);
+    m_Units.push_back(el);
 
-    m_Cnt++;
     return el;
 }
 
 void CBlockPar::UnitDel(CBlockParUnit *el) {
     DTRACE();
-    LIST_DEL(el, m_First, m_Last, m_Prev, m_Next);
+    m_Units.remove(el);
 
-    m_Cnt--;
     if (el->m_Type == 1)
         m_CntPar--;
     else if (el->m_Type == 2)
@@ -471,10 +458,12 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
         }
         // end
 
-        if (us->m_Sort) {
+        if (us->m_Sort)
+        {
             ne = NULL;
             i = us->ArrayFind(std::wstring{(wchar*)path + name_sme, static_cast<size_t>(name_len)});
-            if (i >= 0) {
+            if (i >= 0)
+            {
                 ne = us->m_Array[i];
                 if (no == 0)
                     ;
@@ -484,19 +473,19 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
                     ne = NULL;
             }
         }
-        else {
-            ne = us->m_First;
+        else
+        {
             u = 0;
-            while ((u <= no) && (ne != NULL)) {
-                while (ne != NULL) {
-                    if (ne->m_Name == std::wstring{path + name_sme, static_cast<size_t>(name_len)}) {
-                        if (u < no)
-                            ne = ne->m_Next;
+            for(CBlockParUnit *el : us->m_Units)
+            {
+                if (el->m_Name == std::wstring{path + name_sme, static_cast<size_t>(name_len)})
+                {
+                    if (++u == no)
+                    {
+                        ne = el;
                         break;
                     }
-                    ne = ne->m_Next;
                 }
-                u++;
             }
         }
 
@@ -643,13 +632,12 @@ bool CBlockPar::ParSetNE(const std::wstring& name, const std::wstring& zn)
         }
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if ((el->m_Type == 1) && (el->m_Name == name)) {
                 *(el->m_Par) = zn;
                 return true;
             }
-            el = el->m_Next;
         }
     }
     return false;
@@ -658,8 +646,8 @@ bool CBlockPar::ParSetNE(const std::wstring& name, const std::wstring& zn)
 void CBlockPar::ParDelete(int no)  // нужно оптимизировать
 {
     DTRACE();
-    CBlockParUnit *el = m_First;
-    while (el != NULL) {
+    for(CBlockParUnit *el : m_Units)
+    {
         if (el->m_Type == 1) {
             if (no == 0) {
                 if (m_Sort)
@@ -669,7 +657,6 @@ void CBlockPar::ParDelete(int no)  // нужно оптимизировать
             }
             no--;
         }
-        el = el->m_Next;
     }
     ERROR_E;
 }
@@ -687,12 +674,11 @@ const std::wstring* CBlockPar::ParGetNE_(const std::wstring& name, int index) co
         }
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if ((el->m_Type == 1) && (el->m_Name == name) && index <= 0)
                 return el->m_Par;
             --index;
-            el = el->m_Next;
         }
     }
     return NULL;
@@ -715,11 +701,10 @@ int CBlockPar::ParCount(const std::wstring& name) const
         }
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if ((el->m_Type == 1) && (el->m_Name == name))
                 rv++;
-            el = el->m_Next;
         }
     }
 
@@ -728,18 +713,17 @@ int CBlockPar::ParCount(const std::wstring& name) const
 
 ParamParser CBlockPar::ParGet(int no) const {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntPar)) {
+    if (m_Sort && (m_Units.size() == m_CntPar)) {
         return *m_Array[no]->m_Par;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 1) {
                 if (no == 0)
                     return *el->m_Par;
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -748,13 +732,13 @@ ParamParser CBlockPar::ParGet(int no) const {
 void CBlockPar::ParSet(int no, const std::wstring& zn)
 {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntPar)) {
+    if (m_Sort && (m_Units.size() == m_CntPar)) {
         *(m_Array[no]->m_Par) = zn;
         return;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 1) {
                 if (no == 0)
                 {
@@ -763,7 +747,6 @@ void CBlockPar::ParSet(int no, const std::wstring& zn)
                 }
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -771,18 +754,17 @@ void CBlockPar::ParSet(int no, const std::wstring& zn)
 
 ParamParser CBlockPar::ParGetName(int no) const {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntPar)) {
+    if (m_Sort && (m_Units.size() == m_CntPar)) {
         return m_Array[no]->m_Name;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 1) {
                 if (no == 0)
                     return el->m_Name;
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -817,11 +799,10 @@ CBlockPar *CBlockPar::BlockGetNE(const std::wstring& name)
         }
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if ((el->m_Type == 2) && (el->m_Name == name))
                 return el->m_Block;
-            el = el->m_Next;
         }
     }
     return NULL;
@@ -847,8 +828,7 @@ CBlockPar* CBlockPar::BlockGetAdd(const std::wstring &name)
 void CBlockPar::BlockDelete(const std::wstring &name)
 {
     DTRACE();
-    CBlockParUnit *el = m_First;
-    while (el != NULL)
+    for(CBlockParUnit *el : m_Units)
     {
         if ((el->m_Type == 2) && (el->m_Name == name))
         {
@@ -859,7 +839,6 @@ void CBlockPar::BlockDelete(const std::wstring &name)
             UnitDel(el);
             return;
         }
-        el = el->m_Next;
     }
 
     ERROR_E;
@@ -868,8 +847,8 @@ void CBlockPar::BlockDelete(const std::wstring &name)
 void CBlockPar::BlockDelete(int no)
 {
     DTRACE();
-    CBlockParUnit *el = m_First;
-    while (el != NULL) {
+    for(CBlockParUnit *el : m_Units)
+    {
         if (el->m_Type == 2) {
             if (no == 0) {
                 if (m_Sort)
@@ -879,7 +858,6 @@ void CBlockPar::BlockDelete(int no)
             }
             no--;
         }
-        el = el->m_Next;
     }
     ERROR_E;
 }
@@ -901,11 +879,10 @@ int CBlockPar::BlockCount(const std::wstring& name) const
         }
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if ((el->m_Type == 2) && (el->m_Name == name))
                 rv++;
-            el = el->m_Next;
         }
     }
 
@@ -914,18 +891,17 @@ int CBlockPar::BlockCount(const std::wstring& name) const
 
 CBlockPar *CBlockPar::BlockGet(int no) {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntBlock)) {
+    if (m_Sort && (m_Units.size() == m_CntBlock)) {
         return m_Array[no]->m_Block;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 2) {
                 if (no == 0)
                     return el->m_Block;
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -933,18 +909,17 @@ CBlockPar *CBlockPar::BlockGet(int no) {
 
 const CBlockPar *CBlockPar::BlockGet(int no) const {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntBlock)) {
+    if (m_Sort && (m_Units.size() == m_CntBlock)) {
         return m_Array[no]->m_Block;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 2) {
                 if (no == 0)
                     return el->m_Block;
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -952,18 +927,17 @@ const CBlockPar *CBlockPar::BlockGet(int no) const {
 
 ParamParser CBlockPar::BlockGetName(int no) const {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_CntBlock)) {
+    if (m_Sort && (m_Units.size() == m_CntBlock)) {
         return m_Array[no]->m_Name;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (el->m_Type == 2) {
                 if (no == 0)
                     return el->m_Name;
                 no--;
             }
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -1095,16 +1069,15 @@ CBlockPar *CBlockPar::BlockPathGetAdd(const std::wstring &path)
 ////////////////////////////////////////////////////////////////////////////////
 int CBlockPar::AllGetType(int no) {
     DTRACE();
-    if (m_Sort && (m_Cnt == m_Array.size())) {
+    if (m_Sort && (m_Units.size() == m_Array.size())) {
         return m_Array[no]->m_Type;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (no == 0)
                 return el->m_Type;
             no--;
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -1113,22 +1086,21 @@ int CBlockPar::AllGetType(int no) {
 CBlockPar *CBlockPar::AllGetBlock(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_Array.size())) {
+    if (m_Sort && (m_Units.size() == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 2)
             ERROR_E;
         return el->m_Block;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (no == 0) {
                 if (el->m_Type != 2)
                     ERROR_E;
                 return el->m_Block;
             }
             no--;
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -1137,22 +1109,21 @@ CBlockPar *CBlockPar::AllGetBlock(int no) {
 const std::wstring &CBlockPar::AllGetPar(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_Array.size())) {
+    if (m_Sort && (m_Units.size() == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 1)
             ERROR_E;
         return *el->m_Par;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (no == 0) {
                 if (el->m_Type != 1)
                     ERROR_E;
                 return *el->m_Par;
             }
             no--;
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -1161,22 +1132,21 @@ const std::wstring &CBlockPar::AllGetPar(int no) {
 const std::wstring &CBlockPar::AllGetName(int no) {
     DTRACE();
     CBlockParUnit *el;
-    if (m_Sort && (m_Cnt == m_Array.size())) {
+    if (m_Sort && (m_Units.size() == m_Array.size())) {
         el = m_Array[no];
         if (el->m_Type != 1 && el->m_Type != 2)
             ERROR_E;
         return el->m_Name;
     }
     else {
-        CBlockParUnit *el = m_First;
-        while (el != NULL) {
+        for(CBlockParUnit *el : m_Units)
+        {
             if (no == 0) {
                 if (el->m_Type != 1 && el->m_Type != 2)
                     ERROR_E;
                 return el->m_Name;
             }
             no--;
-            el = el->m_Next;
         }
         ERROR_E;
     }
@@ -1549,8 +1519,8 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 
     bool addspace;
 
-    CBlockParUnit *unit = m_First;
-    while (unit != 0) {
+    for(CBlockParUnit *unit : m_Units)
+    {
         SaveLevel;
 
         if (unit->m_Type == 1) {
@@ -1612,8 +1582,6 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
         }
 
         SaveNewLine;
-
-        unit = unit->m_Next;
     }
 }
 

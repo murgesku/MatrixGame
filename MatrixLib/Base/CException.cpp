@@ -25,7 +25,7 @@ std::wstring CException::Info() const
 {
     return
         utils::format(
-            L"%sFile=%s\nLine=%d\n",
+            L"%lsFile=%ls\nLine=%d\n",
             utils::to_wstring(call_trace).c_str(),
             utils::to_wstring(m_File).c_str(),
             m_Line);
