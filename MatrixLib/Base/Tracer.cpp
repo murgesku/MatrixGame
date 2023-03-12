@@ -352,7 +352,7 @@ CDebugTracer ::CDebugTracer(const char *src_file, int src_line, bool cp) throw()
 
 CDebugTracer::~CDebugTracer() throw() {
 #ifdef HISTORY_PATH_ONLY
-    if (!std::uncaught_exception()) {
+    if (!std::uncaught_exceptions()) {
         DelLastHistory();
     }
 #endif
