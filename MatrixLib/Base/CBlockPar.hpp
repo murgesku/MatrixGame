@@ -94,7 +94,7 @@ class BASE_API CBlockPar : public CMain {
     friend BPCompiler;
 
 private:
-    std::list<CBlockParUnit*> m_Units;
+    std::list<CBlockParUnit> m_Units;
 
     int m_CntPar;
     int m_CntBlock;
