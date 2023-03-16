@@ -280,11 +280,7 @@ CBlockParUnit::CBlockParUnit(CHeap *heap) : CMain(), m_Name{}, m_Com{} {
 
 CBlockParUnit::~CBlockParUnit() {
     DTRACE();
-    Clear();
-}
 
-void CBlockParUnit::Clear() {
-    DTRACE();
     if (m_Type == 1) {
         if (m_Par != NULL) {
             using std::wstring;
@@ -327,7 +323,6 @@ void CBlockParUnit::ChangeType(int nt) {
 
 void CBlockParUnit::CopyFrom(CBlockParUnit &bp) {
     DTRACE();
-    Clear();
     ChangeType(bp.m_Type);
     m_Name = bp.m_Name;
     m_Com = bp.m_Com;

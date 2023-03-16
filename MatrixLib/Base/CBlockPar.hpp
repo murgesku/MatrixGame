@@ -83,7 +83,7 @@ public:
     CBlockParUnit(CHeap *heap = NULL);
     ~CBlockParUnit();
 
-    void Clear(void);
+private:
     void ChangeType(int nt);
 
     void CopyFrom(CBlockParUnit &bp);
