@@ -69,7 +69,8 @@ private:
 
     CBlockPar *m_Parent;
 
-    int m_Type;  // 0-empty 1-par 2-block
+    using Type = int;
+    const Type m_Type;  // 0-empty 1-par 2-block
     std::wstring m_Name;
     std::wstring m_Com;
     union {
@@ -80,13 +81,14 @@ private:
     int m_FastFirst;  // Смещение до первого элемента с одинаковым именем
     int m_FastCnt;  // Количество с одинаковым именем. Инициализировано только для первого
 public:
-    CBlockParUnit(CHeap *heap = NULL);
+    // CBlockParUnit();
+    CBlockParUnit(Type type);
     ~CBlockParUnit();
 
-private:
-    void ChangeType(int nt);
+    CBlockParUnit(const CBlockParUnit&) = delete;
+    CBlockParUnit(CBlockParUnit&&) = delete;
 
-    void CopyFrom(CBlockParUnit &bp);
+    CBlockParUnit& operator = (const CBlockParUnit& that);
 };
 
 class BASE_API CBlockPar : public CMain {
@@ -109,7 +111,7 @@ public:
     void CopyFrom(CBlockPar &bp);
 
 private:
-    CBlockParUnit *UnitAdd(void);
+    CBlockParUnit *UnitAdd(CBlockParUnit::Type type = 0);
     void UnitDel(CBlockParUnit *el);
     CBlockParUnit *UnitGet(const wchar *path, int path_len = -1);
 
