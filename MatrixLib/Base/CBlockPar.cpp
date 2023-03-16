@@ -266,70 +266,60 @@ int ParamParser::GetCountPar(const wchar *ogsim) const {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-CBlockParUnit::CBlockParUnit(CHeap *heap) : CMain(), m_Name{}, m_Com{} {
+
+CBlockParUnit::CBlockParUnit(Type type)
+: CMain{}
+, m_Type{type}
+{
     DTRACE();
-    m_Heap = heap;
+
+    m_Heap = nullptr;
 
     m_Parent = NULL;
 
-    m_Type = 0;
-
     m_FastFirst = 0;
     m_FastCnt = 0;
+
+    if (m_Type == 1)
+        m_Par = new std::wstring{};
+    else if (m_Type == 2)
+        m_Block = new CBlockPar{};
 }
 
 CBlockParUnit::~CBlockParUnit() {
     DTRACE();
 
-    if (m_Type == 1) {
-        if (m_Par != NULL) {
-            using std::wstring;
-            HDelete(wstring, m_Par, m_Heap);
-            m_Par = NULL;
-        }
-    }
-    else if (m_Type == 2) {
-        if (m_Block != NULL) {
-            HDelete(CBlockPar, m_Block, m_Heap);
-            m_Block = NULL;
-        }
-    }
-    m_Type = 0;
-    m_Name.clear();
-    m_Com.clear();
-}
-
-void CBlockParUnit::ChangeType(int nt) {
-    DTRACE();
-    if (m_Type == 1) {
-        if (m_Par != NULL) {
-            using std::wstring;
-            HDelete(wstring, m_Par, m_Heap);
-            m_Par = NULL;
-        }
-    }
-    else if (m_Type == 2) {
-        if (m_Block != NULL) {
-            HDelete(CBlockPar, m_Block, m_Heap);
-            m_Block = NULL;
-        }
-    }
-    m_Type = nt;
-    if (nt == 1)
-        m_Par = HNew(m_Heap) std::wstring{};
-    else if (nt == 2)
-        m_Block = HNew(m_Heap) CBlockPar{};
-}
-
-void CBlockParUnit::CopyFrom(CBlockParUnit &bp) {
-    DTRACE();
-    ChangeType(bp.m_Type);
-    m_Name = bp.m_Name;
-    m_Com = bp.m_Com;
     if (m_Type == 1)
-        *m_Par = *bp.m_Par;
+    {
+        if (m_Par != NULL)
+        {
+            delete m_Par;
+            m_Par = NULL;
+        }
+    }
     else if (m_Type == 2)
-        m_Block->CopyFrom(*bp.m_Block);
+    {
+        if (m_Block != NULL)
+        {
+            delete m_Block;
+            m_Block = NULL;
+        }
+    }
+}
+
+CBlockParUnit& CBlockParUnit::operator = (const CBlockParUnit& that)
+{
+    // TODO: we don't check if unit has the same type here only because there
+    // is only one usage of this function. but to be updated...
+    DTRACE();
+    m_Name = that.m_Name;
+    m_Com = that.m_Com;
+    if (m_Type == 1)
+        *m_Par = *that.m_Par;
+    else if (m_Type == 2)
+        m_Block->CopyFrom(*that.m_Block);
+
+    return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -363,8 +353,9 @@ void CBlockPar::CopyFrom(CBlockPar &bp) {
     Clear();
     for(auto& el : m_Units)
     {
-        CBlockParUnit* el2 = UnitAdd();
-        el2->CopyFrom(el);
+        CBlockParUnit* el2 = UnitAdd(el.m_Type);
+        *el2 = el;
+
         if (el.m_Type == 1)
             m_CntPar++;
         else if (el.m_Type == 2)
@@ -372,12 +363,12 @@ void CBlockPar::CopyFrom(CBlockPar &bp) {
     }
 }
 
-CBlockParUnit *CBlockPar::UnitAdd() {
+CBlockParUnit *CBlockPar::UnitAdd(CBlockParUnit::Type type) {
     DTRACE();
-    CBlockParUnit el;
-    el.m_Parent = this;
 
-    m_Units.push_back(el);
+    m_Units.emplace_back(type);
+
+    m_Units.back().m_Parent = this;
 
     return &m_Units.back();
 }
@@ -480,8 +471,7 @@ CBlockParUnit *CBlockPar::UnitGet(const wchar *path, int path_len) {
 ////////////////////////////////////////////////////////////////////////////////
 CBlockParUnit *CBlockPar::ParAdd(const std::wstring& name, const std::wstring& zn) {
     DTRACE();
-    CBlockParUnit *el = UnitAdd();
-    el->ChangeType(1);
+    CBlockParUnit *el = UnitAdd(1);
     el->m_Name = name;
     *(el->m_Par) = zn;
 
@@ -600,8 +590,7 @@ ParamParser CBlockPar::ParGetName(int no) const {
 CBlockPar *CBlockPar::BlockAdd(const std::wstring& name)
 {
     DTRACE();
-    CBlockParUnit *el = UnitAdd();
-    el->ChangeType(2);
+    CBlockParUnit *el = UnitAdd(2);
     el->m_Name = name;
     m_CntBlock++;
 
@@ -754,8 +743,7 @@ void CBlockPar::ParPathAdd(const std::wstring &path, const std::wstring &zn)
         //        name:=name;
         cd = this;
     }
-    el = cd->UnitAdd();
-    el->ChangeType(1);
+    el = cd->UnitAdd(1);
     el->m_Name = name;
     *(el->m_Par) = zn;
     m_CntPar++;
@@ -822,8 +810,7 @@ CBlockPar *CBlockPar::BlockPathAdd(const std::wstring &path)
         //        name:=name;
         cd = this;
     }
-    el = cd->UnitAdd();
-    el->ChangeType(2);
+    el = cd->UnitAdd(2);
     el->m_Name = name;
     m_CntBlock++;
     return el->m_Block;
@@ -1056,7 +1043,7 @@ public:
 
         while (m_Line < m_TextLen) {
             if (m_Line >= m_ComSpace) {
-                unit = m_BP->UnitAdd();
+                unit = m_BP->UnitAdd(0);
                 if (m_ComSpace < m_LineEnd)
                     unit->m_Com = std::wstring{m_Text + m_ComSpace, static_cast<size_t>(m_LineEnd - m_ComSpace)};
             }
@@ -1071,8 +1058,7 @@ public:
                 m_WordBegin = m_Line;
                 m_WordSearchEnd = m_Block;
 
-                unit = m_BP->UnitAdd();
-                unit->ChangeType(2);
+                unit = m_BP->UnitAdd(2);
                 m_BP->m_CntBlock++;
 
                 if (WordFindBlockName()) {
@@ -1133,8 +1119,7 @@ public:
                 }
             }
             else if (FindPar()) {
-                unit = m_BP->UnitAdd();
-                unit->ChangeType(1);
+                unit = m_BP->UnitAdd(1);
                 m_BP->m_CntPar++;
 
                 unit->m_Name = std::wstring{m_Text + m_Line, static_cast<size_t>(ParNameSize())};
@@ -1144,8 +1129,7 @@ public:
                     unit->m_Com = std::wstring{m_Text + m_ComSpace, static_cast<size_t>(m_LineEnd - m_ComSpace)};
             }
             else {
-                unit = m_BP->UnitAdd();
-                unit->ChangeType(1);
+                unit = m_BP->UnitAdd(1);
                 m_BP->m_CntPar++;
 
                 *(unit->m_Par) = std::wstring{m_Text + m_Line, static_cast<size_t>(m_ComSpace - m_Line)};
