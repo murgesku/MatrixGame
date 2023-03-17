@@ -69,7 +69,12 @@ private:
 
     CBlockPar *m_Parent;
 
-    using Type = int;
+    enum class Type
+    {
+        Empty = 0,
+        Par = 1,
+        Block = 2
+    };
     const Type m_Type;  // 0-empty 1-par 2-block
     std::wstring m_Name;
     std::wstring m_Com;
@@ -88,6 +93,7 @@ public:
     CBlockParUnit(const CBlockParUnit&) = delete;
     CBlockParUnit(CBlockParUnit&&) = delete;
 
+private:
     CBlockParUnit& operator = (const CBlockParUnit& that);
 };
 
@@ -111,7 +117,7 @@ public:
     void CopyFrom(CBlockPar &bp);
 
 private:
-    CBlockParUnit& UnitAdd(CBlockParUnit::Type type = 0);
+    CBlockParUnit& UnitAdd(CBlockParUnit::Type type = CBlockParUnit::Type::Empty);
     void UnitDel(CBlockParUnit& el);
     CBlockParUnit& UnitGet(const wchar *path, int path_len = -1);
 
@@ -199,7 +205,7 @@ public:
 
     //////////////////////////////////////////////////////////////
     int AllCount(void) { return m_Units.size(); }
-    int AllGetType(int no);
+    CBlockParUnit::Type AllGetType(int no);
     CBlockPar *AllGetBlock(int no);
     const std::wstring &AllGetPar(int no);
     const std::wstring &AllGetName(int no);
