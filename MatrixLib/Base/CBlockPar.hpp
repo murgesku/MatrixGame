@@ -65,8 +65,6 @@ class BASE_API CBlockParUnit : public CMain {
     friend BPCompiler;
 
 private:
-    CHeap *m_Heap;
-
     CBlockPar *m_Parent;
 
     enum class Type
@@ -75,7 +73,8 @@ private:
         Par = 1,
         Block = 2
     };
-    const Type m_Type;  // 0-empty 1-par 2-block
+    const Type m_Type;
+
     std::wstring m_Name;
     std::wstring m_Com;
     union {
@@ -83,10 +82,7 @@ private:
         CBlockPar *m_Block;
     };
 
-    int m_FastFirst;  // Смещение до первого элемента с одинаковым именем
-    int m_FastCnt;  // Количество с одинаковым именем. Инициализировано только для первого
 public:
-    // CBlockParUnit();
     CBlockParUnit(Type type);
     ~CBlockParUnit();
 
@@ -202,13 +198,6 @@ public:
     CBlockPar *BlockPathGet(const std::wstring &path);
     CBlockPar *BlockPathAdd(const std::wstring &path);
     CBlockPar *BlockPathGetAdd(const std::wstring &path);
-
-    //////////////////////////////////////////////////////////////
-    int AllCount(void) { return m_Units.size(); }
-    CBlockParUnit::Type AllGetType(int no);
-    CBlockPar *AllGetBlock(int no);
-    const std::wstring &AllGetPar(int no);
-    const std::wstring &AllGetName(int no);
 
     //////////////////////////////////////////////////////////////
 
