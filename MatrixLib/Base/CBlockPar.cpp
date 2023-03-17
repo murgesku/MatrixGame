@@ -273,12 +273,7 @@ CBlockParUnit::CBlockParUnit(Type type)
 {
     DTRACE();
 
-    m_Heap = nullptr;
-
     m_Parent = NULL;
-
-    m_FastFirst = 0;
-    m_FastCnt = 0;
 
     if (m_Type == CBlockParUnit::Type::Par)
         m_Par = new std::wstring{};
@@ -828,66 +823,6 @@ CBlockPar *CBlockPar::BlockPathGetAdd(const std::wstring &path)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CBlockParUnit::Type CBlockPar::AllGetType(int no) {
-    DTRACE();
-
-    for(auto& el : m_Units)
-    {
-        if (no == 0)
-            return el.m_Type;
-        no--;
-    }
-    ERROR_E;
-}
-
-CBlockPar *CBlockPar::AllGetBlock(int no) {
-    DTRACE();
-
-    for(auto& el : m_Units)
-    {
-        if (no == 0) {
-            if (el.m_Type != CBlockParUnit::Type::Block)
-                ERROR_E;
-            return el.m_Block;
-        }
-        no--;
-    }
-    ERROR_E;
-}
-
-const std::wstring &CBlockPar::AllGetPar(int no) {
-    DTRACE();
-
-    for(auto& el : m_Units)
-    {
-        if (no == 0) {
-            if (el.m_Type != CBlockParUnit::Type::Par)
-                ERROR_E;
-            return *el.m_Par;
-        }
-        no--;
-    }
-    ERROR_E;
-}
-
-const std::wstring &CBlockPar::AllGetName(int no) {
-    DTRACE();
-
-    for(auto& el : m_Units)
-    {
-        if (no == 0) {
-            if (el.m_Type != CBlockParUnit::Type::Par && el.m_Type != CBlockParUnit::Type::Block)
-                ERROR_E;
-            return el.m_Name;
-        }
-        no--;
-    }
-    ERROR_E;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 class BPCompiler {
 public:
     CBlockPar *m_BP;
@@ -1264,7 +1199,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
                     SaveSpace;
                 SaveStrConst("{");
 
-                if (unit.m_Block->AllCount() == 0) {
+                if (unit.m_Block->m_Units.size() == 0) {
                     SaveStrConst("}");
                     if (!unit.m_Com.empty())
                         SaveStr(unit.m_Com.c_str());
