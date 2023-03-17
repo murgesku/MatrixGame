@@ -111,9 +111,9 @@ public:
     void CopyFrom(CBlockPar &bp);
 
 private:
-    CBlockParUnit *UnitAdd(CBlockParUnit::Type type = 0);
-    void UnitDel(CBlockParUnit *el);
-    CBlockParUnit *UnitGet(const wchar *path, int path_len = -1);
+    CBlockParUnit& UnitAdd(CBlockParUnit::Type type = 0);
+    void UnitDel(CBlockParUnit& el);
+    CBlockParUnit& UnitGet(const wchar *path, int path_len = -1);
 
     //////////////////////////////////////////////////////////////
 private:
