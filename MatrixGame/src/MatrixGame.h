@@ -5,16 +5,12 @@
 
 #pragma once
 
-#include "Resource.h"
-#include <shlobj.h>
-//#include "windows.h"
+#include "MatrixFormGame.hpp"
+#include "MatrixGameDll.hpp"
 
 class CMatrixMapLogic;
 class CIFaceList;
 class CRenderPipeline;
-// class Base::CBlockPar;
-// class Base::CHeap;
-// class Base::CPoint;
 class CLoadProgress;
 class CHistory;
 struct SMenuItemText;
@@ -32,9 +28,19 @@ extern SMenuItemText *g_PopupHull;
 extern SMenuItemText *g_PopupChassis;
 extern CHistory *g_ConfigHistory;
 
-struct SRobotsSettings;
+class CGame {
+public:
+    CGame(){};
+    ~CGame(){};
 
-void MatrixGameInit(HINSTANCE hInstance, HWND wnd, wchar *map = NULL, SRobotsSettings *set = NULL, wchar *lang = NULL,
-                    wchar *txt_start = NULL, wchar *txt_win = NULL, wchar *txt_loss = NULL, wchar *planet = NULL);
-void MatrixGameDeinit(void);
-std::wstring PathToOutputFiles(const wchar_t* dest);
+    void Init(HINSTANCE hInstance, HWND wnd, wchar *map = NULL, uint32_t seed = 0, SRobotsSettings *set = NULL,
+              wchar *lang = NULL, wchar *txt_start = NULL, wchar *txt_win = NULL, wchar *txt_loss = NULL,
+              wchar *planet = NULL);
+    void Deinit();
+    void SafeFree();
+    void RunGameLoop(CFormMatrixGame *formGame);
+    void SaveResult(SRobotGameState *state);
+
+private:
+    void ApplyVideoParams(SRobotsSettings *settings);
+};
