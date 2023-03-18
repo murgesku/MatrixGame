@@ -89,6 +89,10 @@ public:
     CBlockParUnit(const CBlockParUnit&) = delete;
     CBlockParUnit(CBlockParUnit&&) = delete;
 
+    bool isEmpty() const { return m_Type == Type::Empty; }
+    bool isPar() const   { return m_Type == Type::Par; }
+    bool isBlock() const { return m_Type == Type::Block; }
+
 private:
     CBlockParUnit& operator = (const CBlockParUnit& that);
 };
@@ -113,14 +117,13 @@ public:
     void CopyFrom(CBlockPar &bp);
 
 private:
-    CBlockParUnit& UnitAdd(CBlockParUnit::Type type = CBlockParUnit::Type::Empty);
+    CBlockParUnit& UnitAdd(CBlockParUnit::Type type);
     void UnitDel(CBlockParUnit& el);
-    CBlockParUnit& UnitGet(const wchar *path, int path_len = -1);
+    CBlockParUnit& UnitGet(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
 private:
     bool ParSetNE(const std::wstring& name, const std::wstring& zn);
-    const std::wstring* ParGetNE_(const std::wstring& name, int index) const;
 
 public:
     CBlockParUnit *ParAdd(const std::wstring& name, const std::wstring& zn);
@@ -140,25 +143,10 @@ public:
         ParSetAdd(name, utils::format(L"%.8f", value));
     }
 
-
     void ParDelete(int no);
 
-
-    ParamParser ParGet(const std::wstring& name, int index = 0) const
-    {
-        const std::wstring *str = ParGetNE_(name, index);
-        if (str == NULL)
-            ERROR_S2(L"Not found: ", name.c_str());
-        return *str;
-    }
-
-    ParamParser ParGetNE(const std::wstring& name, int index = 0) const {
-        const std::wstring *str = ParGetNE_(name, index);
-        if (str != NULL)
-            return *str;
-        else
-            return std::wstring();
-    }
+    ParamParser ParGet(const std::wstring& name, int index = 0) const;
+    ParamParser ParGetNE(const std::wstring& name, int index = 0) const;
 
     int ParCount(void) const { return m_CntPar; }
     int ParCount(const std::wstring &name) const;
