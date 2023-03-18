@@ -275,23 +275,23 @@ CBlockParUnit::CBlockParUnit(Type type)
 {
     DTRACE();
 
-    if (m_Type == CBlockParUnit::Type::Par)
+    if (isPar())
         m_Par = new std::wstring{};
-    else if (m_Type == CBlockParUnit::Type::Block)
+    else if (isBlock())
         m_Block = new CBlockPar{};
 }
 
 CBlockParUnit::~CBlockParUnit() {
     DTRACE();
 
-    if (m_Type == CBlockParUnit::Type::Par)
+    if (isPar())
     {
         if (m_Par != nullptr)
         {
             delete m_Par;
         }
     }
-    else if (m_Type == CBlockParUnit::Type::Block)
+    else if (isBlock())
     {
         if (m_Block != nullptr)
         {
@@ -307,9 +307,9 @@ CBlockParUnit& CBlockParUnit::operator = (const CBlockParUnit& that)
     DTRACE();
     m_Name = that.m_Name;
     m_Com = that.m_Com;
-    if (m_Type == CBlockParUnit::Type::Par)
+    if (isPar())
         *m_Par = *that.m_Par;
-    else if (m_Type == CBlockParUnit::Type::Block)
+    else if (isBlock())
         m_Block->CopyFrom(*that.m_Block);
 
     return *this;
@@ -349,9 +349,9 @@ void CBlockPar::CopyFrom(CBlockPar &bp) {
         CBlockParUnit& el2 = UnitAdd(el.m_Type);
         el2 = el;
 
-        if (el.m_Type == CBlockParUnit::Type::Par)
+        if (el.isPar())
             m_CntPar++;
-        else if (el.m_Type == CBlockParUnit::Type::Block)
+        else if (el.isBlock())
             m_CntBlock++;
     }
 }
@@ -369,9 +369,9 @@ CBlockParUnit& CBlockPar::UnitAdd(CBlockParUnit::Type type) {
 void CBlockPar::UnitDel(CBlockParUnit& el) {
     DTRACE();
 
-    if (el.m_Type == CBlockParUnit::Type::Par)
+    if (el.isPar())
         m_CntPar--;
-    else if (el.m_Type == CBlockParUnit::Type::Block)
+    else if (el.isBlock())
         m_CntBlock--;
 
     size_t removed = m_Units.remove_if([&el](auto& unit){ return &el == &unit; });
@@ -448,7 +448,7 @@ CBlockParUnit& CBlockPar::UnitGet(const std::wstring &path)
             ERROR_S2(L"Path not found: ", path.c_str());
         if (name_next >= path.length())
             break;
-        if (ne->m_Type != CBlockParUnit::Type::Block)
+        if (!ne->isBlock())
             ERROR_S2(L"Path not found: ", path.c_str());
         us = ne->m_Block;
     }
@@ -674,18 +674,19 @@ CBlockPar* CBlockPar::BlockGet(int no)
 {
     DTRACE();
 
-    for(auto& el : m_Units)
+    auto pred = [&no](const auto& u) { return u.isBlock() && (no-- == 0); };
+    auto res = std::ranges::find_if(m_Units, pred);
+
+    if (res == m_Units.end())
     {
-        if (el.m_Type == CBlockParUnit::Type::Block) {
-            if (no == 0)
-                return el.m_Block;
-            no--;
-        }
+        ERROR_E;
     }
-    ERROR_E;
+
+    return res->m_Block;
 }
 
-const CBlockPar* CBlockPar::BlockGet(int no) const {
+const CBlockPar* CBlockPar::BlockGet(int no) const
+{
     DTRACE();
 
     auto pred = [&no](const auto& u) { return u.isBlock() && (no-- == 0); };
@@ -753,7 +754,7 @@ void CBlockPar::ParPathSet(const std::wstring &path, const std::wstring &zn)
 {
     DTRACE();
     CBlockParUnit& te = UnitGet(path);
-    if (te.m_Type != CBlockParUnit::Type::Par)
+    if (!te.isPar())
         ERROR_E;
     *(te.m_Par) = zn;
 }
@@ -763,7 +764,7 @@ void CBlockPar::ParPathSetAdd(const std::wstring &path, const std::wstring &zn)
     DTRACE();
     try {
         CBlockParUnit& te = UnitGet(path);
-        if (te.m_Type != CBlockParUnit::Type::Par)
+        if (!te.isPar())
             ERROR_E;
         *(te.m_Par) = zn;
     }
@@ -776,7 +777,7 @@ void CBlockPar::ParPathDelete(const std::wstring &path)
 {
     DTRACE();
     CBlockParUnit& te = UnitGet(path);
-    if (te.m_Type != CBlockParUnit::Type::Par)
+    if (!te.isPar())
         ERROR_E;
     te.m_Parent->UnitDel(te);
 }
@@ -788,7 +789,7 @@ CBlockPar *CBlockPar::BlockPathGet(const std::wstring &path)
 {
     DTRACE();
     CBlockParUnit& el = UnitGet(path);
-    if (el.m_Type != CBlockParUnit::Type::Block)
+    if (!el.isBlock())
         ERROR_E;
     return el.m_Block;
 }
@@ -806,7 +807,6 @@ CBlockPar *CBlockPar::BlockPathAdd(const std::wstring &path)
         name = name.GetStrPar(countep - 1, L"./\\");
     }
     else {
-        //        name:=name;
         cd = this;
     }
     CBlockParUnit& el = cd->UnitAdd(CBlockParUnit::Type::Block);
@@ -1113,17 +1113,15 @@ void CBlockPar::LoadFromTextFile(const std::wstring &filename) {
     fs -= fi.Pointer();
     if (fs > 0) {
         if (fansi) {
-            std::string astr(fs, ' '); // TODO: maybe not spaces?
-
+            std::string astr;
+            astr.resize(fs);
             fi.Read(&astr[0], fs);
-            std::wstring wstr = utils::to_wstring(astr.c_str());
-
-            LoadFromText(wstr);
+            LoadFromText(utils::to_wstring(astr.c_str()));
         }
         else {
             std::wstring wstr;
             wstr.resize(fs / 2);
-            fi.Read(&wstr[0], (fs / 2) * 2); // TODO: wtf?
+            fi.Read(&wstr[0], fs);
             LoadFromText(wstr);
         }
     }
@@ -1176,7 +1174,7 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
     {
         SaveLevel;
 
-        if (unit.m_Type == CBlockParUnit::Type::Par) {
+        if (unit.isPar()) {
             if (!unit.m_Name.empty()) {
                 SaveStr(unit.m_Name.c_str());
                 SaveStrConst("=");
@@ -1185,7 +1183,8 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
             if (!unit.m_Com.empty())
                 SaveStr(unit.m_Com.c_str());
         }
-        else if (unit.m_Type == CBlockParUnit::Type::Block) {
+        else if (unit.isBlock())
+        {
             addspace = false;
             if (!unit.m_Name.empty()) {
                 SaveStr(unit.m_Name.c_str());
