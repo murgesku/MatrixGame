@@ -42,7 +42,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
     }
 
     try {
-        CGame game{};
+        CGame game;
 
         uint32_t seed = (unsigned)time(NULL);
         game.Init(hInstance, NULL, map, seed);
