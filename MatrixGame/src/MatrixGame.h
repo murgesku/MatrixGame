@@ -42,5 +42,5 @@ public:
     void SaveResult(SRobotGameState *state);
 
 private:
-    void ApplyVideoParams(SRobotsSettings *settings);
+    void ApplyVideoParams(SRobotsSettings &settings);
 };

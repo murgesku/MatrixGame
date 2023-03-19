@@ -477,11 +477,11 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
 
     if (set)
     {
-        ApplyVideoParams(set);
+        ApplyVideoParams(*set);
     }
     else
     {
-        ApplyVideoParams(&settings);
+        ApplyVideoParams(settings);
     }
 
     /*IDirect3DSurface9 * surf;
@@ -506,7 +506,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     // if (iface_save) bpi.SaveInTextFile(IF_PATH, true);
 }
 
-void CGame::ApplyVideoParams(SRobotsSettings *set) {
+void CGame::ApplyVideoParams(SRobotsSettings &set) {
     DTRACE();
 
     int bpp;
@@ -525,17 +525,17 @@ void CGame::ApplyVideoParams(SRobotsSettings *set) {
         bpp = 16;
     }
 
-    bool change_refresh_rate = set->m_RefreshRate != 0 && set->m_RefreshRate != d3ddm.RefreshRate;
-    int refresh_rate_required = change_refresh_rate ? set->m_RefreshRate : 0;
+    bool change_refresh_rate = set.m_RefreshRate != 0 && set.m_RefreshRate != d3ddm.RefreshRate;
+    int refresh_rate_required = change_refresh_rate ? set.m_RefreshRate : 0;
 
     RECT rect;
     GetClientRect(g_Wnd, &rect);
     bool was_in_window_mode = (rect.right != d3ddm.Width || rect.bottom != d3ddm.Height);
-    bool now_in_window_mode = was_in_window_mode && (bpp == set->m_BPP) && !change_refresh_rate;
+    bool now_in_window_mode = was_in_window_mode && (bpp == set.m_BPP) && !change_refresh_rate;
 
-    if (set->m_FSAASamples > 16)
+    if (set.m_FSAASamples > 16)
         ERROR_S(L"Invalid multisample type");
-    _D3DMULTISAMPLE_TYPE expectedMultiSampleType = (_D3DMULTISAMPLE_TYPE)set->m_FSAASamples;  //(m_FSAASamples >> 24);
+    _D3DMULTISAMPLE_TYPE expectedMultiSampleType = (_D3DMULTISAMPLE_TYPE)set.m_FSAASamples;  //(m_FSAASamples >> 24);
 
     ZeroMemory(&g_D3Dpp, sizeof(g_D3Dpp));
 
@@ -546,8 +546,8 @@ void CGame::ApplyVideoParams(SRobotsSettings *set) {
         RECT r1, r2;
         GetWindowRect(g_Wnd, &r1);
         GetClientRect(g_Wnd, &r2);
-        SetWindowPos(g_Wnd, NULL, 0, 0, set->m_ResolutionX + (r1.right - r1.left - r2.right),
-                     set->m_ResolutionY + (r1.bottom - r1.top - r2.bottom),
+        SetWindowPos(g_Wnd, NULL, 0, 0, set.m_ResolutionX + (r1.right - r1.left - r2.right),
+                     set.m_ResolutionY + (r1.bottom - r1.top - r2.bottom),
                      SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
     }
     else {
@@ -556,18 +556,18 @@ void CGame::ApplyVideoParams(SRobotsSettings *set) {
 
         if (was_in_window_mode) {
             SetWindowLong(g_Wnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-            MoveWindow(g_Wnd, 0, 0, set->m_ResolutionX, set->m_ResolutionY, false);
+            MoveWindow(g_Wnd, 0, 0, set.m_ResolutionX, set.m_ResolutionY, false);
         }
     }
 
     g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    g_D3Dpp.BackBufferFormat = (set->m_BPP == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
+    g_D3Dpp.BackBufferFormat = (set.m_BPP == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
     g_D3Dpp.EnableAutoDepthStencil = TRUE;
     g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-    g_D3Dpp.PresentationInterval = set->m_VSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+    g_D3Dpp.PresentationInterval = set.m_VSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
     g_D3Dpp.FullScreen_RefreshRateInHz = refresh_rate_required;
-    g_D3Dpp.BackBufferWidth = set->m_ResolutionX;
-    g_D3Dpp.BackBufferHeight = set->m_ResolutionY;
+    g_D3Dpp.BackBufferWidth = set.m_ResolutionX;
+    g_D3Dpp.BackBufferHeight = set.m_ResolutionY;
     g_D3Dpp.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
     g_D3Dpp.hDeviceWindow = g_Wnd;
 
@@ -594,8 +594,8 @@ void CGame::ApplyVideoParams(SRobotsSettings *set) {
 
     ViewPort.X = 0;
     ViewPort.Y = 0;
-    ViewPort.Width = set->m_ResolutionX;
-    ViewPort.Height = set->m_ResolutionY;
+    ViewPort.Width = set.m_ResolutionX;
+    ViewPort.Height = set.m_ResolutionY;
 
     ViewPort.MinZ = 0.0f;
     ViewPort.MaxZ = 1.0f;
