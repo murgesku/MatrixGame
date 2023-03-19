@@ -6,8 +6,6 @@
 #include "stdafx.h"
 
 #include "MatrixGameDll.hpp"
-#include "MatrixGame.h"
-#include "MatrixFormGame.hpp"
 
 #include <time.h>
 #include <windows.h>
@@ -78,18 +76,12 @@ int __stdcall Run(HINSTANCE hinst, HWND hwnd, wchar *map, SRobotsSettings *set, 
 
     game.Init(hinst, hwnd, map, seed, set, lang, txt_start, txt_win, txt_loss, planet);
     
-    CFormMatrixGame *formgame = HNew(NULL) CFormMatrixGame();
+    CFormMatrixGame formgame;
 
-    game.RunGameLoop(formgame);
+    game.RunGameLoop(&formgame);
 
     game.SaveResult(rgs);
     game.SafeFree();
-
-    try {
-        HDelete(CFormMatrixGame, formgame, NULL);
-    }
-    catch (...) {
-    }
 
     ClipCursor(NULL);
 
