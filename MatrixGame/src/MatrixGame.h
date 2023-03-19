@@ -30,7 +30,7 @@ extern CHistory *g_ConfigHistory;
 
 class CGame {
 public:
-    CGame(){};
+    CGame() = default;
     ~CGame() = default;
 
     void Init(HINSTANCE hInstance, HWND wnd, wchar *map = NULL, uint32_t seed = 0, SRobotsSettings *set = NULL,
