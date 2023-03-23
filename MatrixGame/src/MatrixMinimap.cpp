@@ -32,14 +32,14 @@ void CMinimap::SMMTex::Load(CBlockPar *mm, const wchar *name) {
         tex->MipmapOff();
         tex->Preload();
 
-        int x = n.GetIntPar(1, L",");
-        int y = n.GetIntPar(2, L",");
+        int x = n.GetStrPar(1, L",").GetInt();
+        int y = n.GetStrPar(2, L",").GetInt();
 
         u0 = float(x) / float(tex->GetSizeX());
         v0 = float(y) / float(tex->GetSizeY());
 
-        u1 = float(x + n.GetIntPar(3, L",")) / float(tex->GetSizeX());
-        v1 = float(y + n.GetIntPar(4, L",")) / float(tex->GetSizeY());
+        u1 = float(x + n.GetStrPar(3, L",").GetInt()) / float(tex->GetSizeX());
+        v1 = float(y + n.GetStrPar(4, L",").GetInt()) / float(tex->GetSizeY());
     }
 }
 

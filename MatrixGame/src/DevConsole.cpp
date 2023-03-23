@@ -57,12 +57,12 @@ static void hLog(const std::wstring& cmd, const std::wstring& params) {
 }
 
 static void hBuildCFG(const std::wstring& cmd, const std::wstring& params) {
-    CBlockPar bpi(1, g_CacheHeap);
+    CBlockPar bpi;
     bpi.LoadFromTextFile(IF_PATH);
 
     CStorage stor(g_CacheHeap);
 
-    CBlockPar data(1, g_CacheHeap);
+    CBlockPar data;
     data.CopyFrom(*g_MatrixData);
     data.BlockDelete(PAR_REPLACE);
 

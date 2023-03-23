@@ -157,18 +157,18 @@ void StrToFrameList(Base::CWStr & str,Base::CBuf & buf)
 
 		int cntp=st.GetCountPar(L",");
 		if(cntp<2) continue;
-		int time=st.GetIntPar(0,L",");
+		int time=st.GetStrPar(0,L",").GetInt();
 		for(int u=1;u<cntp;u++) {
 			sf=st.GetStrPar(u,L",").Trim();
 			if(sf.IsEmpty()) continue;
 			int cp=sf.GetCountPar(L"-:");
 			if(cp==0) continue;
 			else if(cp==1) {
-				buf.Dword(sf.GetIntPar(0,L"-:"));
+				buf.Dword(sf.GetStrPar(0,L"-:")).GetInt();
 				buf.Dword(time);
 			} else if(cp==2) {
-				int ifrom=sf.GetIntPar(0,L"-:");
-				int ito=sf.GetIntPar(1,L"-:");
+				int ifrom=sf.GetStrPar(0,L"-:").GetInt();
+				int ito=sf.GetStrPar(1,L"-:").GetInt();
 				int k=ifrom;
 				while(true) {
 					buf.Dword(k);
@@ -178,9 +178,9 @@ void StrToFrameList(Base::CWStr & str,Base::CBuf & buf)
 					if(k==ito) break;
 				}
 			} else {
-				int ifrom=sf.GetIntPar(0,L"-:");
-				int ito=sf.GetIntPar(1,L"-:");
-				int istep=sf.GetIntPar(2,L"-:");
+				int ifrom=sf.GetStrPar(0,L"-:").GetInt();
+				int ito=sf.GetStrPar(1,L"-:").GetInt();
+				int istep=sf.GetStrPar(2,L"-:").GetInt();
 				if(istep<1) continue;
 
 				int k=ifrom;
@@ -903,17 +903,17 @@ BOOL EGExp::ExportSimple_NodeEnumFirst(INode *node,TimeValue timev,int frame)
 //							if(sc>0) m_MaxSize=sc;
 
 							int cp=ts.GetCountPar(L",");
-							if(cp>=1 && !ts.GetStrPar(0,L",").Trim().IsEmpty()) m_MaxSizeX=ts.GetDoublePar(0,L",");
-							if(cp>=2 && !ts.GetStrPar(1,L",").Trim().IsEmpty()) m_MaxSizeY=ts.GetDoublePar(1,L",");
-							if(cp>=3 && !ts.GetStrPar(2,L",").Trim().IsEmpty()) m_MaxSizeZ=ts.GetDoublePar(2,L",");
+							if(cp>=1 && !ts.GetStrPar(0,L",").Trim().IsEmpty()) m_MaxSizeX=ts.GetStrPar(0,L",").GetDouble();
+							if(cp>=2 && !ts.GetStrPar(1,L",").Trim().IsEmpty()) m_MaxSizeY=ts.GetStrPar(1,L",").GetDouble();
+							if(cp>=3 && !ts.GetStrPar(2,L",").Trim().IsEmpty()) m_MaxSizeZ=ts.GetStrPar(2,L",").GetDouble();
 						}
 						if(node->GetUserPropString("Scale",tstr)) {
 							Base::CWStr ts(Base::CStr(tstr.data()));
 
 							int cp=ts.GetCountPar(L",");
-							if(cp>=1 && !ts.GetStrPar(0,L",").Trim().IsEmpty()) m_Scale.x=(float)ts.GetDoublePar(0,L",");
-							if(cp>=2 && !ts.GetStrPar(1,L",").Trim().IsEmpty()) m_Scale.y=(float)ts.GetDoublePar(1,L",");
-							if(cp>=3 && !ts.GetStrPar(2,L",").Trim().IsEmpty()) m_Scale.z=(float)ts.GetDoublePar(2,L",");
+							if(cp>=1 && !ts.GetStrPar(0,L",").Trim().IsEmpty()) m_Scale.x=(float)ts.GetStrPar(0,L",").GetDouble();
+							if(cp>=2 && !ts.GetStrPar(1,L",").Trim().IsEmpty()) m_Scale.y=(float)ts.GetStrPar(1,L",").GetDouble();
+							if(cp>=3 && !ts.GetStrPar(2,L",").Trim().IsEmpty()) m_Scale.z=(float)ts.GetStrPar(2,L",").GetDouble();
 						}
 					}
 				}

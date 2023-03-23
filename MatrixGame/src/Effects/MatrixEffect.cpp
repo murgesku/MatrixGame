@@ -397,14 +397,14 @@ void CMatrixEffect::InitEffects(CBlockPar &bp_in) {
     for (int i = 0; i < BBT_LAST; ++i) {
         auto texp = tex.ParGet(bb2tn[i].name);
         SBillboardTextureArrayElement *e = m_BBTextures + bb2tn[i].id;
-        if (texp.GetIntPar(0, L",") == 0) {
+        if (texp.GetStrPar(0, L",").GetInt() == 0) {
             RESETFLAG(e->flags, BBT_FLAG_INTENSE);
 
             int x0, y0, sx, sy;
-            x0 = texp.GetIntPar(1, L",");
-            y0 = texp.GetIntPar(2, L",");
-            sx = texp.GetIntPar(3, L",");
-            sy = texp.GetIntPar(4, L",");
+            x0 = texp.GetStrPar(1, L",").GetInt();
+            y0 = texp.GetStrPar(2, L",").GetInt();
+            sx = texp.GetStrPar(3, L",").GetInt();
+            sy = texp.GetStrPar(4, L",").GetInt();
 
             e->bbt.tu0 = float(x0) / float(ts->GetSizeX());
             e->bbt.tv0 = float(y0) / float(ts->GetSizeY());

@@ -64,12 +64,12 @@ void CMatrixCursor::Select(const std::wstring& name) {
         if (g_Config.m_Cursors[idx].key == name) {
             n = g_Config.m_Cursors[idx].val;
 
-            m_HotSpot.x = n.GetStrPar(1, L"?").GetIntPar(0, L",");
-            m_HotSpot.y = n.GetStrPar(1, L"?").GetIntPar(1, L",");
+            m_HotSpot.x = n.GetStrPar(1, L"?").GetStrPar(0, L",").GetInt();
+            m_HotSpot.y = n.GetStrPar(1, L"?").GetStrPar(1, L",").GetInt();
 
-            m_FramesCnt = n.GetStrPar(1, L"?").GetIntPar(2, L",");
-            m_CursorSize = n.GetStrPar(1, L"?").GetIntPar(3, L",");
-            m_CursorTimePeriod = n.GetStrPar(1, L"?").GetIntPar(4, L",");
+            m_FramesCnt = n.GetStrPar(1, L"?").GetStrPar(2, L",").GetInt();
+            m_CursorSize = n.GetStrPar(1, L"?").GetStrPar(3, L",").GetInt();
+            m_CursorTimePeriod = n.GetStrPar(1, L"?").GetStrPar(4, L",").GetInt();
 
             if (m_FramesCnt < 0) {
                 m_FramesCnt = -m_FramesCnt;

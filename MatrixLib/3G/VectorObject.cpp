@@ -34,7 +34,7 @@ static bool FreeObjectResources(uintptr_t user) {
 
 #pragma warning(disable : 4355)
 CVectorObject::CVectorObject(void)
-  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)), m_Props(true, g_CacheHeap) {
+  : CCacheData(), m_RemindCore(FreeObjectResources, reinterpret_cast<uintptr_t>(this)) {
     DTRACE();
     m_Type = cc_VO;
 
@@ -1646,14 +1646,14 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
             const wchar *mn = m_VO->GetMatrixName(m);
             if (mn[0] == '$') {
                 ParamParser li_info(m_VO->GetPropValue(m_VO->GetMatrixName(m)));
-                float ra = (float)li_info.GetDoublePar(0, L",");
+                float ra = (float)li_info.GetStrPar(0, L",").GetDouble();
 
                 int pars = li_info.GetCountPar(L",");
                 m_Lights[l].intervals_cnt = pars - 2;
                 if (m_Lights[l].intervals_cnt == 0) {
                     m_Lights[l].intervals = (SColorInterval *)HAlloc(sizeof(SColorInterval), g_CacheHeap);
                     m_Lights[l].intervals_cnt = 1;
-                    m_Lights[l].intervals[0].time1 = li_info.GetStrPar(1, L",").GetIntPar(0, L":");
+                    m_Lights[l].intervals[0].time1 = li_info.GetStrPar(1, L",").GetStrPar(0, L":").GetInt();
                     m_Lights[l].intervals[0].time2 = m_Lights[l].intervals[0].time1;
                     m_Lights[l].intervals[0].c1 =
                             0xFF000000 | li_info.GetStrPar(1, L",").GetStrPar(1, L":").GetHexUnsigned();
@@ -1669,7 +1669,7 @@ void CVectorObjectAnim::InitLights(CTextureManaged *tex_light) {
                     DWORD *colors = (DWORD *)(times + (pars - 1));
 
                     for (int pa = 1; pa < pars; ++pa) {
-                        times[pa - 1] = li_info.GetStrPar(pa, L",").GetIntPar(0, L":");
+                        times[pa - 1] = li_info.GetStrPar(pa, L",").GetStrPar(0, L":").GetInt();
                         colors[pa - 1] = 0xFF000000 | li_info.GetStrPar(pa, L",").GetStrPar(1, L":").GetHexUnsigned();
                     }
 
@@ -2271,7 +2271,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
     std::wstring tstr, tstr2, unit, bs;
     std::wstring texture, texture_gloss, texture_back, texture_mask;
 
-    CBlockPar bp(true, g_CacheHeap);
+    CBlockPar bp;
     CVectorObjectGroupUnit *gu;
 
     bp.LoadFromTextFile(filename);
@@ -2289,7 +2289,7 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         gu = Add();
         gu->m_Name = bp.BlockGetName(i);
 
-        tstr = bp2.ParNE(L"Model");
+        tstr = bp2.ParGetNE(L"Model");
         if (!tstr.empty()) {
             auto idx = tstr.find(L"?");
             if (idx != std::wstring::npos)
@@ -2298,26 +2298,26 @@ void CVectorObjectGroup::Load(const wchar *filename, CTextureManaged *lt, SKIN_G
         }
 
         if (bp2.ParCount(L"Id") > 0)
-            gu->m_Id = bp2.Par(L"Id").GetInt();
+            gu->m_Id = bp2.ParGet(L"Id").GetInt();
 
         if (bp2.ParCount(L"Texture")) {
-            CacheReplaceFileNameAndExt(texture, filename, bp2.Par(L"Texture").c_str());
+            CacheReplaceFileNameAndExt(texture, filename, bp2.ParGet(L"Texture").c_str());
         }
         if (bp2.ParCount(L"TextureGloss")) {
-            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.Par(L"TextureGloss").c_str());
+            CacheReplaceFileNameAndExt(texture_gloss, filename, bp2.ParGet(L"TextureGloss").c_str());
         }
         if (bp2.ParCount(L"TextureBack")) {
-            CacheReplaceFileNameAndExt(texture_back, filename, bp2.Par(L"TextureBack").c_str());
+            CacheReplaceFileNameAndExt(texture_back, filename, bp2.ParGet(L"TextureBack").c_str());
         }
         if (bp2.ParCount(L"TextureMask")) {
-            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.Par(L"TextureMask").c_str());
+            CacheReplaceFileNameAndExt(texture_mask, filename, bp2.ParGet(L"TextureMask").c_str());
         }
         if (bp2.ParCount(L"TextureBackScroll")) {
-            bs = bp2.Par(L"TextureBackScroll");
+            bs = bp2.ParGet(L"TextureBackScroll");
         }
 
         if (bp2.ParCount(L"Link"))
-            gu->m_LinkMatrixName = bp2.Par(L"Link");
+            gu->m_LinkMatrixName = bp2.ParGet(L"Link");
 
         if (texture_mask.empty())
             texture_back.clear();
