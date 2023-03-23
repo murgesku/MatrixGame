@@ -12,30 +12,16 @@
 
 #include "MatrixGame.h"
 #include "MatrixMap.hpp"
-#include "MatrixFormGame.hpp"
 #include "Interface/CInterface.h"
 #include "MatrixRenderPipeline.hpp"
-#include "MatrixGameDll.hpp"
 #include "ShadowStencil.hpp"
 #include "MatrixLoadProgress.hpp"
-#include "MatrixFlyer.hpp"
-#include "MatrixMapStatic.hpp"
-#include "MatrixMultiSelection.hpp"
-#include "MatrixTerSurface.hpp"
 #include "MatrixSkinManager.hpp"
-#include "MatrixSoundManager.hpp"
 #include "Interface/CIFaceMenu.h"
 #include "Interface/MatrixHint.hpp"
 #include "Interface/CHistory.h"
-#include "MatrixInstantDraw.hpp"
 #include "MatrixSampleStateManager.hpp"
 
-#include <stdio.h>
-#include <time.h>
-
-#include <ddraw.h>
-
-#include <utils.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 CHeap *g_MatrixHeap;
@@ -45,32 +31,6 @@ CRenderPipeline *g_Render;
 CLoadProgress *g_LoadProgress;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
-    // CBitmap b,bb;
-    // b.LoadFromPNG(L"test.png");
-    // bb.CreateRGB(b.SizeX(), b.SizeY());
-    // bb.Copy(CPoint(0,0), b.Size(), b, CPoint(0,0));
-    // bb.SaveInDDSUncompressed(L"out.dds");
-
-    // CBuf bla;
-    // bla.LoadFromFile(L"test.dds");
-    // BYTE *data = (BYTE *)bla.Get();
-    // DDSURFACEDESC2 *desc = (DDSURFACEDESC2 *)(data + 4);
-
-    // int x = FP_NORM_TO_BYTE2(1.0f);
-    // x = FP_NORM_TO_BYTE2(0.9999f);
-    // x = FP_NORM_TO_BYTE2(0.5f);
-    // x = FP_NORM_TO_BYTE2(0.1f);
-    // x = FP_NORM_TO_BYTE2(0.0f);
-    // x = FP_NORM_TO_BYTE2(2.0f);
-    // x = FP_NORM_TO_BYTE2(200.6f);
-    // x = FP_NORM_TO_BYTE2(255.6f);
-    // x = FP_NORM_TO_BYTE2(256.6f);
-
-    // float t,k;
-    // k = 10.0f; FP_INV(t, k);
-    // k = 20.0f; FP_INV(t, k);
-    // k = 25.0f; FP_INV(t, k);
-
     const wchar *cmd = GetCommandLineW();
 
     int numarg;
@@ -82,18 +42,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
     }
 
     try {
-        srand((unsigned)time(NULL));
+        CGame game;
 
-        MatrixGameInit(hInstance, NULL, map);
+        uint32_t seed = (unsigned)time(NULL);
+        game.Init(hInstance, NULL, map, seed);
 
         CFormMatrixGame *formgame = HNew(NULL) CFormMatrixGame();
         FormChange(formgame);
 
         timeBeginPeriod(1);
-
-        // DWORD * buf=(DWORD *)HAlloc(124,NULL);
-        //*(buf-1)=1;
-        // HFree(buf,NULL);
 
         if (map)
         {
@@ -117,7 +74,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
 
         timeEndPeriod(1);
 
-        MatrixGameDeinit();
+        game.Deinit();
 
         FormChange(NULL);
         HDelete(CFormMatrixGame, formgame, NULL);
@@ -195,8 +152,9 @@ static void static_init(void) {
     g_Flags = 0;  // GFLAG_FORMACCESS;
 }
 
-void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, wchar *lang, wchar *txt_start,
-                    wchar *txt_win, wchar *txt_loss, wchar *planet) {
+void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSettings *set, wchar *lang,
+                 wchar *txt_start, wchar *txt_win, wchar *txt_loss, wchar *planet) {
+    srand(seed);
     static_init();
 
     DTRACE();
@@ -344,11 +302,13 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     {
         g_Config.ApplySettings(set);
         g_Sampler.ApplySettings(set);
+        SetMaxCameraDistance(set->m_MaxDistance);
     }
     else
     {
         g_Config.ApplySettings(&settings);
         g_Sampler.ApplySettings(&settings);
+        SetMaxCameraDistance(settings.m_MaxDistance);
     }
 
     DCP();
@@ -517,11 +477,11 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
 
     if (set)
     {
-        set->ApplyVideoParams();
+        ApplyVideoParams(*set);
     }
     else
     {
-        settings.ApplyVideoParams();
+        ApplyVideoParams(settings);
     }
 
     /*IDirect3DSurface9 * surf;
@@ -546,7 +506,7 @@ void MatrixGameInit(HINSTANCE inst, HWND wnd, wchar *map, SRobotsSettings *set, 
     // if (iface_save) bpi.SaveInTextFile(IF_PATH, true);
 }
 
-void SRobotsSettings::ApplyVideoParams(void) {
+void CGame::ApplyVideoParams(SRobotsSettings &set) {
     DTRACE();
 
     int bpp;
@@ -565,17 +525,17 @@ void SRobotsSettings::ApplyVideoParams(void) {
         bpp = 16;
     }
 
-    bool change_refresh_rate = m_RefreshRate != 0 && m_RefreshRate != d3ddm.RefreshRate;
-    int refresh_rate_required = change_refresh_rate ? m_RefreshRate : 0;
+    bool change_refresh_rate = set.m_RefreshRate != 0 && set.m_RefreshRate != d3ddm.RefreshRate;
+    int refresh_rate_required = change_refresh_rate ? set.m_RefreshRate : 0;
 
     RECT rect;
     GetClientRect(g_Wnd, &rect);
     bool was_in_window_mode = (rect.right != d3ddm.Width || rect.bottom != d3ddm.Height);
-    bool now_in_window_mode = was_in_window_mode && (bpp == m_BPP) && !change_refresh_rate;
+    bool now_in_window_mode = was_in_window_mode && (bpp == set.m_BPP) && !change_refresh_rate;
 
-    if (m_FSAASamples > 16)
+    if (set.m_FSAASamples > 16)
         ERROR_S(L"Invalid multisample type");
-    _D3DMULTISAMPLE_TYPE expectedMultiSampleType = (_D3DMULTISAMPLE_TYPE)m_FSAASamples;  //(m_FSAASamples >> 24);
+    _D3DMULTISAMPLE_TYPE expectedMultiSampleType = (_D3DMULTISAMPLE_TYPE)set.m_FSAASamples;  //(m_FSAASamples >> 24);
 
     ZeroMemory(&g_D3Dpp, sizeof(g_D3Dpp));
 
@@ -586,8 +546,8 @@ void SRobotsSettings::ApplyVideoParams(void) {
         RECT r1, r2;
         GetWindowRect(g_Wnd, &r1);
         GetClientRect(g_Wnd, &r2);
-        SetWindowPos(g_Wnd, NULL, 0, 0, m_ResolutionX + (r1.right - r1.left - r2.right),
-                     m_ResolutionY + (r1.bottom - r1.top - r2.bottom),
+        SetWindowPos(g_Wnd, NULL, 0, 0, set.m_ResolutionX + (r1.right - r1.left - r2.right),
+                     set.m_ResolutionY + (r1.bottom - r1.top - r2.bottom),
                      SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
     }
     else {
@@ -596,18 +556,18 @@ void SRobotsSettings::ApplyVideoParams(void) {
 
         if (was_in_window_mode) {
             SetWindowLong(g_Wnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-            MoveWindow(g_Wnd, 0, 0, m_ResolutionX, m_ResolutionY, false);
+            MoveWindow(g_Wnd, 0, 0, set.m_ResolutionX, set.m_ResolutionY, false);
         }
     }
 
     g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    g_D3Dpp.BackBufferFormat = (m_BPP == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
+    g_D3Dpp.BackBufferFormat = (set.m_BPP == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
     g_D3Dpp.EnableAutoDepthStencil = TRUE;
     g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-    g_D3Dpp.PresentationInterval = m_VSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+    g_D3Dpp.PresentationInterval = set.m_VSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
     g_D3Dpp.FullScreen_RefreshRateInHz = refresh_rate_required;
-    g_D3Dpp.BackBufferWidth = m_ResolutionX;
-    g_D3Dpp.BackBufferHeight = m_ResolutionY;
+    g_D3Dpp.BackBufferWidth = set.m_ResolutionX;
+    g_D3Dpp.BackBufferHeight = set.m_ResolutionY;
     g_D3Dpp.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
     g_D3Dpp.hDeviceWindow = g_Wnd;
 
@@ -634,8 +594,8 @@ void SRobotsSettings::ApplyVideoParams(void) {
 
     ViewPort.X = 0;
     ViewPort.Y = 0;
-    ViewPort.Width = m_ResolutionX;
-    ViewPort.Height = m_ResolutionY;
+    ViewPort.Width = set.m_ResolutionX;
+    ViewPort.Height = set.m_ResolutionY;
 
     ViewPort.MinZ = 0.0f;
     ViewPort.MaxZ = 1.0f;
@@ -679,7 +639,7 @@ void SRobotsSettings::ApplyVideoParams(void) {
     ASSERT_DX(g_D3DD->LightEnable(0, TRUE));
 }
 
-void MatrixGameDeinit(void) {
+void CGame::Deinit(void) {
     DTRACE();
 
     SSpecialBot::ClearAIRobotType();
@@ -800,28 +760,71 @@ void MatrixGameDeinit(void) {
     }
 }
 
-std::wstring PathToOutputFiles(const wchar_t* dest) {
-    static std::wstring path{};
+void CGame::RunGameLoop(CFormMatrixGame *formgame) {
+    try {
+        g_ExitState = 0;
+        FormChange(formgame);
 
-    if (path.empty())
-    {
-        ITEMIDLIST *pidl;
+        timeBeginPeriod(1);
 
-        HRESULT hRes = SHGetSpecialFolderLocation(NULL, CSIDL_PERSONAL, &pidl);
-        if (hRes == NOERROR)
-        {
-            wchar_t lpPath[MAX_PATH];
-            SHGetPathFromIDListW(pidl, lpPath);
+        SETFLAG(g_Flags, GFLAG_APPACTIVE);
+        RESETFLAG(g_Flags, GFLAG_EXITLOOP);
 
-            path = utils::format(L"%ls\\SpaceRangersHD", lpPath);
-            CreateDirectoryW(path.c_str(), NULL);
-            path += L"\\";
-            path += dest;
-        }
-        else {
-            path = utils::format(L".\\%ls", dest);
-        }
+        L3GRun();
+    }
+    catch (... /*ExceptionHandler(GetExceptionInformation())*/) {
+        SETFLAG(g_Flags, GFLAG_EXITLOOP);
+        g_ExitState += 100;
+    }
+}
+
+void CGame::SaveResult(SRobotGameState *state) {
+    state->m_Time = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_TIME);
+    state->m_BuildRobot = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_ROBOT_BUILD);
+    state->m_KillRobot = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_ROBOT_KILL);
+    state->m_BuildTurret = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_TURRET_BUILD);
+    state->m_KillTurret = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_TURRET_KILL);
+    state->m_KillBuilding = g_MatrixMap->GetPlayerSide()->GetStatValue(STAT_BUILDING_KILL);
+}
+
+void CGame::SafeFree() {
+    try {
+        timeEndPeriod(1);
+
+        Deinit();
+    }
+    catch (...) {
     }
 
-    return path;
+    try {
+        FormChange(NULL);
+    }
+    catch (...) {
+    }
+
+    try {
+        g_Cache->Clear();
+    }
+    catch (...) {
+    }
+
+    try {
+        L3GDeinit();
+    }
+    catch (...) {
+    }
+
+    try {
+        CacheDeinit();
+    }
+    catch (...) {
+    }
+
+#ifdef MEM_SPY_ENABLE
+    try {
+        CMain::BaseDeInit();
+    }
+    catch (...) {
+    }
+#endif
 }

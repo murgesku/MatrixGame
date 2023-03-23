@@ -16,6 +16,7 @@
 #include "MatrixObjectCannon.hpp"
 #include "MatrixTerSurface.hpp"
 #include "MatrixSampleStateManager.hpp"
+#include "MatrixGamePathUtils.hpp"
 
 #include <utils.hpp>
 

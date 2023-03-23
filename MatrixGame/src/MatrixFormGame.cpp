@@ -24,6 +24,7 @@
 #include "Interface/MatrixHint.hpp"
 #include "MatrixObjectCannon.hpp"
 #include "Interface/CCounter.h"
+#include "MatrixGamePathUtils.hpp"
 
 #include <time.h>
 #include <sys/timeb.h>
