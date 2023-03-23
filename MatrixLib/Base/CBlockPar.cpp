@@ -122,33 +122,6 @@ double ParamParser::GetDouble() const {
     return zn;
 }
 
-int ParamParser::GetHex() const {
-    int tlen = length();
-    if (tlen < 1)
-        return 0;
-    const wchar *tstr = c_str();
-
-    int zn = 0;
-    int i;
-
-    wchar ch;
-    for (i = 0; i < tlen; i++) {
-        ch = tstr[i];
-
-        ch -= '0';
-        if (ch > 9)
-            ch = (tstr[i] & (~32)) - ('A' - 10);
-        zn = zn * 16 + ch;
-    }
-    for (i = 0; i < tlen; i++)
-        if (tstr[i] == '-') {
-            zn = -zn;
-            break;
-        }
-
-    return zn;
-}
-
 DWORD ParamParser::GetHexUnsigned(void) const {
     int tlen = length();
     if (tlen < 1)
@@ -472,7 +445,7 @@ CBlockParUnit *CBlockPar::ParAdd(const std::wstring& name, const std::wstring& z
     return &el;
 }
 
-bool CBlockPar::ParSetNE(const std::wstring& name, const std::wstring& zn)
+void CBlockPar::ParSetAdd(const std::wstring& name, const std::wstring& zn)
 {
     DTRACE();
 
@@ -481,11 +454,10 @@ bool CBlockPar::ParSetNE(const std::wstring& name, const std::wstring& zn)
 
     if (res == m_Units.end())
     {
-        return false;
+        ParAdd(name, zn);
     }
 
     *(res->m_Par) = zn;
-    return true;
 }
 
 void CBlockPar::ParDelete(int no)
@@ -554,21 +526,6 @@ ParamParser CBlockPar::ParGet(int no) const
     }
 
     return *(res->m_Par);
-}
-
-void CBlockPar::ParSet(int no, const std::wstring& zn)
-{
-    DTRACE();
-
-    auto pred = [&no](const auto& u) { return u.isPar() && (no-- == 0); };
-    auto res = std::ranges::find_if(m_Units, pred);
-
-    if (res == m_Units.end())
-    {
-        ERROR_E;
-    }
-
-    *(res->m_Par) = zn;
 }
 
 ParamParser CBlockPar::ParGetName(int no) const

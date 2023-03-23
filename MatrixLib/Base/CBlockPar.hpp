@@ -30,12 +30,10 @@ public:
     ParamParser() = default;
     ~ParamParser() = default;
 
-
     bool GetBool() const;
     int GetInt(void) const;
     DWORD GetDword(void) const;
     double GetDouble(void) const;
-    int GetHex(void) const;
     DWORD GetHexUnsigned(void) const;
 
     bool IsOnlyInt(void) const;
@@ -97,8 +95,8 @@ private:
     CBlockParUnit& operator = (const CBlockParUnit& that);
 };
 
-class BASE_API CBlockPar : public CMain {
-    friend CBlockParUnit;
+class BASE_API CBlockPar : public CMain
+{
     friend BPCompiler;
 
 private:
@@ -122,21 +120,10 @@ private:
     CBlockParUnit& UnitGet(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
-private:
-    bool ParSetNE(const std::wstring& name, const std::wstring& zn);
-
 public:
     CBlockParUnit *ParAdd(const std::wstring& name, const std::wstring& zn);
 
-    void ParSet(const std::wstring &name, const std::wstring &zn) {
-        if (!ParSetNE(name, zn))
-            ERROR_E;
-    }
-
-    void ParSetAdd(const std::wstring &name, const std::wstring &zn) {
-        if (!ParSetNE(name, zn))
-            ParAdd(name, zn);
-    }
+    void ParSetAdd(const std::wstring &name, const std::wstring &zn);
 
     void ParSetAdd(const std::wstring& name, double value)
     {
@@ -152,11 +139,10 @@ public:
     int ParCount(const std::wstring &name) const;
 
     ParamParser ParGet(int no) const;
-    void ParSet(int no, const std::wstring &zn);
     ParamParser ParGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
-public:
+
     CBlockPar *BlockAdd(const std::wstring& name);
     CBlockPar *BlockGetNE(const std::wstring &name);
     CBlockPar *BlockGet(const std::wstring &name);
@@ -174,7 +160,7 @@ public:
     ParamParser BlockGetName(int no) const;
 
     //////////////////////////////////////////////////////////////
-public:
+
     const std::wstring &ParPathGet(const std::wstring &path);
     void ParPathAdd(const std::wstring &path, const std::wstring &zn);
     void ParPathSet(const std::wstring &path, const std::wstring &zn);
@@ -182,7 +168,7 @@ public:
     void ParPathDelete(const std::wstring &path);
 
     //////////////////////////////////////////////////////////////
-public:
+
     CBlockPar *BlockPathGet(const std::wstring &path);
     CBlockPar *BlockPathAdd(const std::wstring &path);
     CBlockPar *BlockPathGetAdd(const std::wstring &path);
