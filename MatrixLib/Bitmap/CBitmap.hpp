@@ -7,7 +7,9 @@
 
 #include <algorithm>
 
-#include "BitmapDef.hpp"
+#include <windows.h>
+#include <stdlib.h>
+
 #include "../Base/Base.hpp"
 
 #define BMF_USER        0
