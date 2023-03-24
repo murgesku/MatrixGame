@@ -25,7 +25,6 @@
     #include "dxerr.h"
 #endif // __GNUC__
 
-#include "../Bitmap/Bitmap.pch"
 #include "../Base/Base.hpp"
 
 #include "../Bitmap/CBitmap.hpp"

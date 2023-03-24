@@ -74,9 +74,6 @@ set(BITMAP_SOURCES
     Bitmap/FilePNG.cpp
 )
 set(BITMAP_HEADERS
-    Bitmap/Bitmap.pch
-    Bitmap/Bitmap.hpp
-    Bitmap/BitmapDef.hpp
     Bitmap/CBitmap.hpp
     Bitmap/FilePNG.hpp
 )

@@ -6,8 +6,6 @@
 #include <cmath>
 #include <cstdint>
 
-#include "Bitmap.pch"
-
 #include "CBitmap.hpp"
 #include "FilePNG.hpp"
 
