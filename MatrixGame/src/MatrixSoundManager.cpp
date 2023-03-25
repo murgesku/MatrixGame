@@ -252,7 +252,7 @@ struct SDS {
     CSoundArray *sa;
     float ms;
 };
-static bool update_positions(DWORD key, DWORD val, DWORD user) {
+static bool update_positions(uint32_t key, uint32_t val, uint32_t user) {
     DTRACE();
 
     SDS *kk = (SDS *)user;
@@ -832,9 +832,9 @@ void CSound::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
     DWORD key = Pos2Key(pos);
 
     CSoundArray *sa;
-    if (!m_PosSounds->Get(key, (DWORD *)&sa)) {
+    if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
         sa = HNew(g_MatrixHeap) CSoundArray(g_MatrixHeap);
-        m_PosSounds->Set(key, (DWORD)sa);
+        m_PosSounds->Set(key, (uint32_t)sa);
     }
     sa->AddSound(snd, pos, sl, ifl);
 }
@@ -860,14 +860,14 @@ void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1
     DWORD key = Pos2Key(pos);
 
     CSoundArray *sa;
-    if (!m_PosSounds->Get(key, (DWORD *)&sa)) {
+    if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
         sa = HNew(g_MatrixHeap) CSoundArray(g_MatrixHeap);
-        m_PosSounds->Set(key, (DWORD)sa);
+        m_PosSounds->Set(key, (uint32_t)sa);
     }
     sa->AddSound(pos, attn, pan0, pan1, vol0, vol1, name);
 }
 
-static bool delete_arrays(DWORD key, DWORD val, DWORD user) {
+static bool delete_arrays(uint32_t key, uint32_t val, uint32_t user) {
     DTRACE();
 
     CSoundArray *sa = (CSoundArray *)val;
