@@ -5,11 +5,10 @@
 
 #pragma once
 
-#include "Base.pch"
-
 #include "CMain.hpp"
 
 #include <windows.h>
+#include <string>
 
 namespace Base {
 
@@ -32,10 +31,10 @@ class BASE_API CFile : public CMain {
     int m_Open;        // Кол-во вызовов Open
 
 public:
-    CFile(CHeap *heap = NULL);
-    CFile(const std::wstring &filename, CHeap *heap = NULL);
-    CFile(const wchar *filename, CHeap *heap = NULL);
-    CFile(const wchar *filename, int len, CHeap *heap = NULL);
+    CFile();
+    CFile(const std::wstring &filename);
+    CFile(const wchar *filename);
+    CFile(const wchar *filename, int len);
     ~CFile();
 
     static void StaticInit(void) {
@@ -46,7 +45,7 @@ public:
     }
 
 #ifndef MAXEXP_EXPORTS
-    static void AddPackFile(const wchar *name, CHeap *heap);
+    static void AddPackFile(const wchar *name);
     static void OpenPackFiles(void);
     static void ReleasePackFiles(void);
 #endif

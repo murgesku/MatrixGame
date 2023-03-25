@@ -5,16 +5,28 @@
 
 #include <fstream>
 
-#include "3g.pch"
-
 #include "Texture.hpp"
 #include "3g.hpp"
 #include "Helper.hpp"
 #include "../../MatrixGame/src/MatrixSampleStateManager.hpp"
 
+#include "CBlockPar.hpp"
+#include "CHeap.hpp"
+#include "CBuf.hpp"
+#include "CException.hpp"
+#include "CReminder.hpp"
+
 #include <stdio.h>
 
 #include <utils.hpp>
+
+#ifdef __GNUC__
+    #include "dxerr9.h"
+    #define DXGetErrorStringW DXGetErrorString9W
+    #define DXGetErrorDescriptionW DXGetErrorDescription9W
+#else
+    #include "dxerr.h"
+#endif // __GNUC__
 
 HINSTANCE g_HInst = 0;
 IDirect3D9 *g_D3D = NULL;

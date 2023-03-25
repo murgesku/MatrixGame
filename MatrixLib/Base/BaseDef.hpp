@@ -15,6 +15,16 @@
 #define BASE_API
 #endif
 
+//////////////////////////
+using wchar = wchar_t;
+using dword = unsigned long;
+//////////////////////////
+
+#define IS_UNICODE() true
+
+#pragma warning (disable : 4201)
+#pragma warning (disable : 4238)
+
 namespace Base {
 
 // lint -e1401

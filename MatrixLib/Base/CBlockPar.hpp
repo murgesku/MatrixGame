@@ -32,9 +32,9 @@ public:
 
     bool GetBool() const;
     int GetInt(void) const;
-    DWORD GetDword(void) const;
+    uint32_t GetDword(void) const;
     double GetDouble(void) const;
-    DWORD GetHexUnsigned(void) const;
+    uint32_t GetHexUnsigned(void) const;
 
     bool IsOnlyInt(void) const;
 

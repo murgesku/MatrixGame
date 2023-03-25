@@ -5,10 +5,8 @@
 
 #pragma once
 
-extern IDirect3DDevice9 *g_D3DD;
-
-#define FREE_TEXTURE_TIME_PERIOD (7000)
-#define FREE_VO_TIME_PERIOD      (30000)
+#include "d3d9.h"
+#include "d3dx9tex.h"
 
 #include "Cache.hpp"
 #include "D3DControl.hpp"
@@ -16,8 +14,13 @@ extern IDirect3DDevice9 *g_D3DD;
 #include "BigIB.hpp"
 #include "ShadowProj.hpp"
 #include "CBillboard.hpp"
+#include "CReminder.hpp"
 
-// #include "ShadowStencil.hpp"
+extern IDirect3DDevice9 *g_D3DD;
+
+#define FREE_TEXTURE_TIME_PERIOD (7000)
+#define FREE_VO_TIME_PERIOD      (30000)
+
 class CVOShadowStencil;
 
 #define GLOSS_TEXTURE_SUFFIX L"_gloss"

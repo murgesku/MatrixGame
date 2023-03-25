@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "CReminder.hpp"
 
 namespace Base {
@@ -16,9 +14,9 @@ int SRemindCore::gtime;
 int SRemindCore::ctime;
 
 void SRemindCore::Takt(int ms) {
-    if (first == NULL)
+    if (first == nullptr)
         return;
-    if (current == NULL)
+    if (current == nullptr)
         current = first;
 
     gtime += ms;
@@ -30,15 +28,15 @@ void SRemindCore::Takt(int ms) {
 
         while (checks-- > 0) {
             current = current->next;
-            if (current == NULL)
+            if (current == nullptr)
                 current = first;
             if (gtime > current->time) {
                 if (!current->handler(current->param)) {
                     current->Down();
                 }
-                if (current == NULL)
+                if (current == nullptr)
                     current = first;
-                if (current == NULL)
+                if (current == nullptr)
                     return;
             }
         }
@@ -68,8 +66,8 @@ void SRemindCore::Takt(int ms) {
 //    m_Time = 0;
 //    m_Pointer = 0;
 //    m_NextTime = REMINDER_TAKT;
-//    m_FirstFree = NULL;
-//    m_LastFree = NULL;
+//    m_FirstFree = nullptr;
+//    m_LastFree = nullptr;
 //
 //    m_Ref = 1;
 //}
@@ -102,8 +100,8 @@ void SRemindCore::Takt(int ms) {
 //    m_Time = 0;
 //    m_Pointer = 0;
 //    m_NextTime = REMINDER_TAKT;
-//    m_FirstFree = NULL;
-//    m_LastFree = NULL;
+//    m_FirstFree = nullptr;
+//    m_LastFree = nullptr;
 //
 //    //Validate();
 //}
@@ -134,7 +132,7 @@ void SRemindCore::Takt(int ms) {
 //        if (m_LastFree) m_LastFree = (SReminderItem *)((BYTE *)m_LastFree + delta);
 //
 //        SReminderItem * i = m_FirstFree;
-//        while (i != NULL)
+//        while (i != nullptr)
 //        {
 //            if (i->next_free) i->next_free = (SReminderItem *)((BYTE *)i->next_free + delta);
 //            if (i->prev_free) i->prev_free = (SReminderItem *)((BYTE *)i->prev_free + delta);
@@ -150,7 +148,7 @@ void SRemindCore::Takt(int ms) {
 //{
 //    DTRACE();
 //    LIST_ADD(item, m_FirstFree, m_LastFree, prev_free, next_free);
-//    item->handler = NULL;
+//    item->handler = nullptr;
 //}
 //
 ///*
@@ -166,9 +164,9 @@ void SRemindCore::Takt(int ms) {
 //        while (id < idend)
 //        {
 //            SReminderItem * item = (SReminderItem *)m_Items.Get() + (*id);
-//            if (item->handler == NULL)
+//            if (item->handler == nullptr)
 //            {
-//                DM("ID" + CStr((int)*id), "NULL" );
+//                DM("ID" + CStr((int)*id), "nullptr" );
 //                return;
 //                //ERROR_E;
 //            }

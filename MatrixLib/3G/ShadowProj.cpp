@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "3g.pch"
-
 #include "ShadowProj.hpp"
 
 CBigVB<SVOShadowProjVertex> *CVOShadowProj::m_VB;

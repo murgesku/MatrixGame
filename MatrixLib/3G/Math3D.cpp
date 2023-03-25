@@ -3,7 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "3g.pch"
+#include "Math3D.hpp"
+#include "3g.hpp"
 
 #include <algorithm>
 

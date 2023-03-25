@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include <string>
+
+#include "CMain.hpp"
+
 enum ButtonStatus {
     B_DOWN,
     B_UP,
@@ -18,7 +22,7 @@ enum ESysEvent {
     SYSEV_ACTIVATED,
 };
 
-class CForm : public CMain {
+class CForm : public Base::CMain {
 private:
     CForm *m_FormPrev;
     CForm *m_FormNext;

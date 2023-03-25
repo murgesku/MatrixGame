@@ -11,6 +11,7 @@
 
 #include "CFile.hpp"
 #include "CException.hpp"
+#include "CRC32.hpp"
 
 #include <malloc.h>
 #include <ddraw.h>

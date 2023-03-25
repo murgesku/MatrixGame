@@ -6,8 +6,6 @@
 #include <string>
 #include <algorithm>
 
-#include "Base.pch"
-
 #include "CBlockPar.hpp"
 #include "CFile.hpp"
 #include "CException.hpp"
@@ -70,13 +68,13 @@ int ParamParser::GetInt() const
     return sign ? -value : value;
 }
 
-DWORD ParamParser::GetDword() const {
+uint32_t ParamParser::GetDword() const {
     int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = c_str();
 
-    DWORD zn = 0;
+    uint32_t zn = 0;
     wchar ch;
     for (int i = 0; i < tlen; i++) {
         ch = tstr[i] - '0';
@@ -122,13 +120,13 @@ double ParamParser::GetDouble() const {
     return zn;
 }
 
-DWORD ParamParser::GetHexUnsigned(void) const {
+uint32_t ParamParser::GetHexUnsigned(void) const {
     int tlen = length();
     if (tlen < 1)
         return 0;
     const wchar *tstr = c_str();
 
-    DWORD zn = 0;
+    uint32_t zn = 0;
     int i;
 
     wchar ch;
@@ -1191,12 +1189,12 @@ void CBlockPar::SaveInTextFile(const std::wstring &filename, bool ansi)
 {
     DTRACE();
 
-    CBuf buf(nullptr);
+    CBuf buf;
     if (!ansi)
         buf.Word(0x0feff);
     SaveInText(buf, ansi);
 
-    CFile fi(filename, nullptr);
+    CFile fi(filename);
     fi.Create();
     fi.Write(buf.Get(), buf.Len());
     fi.Close();

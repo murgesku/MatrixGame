@@ -6,10 +6,15 @@
 #ifndef HPP_3G_INCLUDE
 #define HPP_3G_INCLUDE
 
+#include "BaseDef.hpp"
+#include "CBlockPar.hpp"
 #include "Cache.hpp"
 #include "Math3D.hpp"
 #include "Form.hpp"
 #include "Helper.hpp"
+
+#include "d3d9.h"
+#include "d3dx9tex.h"
 
 #define GFLAG_APPACTIVE SETBIT(0)
 //#define GFLAG_FORMACCESS            SETBIT(1)
@@ -42,14 +47,6 @@ extern D3DPRESENT_PARAMETERS g_D3Dpp;
 
 // global config flags
 extern DWORD g_Flags;
-
-#ifdef _DEBUG
-__inline int D3DDRef(void) {
-    int ref = g_D3DD->AddRef();
-    ref = g_D3DD->Release();
-    return ref;
-}
-#endif
 
 #ifdef DO_SMART_COLOROPS
 

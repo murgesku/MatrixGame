@@ -5,9 +5,8 @@
 
 #include <new>
 
-#include "Base.pch"
-
 #include "CStorage.hpp"
+#include "CRC32.hpp"
 
 #undef ZEXPORT
 #define ZEXPORT __cdecl

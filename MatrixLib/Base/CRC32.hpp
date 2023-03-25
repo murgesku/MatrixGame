@@ -9,9 +9,9 @@
 
 namespace Base {
 
-BASE_API dword CalcCRC32(const void *buf, int len);
-BASE_API dword CalcCRC32_Begin(const void *buf, int len);
-BASE_API dword CalcCRC32_Buf(dword crc, const void *buf, int len);
-BASE_API dword CalcCRC32_End(dword crc);
+dword CalcCRC32(const void *buf, int len);
+dword CalcCRC32_Begin(const void *buf, int len);
+dword CalcCRC32_Buf(dword crc, const void *buf, int len);
+dword CalcCRC32_End(dword crc);
 
 }  // namespace Base
