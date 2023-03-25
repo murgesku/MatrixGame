@@ -122,11 +122,6 @@ void CDText::Get(std::string& out)
     out = res;
 }
 
-void DbgShowDword(const char *n, DWORD sz)
-{
-    CDText::T(n, sz);
-}
-
 #endif
 
 int g_CheckPointNumber;

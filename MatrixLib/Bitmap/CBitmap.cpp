@@ -9,6 +9,9 @@
 #include "CBitmap.hpp"
 #include "FilePNG.hpp"
 
+#include "CFile.hpp"
+#include "CException.hpp"
+
 #include <malloc.h>
 #include <ddraw.h>
 
@@ -45,9 +48,8 @@ inline DWORD LIC(DWORD c0, DWORD c1, float t) {
 
 using namespace Base;
 
-CBitmap::CBitmap(Base::CHeap *heap) : CMain() {
-    m_Heap = heap;
-
+CBitmap::CBitmap(void* heap)
+{
     m_Pos.x = 0;
     m_Pos.y = 0;
     m_Size.x = 0;
@@ -102,14 +104,14 @@ void CBitmap::Clear() {
     m_MColor[3] = 0;
 
     if (m_Data != NULL && !m_DataExt)
-        HFree(m_Data, m_Heap);
+        HFree(m_Data, nullptr);
     m_Data = NULL;
     m_Pitch = 0;
     m_DataExt = false;
 
     for (int i = 0; i < 4; i++) {
         if (m_AddData[i] != NULL && !m_AddDataExt[i])
-            HFree(m_AddData[i], m_Heap);
+            HFree(m_AddData[i], nullptr);
         m_AddData[i] = NULL;
         m_AddDataExt[i] = false;
         m_AddDataVal[i] = 0;
@@ -127,8 +129,8 @@ void CBitmap::CreatePalate(int lenx, int leny, int palcnt) {
     m_BitPP = 8;
     m_MColor[0] = 0x0ff;
     m_Pitch = lenx;
-    m_Data = HAlloc(m_Pitch * m_Size.y, m_Heap);
-    m_AddData[0] = HAlloc(palcnt * 4, m_Heap);
+    m_Data = HAlloc(m_Pitch * m_Size.y, nullptr);
+    m_AddData[0] = HAlloc(palcnt * 4, nullptr);
     m_AddDataVal[0] = palcnt;
 }
 
@@ -143,18 +145,18 @@ void CBitmap::CreateGrayscale(int lenx, int leny) {
     m_BitPP = 8;
     m_MColor[0] = 0x0ff;
     m_Pitch = lenx;
-    m_Data = HAlloc(m_Pitch * m_Size.y, m_Heap);
+    m_Data = HAlloc(m_Pitch * m_Size.y, nullptr);
 }
 
 void CBitmap::Recrate(int lenx, int leny, int pitch) {
     m_Size.x = lenx;
     m_Size.y = leny;
     m_Pitch = pitch;
-    m_Data = HAllocEx(m_Data, m_Pitch * m_Size.y, m_Heap);
+    m_Data = HAllocEx(m_Data, m_Pitch * m_Size.y, nullptr);
 }
 
 void CBitmap::AllocData() {
-    m_Data = HAllocEx(m_Data, m_Pitch * m_Size.y, m_Heap);
+    m_Data = HAllocEx(m_Data, m_Pitch * m_Size.y, nullptr);
 }
 
 void CBitmap::BitmapDuplicate(CBitmap &des) {
@@ -318,7 +320,7 @@ DWORD CBitmap::ARGB(float x, float y)  // get interpolated ARGB for specified co
 #pragma warning(disable : 4731)
 void CBitmap::Make2xSmaller(void) {
     DTRACE();
-    // void *d = HAlloc(m_Pitch*m_Size.y / 4,m_Heap);
+    // void *d = HAlloc(m_Pitch*m_Size.y / 4,nullptr);
 
     // byte * des=(byte *)d;
     byte *des = (byte *)m_Data;
@@ -407,8 +409,8 @@ void CBitmap::Make2xSmaller(void) {
     }
 
     m_Pitch /= 2;
-    m_Data = HReAlloc(m_Data, m_Pitch * m_Size.y, m_Heap);
-    // HFree(m_Data,m_Heap);
+    m_Data = HReAlloc(m_Data, m_Pitch * m_Size.y, nullptr);
+    // HFree(m_Data,nullptr);
 
     // m_Data = d;
 }
@@ -507,7 +509,7 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
 #pragma warning(default : 4731)
 
 void CBitmap::MakeLarger(int factor) {
-    void *d = HAlloc(m_Pitch * m_Size.y * factor * factor, m_Heap);
+    void *d = HAlloc(m_Pitch * m_Size.y * factor * factor, nullptr);
 
     byte *des = (byte *)d;
     byte *sou = (byte *)m_Data;
@@ -580,7 +582,7 @@ void CBitmap::MakeLarger(int factor) {
         }
     }
 
-    HFree(m_Data, m_Heap);
+    HFree(m_Data, nullptr);
 
     m_Data = d;
     m_Pitch *= factor;
@@ -1902,7 +1904,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
 }
 
 void CBitmap::SaveInBMP(const wchar *filename, int filenamelen) const {
-    CBuf buf(m_Heap);
+    CBuf buf;
     SaveInBMP(buf);
     buf.SaveInFile(filename, filenamelen);
 }
@@ -2098,7 +2100,7 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
 #pragma warning(default : 4731)
 
 void CBitmap::SaveInDDSUncompressed(const wchar *filename, int filenamelen) const {
-    CBuf buf(m_Heap);
+    CBuf buf;
     SaveInDDSUncompressed(buf);
     buf.SaveInFile(filename, filenamelen);
 }
@@ -2137,7 +2139,7 @@ bool CBitmap::LoadFromPNG(void *buf, int buflen) {
 }
 
 bool CBitmap::LoadFromPNG(const wchar *filename) {
-    CFile file(filename, m_Heap);
+    CFile file(filename);
     file.OpenRead();
     int size = file.Size();
     if (size < 0)
@@ -2147,18 +2149,18 @@ bool CBitmap::LoadFromPNG(const wchar *filename) {
         buf = _alloca(size);
     }
     else {
-        buf = HAlloc(size, m_Heap);
+        buf = HAlloc(size, nullptr);
     }
     try {
         file.Read(buf, size);
         LoadFromPNG(buf, size);
         if (size > 32768)
-            HFree(buf, m_Heap);
+            HFree(buf, nullptr);
         return true;
     }
     catch (...) {
         if (size > 32768)
-            HFree(buf, m_Heap);
+            HFree(buf, nullptr);
         throw;
     }
 }
@@ -2186,11 +2188,11 @@ bool CBitmap::SaveInPNG(CBuf &buf) {
 }
 
 bool CBitmap::SaveInPNG(const wchar *filename, int filenamelen) {
-    CBuf buf(m_Heap);
+    CBuf buf;
     if (!SaveInPNG(buf))
         return false;
 
-    CFile file(filename, filenamelen, m_Heap);
+    CFile file(filename, filenamelen);
     file.Create();
     file.Write(buf.Get(), buf.Len());
     file.Close();
