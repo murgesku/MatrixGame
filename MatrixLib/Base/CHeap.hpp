@@ -5,8 +5,10 @@
 
 #pragma once
 
-#include "CMain.hpp"
 #include "Tracer.hpp"
+#include "BaseDef.hpp"
+
+#include <cstring> // for std::memset
 
 #if (defined _DEBUG) || (defined FORCE_ENABLE_MEM_SPY)
 #define MEM_SPY_ENABLE
@@ -75,18 +77,18 @@ namespace Base {
 struct SMemHeader {
     static SMemHeader *first_mem_block;
     static SMemHeader *last_mem_block;
-    static uint fullsize;
-    static uint maxblocksize;
+    static uint32_t fullsize;
+    static uint32_t maxblocksize;
 
     SMemHeader *prev;
     SMemHeader *next;
     const char *file;
     int line;
-    uint blocksize;
+    uint32_t blocksize;
 
     int cnt;
 
-    static uint CalcSize(uint size) {
+    static uint32_t CalcSize(uint32_t size) {
         return size + sizeof(SMemHeader)
 #ifdef MEM_CHECK
                + MEM_CHECK_BOUND_SIZE + MEM_CHECK_BOUND_SIZE
@@ -94,7 +96,7 @@ struct SMemHeader {
                 ;
     }
     static SMemHeader *CalcBegin(void *ptr) {
-        return (SMemHeader *)(((BYTE *)ptr) - sizeof(SMemHeader)
+        return (SMemHeader *)(((uint8_t *)ptr) - sizeof(SMemHeader)
 #ifdef MEM_CHECK
                               - MEM_CHECK_BOUND_SIZE
 #endif
@@ -102,7 +104,7 @@ struct SMemHeader {
     }
 
     void Release(void);
-    void *Init(uint sz, const char *f, int l) {
+    void *Init(uint32_t sz, const char *f, int l) {
         LIST_ADD(this, first_mem_block, last_mem_block, prev, next);
 
         blocksize = sz;
@@ -116,9 +118,9 @@ struct SMemHeader {
 
         void *ptr;
 #ifdef MEM_CHECK
-        memset(this + 1, MEM_CHECK_FILLER, MEM_CHECK_BOUND_SIZE);
-        memset((((BYTE *)this) + sz) - MEM_CHECK_BOUND_SIZE, MEM_CHECK_FILLER, MEM_CHECK_BOUND_SIZE);
-        ptr = ((BYTE *)(this + 1)) + MEM_CHECK_BOUND_SIZE;
+        std::memset(this + 1, MEM_CHECK_FILLER, MEM_CHECK_BOUND_SIZE);
+        std::memset((((uint8_t *)this) + sz) - MEM_CHECK_BOUND_SIZE, MEM_CHECK_FILLER, MEM_CHECK_BOUND_SIZE);
+        ptr = ((uint8_t *)(this + 1)) + MEM_CHECK_BOUND_SIZE;
 #else
         ptr = this + 1;
 #endif
@@ -131,7 +133,7 @@ struct SMemHeader {
 
 #endif
 
-class BASE_API CHeap : public CMain {
+class CHeap {
 public:
 #ifdef MEM_SPY_ENABLE
     static void StaticInit(void);
@@ -141,12 +143,12 @@ public:
     static void AllocationError(int zn);
 
 #ifdef MEM_SPY_ENABLE
-    static void *Alloc(uint size, const char *file, int line);
-    static void *AllocClear(uint size, const char *file, int line);
-    static void *ReAlloc(void *buf, uint size, const char *file, int line);
-    static void *ReAllocClear(void *buf, uint size, const char *file, int line);
-    static void *AllocEx(void *buf, uint size, const char *file, int line);
-    static void *AllocClearEx(void *buf, uint size, const char *file, int line);
+    static void *Alloc(uint32_t size, const char *file, int line);
+    static void *AllocClear(uint32_t size, const char *file, int line);
+    static void *ReAlloc(void *buf, uint32_t size, const char *file, int line);
+    static void *ReAllocClear(void *buf, uint32_t size, const char *file, int line);
+    static void *AllocEx(void *buf, uint32_t size, const char *file, int line);
+    static void *AllocClearEx(void *buf, uint32_t size, const char *file, int line);
     static void Free(void *buf, const char *file, int line);
 #endif
 
@@ -161,64 +163,64 @@ public:
 
 #ifdef MEM_SPY_ENABLE
 
-inline void *CHeap::Alloc(uint size, const char *file, int line) {
+inline void *CHeap::Alloc(uint32_t size, const char *file, int line) {
     DTRACE();
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     SMemHeader *h = (SMemHeader *)Alloc(sz);
     return h->Init(sz, file, line);
 }
 
-inline void *CHeap::AllocClear(uint size, const char *file, int line) {
+inline void *CHeap::AllocClear(uint32_t size, const char *file, int line) {
     DTRACE();
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     SMemHeader *h = (SMemHeader *)AllocClear(sz);
     return h->Init(sz, file, line);
 }
 
-inline void *CHeap::ReAlloc(void *buf, uint size, const char *file, int line) {
+inline void *CHeap::ReAlloc(void *buf, uint32_t size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
     if (buf != NULL) {
         h = SMemHeader::CalcBegin(buf);
         h->Release();
     }
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     h = (SMemHeader *)ReAlloc(h, sz);
     return h->Init(sz, file, line);
 }
 
-inline void *CHeap::ReAllocClear(void *buf, uint size, const char *file, int line) {
+inline void *CHeap::ReAllocClear(void *buf, uint32_t size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
     if (buf != NULL) {
         h = SMemHeader::CalcBegin(buf);
         h->Release();
     }
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     h = (SMemHeader *)ReAllocClear(h, sz);
     return h->Init(sz, file, line);
 }
 
-inline void *CHeap::AllocEx(void *buf, uint size, const char *file, int line) {
+inline void *CHeap::AllocEx(void *buf, uint32_t size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
     if (buf != NULL) {
         h = SMemHeader::CalcBegin(buf);
         h->Release();
     }
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     h = (SMemHeader *)AllocEx(h, sz);
     return h->Init(sz, file, line);
 }
 
-inline void *CHeap::AllocClearEx(void *buf, uint size, const char *file, int line) {
+inline void *CHeap::AllocClearEx(void *buf, uint32_t size, const char *file, int line) {
     DTRACE();
     SMemHeader *h = NULL;
     if (buf != NULL) {
         h = SMemHeader::CalcBegin(buf);
         h->Release();
     }
-    uint sz = SMemHeader::CalcSize(size);
+    uint32_t sz = SMemHeader::CalcSize(size);
     h = (SMemHeader *)AllocClearEx(h, sz);
     return h->Init(sz, file, line);
 }
@@ -280,20 +282,20 @@ inline void CHeap::Free(void *buf) {
 
 // lint -e1532
 #ifdef MEM_SPY_ENABLE
-inline BASE_API void *operator new(size_t size, const char *file, int line, Base::CHeap*)
+inline void *operator new(size_t size, const char *file, int line, Base::CHeap*)
 {
     return Base::CHeap::Alloc(size, file, line);
 }
-inline BASE_API void operator delete(void *buf, const char *file, int line, Base::CHeap*)
+inline void operator delete(void *buf, const char *file, int line, Base::CHeap*)
 {
     Base::CHeap::Free(buf, file, line);
 }
 #else
-inline BASE_API void *operator new(size_t size, Base::CHeap*)
+inline void *operator new(size_t size, Base::CHeap*)
 {
     return Base::CHeap::Alloc(size);
 }
-inline BASE_API void operator delete(void *buf, Base::CHeap*)
+inline void operator delete(void *buf, Base::CHeap*)
 {
     Base::CHeap::Free(buf);
 }

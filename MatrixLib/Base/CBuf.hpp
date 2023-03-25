@@ -8,6 +8,8 @@
 // #pragma once
 
 #include "CMain.hpp"
+#include "CHeap.hpp"
+#include "CException.hpp"
 #include "Mem.hpp"
 #include "Tracer.hpp"
 
