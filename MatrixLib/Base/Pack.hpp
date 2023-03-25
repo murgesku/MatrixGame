@@ -8,8 +8,6 @@
 
 #include <string>
 
-#include "Base.pch"
-
 #include "CException.hpp"
 #include "CMain.hpp"
 #include "CHeap.hpp"

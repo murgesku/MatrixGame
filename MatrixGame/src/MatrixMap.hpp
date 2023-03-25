@@ -9,6 +9,8 @@
 #include "Common.hpp"
 #include "MatrixConfig.hpp"
 
+#include "CStorage.hpp"
+
 //#define DRAW_LANDSCAPE_SETKA 1
 
 #define FREE_TIME_PERIOD (5000)  // in ms

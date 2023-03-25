@@ -9,6 +9,8 @@
 #include "DevConsole.hpp"
 #include "MatrixSoundManager.hpp"
 
+#include "CFile.hpp"
+
 #include <utils.hpp>
 
 static void hHelp(const std::wstring& cmd, const std::wstring& params) {

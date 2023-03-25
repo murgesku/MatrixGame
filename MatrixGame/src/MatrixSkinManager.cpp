@@ -9,6 +9,8 @@
 #include "MatrixMap.hpp"
 #include "MatrixObject.hpp"
 
+#include "CFile.hpp"
+
 PPSMatrixSkin CSkinManager::m_Skins[GSP_COUNT];
 int CSkinManager::m_SkinsCount[GSP_COUNT];
 

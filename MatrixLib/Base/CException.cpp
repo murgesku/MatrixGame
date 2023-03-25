@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "CException.hpp"
 #include <stdio.h>
 
@@ -34,8 +32,8 @@ std::wstring CException::Info() const
 CExceptionStr::CExceptionStr(
     const char *file,
     int line,
-    const wchar *str,
-    const wchar *str2)
+    const wchar_t *str,
+    const wchar_t *str2)
 : CException(file, line)
 {
     m_str = str;

@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "CBuf.hpp"
 #include "CException.hpp"
 #include "Mem.hpp"

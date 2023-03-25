@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "Tracer.hpp"
 #include <windows.h>
 #include <stdio.h>

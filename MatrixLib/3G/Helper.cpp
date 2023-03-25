@@ -3,9 +3,11 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "3g.pch"
-
 #include "Helper.hpp"
+
+#include "CHeap.hpp"
+#include "Tracer.hpp"
+#include "3g.hpp"
 
 #if (defined _DEBUG) && !(defined _RELDEBUG)
 

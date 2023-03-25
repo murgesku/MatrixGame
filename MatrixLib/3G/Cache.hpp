@@ -5,11 +5,17 @@
 
 #pragma once
 
+#include "CMain.hpp"
+#include "CHeap.hpp"
+#include "CBuf.hpp"
+
+using namespace Base; // TODO: remove
+
 class CCache;
 
 enum CacheClass { cc_Unknown = 0, cc_Texture, cc_TextureManaged, cc_VO };
 
-class CCacheData : public CMain {
+class CCacheData : public Base::CMain {
 public:
     CCacheData *m_Prev;
     CCacheData *m_Next;

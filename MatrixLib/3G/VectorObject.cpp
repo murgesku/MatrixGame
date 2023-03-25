@@ -6,11 +6,11 @@
 #include <new>
 #include <algorithm>
 
-#include "3g.pch"
-
 #include "VectorObject.hpp"
 #include "ShadowStencil.hpp"
-#include "../../MatrixGame/src/MatrixSampleStateManager.hpp"
+#include "CStorage.hpp"
+
+#include "../../MatrixGame/src/MatrixSampleStateManager.hpp" // TODO: wtf?
 
 // Сделать: Оптимизировать если нет прозрачной текстуры (Так как не нужно устанавливать текстуру)
 // Сделать чтобы индексы не всегда устанавливались

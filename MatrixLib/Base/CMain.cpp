@@ -3,7 +3,12 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
+#include "CMain.hpp"
+
+#include "CFile.hpp"
+
+#include "CReminder.hpp"
+#include "Tracer.hpp"
 
 namespace Base {
 

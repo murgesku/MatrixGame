@@ -3,9 +3,18 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#pragma once
+
 #include <cmath>
 
-#pragma once
+#include "d3d9.h"
+#include "d3dx9tex.h"
+
+#include "CHeap.hpp"
+#include "CMain.hpp"
+#include "CException.hpp"
+
+using namespace Base; // TODO: remove
 
 #define pi_f    3.14159265358979f
 #define pi_     3.14159265358979

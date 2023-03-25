@@ -5,10 +5,10 @@
 
 #include <cstdint>
 
-#include "Base.pch"
-
 #include "CFile.hpp"
+#include "CHeap.hpp"
 #include "CException.hpp"
+#include "Pack.hpp"
 
 #include <utils.hpp>
 
@@ -18,9 +18,9 @@ namespace Base {
 CPackCollection *CFile::m_Packs;
 int CFile::m_PacksRef;
 
-void CFile::AddPackFile(const wchar *name, CHeap *heap) {
+void CFile::AddPackFile(const wchar *name) {
     if (m_Packs == NULL) {
-        m_Packs = HNew(heap) CPackCollection(heap);
+        m_Packs = HNew(nullptr) CPackCollection(nullptr);
     }
 
     m_Packs->AddPacketFile(name);
@@ -43,7 +43,7 @@ void CFile::ReleasePackFiles(void) {
 }
 #endif
 
-CFile::CFile(CHeap *heap) : CMain(), m_FileName{} {
+CFile::CFile() : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -51,16 +51,7 @@ CFile::CFile(CHeap *heap) : CMain(), m_FileName{} {
     m_Open = 0;
 }
 
-CFile::CFile(const std::wstring &filename, CHeap *heap) : CMain(), m_FileName{} {
-#ifndef MAXEXP_EXPORTS
-    m_PackHandle = 0xFFFFFFFF;
-#endif
-    m_Handle = INVALID_HANDLE_VALUE;
-    m_Open = 0;
-    Init(filename);
-}
-
-CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName{} {
+CFile::CFile(const std::wstring &filename) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif
@@ -69,7 +60,16 @@ CFile::CFile(const wchar *filename, CHeap *heap) : CMain(), m_FileName{} {
     Init(filename);
 }
 
-CFile::CFile(const wchar *filename, int len, CHeap *heap) : CMain(), m_FileName{} {
+CFile::CFile(const wchar *filename) : CMain(), m_FileName{} {
+#ifndef MAXEXP_EXPORTS
+    m_PackHandle = 0xFFFFFFFF;
+#endif
+    m_Handle = INVALID_HANDLE_VALUE;
+    m_Open = 0;
+    Init(filename);
+}
+
+CFile::CFile(const wchar *filename, int len) : CMain(), m_FileName{} {
 #ifndef MAXEXP_EXPORTS
     m_PackHandle = 0xFFFFFFFF;
 #endif

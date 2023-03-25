@@ -10,6 +10,9 @@
 
 #include "stdafx.h"
 
+#include "CStorage.hpp"
+#include "CFile.hpp"
+
 #include "MatrixGame.h"
 #include "MatrixMap.hpp"
 #include "Interface/CInterface.h"
@@ -161,7 +164,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
 
     g_MatrixHeap = HNew(NULL) CHeap;
 
-    CFile::AddPackFile(L"DATA\\robots.pkg", NULL);
+    CFile::AddPackFile(L"DATA\\robots.pkg");
     CFile::OpenPackFiles();
 
     CLoadProgress lp;
@@ -323,7 +326,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     DCP();
     g_MatrixMap->RobotPreload();
 
-    CStorage stor(g_CacheHeap);
+    CStorage stor;
     DCP();
 
     std::wstring mapname;
