@@ -74,7 +74,7 @@ class CDataBuf : public CBuf {
     }
 
 public:
-    CDataBuf(CHeap *heap, EStorageType st) : CBuf(heap, 1024) {
+    CDataBuf(CHeap *heap, EStorageType st) : CBuf(1024) {
         int ets = StorageTypeSize(st);
         Expand(sizeof(SDataBufHeader));
         SDataBufHeader *header = Buff<SDataBufHeader>();

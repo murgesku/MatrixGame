@@ -1105,9 +1105,9 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 #define SaveSpace           \
     {                       \
         if (ansi)           \
-            buf.Byte(0x20); \
+            buf.Add<uint8_t>(0x20); \
         else                \
-            buf.Word(0x20); \
+            buf.Add<uint16_t>(0x20); \
     }
 #define SaveStrConst(cstr)       \
     {                            \
@@ -1119,9 +1119,9 @@ void CBlockPar::SaveInText(CBuf &buf, bool ansi, int level) {
 #define SaveNewLine                \
     {                              \
         if (ansi)                  \
-            buf.Word(0x0a0d);      \
+            buf.Add<uint16_t>(0x0a0d);      \
         else                       \
-            buf.Dword(0x000a000d); \
+            buf.Add<uint32_t>(0x000a000d); \
     }
 
     bool addspace;
@@ -1192,7 +1192,7 @@ void CBlockPar::SaveInTextFile(const std::wstring &filename, bool ansi)
 
     CBuf buf;
     if (!ansi)
-        buf.Word(0x0feff);
+        buf.Add<uint16_t>(0x0feff);
     SaveInText(buf, ansi);
 
     CFile fi(filename);

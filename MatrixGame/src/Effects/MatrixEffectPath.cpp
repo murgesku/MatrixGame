@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 CMatrixEffectPath::CMatrixEffectPath(const D3DXVECTOR3 *pos, int cnt)
-  : CMatrixEffect(), m_Kill(false), m_Points(m_Heap), m_Dirs(m_Heap), m_Lens(m_Heap), m_Cnt(cnt), m_Takt(0),
+  : CMatrixEffect(), m_Kill(false), m_Cnt(cnt), m_Takt(0),
     m_NextTakt(0), m_Dots(NULL), m_DotsCnt(0), m_First(NULL), m_Last(NULL), m_Angle(0), m_Barier(PATH_HIDE_DISTANCE) {
     DTRACE();
 
@@ -27,14 +27,14 @@ CMatrixEffectPath::CMatrixEffectPath(const D3DXVECTOR3 *pos, int cnt)
     ASSERT(cnt >= 2);
 
     for (int i = 0; i < cnt; ++i) {
-        m_Points.AnyStruct<D3DXVECTOR3>(pos[i]);
+        m_Points.Add<D3DXVECTOR3>(pos[i]);
     }
     UpdateData();
 }
 
 void CMatrixEffectPath::AddPos(const D3DXVECTOR3 &pos) {
     DTRACE();
-    m_Points.AnyStruct<D3DXVECTOR3>(pos);
+    m_Points.Add<D3DXVECTOR3>(pos);
     ++m_Cnt;
     UpdateData();
 }
@@ -63,8 +63,8 @@ void CMatrixEffectPath::UpdateData(void) {
         D3DXVECTOR3 dir(*(pts + 1) - (*pts));
         float l = D3DXVec3Length(&dir);
         float _l = (l != 0) ? 1.0f / l : 1.0f;
-        m_Dirs.AnyStruct<D3DXVECTOR3>(dir * _l);
-        m_Lens.Float(l);
+        m_Dirs.Add<D3DXVECTOR3>(dir * _l);
+        m_Lens.Add<float>(l);
 
         m_Len += l;
         ++pts;

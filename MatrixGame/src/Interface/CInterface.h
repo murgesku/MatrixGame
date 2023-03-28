@@ -248,7 +248,7 @@ public:
 
     static CBuf *m_ClearRects;
     static void ClearRects_Clear(void) { m_ClearRects->Clear(); };
-    static void ClearRects_Add(const D3DRECT &rect) { m_ClearRects->AnyStruct<D3DRECT>(rect); }
+    static void ClearRects_Add(const D3DRECT &rect) { m_ClearRects->Add<D3DRECT>(rect); }
     static D3DRECT *ClearRects_Get(void) { return (D3DRECT *)m_ClearRects->Get(); }
     static int ClearRects_GetCount(void) { return m_ClearRects->Len() / sizeof(D3DRECT); }
 };

@@ -341,7 +341,7 @@ class CSoundArray : public Base::CBuf {
     };
 
 public:
-    CSoundArray(CHeap *heap) : CBuf(heap){};
+    CSoundArray(CHeap *heap) {};
 
     void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL, ESoundInterruptFlag ifl = SEF_INTERRUPT);
     void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {

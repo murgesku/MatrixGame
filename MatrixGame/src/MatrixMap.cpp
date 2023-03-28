@@ -44,9 +44,9 @@
 
 CMatrixMap::CMatrixMap()
   : CMain(), m_Console(), m_Camera(), m_CurFrame(0), m_IntersectFlagTracer(0), m_IntersectFlagFindObjects(0),
-    m_AllObjects(g_MatrixHeap, 1024), m_RN(g_MatrixHeap), m_EffectsFirst(NULL), m_EffectsLast(NULL),
+    m_AllObjects(1024), m_RN(g_MatrixHeap), m_EffectsFirst(NULL), m_EffectsLast(NULL),
     m_EffectsNextTakt(NULL), m_Flags(0), m_WaterName{}, m_SkyAngle(0), m_SkyDeltaAngle(0),
-    m_PrevTimeCheckStatus(-1500), m_Time(0), m_BeforeWinCount(0), m_PauseHint(NULL), m_DialogModeHints(g_MatrixHeap),
+    m_PrevTimeCheckStatus(-1500), m_Time(0), m_BeforeWinCount(0), m_PauseHint(NULL),
     m_DialogModeName(NULL), m_BeforeWinLooseDialogCount(0) {
     DTRACE();
 
@@ -1054,7 +1054,7 @@ void CMatrixMap::WaterInit() {
         m_Water->Clear();
     }
     if (!m_VisWater) {
-        m_VisWater = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
+        m_VisWater = HNew(g_MatrixHeap) CBuf();
     }
     else {
         m_VisWater->Clear();
@@ -3257,7 +3257,7 @@ static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler) {
         g_IFaceList->CreateHintButton(x, y, HINT_CANCEL, ConfirmCancelHandler);
     }
 
-    g_MatrixMap->m_DialogModeHints.Dword((DWORD)h);
+    g_MatrixMap->m_DialogModeHints.Add<uint32_t>((DWORD)h);
 }
 
 void ExitRequestHandler(void) {
@@ -3405,7 +3405,7 @@ void CMatrixMap::EnterDialogMode(const wchar *hint_i) {
             }
 
             ww += h->m_Width + 20;
-            m_DialogModeHints.Dword((DWORD)h);
+            m_DialogModeHints.Add<uint32_t>((DWORD)h);
         }
     }
 }
