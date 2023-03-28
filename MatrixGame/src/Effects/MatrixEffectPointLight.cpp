@@ -229,7 +229,7 @@ void CMatrixEffectPointLight::BuildLand(void) {
         if (v->mp != NULL) {                       \
             light.lum = v->lum;                    \
             light.mp = v->mp;                      \
-            m_PointLum.Any<SMapPointLight>(light); \
+            m_PointLum.Add<SMapPointLight>(light); \
         }                                          \
         ++verts;                                   \
         ++m_NumVerts;                              \
@@ -425,7 +425,7 @@ void CMatrixEffectPointLight::BuildLandV(void) {
         if (v->mp != NULL) {                                         \
             light.lum = v->lum;                                      \
             light.mp = v->mp;                                        \
-            m_PointLum.Any<SMapPointLight>(light);                   \
+            m_PointLum.Add<SMapPointLight>(light);                   \
         }                                                            \
         ++verts;                                                     \
         ++m_NumVerts;                                                \

@@ -204,9 +204,9 @@ public:
     }
 
     template <class D>
-    void Any(D zn) {
+    void Add(D zn) {
         TestAdd(sizeof(D));
-        *(D *)(m_Buf + m_Pointer) = zn;
+        *(D*)(m_Buf + m_Pointer) = zn;
         m_Pointer += sizeof(D);
     }
     template <class D>
