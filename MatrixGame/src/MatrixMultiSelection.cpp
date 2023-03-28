@@ -22,7 +22,7 @@ int CMultiSelection::m_Time;
 
 #define MS_Z 0
 
-CMultiSelection::CMultiSelection(const Base::CPoint &pos) : m_LT(pos), m_RB(pos), m_Flags(0), m_SelItems(g_MatrixHeap) {
+CMultiSelection::CMultiSelection(const Base::CPoint &pos) : m_LT(pos), m_RB(pos), m_Flags(0) {
     // m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SELBACK);
     // m_Tex->MipmapOff();
     // m_Tex->Preload();
@@ -251,7 +251,7 @@ void CMultiSelection::Update(const Base::CPoint &pos, DWORD mask, SELECT_ENUM ca
             }
 
             if ((m_SelItems.Len() / sizeof(DWORD)) < 9) {
-                m_SelItems.Dword((DWORD)o);
+                m_SelItems.Add<uint32_t>((DWORD)o);
                 if (o->IsRobot()) {
                     if (!o->AsRobot()->IsSelected()) {
                         o->AsRobot()->SelectByGroup();

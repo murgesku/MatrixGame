@@ -20,7 +20,7 @@ int CMatrixHint::m_BitmapsCnt;
 
 CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const std::wstring &soundout, SHintElement *elems,
                                 CRect *otstup) {
-    CBitmap bmps(g_CacheHeap);
+    CBitmap bmps;
     CBlockPar *bph = NULL;
     if (border >= 0) {
         bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGetNE(utils::format(L"%d", border));
@@ -42,7 +42,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
     int cw = 0;
     int ch = 0;
 
-    CBuf pos(g_CacheHeap, 512);
+    CBuf pos(512);
 
     bool new_coord_f = false;
     CPoint new_coord;
@@ -535,8 +535,8 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
 
     SHintElement elems[256];
 
-    CBuf its(g_CacheHeap, 256);
-    CBuf bmps(g_CacheHeap, 256);
+    CBuf its(256);
+    CBuf bmps(256);
     int ssz = 0;
 
     bool otstup = false;
@@ -675,8 +675,8 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
                 CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
                 bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
 
-                its.Dword((DWORD)it);
-                bmps.Dword((DWORD)bmsrc);
+                its.Add<uint32_t>((DWORD)it);
+                bmps.Add<uint32_t>((DWORD)bmsrc);
                 ssz++;
 
                 elems[nelem].bmp = bmsrc;

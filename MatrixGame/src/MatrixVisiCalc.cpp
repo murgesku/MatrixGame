@@ -226,7 +226,7 @@ void CMatrixMap::CalcVis(void) {
     CHelper::DestroyByGroup(888);
 #endif
 
-    CBuf pe(g_MatrixHeap);
+    CBuf pe;
 
     int pointsCount = (g_MatrixMap->m_Size.y + 1) * (g_MatrixMap->m_Size.x + 1);
 
@@ -300,7 +300,7 @@ void CMatrixMap::CalcVis(void) {
                     edge.plane2 = calcs->plane2;
 
                     if (edge.plane1.norm != edge.plane2.norm) {
-                        pe.AnyStruct<SPotEdge>(edge);
+                        pe.Add<SPotEdge>(edge);
                     }
                 }
 
@@ -313,7 +313,7 @@ void CMatrixMap::CalcVis(void) {
                         edge.plane2 = (calcs + g_MatrixMap->m_Size.x)->plane2;
 
                         if (edge.plane1.norm != edge.plane2.norm) {
-                            pe.AnyStruct<SPotEdge>(edge);
+                            pe.Add<SPotEdge>(edge);
                         }
                     }
                 }
@@ -327,7 +327,7 @@ void CMatrixMap::CalcVis(void) {
                         edge.plane2 = (calcs + 1)->plane1;
 
                         if (edge.plane1.norm != edge.plane2.norm) {
-                            pe.AnyStruct<SPotEdge>(edge);
+                            pe.Add<SPotEdge>(edge);
                         }
                     }
                 }
@@ -482,7 +482,7 @@ void CMatrixMap::CheckCandidate(SCalcVisRuntime &visRuntime, CMatrixMapGroup *ma
             D3DXVECTOR3 maxs(mins.x + float(MAP_GROUP_SIZE * GLOBAL_SCALE),
                              mins.y + float(MAP_GROUP_SIZE * GLOBAL_SCALE), WATER_LEVEL);
             if (m_Camera.IsInFrustum(mins, maxs)) {
-                m_VisWater->AnyStruct<D3DXVECTOR2>(mapGroup->GetPos0());
+                m_VisWater->Add<D3DXVECTOR2>(mapGroup->GetPos0());
             }
         }
     }
@@ -704,7 +704,7 @@ void CMatrixMap::CalcMapGroupVisibility(void) {
                 }
 
                 if (m_Camera.IsInFrustum(p0, p1)) {
-                    m_VisWater->AnyStruct<D3DXVECTOR2>(*(D3DXVECTOR2 *)&p0);
+                    m_VisWater->Add<D3DXVECTOR2>(*(D3DXVECTOR2 *)&p0);
                 }
             invisible_w:;
             }

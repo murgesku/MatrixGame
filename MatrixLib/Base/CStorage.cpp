@@ -50,11 +50,11 @@ static int ZL03_UnCompress(CBuf &out, BYTE *in, int inlen) {
 
 static void ZL03_Compression(CBuf &out, BYTE *in, int inlen) {
     out.Clear();
-    out.Byte('Z');
-    out.Byte('L');
-    out.Byte('0');
-    out.Byte('3');
-    out.Dword(0);  // will be updated. blocks count
+    out.Add<uint8_t>('Z');
+    out.Add<uint8_t>('L');
+    out.Add<uint8_t>('0');
+    out.Add<uint8_t>('3');
+    out.Add<uint32_t>(0);  // will be updated. blocks count
 
     int cnt = 0;
 
@@ -125,25 +125,25 @@ void CStorageRecordItem::Save(CBuf &buf, bool compression) {
     buf.WStr(m_Name);
 
     if (compression) {
-        buf.Dword(m_Type | ST_COMPRESSED);
-        CBuf cb(buf.m_Heap);
+        buf.Add<uint32_t>(m_Type | ST_COMPRESSED);
+        CBuf cb;
         ZL03_Compression(cb, (BYTE *)m_Buf->Get(), m_Buf->Len());
 
-        buf.Dword(cb.Len());
-        buf.BufAdd(cb.Get(), cb.Len());
+        buf.Add<uint32_t>(cb.Len());
+        buf.Add(cb.Get(), cb.Len());
     }
     else {
-        buf.Dword(m_Type);
-        buf.Dword(m_Buf->Len());
-        buf.BufAdd(m_Buf->Get(), m_Buf->Len());
+        buf.Add<uint32_t>(m_Type);
+        buf.Add<uint32_t>(m_Buf->Len());
+        buf.Add(m_Buf->Get(), m_Buf->Len());
     }
 }
 bool CStorageRecordItem::Load(CBuf &buf) {
     ASSERT(m_Buf);
 
     m_Name = buf.WStr();
-    m_Type = (EStorageType)buf.Dword();
-    DWORD sz = buf.Dword();
+    m_Type = (EStorageType)buf.Get<DWORD>();
+    DWORD sz = buf.Get<DWORD>();
 
     if (m_Type & ST_COMPRESSED) {
         m_Type = (EStorageType)(m_Type & ST_COMPRESSED);
@@ -153,7 +153,7 @@ bool CStorageRecordItem::Load(CBuf &buf) {
     else {
         m_Buf->Clear();
         m_Buf->Expand(sz);
-        buf.BufGet(m_Buf->Get(), sz);
+        buf.Get(m_Buf->Get(), sz);
     }
 
     return true;
@@ -195,7 +195,7 @@ CDataBuf *CStorageRecord::GetBuf(const wchar *column, EStorageType st) {
 
 void CStorageRecord::Save(CBuf &buf, bool compression) {
     buf.WStr(m_Name);
-    buf.Dword(m_ItemsCount);
+    buf.Add<uint32_t>(m_ItemsCount);
     for (int i = 0; i < m_ItemsCount; ++i) {
         m_Items[i].Save(buf, compression);
     }
@@ -220,7 +220,7 @@ bool CStorageRecord::Load(CBuf &buf) {
     }
 
     m_Name = buf.WStr();
-    m_ItemsCount = buf.Dword();
+    m_ItemsCount = buf.Get<DWORD>();
     if (m_ItemsCount == 0)
         return true;
 
@@ -305,12 +305,12 @@ DWORD CStorage::CalcUniqID(void) {
 }
 
 void CStorage::Save(const wchar *fname, bool compression) {
-    CBuf buf(m_Heap);
+    CBuf buf;
     Save(buf, compression);
     buf.SaveInFile(fname);
 
-    // CBuf    buf1(m_Heap);
-    // CBuf    buf2(m_Heap);
+    // CBuf    buf1;
+    // CBuf    buf2;
 
     // ZL03_Compression(buf1, buf);
     // buf1.SaveInFile(CWStr(fname)+L"1");
@@ -320,23 +320,23 @@ void CStorage::Save(const wchar *fname, bool compression) {
 }
 
 bool CStorage::Load(const wchar *fname) {
-    CBuf buf(m_Heap);
+    CBuf buf;
     buf.LoadFromFile(fname);
     return Load(buf);
 }
 
 void CStorage::Save(CBuf &buf, bool compression) {
     buf.Clear();
-    buf.Dword(0x47525453);
-    buf.Dword(compression ? 1 : 0);  // version
-    buf.Dword(m_RecordsCnt);         // records count
+    buf.Add<uint32_t>(0x47525453);
+    buf.Add<uint32_t>(compression ? 1 : 0);  // version
+    buf.Add<uint32_t>(m_RecordsCnt);         // records count
 
     for (int i = 0; i < m_RecordsCnt; ++i) {
         m_Records[i].Save(buf, false);
     }
 
     if (compression) {
-        CBuf buf2(buf.m_Heap);
+        CBuf buf2;
         ZL03_Compression(buf2, buf.Buff<BYTE>() + 8, buf.Len() - 8);
         buf.SetLenNoShrink(8);
         buf.Expand(buf2.Len());
@@ -347,15 +347,15 @@ void CStorage::Save(CBuf &buf, bool compression) {
 
 bool CStorage::Load(CBuf &buf_in) {
     buf_in.Pointer(0);
-    DWORD tag = buf_in.Dword();
+    DWORD tag = buf_in.Get<DWORD>();
     if (tag != 0x47525453)
         return false;
-    DWORD ver = buf_in.Dword();
+    DWORD ver = buf_in.Get<DWORD>();
 
     if (ver > 1)
         return false;
 
-    CBuf buf2(buf_in.m_Heap);
+    CBuf buf2;
     CBuf *buf = &buf_in;
 
     if (ver == 1) {
@@ -373,7 +373,7 @@ bool CStorage::Load(CBuf &buf_in) {
         m_Records = NULL;
     }
 
-    m_RecordsCnt = buf->Dword();
+    m_RecordsCnt = buf->Get<DWORD>();
     if (m_RecordsCnt == 0)
         return true;
 

@@ -2613,112 +2613,112 @@ int CMatrixRoadNetwork::FindInPL(const CPoint &mappos) {
 void CMatrixRoadNetwork::Save(CBuf &b) {
     int u;
 
-    b.Int(m_ZoneCnt);
+    b.Add<int>(m_ZoneCnt);
     for (int i = 0; i < m_ZoneCnt; i++) {
-        b.AnyStruct<CPoint>(m_Zone[i].m_Center);
-        b.Bool(m_Zone[i].m_Bottleneck);
-        b.Int(m_Zone[i].m_Size);
-        b.Int(m_Zone[i].m_Perim);
-        b.AnyStruct<CRect>(m_Zone[i].m_Rect);
-        b.Bool(m_Zone[i].m_Road);
-        b.Byte(BYTE(m_Zone[i].m_Move));
-        b.Byte(m_Zone[i].m_NearZoneCnt);
+        b.Add<CPoint>(m_Zone[i].m_Center);
+        b.Add<bool>(m_Zone[i].m_Bottleneck);
+        b.Add<int>(m_Zone[i].m_Size);
+        b.Add<int>(m_Zone[i].m_Perim);
+        b.Add<CRect>(m_Zone[i].m_Rect);
+        b.Add<bool>(m_Zone[i].m_Road);
+        b.Add<uint8_t>(BYTE(m_Zone[i].m_Move));
+        b.Add<uint8_t>(m_Zone[i].m_NearZoneCnt);
         for (u = 0; u < m_Zone[i].m_NearZoneCnt; u++) {
-            b.Int(m_Zone[i].m_NearZone[u]);
-            b.Int(m_Zone[i].m_NearZoneConnectSize[u]);
-            b.Byte(m_Zone[i].m_NearZoneMove[u]);
+            b.Add<int>(m_Zone[i].m_NearZone[u]);
+            b.Add<int>(m_Zone[i].m_NearZoneConnectSize[u]);
+            b.Add<uint8_t>(m_Zone[i].m_NearZoneMove[u]);
         }
-        b.Int(m_Zone[i].m_Region);
-        b.Byte(m_Zone[i].m_PlaceCnt);
+        b.Add<int>(m_Zone[i].m_Region);
+        b.Add<uint8_t>(m_Zone[i].m_PlaceCnt);
         for (u = 0; u < m_Zone[i].m_PlaceCnt; u++)
-            b.Int(m_Zone[i].m_Place[u]);
+            b.Add<int>(m_Zone[i].m_Place[u]);
     }
 
-    b.Int(m_CrotchCnt);
+    b.Add<int>(m_CrotchCnt);
     CMatrixCrotch *crotch = m_CrotchFirst;
     int i = 0;
     while (crotch) {
         crotch->m_Data = i;
 
-        b.AnyStruct<CPoint>(crotch->m_Center);
-        b.Int(crotch->m_Zone);
-        b.Bool(crotch->m_Critical);
-        b.Int(crotch->m_Island);
+        b.Add<CPoint>(crotch->m_Center);
+        b.Add<int>(crotch->m_Zone);
+        b.Add<bool>(crotch->m_Critical);
+        b.Add<int>(crotch->m_Island);
 
         i++;
         crotch = crotch->m_Next;
     }
 
-    b.Int(m_RoadCnt);
+    b.Add<int>(m_RoadCnt);
     CMatrixRoad *road = m_RoadFirst;
     while (road) {
-        b.Int(road->m_Start->m_Data);
-        b.Int(road->m_End->m_Data);
+        b.Add<int>(road->m_Start->m_Data);
+        b.Add<int>(road->m_End->m_Data);
 
-        b.Int(road->m_ZoneCnt);
+        b.Add<int>(road->m_ZoneCnt);
         for (u = 0; u < road->m_ZoneCnt; u++) {
-            b.Int(road->m_Zone[u]);
+            b.Add<int>(road->m_Zone[u]);
         }
 
-        b.Int(road->m_Dist);
-        b.Byte(road->m_Move);
+        b.Add<int>(road->m_Dist);
+        b.Add<uint8_t>(road->m_Move);
 
         road = road->m_Next;
     }
 
-    b.Int(m_PlaceCnt);
+    b.Add<int>(m_PlaceCnt);
     for (i = 0; i < m_PlaceCnt; i++) {
         SMatrixPlace *place = GetPlace(i);
 
-        b.AnyStruct<CPoint>(place->m_Pos);
-        b.Byte(BYTE(place->m_Move));
-        b.Byte(place->m_BorderLeft);
-        b.Byte(place->m_BorderTop);
-        b.Byte(place->m_BorderRight);
-        b.Byte(place->m_BorderBottom);
-        b.Byte(place->m_BorderCnt);
-        b.Byte(place->m_EdgeLeft);
-        b.Byte(place->m_EdgeTop);
-        b.Byte(place->m_EdgeRight);
-        b.Byte(place->m_EdgeBottom);
-        b.Byte(place->m_EdgeCnt);
+        b.Add<CPoint>(place->m_Pos);
+        b.Add<uint8_t>(BYTE(place->m_Move));
+        b.Add<uint8_t>(place->m_BorderLeft);
+        b.Add<uint8_t>(place->m_BorderTop);
+        b.Add<uint8_t>(place->m_BorderRight);
+        b.Add<uint8_t>(place->m_BorderBottom);
+        b.Add<uint8_t>(place->m_BorderCnt);
+        b.Add<uint8_t>(place->m_EdgeLeft);
+        b.Add<uint8_t>(place->m_EdgeTop);
+        b.Add<uint8_t>(place->m_EdgeRight);
+        b.Add<uint8_t>(place->m_EdgeBottom);
+        b.Add<uint8_t>(place->m_EdgeCnt);
         for (u = 0; u < 9; u++)
-            b.Bool(place->m_Blockade[u]);
-        b.Byte(place->m_Cannon);
-        b.Byte(place->m_NearCnt);
+            b.Add<bool>(place->m_Blockade[u]);
+        b.Add<uint8_t>(place->m_Cannon);
+        b.Add<uint8_t>(place->m_NearCnt);
         for (u = 0; u < place->m_NearCnt; u++) {
-            b.Int(place->m_Near[u]);
-            b.Byte(place->m_NearMove[u]);
+            b.Add<int>(place->m_Near[u]);
+            b.Add<uint8_t>(place->m_NearMove[u]);
         }
     }
 
-    b.Int(m_RegionCnt);
+    b.Add<int>(m_RegionCnt);
     for (i = 0; i < m_RegionCnt; i++) {
         SMatrixRegion *region = GetRegion(i);
 
-        b.AnyStruct<CPoint>(region->m_Center);
+        b.Add<CPoint>(region->m_Center);
 
-        b.Int(region->m_RadiusPlace);
+        b.Add<int>(region->m_RadiusPlace);
 
-        b.Byte(region->m_CrotchCnt);
+        b.Add<uint8_t>(region->m_CrotchCnt);
         for (u = 0; u < region->m_CrotchCnt; u++)
-            b.Int(region->m_Crotch[u]->m_Data);
+            b.Add<int>(region->m_Crotch[u]->m_Data);
 
-        b.Byte(region->m_PlaceCnt);
+        b.Add<uint8_t>(region->m_PlaceCnt);
         for (u = 0; u < region->m_PlaceCnt; u++)
-            b.Int(region->m_Place[u]);
+            b.Add<int>(region->m_Place[u]);
 
-        b.Byte(region->m_PlaceAllCnt);
+        b.Add<uint8_t>(region->m_PlaceAllCnt);
         for (u = 0; u < region->m_PlaceAllCnt; u++)
-            b.Int(region->m_PlaceAll[u]);
+            b.Add<int>(region->m_PlaceAll[u]);
 
-        b.Byte(region->m_NearCnt);
+        b.Add<uint8_t>(region->m_NearCnt);
         for (u = 0; u < region->m_NearCnt; u++) {
-            b.Int(region->m_Near[u]);
-            b.Byte(region->m_NearMove[u]);
+            b.Add<int>(region->m_Near[u]);
+            b.Add<uint8_t>(region->m_NearMove[u]);
         }
 
-        b.Dword(region->m_Color);
+        b.Add<uint32_t>(region->m_Color);
     }
 }
 
@@ -2727,68 +2727,68 @@ void CMatrixRoadNetwork::Load(CBuf &b, int ver) {
 
     int u;
 
-    int cnt = b.Int();
+    int cnt = b.Get<int>();
     SetZoneCntMax(cnt);
     m_ZoneCnt = cnt;
     for (int i = 0; i < cnt; i++) {
-        m_Zone[i].m_Center = b.AnyStruct<CPoint>();
-        m_Zone[i].m_Bottleneck = b.Bool();
-        m_Zone[i].m_Size = b.Int();
-        m_Zone[i].m_Perim = b.Int();
-        m_Zone[i].m_Rect = b.AnyStruct<CRect>();
-        m_Zone[i].m_Road = b.Bool();
-        m_Zone[i].m_Move = b.Byte();
-        m_Zone[i].m_NearZoneCnt = b.Byte();
+        m_Zone[i].m_Center = b.Get<CPoint>();
+        m_Zone[i].m_Bottleneck = b.Get<bool>();
+        m_Zone[i].m_Size = b.Get<int>();
+        m_Zone[i].m_Perim = b.Get<int>();
+        m_Zone[i].m_Rect = b.Get<CRect>();
+        m_Zone[i].m_Road = b.Get<bool>();
+        m_Zone[i].m_Move = b.Get<uint8_t>();
+        m_Zone[i].m_NearZoneCnt = b.Get<uint8_t>();
         for (u = 0; u < m_Zone[i].m_NearZoneCnt; u++) {
-            m_Zone[i].m_NearZone[u] = b.Int();
-            m_Zone[i].m_NearZoneConnectSize[u] = b.Int();
+            m_Zone[i].m_NearZone[u] = b.Get<int>();
+            m_Zone[i].m_NearZoneConnectSize[u] = b.Get<int>();
             if (ver >= 25)
-                m_Zone[i].m_NearZoneMove[u] = b.Byte();
+                m_Zone[i].m_NearZoneMove[u] = b.Get<uint8_t>();
         }
         if (ver >= 24) {
-            m_Zone[i].m_Region = b.Int();
+            m_Zone[i].m_Region = b.Get<int>();
         }
         if (ver >= 27) {
-            m_Zone[i].m_PlaceCnt = b.Byte();
+            m_Zone[i].m_PlaceCnt = b.Get<uint8_t>();
             for (u = 0; u < m_Zone[i].m_PlaceCnt; u++)
-                m_Zone[i].m_Place[u] = b.Int();
+                m_Zone[i].m_Place[u] = b.Get<int>();
         }
         m_Zone[i].m_Access = false;
     }
 
-    cnt = b.Int();
+    cnt = b.Get<int>();
     CMatrixCrotch **indx = (CMatrixCrotch **)HAlloc(sizeof(CMatrixCrotch *) * cnt, m_Heap);
     for (int i = 0; i < cnt; i++) {
         CMatrixCrotch *crotch = AddCrotch();
         indx[i] = crotch;
 
-        crotch->m_Center = b.AnyStruct<CPoint>();
-        crotch->m_Zone = b.Int();
-        crotch->m_Critical = b.Bool();
-        crotch->m_Island = b.Int();
+        crotch->m_Center = b.Get<CPoint>();
+        crotch->m_Zone = b.Get<int>();
+        crotch->m_Critical = b.Get<bool>();
+        crotch->m_Island = b.Get<int>();
         crotch->m_Region = m_Zone[crotch->m_Zone].m_Region;
     }
 
-    cnt = b.Int();
+    cnt = b.Get<int>();
     for (int i = 0; i < cnt; i++) {
         CMatrixRoad *road = AddRoad();
 
-        road->m_Start = indx[b.Int()];
-        road->m_End = indx[b.Int()];
+        road->m_Start = indx[b.Get<int>()];
+        road->m_End = indx[b.Get<int>()];
 
-        int ucnt = b.Int();
+        int ucnt = b.Get<int>();
         road->LoadZone(ucnt, (int *)((byte *)b.Get() + b.Pointer()));
         b.Pointer(b.Pointer() + ucnt * sizeof(int));
 
-        road->m_Dist = b.Int();
-        road->m_Move = b.Byte();
+        road->m_Dist = b.Get<int>();
+        road->m_Move = b.Get<uint8_t>();
 
         road->m_Start->AddRoad(road);
         road->m_End->AddRoad(road);
     }
 
     if (ver >= 21) {
-        cnt = b.Int();
+        cnt = b.Get<int>();
         SetPlaceCnt(cnt);
         m_PlaceEmpty = -1;
 
@@ -2797,22 +2797,22 @@ void CMatrixRoadNetwork::Load(CBuf &b, int ver) {
             place->m_Empty = false;
             place->m_EmptyNext = -1;
 
-            place->m_Pos = b.AnyStruct<CPoint>();
-            place->m_Move = b.Byte();
-            place->m_BorderLeft = b.Byte();
-            place->m_BorderTop = b.Byte();
-            place->m_BorderRight = b.Byte();
-            place->m_BorderBottom = b.Byte();
-            place->m_BorderCnt = b.Byte();
-            place->m_EdgeLeft = b.Byte();
-            place->m_EdgeTop = b.Byte();
-            place->m_EdgeRight = b.Byte();
-            place->m_EdgeBottom = b.Byte();
-            place->m_EdgeCnt = b.Byte();
+            place->m_Pos = b.Get<CPoint>();
+            place->m_Move = b.Get<uint8_t>();
+            place->m_BorderLeft = b.Get<uint8_t>();
+            place->m_BorderTop = b.Get<uint8_t>();
+            place->m_BorderRight = b.Get<uint8_t>();
+            place->m_BorderBottom = b.Get<uint8_t>();
+            place->m_BorderCnt = b.Get<uint8_t>();
+            place->m_EdgeLeft = b.Get<uint8_t>();
+            place->m_EdgeTop = b.Get<uint8_t>();
+            place->m_EdgeRight = b.Get<uint8_t>();
+            place->m_EdgeBottom = b.Get<uint8_t>();
+            place->m_EdgeCnt = b.Get<uint8_t>();
             for (u = 0; u < 9; u++)
-                place->m_Blockade[u] = b.Bool();
+                place->m_Blockade[u] = b.Get<bool>();
             if (ver >= 24)
-                place->m_Cannon = b.Byte();
+                place->m_Cannon = b.Get<uint8_t>();
             else
                 place->m_Cannon = 0;
             if (place->m_Cannon) {
@@ -2820,55 +2820,55 @@ void CMatrixRoadNetwork::Load(CBuf &b, int ver) {
             }
 
             if (ver >= 27) {
-                place->m_NearCnt = b.Byte();
+                place->m_NearCnt = b.Get<uint8_t>();
                 for (u = 0; u < place->m_NearCnt; u++) {
-                    place->m_Near[u] = b.Int();
-                    place->m_NearMove[u] = b.Byte();
+                    place->m_Near[u] = b.Get<int>();
+                    place->m_NearMove[u] = b.Get<uint8_t>();
                 }
             }
 
             place->m_Region = -1;
         }
 
-        cnt = b.Int();
+        cnt = b.Get<int>();
         m_RegionCnt = cnt;
         m_Region = (SMatrixRegion *)HAllocClearEx(m_Region, m_RegionCnt * sizeof(SMatrixRegion), m_Heap);
 
         for (int i = 0; i < cnt; i++) {
             SMatrixRegion *region = GetRegion(i);
 
-            region->m_Center = b.AnyStruct<CPoint>();
+            region->m_Center = b.Get<CPoint>();
 
             if (ver >= 24)
-                region->m_RadiusPlace = b.Int();
+                region->m_RadiusPlace = b.Get<int>();
 
-            region->m_CrotchCnt = b.Byte();
+            region->m_CrotchCnt = b.Get<uint8_t>();
             for (u = 0; u < region->m_CrotchCnt; u++) {
-                region->m_Crotch[u] = indx[b.Int()];
+                region->m_Crotch[u] = indx[b.Get<int>()];
                 //                region->m_Crotch[u]->m_Region=i;
             }
 
-            region->m_PlaceCnt = b.Byte();
+            region->m_PlaceCnt = b.Get<uint8_t>();
             for (u = 0; u < region->m_PlaceCnt; u++) {
-                region->m_Place[u] = b.Int();
+                region->m_Place[u] = b.Get<int>();
                 GetPlace(region->m_Place[u])->m_Region = i;
             }
 
             if (ver >= 24) {
-                region->m_PlaceAllCnt = b.Byte();
+                region->m_PlaceAllCnt = b.Get<uint8_t>();
                 for (u = 0; u < region->m_PlaceAllCnt; u++)
-                    region->m_PlaceAll[u] = b.Int();
+                    region->m_PlaceAll[u] = b.Get<int>();
             }
 
-            region->m_NearCnt = b.Byte();
+            region->m_NearCnt = b.Get<uint8_t>();
             for (u = 0; u < region->m_NearCnt; u++) {
-                region->m_Near[u] = b.Int();
+                region->m_Near[u] = b.Get<int>();
                 if (ver >= 26)
-                    region->m_NearMove[u] = b.Byte();
+                    region->m_NearMove[u] = b.Get<uint8_t>();
             }
 
             if (ver >= 24) {
-                region->m_Color = b.Dword();
+                region->m_Color = b.Get<DWORD>();
             }
         }
     }

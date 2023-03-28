@@ -3278,7 +3278,7 @@ CIFaceList::CIFaceList() : m_CurrentHintControlName{} {
     m_HeadPilon = NULL;
     m_BuildCa = NULL;
 
-    CInterface::m_ClearRects = HNew(g_MatrixHeap) CBuf(g_MatrixHeap);
+    CInterface::m_ClearRects = HNew(g_MatrixHeap) CBuf();
 
     m_RCountControl = HNew(g_MatrixHeap) CIFaceCounter;
     m_CurrentHint = NULL;

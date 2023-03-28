@@ -246,7 +246,7 @@ void CCacheData::LoadFromFile(CBuf &buf, const wchar *exts) {
         ERROR_S(utils::format(L"File not found: %ls   Exts: %ls", tname.c_str(), exts));
     }
 
-    buf.LoadFromFile(tstr.c_str());
+    buf.LoadFromFile(tstr);
 
     /*	ASSERT(m_Name.Len()>0);
 

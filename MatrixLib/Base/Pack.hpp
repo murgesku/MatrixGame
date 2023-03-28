@@ -319,7 +319,7 @@ public:
     CBuf m_PackFiles;
 
 public:
-    CPackCollection(CHeap *heap) : m_Heap(heap), m_PackFiles(heap) {}
+    CPackCollection(CHeap *heap) : m_Heap(heap) {}
     ~CPackCollection() { Clear(); };
 
     //******** Процедуры работы со списком пакетных файлом ********//

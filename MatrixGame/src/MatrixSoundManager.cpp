@@ -1076,7 +1076,7 @@ void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, E
 void CSound::SaveSoundLog(void) {
     DTRACE();
 
-    CBuf b(g_CacheHeap);
+    CBuf b;
     b.StrNZ("Sounds:\n");
 
     for (int i = 0; i < MAX_SOUNDS; ++i) {

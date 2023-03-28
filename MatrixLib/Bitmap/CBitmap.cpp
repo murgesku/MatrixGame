@@ -1828,7 +1828,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     if (m_Format == BMF_PALATE)
         bmFileHeader.bfSize += m_AddDataVal[0] * 4;
     bmFileHeader.bfOffBits = bmFileHeader.bfSize - lPitch * m_Size.y;
-    buf.BufAdd(&bmFileHeader, sizeof(BITMAPFILEHEADER));
+    buf.Add(&bmFileHeader, sizeof(BITMAPFILEHEADER));
 
     memset(&bmInfoHeader, 0, sizeof(BITMAPINFOHEADER));
     bmInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -1838,10 +1838,10 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     bmInfoHeader.biBitCount = (WORD)m_BitPP;
     bmInfoHeader.biCompression = 0;
     bmInfoHeader.biSizeImage = lPitch * m_Size.y;
-    buf.BufAdd(&bmInfoHeader, sizeof(BITMAPINFOHEADER));
+    buf.Add(&bmInfoHeader, sizeof(BITMAPINFOHEADER));
 
     if (m_Format == BMF_PALATE) {
-        buf.BufAdd(m_AddData[0], m_AddDataVal[0] * 4);
+        buf.Add(m_AddData[0], m_AddDataVal[0] * 4);
     }
 
     BYTE *sou = (byte *)m_Data + (m_Size.y - 1) * m_Pitch;
@@ -1894,7 +1894,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     else {
     oformat:
         for (int y = 0; y < m_Size.y; y++, sou -= m_Pitch) {
-            buf.BufAdd(sou, len);
+            buf.Add(sou, len);
             if (len < lPitch)
                 buf.ByteLoop(0, lPitch - len);
         }
@@ -1907,7 +1907,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
 void CBitmap::SaveInBMP(const wchar *filename, int filenamelen) const {
     CBuf buf;
     SaveInBMP(buf);
-    buf.SaveInFile(filename, filenamelen);
+    buf.SaveInFile(std::wstring{filename, static_cast<size_t>(filenamelen)});
 }
 
 #pragma warning(disable : 4731)
@@ -2103,7 +2103,7 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
 void CBitmap::SaveInDDSUncompressed(const wchar *filename, int filenamelen) const {
     CBuf buf;
     SaveInDDSUncompressed(buf);
-    buf.SaveInFile(filename, filenamelen);
+    buf.SaveInFile(std::wstring{filename, static_cast<size_t>(filenamelen)});
 }
 
 #ifdef USE_PNGLIB
