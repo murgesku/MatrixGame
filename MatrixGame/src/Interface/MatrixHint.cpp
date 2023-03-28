@@ -58,11 +58,11 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
 
         if (els->hem == HEM_BITMAP) {
             if (new_coord_f) {
-                pos.Any<CPoint>(new_coord);
+                pos.Add<CPoint>(new_coord);
                 new_coord_f = false;
             }
             else {
-                pos.Any<CPoint>(CPoint(cx, cy));
+                pos.Add<CPoint>(CPoint(cx, cy));
                 cx += bx;
                 if (cx > cw)
                     cw = cx;
@@ -71,7 +71,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             }
         }
         else if (els->hem == HEM_LAST_ON_LINE) {
-            pos.Any<CPoint>(CPoint(cx, cy));
+            pos.Add<CPoint>(CPoint(cx, cy));
             cx += bx;
             if (cx > cw)
                 cw = cx;
@@ -81,7 +81,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             cy = ch;
         }
         else if (els->hem == HEM_LAST) {
-            pos.Any<CPoint>(CPoint(cx, cy));
+            pos.Add<CPoint>(CPoint(cx, cy));
             cx += bx;
             if (cx > cw)
                 cw = cx;
@@ -90,7 +90,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             break;
         }
         else if (els->hem == HEM_CENTER) {
-            pos.Any<CPoint>(CPoint(-1000, cy));
+            pos.Add<CPoint>(CPoint(-1000, cy));
             if (bx > cw)
                 cw = bx;
             if ((cy + by) > ch)
@@ -99,7 +99,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             cy = ch;
         }
         else if (els->hem <= HEM_TAB_LARGEST) {
-            pos.Any<CPoint>(CPoint(els->hem, cy));
+            pos.Add<CPoint>(CPoint(els->hem, cy));
             cx = els->hem + bx;
             if (cx > cw)
                 cw = cx;
@@ -107,7 +107,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem <= HEM_CENTER_RIGHT_LARGEST) {
-            pos.Any<CPoint>(CPoint(-1001, cy));
+            pos.Add<CPoint>(CPoint(-1001, cy));
 
             int tv = els->hem - HEM_TAB_LARGEST;
             if ((tv + bx) > (cw / 2))
@@ -117,7 +117,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem <= HEM_CENTER_LEFT_LARGEST) {
-            pos.Any<CPoint>(CPoint(-1002, cy));
+            pos.Add<CPoint>(CPoint(-1002, cy));
 
             int tv = els->hem - HEM_CENTER_RIGHT_LARGEST;
             if ((tv + bx) > (cw / 2))
@@ -127,18 +127,18 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem == HEM_COPY) {
-            pos.Any<CPoint>(CPoint(0, 0));
+            pos.Add<CPoint>(CPoint(0, 0));
             // do nothing
         }
         else if (els->hem == HEM_DOWN) {
-            pos.Any<CPoint>(CPoint(0, 0));
+            pos.Add<CPoint>(CPoint(0, 0));
             cy += els->y;
             if (cy > ch)
                 ch = cy;
             els->bmp = NULL;
         }
         else if (els->hem == HEM_RIGHT) {
-            pos.Any<CPoint>(CPoint(0, 0));
+            pos.Add<CPoint>(CPoint(0, 0));
             cx += els->x;
             if (cx > cw)
                 cw = cx;
@@ -148,7 +148,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             new_coord_f = true;
             new_coord.x = els->x;
             new_coord.y = els->y;
-            pos.Any<CPoint>(CPoint(0, 0));
+            pos.Add<CPoint>(CPoint(0, 0));
             els->bmp = NULL;
             // do nothing
         }
