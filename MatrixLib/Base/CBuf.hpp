@@ -121,16 +121,6 @@ public:
         m_Pointer += sizeof(int64_t);
         return *(int64_t *)(m_Buf + m_Pointer - sizeof(int64_t));
     }
-    float Float(void) {
-        TestGet(sizeof(float));
-        m_Pointer += sizeof(float);
-        return *(float *)(m_Buf + m_Pointer - sizeof(float));
-    }
-    double Double(void) {
-        TestGet(sizeof(double));
-        m_Pointer += sizeof(double);
-        return *(double *)(m_Buf + m_Pointer - sizeof(double));
-    }
 
     template <class D>
     D Get(void) {
