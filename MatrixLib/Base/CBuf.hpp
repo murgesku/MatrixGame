@@ -133,7 +133,7 @@ public:
     }
 
     template <class D>
-    D Any(void) {
+    D Get(void) {
         DTRACE();
         TestGet(sizeof(D));
         m_Pointer += sizeof(D);
