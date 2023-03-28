@@ -33,6 +33,8 @@
 
 #include "Effects/MatrixEffectLandscapeSpot.hpp"
 
+#include "CFile.hpp"
+
 #define RENDER_PROJ_SHADOWS_IN_STENCIL_PASS
 
 // Globals

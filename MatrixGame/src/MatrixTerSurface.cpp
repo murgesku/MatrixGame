@@ -11,6 +11,8 @@
 #include "MatrixMap.hpp"
 #include "MatrixRenderPipeline.hpp"
 
+#include "CFile.hpp"
+
 CBigIB *CTerSurface::m_BigIB;
 CBigVB<CTerSurface::STerSurfVertex> *CTerSurface::m_BigVB;
 CBigVB<CTerSurface::STerSurfVertexM> *CTerSurface::m_BigVBM;

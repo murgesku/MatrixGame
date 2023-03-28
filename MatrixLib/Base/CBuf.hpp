@@ -8,8 +8,12 @@
 // #pragma once
 
 #include "CMain.hpp"
+#include "CHeap.hpp"
+#include "CException.hpp"
 #include "Mem.hpp"
 #include "Tracer.hpp"
+
+#include <windows.h> // TODO: here for CopyMemory; remove
 
 namespace Base {
 
@@ -20,7 +24,7 @@ public:
     int m_Max;      // Размер буфера
     int m_Add;      // На сколько увеличивается буфер
     int m_Pointer;  // Указатель
-    BYTE *m_Buf;    // Буфер
+    uint8_t *m_Buf;    // Буфер
 public:
     CBuf(CHeap *heap = NULL, int add = 32);
     ~CBuf();
@@ -53,7 +57,7 @@ public:
     void TestAdd(int len) {
         if ((m_Pointer + len) > m_Max) {
             m_Max = m_Pointer + len + m_Add;
-            m_Buf = (BYTE *)HAllocEx(m_Buf, m_Max, m_Heap);
+            m_Buf = (uint8_t *)HAllocEx(m_Buf, m_Max, m_Heap);
         }
         m_Len += len;
     }  // Can change m_Len
@@ -61,7 +65,7 @@ public:
         m_Len += sz;
         if (m_Len > m_Max) {
             m_Max = m_Len + m_Add;
-            m_Buf = (BYTE *)HAllocEx(m_Buf, m_Max, m_Heap);
+            m_Buf = (uint8_t *)HAllocEx(m_Buf, m_Max, m_Heap);
         }
     }
 
@@ -77,10 +81,10 @@ public:
         m_Pointer += sizeof(bool);
         return *(bool *)(m_Buf + m_Pointer - sizeof(bool));
     }
-    byte Byte(void) {
-        TestGet(sizeof(byte));
-        m_Pointer += sizeof(byte);
-        return *(byte *)(m_Buf + m_Pointer - sizeof(byte));
+    uint8_t Byte(void) {
+        TestGet(sizeof(uint8_t));
+        m_Pointer += sizeof(uint8_t);
+        return *(uint8_t *)(m_Buf + m_Pointer - sizeof(uint8_t));
     }
     char Char(void) {
         TestGet(sizeof(char));
@@ -97,10 +101,10 @@ public:
         m_Pointer += sizeof(short);
         return *(short *)(m_Buf + m_Pointer - sizeof(short));
     }
-    dword Dword(void) {
-        TestGet(sizeof(dword));
-        m_Pointer += sizeof(dword);
-        return *(dword *)(m_Buf + m_Pointer - sizeof(dword));
+    uint32_t Dword(void) {
+        TestGet(sizeof(uint32_t));
+        m_Pointer += sizeof(uint32_t);
+        return *(uint32_t *)(m_Buf + m_Pointer - sizeof(uint32_t));
     }
     long Long(void) {
         TestGet(sizeof(long));
@@ -112,10 +116,10 @@ public:
         m_Pointer += sizeof(int);
         return *(int *)(m_Buf + m_Pointer - sizeof(int));
     }
-    int64 Int64(void) {
-        TestGet(sizeof(int64));
-        m_Pointer += sizeof(int64);
-        return *(int64 *)(m_Buf + m_Pointer - sizeof(int64));
+    int64_t Int64(void) {
+        TestGet(sizeof(int64_t));
+        m_Pointer += sizeof(int64_t);
+        return *(int64_t *)(m_Buf + m_Pointer - sizeof(int64_t));
     }
     float Float(void) {
         TestGet(sizeof(float));
@@ -148,30 +152,30 @@ public:
         *(bool *)(m_Buf + m_Pointer) = zn;
         m_Pointer += sizeof(bool);
     }
-    void Byte(byte zn) {
-        TestAdd(sizeof(byte));
-        *(byte *)(m_Buf + m_Pointer) = zn;
-        m_Pointer += sizeof(byte);
+    void Byte(uint8_t zn) {
+        TestAdd(sizeof(uint8_t));
+        *(uint8_t *)(m_Buf + m_Pointer) = zn;
+        m_Pointer += sizeof(uint8_t);
     }
     void Char(char zn) {
         TestAdd(sizeof(char));
         *(char *)(m_Buf + m_Pointer) = zn;
         m_Pointer += sizeof(char);
     }
-    void Word(word zn) {
-        TestAdd(sizeof(word));
-        *(word *)(m_Buf + m_Pointer) = zn;
-        m_Pointer += sizeof(word);
+    void Word(uint16_t zn) {
+        TestAdd(sizeof(uint16_t));
+        *(uint16_t *)(m_Buf + m_Pointer) = zn;
+        m_Pointer += sizeof(uint16_t);
     }
     void Short(short zn) {
         TestAdd(sizeof(short));
         *(short *)(m_Buf + m_Pointer) = zn;
         m_Pointer += sizeof(short);
     }
-    void Dword(dword zn) {
-        TestAdd(sizeof(dword));
-        *(dword *)(m_Buf + m_Pointer) = zn;
-        m_Pointer += sizeof(dword);
+    void Dword(uint32_t zn) {
+        TestAdd(sizeof(uint32_t));
+        *(uint32_t *)(m_Buf + m_Pointer) = zn;
+        m_Pointer += sizeof(uint32_t);
     }
     void Long(long zn) {
         TestAdd(sizeof(long));
@@ -183,10 +187,10 @@ public:
         *(int *)(m_Buf + m_Pointer) = zn;
         m_Pointer += sizeof(int);
     }
-    void Int64(int64 zn) {
-        TestAdd(sizeof(int64));
-        *(int64 *)(m_Buf + m_Pointer) = zn;
-        m_Pointer += sizeof(int64);
+    void Int64(int64_t zn) {
+        TestAdd(sizeof(int64_t));
+        *(int64_t *)(m_Buf + m_Pointer) = zn;
+        m_Pointer += sizeof(int64_t);
     }
     void Float(float zn) {
         TestAdd(sizeof(float));
@@ -227,19 +231,19 @@ public:
         m_Pointer += len;
     }
 
-    void ByteLoop(byte zn, int cnt) {
+    void ByteLoop(uint8_t zn, int cnt) {
         if (cnt <= 0)
             return;
         TestAdd(cnt);
         memset(m_Buf + m_Pointer, zn, cnt);
         m_Pointer += cnt;
     }
-    void WordLoop(word zn, int cnt) {
+    void WordLoop(uint16_t zn, int cnt) {
         if (cnt <= 0)
             return;
         TestAdd(cnt * 2);
         for (int i = 0; i < cnt; i++, m_Pointer += 2)
-            *(word *)(m_Buf + m_Pointer) = zn;
+            *(uint16_t *)(m_Buf + m_Pointer) = zn;
     }
 
     int StrLen(void);

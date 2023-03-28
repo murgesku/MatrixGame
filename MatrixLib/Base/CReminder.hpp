@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include "Base.hpp"
+#include <cstdint>
+#include "BaseDef.hpp"
 
 namespace Base {
 
@@ -27,13 +28,13 @@ struct SRemindCore {
     REMIND_HANDLER handler;
     uintptr_t param;
 
-    SRemindCore(REMIND_HANDLER hand, uintptr_t par) : next(NULL), prev(NULL), time(gtime), handler(hand), param(par) {}
+    SRemindCore(REMIND_HANDLER hand, uintptr_t par) : next(nullptr), prev(nullptr), time(gtime), handler(hand), param(par) {}
     ~SRemindCore(void) { Down(); }
 
     static void StaticInit(void) {
-        first = NULL;
-        last = NULL;
-        current = NULL;
+        first = nullptr;
+        last = nullptr;
+        current = nullptr;
         gtime = 0;
         ctime = 0;
     }
@@ -45,7 +46,7 @@ struct SRemindCore {
     }
 
     void Use(int nexttime) {
-        if (first != NULL) {
+        if (first != nullptr) {
             if ((((uintptr_t)next) | ((uintptr_t)prev)) == 0 && (this != first)) {
                 LIST_ADD(this, first, last, prev, next);
             }
@@ -53,8 +54,8 @@ struct SRemindCore {
         else {
             first = this;
             last = this;
-            next = NULL;
-            prev = NULL;
+            next = nullptr;
+            prev = nullptr;
         }
         time = gtime + nexttime;
     }

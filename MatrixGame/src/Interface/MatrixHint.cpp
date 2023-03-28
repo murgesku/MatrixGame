@@ -10,6 +10,8 @@
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
 
+#include "CFile.hpp"
+
 CMatrixHint *CMatrixHint::m_First;
 CMatrixHint *CMatrixHint::m_Last;
 

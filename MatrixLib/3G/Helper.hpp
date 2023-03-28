@@ -6,6 +6,14 @@
 #ifndef HELPER_INCLUDE
 #define HELPER_INCLUDE
 
+#include <windows.h>
+#include <cstdint>
+
+#include "CMain.hpp"
+
+#include "d3d9.h"
+#include "d3dx9tex.h"
+
 // Класс для отображения дебуг информации в 3D
 
 #if (defined _DEBUG) && !(defined _RELDEBUG)
@@ -18,7 +26,7 @@ struct SHelperVertex {
     float tu, tv;
 };
 
-class CHelper : public CMain {
+class CHelper : public Base::CMain {
     static CHelper *m_First;
     static CHelper *m_Last;
 
@@ -39,7 +47,7 @@ class CHelper : public CMain {
     int m_CntVertex;
     int m_CntIndex;
     SHelperVertex *m_Vertex;
-    word *m_Index;
+    uint16_t *m_Index;
 
     void SetMatrixPos(const D3DXVECTOR3 &pos) {
         m_Matrix._41 = pos.x;

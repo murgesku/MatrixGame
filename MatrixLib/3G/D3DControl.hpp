@@ -8,12 +8,14 @@
 
 #include "3g.hpp"
 
+#include "CMain.hpp"
+
 //////////D3DResources
 #ifdef _DEBUG
 
 enum D3DResType { D3DRESTYPE_IB, D3DRESTYPE_VB, D3DRESTYPE_TEX };
 
-class D3DResource : public CMain {
+class D3DResource : public Base::CMain {
     static int m_IB_cnt;
     static int m_VB_cnt;
     static int m_TEX_cnt;

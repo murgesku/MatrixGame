@@ -3,10 +3,11 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "CHeap.hpp"
 #include "CException.hpp"
+
+#include <windows.h>
+#include <stdlib.h>
 
 #include <utils.hpp>
 
@@ -17,24 +18,24 @@ int get_id(void) {
     static int last_id;
     return last_id++;
 }
-BYTE semetery_heap[SEMETERY_HEAP_SIZE];
+uint8_t semetery_heap[SEMETERY_HEAP_SIZE];
 SDeadMem semetery[SEMETERY_SIZE];
 
 int semetery_cnt = 0;
 int semetery_heap_size = 0;
 
-int find_by_id(int id, BYTE **ptr) {
+int find_by_id(int id, uint8_t **ptr) {
     SDeadMemBody *b = (SDeadMemBody *)&semetery_heap;
 
     while (id != b->id) {
-        b = (SDeadMemBody *)(((BYTE *)b) + b->size);
+        b = (SDeadMemBody *)(((uint8_t *)b) + b->size);
     }
 
-    *ptr = (BYTE *)b;
+    *ptr = (uint8_t *)b;
     return b->size;
 }
 void remove_by_id(int id) {
-    BYTE *ptr;
+    uint8_t *ptr;
     int sz = find_by_id(id, &ptr);
 
     memcpy(ptr, ptr + sz, semetery_heap_size - sz);
@@ -62,7 +63,7 @@ void remove_first(void) {
 void *get_dead_mem(void *mem) {
     for (int i = 0; i < semetery_cnt; ++i) {
         if (semetery[i].ptr_was == mem) {
-            BYTE *ptr;
+            uint8_t *ptr;
             int sz = find_by_id(semetery[i].id, &ptr);
             return ptr + sizeof(SDeadMemBody);
         }
@@ -137,8 +138,8 @@ void SMemHeader::Release(void) {
     LIST_DEL(this, first_mem_block, last_mem_block, prev, next);
     fullsize -= blocksize;
 #ifdef MEM_CHECK
-    BYTE *d1 = (BYTE *)(this + 1);
-    BYTE *d2 = ((BYTE *)this) + blocksize - MEM_CHECK_BOUND_SIZE;
+    uint8_t *d1 = (uint8_t *)(this + 1);
+    uint8_t *d2 = ((uint8_t *)this) + blocksize - MEM_CHECK_BOUND_SIZE;
     for (int i = 0; i < MEM_CHECK_BOUND_SIZE; ++i) {
         bool begin = *(d1 + i) != MEM_CHECK_FILLER;
         bool end = *(d2 + i) != MEM_CHECK_FILLER;

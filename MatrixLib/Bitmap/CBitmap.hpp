@@ -7,8 +7,11 @@
 
 #include <algorithm>
 
-#include "BitmapDef.hpp"
-#include "../Base/Base.hpp"
+#include <windows.h>
+#include <stdlib.h>
+
+#include "BaseDef.hpp"
+#include "CBuf.hpp"
 
 #define BMF_USER        0
 #define BMF_FLAT        1
@@ -23,7 +26,8 @@ enum EAreaType {
     EAreaType_FORCE_DWORD = 0x7FFFFFFF
 };
 
-class CBitmap : public Base::CMain {
+class CBitmap
+{
 private:
     Base::CHeap *m_Heap;
 
@@ -48,7 +52,7 @@ private:
     HBITMAP m_WindowBitmap;  // Windows-кий bitmap
     HDC m_WindowDC;          // Context windows-кого bitmap-а
 public:
-    CBitmap(Base::CHeap *heap = NULL);
+    CBitmap(void* heap = nullptr); // TODO: remove param
     ~CBitmap();
 
     void Clear(void);

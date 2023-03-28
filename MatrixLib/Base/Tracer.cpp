@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Base.pch"
-
 #include "Tracer.hpp"
 #include <windows.h>
 #include <stdio.h>
@@ -120,11 +118,6 @@ void CDText::Get(std::string& out)
     }
 
     out = res;
-}
-
-void DbgShowDword(const char *n, DWORD sz)
-{
-    CDText::T(n, sz);
 }
 
 #endif

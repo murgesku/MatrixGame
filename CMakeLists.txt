@@ -37,7 +37,7 @@ if(MSVC)
         $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG>
     )
 
-    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT)
+    list(APPEND COMPILE_DEFINITIONS $<$<CONFIG:Release>:_CRT_SECURE_NO_WARNINGS> _AFX_NO_DEBUG_CRT NOMINMAX)
 
     # TODO: <codecvt> is deprecated since C++17. in future we should
     # use std::string everywhere and not cast string <-> wstring.

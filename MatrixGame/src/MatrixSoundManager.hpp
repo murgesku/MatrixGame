@@ -6,6 +6,8 @@
 #ifndef MATRIX_SOUND_MANAGER
 #define MATRIX_SOUND_MANAGER
 
+#include "CDWORDMap.hpp"
+
 #define SOUND_ID_EMPTY         (0xFFFFFFFF)
 #define SOUND_FULL_VOLUME_DIST 200
 

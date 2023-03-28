@@ -20,8 +20,6 @@
 #include <tchar.h>
 
 // TODO: reference additional headers your program requires here
-#include "../../MatrixLib/3G/3g.pch"
-
 #include "../../MatrixLib/3G/3g.hpp"
 #include "../../MatrixLib/3G/VectorObject.hpp"
 #include "../../MatrixLib/3G/CBillboard.hpp"

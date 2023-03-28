@@ -7,6 +7,8 @@
 
 #include "MatrixMap.hpp"
 
+#include "CFile.hpp"
+
 #define CURSOR_Z 0.0f
 
 void CMatrixCursor::SetVisible(bool flag) {

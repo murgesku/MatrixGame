@@ -3,9 +3,10 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "3g.pch"
-
 #include "Texture.hpp"
+
+#include "CFile.hpp"
+#include "CStorage.hpp"
 
 CBaseTexture *CBaseTexture::m_TexturesFirst;
 CBaseTexture *CBaseTexture::m_TexturesLast;

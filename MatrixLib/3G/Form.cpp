@@ -3,7 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "3g.pch"
+#include "Form.hpp"
+#include "BaseDef.hpp"
+#include "Tracer.hpp"
 
 CForm *g_FormFirst;
 CForm *g_FormLast;
@@ -12,7 +14,7 @@ CForm *g_FormCur;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-CForm::CForm() : CMain(), m_Name() {
+CForm::CForm() : Base::CMain(), m_Name() {
     DTRACE();
 
     m_FormPrev = NULL;

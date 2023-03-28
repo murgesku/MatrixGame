@@ -9,6 +9,8 @@
 #include <string>
 #include <utils.hpp>
 
+#include <windows.h>
+
 #ifdef __GNUC__
 #include <x86intrin.h>
 #endif
@@ -72,7 +74,7 @@ public:
         T(key, std::to_string(arg).c_str());
     }
 
-    static void T(const char* key, DWORD arg)
+    static void T(const char* key, uint32_t arg)
     {
         T(key, std::to_string(arg).c_str());
     }
@@ -98,8 +100,6 @@ extern int g_CheckPointNumber;
             debugbreak();                      \
         };                                     \
     }
-
-void DbgShowDword(const char *n, DWORD sz);
 
 #if _MSC_VER >= 1300
 #define MSVC7
@@ -173,7 +173,7 @@ class CDebugTracer {
     bool m_checkpoint;
 
 #ifdef ENABLE_HISTORY
-    static BYTE m_history[HISTORY_SIZE * sizeof(SDebugCallInfo)];
+    static uint8_t m_history[HISTORY_SIZE * sizeof(SDebugCallInfo)];
     static int m_hist_start;
     static int m_hist_end;
 #endif

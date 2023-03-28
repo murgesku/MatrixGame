@@ -6,8 +6,13 @@
 #ifndef TEXTURE_INCLUDE_HPP
 #define TEXTURE_INCLUDE_HPP
 
-//#include "3g.hpp"
+#include "3g.hpp"
 #include "Cache.hpp"
+#include "CBitmap.hpp"
+#include "CBlockPar.hpp"
+
+#include "d3d9.h"
+#include "d3dx9tex.h"
 
 //#define TF_NORMAL	SETBIT(0)		// У текстуры есть пиксели без alpha и прозрачности
 //#define TF_TRANS	SETBIT(1)		// У текстуры есть прозрачные пиксели

@@ -6,7 +6,11 @@
 #ifndef STORAGE_INCLUDE
 #define STORAGE_INCLUDE
 
-#include "Base.hpp"
+#include <windows.h>
+
+#include "CHeap.hpp"
+#include "CException.hpp"
+#include "CBlockPar.hpp"
 
 namespace Base {
 
