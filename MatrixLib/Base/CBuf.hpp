@@ -16,7 +16,7 @@ namespace Base {
 
 class BASE_API CBuf
 {
-public:
+private:
     int m_Len;      // Кол-во данных
     int m_Max;      // Размер буфера
     int m_Add;      // На сколько увеличивается буфер
@@ -125,7 +125,6 @@ public:
             *(uint16_t *)(m_Buf.data() + m_Pointer) = zn;
     }
 
-    int StrLen(void);
     std::string Str(void) {
         int len = StrLen();
         char *abuf = (char *)(m_Buf.data() + m_Pointer);
@@ -149,7 +148,6 @@ public:
             Add(str.c_str(), str.length());
     }
 
-    int WStrLen(void);
     std::wstring WStr(void) {
         int len = WStrLen();
         wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
@@ -172,7 +170,6 @@ public:
             Add(str.c_str(), str.length() * 2);
     }
 
-    int StrTextLen(void);
     std::string StrText(void) {
         char ch;
         int len = StrTextLen();
@@ -199,7 +196,6 @@ public:
         Add<uint16_t>(0x0a0d);
     }
 
-    int WStrTextLen(void);
     std::wstring WStrText(void) {
         wchar ch;
         int len = WStrTextLen();
@@ -228,6 +224,12 @@ public:
 
     void LoadFromFile(const std::wstring &filename);
     void SaveInFile(const std::wstring &filename) const;
+
+private:
+    int StrLen(void);
+    int WStrLen(void);
+    int StrTextLen(void);
+    int WStrTextLen(void);
 };
 
 }  // namespace Base
