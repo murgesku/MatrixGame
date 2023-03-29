@@ -10,6 +10,8 @@
 #include "Mem.hpp"
 #include "Tracer.hpp"
 
+#include <vector>
+
 namespace Base {
 
 class BASE_API CBuf
@@ -19,7 +21,7 @@ public:
     int m_Max;      // Размер буфера
     int m_Add;      // На сколько увеличивается буфер
     int m_Pointer;  // Указатель
-    uint8_t *m_Buf;    // Буфер
+    std::vector<uint8_t> m_Buf;
 public:
     CBuf(int add = 32);
     ~CBuf();
@@ -27,14 +29,14 @@ public:
     void Clear(void);
     void ClearFull(void);  // А также освобождает память
 
-    void *Get(void) const { return m_Buf; }
+    void *Get(void) const { return const_cast<uint8_t*>(m_Buf.data()); }
     template <class D>
     D *Buff(void) {
-        return (D *)m_Buf;
+        return (D*)m_Buf.data();
     }
     template <class D>
     D *BuffEnd(void) {
-        return (D *)(m_Buf + m_Len);
+        return (D *)(m_Buf.data() + m_Len);
     }
     int Len(void) const { return m_Len; }
     void Len(int zn);
@@ -50,7 +52,7 @@ public:
     void TestAdd(int len) {
         if ((m_Pointer + len) > m_Max) {
             m_Max = m_Pointer + len + m_Add;
-            m_Buf = (uint8_t *)HAllocEx(m_Buf, m_Max, nullptr);
+            m_Buf.resize(m_Max);
         }
         m_Len += len;
     }  // Can change m_Len
@@ -58,7 +60,7 @@ public:
         m_Len += sz;
         if (m_Len > m_Max) {
             m_Max = m_Len + m_Add;
-            m_Buf = (uint8_t *)HAllocEx(m_Buf, m_Max, nullptr);
+            m_Buf.resize(m_Max);
         }
     }
 
@@ -77,7 +79,7 @@ public:
         DTRACE();
         TestGet(sizeof(D));
         m_Pointer += sizeof(D);
-        return *(D *)(m_Buf + m_Pointer - sizeof(D));
+        return *(D *)(m_Buf.data() + m_Pointer - sizeof(D));
     }
 
     void Get(void *buf, int len)
@@ -85,7 +87,7 @@ public:
         if (len <= 0)
             return;
         TestGet(len);
-        memcpy(buf, m_Buf + m_Pointer, len);
+        memcpy(buf, m_Buf.data() + m_Pointer, len);
         m_Pointer += len;
     }
 
@@ -94,7 +96,7 @@ public:
     template <class D>
     void Add(D zn) {
         TestAdd(sizeof(D));
-        *(D*)(m_Buf + m_Pointer) = zn;
+        *(D*)(m_Buf.data() + m_Pointer) = zn;
         m_Pointer += sizeof(D);
     }
 
@@ -102,7 +104,7 @@ public:
         if (len <= 0)
             return;
         TestAdd(len);
-        memcpy(m_Buf + m_Pointer, buf, len);
+        memcpy(m_Buf.data() + m_Pointer, buf, len);
         m_Pointer += len;
     }
 
@@ -112,7 +114,7 @@ public:
         if (cnt <= 0)
             return;
         TestAdd(cnt);
-        memset(m_Buf + m_Pointer, zn, cnt);
+        memset(m_Buf.data() + m_Pointer, zn, cnt);
         m_Pointer += cnt;
     }
     void WordLoop(uint16_t zn, int cnt) {
@@ -120,13 +122,13 @@ public:
             return;
         TestAdd(cnt * 2);
         for (int i = 0; i < cnt; i++, m_Pointer += 2)
-            *(uint16_t *)(m_Buf + m_Pointer) = zn;
+            *(uint16_t *)(m_Buf.data() + m_Pointer) = zn;
     }
 
     int StrLen(void);
     std::string Str(void) {
         int len = StrLen();
-        char *abuf = (char *)(m_Buf + m_Pointer);
+        char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len + 1;
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
@@ -150,7 +152,7 @@ public:
     int WStrLen(void);
     std::wstring WStr(void) {
         int len = WStrLen();
-        wchar *abuf = (wchar *)(m_Buf + m_Pointer);
+        wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += ((len + 1) << 1);
         if (m_Pointer > m_Len)
             m_Pointer = m_Len;
@@ -174,14 +176,14 @@ public:
     std::string StrText(void) {
         char ch;
         int len = StrTextLen();
-        char *abuf = (char *)(m_Buf + m_Pointer);
+        char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len;
         if (m_Pointer < m_Len) {
-            ch = *(char *)(m_Buf + m_Pointer);
+            ch = *(char *)(m_Buf.data() + m_Pointer);
             if (ch == 0 || ch == 0x0d || ch == 0x0a)
                 m_Pointer++;
             if (m_Pointer < m_Len) {
-                ch = *(char *)(m_Buf + m_Pointer);
+                ch = *(char *)(m_Buf.data() + m_Pointer);
                 if (ch == 0 || ch == 0x0d || ch == 0x0a)
                     m_Pointer++;
             }
@@ -201,14 +203,14 @@ public:
     std::wstring WStrText(void) {
         wchar ch;
         int len = WStrTextLen();
-        wchar *abuf = (wchar *)(m_Buf + m_Pointer);
+        wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += len << 1;
         if (m_Pointer + 1 < m_Len) {
-            ch = *(wchar *)(m_Buf + m_Pointer);
+            ch = *(wchar *)(m_Buf.data() + m_Pointer);
             if (ch == 0 || ch == 0x0d || ch == 0x0a)
                 m_Pointer += 2;
             if (m_Pointer + 1 < m_Len) {
-                ch = *(wchar *)(m_Buf + m_Pointer);
+                ch = *(wchar *)(m_Buf.data() + m_Pointer);
                 if (ch == 0 || ch == 0x0d || ch == 0x0a)
                     m_Pointer += 2;
             }
