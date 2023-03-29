@@ -17,7 +17,6 @@ CBuf::CBuf(int add)
     m_Max = 0;
 
     m_Pointer = 0;
-    m_Buf = NULL;
 }
 
 CBuf::~CBuf() {
@@ -30,10 +29,7 @@ void CBuf::Clear() {
 }
 
 void CBuf::ClearFull(void) {
-    if (m_Buf != NULL) {
-        HFree(m_Buf, nullptr);
-        m_Buf = NULL;
-    }
+    m_Buf.clear();
     m_Len = 0;
     m_Max = 0;
     m_Pointer = 0;
@@ -45,7 +41,7 @@ void CBuf::Len(int zn) {
         return;
     }
     m_Len = m_Max = zn;
-    m_Buf = (BYTE *)HAllocEx(m_Buf, m_Max, nullptr);
+    m_Buf.resize(m_Max);
     if (m_Pointer < 0)
         m_Pointer = 0;
     else if (m_Pointer > m_Len)
@@ -55,7 +51,7 @@ void CBuf::Len(int zn) {
 int CBuf::StrLen(void) {
     int len = 0;
     for (int i = m_Pointer; i < m_Len; i++, len++) {
-        if (*(char *)(m_Buf + i) == 0)
+        if (*(char *)(m_Buf.data() + i) == 0)
             return len;
     }
     return 0;
@@ -64,7 +60,7 @@ int CBuf::StrLen(void) {
 int CBuf::WStrLen(void) {
     int len = 0;
     for (int i = m_Pointer; i + 1 < m_Len; i += 2, len++) {
-        if (*(wchar *)(m_Buf + i) == 0)
+        if (*(wchar *)(m_Buf.data() + i) == 0)
             return len;
     }
     return 0;
@@ -73,7 +69,7 @@ int CBuf::WStrLen(void) {
 int CBuf::StrTextLen(void) {
     int len = 0;
     for (int i = m_Pointer; i < m_Len; i++, len++) {
-        char ch = *(char *)(m_Buf + i);
+        char ch = *(char *)(m_Buf.data() + i);
         if (ch == 0 || ch == 0x0d || ch == 0x0a)
             return len;
     }
@@ -83,7 +79,7 @@ int CBuf::StrTextLen(void) {
 int CBuf::WStrTextLen(void) {
     int len = 0;
     for (int i = m_Pointer; i + 1 < m_Len; i += 2, len++) {
-        wchar ch = *(wchar *)(m_Buf + i);
+        wchar ch = *(wchar *)(m_Buf.data() + i);
         if (ch == 0 || ch == 0x0d || ch == 0x0a)
             return len;
     }
@@ -96,7 +92,7 @@ void CBuf::LoadFromFile(const std::wstring &filename)
     CFile file(filename.c_str(), filename.length());
     file.OpenRead();
     Len(file.Size());
-    file.Read(m_Buf, m_Len);
+    file.Read(m_Buf.data(), m_Len);
     file.Close();
 }
 
@@ -107,7 +103,7 @@ void CBuf::SaveInFile(const std::wstring &filename) const
 
     CFile file(filename.c_str(), filename.length());
     file.Create();
-    file.Write(m_Buf, m_Len);
+    file.Write(const_cast<uint8_t*>(m_Buf.data()), m_Len);
     file.Close();
 }
 
