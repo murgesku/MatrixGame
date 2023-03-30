@@ -7,10 +7,13 @@
 
 #include "BaseDef.hpp"
 
+#include <string>
+#include <windows.h>
+
 namespace Base {
 
-BASE_API void Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const std::wstring &str);
-BASE_API std::wstring Reg_GetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *defaultstr);
-BASE_API void Reg_SetString(HKEY pkey, const wchar *path, const wchar *name, const wchar *str);
+void Reg_GetString(HKEY pkey, const wchar_t *path, const wchar_t *name, const std::wstring &str);
+std::wstring Reg_GetString(HKEY pkey, const wchar_t *path, const wchar_t *name, const wchar_t *defaultstr);
+void Reg_SetString(HKEY pkey, const wchar_t *path, const wchar_t *name, const wchar_t *str);
 
 }  // namespace Base

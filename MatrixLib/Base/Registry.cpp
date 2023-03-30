@@ -5,6 +5,8 @@
 
 #include <cwchar>
 
+#include "Registry.hpp"
+
 #include "CException.hpp"
 #include "CBuf.hpp"
 

@@ -6,11 +6,9 @@
 #pragma once
 
 #include "CException.hpp"
-#include "CHeap.hpp"
-#include "Mem.hpp"
-#include "Tracer.hpp"
 
 #include <vector>
+#include <cstring> // for memset
 
 namespace Base {
 
@@ -59,7 +57,6 @@ public:
     template <class D>
     D Get(void)
     {
-        DTRACE();
         TestGet(sizeof(D));
         m_Pointer += sizeof(D);
         return *(D *)(m_Buf.data() + m_Pointer - sizeof(D));
@@ -202,7 +199,7 @@ public:
     void WStrText(const std::wstring& str)
     {
         WStrNZ(str);
-        Add<DWORD>(0x000a000d);
+        Add<uint32_t>(0x000a000d);
     }
 
     void LoadFromFile(const std::wstring &filename);
