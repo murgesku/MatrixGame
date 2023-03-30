@@ -17,7 +17,6 @@ namespace Base {
 class BASE_API CBuf
 {
 private:
-    int m_Len;      // Кол-во данных
     int m_Add;      // На сколько увеличивается буфер
     int m_Pointer;  // Указатель
     std::vector<uint8_t> m_Buf;
@@ -35,36 +34,29 @@ public:
     }
     template <class D>
     D *BuffEnd(void) {
-        return (D *)(m_Buf.data() + m_Len);
+        return (D *)(m_Buf.data() + m_Buf.size());
     }
-    int Len(void) const { return m_Len; }
+    int Len(void) const { return m_Buf.size(); }
     void Len(int zn);
     void SetLenNoShrink(int len) {
         ASSERT(len <= m_Buf.size());
-        m_Len = len;
+        m_Buf.resize(len);
     }
 
     inline void TestGet(int len) {
-        if ((m_Pointer + len) > m_Len)
+        if ((m_Pointer + len) > m_Buf.size())
             ERROR_E;
     }
     void TestAdd(int len) {
-        if ((m_Pointer + len) > m_Buf.size()) {
-            m_Buf.resize(m_Pointer + len + m_Add);
-        }
-        m_Len += len;
-    }  // Can change m_Len
+        m_Buf.resize(m_Buf.size() + len);
+    }
     void Expand(int sz) {
-        m_Len += sz;
-        if (m_Len > m_Buf.size())
-        {
-            m_Buf.resize(m_Len + m_Add);
-        }
+        m_Buf.resize(m_Buf.size() + sz);
     }
 
     int Pointer(void) const { return m_Pointer; }
     void Pointer(int zn) {
-        if ((zn < 0) || (zn > m_Len))
+        if ((zn < 0) || (zn > m_Buf.size()))
             ERROR_E;
         m_Pointer = zn;
     }
@@ -127,8 +119,8 @@ public:
         int len = StrLen();
         char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len + 1;
-        if (m_Pointer > m_Len)
-            m_Pointer = m_Len;
+        if (m_Pointer > m_Buf.size())
+            m_Pointer = m_Buf.size();
         if (len > 0)
             return std::string(abuf, len);
         else
@@ -150,8 +142,8 @@ public:
         int len = WStrLen();
         wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += ((len + 1) << 1);
-        if (m_Pointer > m_Len)
-            m_Pointer = m_Len;
+        if (m_Pointer > m_Buf.size())
+            m_Pointer = m_Buf.size();
         if (len > 0)
             return std::wstring(abuf, len);
         else
@@ -173,11 +165,11 @@ public:
         int len = StrTextLen();
         char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len;
-        if (m_Pointer < m_Len) {
+        if (m_Pointer < m_Buf.size()) {
             ch = *(char *)(m_Buf.data() + m_Pointer);
             if (ch == 0 || ch == 0x0d || ch == 0x0a)
                 m_Pointer++;
-            if (m_Pointer < m_Len) {
+            if (m_Pointer < m_Buf.size()) {
                 ch = *(char *)(m_Buf.data() + m_Pointer);
                 if (ch == 0 || ch == 0x0d || ch == 0x0a)
                     m_Pointer++;
@@ -199,11 +191,11 @@ public:
         int len = WStrTextLen();
         wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += len << 1;
-        if (m_Pointer + 1 < m_Len) {
+        if (m_Pointer + 1 < m_Buf.size()) {
             ch = *(wchar *)(m_Buf.data() + m_Pointer);
             if (ch == 0 || ch == 0x0d || ch == 0x0a)
                 m_Pointer += 2;
-            if (m_Pointer + 1 < m_Len) {
+            if (m_Pointer + 1 < m_Buf.size()) {
                 ch = *(wchar *)(m_Buf.data() + m_Pointer);
                 if (ch == 0 || ch == 0x0d || ch == 0x0a)
                     m_Pointer += 2;
