@@ -14,8 +14,6 @@ CBuf::CBuf(int add)
 : m_Add(add)
 {
     m_Len = 0;
-    m_Max = 0;
-
     m_Pointer = 0;
 }
 
@@ -31,7 +29,6 @@ void CBuf::Clear() {
 void CBuf::ClearFull(void) {
     m_Buf.clear();
     m_Len = 0;
-    m_Max = 0;
     m_Pointer = 0;
 }
 
@@ -40,8 +37,8 @@ void CBuf::Len(int zn) {
         Clear();
         return;
     }
-    m_Len = m_Max = zn;
-    m_Buf.resize(m_Max);
+    m_Len  = zn;
+    m_Buf.resize(m_Len);
     if (m_Pointer < 0)
         m_Pointer = 0;
     else if (m_Pointer > m_Len)
