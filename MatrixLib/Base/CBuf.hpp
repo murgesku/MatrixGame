@@ -17,11 +17,10 @@ namespace Base {
 class BASE_API CBuf
 {
 private:
-    int m_Add;      // На сколько увеличивается буфер
     int m_Pointer;  // Указатель
     std::vector<uint8_t> m_Buf;
 public:
-    CBuf(int add = 32);
+    CBuf();
     ~CBuf();
 
     void Clear(void);

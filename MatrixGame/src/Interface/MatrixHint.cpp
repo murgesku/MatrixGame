@@ -42,7 +42,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
     int cw = 0;
     int ch = 0;
 
-    CBuf pos(512);
+    CBuf pos;
 
     bool new_coord_f = false;
     CPoint new_coord;
@@ -535,8 +535,8 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
 
     SHintElement elems[256];
 
-    CBuf its(256);
-    CBuf bmps(256);
+    CBuf its;
+    CBuf bmps;
     int ssz = 0;
 
     bool otstup = false;

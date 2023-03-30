@@ -10,8 +10,7 @@
 
 namespace Base {
 
-CBuf::CBuf(int add)
-: m_Add(add)
+CBuf::CBuf()
 {
     m_Pointer = 0;
 }
