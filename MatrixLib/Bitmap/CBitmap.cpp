@@ -1854,7 +1854,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
         if (m_BytePP == 3) {
             for (int y = 0; y < m_Size.y; y++, sou -= m_Pitch) {
                 BYTE *sb = (BYTE *)sou;
-                buf.TestAdd(len);
+                buf.Expand(len);
                 BYTE *db = ((BYTE *)buf.Get()) + buf.Pointer();
                 buf.Pointer(buf.Pointer() + len);
                 BYTE *de = db + len;
@@ -1872,7 +1872,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
         else if (m_BytePP == 4) {
             for (int y = 0; y < m_Size.y; y++, sou -= m_Pitch) {
                 BYTE *sb = (BYTE *)sou;
-                buf.TestAdd(len);
+                buf.Expand(len);
                 BYTE *db = ((BYTE *)buf.Get()) + buf.Pointer();
                 buf.Pointer(buf.Pointer() + len);
                 BYTE *de = db + len;

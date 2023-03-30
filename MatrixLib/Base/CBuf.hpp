@@ -37,19 +37,14 @@ public:
     }
     int Len(void) const { return m_Buf.size(); }
     void Len(int zn);
-    void SetLenNoShrink(int len) {
+    void SetLenNoShrink(int len)
+    {
         ASSERT(len <= m_Buf.size());
         m_Buf.resize(len);
     }
 
-    inline void TestGet(int len) {
-        if ((m_Pointer + len) > m_Buf.size())
-            ERROR_E;
-    }
-    void TestAdd(int len) {
-        m_Buf.resize(m_Buf.size() + len);
-    }
-    void Expand(int sz) {
+    void Expand(int sz)
+    {
         m_Buf.resize(m_Buf.size() + sz);
     }
 
@@ -219,6 +214,21 @@ private:
     int WStrLen(void);
     int StrTextLen(void);
     int WStrTextLen(void);
+
+    inline void TestGet(int len)
+    {
+        if ((m_Pointer + len) > m_Buf.size())
+        {
+            ERROR_E;
+        }
+    }
+    void TestAdd(int len)
+    {
+        if (m_Pointer + len > m_Buf.size())
+        {
+            m_Buf.resize(m_Buf.size() + len);
+        }
+    }
 };
 
 }  // namespace Base
