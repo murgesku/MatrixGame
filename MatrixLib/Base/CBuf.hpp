@@ -18,7 +18,6 @@ class BASE_API CBuf
 {
 private:
     int m_Len;      // Кол-во данных
-    int m_Max;      // Размер буфера
     int m_Add;      // На сколько увеличивается буфер
     int m_Pointer;  // Указатель
     std::vector<uint8_t> m_Buf;
@@ -41,7 +40,7 @@ public:
     int Len(void) const { return m_Len; }
     void Len(int zn);
     void SetLenNoShrink(int len) {
-        ASSERT(len <= m_Max);
+        ASSERT(len <= m_Buf.size());
         m_Len = len;
     }
 
@@ -50,17 +49,16 @@ public:
             ERROR_E;
     }
     void TestAdd(int len) {
-        if ((m_Pointer + len) > m_Max) {
-            m_Max = m_Pointer + len + m_Add;
-            m_Buf.resize(m_Max);
+        if ((m_Pointer + len) > m_Buf.size()) {
+            m_Buf.resize(m_Pointer + len + m_Add);
         }
         m_Len += len;
     }  // Can change m_Len
     void Expand(int sz) {
         m_Len += sz;
-        if (m_Len > m_Max) {
-            m_Max = m_Len + m_Add;
-            m_Buf.resize(m_Max);
+        if (m_Len > m_Buf.size())
+        {
+            m_Buf.resize(m_Len + m_Add);
         }
     }
 
