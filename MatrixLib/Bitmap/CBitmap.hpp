@@ -12,6 +12,7 @@
 
 #include "BaseDef.hpp"
 #include "CBuf.hpp"
+#include "CHeap.hpp"
 
 #define BMF_USER        0
 #define BMF_FLAT        1

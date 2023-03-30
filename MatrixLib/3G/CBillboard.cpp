@@ -6,6 +6,7 @@
 #include "3g.hpp"
 
 #include "CBillboard.hpp"
+#include "Mem.hpp"
 
 CBillboard *CBillboard::m_FirstIntense;
 CBillboard::PCBillboard CBillboard::bboards[MAX_BBOARDS];
