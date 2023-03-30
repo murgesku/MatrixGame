@@ -10,21 +10,7 @@
 
 namespace Base {
 
-CBuf::CBuf()
-{
-    m_Pointer = 0;
-}
-
-CBuf::~CBuf() {
-    ClearFull();
-}
-
 void CBuf::Clear() {
-    m_Buf.clear();
-    m_Pointer = 0;
-}
-
-void CBuf::ClearFull(void) {
     m_Buf.clear();
     m_Pointer = 0;
 }
@@ -81,7 +67,7 @@ int CBuf::WStrTextLen(void) {
 
 void CBuf::LoadFromFile(const std::wstring &filename)
 {
-    ClearFull();
+    Clear();
     CFile file(filename.c_str(), filename.length());
     file.OpenRead();
     Len(file.Size());
