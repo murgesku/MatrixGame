@@ -17,14 +17,13 @@ namespace Base {
 class BASE_API CBuf
 {
 private:
-    int m_Pointer;  // Указатель
+    int m_Pointer = 0;  // Указатель
     std::vector<uint8_t> m_Buf;
 public:
-    CBuf();
-    ~CBuf();
+    CBuf() = default;
+    ~CBuf() = default;
 
     void Clear(void);
-    void ClearFull(void);  // А также освобождает память
 
     void *Get(void) const { return const_cast<uint8_t*>(m_Buf.data()); }
     template <class D>
@@ -217,7 +216,7 @@ private:
 
     inline void TestGet(int len)
     {
-        if ((m_Pointer + len) > m_Buf.size())
+        if (m_Pointer + len > m_Buf.size())
         {
             ERROR_E;
         }
