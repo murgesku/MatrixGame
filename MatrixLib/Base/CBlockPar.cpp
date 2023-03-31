@@ -453,6 +453,7 @@ void CBlockPar::ParSetAdd(const std::wstring& name, const std::wstring& zn)
     if (res == m_Units.end())
     {
         ParAdd(name, zn);
+        return;
     }
 
     *(res->m_Par) = zn;
@@ -723,7 +724,7 @@ void CBlockPar::ParPathSetAdd(const std::wstring &path, const std::wstring &zn)
             ERROR_E;
         *(te.m_Par) = zn;
     }
-    catch (const CException& ex) {
+    catch (const CException&) {
         ParPathAdd(path, zn);
     }
 }
@@ -776,7 +777,7 @@ CBlockPar *CBlockPar::BlockPathGetAdd(const std::wstring &path)
     try {
         return BlockPathGet(path);
     }
-    catch (const CException& ex) {
+    catch (const CException&) {
         return BlockPathAdd(path);
     }
 }
