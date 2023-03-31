@@ -723,7 +723,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 sb.side = side[i];
                 sb.group = grp[i];
 
-                robots->AnyStruct<SPreRobot>(sb);
+                robots->Add<SPreRobot>(sb);
             }
         }
         return n;
@@ -1498,7 +1498,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     g_LoadProgress->SetCurLPPos(89500);
 
     ASSERT(robots_buf == NULL);
-    robots_buf = HNew(g_CacheHeap) CBuf(g_CacheHeap);
+    robots_buf = HNew(g_CacheHeap) CBuf();
 
     allobj += ReloadDynamics(stor, RS_ROBOTS, robots_buf);
     g_LoadProgress->SetCurLPPos(90000);
@@ -1509,10 +1509,10 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
 
     CDataBuf *roads = stor.GetBuf(DATA_ROADS, DATA_ROADS_DATA, ST_BYTE);
     if (roads && roads->GetArrayLength(0) > 0) {
-        CBuf rnb(g_CacheHeap);
-        rnb.BufAdd(roads->GetFirst<BYTE>(0), roads->GetArrayLength(0));
+        CBuf rnb;
+        rnb.Add(roads->GetFirst<BYTE>(0), roads->GetArrayLength(0));
         rnb.Pointer(0);
-        DWORD ver = rnb.Dword();
+        DWORD ver = rnb.Get<DWORD>();
         if (ver != 27)
             ERROR_S(L"Please, recompile map with last editor...");
 
@@ -1777,7 +1777,7 @@ void CMatrixMap::Restart(void) {
     ReloadDynamics(stor, RS_RESOURCES);
     int allobj = ReloadDynamics(stor, RS_MAPOBJECTS);  // objects
     allobj += ReloadDynamics(stor, RS_BUILDINGS);      // buildings
-    CBuf robots(g_CacheHeap);
+    CBuf robots;
     allobj += ReloadDynamics(stor, RS_ROBOTS, &robots);
     allobj += ReloadDynamics(stor, RS_CANNONS);
 

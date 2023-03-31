@@ -38,7 +38,7 @@ static void hLog(const std::wstring& cmd, const std::wstring& params) {
         CSound::SaveSoundLog();
     }
     else if (params == L"e") {
-        CBuf b(g_CacheHeap);
+        CBuf b;
         b.StrNZ("Effects:\n");
 
         for (int i = 0; i < EFFECT_TYPE_COUNT; ++i) {
@@ -112,7 +112,7 @@ static void hCalcVis(const std::wstring& cmd, const std::wstring& params) {
 static void hCompress(const std::wstring& cmd, const std::wstring& params) {
     std::wstring name;
     if (CFile::FileExist(name, params.c_str())) {
-        CBuf fil(g_CacheHeap);
+        CBuf fil;
         CStorage out(g_CacheHeap);
         fil.LoadFromFile(params);
 

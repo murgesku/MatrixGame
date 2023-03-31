@@ -15,6 +15,8 @@
 #include "MatrixFlyer.hpp"
 #include "MatrixObjectCannon.hpp"
 
+#include "Mem.hpp"
+
 bool FreeObjResources(uintptr_t user) {
     DTRACE();
     auto obj = reinterpret_cast<CMatrixMapStatic*>(user);

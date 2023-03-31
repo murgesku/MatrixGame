@@ -114,7 +114,8 @@ SPL_VBIB *SPL_VBIB::GetCreate(int vbsize, int ibsize, DWORD fvf) {
 ////////////////////////////////////////////////////////////////////////////////
 
 CMatrixEffectPointLight::CMatrixEffectPointLight(const D3DXVECTOR3 &pos, float r, DWORD color, bool drawbill)
-  : CMatrixEffect(), m_Pos(pos), m_Radius(r), m_Color(color), m_Bill(0), m_Time(0), m_PointLum(m_Heap) {
+  : CMatrixEffect(), m_Pos(pos), m_Radius(r), m_Color(color), m_Bill(0), m_Time(0)
+{
     DTRACE();
 
     m_EffectType = EFFECT_POINT_LIGHT;
@@ -229,7 +230,7 @@ void CMatrixEffectPointLight::BuildLand(void) {
         if (v->mp != NULL) {                       \
             light.lum = v->lum;                    \
             light.mp = v->mp;                      \
-            m_PointLum.Any<SMapPointLight>(light); \
+            m_PointLum.Add<SMapPointLight>(light); \
         }                                          \
         ++verts;                                   \
         ++m_NumVerts;                              \
@@ -425,7 +426,7 @@ void CMatrixEffectPointLight::BuildLandV(void) {
         if (v->mp != NULL) {                                         \
             light.lum = v->lum;                                      \
             light.mp = v->mp;                                        \
-            m_PointLum.Any<SMapPointLight>(light);                   \
+            m_PointLum.Add<SMapPointLight>(light);                   \
         }                                                            \
         ++verts;                                                     \
         ++m_NumVerts;                                                \
