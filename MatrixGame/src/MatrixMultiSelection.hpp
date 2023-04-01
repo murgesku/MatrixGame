@@ -8,6 +8,8 @@
 
 #include "StringConstants.hpp"
 
+#include <vector>
+
 class CMatrixMapStatic;
 
 typedef void (*SELECT_ENUM)(CMatrixMapStatic *ms, DWORD param);
@@ -37,7 +39,7 @@ class CMultiSelection : public CMain {
 
     int m_TimeBeforeDip;
 
-    CBuf m_SelItems;
+    std::vector<CMatrixMapStatic*> m_SelItems;
 
     static int m_Time;
 
@@ -61,7 +63,7 @@ class CMultiSelection : public CMain {
         RESETFLAG(m_Flags, MS_FLAG_BUILDINGS);
         RESETFLAG(m_Flags, MS_FLAG_ROBOTS);
 
-        m_SelItems.Clear();
+        m_SelItems.clear();
     }
 
 public:
