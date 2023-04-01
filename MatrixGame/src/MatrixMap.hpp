@@ -11,6 +11,8 @@
 
 #include "CStorage.hpp"
 
+#include <vector>
+
 //#define DRAW_LANDSCAPE_SETKA 1
 
 #define FREE_TIME_PERIOD (5000)  // in ms
@@ -256,7 +258,7 @@ enum {
 class CMatrixHint;
 
 class CMatrixMap : public CMain {
-    CBuf m_AllObjects;
+    std::vector<CMatrixMapStatic*> m_AllObjects;
 
 protected:
     ~CMatrixMap();
@@ -533,9 +535,7 @@ public:
     // CMatrixMapStatic * StaticAdd(EObjectType type, bool add_to_logic = true);
 
     inline void AddObject(CMatrixMapStatic *ms, bool add_to_logic) {
-        m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
-        CMatrixMapStatic **e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-        *(e - 1) = ms;
+        m_AllObjects.push_back(ms);
         if (add_to_logic)
             ms->AddLT();
     }

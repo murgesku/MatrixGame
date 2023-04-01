@@ -818,8 +818,9 @@ bool CMatrixMap::UnitPickWorld(const D3DXVECTOR3 &orig, const D3DXVECTOR3 &dir, 
 void CMatrixMap::StaticClear(void) {
     DTRACE();
 
-    for (; m_AllObjects.Len() > 0;) {
-        StaticDelete(*m_AllObjects.Buff<CMatrixMapStatic *>());
+    while (!m_AllObjects.empty())
+    {
+        StaticDelete(m_AllObjects.front());
     }
 
     CMatrixMapObject::ClearTextures();
@@ -842,9 +843,9 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic *ms) {
 
     CMatrixMapStatic::RemoveFromSorted(ms);
 
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    CMatrixMapStatic **ses = se - 1;
+    auto sb = m_AllObjects.begin();
+    auto se = m_AllObjects.end();
+    auto ses = se - 1;
 
     if (ms->InLT()) {
         ms->DelLT();
@@ -865,7 +866,7 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic *ms) {
             ++sb;
         }
     }
-    m_AllObjects.SetLenNoShrink(m_AllObjects.Len() - sizeof(CMatrixMapStatic *));
+    m_AllObjects.erase(m_AllObjects.end() - 1);
 
     //#ifdef _DEBUG
     //    std::wstring c(L"Del obj ");
@@ -922,9 +923,7 @@ void CMatrixMap::StaticDelete(CMatrixMapStatic *ms) {
 ////    SLOG("objlog.txt", c.Get());
 ////#endif
 //
-//    m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
-//    CMatrixMapStatic ** e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-//    *(e-1) = ms;
+//    m_AllObjects.push_back(ms);
 //
 //
 //	if(add_to_logic && type!=OBJECT_TYPE_MAPOBJECT)
@@ -3435,12 +3434,12 @@ void CMatrixMap::ShowPortrets(void) {
     int n = 0;
     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SHOWPORTRETS);
 
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    for (; sb < se; ++sb) {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT && ((CMatrixMapObject *)(*sb))->m_BehFlag == BEHF_PORTRET) {
-            ((CMatrixMapObject *)(*sb))->m_PrevStateRobotsInRadius = ++n;
-            ((CMatrixMapObject *)(*sb))->RChange(MR_Graph);
+    for (auto item : m_AllObjects)
+    {
+        if (item->GetObjectType() == OBJECT_TYPE_MAPOBJECT && ((CMatrixMapObject*)item)->m_BehFlag == BEHF_PORTRET)
+        {
+            ((CMatrixMapObject*)item)->m_PrevStateRobotsInRadius = ++n;
+            ((CMatrixMapObject*)item)->RChange(MR_Graph);
         }
     }
 }
