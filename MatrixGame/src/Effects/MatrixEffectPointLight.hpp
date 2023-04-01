@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <vector>
+
 // point light
 #define POINTLIGHT_FVF   (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2)
 #define POINTLIGHT_FVF_V (D3DFVF_XYZ | D3DFVF_DIFFUSE)
@@ -128,7 +130,7 @@ class CMatrixEffectPointLight : public CMatrixEffect {
 
     CBillboard *m_Bill;
 
-    CBuf m_PointLum;
+    std::vector<SMapPointLight> m_PointLum;
 
     CMatrixEffectPointLight(const D3DXVECTOR3 &pos, float r, DWORD color, bool drawbill = false);
     virtual ~CMatrixEffectPointLight();
