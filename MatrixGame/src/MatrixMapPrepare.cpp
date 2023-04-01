@@ -1567,27 +1567,25 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
 
 void CMatrixMap::StaticPrepare2(CBuf *robots) {
     // prepare shadows textures
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    while (sb < se) {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
-            if (((CMatrixMapObject *)(*sb))->m_ShadowType == SHADOW_PROJ_DYNAMIC &&
-                ((CMatrixMapObject *)(*sb))->m_Graph->VO()->GetFramesCnt() > 1) {}
+    for (auto item : m_AllObjects)
+    {
+        if (item->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
+            if (((CMatrixMapObject *)item)->m_ShadowType == SHADOW_PROJ_DYNAMIC &&
+                ((CMatrixMapObject *)item)->m_Graph->VO()->GetFramesCnt() > 1) {}
             else {
-                (*sb)->RNeed(MR_ShadowProjTex);
+                item->RNeed(MR_ShadowProjTex);
             }
         }
         else {
-            (*sb)->RNeed(MR_ShadowProjTex);
+            item->RNeed(MR_ShadowProjTex);
 
-            if ((*sb)->IsBase() && (*sb)->IsLiveBuilding()) {
-                int side = (*sb)->GetSide();
+            if (item->IsBase() && item->IsLiveBuilding()) {
+                int side = item->GetSide();
                 if (side != 0) {
                     g_MatrixMap->GetSideById(side)->SetStatus(SS_ACTIVE);
                 }
             }
         }
-        ++sb;
     }
 
     if (robots) {
@@ -1636,13 +1634,11 @@ void CMatrixMap::StaticPrepare(int ocnt, bool skip_progress) {
         g_LoadProgress->InitCurLP(ocnt * 2);
     }
 
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-
-    while (sb < se) {
-        (*sb)->RNeed(MR_Matrix | MR_Graph);
-        if ((*sb)->GetObjectType() != OBJECT_TYPE_MAPOBJECT) {
-            (*sb)->JoinToGroup();
+    for (auto item : m_AllObjects)
+    {
+        item->RNeed(MR_Matrix | MR_Graph);
+        if (item->GetObjectType() != OBJECT_TYPE_MAPOBJECT) {
+            item->JoinToGroup();
             // b0
             // x -8,896
             // y 68,774
@@ -1668,47 +1664,45 @@ void CMatrixMap::StaticPrepare(int ocnt, bool skip_progress) {
             // y 72,302
             // z 51,103
 
-            if ((*sb)->IsBuilding()) {
-                SObjectCore *core = (*sb)->GetCore(DEBUG_CALL_INFO);
-                if ((*sb)->AsBuilding()->m_Kind == BUILDING_BASE) {
+            if (item->IsBuilding()) {
+                SObjectCore *core = item->GetCore(DEBUG_CALL_INFO);
+                if (item->AsBuilding()->m_Kind == BUILDING_BASE) {
                     auto tmp = D3DXVECTOR3(-8.896f, -68.774f, 55.495f);
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
+                    D3DXVec3TransformCoord(&item->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
-                else if ((*sb)->AsBuilding()->m_Kind == BUILDING_TITAN) {
+                else if (item->AsBuilding()->m_Kind == BUILDING_TITAN) {
                     auto tmp = D3DXVECTOR3(0.455f, 58.688f, 73.993f);
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
+                    D3DXVec3TransformCoord(&item->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
-                else if ((*sb)->AsBuilding()->m_Kind == BUILDING_ELECTRONIC) {
+                else if (item->AsBuilding()->m_Kind == BUILDING_ELECTRONIC) {
                     auto tmp = D3DXVECTOR3(0.124f, 64.68f, 75.081f);
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
+                    D3DXVec3TransformCoord(&item->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
-                else if ((*sb)->AsBuilding()->m_Kind == BUILDING_ENERGY) {
+                else if (item->AsBuilding()->m_Kind == BUILDING_ENERGY) {
                     auto tmp = D3DXVECTOR3(0.1f, 110.0f, 51.103f);
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
+                    D3DXVec3TransformCoord(&item->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
-                else if ((*sb)->AsBuilding()->m_Kind == BUILDING_PLASMA) {
+                else if (item->AsBuilding()->m_Kind == BUILDING_PLASMA) {
                     auto tmp = D3DXVECTOR3(-0.149f, 105.0f, 72.981f);
-                    D3DXVec3TransformCoord(&(*sb)->AsBuilding()->m_TopPoint, &tmp,
+                    D3DXVec3TransformCoord(&item->AsBuilding()->m_TopPoint, &tmp,
                                            &core->m_Matrix);
                 }
 
                 core->Release();
             }
         }
-        ++sb;
         ++n;
     }
 
     // prepare shadows geometry
-    sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    while (sb < se) {
-        (*sb)->RNeed(MR_ShadowProjGeom);
+    for (auto item : m_AllObjects)
+    {
+        item->RNeed(MR_ShadowProjGeom);
         // ms->FreeDynamicResources();
-        ++sb;
         if (!skip_progress) {
             g_LoadProgress->SetCurLPPos(n++);
         }
@@ -1723,12 +1717,11 @@ void CMatrixMap::Restart(void) {
 
     CDWORDMap dm(g_CacheHeap);
 
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    for (; sb < se; ++sb) {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
-            if ((*sb)->IsNotOnMinimap()) {
-                int uid = ((CMatrixMapObject *)(*sb))->m_UID;
+    for (auto item : m_AllObjects)
+    {
+        if (item->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
+            if (item->IsNotOnMinimap()) {
+                int uid = ((CMatrixMapObject *)item)->m_UID;
                 if (uid >= 0)
                     dm.Set(uid, 0);
             }
@@ -1790,9 +1783,6 @@ void CMatrixMap::Restart(void) {
 
     // minimap rendering
     {
-        CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-        CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-
         DWORD flags = 0;
 
         if (g_Config.m_DrawAllObjectsToMinimap == 1)
@@ -1802,16 +1792,16 @@ void CMatrixMap::Restart(void) {
         }
 
         if (flags != 0) {
-            while (sb < se) {
-                int uid = ((CMatrixMapObject *)(*sb))->m_UID;
+            for (auto item : m_AllObjects)
+            {
+                int uid = ((CMatrixMapObject *)item)->m_UID;
                 if (dm.Get(uid, NULL)) {
                     dm.Del(uid);
                     flags &= ~MR_MiniMap;
-                    (*sb)->RNoNeed(MR_MiniMap);
+                    item->RNoNeed(MR_MiniMap);
                 }
 
-                (*sb)->RNeed(flags);
-                ++sb;
+                item->RNeed(flags);
             }
         }
     }
@@ -1835,11 +1825,10 @@ void CMatrixMap::Restart(void) {
 
 void CMatrixMap::InitObjectsLights(void) {
     // init lights
-    CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-    CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-    for (; sb < se; ++sb) {
-        if ((*sb)->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
-            ((CMatrixMapObject *)(*sb))->m_Graph->InitLights(CMatrixEffect::GetBBTexI(BBT_POINTLIGHT));
+    for (auto item : m_AllObjects)
+    {
+        if (item->GetObjectType() == OBJECT_TYPE_MAPOBJECT) {
+            ((CMatrixMapObject *)item)->m_Graph->InitLights(CMatrixEffect::GetBBTexI(BBT_POINTLIGHT));
         }
     }
 }
@@ -1910,9 +1899,6 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
         m_Minimap.RenderBackground(nnn, uniq);
 
         {
-            CMatrixMapStatic **sb = m_AllObjects.Buff<CMatrixMapStatic *>();
-            CMatrixMapStatic **se = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-
             DWORD flags = 0;
 
             if (g_Config.m_DrawAllObjectsToMinimap == 1)
@@ -1921,10 +1907,11 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
                 flags = MR_Matrix | MR_Graph | MR_MiniMap;
             }
 
-            if (flags != 0) {
-                while (sb < se) {
-                    (*sb)->RNeed(flags);
-                    ++sb;
+            if (flags != 0)
+            {
+                for (auto item : m_AllObjects)
+                {
+                    item->RNeed(flags);
                 }
             }
         }
