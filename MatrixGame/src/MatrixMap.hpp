@@ -589,11 +589,11 @@ public:
     // DWORD Load(CBuf & b, CBlockPar & bp, bool &surface_macro);
     void Restart(void);  // boo!
 
-    int ReloadDynamics(CStorage &stor, EReloadStep step, CBuf *robots = NULL);
+    int ReloadDynamics(CStorage &stor, EReloadStep step, void* robots = NULL);
 
     int PrepareMap(CStorage &stor, const std::wstring &mapname);
     void StaticPrepare(int n, bool skip_progress = false);
-    void StaticPrepare2(CBuf *robots);
+    void StaticPrepare2(void* robots);
 
     void InitObjectsLights(void);  // must be called only after CreatePoolDefaultResources
     void ReleasePoolDefaultResources(void);
