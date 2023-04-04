@@ -482,7 +482,7 @@ void CMatrixMap::CheckCandidate(SCalcVisRuntime &visRuntime, CMatrixMapGroup *ma
             D3DXVECTOR3 maxs(mins.x + float(MAP_GROUP_SIZE * GLOBAL_SCALE),
                              mins.y + float(MAP_GROUP_SIZE * GLOBAL_SCALE), WATER_LEVEL);
             if (m_Camera.IsInFrustum(mins, maxs)) {
-                m_VisWater->Add<D3DXVECTOR2>(mapGroup->GetPos0());
+                m_VisWater.push_back(mapGroup->GetPos0());
             }
         }
     }
@@ -655,7 +655,7 @@ void CMatrixMap::CalcMapGroupVisibility(void) {
     int iminy = (int)floor(miny * (1.0 / (MAP_GROUP_SIZE * GLOBAL_SCALE))) - 1;
     int imaxy = (int)(maxy * (1.0 / (MAP_GROUP_SIZE * GLOBAL_SCALE))) + 1;
 
-    m_VisWater->Clear();
+    m_VisWater.clear();
 
     // DM("TIME", "TIME_STEP1 " + CStr(iminx) + " " + CStr(iminy)+ " " + CStr(imaxx)+ " " + CStr(imaxy));
 
@@ -704,7 +704,7 @@ void CMatrixMap::CalcMapGroupVisibility(void) {
                 }
 
                 if (m_Camera.IsInFrustum(p0, p1)) {
-                    m_VisWater->Add<D3DXVECTOR2>(*(D3DXVECTOR2 *)&p0);
+                    m_VisWater.push_back(*(D3DXVECTOR2 *)&p0);
                 }
             invisible_w:;
             }

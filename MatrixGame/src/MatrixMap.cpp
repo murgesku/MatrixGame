@@ -76,7 +76,6 @@ CMatrixMap::CMatrixMap()
     D3DXVec3Normalize(&m_LightMain, &m_LightMain);
 
     m_Water = NULL;
-    m_VisWater = NULL;
     m_VisibleGroupsCount = 0;
 
     m_IdsCnt = 0;
@@ -1036,10 +1035,8 @@ void CMatrixMap::WaterClear() {
         HDelete(CMatrixWater, m_Water, g_MatrixHeap);
         m_Water = NULL;
     }
-    if (m_VisWater) {
-        HDelete(CBuf, m_VisWater, g_MatrixHeap);
-        m_VisWater = NULL;
-    }
+    m_VisWater.clear();
+
     SInshorewave::MarkAllBuffersNoNeed();
 }
 
@@ -1052,12 +1049,8 @@ void CMatrixMap::WaterInit() {
     else {
         m_Water->Clear();
     }
-    if (!m_VisWater) {
-        m_VisWater = HNew(g_MatrixHeap) CBuf();
-    }
-    else {
-        m_VisWater->Clear();
-    }
+
+    m_VisWater.clear();
     m_Water->Init();
 }
 
@@ -1712,16 +1705,11 @@ void CMatrixMap::DrawWater(void) {
     for (curpass = 0; curpass < g_Render->m_WaterPassSolid; ++curpass) {
         g_Render->m_WaterSolid(m_Water->m_WaterTex1, m_Water->m_WaterTex2, curpass);
 
-        D3DXVECTOR2 *bp = m_VisWater->Buff<D3DXVECTOR2>();
-        D3DXVECTOR2 *ep = m_VisWater->BuffEnd<D3DXVECTOR2>();
-
-        while (bp < ep) {
-            // m_VisWater->BufGet(&p,sizeof(D3DXVECTOR2));
-            m._41 = bp->x;
-            m._42 = bp->y;
+        for (const auto& item : m_VisWater)
+        {
+            m._41 = item.x;
+            m._42 = item.y;
             m_Water->Draw(m);
-
-            ++bp;
         }
     }
 
