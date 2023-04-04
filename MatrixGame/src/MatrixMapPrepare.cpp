@@ -3,9 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <new>
-#include <algorithm>
-
 #include "stdafx.h"
 
 #include "MatrixMap.hpp"
@@ -20,6 +17,10 @@
 #include "MatrixShadowManager.hpp"
 #include "ShadowStencil.hpp"
 #include "Interface/CConstructor.h"
+
+#include <new>
+#include <algorithm>
+#include <vector>
 
 void CMatrixMap::PointCalcNormals(int x, int y) {
     DTRACE();
@@ -381,7 +382,8 @@ struct SPreRobot {
     float angle;
 };
 
-int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBuf *robots) {
+int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, void* robots)
+{
     CDataBuf *propkey = stor.GetBuf(DATA_PROPERTIES, DATA_PROPERTIES_NAME, ST_WCHAR);
     CDataBuf *propval = stor.GetBuf(DATA_PROPERTIES, DATA_PROPERTIES_VALUE, ST_WCHAR);
 
@@ -723,7 +725,8 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
                 sb.side = side[i];
                 sb.group = grp[i];
 
-                robots->Add<SPreRobot>(sb);
+                auto robots_vector = reinterpret_cast<std::vector<SPreRobot>*>(robots);
+                robots_vector->push_back(sb);
             }
         }
         return n;
@@ -932,12 +935,12 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, CBu
 }
 
 DWORD uniq;
-CBuf *robots_buf;
+std::vector<SPreRobot> robots_buf;
 
 int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     DTRACE();
 
-    robots_buf = NULL;
+    robots_buf.clear();
 
     D3DMATERIAL9 mtrl;
     ZeroMemory(&mtrl, sizeof(D3DMATERIAL9));
@@ -1497,10 +1500,8 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     allobj += ReloadDynamics(stor, RS_BUILDINGS);
     g_LoadProgress->SetCurLPPos(89500);
 
-    ASSERT(robots_buf == NULL);
-    robots_buf = HNew(g_CacheHeap) CBuf();
-
-    allobj += ReloadDynamics(stor, RS_ROBOTS, robots_buf);
+    ASSERT(robots_buf.empty());
+    allobj += ReloadDynamics(stor, RS_ROBOTS, &robots_buf);
     g_LoadProgress->SetCurLPPos(90000);
     allobj += ReloadDynamics(stor, RS_CANNONS);
     g_LoadProgress->SetCurLPPos(91000);
@@ -1565,7 +1566,7 @@ int CMatrixMap::PrepareMap(CStorage &stor, const std::wstring &mapname) {
     return ReloadDynamics(stor, RS_CAMPOS);
 }
 
-void CMatrixMap::StaticPrepare2(CBuf *robots) {
+void CMatrixMap::StaticPrepare2(void* robots) {
     // prepare shadows textures
     for (auto item : m_AllObjects)
     {
@@ -1589,12 +1590,12 @@ void CMatrixMap::StaticPrepare2(CBuf *robots) {
     }
 
     if (robots) {
-        SPreRobot *pr0 = robots->Buff<SPreRobot>();
-        SPreRobot *pr1 = robots->BuffEnd<SPreRobot>();
-        for (; pr0 < pr1; ++pr0) {
-            CMatrixRobotAI *r = pr0->sb.GetRobot(pr0->pos, pr0->side);
-            r->m_Forward.x = float(-sin(pr0->angle));
-            r->m_Forward.y = float(cos(pr0->angle));
+        auto robots_vector = reinterpret_cast<std::vector<SPreRobot>*>(robots);
+        for (auto& item : *robots_vector)
+        {
+            CMatrixRobotAI *r = item.sb.GetRobot(item.pos, item.side);
+            r->m_Forward.x = float(-sin(item.angle));
+            r->m_Forward.y = float(cos(item.angle));
             g_MatrixMap->AddObject(r, true);
             r->JoinToGroup();
             r->CreateTextures();
@@ -1606,10 +1607,10 @@ void CMatrixMap::StaticPrepare2(CBuf *robots) {
 
             r->MapPosCalc();
 
-            // use a group: pr0->group
+            // use a group: item.group
             if (side != PLAYER_SIDE) {
-                if (pr0->group >= 1 && pr0->group <= 3)
-                    r->SetTeam(pr0->group - 1);
+                if (item.group >= 1 && item.group <= 3)
+                    r->SetTeam(item.group - 1);
                 else
                     r->SetTeam(-1);
             }
@@ -1872,10 +1873,8 @@ void CMatrixMap::CreatePoolDefaultResources(bool loading) {
     UNLOCK_VB(m_ShadowVB);
 
     if (loading) {
-        StaticPrepare2(robots_buf);
-
-        HDelete(CBuf, robots_buf, g_CacheHeap);
-        robots_buf = NULL;
+        StaticPrepare2(&robots_buf);
+        robots_buf.clear();
 
         m_Minimap.Init();
         std::wstring nnn(MapName());
