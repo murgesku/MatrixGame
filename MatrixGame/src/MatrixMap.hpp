@@ -412,7 +412,7 @@ protected:
     float m_minz;
     float m_maxz;
 
-    CBuf *m_VisWater;
+    std::vector<D3DXVECTOR2> m_VisWater;
 
     CMatrixMapGroup **m_VisibleGroups;
     int m_VisibleGroupsCount;
