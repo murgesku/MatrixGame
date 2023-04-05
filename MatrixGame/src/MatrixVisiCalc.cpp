@@ -5,9 +5,10 @@
 
 #include "stdafx.h"
 
-#include <algorithm>
-
 #include "MatrixMap.hpp"
+
+#include <algorithm>
+#include <vector>
 
 struct STempPoints {
     DWORD invisible;     // 0 - visible // 1 - invisible
@@ -129,34 +130,33 @@ struct SVisGroup {
         }
     }
 
-    void BuildShadowFor(const D3DXVECTOR3 &pointsFrom, int pointsCount, STempPoints *points, CBuf &pe) {
+    void BuildShadowFor(const D3DXVECTOR3 &pointsFrom, int pointsCount, STempPoints *points, const std::vector<SPotEdge>& pe)
+    {
         for (int i = 0; i < pointsCount; ++i)
             points[i].invisibleNow = 0;
 
-        SPotEdge *edge = pe.Buff<SPotEdge>();
-        SPotEdge *bufferEnd = pe.BuffEnd<SPotEdge>();
-
         SPlane vPlane;
 
-        for (; edge < bufferEnd; ++edge) {
-            bool os1 = edge->plane1.IsOnSide(pointsFrom);
-            bool os2 = edge->plane2.IsOnSide(pointsFrom);
+        for (auto& edge : pe)
+        {
+            bool os1 = edge.plane1.IsOnSide(pointsFrom);
+            bool os2 = edge.plane2.IsOnSide(pointsFrom);
             if (!(os1 ^ os2))
                 continue;
 
 #ifdef _DEBUG
-            CHelper::Create(10000, 888)->Cone(edge->p1, edge->p2, 2, 2, 0xFF00FF00, 0xFF00FF00, 3);
+            CHelper::Create(10000, 888)->Cone(edge.p1, edge.p2, 2, 2, 0xFF00FF00, 0xFF00FF00, 3);
 #endif
 
-            D3DXVECTOR2 p20(edge->p1.x, edge->p1.y);
-            D3DXVECTOR2 p21(edge->p2.x, edge->p2.y);
+            D3DXVECTOR2 p20(edge.p1.x, edge.p1.y);
+            D3DXVECTOR2 p21(edge.p2.x, edge.p2.y);
             bool ppcam = PointLineCatch(p20, p21, D3DXVECTOR2(pointsFrom.x, pointsFrom.y));
 
             if (ppcam) {
-                SPlane::BuildFromPoints(vPlane, pointsFrom, edge->p1, edge->p2);
+                SPlane::BuildFromPoints(vPlane, pointsFrom, edge.p1, edge.p2);
             }
             else {
-                SPlane::BuildFromPoints(vPlane, pointsFrom, edge->p2, edge->p1);
+                SPlane::BuildFromPoints(vPlane, pointsFrom, edge.p2, edge.p1);
             }
 
             STempPoints *tempPoints = points;
@@ -192,7 +192,8 @@ struct SVisGroup {
     }
 
     void CalcVis(SVisGroup *visibilityGroup, int groupCount, int pointsCount, STempPoints *points, STempCalcs *calcs,
-                 CBuf &pe) {
+                 const std::vector<SPotEdge>& pe)
+    {
         float z0 = minz + GLOBAL_SCALE + 1;
 
         // TEMP:
@@ -226,7 +227,7 @@ void CMatrixMap::CalcVis(void) {
     CHelper::DestroyByGroup(888);
 #endif
 
-    CBuf pe;
+    std::vector<SPotEdge> pe;
 
     int pointsCount = (g_MatrixMap->m_Size.y + 1) * (g_MatrixMap->m_Size.x + 1);
 
@@ -300,7 +301,7 @@ void CMatrixMap::CalcVis(void) {
                     edge.plane2 = calcs->plane2;
 
                     if (edge.plane1.norm != edge.plane2.norm) {
-                        pe.Add<SPotEdge>(edge);
+                        pe.push_back(edge);
                     }
                 }
 
@@ -313,7 +314,7 @@ void CMatrixMap::CalcVis(void) {
                         edge.plane2 = (calcs + g_MatrixMap->m_Size.x)->plane2;
 
                         if (edge.plane1.norm != edge.plane2.norm) {
-                            pe.Add<SPotEdge>(edge);
+                            pe.push_back(edge);
                         }
                     }
                 }
@@ -327,7 +328,7 @@ void CMatrixMap::CalcVis(void) {
                         edge.plane2 = (calcs + 1)->plane1;
 
                         if (edge.plane1.norm != edge.plane2.norm) {
-                            pe.Add<SPotEdge>(edge);
+                            pe.push_back(edge);
                         }
                     }
                 }
@@ -374,8 +375,7 @@ void CMatrixMap::CalcVis(void) {
     // TEMP:
     int gx = TruncFloat(g_MatrixMap->m_Camera.GetFrustumCenter().x / MAP_GROUP_SIZE / GLOBAL_SCALE);
     int gy = TruncFloat(g_MatrixMap->m_Camera.GetFrustumCenter().y / MAP_GROUP_SIZE / GLOBAL_SCALE);
-    visibilityGroup[gx + gy * g_MatrixMap->m_GroupSize.x].CalcVis(visibilityGroup, groupCount, pointsCount, aps, bla,
-                                                                  pe);
+    visibilityGroup[gx + gy * g_MatrixMap->m_GroupSize.x].CalcVis(visibilityGroup, groupCount, pointsCount, aps, bla, pe);
 
     HFree(visibilityGroup, g_MatrixHeap);
 
