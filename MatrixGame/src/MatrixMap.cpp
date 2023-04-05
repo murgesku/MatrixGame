@@ -2386,7 +2386,7 @@ void CMatrixMap::Draw(void) {
 
     if (m_DialogModeName) {
         if (wcscmp(m_DialogModeName, TEMPLATE_DIALOG_MENU) == 0) {
-            m_DialogModeHints.Buff<CMatrixHint *>()[0]->DrawNow();
+            m_DialogModeHints[0]->DrawNow();
         }
     }
 
@@ -3143,18 +3143,18 @@ void CMatrixMap::LeaveDialogMode(void) {
         return;
 
     if (0 == wcscmp(m_DialogModeName, TEMPLATE_DIALOG_MENU)) {
-        m_DialogModeHints.Buff<CMatrixHint *>()[0]->SoundOut();
+        m_DialogModeHints[0]->SoundOut();
     }
 
     RESETFLAG(m_Flags, MMFLAG_DIALOG_MODE);
     Pause(false);
-    DWORD *a = m_DialogModeHints.Buff<DWORD>();
-    DWORD *b = m_DialogModeHints.BuffEnd<DWORD>();
-    for (; a < b; ++a) {
-        ((CMatrixHint *)(*a))->Release();
+
+    for (auto item : m_DialogModeHints)
+    {
+        item->Release();
     }
 
-    m_DialogModeHints.Clear();
+    m_DialogModeHints.clear();
     g_IFaceList->HideHintButtons();
     m_DialogModeName = NULL;
 }
@@ -3205,8 +3205,8 @@ static void OkResetHandler(void) {
     // SETFLAG(g_Flags, GFLAG_EXITLOOP);
 }
 void ConfirmCancelHandler(void) {
-    CMatrixHint *h = (CMatrixHint *)g_MatrixMap->m_DialogModeHints.Buff<DWORD>()[1];
-    g_MatrixMap->m_DialogModeHints.SetLenNoShrink(g_MatrixMap->m_DialogModeHints.Len() - sizeof(DWORD));
+    CMatrixHint *h = (CMatrixHint *)g_MatrixMap->m_DialogModeHints[1];
+    g_MatrixMap->m_DialogModeHints.erase(g_MatrixMap->m_DialogModeHints.end() - 1);
     h->Release();
 
     g_IFaceList->EnableMainMenuButton(HINT_CANCEL_MENU);
@@ -3226,8 +3226,6 @@ static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler) {
     g_IFaceList->DisableMainMenuButton(HINT_RESET);
     g_IFaceList->DisableMainMenuButton(HINT_EXIT);
 
-    g_MatrixMap->m_DialogModeHints.Pointer(g_MatrixMap->m_DialogModeHints.Len());
-
     CMatrixHint *h = CMatrixHint::Build(std::wstring(hint), hint);
     int ww = (g_ScreenX - h->m_Width) / 2;
     int hh = (g_ScreenY - h->m_Height) / 2 - Float2Int(float(g_ScreenY) * 0.09f);
@@ -3244,7 +3242,7 @@ static void CreateConfirmation(const wchar *hint, DialogButtonHandler handler) {
         g_IFaceList->CreateHintButton(x, y, HINT_CANCEL, ConfirmCancelHandler);
     }
 
-    g_MatrixMap->m_DialogModeHints.Add<uint32_t>((DWORD)h);
+    g_MatrixMap->m_DialogModeHints.push_back(h);
 }
 
 void ExitRequestHandler(void) {
@@ -3292,8 +3290,6 @@ void CMatrixMap::EnterDialogMode(const wchar *hint_i) {
     if (0 != wcscmp(hint_i, TEMPLATE_DIALOG_BEGIN)) {
         g_MatrixMap->GetPlayerSide()->PLDropAllActions();
     }
-
-    m_DialogModeHints.Pointer(m_DialogModeHints.Len());
 
     CBlockPar *bp = g_MatrixData->BlockGet(PAR_TEMPLATES);
 
@@ -3392,7 +3388,7 @@ void CMatrixMap::EnterDialogMode(const wchar *hint_i) {
             }
 
             ww += h->m_Width + 20;
-            m_DialogModeHints.Add<uint32_t>((DWORD)h);
+            m_DialogModeHints.push_back(h);
         }
     }
 }

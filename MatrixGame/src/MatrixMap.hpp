@@ -286,7 +286,7 @@ public:
 
     CMatrixHint *m_PauseHint;
 
-    CBuf m_DialogModeHints;
+    std::vector<CMatrixHint*> m_DialogModeHints;
     const wchar *m_DialogModeName;
 
     int m_TexUnionDim;
