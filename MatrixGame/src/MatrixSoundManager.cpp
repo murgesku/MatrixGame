@@ -833,7 +833,7 @@ void CSound::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
 
     CSoundArray *sa;
     if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
-        sa = HNew(g_MatrixHeap) CSoundArray(g_MatrixHeap);
+        sa = HNew(g_MatrixHeap) CSoundArray{};
         m_PosSounds->Set(key, (uint32_t)sa);
     }
     sa->AddSound(snd, pos, sl, ifl);
@@ -861,7 +861,7 @@ void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1
 
     CSoundArray *sa;
     if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
-        sa = HNew(g_MatrixHeap) CSoundArray(g_MatrixHeap);
+        sa = HNew(g_MatrixHeap) CSoundArray{};
         m_PosSounds->Set(key, (uint32_t)sa);
     }
     sa->AddSound(pos, attn, pan0, pan1, vol0, vol1, name);
@@ -898,46 +898,48 @@ void CSound::Clear(void) {
 void CSoundArray::UpdateTimings(float ms) {
     DTRACE();
 
-    if (g_RangersInterface) {
-        SSndData *sb = Buff<SSndData>();
-        SSndData *se = BuffEnd<SSndData>();
-        for (; sb < se;) {
-            if (sb->snd == S_UNDEF) {
-                ++sb;
+    if (g_RangersInterface)
+    {
+        for (auto iter = m_array.begin(); iter < m_array.end();)
+        {
+            if (iter->snd == S_UNDEF)
+            {
+                ++iter;
                 continue;
             }
-            int idx = CSound::FindSoundSlotPlayedOnly(sb->id);
+            int idx = CSound::FindSoundSlotPlayedOnly(iter->id);
             if (idx >= 0) {
-                if (sb->ttl < 0) {
-                    if (sb->fade < 0) {
-                        if (sb->id == 1)
+                if (iter->ttl < 0) {
+                    if (iter->fade < 0) {
+                        if (iter->id == 1)
                             debugbreak();
 
                         CSound::StopPlayInternal(idx);
-                        goto del;
+
+                        iter = m_array.erase(iter);
+                        continue;
                     }
 
-                    sb->fade -= ms;
+                    iter->fade -= ms;
                 }
                 else {
-                    sb->ttl -= ms;
-                    if (sb->ttl < 0) {
-                        sb->ttl = -sb->fade;
+                    iter->ttl -= ms;
+                    if (iter->ttl < 0) {
+                        iter->ttl = -(iter->fade);
                     }
                 }
             }
             else {
-            del:
-                *sb = *(--se);
-                SetLenNoShrink(Len() - sizeof(SSndData));
+                iter = m_array.erase(iter);
                 continue;
             }
 
-            ++sb;
+            ++iter;
         }
     }
-    else {
-        SetLenNoShrink(0);
+    else
+    {
+        m_array.clear();
     }
 }
 
@@ -946,21 +948,20 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
 
     if (g_RangersInterface) {
         DCP();
-        SSndData *sb = Buff<SSndData>();
-        SSndData *se = BuffEnd<SSndData>();
-        for (; sb < se;) {
+        for (auto iter = m_array.begin(); iter < m_array.end();)
+        {
             DCP();
-            int idx = CSound::FindSoundSlotPlayedOnly(sb->id);
+            int idx = CSound::FindSoundSlotPlayedOnly(iter->id);
             if (idx >= 0) {
                 DCP();
                 float k = 1.0f;
-                if (sb->ttl < 0 && sb->snd != S_UNDEF) {
-                    k = -sb->fade / sb->ttl;
+                if (iter->ttl < 0 && iter->snd != S_UNDEF) {
+                    k = -iter->fade / iter->ttl;
                 }
 
                 DCP();
                 float pan, vol;
-                CSound::CalcPanVol(pos, sb->attn, sb->pan0, sb->pan1, sb->vol0, sb->vol1, &pan, &vol);
+                CSound::CalcPanVol(pos, iter->attn, iter->pan0, iter->pan1, iter->vol0, iter->vol1, &pan, &vol);
 
                 DCP();
                 vol *= k;
@@ -969,7 +970,9 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                     DCP();
                     CSound::StopPlayInternal(idx);
                     DCP();
-                    goto dele;
+
+                    iter = m_array.erase(iter);
+                    continue;
                 }
 #if defined _TRACE || defined _DEBUG
                 try {
@@ -984,11 +987,11 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
 #if defined _TRACE || defined _DEBUG
                 }
                 catch (...) {
-                    if (sb->snd < S_COUNT && (int)sb->snd >= 0) {
-                        ERROR_S2(L"Problem with sound: ", CSound::m_Sounds[sb->snd].Path().c_str());
+                    if (iter->snd < S_COUNT && (int)iter->snd >= 0) {
+                        ERROR_S2(L"Problem with sound: ", CSound::m_Sounds[iter->snd].Path().c_str());
                     }
                     else {
-                        ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)sb->snd).c_str());
+                        ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)iter->snd).c_str());
                     }
                 }
 #endif
@@ -1000,21 +1003,19 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
                 // g_MatrixMap->m_DI.T(std::wstring(vol).Get(), L"1212");
             }
             else {
-            dele:;
                 DCP();
 
-                *sb = *(--se);
-                SetLenNoShrink(Len() - sizeof(SSndData));
+                iter = m_array.erase(iter);
                 continue;
             }
 
-            ++sb;
+            ++iter;
         }
     }
     else {
         DCP();
 
-        SetLenNoShrink(0);
+        m_array.clear();
     }
     DCP();
 }
@@ -1022,26 +1023,26 @@ void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
 void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag ifl) {
     DTRACE();
 
-    SSndData *sb = Buff<SSndData>();
-    SSndData *se = BuffEnd<SSndData>();
-    for (; sb < se; ++sb) {
-        if (sb->snd == snd) {
-            if (ifl == SEF_INTERRUPT) {
-                CSound::StopPlay(sb->id);
-                (*sb) = *(--se);
-                SetLenNoShrink(Len() - sizeof(SSndData));
+    for (auto iter = m_array.begin(); iter < m_array.end(); ++iter)
+    {
+        if (iter->snd == snd)
+        {
+            if (ifl == SEF_INTERRUPT)
+            {
+                CSound::StopPlay(iter->id);
+                m_array.erase(iter);
                 break;
             }
-            if (!CSound::IsSoundPlay(sb->id)) {
-                (*sb) = *(--se);
-                SetLenNoShrink(Len() - sizeof(SSndData));
+            if (!CSound::IsSoundPlay(iter->id))
+            {
+                m_array.erase(iter);
                 break;
             }
 
             // oops. the same sound
             // only set ttl and fade
-            sb->ttl = CSound::m_Sounds[snd].ttl;
-            sb->fade = CSound::m_Sounds[snd].fadetime;
+            iter->ttl = CSound::m_Sounds[snd].ttl;
+            iter->fade = CSound::m_Sounds[snd].fadetime;
             return;
         }
     }
@@ -1059,17 +1060,18 @@ void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, E
     //
     //#endif
 
-    Expand(sizeof(SSndData));
+    m_array.emplace_back();
+    auto& item = m_array.back();
 
-    (BuffEnd<SSndData>() - 1)->snd = snd;
-    (BuffEnd<SSndData>() - 1)->id = id;
-    (BuffEnd<SSndData>() - 1)->pan0 = CSound::m_Sounds[snd].pan0;
-    (BuffEnd<SSndData>() - 1)->pan1 = CSound::m_Sounds[snd].pan1;
-    (BuffEnd<SSndData>() - 1)->vol0 = CSound::m_Sounds[snd].vol0;
-    (BuffEnd<SSndData>() - 1)->vol1 = CSound::m_Sounds[snd].vol1;
-    (BuffEnd<SSndData>() - 1)->attn = CSound::m_Sounds[snd].attn;
-    (BuffEnd<SSndData>() - 1)->ttl = CSound::m_Sounds[snd].ttl;
-    (BuffEnd<SSndData>() - 1)->fade = CSound::m_Sounds[snd].fadetime;
+    item.snd = snd;
+    item.id = id;
+    item.pan0 = CSound::m_Sounds[snd].pan0;
+    item.pan1 = CSound::m_Sounds[snd].pan1;
+    item.vol0 = CSound::m_Sounds[snd].vol0;
+    item.vol1 = CSound::m_Sounds[snd].vol1;
+    item.attn = CSound::m_Sounds[snd].attn;
+    item.ttl = CSound::m_Sounds[snd].ttl;
+    item.fade = CSound::m_Sounds[snd].fadetime;
     return;
 }
 
