@@ -11,6 +11,8 @@
 
 #include "CStorage.hpp"
 
+#include <vector>
+
 //#define DRAW_LANDSCAPE_SETKA 1
 
 #define FREE_TIME_PERIOD (5000)  // in ms
@@ -256,7 +258,7 @@ enum {
 class CMatrixHint;
 
 class CMatrixMap : public CMain {
-    CBuf m_AllObjects;
+    std::vector<CMatrixMapStatic*> m_AllObjects;
 
 protected:
     ~CMatrixMap();
@@ -284,7 +286,7 @@ public:
 
     CMatrixHint *m_PauseHint;
 
-    CBuf m_DialogModeHints;
+    std::vector<CMatrixHint*> m_DialogModeHints;
     const wchar *m_DialogModeName;
 
     int m_TexUnionDim;
@@ -410,7 +412,7 @@ protected:
     float m_minz;
     float m_maxz;
 
-    CBuf *m_VisWater;
+    std::vector<D3DXVECTOR2> m_VisWater;
 
     CMatrixMapGroup **m_VisibleGroups;
     int m_VisibleGroupsCount;
@@ -533,9 +535,7 @@ public:
     // CMatrixMapStatic * StaticAdd(EObjectType type, bool add_to_logic = true);
 
     inline void AddObject(CMatrixMapStatic *ms, bool add_to_logic) {
-        m_AllObjects.Expand(sizeof(CMatrixMapStatic *));
-        CMatrixMapStatic **e = m_AllObjects.BuffEnd<CMatrixMapStatic *>();
-        *(e - 1) = ms;
+        m_AllObjects.push_back(ms);
         if (add_to_logic)
             ms->AddLT();
     }
@@ -589,11 +589,11 @@ public:
     // DWORD Load(CBuf & b, CBlockPar & bp, bool &surface_macro);
     void Restart(void);  // boo!
 
-    int ReloadDynamics(CStorage &stor, EReloadStep step, CBuf *robots = NULL);
+    int ReloadDynamics(CStorage &stor, EReloadStep step, void* robots = NULL);
 
     int PrepareMap(CStorage &stor, const std::wstring &mapname);
     void StaticPrepare(int n, bool skip_progress = false);
-    void StaticPrepare2(CBuf *robots);
+    void StaticPrepare2(void* robots);
 
     void InitObjectsLights(void);  // must be called only after CreatePoolDefaultResources
     void ReleasePoolDefaultResources(void);

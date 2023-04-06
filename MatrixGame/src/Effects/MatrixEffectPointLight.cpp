@@ -167,7 +167,7 @@ void CMatrixEffectPointLight::Clear(void) {
     // if(IS_IB(m_IB)) { DESTROY_IB(m_IB); }
 
     RemoveColorData();
-    m_PointLum.Clear();
+    m_PointLum.clear();
     // m_StripsCnt=0;
 }
 
@@ -230,7 +230,7 @@ void CMatrixEffectPointLight::BuildLand(void) {
         if (v->mp != NULL) {                       \
             light.lum = v->lum;                    \
             light.mp = v->mp;                      \
-            m_PointLum.Add<SMapPointLight>(light); \
+            m_PointLum.push_back(light);           \
         }                                          \
         ++verts;                                   \
         ++m_NumVerts;                              \
@@ -426,7 +426,7 @@ void CMatrixEffectPointLight::BuildLandV(void) {
         if (v->mp != NULL) {                                         \
             light.lum = v->lum;                                      \
             light.mp = v->mp;                                        \
-            m_PointLum.Add<SMapPointLight>(light);                   \
+            m_PointLum.push_back(light);                             \
         }                                                            \
         ++verts;                                                     \
         ++m_NumVerts;                                                \
@@ -618,36 +618,37 @@ void CMatrixEffectPointLight::UpdateData(void) {
     g_MatrixMap->MarkNeedRecalcTerainColor();
 }
 
-void CMatrixEffectPointLight::RemoveColorData(void) {
-    if (m_PointLum.Len() == 0)
+void CMatrixEffectPointLight::RemoveColorData(void)
+{
+    if (m_PointLum.empty())
+    {
         return;
-    SMapPointLight *mp = m_PointLum.Buff<SMapPointLight>();
-    SMapPointLight *mp_end = m_PointLum.BuffEnd<SMapPointLight>();
+    }
 
-    while (mp < mp_end) {
-        mp->mp->lum_r -= mp->addlum_r;
-        mp->mp->lum_g -= mp->addlum_g;
-        mp->mp->lum_b -= mp->addlum_b;
-
-        ++mp;
+    for (auto& item : m_PointLum)
+    {
+        item.mp->lum_r -= item.addlum_r;
+        item.mp->lum_g -= item.addlum_g;
+        item.mp->lum_b -= item.addlum_b;
     }
 }
 
-void CMatrixEffectPointLight::AddColorData(void) {
-    if (m_PointLum.Len() == 0)
+void CMatrixEffectPointLight::AddColorData(void)
+{
+    if (m_PointLum.empty())
+    {
         return;
-    SMapPointLight *mp = m_PointLum.Buff<SMapPointLight>();
-    SMapPointLight *mp_end = m_PointLum.BuffEnd<SMapPointLight>();
+    }
 
-    while (mp < mp_end) {
-        mp->addlum_r = Float2Int(mp->lum * float((m_Color >> 16) & 255));
-        mp->addlum_g = Float2Int(mp->lum * float((m_Color >> 8) & 255));
-        mp->addlum_b = Float2Int(mp->lum * float((m_Color >> 0) & 255));
+    for (auto& item : m_PointLum)
+    {
+        item.addlum_r = Float2Int(item.lum * float((m_Color >> 16) & 255));
+        item.addlum_g = Float2Int(item.lum * float((m_Color >> 8) & 255));
+        item.addlum_b = Float2Int(item.lum * float((m_Color >> 0) & 255));
 
-        mp->mp->lum_r += mp->addlum_r;
-        mp->mp->lum_g += mp->addlum_g;
-        mp->mp->lum_b += mp->addlum_b;
-        ++mp;
+        item.mp->lum_r += item.addlum_r;
+        item.mp->lum_g += item.addlum_g;
+        item.mp->lum_b += item.addlum_b;
     }
 
     g_MatrixMap->MarkNeedRecalcTerainColor();

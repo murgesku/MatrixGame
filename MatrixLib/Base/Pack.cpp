@@ -8,6 +8,7 @@
 #include <utility>
 #include <tuple> // for std::tie
 #include <cctype> // for std::toupper
+#include <algorithm>
 
 #include <utils.hpp>
 
@@ -2325,108 +2326,126 @@ int CPackFile::FindFirst(const std::string& path, DWORD Attr, SSearchRec &S) {
 //***************** КЛАСС - КОЛЛЕКЦИЯ ПАКЕТНЫХ ФАЙЛОВ ******************
 //**********************************************************************
 
-void CPackCollection::Clear(void) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        HDelete(CPackFile, *ff, m_Heap);
+void CPackCollection::Clear(void)
+{
+    for (auto item : m_PackFiles)
+    {
+        HDelete(CPackFile, item, nullptr);
     }
-    m_PackFiles.Clear();
+    m_PackFiles.clear();
 }
 
-void CPackCollection::AddPacketFile(const wchar *name) {
-    m_PackFiles.Expand(sizeof(PCPackFile));
-    PCPackFile f = HNew(m_Heap) CPackFile(m_Heap, name);
-    *(m_PackFiles.BuffEnd<PCPackFile>() - 1) = f;
+void CPackCollection::AddPacketFile(const wchar *name)
+{
+    auto f = HNew(m_Heap) CPackFile(m_Heap, name);
+    m_PackFiles.push_back(f);
 }
 
-void CPackCollection::DelPacketFile(const wchar *name) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        if ((*ff)->GetName() == name) {
-            *ff = *(fe - 1);
-            m_PackFiles.SetLenNoShrink(m_PackFiles.Len() - sizeof(PCPackFile));
-            return;
-        }
+void CPackCollection::DelPacketFile(const wchar *name)
+{
+    auto pred = [name](const CPackFile* item){ return item->GetName() == name; };
+    auto item = std::ranges::find_if(m_PackFiles, pred);
+    if (item != m_PackFiles.end())
+    {
+        m_PackFiles.erase(item);
     }
 }
 
-bool CPackCollection::OpenPacketFiles(void) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        if (!(*ff)->OpenPacketFile())
+bool CPackCollection::OpenPacketFiles(void)
+{
+    size_t iter = 0;
+    for (; iter < m_PackFiles.size(); ++iter)
+    {
+        if (!m_PackFiles[iter]->OpenPacketFile())
+        {
             break;
+        }
     }
 
-    if (ff < fe) {
-        //*********** Ошибка открытия одного из пакетных файлов **********
-        PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
-        for (; fff < ff; ++fff) {
-            (*fff)->ClosePacketFile();
+    // if not all the files were opened, we'll close the open ones
+    if (iter != m_PackFiles.size())
+    {
+        for (; iter >= 0; --iter)
+        {
+            m_PackFiles[iter]->ClosePacketFile();
         }
+
         return false;
     }
+
     return true;
 }
 
-bool CPackCollection::ClosePacketFiles(void) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        (*ff)->ClosePacketFile();
+bool CPackCollection::ClosePacketFiles(void)
+{
+    for (auto item : m_PackFiles)
+    {
+        item->ClosePacketFile();
     }
+
     return true;
 }
 
-bool CPackCollection::OpenPacketFilesEx(void) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        if (!(*ff)->OpenPacketFileEx())
+bool CPackCollection::OpenPacketFilesEx(void)
+{
+    size_t iter = 0;
+    for (; iter < m_PackFiles.size(); ++iter)
+    {
+        if (!m_PackFiles[iter]->OpenPacketFileEx())
+        {
             break;
+        }
     }
 
-    if (ff < fe) {
-        //*********** Ошибка открытия одного из пакетных файлов **********
-        PCPackFile *fff = m_PackFiles.Buff<PCPackFile>();
-        for (; fff < ff; ++fff) {
-            (*fff)->ClosePacketFileEx();
+    // if not all the files were opened, we'll close the open ones
+    if (iter != m_PackFiles.size())
+    {
+        for (; iter >= 0; --iter)
+        {
+            m_PackFiles[iter]->ClosePacketFileEx();
         }
+
         return false;
     }
+
     return true;
 }
 
-bool CPackCollection::ClosePacketFilesEx(void) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        (*ff)->ClosePacketFileEx();
+bool CPackCollection::ClosePacketFilesEx(void)
+{
+    for (auto item : m_PackFiles)
+    {
+        item->ClosePacketFileEx();
     }
+
     return true;
 }
 
 //******** Процедуры для работы файлами ***********//
 
-bool CPackCollection::FileExists(const std::string& name) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        if ((*ff)->FileExists(name))
+bool CPackCollection::FileExists(const std::string& name)
+{
+    for (auto item : m_PackFiles)
+    {
+        if(item->FileExists(name))
+        {
             return true;
+        }
     }
+
     return false;
 }
 
-bool CPackCollection::PathExists(const std::string& path) {
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        if ((*ff)->PathExists(path))
+bool CPackCollection::PathExists(const std::string& path)
+{
+    for (auto item : m_PackFiles)
+    {
+        if(item->PathExists(path))
+        {
             return true;
+        }
     }
+
     return false;
 }
 
@@ -2435,14 +2454,14 @@ DWORD CPackCollection::Open(const std::string& name, DWORD modeopen) {
     DWORD Handle;
     DWORD Counter = 0;
 
-    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-    for (; ff < fe; ++ff) {
-        Handle = (*ff)->Open(name, modeopen);
+    for (auto item : m_PackFiles)
+    {
+        Handle = item->Open(name, modeopen);
         if (Handle != 0xFFFFFFFF)
             break;
         ++Counter;
     }
+
     if (Handle == 0xFFFFFFFF)
         return 0xFFFFFFFF;
     return Handle + (Counter << MAX_VIRTUAL_HANDLE_COUNT_BITS);
@@ -2451,7 +2470,7 @@ DWORD CPackCollection::Open(const std::string& name, DWORD modeopen) {
 bool CPackCollection::Close(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return false;
     return P->Close(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
@@ -2461,7 +2480,7 @@ bool CPackCollection::Read(DWORD Handle, void *Buf, int Size) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return false;
     return P->Read(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1), Buf, Size);
@@ -2472,7 +2491,7 @@ bool CPackCollection::Read(DWORD Handle, void *Buf, int Size) {
 //    ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 //
 //    int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-//    PCPackFile P = GetPacketFile(number);
+//    CPackFile* P = GetPacketFile(number);
 //    if (P==NULL) return false;
 //    return P->Write(Handle & (MAX_VIRTUAL_HANDLE_COUNT-1),Buf,Size);
 //}
@@ -2481,7 +2500,7 @@ bool CPackCollection::SetPos(DWORD Handle, DWORD Pos, int ftype) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return false;
     return P->SetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1), Pos, ftype);
@@ -2491,7 +2510,7 @@ DWORD CPackCollection::GetPos(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return 0xFFFFFFFF;
     return P->GetPos(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
@@ -2501,7 +2520,7 @@ DWORD CPackCollection::GetSize(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return 0xFFFFFFFF;
     return P->GetSize(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
@@ -2511,25 +2530,23 @@ DWORD CPackCollection::GetHandle(DWORD Handle) {
     ASSERT(MAX_VIRTUAL_HANDLE_COUNT == (1 << MAX_VIRTUAL_HANDLE_COUNT_BITS));
 
     int number = Handle >> MAX_VIRTUAL_HANDLE_COUNT_BITS;
-    PCPackFile P = GetPacketFile(number);
+    CPackFile* P = GetPacketFile(number);
     if (P == NULL)
         return 0xFFFFFFFF;
     return P->GetHandle(Handle & (MAX_VIRTUAL_HANDLE_COUNT - 1));
 }
 
-// bool  CPackCollection::UnpackFile(const std::string& souname,const std::string& desname)
-//{
-//    PCPackFile *ff = m_PackFiles.Buff<PCPackFile>();
-//    PCPackFile *fe = m_PackFiles.BuffEnd<PCPackFile>();
-//    for(;ff < fe; ++ff)
-//    {
-//        if ((*ff)->FileExists(souname))
-//        {
-//            return (*ff)->UnpackFile(souname,desname);
-//        }
-//    }
-//    return false;
-//}
+// bool CPackCollection::UnpackFile(const std::string& souname,const std::string& desname)
+// {
+//     for (auto item : m_PackFiles)
+//     {
+//         if (item->FileExists(souname))
+//         {
+//             return item->UnpackFile(souname,desname);
+//         }
+//     }
+//     return false;
+// }
 
 }  // namespace Base
 

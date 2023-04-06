@@ -12,6 +12,8 @@
 
 #include "CFile.hpp"
 
+#include <vector>
+
 CMatrixHint *CMatrixHint::m_First;
 CMatrixHint *CMatrixHint::m_Last;
 
@@ -42,7 +44,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
     int cw = 0;
     int ch = 0;
 
-    CBuf pos;
+    std::vector<CPoint> pos;
 
     bool new_coord_f = false;
     CPoint new_coord;
@@ -58,11 +60,11 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
 
         if (els->hem == HEM_BITMAP) {
             if (new_coord_f) {
-                pos.Add<CPoint>(new_coord);
+                pos.push_back(new_coord);
                 new_coord_f = false;
             }
             else {
-                pos.Add<CPoint>(CPoint(cx, cy));
+                pos.push_back(CPoint(cx, cy));
                 cx += bx;
                 if (cx > cw)
                     cw = cx;
@@ -71,7 +73,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             }
         }
         else if (els->hem == HEM_LAST_ON_LINE) {
-            pos.Add<CPoint>(CPoint(cx, cy));
+            pos.push_back(CPoint(cx, cy));
             cx += bx;
             if (cx > cw)
                 cw = cx;
@@ -81,7 +83,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             cy = ch;
         }
         else if (els->hem == HEM_LAST) {
-            pos.Add<CPoint>(CPoint(cx, cy));
+            pos.push_back(CPoint(cx, cy));
             cx += bx;
             if (cx > cw)
                 cw = cx;
@@ -90,7 +92,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             break;
         }
         else if (els->hem == HEM_CENTER) {
-            pos.Add<CPoint>(CPoint(-1000, cy));
+            pos.push_back(CPoint(-1000, cy));
             if (bx > cw)
                 cw = bx;
             if ((cy + by) > ch)
@@ -99,7 +101,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             cy = ch;
         }
         else if (els->hem <= HEM_TAB_LARGEST) {
-            pos.Add<CPoint>(CPoint(els->hem, cy));
+            pos.push_back(CPoint(els->hem, cy));
             cx = els->hem + bx;
             if (cx > cw)
                 cw = cx;
@@ -107,7 +109,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem <= HEM_CENTER_RIGHT_LARGEST) {
-            pos.Add<CPoint>(CPoint(-1001, cy));
+            pos.push_back(CPoint(-1001, cy));
 
             int tv = els->hem - HEM_TAB_LARGEST;
             if ((tv + bx) > (cw / 2))
@@ -117,7 +119,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem <= HEM_CENTER_LEFT_LARGEST) {
-            pos.Add<CPoint>(CPoint(-1002, cy));
+            pos.push_back(CPoint(-1002, cy));
 
             int tv = els->hem - HEM_CENTER_RIGHT_LARGEST;
             if ((tv + bx) > (cw / 2))
@@ -127,18 +129,18 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
                 ch = by + cy;
         }
         else if (els->hem == HEM_COPY) {
-            pos.Add<CPoint>(CPoint(0, 0));
+            pos.push_back(CPoint(0, 0));
             // do nothing
         }
         else if (els->hem == HEM_DOWN) {
-            pos.Add<CPoint>(CPoint(0, 0));
+            pos.push_back(CPoint(0, 0));
             cy += els->y;
             if (cy > ch)
                 ch = cy;
             els->bmp = NULL;
         }
         else if (els->hem == HEM_RIGHT) {
-            pos.Add<CPoint>(CPoint(0, 0));
+            pos.push_back(CPoint(0, 0));
             cx += els->x;
             if (cx > cw)
                 cw = cx;
@@ -148,7 +150,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             new_coord_f = true;
             new_coord.x = els->x;
             new_coord.y = els->y;
-            pos.Add<CPoint>(CPoint(0, 0));
+            pos.push_back(CPoint(0, 0));
             els->bmp = NULL;
             // do nothing
         }
@@ -262,24 +264,25 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
         h_delta = parts[4].size.y;
     }
 
-    CPoint *pb = pos.Buff<CPoint>();
-    CPoint *pe = pos.BuffEnd<CPoint>();
     int idx = 0;
-    for (; pb < pe; ++pb, ++idx) {
-        if (pb->x == -1000) {
-            pb->x = (cw - elems[idx].bmp->SizeX()) / 2;
+    for (auto& item : pos)
+    {
+        if (item.x == -1000) {
+            item.x = (cw - elems[idx].bmp->SizeX()) / 2;
         }
-        else if (pb->x == -1001) {
+        else if (item.x == -1001) {
             int tv = elems[idx].hem - HEM_TAB_LARGEST;
-            pb->x = cw / 2 + tv;
+            item.x = cw / 2 + tv;
         }
-        else if (pb->x == -1002) {
+        else if (item.x == -1002) {
             int tv = elems[idx].hem - HEM_CENTER_RIGHT_LARGEST;
-            pb->x = cw / 2 - tv - elems[idx].bmp->SizeX();
+            item.x = cw / 2 - tv - elems[idx].bmp->SizeX();
         }
 
-        pb->x += ots.left;
-        pb->y += ots.top;
+        item.x += ots.left;
+        item.y += ots.top;
+
+        ++idx;
     }
 
     if (ch < (parts[1].size.y + parts[7].size.y - ots.top - ots.bottom)) {
@@ -365,32 +368,32 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
     CPoint *copypos = NULL;
     int copyposcnt = 0;
 
-    pb = pos.Buff<CPoint>();
-    pe = pos.BuffEnd<CPoint>();
     idx = 0;
     bool copy = false;
-    for (; pb < pe; ++pb, ++idx) {
+    for (const auto& item : pos)
+    {
         bool new_copy = elems[idx].hem == HEM_COPY;
 
         if (elems[idx].bmp) {
             if (copy) {
-                bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
+                bmpf.Copy(item, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
 
                 ++copyposcnt;
                 copypos = (CPoint *)HAllocEx(copypos, sizeof(CPoint) * copyposcnt, g_MatrixHeap);
-                copypos[copyposcnt - 1] = *pb;
+                copypos[copyposcnt - 1] = item;
             }
             else {
                 if (elems[idx].bmp->BytePP() == 3) {
-                    bmpf.Copy(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
+                    bmpf.Copy(item, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
                 }
                 else {
-                    bmpf.MergeWithAlpha(*pb, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
+                    bmpf.MergeWithAlpha(item, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
                 }
             }
         }
 
         copy = new_copy;
+        ++idx;
     }
 
     // bmpf.SaveInPNG(L"bla.png");
