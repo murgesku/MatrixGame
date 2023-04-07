@@ -15,7 +15,7 @@ namespace Base {
 class BASE_API CBuf
 {
 private:
-    int m_Pointer = 0;  // Указатель
+    size_t m_Pointer = 0;  // Указатель
     std::vector<uint8_t> m_Buf;
 public:
     CBuf() = default;
@@ -32,22 +32,22 @@ public:
     D *BuffEnd(void) {
         return (D *)(m_Buf.data() + m_Buf.size());
     }
-    int Len(void) const { return m_Buf.size(); }
-    void Len(int zn);
-    void SetLenNoShrink(int len)
+    size_t Len(void) const { return m_Buf.size(); }
+    void Len(size_t zn);
+    void SetLenNoShrink(size_t len)
     {
         ASSERT(len <= m_Buf.size());
         m_Buf.resize(len);
     }
 
-    void Expand(int sz)
+    void Expand(size_t sz)
     {
         m_Buf.resize(m_Buf.size() + sz);
     }
 
-    int Pointer(void) const { return m_Pointer; }
-    void Pointer(int zn) {
-        if ((zn < 0) || (zn > m_Buf.size()))
+    size_t Pointer(void) const { return m_Pointer; }
+    void Pointer(size_t zn) {
+        if (zn > m_Buf.size())
             ERROR_E;
         m_Pointer = zn;
     }
@@ -62,9 +62,9 @@ public:
         return *(D *)(m_Buf.data() + m_Pointer - sizeof(D));
     }
 
-    void Get(void *buf, int len)
+    void Get(void *buf, size_t len)
     {
-        if (len <= 0)
+        if (len == 0)
             return;
         TestGet(len);
         memcpy(buf, m_Buf.data() + m_Pointer, len);
@@ -80,8 +80,8 @@ public:
         m_Pointer += sizeof(D);
     }
 
-    void Add(const void *buf, int len) {
-        if (len <= 0)
+    void Add(const void *buf, size_t len) {
+        if (len == 0)
             return;
         TestAdd(len);
         memcpy(m_Buf.data() + m_Pointer, buf, len);
@@ -90,23 +90,23 @@ public:
 
     ///////////////////////////////////////////////////////////////
 
-    void ByteLoop(uint8_t zn, int cnt) {
-        if (cnt <= 0)
+    void ByteLoop(uint8_t zn, size_t cnt) {
+        if (cnt == 0)
             return;
         TestAdd(cnt);
         memset(m_Buf.data() + m_Pointer, zn, cnt);
         m_Pointer += cnt;
     }
-    void WordLoop(uint16_t zn, int cnt) {
-        if (cnt <= 0)
+    void WordLoop(uint16_t zn, size_t cnt) {
+        if (cnt == 0)
             return;
         TestAdd(cnt * 2);
-        for (int i = 0; i < cnt; i++, m_Pointer += 2)
+        for (size_t i = 0; i < cnt; i++, m_Pointer += 2)
             *(uint16_t *)(m_Buf.data() + m_Pointer) = zn;
     }
 
     std::string Str(void) {
-        int len = StrLen();
+        size_t len = StrLen();
         char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len + 1;
         if (m_Pointer > m_Buf.size())
@@ -129,7 +129,7 @@ public:
     }
 
     std::wstring WStr(void) {
-        int len = WStrLen();
+        size_t len = WStrLen();
         wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += ((len + 1) << 1);
         if (m_Pointer > m_Buf.size())
@@ -152,7 +152,7 @@ public:
 
     std::string StrText(void) {
         char ch;
-        int len = StrTextLen();
+        size_t len = StrTextLen();
         char *abuf = (char *)(m_Buf.data() + m_Pointer);
         m_Pointer += len;
         if (m_Pointer < m_Buf.size()) {
@@ -178,7 +178,7 @@ public:
 
     std::wstring WStrText(void) {
         wchar ch;
-        int len = WStrTextLen();
+        size_t len = WStrTextLen();
         wchar *abuf = (wchar *)(m_Buf.data() + m_Pointer);
         m_Pointer += len << 1;
         if (m_Pointer + 1 < m_Buf.size()) {
@@ -206,19 +206,19 @@ public:
     void SaveInFile(const std::wstring &filename) const;
 
 private:
-    int StrLen(void);
-    int WStrLen(void);
-    int StrTextLen(void);
-    int WStrTextLen(void);
+    size_t StrLen(void);
+    size_t WStrLen(void);
+    size_t StrTextLen(void);
+    size_t WStrTextLen(void);
 
-    inline void TestGet(int len)
+    inline void TestGet(size_t len)
     {
         if (m_Pointer + len > m_Buf.size())
         {
             ERROR_E;
         }
     }
-    void TestAdd(int len)
+    void TestAdd(size_t len)
     {
         if (m_Pointer + len > m_Buf.size())
         {
