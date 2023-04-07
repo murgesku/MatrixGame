@@ -15,8 +15,9 @@ void CBuf::Clear() {
     m_Pointer = 0;
 }
 
-void CBuf::Len(int zn) {
-    if (zn <= 0) {
+void CBuf::Len(size_t zn)
+{
+    if (zn == 0) {
         Clear();
         return;
     }
@@ -27,27 +28,27 @@ void CBuf::Len(int zn) {
         m_Pointer = m_Buf.size();
 }
 
-int CBuf::StrLen(void) {
-    int len = 0;
-    for (int i = m_Pointer; i < m_Buf.size(); i++, len++) {
+size_t CBuf::StrLen(void) {
+    size_t len = 0;
+    for (size_t i = m_Pointer; i < m_Buf.size(); i++, len++) {
         if (*(char *)(m_Buf.data() + i) == 0)
             return len;
     }
     return 0;
 }
 
-int CBuf::WStrLen(void) {
-    int len = 0;
-    for (int i = m_Pointer; i + 1 < m_Buf.size(); i += 2, len++) {
+size_t CBuf::WStrLen(void) {
+    size_t len = 0;
+    for (size_t i = m_Pointer; i + 1 < m_Buf.size(); i += 2, len++) {
         if (*(wchar *)(m_Buf.data() + i) == 0)
             return len;
     }
     return 0;
 }
 
-int CBuf::StrTextLen(void) {
-    int len = 0;
-    for (int i = m_Pointer; i < m_Buf.size(); i++, len++) {
+size_t CBuf::StrTextLen(void) {
+    size_t len = 0;
+    for (size_t i = m_Pointer; i < m_Buf.size(); i++, len++) {
         char ch = *(char *)(m_Buf.data() + i);
         if (ch == 0 || ch == 0x0d || ch == 0x0a)
             return len;
@@ -55,9 +56,9 @@ int CBuf::StrTextLen(void) {
     return len;
 }
 
-int CBuf::WStrTextLen(void) {
-    int len = 0;
-    for (int i = m_Pointer; i + 1 < m_Buf.size(); i += 2, len++) {
+size_t CBuf::WStrTextLen(void) {
+    size_t len = 0;
+    for (size_t i = m_Pointer; i + 1 < m_Buf.size(); i += 2, len++) {
         wchar ch = *(wchar *)(m_Buf.data() + i);
         if (ch == 0 || ch == 0x0d || ch == 0x0a)
             return len;
