@@ -3,7 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <new>
 
 #include "stdafx.h"
 
@@ -12,6 +11,8 @@
 #include "MatrixMap.hpp"
 
 #include <utils.hpp>
+#include <new>
+#include <map>
 
 CSound::SSoundItem CSound::m_Sounds[S_COUNT];
 CSound::SLID CSound::m_LayersI[SL_COUNT];
@@ -19,7 +20,7 @@ int CSound::m_LastGroup;
 DWORD CSound::m_LastID;
 // CBuf                *CSound::m_AllSounds;
 CSound::SPlayedSound CSound::m_AllSounds[MAX_SOUNDS];
-CDWORDMap *CSound::m_PosSounds;
+std::map<uint32_t, CSoundArray> m_PosSounds;
 
 inline DWORD snd_create(wchar *n, int i, int j) {
     DTRACE();
@@ -45,10 +46,6 @@ inline void snd_play(DWORD s) {
     g_RangersInterface->m_SoundPlay(s);
 }
 
-CSound::SSoundItem::SSoundItem(const wchar *sndname) : vol0(1), vol1(1), pan0(0), pan1(0), flags(0) {
-    new(&Path()) std::wstring(sndname);
-}
-
 void CSound::Init(void) {
     DTRACE();
 
@@ -66,7 +63,6 @@ void CSound::Init(void) {
         m_AllSounds[i].id = SOUND_ID_EMPTY;
         m_AllSounds[i].id_internal = 0;
     }
-    m_PosSounds = HNew(g_MatrixHeap) CDWORDMap(g_MatrixHeap);
 
     // sound initializatation
 
@@ -252,14 +248,13 @@ struct SDS {
     CSoundArray *sa;
     float ms;
 };
-static bool update_positions(uint32_t key, uint32_t val, uint32_t user) {
+static bool update_positions(uint32_t key, CSoundArray& sa, SDS& kk)
+{
     DTRACE();
 
-    SDS *kk = (SDS *)user;
-    CSoundArray *sa = (CSoundArray *)val;
-    if (sa->Len() == 0) {
-        kk->key = key;
-        kk->sa = sa;
+    if (sa.Len() == 0) {
+        kk.key = key;
+        kk.sa = &sa;
         return true;
     }
 
@@ -273,8 +268,8 @@ static bool update_positions(uint32_t key, uint32_t val, uint32_t user) {
 
     DWORD z = (key >> 26);  // only positive
     D3DXVECTOR3 pos(float(x * SOUND_POS_DIVIDER), float(y * SOUND_POS_DIVIDER), float(z * SOUND_POS_DIVIDER));
-    sa->UpdateTimings(kk->ms);
-    sa->SetSoundPos(pos);
+    sa.UpdateTimings(kk.ms);
+    sa.SetSoundPos(pos);
     return true;
 }
 
@@ -294,10 +289,15 @@ void CSound::Takt(void) {
         SDS sds;
         sds.ms = float(delta);
         sds.sa = NULL;
-        m_PosSounds->Enum(update_positions, (DWORD)&sds);
-        if (sds.sa != NULL) {
-            HDelete(CSoundArray, sds.sa, g_MatrixHeap);
-            m_PosSounds->Del(sds.key);
+
+        for (auto& [key, val] : m_PosSounds)
+        {
+            update_positions(key, val, sds);
+        }
+
+        if (sds.sa != NULL)
+        {
+            m_PosSounds.erase(sds.key);
         }
     }
 
@@ -364,7 +364,7 @@ void CSound::SureLoaded(ESound snd) {
             // load sound
             CBlockPar *bps = g_MatrixData->BlockGet(L"Sounds");
 
-            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].Path().c_str());
+            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].Path());
             if (bp == NULL) {
                 bp = bps->BlockGetNE(L"dummy");
             }
@@ -831,12 +831,11 @@ void CSound::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
         return;
     DWORD key = Pos2Key(pos);
 
-    CSoundArray *sa;
-    if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
-        sa = HNew(g_MatrixHeap) CSoundArray{};
-        m_PosSounds->Set(key, (uint32_t)sa);
+    if (!m_PosSounds.contains(key))
+    {
+        m_PosSounds.emplace(key, CSoundArray{});
     }
-    sa->AddSound(snd, pos, sl, ifl);
+    m_PosSounds[key].AddSound(snd, pos, sl, ifl);
 }
 
 void CSound::AddSound(const wchar *name, const D3DXVECTOR3 &pos) {
@@ -859,20 +858,11 @@ void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1
         return;
     DWORD key = Pos2Key(pos);
 
-    CSoundArray *sa;
-    if (!m_PosSounds->Get(key, (uint32_t*)&sa)) {
-        sa = HNew(g_MatrixHeap) CSoundArray{};
-        m_PosSounds->Set(key, (uint32_t)sa);
+    if (!m_PosSounds.contains(key))
+    {
+        m_PosSounds.emplace(key, CSoundArray{});
     }
-    sa->AddSound(pos, attn, pan0, pan1, vol0, vol1, name);
-}
-
-static bool delete_arrays(uint32_t key, uint32_t val, uint32_t user) {
-    DTRACE();
-
-    CSoundArray *sa = (CSoundArray *)val;
-    HDelete(CSoundArray, sa, g_MatrixHeap);
-    return true;
+    m_PosSounds[key].AddSound(pos, attn, pan0, pan1, vol0, vol1, name);
 }
 
 void CSound::Clear(void) {
@@ -886,13 +876,12 @@ void CSound::Clear(void) {
             }
         }
     }
-    m_PosSounds->Enum(delete_arrays, 0);
 
     for (int i = 0; i < S_COUNT; ++i) {
         m_Sounds[i].Release();
     }
 
-    HDelete(CDWORDMap, m_PosSounds, g_MatrixHeap);
+    m_PosSounds.clear();
 }
 
 void CSoundArray::UpdateTimings(float ms) {

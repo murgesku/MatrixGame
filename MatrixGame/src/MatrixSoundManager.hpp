@@ -6,8 +6,6 @@
 #ifndef MATRIX_SOUND_MANAGER
 #define MATRIX_SOUND_MANAGER
 
-#include "CDWORDMap.hpp"
-
 #include <vector>
 
 #define SOUND_ID_EMPTY         (0xFFFFFFFF)
@@ -229,20 +227,26 @@ class CSound : public CMain {
     struct SSoundItem {
     private:
     public:
-        float vol0, vol1;
-        float pan0, pan1;
-        DWORD flags;
+        float vol0{1};
+        float vol1{1};
+        float pan0{0};
+        float pan1{0};
+        DWORD flags{0};
         float attn;
         float radius;
         float ttl;       // valid only for looped pos sounds
         float fadetime;  // valid only for looped pos sounds
-        BYTE path[sizeof(std::wstring)];
+        std::wstring path;
 
-        SSoundItem(void){};
-        SSoundItem(const wchar *sndname);
-        ~SSoundItem(){};
-        void Release(void) { Path().std::wstring::~wstring(); }
-        std::wstring &Path(void) { return *((std::wstring *)&path); }
+        SSoundItem() = default;
+        ~SSoundItem() = default;
+
+        SSoundItem(const std::wstring& sndname)
+        : path{sndname}
+        {}
+
+        void Release() { path.clear(); }
+        std::wstring& Path() { return path; }
 
         static const DWORD LOOPED = SETBIT(0);
         static const DWORD LOADED = SETBIT(1);
@@ -271,8 +275,6 @@ class CSound : public CMain {
     static int m_LastGroup;
     static DWORD m_LastID;
     // static CBuf         *m_AllSounds;
-
-    static CDWORDMap *m_PosSounds;
 
     static DWORD PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt);
     static void StopPlayInternal(int deli);
