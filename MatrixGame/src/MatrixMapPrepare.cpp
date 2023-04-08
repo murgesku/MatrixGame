@@ -21,6 +21,7 @@
 #include <new>
 #include <algorithm>
 #include <vector>
+#include <set>
 
 void CMatrixMap::PointCalcNormals(int x, int y) {
     DTRACE();
@@ -1716,7 +1717,7 @@ void CMatrixMap::Restart(void) {
     if (SETFLAG(m_Flags, MMFLAG_WIN))
         RESETFLAG(m_Flags, MMFLAG_WIN);
 
-    CDWORDMap dm(g_CacheHeap);
+    std::set<int> dm;
 
     for (auto item : m_AllObjects)
     {
@@ -1724,7 +1725,7 @@ void CMatrixMap::Restart(void) {
             if (item->IsNotOnMinimap()) {
                 int uid = ((CMatrixMapObject *)item)->m_UID;
                 if (uid >= 0)
-                    dm.Set(uid, 0);
+                    dm.emplace(uid);
             }
         }
     }
@@ -1796,8 +1797,9 @@ void CMatrixMap::Restart(void) {
             for (auto item : m_AllObjects)
             {
                 int uid = ((CMatrixMapObject *)item)->m_UID;
-                if (dm.Get(uid, NULL)) {
-                    dm.Del(uid);
+                if (dm.contains(uid))
+                {
+                    dm.erase(uid);
                     flags &= ~MR_MiniMap;
                     item->RNoNeed(MR_MiniMap);
                 }
