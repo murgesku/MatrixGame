@@ -33,7 +33,6 @@ set(3G_HEADERS
 set(BASE_SOURCES
     Base/CBlockPar.cpp
     Base/CBuf.cpp
-    Base/CDWORDMap.cpp
     Base/CException.cpp
     Base/CFile.cpp
     Base/CHeap.cpp
@@ -49,7 +48,6 @@ set(BASE_HEADERS
     Base/BaseDef.hpp
     Base/CBlockPar.hpp
     Base/CBuf.hpp
-    Base/CDWORDMap.hpp
     Base/CException.hpp
     Base/CFile.hpp
     Base/CHeap.hpp
