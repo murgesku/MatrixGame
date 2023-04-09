@@ -8,6 +8,8 @@
 
 #include "CDWORDMap.hpp"
 
+#include <vector>
+
 #define SOUND_ID_EMPTY         (0xFFFFFFFF)
 #define SOUND_FULL_VOLUME_DIST 200
 
@@ -330,8 +332,10 @@ public:
     static void SaveSoundLog(void);
 };
 
-class CSoundArray : public Base::CBuf {
-    struct SSndData {
+class CSoundArray
+{
+    struct SSndData
+    {
         ESound snd;
         DWORD id;
         float pan0, pan1;
@@ -340,26 +344,35 @@ class CSoundArray : public Base::CBuf {
         float ttl, fade;
     };
 
+    std::vector<SSndData> m_array;
+
 public:
-    CSoundArray(CHeap *heap) {};
+    CSoundArray() = default;
 
     void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL, ESoundInterruptFlag ifl = SEF_INTERRUPT);
-    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
+    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name)
+    {
         DWORD id = CSound::Play(pos, attn, pan0, pan1, vol0, vol1, name);
         if (id == SOUND_ID_EMPTY)
             return;
 
-        Expand(sizeof(SSndData));
-        (BuffEnd<SSndData>() - 1)->id = id;
-        (BuffEnd<SSndData>() - 1)->pan0 = pan0;
-        (BuffEnd<SSndData>() - 1)->pan1 = pan1;
-        (BuffEnd<SSndData>() - 1)->vol0 = vol0;
-        (BuffEnd<SSndData>() - 1)->vol1 = vol1;
-        (BuffEnd<SSndData>() - 1)->attn = attn;
-        (BuffEnd<SSndData>() - 1)->snd = S_UNDEF;
+        m_array.emplace_back();
+        auto& item = m_array.back();
+        item.id = id;
+        item.pan0 = pan0;
+        item.pan1 = pan1;
+        item.vol0 = vol0;
+        item.vol1 = vol1;
+        item.attn = attn;
+        item.snd = S_UNDEF;
     }
     void SetSoundPos(const D3DXVECTOR3 &pos);
     void UpdateTimings(float ms);
+
+    int Len() const
+    {
+        return m_array.size() * sizeof(SSndData);
+    }
 };
 
 #endif
