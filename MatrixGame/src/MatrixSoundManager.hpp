@@ -3,17 +3,14 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#ifndef MATRIX_SOUND_MANAGER
-#define MATRIX_SOUND_MANAGER
+#pragma once
 
-#include <vector>
+#include "d3d9.h"
+#include "d3dx9tex.h"
 
-#define SOUND_ID_EMPTY         (0xFFFFFFFF)
-#define SOUND_FULL_VOLUME_DIST 200
+#include <cstdint>
 
-#define SOUND_POS_DIVIDER (GLOBAL_SCALE + GLOBAL_SCALE)
-
-#define MAX_SOUNDS 16  // 16 mixed sound for SL_ALL
+#define SOUND_ID_EMPTY (0xFFFFFFFF)
 
 enum ESoundLayer {
     SL_ALL,
@@ -223,158 +220,46 @@ enum ESound {
     S_NONE = -1
 };
 
-class CSound : public CMain {
-    struct SSoundItem {
-    private:
-    public:
-        float vol0{1};
-        float vol1{1};
-        float pan0{0};
-        float pan1{0};
-        DWORD flags{0};
-        float attn;
-        float radius;
-        float ttl;       // valid only for looped pos sounds
-        float fadetime;  // valid only for looped pos sounds
-        std::wstring path;
-
-        SSoundItem() = default;
-        ~SSoundItem() = default;
-
-        SSoundItem(const std::wstring& sndname)
-        : path{sndname}
-        {}
-
-        void Release() { path.clear(); }
-        std::wstring& Path() { return path; }
-
-        static const DWORD LOOPED = SETBIT(0);
-        static const DWORD LOADED = SETBIT(1);
-#ifdef _DEBUG
-        static const DWORD NOTINITED = SETBIT(2);
-#endif
-    };
-
-    struct SLID {
-        int index;
-        DWORD id;
-
-        bool IsPlayed(void);
-    };
-
-    struct SPlayedSound {
-        DWORD id_internal;  // used in Rangers engine
-        DWORD id;           // in robots. always uniq! there is no the same id's per game
-        float curvol;
-        float curpan;
-    };
-
-    static SPlayedSound m_AllSounds[MAX_SOUNDS];
-    static SSoundItem m_Sounds[S_COUNT];
-    static SLID m_LayersI[SL_COUNT];  // indices in m_AllSounds array
-    static int m_LastGroup;
-    static DWORD m_LastID;
-    // static CBuf         *m_AllSounds;
-
-    static DWORD PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt);
-    static void StopPlayInternal(int deli);
-    static int FindSlotForSound(void);
-    static int FindSoundSlot(DWORD id);
-    static int FindSoundSlotPlayedOnly(DWORD id);
-    // static void ExtraRemove(void);  // extra remove sound from SL_ALL layer.
-
+class CSound
+{
 public:
-    friend class CSoundArray;
+    static bool IsSoundPlay(uint32_t id);
 
-    static bool IsSoundPlay(DWORD id);
-
-    static void Init(void);
-    static void Clear(void);
+    static void Init();
+    static void Clear();
     static void LayerOff(ESoundLayer sl);
     static void SureLoaded(ESound snd);
 
-    static DWORD Play(ESound snd, ESoundLayer sl = SL_ALL, ESoundInterruptFlag interrupt = SEF_INTERRUPT);
-    static DWORD Play(ESound snd, float vol, float pan, ESoundLayer sl = SL_ALL,
-                      ESoundInterruptFlag interrupt = SEF_INTERRUPT) {
-        SureLoaded(snd);
-        return PlayInternal(snd, vol, pan, sl, interrupt);
-    }
+    static uint32_t Play(ESound snd, ESoundLayer sl = SL_ALL, ESoundInterruptFlag interrupt = SEF_INTERRUPT);
+    static uint32_t Play(ESound snd, float vol, float pan, ESoundLayer sl = SL_ALL, ESoundInterruptFlag interrupt = SEF_INTERRUPT);
 
-    static DWORD Play(const wchar *name, ESoundLayer sl = SL_ALL,
+    static uint32_t Play(const wchar_t *name, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);  // name - robots sound
-    static DWORD Play(const wchar *name, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
+    static uint32_t Play(const wchar_t *name, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);  // name - robots sound
-    static DWORD Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name);
-    static DWORD Play(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
+    static uint32_t Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar_t *name);
+    static uint32_t Play(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);
-    static DWORD Play(DWORD id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
+    static uint32_t Play(uint32_t id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                       ESoundInterruptFlag interrupt = SEF_INTERRUPT);  // use only for ambient
-    static void StopPlay(DWORD id);
-    static void StopPlayAllSounds(void);
-    static DWORD ChangePos(DWORD id, ESound snd, const D3DXVECTOR3 &pos);
-    static float GetSoundMaxDistSQ(ESound snd) {
-        SureLoaded(snd);
-        return m_Sounds[snd].radius * m_Sounds[snd].radius;
-    }
+    static void StopPlay(uint32_t id);
+    static void StopPlayAllSounds();
+    static uint32_t ChangePos(uint32_t id, ESound snd, const D3DXVECTOR3 &pos);
+    static float GetSoundMaxDistSQ(ESound snd);
 
     static void CalcPanVol(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1,
                            float *pan, float *vol);
 
-    static void Takt(void);
+    static void Takt();
 
     static void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL,
                          ESoundInterruptFlag ifl = SEF_INTERRUPT);  // automatic position
 
-    static void AddSound(const wchar *name, const D3DXVECTOR3 &pos);  // automatic position
+    static void AddSound(const wchar_t *name, const D3DXVECTOR3 &pos);  // automatic position
     static void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1,
-                         const wchar *name);
+                         const wchar_t *name);
 
-    static inline DWORD Pos2Key(const D3DXVECTOR3 &pos);
+    static inline uint32_t Pos2Key(const D3DXVECTOR3 &pos);
 
-    static void SaveSoundLog(void);
+    static void SaveSoundLog();
 };
-
-class CSoundArray
-{
-    struct SSndData
-    {
-        ESound snd;
-        DWORD id;
-        float pan0, pan1;
-        float vol0, vol1;
-        float attn;
-        float ttl, fade;
-    };
-
-    std::vector<SSndData> m_array;
-
-public:
-    CSoundArray() = default;
-
-    void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL, ESoundInterruptFlag ifl = SEF_INTERRUPT);
-    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name)
-    {
-        DWORD id = CSound::Play(pos, attn, pan0, pan1, vol0, vol1, name);
-        if (id == SOUND_ID_EMPTY)
-            return;
-
-        m_array.emplace_back();
-        auto& item = m_array.back();
-        item.id = id;
-        item.pan0 = pan0;
-        item.pan1 = pan1;
-        item.vol0 = vol0;
-        item.vol1 = vol1;
-        item.attn = attn;
-        item.snd = S_UNDEF;
-    }
-    void SetSoundPos(const D3DXVECTOR3 &pos);
-    void UpdateTimings(float ms);
-
-    int Len() const
-    {
-        return m_array.size() * sizeof(SSndData);
-    }
-};
-
-#endif

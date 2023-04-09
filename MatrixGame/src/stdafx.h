@@ -28,12 +28,6 @@
 
 #include "MatrixMultiSelection.hpp"
 
-#ifdef MATRIXGAME_EXPORTS
-#define MATRIXGAMEDLL_API __declspec(dllexport)
-#else
-#define MATRIXGAMEDLL_API __declspec(dllimport)
-#endif
-
 #include "MatrixGame.h"
 
 using namespace Base;

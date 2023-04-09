@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <BaseDef.hpp>
+
 enum ESupportError {
     SUPE_OK = 0,
     SUPE_DIRECTX = 1,        // non 9.x DirectX
@@ -76,7 +78,7 @@ struct SMGDRangersInterface {
     float(__stdcall *m_SoundGetPan)(dword id);
 
     void(__stdcall *m_RangersText)(wchar *text, wchar *font, DWORD color, int sizex, int sizey, int alignx, int aligny,
-                                   int wordwrap, int smex, int smy, CRect *clipr, SMGDRangersInterfaceText *it);
+                                   int wordwrap, int smex, int smy, Base::CRect *clipr, SMGDRangersInterfaceText *it);
     void(__stdcall *m_RangersTextClear)(SMGDRangersInterfaceText *it);
 
     void(__stdcall *m_ProgressBar)(float val);
@@ -96,6 +98,12 @@ struct SMGDRangersInterfaceText {
     int m_SizeX;
     int m_SizeY;
 };
+
+#ifdef MATRIXGAME_EXPORTS
+#define MATRIXGAMEDLL_API __declspec(dllexport)
+#else
+#define MATRIXGAMEDLL_API __declspec(dllimport)
+#endif
 
 extern "C" {
 MATRIXGAMEDLL_API SMGDRobotInterface *__cdecl GetRobotInterface(void);
