@@ -8,13 +8,12 @@
 
 #include "VectorObject.hpp"
 
-struct SVOShadowStencilVertex {
-    D3DXVECTOR3 v;
+#include <vector>
 
-    static const DWORD FVF = D3DFVF_XYZ;
-};
+using SVOShadowStencilVertex = D3DXVECTOR3;
 
-class CVOShadowStencil : public CMain {
+class CVOShadowStencil
+{
     DWORD m_DirtyDX;
     D3D_VB m_VB;
     D3D_IB m_IB;
@@ -33,38 +32,30 @@ class CVOShadowStencil : public CMain {
     int m_FrameFor;
 
     struct SSSFrameData {
-        SVOShadowStencilVertex *m_preVerts;
-        int m_preVertsAllocated;
-        int m_preVertsSize;
-
-        WORD *m_preInds;
-        int m_preIndsAllocated;
-        int m_preIndsSize;
+        std::vector<SVOShadowStencilVertex> m_preVerts;
+        std::vector<WORD> m_preInds;
 
         SVONormal m_light;
         float m_len;
     };
 
-    CHeap *m_Heap;
-
-    // calculated for
-
-    SSSFrameData *m_Frames;
+    std::vector<SSSFrameData> m_Frames;
     int m_FramesCnt;
 
 public:
-    static void StaticInit(void) {
+    static void StaticInit(void)
+    {
         m_First = NULL;
         m_Last = NULL;
     }
-    static void BeforeRenderAll(void) { ASSERT_DX(g_D3DD->SetFVF(SVOShadowStencilVertex::FVF)); }
+    static void BeforeRenderAll(void);
 
     static void MarkAllBuffersNoNeed(void);
 
-    CVOShadowStencil(CHeap *heap);
-    ~CVOShadowStencil(void);
+    CVOShadowStencil();
+    ~CVOShadowStencil();
 
-    bool IsReady(void) const { return m_Frames != NULL; }
+    bool IsReady(void) const { return !m_Frames.empty(); }
     void DX_Prepare(void);
     void DX_Free(void) {
         if (IS_VB(m_VB))

@@ -506,7 +506,7 @@ void CMatrixMapObject::RNeed(dword need) {
             ASSERT(m_Graph->VO());
 
             if (!m_ShadowStencil)
-                m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
+                m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil();
 
             // STENCIL
             D3DXVECTOR3 light;
