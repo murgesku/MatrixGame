@@ -7,6 +7,8 @@
 
 #include "MatrixTactics.h"
 
+#include <cstdint>
+
 class CMatrixRobotAI;
 class CMatrixLogicSlot;
 class CMatrixState;
@@ -65,19 +67,19 @@ typedef enum { CAPTURE_UNDEF, CAPTURE, NOT_CAPTURE } CaptureTarget;
 typedef enum { POSITION_UNDEF, POSITION_NEAREST_TO_TARGET } Position;
 
 typedef struct _cond {
-    DWORD m_EnemySpoted;
+    uint32_t m_EnemySpoted;
     CMatrixLogicSlot *m_DestroyedSlot;
     Position m_Position;
     _cond() {
         m_EnemySpoted = ENEMY_UNDEF;
-        m_DestroyedSlot = NULL;
+        m_DestroyedSlot = nullptr;
         m_Position = POSITION_UNDEF;
     }
 } Condition;
 
 typedef struct _act {
-    DWORD m_MoveTo;
-    DWORD m_Patrol;
+    uint32_t m_MoveTo;
+    uint32_t m_Patrol;
     ChangeEnemy m_ChangeEnemy;
     AttackEnemy m_AttackEnemy;
     PursueEnemy m_PursueEnemy;
@@ -92,7 +94,7 @@ typedef struct _act {
         m_AttackEnemy = ATTACK_UNDEF;
         m_PursueEnemy = PURSUE_UNDEF;
         m_FleeFromEnemy = FLEE_UNDEF;
-        m_GoTo = NULL;
+        m_GoTo = nullptr;
         m_Exit = EXIT_UNDEF;
         m_Capture = CAPTURE_UNDEF;
     }
@@ -119,9 +121,9 @@ typedef struct _act {
 //
 //    CMatrixRule()
 //    {
-//        m_PrevRule      = NULL;
-//        m_NextRule      = NULL;
-//        m_ContextEnemy  = NULL;
+//        m_PrevRule      = nullptr;
+//        m_NextRule      = nullptr;
+//        m_ContextEnemy  = nullptr;
 //
 //        m_AroundPeriod  = AROUNDENEMY_PERIOD + 10;
 //    }

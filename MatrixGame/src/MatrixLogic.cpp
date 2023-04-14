@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
 #include "MatrixLogic.hpp"
 #include "MatrixObject.hpp"
 #include "MatrixObjectBuilding.hpp"
@@ -15,6 +13,7 @@
 #include "Interface/MatrixHint.hpp"
 #include <stdio.h>
 #include "MatrixGameDll.hpp"
+#include "MatrixMultiSelection.hpp"
 
 // CPoint MatrixDir45[8]={	CPoint(-1,0),	CPoint(1,0),CPoint(0,-1),CPoint(0,1),
 //						CPoint(-1,-1),CPoint(1,1),CPoint(-1,1),CPoint(1,-1)};

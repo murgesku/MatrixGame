@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include "stdafx.h"
-
 #include "MatrixInstantDraw.hpp"
 
 #define MINIMAP_MAX_SCALE (3.0f)

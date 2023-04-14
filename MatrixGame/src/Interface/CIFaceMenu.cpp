@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
 #include "CIFaceMenu.h"
 #include "CInterface.h"
 #include "CIFaceStatic.h"

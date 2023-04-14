@@ -5,8 +5,6 @@
 
 #include <new>
 
-#include "../stdafx.h"
-
 #include "MatrixEffect.hpp"
 #include "MatrixEffectShleif.hpp"
 #include "../MatrixMap.hpp"

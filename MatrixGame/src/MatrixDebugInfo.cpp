@@ -3,9 +3,10 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
+#include "MatrixGame.h"
 #include "MatrixDebugInfo.hpp"
+#include "Math3D.hpp"
+#include "3g.hpp"
 
 #define DI_KEY_X 10
 #define DI_KEY_Y 10

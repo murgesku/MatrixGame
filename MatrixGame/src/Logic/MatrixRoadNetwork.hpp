@@ -6,6 +6,9 @@
 #pragma once
 
 #include "CMain.hpp"
+#include "CHeap.hpp"
+#include "CBuf.hpp"
+#include "Tracer.hpp"
 #include "BaseDef.hpp"
 
 class CMatrixCrotch;

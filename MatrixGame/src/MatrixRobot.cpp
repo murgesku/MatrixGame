@@ -6,8 +6,6 @@
 #include <new>
 #include <algorithm>
 
-#include "stdafx.h"
-
 #include "MatrixRobot.hpp"
 #include "MatrixObjectBuilding.hpp"
 #include "Logic/MatrixRule.h"

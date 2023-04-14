@@ -6,8 +6,6 @@
 #include <algorithm>
 #include <array> // for std::begin, std::end
 
-#include "../stdafx.h"
-
 #include "CIFaceButton.h"
 #include "CIFaceStatic.h"
 #include "CInterface.h"

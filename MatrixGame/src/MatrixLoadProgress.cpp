@@ -3,10 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
 #include "MatrixLoadProgress.hpp"
 #include "MatrixGameDll.hpp"
+#include "Math3D.hpp"
 
 static SLoadProcessProps lp_props[] = {
         {L"Preloading robots", 70},

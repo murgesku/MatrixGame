@@ -6,6 +6,9 @@
 #ifndef PROGRESS_BAR_INCLUDE
 #define PROGRESS_BAR_INCLUDE
 
+#include "Texture.hpp"
+#include "MatrixProgressBar.hpp"
+
 #define PB_BUILDING_WIDTH 200
 #define PB_ROBOT_WIDTH    70
 #define PB_CANNON_WIDTH   100

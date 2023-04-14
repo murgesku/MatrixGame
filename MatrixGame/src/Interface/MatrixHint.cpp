@@ -3,13 +3,12 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
 #include "MatrixHint.hpp"
 #include "../MatrixGameDll.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
 
+#include "StringConstants.hpp"
 #include "CFile.hpp"
 
 #include <vector>
