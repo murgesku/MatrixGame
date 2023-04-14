@@ -3,9 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-
-#include "stdafx.h"
-
 #include "MatrixSoundManager.hpp"
 #include "MatrixGameDll.hpp"
 #include "MatrixMap.hpp"
@@ -13,238 +10,344 @@
 #include <utils.hpp>
 #include <new>
 #include <map>
+#include <array>
+#include <vector>
+#include <fstream>
 
-CSound::SSoundItem CSound::m_Sounds[S_COUNT];
-CSound::SLID CSound::m_LayersI[SL_COUNT];
-int CSound::m_LastGroup;
-DWORD CSound::m_LastID;
-// CBuf                *CSound::m_AllSounds;
-CSound::SPlayedSound CSound::m_AllSounds[MAX_SOUNDS];
+#define MAX_SOUNDS 16  // 16 mixed sound for SL_ALL
+
+#define SOUND_FULL_VOLUME_DIST 200
+
+#define SOUND_POS_DIVIDER (GLOBAL_SCALE + GLOBAL_SCALE)
+
+namespace {
+
+struct SSoundItem
+{
+    static const uint32_t LOOPED = SETBIT(0);
+    static const uint32_t LOADED = SETBIT(1);
+    static const uint32_t NOTINITED = SETBIT(2);
+
+    float vol0{1};
+    float vol1{1};
+    float pan0{0};
+    float pan1{0};
+    uint32_t flags{NOTINITED};
+    float attn;
+    float radius;
+    float ttl;       // valid only for looped pos sounds
+    float fadetime;  // valid only for looped pos sounds
+    std::wstring path;
+
+    SSoundItem() = default;
+    ~SSoundItem() = default;
+
+    SSoundItem(const std::wstring& sndname)
+    : flags{0}
+    , path{sndname}
+    {}
+};
+
+struct SPlayedSound
+{
+    uint32_t id_internal;  // used in Rangers engine
+    uint32_t id;           // in robots. always uniq! there is no the same id's per game
+    float curvol;
+    float curpan;
+};
+
+struct SLID
+{
+    int index;
+    uint32_t id;
+
+    bool IsPlayed(void);
+};
+
+class CSoundArray
+{
+    struct SSndData
+    {
+        ESound snd;
+        uint32_t id;
+        float pan0, pan1;
+        float vol0, vol1;
+        float attn;
+        float ttl, fade;
+    };
+
+    std::vector<SSndData> m_array;
+
+public:
+    CSoundArray() = default;
+
+    void AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl = SL_ALL, ESoundInterruptFlag ifl = SEF_INTERRUPT);
+    void AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar_t *name)
+    {
+        uint32_t id = CSound::Play(pos, attn, pan0, pan1, vol0, vol1, name);
+        if (id == SOUND_ID_EMPTY)
+            return;
+
+        m_array.emplace_back();
+        auto& item = m_array.back();
+        item.id = id;
+        item.pan0 = pan0;
+        item.pan1 = pan1;
+        item.vol0 = vol0;
+        item.vol1 = vol1;
+        item.attn = attn;
+        item.snd = S_UNDEF;
+    }
+    void SetSoundPos(const D3DXVECTOR3 &pos);
+    void UpdateTimings(float ms);
+
+    int size() const
+    {
+        return m_array.size() * sizeof(SSndData);
+    }
+
+    bool empty() const
+    {
+        return m_array.empty();
+    }
+};
+
+std::array<SSoundItem, S_COUNT> m_Sounds;
+SPlayedSound m_AllSounds[MAX_SOUNDS];
 std::map<uint32_t, CSoundArray> m_PosSounds;
+SLID m_LayersI[SL_COUNT];  // indices in m_AllSounds array
+int m_LastGroup;
+uint32_t m_LastID;
 
-inline DWORD snd_create(wchar *n, int i, int j) {
+} // namespace
+
+uint32_t PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt);
+void StopPlayInternal(int deli);
+int FindSlotForSound(void);
+int FindSoundSlot(uint32_t id);
+int FindSoundSlotPlayedOnly(uint32_t id);
+// void ExtraRemove(void);  // extra remove sound from SL_ALL layer.
+
+///////////////////////////////////////////////////////////////////////////////
+inline uint32_t snd_create(wchar_t *n, int i, int j) {
     DTRACE();
     return g_RangersInterface->m_SoundCreate(n, i, j);
 }
 
-inline void snd_destroy(DWORD s) {
+inline void snd_destroy(uint32_t s) {
     DTRACE();
     g_RangersInterface->m_SoundDestroy(s);
 }
 
-inline void snd_pan(DWORD s, float v) {
+inline void snd_pan(uint32_t s, float v) {
     DTRACE();
     g_RangersInterface->m_SoundPan(s, v);
 }
-inline void snd_vol(DWORD s, float v) {
+inline void snd_vol(uint32_t s, float v) {
     DTRACE();
     g_RangersInterface->m_SoundVolume(s, v);
 }
 
-inline void snd_play(DWORD s) {
+inline void snd_play(uint32_t s) {
     DTRACE();
     g_RangersInterface->m_SoundPlay(s);
 }
+///////////////////////////////////////////////////////////////////////////////
 
 void CSound::Init(void) {
     DTRACE();
 
     m_LastGroup = 0;
     m_LastID = 0;
-    for (int i = 0; i < SL_COUNT; ++i) {
+    for (int i = 0; i < SL_COUNT; ++i)
+    {
         m_LayersI[i].index = -1;
     }
-#ifdef _DEBUG
-    for (int i = 0; i < S_COUNT; ++i) {
-        SETFLAG(m_Sounds[i].flags, SSoundItem::NOTINITED);
-    }
-#endif
-    for (int i = 0; i < MAX_SOUNDS; ++i) {
+
+    for (int i = 0; i < MAX_SOUNDS; ++i)
+    {
         m_AllSounds[i].id = SOUND_ID_EMPTY;
         m_AllSounds[i].id_internal = 0;
     }
 
     // sound initializatation
+    m_Sounds[S_BCLICK] =       SSoundItem(L"bclick");
+    m_Sounds[S_BENTER] =       SSoundItem(L"benter");
+    m_Sounds[S_BLEAVE] =       SSoundItem(L"bleave");
+    m_Sounds[S_MAP_PLUS] =     SSoundItem(L"map_plus");
+    m_Sounds[S_MAP_MINUS] =    SSoundItem(L"map_minus");
+    m_Sounds[S_PRESET_CLICK] = SSoundItem(L"preset_click");
+    m_Sounds[S_BUILD_CLICK] =  SSoundItem(L"build_click");
+    m_Sounds[S_CANCEL_CLICK] = SSoundItem(L"cancel_click");
 
-    new(&m_Sounds[S_BCLICK])       SSoundItem(L"bclick");
-    new(&m_Sounds[S_BENTER])       SSoundItem(L"benter");
-    new(&m_Sounds[S_BLEAVE])       SSoundItem(L"bleave");
-    new(&m_Sounds[S_MAP_PLUS])     SSoundItem(L"map_plus");
-    new(&m_Sounds[S_MAP_MINUS])    SSoundItem(L"map_minus");
-    new(&m_Sounds[S_PRESET_CLICK]) SSoundItem(L"preset_click");
-    new(&m_Sounds[S_BUILD_CLICK])  SSoundItem(L"build_click");
-    new(&m_Sounds[S_CANCEL_CLICK]) SSoundItem(L"cancel_click");
+    m_Sounds[S_DOORS_OPEN] =       SSoundItem(L"base_doors_open");
+    m_Sounds[S_DOORS_CLOSE] =      SSoundItem(L"base_doors_close");
+    m_Sounds[S_DOORS_CLOSE_STOP] = SSoundItem(L"base_doors_close_stop");
+    m_Sounds[S_PLATFORM_UP] =      SSoundItem(L"base_platform_up");
+    m_Sounds[S_PLATFORM_DOWN] =    SSoundItem(L"base_platform_down");
+    m_Sounds[S_PLATFORM_UP_STOP] = SSoundItem(L"base_platform_up_stop");
 
-    new(&m_Sounds[S_DOORS_OPEN])       SSoundItem(L"base_doors_open");
-    new(&m_Sounds[S_DOORS_CLOSE])      SSoundItem(L"base_doors_close");
-    new(&m_Sounds[S_DOORS_CLOSE_STOP]) SSoundItem(L"base_doors_close_stop");
-    new(&m_Sounds[S_PLATFORM_UP])      SSoundItem(L"base_platform_up");
-    new(&m_Sounds[S_PLATFORM_DOWN])    SSoundItem(L"base_platform_down");
-    new(&m_Sounds[S_PLATFORM_UP_STOP]) SSoundItem(L"base_platform_up_stop");
-    //    m_Sounds[S_BASE_AMBIENT     ].SSoundItem::SSoundItem(L"base_amb");
+    // m_Sounds[S_BASE_AMBIENT] = SSoundItem(L"base_amb");
+    // m_Sounds[S_TITAN_AMBIENT] = SSoundItem(L"titan_amb");
+    // m_Sounds[S_ELECTRONIC_AMBIENT] = SSoundItem(L"electronic_amb");
+    // m_Sounds[S_ENERGY_AMBIENT] = SSoundItem(L"energy_amb");
+    // m_Sounds[S_PLASMA_AMBIENT] = SSoundItem(L"plasma_amb");
+    // m_Sounds[S_REPAIR_AMBIENT] = SSoundItem(L"repair_amb");
 
-    // m_Sounds[S_TITAN_AMBIENT    ].SSoundItem::SSoundItem(L"titan_amb");
-    // m_Sounds[S_ELECTRONIC_AMBIENT].SSoundItem::SSoundItem(L"electronic_amb");
-    // m_Sounds[S_ENERGY_AMBIENT].SSoundItem::SSoundItem(L"energy_amb");
-    // m_Sounds[S_PLASMA_AMBIENT].SSoundItem::SSoundItem(L"plasma_amb");
-    // m_Sounds[S_REPAIR_AMBIENT].SSoundItem::SSoundItem(L"repair_amb");
+    m_Sounds[S_EXPLOSION_NORMAL] = SSoundItem(L"expl_norm");
+    m_Sounds[S_EXPLOSION_MISSILE] = SSoundItem(L"expl_missile");
+    m_Sounds[S_EXPLOSION_ROBOT_HIT] = SSoundItem(L"expl_rh");
+    m_Sounds[S_EXPLOSION_LASER_HIT] = SSoundItem(L"expl_lh");
+    m_Sounds[S_EXPLOSION_BUILDING_BOOM] = SSoundItem(L"expl_bb");
+    m_Sounds[S_EXPLOSION_BUILDING_BOOM2] = SSoundItem(L"expl_bb2");
+    m_Sounds[S_EXPLOSION_BUILDING_BOOM3] = SSoundItem(L"expl_bb3");
+    m_Sounds[S_EXPLOSION_BUILDING_BOOM4] = SSoundItem(L"expl_bb4");
+    m_Sounds[S_EXPLOSION_ROBOT_BOOM] = SSoundItem(L"expl_rb");
+    m_Sounds[S_EXPLOSION_ROBOT_BOOM_SMALL] = SSoundItem(L"expl_rbs");
+    m_Sounds[S_EXPLOSION_BIGBOOM] = SSoundItem(L"expl_bigboom");
+    m_Sounds[S_EXPLOSION_OBJECT] = SSoundItem(L"expl_obj");
 
-    new(&m_Sounds[S_EXPLOSION_NORMAL]) SSoundItem(L"expl_norm");
-    new(&m_Sounds[S_EXPLOSION_MISSILE]) SSoundItem(L"expl_missile");
-    new(&m_Sounds[S_EXPLOSION_ROBOT_HIT]) SSoundItem(L"expl_rh");
-    new(&m_Sounds[S_EXPLOSION_LASER_HIT]) SSoundItem(L"expl_lh");
-    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM]) SSoundItem(L"expl_bb");
-    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM2]) SSoundItem(L"expl_bb2");
-    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM3]) SSoundItem(L"expl_bb3");
-    new(&m_Sounds[S_EXPLOSION_BUILDING_BOOM4]) SSoundItem(L"expl_bb4");
-    new(&m_Sounds[S_EXPLOSION_ROBOT_BOOM]) SSoundItem(L"expl_rb");
-    new(&m_Sounds[S_EXPLOSION_ROBOT_BOOM_SMALL]) SSoundItem(L"expl_rbs");
-    new(&m_Sounds[S_EXPLOSION_BIGBOOM]) SSoundItem(L"expl_bigboom");
-    new(&m_Sounds[S_EXPLOSION_OBJECT]) SSoundItem(L"expl_obj");
+    m_Sounds[S_SPLASH] = SSoundItem(L"splash");
 
-    new(&m_Sounds[S_SPLASH]) SSoundItem(L"splash");
+    m_Sounds[S_EF_START] = SSoundItem(L"ef_start");  // elevator fields
+    m_Sounds[S_EF_CONTINUE] = SSoundItem(L"ef_cont");
+    m_Sounds[S_EF_END] = SSoundItem(L"ef_end");
 
-    new(&m_Sounds[S_EF_START]) SSoundItem(L"ef_start");  // elevator fields
-    new(&m_Sounds[S_EF_CONTINUE]) SSoundItem(L"ef_cont");
-    new(&m_Sounds[S_EF_END]) SSoundItem(L"ef_end");
+    m_Sounds[S_FLYER_VINT_START] = SSoundItem(L"fl_start");
+    m_Sounds[S_FLYER_VINT_CONTINUE] = SSoundItem(L"fl_cont");
 
-    new(&m_Sounds[S_FLYER_VINT_START]) SSoundItem(L"fl_start");
-    new(&m_Sounds[S_FLYER_VINT_CONTINUE]) SSoundItem(L"fl_cont");
+    m_Sounds[S_WEAPON_PLASMA] = SSoundItem(L"wplasma");
+    m_Sounds[S_WEAPON_VOLCANO] = SSoundItem(L"wvolcano");
+    m_Sounds[S_WEAPON_HOMING_MISSILE] = SSoundItem(L"wmissile");
+    m_Sounds[S_WEAPON_BOMB] = SSoundItem(L"wbomb");
+    m_Sounds[S_WEAPON_FLAMETHROWER] = SSoundItem(L"wflame");
+    m_Sounds[S_WEAPON_BIGBOOM] = SSoundItem(L"wbigboom");
+    m_Sounds[S_WEAPON_LIGHTENING] = SSoundItem(L"wlightening");
+    m_Sounds[S_WEAPON_LASER] = SSoundItem(L"wlaser");
+    m_Sounds[S_WEAPON_GUN] = SSoundItem(L"wgun");
+    m_Sounds[S_WEAPON_REPAIR] = SSoundItem(L"wrepair");
 
-    new(&m_Sounds[S_WEAPON_PLASMA]) SSoundItem(L"wplasma");
-    new(&m_Sounds[S_WEAPON_VOLCANO]) SSoundItem(L"wvolcano");
-    new(&m_Sounds[S_WEAPON_HOMING_MISSILE]) SSoundItem(L"wmissile");
-    new(&m_Sounds[S_WEAPON_BOMB]) SSoundItem(L"wbomb");
-    new(&m_Sounds[S_WEAPON_FLAMETHROWER]) SSoundItem(L"wflame");
-    new(&m_Sounds[S_WEAPON_BIGBOOM]) SSoundItem(L"wbigboom");
-    new(&m_Sounds[S_WEAPON_LIGHTENING]) SSoundItem(L"wlightening");
-    new(&m_Sounds[S_WEAPON_LASER]) SSoundItem(L"wlaser");
-    new(&m_Sounds[S_WEAPON_GUN]) SSoundItem(L"wgun");
-    new(&m_Sounds[S_WEAPON_REPAIR]) SSoundItem(L"wrepair");
+    m_Sounds[S_WEAPON_CANNON0] = SSoundItem(L"wcannon0");
+    m_Sounds[S_WEAPON_CANNON1] = SSoundItem(L"wcannon1");
+    m_Sounds[S_WEAPON_CANNON2] = SSoundItem(L"wcannon2");
+    m_Sounds[S_WEAPON_CANNON3] = SSoundItem(L"wcannon3");
 
-    new(&m_Sounds[S_WEAPON_CANNON0]) SSoundItem(L"wcannon0");
-    new(&m_Sounds[S_WEAPON_CANNON1]) SSoundItem(L"wcannon1");
-    new(&m_Sounds[S_WEAPON_CANNON2]) SSoundItem(L"wcannon2");
-    new(&m_Sounds[S_WEAPON_CANNON3]) SSoundItem(L"wcannon3");
+    m_Sounds[S_WEAPON_HIT_PLASMA] = SSoundItem(L"whplasma");
+    m_Sounds[S_WEAPON_HIT_VOLCANO] = SSoundItem(L"whvolcano");
+    m_Sounds[S_WEAPON_HIT_HOMING_MISSILE] = SSoundItem(L"whmissile");
+    m_Sounds[S_WEAPON_HIT_BOMB] = SSoundItem(L"whbomb");
+    m_Sounds[S_WEAPON_HIT_FLAMETHROWER] = SSoundItem(L"whflame");
+    m_Sounds[S_WEAPON_HIT_BIGBOOM] = SSoundItem(L"whbigboom");
+    m_Sounds[S_WEAPON_HIT_LIGHTENING] = SSoundItem(L"whlightening");
+    m_Sounds[S_WEAPON_HIT_LASER] = SSoundItem(L"whlaser");
+    m_Sounds[S_WEAPON_HIT_GUN] = SSoundItem(L"whgun");
+    m_Sounds[S_WEAPON_HIT_REPAIR] = SSoundItem(L"whrepair");
+    m_Sounds[S_WEAPON_HIT_ABLAZE] = SSoundItem(L"whablaze");
+    m_Sounds[S_WEAPON_HIT_SHORTED] = SSoundItem(L"whshorted");
+    m_Sounds[S_WEAPON_HIT_DEBRIS] = SSoundItem(L"whdebris");
 
-    new(&m_Sounds[S_WEAPON_HIT_PLASMA]) SSoundItem(L"whplasma");
-    new(&m_Sounds[S_WEAPON_HIT_VOLCANO]) SSoundItem(L"whvolcano");
-    new(&m_Sounds[S_WEAPON_HIT_HOMING_MISSILE]) SSoundItem(L"whmissile");
-    new(&m_Sounds[S_WEAPON_HIT_BOMB]) SSoundItem(L"whbomb");
-    new(&m_Sounds[S_WEAPON_HIT_FLAMETHROWER]) SSoundItem(L"whflame");
-    new(&m_Sounds[S_WEAPON_HIT_BIGBOOM]) SSoundItem(L"whbigboom");
-    new(&m_Sounds[S_WEAPON_HIT_LIGHTENING]) SSoundItem(L"whlightening");
-    new(&m_Sounds[S_WEAPON_HIT_LASER]) SSoundItem(L"whlaser");
-    new(&m_Sounds[S_WEAPON_HIT_GUN]) SSoundItem(L"whgun");
-    new(&m_Sounds[S_WEAPON_HIT_REPAIR]) SSoundItem(L"whrepair");
-    new(&m_Sounds[S_WEAPON_HIT_ABLAZE]) SSoundItem(L"whablaze");
-    new(&m_Sounds[S_WEAPON_HIT_SHORTED]) SSoundItem(L"whshorted");
-    new(&m_Sounds[S_WEAPON_HIT_DEBRIS]) SSoundItem(L"whdebris");
+    m_Sounds[S_WEAPON_HIT_CANNON0] = SSoundItem(L"whcannon0");
+    m_Sounds[S_WEAPON_HIT_CANNON1] = SSoundItem(L"whcannon1");
+    m_Sounds[S_WEAPON_HIT_CANNON2] = SSoundItem(L"whcannon2");
+    m_Sounds[S_WEAPON_HIT_CANNON3] = SSoundItem(L"whcannon3");
 
-    new(&m_Sounds[S_WEAPON_HIT_CANNON0]) SSoundItem(L"whcannon0");
-    new(&m_Sounds[S_WEAPON_HIT_CANNON1]) SSoundItem(L"whcannon1");
-    new(&m_Sounds[S_WEAPON_HIT_CANNON2]) SSoundItem(L"whcannon2");
-    new(&m_Sounds[S_WEAPON_HIT_CANNON3]) SSoundItem(L"whcannon3");
+    m_Sounds[S_ROBOT_BUILD_END] = SSoundItem(L"r_build_e");
+    m_Sounds[S_ROBOT_BUILD_END_ALT] = SSoundItem(L"r_build_ea");
 
-    new(&m_Sounds[S_ROBOT_BUILD_END]) SSoundItem(L"r_build_e");
-    new(&m_Sounds[S_ROBOT_BUILD_END_ALT]) SSoundItem(L"r_build_ea");
+    m_Sounds[S_TURRET_BUILD_START] = SSoundItem(L"t_build_s");
+    m_Sounds[S_TURRET_BUILD_0] = SSoundItem(L"t_build_0");
+    m_Sounds[S_TURRET_BUILD_1] = SSoundItem(L"t_build_1");
+    m_Sounds[S_TURRET_BUILD_2] = SSoundItem(L"t_build_2");
+    m_Sounds[S_TURRET_BUILD_3] = SSoundItem(L"t_build_3");
 
-    new(&m_Sounds[S_TURRET_BUILD_START]) SSoundItem(L"t_build_s");
-    new(&m_Sounds[S_TURRET_BUILD_0]) SSoundItem(L"t_build_0");
-    new(&m_Sounds[S_TURRET_BUILD_1]) SSoundItem(L"t_build_1");
-    new(&m_Sounds[S_TURRET_BUILD_2]) SSoundItem(L"t_build_2");
-    new(&m_Sounds[S_TURRET_BUILD_3]) SSoundItem(L"t_build_3");
+    m_Sounds[S_FLYER_BUILD_END] = SSoundItem(L"f_build_e");
+    m_Sounds[S_FLYER_BUILD_END_ALT] = SSoundItem(L"f_build_ea");
 
-    new(&m_Sounds[S_FLYER_BUILD_END]) SSoundItem(L"f_build_e");
-    new(&m_Sounds[S_FLYER_BUILD_END_ALT]) SSoundItem(L"f_build_ea");
+    m_Sounds[S_YES_SIR_1] = SSoundItem(L"s_yes_1");
+    m_Sounds[S_YES_SIR_2] = SSoundItem(L"s_yes_2");
+    m_Sounds[S_YES_SIR_3] = SSoundItem(L"s_yes_3");
+    m_Sounds[S_YES_SIR_4] = SSoundItem(L"s_yes_4");
+    m_Sounds[S_YES_SIR_5] = SSoundItem(L"s_yes_5");
 
-    new(&m_Sounds[S_YES_SIR_1]) SSoundItem(L"s_yes_1");
-    new(&m_Sounds[S_YES_SIR_2]) SSoundItem(L"s_yes_2");
-    new(&m_Sounds[S_YES_SIR_3]) SSoundItem(L"s_yes_3");
-    new(&m_Sounds[S_YES_SIR_4]) SSoundItem(L"s_yes_4");
-    new(&m_Sounds[S_YES_SIR_5]) SSoundItem(L"s_yes_5");
+    m_Sounds[S_SELECTION_1] = SSoundItem(L"s_selection_1");
+    m_Sounds[S_SELECTION_2] = SSoundItem(L"s_selection_2");
+    m_Sounds[S_SELECTION_3] = SSoundItem(L"s_selection_3");
+    m_Sounds[S_SELECTION_4] = SSoundItem(L"s_selection_4");
+    m_Sounds[S_SELECTION_5] = SSoundItem(L"s_selection_5");
+    m_Sounds[S_SELECTION_6] = SSoundItem(L"s_selection_6");
+    m_Sounds[S_SELECTION_7] = SSoundItem(L"s_selection_7");
 
-    new(&m_Sounds[S_SELECTION_1]) SSoundItem(L"s_selection_1");
-    new(&m_Sounds[S_SELECTION_2]) SSoundItem(L"s_selection_2");
-    new(&m_Sounds[S_SELECTION_3]) SSoundItem(L"s_selection_3");
-    new(&m_Sounds[S_SELECTION_4]) SSoundItem(L"s_selection_4");
-    new(&m_Sounds[S_SELECTION_5]) SSoundItem(L"s_selection_5");
-    new(&m_Sounds[S_SELECTION_6]) SSoundItem(L"s_selection_6");
-    new(&m_Sounds[S_SELECTION_7]) SSoundItem(L"s_selection_7");
+    m_Sounds[S_BUILDING_SEL] = SSoundItem(L"s_building_sel");
+    m_Sounds[S_BASE_SEL] = SSoundItem(L"s_base_sel");
 
-    new(&m_Sounds[S_BUILDING_SEL]) SSoundItem(L"s_building_sel");
-    new(&m_Sounds[S_BASE_SEL]) SSoundItem(L"s_base_sel");
+    m_Sounds[S_CHASSIS_PNEUMATIC_LOOP] = SSoundItem(L"s_chassis_pneumatic_l");
+    m_Sounds[S_CHASSIS_WHEEL_LOOP] = SSoundItem(L"s_chassis_wheel_l");
+    m_Sounds[S_CHASSIS_TRACK_LOOP] = SSoundItem(L"s_chassis_track_l");
+    m_Sounds[S_CHASSIS_HOVERCRAFT_LOOP] = SSoundItem(L"s_chassis_hovercraft_l");
+    m_Sounds[S_CHASSIS_ANTIGRAVITY_LOOP] = SSoundItem(L"s_chassis_antigravity_l");
 
-    new(&m_Sounds[S_CHASSIS_PNEUMATIC_LOOP]) SSoundItem(L"s_chassis_pneumatic_l");
-    new(&m_Sounds[S_CHASSIS_WHEEL_LOOP]) SSoundItem(L"s_chassis_wheel_l");
-    new(&m_Sounds[S_CHASSIS_TRACK_LOOP]) SSoundItem(L"s_chassis_track_l");
-    new(&m_Sounds[S_CHASSIS_HOVERCRAFT_LOOP]) SSoundItem(L"s_chassis_hovercraft_l");
-    new(&m_Sounds[S_CHASSIS_ANTIGRAVITY_LOOP]) SSoundItem(L"s_chassis_antigravity_l");
+    m_Sounds[S_HULL_PASSIVE] = SSoundItem(L"s_hull_passive");
+    m_Sounds[S_HULL_ACTIVE] = SSoundItem(L"s_hull_active");
+    m_Sounds[S_HULL_FIREPROOF] = SSoundItem(L"s_hull_fireproof");
+    m_Sounds[S_HULL_PLASMIC] = SSoundItem(L"s_hull_plasmic");
+    m_Sounds[S_HULL_NUCLEAR] = SSoundItem(L"s_hull_nuclear");
+    m_Sounds[S_HULL_6] = SSoundItem(L"s_hull_6");
 
-    new(&m_Sounds[S_HULL_PASSIVE]) SSoundItem(L"s_hull_passive");
-    new(&m_Sounds[S_HULL_ACTIVE]) SSoundItem(L"s_hull_active");
-    new(&m_Sounds[S_HULL_FIREPROOF]) SSoundItem(L"s_hull_fireproof");
-    new(&m_Sounds[S_HULL_PLASMIC]) SSoundItem(L"s_hull_plasmic");
-    new(&m_Sounds[S_HULL_NUCLEAR]) SSoundItem(L"s_hull_nuclear");
-    new(&m_Sounds[S_HULL_6]) SSoundItem(L"s_hull_6");
+    m_Sounds[S_MAINTENANCE] = SSoundItem(L"s_maintenance");
+    m_Sounds[S_MAINTENANCE_ON] = SSoundItem(L"s_maintenance_on");
+    m_Sounds[S_RESINCOME] = SSoundItem(L"s_resincome");
 
-    new(&m_Sounds[S_MAINTENANCE]) SSoundItem(L"s_maintenance");
-    new(&m_Sounds[S_MAINTENANCE_ON]) SSoundItem(L"s_maintenance_on");
-    new(&m_Sounds[S_RESINCOME]) SSoundItem(L"s_resincome");
+    m_Sounds[S_SIDE_UNDER_ATTACK_1] = SSoundItem(L"s_side_attacked_1");
+    m_Sounds[S_SIDE_UNDER_ATTACK_2] = SSoundItem(L"s_side_attacked_2");
+    m_Sounds[S_SIDE_UNDER_ATTACK_3] = SSoundItem(L"s_side_attacked_3");
 
-    new(&m_Sounds[S_SIDE_UNDER_ATTACK_1]) SSoundItem(L"s_side_attacked_1");
-    new(&m_Sounds[S_SIDE_UNDER_ATTACK_2]) SSoundItem(L"s_side_attacked_2");
-    new(&m_Sounds[S_SIDE_UNDER_ATTACK_3]) SSoundItem(L"s_side_attacked_3");
+    m_Sounds[S_ENEMY_BASE_CAPTURED] = SSoundItem(L"s_eb_cap");
+    m_Sounds[S_ENEMY_FACTORY_CAPTURED] = SSoundItem(L"s_ef_cap");
+    m_Sounds[S_PLAYER_BASE_CAPTURED] = SSoundItem(L"s_pb_cap");
+    m_Sounds[S_PLAYER_FACTORY_CAPTURED] = SSoundItem(L"s_pf_cap");
 
-    new(&m_Sounds[S_ENEMY_BASE_CAPTURED]) SSoundItem(L"s_eb_cap");
-    new(&m_Sounds[S_ENEMY_FACTORY_CAPTURED]) SSoundItem(L"s_ef_cap");
-    new(&m_Sounds[S_PLAYER_BASE_CAPTURED]) SSoundItem(L"s_pb_cap");
-    new(&m_Sounds[S_PLAYER_FACTORY_CAPTURED]) SSoundItem(L"s_pf_cap");
+    m_Sounds[S_BASE_KILLED] = SSoundItem(L"s_base_dead");
+    m_Sounds[S_FACTORY_KILLED] = SSoundItem(L"s_fa_dead");
+    m_Sounds[S_BUILDING_KILLED] = SSoundItem(L"s_building_dead");
 
-    new(&m_Sounds[S_BASE_KILLED]) SSoundItem(L"s_base_dead");
-    new(&m_Sounds[S_FACTORY_KILLED]) SSoundItem(L"s_fa_dead");
-    new(&m_Sounds[S_BUILDING_KILLED]) SSoundItem(L"s_building_dead");
+    m_Sounds[S_ORDER_INPROGRESS1] = SSoundItem(L"s_ord_inprogress1");
+    m_Sounds[S_ORDER_INPROGRESS2] = SSoundItem(L"s_ord_inprogress2");
 
-    new(&m_Sounds[S_ORDER_INPROGRESS1]) SSoundItem(L"s_ord_inprogress1");
-    new(&m_Sounds[S_ORDER_INPROGRESS2]) SSoundItem(L"s_ord_inprogress2");
+    m_Sounds[S_ORDER_ACCEPT] = SSoundItem(L"s_ord_accept");
+    m_Sounds[S_ORDER_ATTACK] = SSoundItem(L"s_ord_attack");
+    m_Sounds[S_ORDER_CAPTURE] = SSoundItem(L"s_ord_capture");
+    m_Sounds[S_ORDER_CAPTURE_PUSH] = SSoundItem(L"s_ord_capture_push");
+    m_Sounds[S_ORDER_REPAIR] = SSoundItem(L"s_ord_repair");
 
-    new(&m_Sounds[S_ORDER_ACCEPT]) SSoundItem(L"s_ord_accept");
-    new(&m_Sounds[S_ORDER_ATTACK]) SSoundItem(L"s_ord_attack");
-    new(&m_Sounds[S_ORDER_CAPTURE]) SSoundItem(L"s_ord_capture");
-    new(&m_Sounds[S_ORDER_CAPTURE_PUSH]) SSoundItem(L"s_ord_capture_push");
-    new(&m_Sounds[S_ORDER_REPAIR]) SSoundItem(L"s_ord_repair");
+    m_Sounds[S_ORDER_AUTO_ATTACK] = SSoundItem(L"s_orda_attack");
+    m_Sounds[S_ORDER_AUTO_CAPTURE] = SSoundItem(L"s_orda_capture");
+    m_Sounds[S_ORDER_AUTO_DEFENCE] = SSoundItem(L"s_orda_defence");
 
-    new(&m_Sounds[S_ORDER_AUTO_ATTACK]) SSoundItem(L"s_orda_attack");
-    new(&m_Sounds[S_ORDER_AUTO_CAPTURE]) SSoundItem(L"s_orda_capture");
-    new(&m_Sounds[S_ORDER_AUTO_DEFENCE]) SSoundItem(L"s_orda_defence");
+    m_Sounds[S_TERRON_PAIN1] = SSoundItem(L"s_terron_pain1");
+    m_Sounds[S_TERRON_PAIN2] = SSoundItem(L"s_terron_pain2");
+    m_Sounds[S_TERRON_PAIN3] = SSoundItem(L"s_terron_pain3");
+    m_Sounds[S_TERRON_PAIN4] = SSoundItem(L"s_terron_pain4");
+    m_Sounds[S_TERRON_KILLED] = SSoundItem(L"s_terron_killed");
 
-    new(&m_Sounds[S_TERRON_PAIN1]) SSoundItem(L"s_terron_pain1");
-    new(&m_Sounds[S_TERRON_PAIN2]) SSoundItem(L"s_terron_pain2");
-    new(&m_Sounds[S_TERRON_PAIN3]) SSoundItem(L"s_terron_pain3");
-    new(&m_Sounds[S_TERRON_PAIN4]) SSoundItem(L"s_terron_pain4");
-    new(&m_Sounds[S_TERRON_KILLED]) SSoundItem(L"s_terron_killed");
+    m_Sounds[S_ORDER_CAPTURE_FUCK_OFF] = SSoundItem(L"s_ord_capoff");
 
-    new(&m_Sounds[S_ORDER_CAPTURE_FUCK_OFF]) SSoundItem(L"s_ord_capoff");
+    m_Sounds[S_ROBOT_UPAL] = SSoundItem(L"s_upal");
 
-    new(&m_Sounds[S_ROBOT_UPAL]) SSoundItem(L"s_upal");
+    m_Sounds[S_CANTBE] = SSoundItem(L"s_cantbe");
 
-    new(&m_Sounds[S_CANTBE]) SSoundItem(L"s_cantbe");
+    m_Sounds[S_SPECIAL_SLOT] = SSoundItem(L"");
 
-    new(&m_Sounds[S_SPECIAL_SLOT]) SSoundItem(L"");
-
-#ifdef _DEBUG
-    for (int i = 0; i < S_COUNT; ++i) {
-        if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED)) {
-            // ERROR_S((std::wstring(L"Sound ") + i + L" not initialized!").Get());
-            MessageBoxW(NULL, utils::format(L"Sound %d not initialized!", i).c_str(), L"Error", MB_ICONERROR);
-            debugbreak();
+    for (int i = 0; i < S_COUNT; ++i)
+    {
+        if (FLAG(m_Sounds[i].flags, SSoundItem::NOTINITED))
+        {
+            throw std::runtime_error(utils::format("Sound %d not initialized!", i));
         }
     }
-#endif
 }
 
 struct SDS {
-    DWORD key;
+    uint32_t key;
     CSoundArray *sa;
     float ms;
 };
@@ -252,7 +355,8 @@ static bool update_positions(uint32_t key, CSoundArray& sa, SDS& kk)
 {
     DTRACE();
 
-    if (sa.Len() == 0) {
+    if (sa.empty())
+    {
         kk.key = key;
         kk.sa = &sa;
         return true;
@@ -266,7 +370,7 @@ static bool update_positions(uint32_t key, CSoundArray& sa, SDS& kk)
     if ((key & 0x02000000) != 0)
         y = -y;
 
-    DWORD z = (key >> 26);  // only positive
+    uint32_t z = (key >> 26);  // only positive
     D3DXVECTOR3 pos(float(x * SOUND_POS_DIVIDER), float(y * SOUND_POS_DIVIDER), float(z * SOUND_POS_DIVIDER));
     sa.UpdateTimings(kk.ms);
     sa.SetSoundPos(pos);
@@ -364,7 +468,7 @@ void CSound::SureLoaded(ESound snd) {
             // load sound
             CBlockPar *bps = g_MatrixData->BlockGet(L"Sounds");
 
-            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].Path());
+            CBlockPar *bp = bps->BlockGetNE(m_Sounds[snd].path);
             if (bp == NULL) {
                 bp = bps->BlockGetNE(L"dummy");
             }
@@ -408,13 +512,13 @@ void CSound::SureLoaded(ESound snd) {
                 m_Sounds[snd].radius = 1.0f / 0.002f;
             }
 
-            m_Sounds[snd].Path() = bp->ParGet(L"path");
+            m_Sounds[snd].path= bp->ParGet(L"path");
             SETFLAG(m_Sounds[snd].flags, SSoundItem::LOADED);
         }
     }
 }
 
-// void CSound::ExtraRemove(void)
+// void ExtraRemove(void)
 //{
 //    float minv = 100;
 //    int deli = -1;
@@ -440,7 +544,7 @@ void CSound::SureLoaded(ESound snd) {
 //
 //}
 
-void CSound::StopPlayInternal(int deli) {
+void StopPlayInternal(int deli) {
     DTRACE();
     // snd_vol(m_AllSounds[deli].id_internal,0);
     snd_destroy(m_AllSounds[deli].id_internal);
@@ -448,7 +552,7 @@ void CSound::StopPlayInternal(int deli) {
     m_AllSounds[deli].id = SOUND_ID_EMPTY;
 }
 
-int CSound::FindSoundSlot(DWORD id) {
+int FindSoundSlot(uint32_t id) {
     DTRACE();
     for (int i = 0; i < MAX_SOUNDS; ++i) {
         if (m_AllSounds[i].id == id) {
@@ -458,7 +562,7 @@ int CSound::FindSoundSlot(DWORD id) {
     return -1;
 }
 
-int CSound::FindSoundSlotPlayedOnly(DWORD id) {
+int FindSoundSlotPlayedOnly(uint32_t id) {
     DTRACE();
     int i = FindSoundSlot(id);
     if (i >= 0) {
@@ -472,7 +576,7 @@ int CSound::FindSoundSlotPlayedOnly(DWORD id) {
     return -1;
 }
 
-int CSound::FindSlotForSound(void) {
+int FindSlotForSound(void) {
     DTRACE();
     float minv = 100;
     int deli = -1;
@@ -501,31 +605,37 @@ int CSound::FindSlotForSound(void) {
     return deli;
 }
 
-DWORD CSound::Play(const wchar *name, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t CSound::Play(const wchar_t *name, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (!g_RangersInterface)
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path() = name;
+    m_Sounds[S_SPECIAL_SLOT].path = name;
 
     return Play(S_SPECIAL_SLOT, pos, sl, interrupt);
 }
 
-DWORD CSound::Play(const wchar *name, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t CSound::Play(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt)
+{
+    SureLoaded(snd);
+    return PlayInternal(snd, vol, pan, sl, interrupt);
+}
+
+uint32_t CSound::Play(const wchar_t *name, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (!g_RangersInterface)
         return SOUND_ID_EMPTY;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path() = name;
+    m_Sounds[S_SPECIAL_SLOT].path = name;
 
     return Play(S_SPECIAL_SLOT, sl, interrupt);
 }
 
-DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
+uint32_t CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar_t *name) {
     DTRACE();
 
     if (!g_RangersInterface)
@@ -566,7 +676,7 @@ DWORD CSound::Play(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, f
     return m_AllSounds[si].id;
 }
 
-bool CSound::IsSoundPlay(DWORD id) {
+bool CSound::IsSoundPlay(uint32_t id) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -585,18 +695,18 @@ bool CSound::IsSoundPlay(DWORD id) {
     return false;
 }
 
-bool CSound::SLID::IsPlayed(void) {
+bool SLID::IsPlayed(void) {
     DTRACE();
 
     if (index >= 0 && index < MAX_SOUNDS) {
-        if (CSound::m_AllSounds[index].id == id) {
-            return g_RangersInterface->m_SoundIsPlay(CSound::m_AllSounds[index].id_internal) != 0;
+        if (m_AllSounds[index].id == id) {
+            return g_RangersInterface->m_SoundIsPlay(m_AllSounds[index].id_internal) != 0;
         }
     }
     return false;
 }
 
-DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -610,19 +720,19 @@ DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESo
 
         int si;
 
-        DWORD newid = m_LastID++;
+        uint32_t newid = m_LastID++;
 
         if (sl != SL_ALL) {
             if (interrupt == SEF_SKIP && m_LayersI[sl].IsPlayed()) {
                 return SOUND_ID_EMPTY;
             }
-            LayerOff(sl);
+            CSound::LayerOff(sl);
             m_LayersI[sl].id = newid;
         }
 
         si = FindSlotForSound();
         // TODO: non-const pointer is required here for no reason
-        wchar_t* path = const_cast<wchar_t*>(m_Sounds[snd].Path().c_str());
+        wchar_t* path = const_cast<wchar_t*>(m_Sounds[snd].path.c_str());
         m_AllSounds[si].id_internal =
                 snd_create(path, m_LastGroup++, FLAG(m_Sounds[snd].flags, SSoundItem::LOOPED));
         m_AllSounds[si].id = newid;
@@ -640,7 +750,7 @@ DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESo
         //#if defined _TRACE || defined _DEBUG
         //    } catch (...)
         //    {
-        //        ERROR_S(L"Problem with sound: " + m_Sounds[snd].Path());
+        //        ERROR_S(L"Problem with sound: " + m_Sounds[snd].path);
         //    }
         //#endif
     }
@@ -649,7 +759,7 @@ DWORD CSound::PlayInternal(ESound snd, float vol, float pan, ESoundLayer sl, ESo
     }
 }
 
-DWORD CSound::Play(ESound snd, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t CSound::Play(ESound snd, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -662,7 +772,7 @@ DWORD CSound::Play(ESound snd, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     }
 }
 
-DWORD CSound::Play(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t CSound::Play(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -704,7 +814,7 @@ void CSound::CalcPanVol(const D3DXVECTOR3 &pos, float attn, float pan0, float pa
     }
 }
 
-DWORD CSound::Play(DWORD id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
+uint32_t CSound::Play(uint32_t id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag interrupt) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -733,7 +843,7 @@ DWORD CSound::Play(DWORD id, ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
     }
 }
 
-DWORD CSound::ChangePos(DWORD id, ESound snd, const D3DXVECTOR3 &pos) {
+uint32_t CSound::ChangePos(uint32_t id, ESound snd, const D3DXVECTOR3 &pos) {
     DTRACE();
 
     if (g_RangersInterface) {
@@ -772,7 +882,7 @@ void CSound::StopPlayAllSounds(void) {
     }
 }
 
-void CSound::StopPlay(DWORD id) {
+void CSound::StopPlay(uint32_t id) {
     DTRACE();
 
     if (id == SOUND_ID_EMPTY)
@@ -787,14 +897,20 @@ void CSound::StopPlay(DWORD id) {
     }
 }
 
-inline DWORD CSound::Pos2Key(const D3DXVECTOR3 &pos) {
+float CSound::GetSoundMaxDistSQ(ESound snd)
+{
+    SureLoaded(snd);
+    return m_Sounds[snd].radius * m_Sounds[snd].radius;
+}
+
+inline uint32_t CSound::Pos2Key(const D3DXVECTOR3 &pos) {
     DTRACE();
 
     int x = Float2Int(pos.x / SOUND_POS_DIVIDER);
     int y = Float2Int(pos.y / SOUND_POS_DIVIDER);
     int z = Float2Int(pos.z / SOUND_POS_DIVIDER);
 
-    DWORD key = 0;
+    uint32_t key = 0;
 
     if (x < 0) {
         x = -x;
@@ -817,7 +933,7 @@ inline DWORD CSound::Pos2Key(const D3DXVECTOR3 &pos) {
 
     key |= (x & 31) | ((x & 4064) << 5);
     key |= ((y & 31) << 5) | ((y & 4064) << (8 + 5));
-    key |= ((DWORD)z) << 26;
+    key |= ((uint32_t)z) << 26;
 
     return key;
 }
@@ -829,7 +945,7 @@ void CSound::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
 
     if (!g_RangersInterface)
         return;
-    DWORD key = Pos2Key(pos);
+    uint32_t key = Pos2Key(pos);
 
     if (!m_PosSounds.contains(key))
     {
@@ -838,25 +954,25 @@ void CSound::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl,
     m_PosSounds[key].AddSound(snd, pos, sl, ifl);
 }
 
-void CSound::AddSound(const wchar *name, const D3DXVECTOR3 &pos) {
+void CSound::AddSound(const wchar_t *name, const D3DXVECTOR3 &pos) {
     DTRACE();
     if (!g_RangersInterface)
         return;
 
     RESETFLAG(m_Sounds[S_SPECIAL_SLOT].flags, SSoundItem::LOADED);
-    m_Sounds[S_SPECIAL_SLOT].Path() = name;
+    m_Sounds[S_SPECIAL_SLOT].path = name;
     SureLoaded(S_SPECIAL_SLOT);
 
     AddSound(pos, m_Sounds[S_SPECIAL_SLOT].attn, m_Sounds[S_SPECIAL_SLOT].pan0, m_Sounds[S_SPECIAL_SLOT].pan1,
-             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].Path().c_str());
+             m_Sounds[S_SPECIAL_SLOT].vol0, m_Sounds[S_SPECIAL_SLOT].vol1, m_Sounds[S_SPECIAL_SLOT].path.c_str());
 }
 
-void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar *name) {
+void CSound::AddSound(const D3DXVECTOR3 &pos, float attn, float pan0, float pan1, float vol0, float vol1, const wchar_t *name) {
     DTRACE();
 
     if (!g_RangersInterface)
         return;
-    DWORD key = Pos2Key(pos);
+    uint32_t key = Pos2Key(pos);
 
     if (!m_PosSounds.contains(key))
     {
@@ -877,139 +993,136 @@ void CSound::Clear(void) {
         }
     }
 
-    for (int i = 0; i < S_COUNT; ++i) {
-        m_Sounds[i].Release();
-    }
-
     m_PosSounds.clear();
 }
 
-void CSoundArray::UpdateTimings(float ms) {
+void CSoundArray::UpdateTimings(float ms)
+{
     DTRACE();
 
-    if (g_RangersInterface)
+    if (!g_RangersInterface)
     {
-        for (auto iter = m_array.begin(); iter < m_array.end();)
+        m_array.clear();
+        return;
+    }
+
+    for (auto iter = m_array.begin(); iter < m_array.end();)
+    {
+        if (iter->snd == S_UNDEF)
         {
-            if (iter->snd == S_UNDEF)
+            ++iter;
+            continue;
+        }
+
+        int idx = FindSoundSlotPlayedOnly(iter->id);
+        if (idx < 0)
+        {
+            iter = m_array.erase(iter);
+            continue;
+        }
+
+        if (iter->ttl < 0)
+        {
+            if (iter->fade < 0)
             {
-                ++iter;
-                continue;
-            }
-            int idx = CSound::FindSoundSlotPlayedOnly(iter->id);
-            if (idx >= 0) {
-                if (iter->ttl < 0) {
-                    if (iter->fade < 0) {
-                        if (iter->id == 1)
-                            debugbreak();
-
-                        CSound::StopPlayInternal(idx);
-
-                        iter = m_array.erase(iter);
-                        continue;
-                    }
-
-                    iter->fade -= ms;
+                if (iter->id == 1)
+                {
+                    debugbreak();
                 }
-                else {
-                    iter->ttl -= ms;
-                    if (iter->ttl < 0) {
-                        iter->ttl = -(iter->fade);
-                    }
-                }
-            }
-            else {
+
+                StopPlayInternal(idx);
+
                 iter = m_array.erase(iter);
                 continue;
             }
 
-            ++iter;
+            iter->fade -= ms;
         }
-    }
-    else
-    {
-        m_array.clear();
+        else
+        {
+            iter->ttl -= ms;
+            if (iter->ttl < 0)
+            {
+                iter->ttl = -(iter->fade);
+            }
+        }
+
+        ++iter;
     }
 }
 
-void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos) {
+void CSoundArray::SetSoundPos(const D3DXVECTOR3 &pos)
+{
     DTRACE();
 
-    if (g_RangersInterface) {
+    if (!g_RangersInterface)
+    {
+        m_array.clear();
+        return;
+    }
+
+    for (auto iter = m_array.begin(); iter < m_array.end();)
+    {
         DCP();
-        for (auto iter = m_array.begin(); iter < m_array.end();)
+        int idx = FindSoundSlotPlayedOnly(iter->id);
+        if (idx < 0)
         {
+            iter = m_array.erase(iter);
+            continue;
+        }
+
+        DCP();
+        float k = 1.0f;
+        if (iter->ttl < 0 && iter->snd != S_UNDEF) {
+            k = -iter->fade / iter->ttl;
+        }
+
+        DCP();
+        float pan, vol;
+        CSound::CalcPanVol(pos, iter->attn, iter->pan0, iter->pan1, iter->vol0, iter->vol1, &pan, &vol);
+
+        DCP();
+        vol *= k;
+        DCP();
+        if (vol < 0.00001f) {
             DCP();
-            int idx = CSound::FindSoundSlotPlayedOnly(iter->id);
-            if (idx >= 0) {
-                DCP();
-                float k = 1.0f;
-                if (iter->ttl < 0 && iter->snd != S_UNDEF) {
-                    k = -iter->fade / iter->ttl;
-                }
+            StopPlayInternal(idx);
+            DCP();
 
-                DCP();
-                float pan, vol;
-                CSound::CalcPanVol(pos, iter->attn, iter->pan0, iter->pan1, iter->vol0, iter->vol1, &pan, &vol);
-
-                DCP();
-                vol *= k;
-                DCP();
-                if (vol < 0.00001f) {
-                    DCP();
-                    CSound::StopPlayInternal(idx);
-                    DCP();
-
-                    iter = m_array.erase(iter);
-                    continue;
-                }
+            iter = m_array.erase(iter);
+            continue;
+        }
 #if defined _TRACE || defined _DEBUG
-                try {
+        try {
 #endif
-                    DCP();
+            DCP();
 
-                    snd_pan(CSound::m_AllSounds[idx].id_internal, pan);
-                    DCP();
-                    snd_vol(CSound::m_AllSounds[idx].id_internal, vol);
-                    DCP();
+            snd_pan(m_AllSounds[idx].id_internal, pan);
+            DCP();
+            snd_vol(m_AllSounds[idx].id_internal, vol);
+            DCP();
 
 #if defined _TRACE || defined _DEBUG
-                }
-                catch (...) {
-                    if (iter->snd < S_COUNT && (int)iter->snd >= 0) {
-                        ERROR_S2(L"Problem with sound: ", CSound::m_Sounds[iter->snd].Path().c_str());
-                    }
-                    else {
-                        ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)iter->snd).c_str());
-                    }
-                }
-#endif
-                DCP();
-
-                CSound::m_AllSounds[idx].curpan = pan;
-                CSound::m_AllSounds[idx].curvol = vol;
-
-                // g_MatrixMap->m_DI.T(std::wstring(vol).Get(), L"1212");
+        }
+        catch (...) {
+            if (iter->snd < S_COUNT && (int)iter->snd >= 0) {
+                ERROR_S2(L"Problem with sound: ", m_Sounds[iter->snd].path.c_str());
             }
             else {
-                DCP();
-
-                iter = m_array.erase(iter);
-                continue;
+                ERROR_S2(L"Problem with sound: ", utils::format(L"%d", (int)iter->snd).c_str());
             }
-
-            ++iter;
         }
-    }
-    else {
-        DCP();
+#endif
 
-        m_array.clear();
+        m_AllSounds[idx].curpan = pan;
+        m_AllSounds[idx].curvol = vol;
+
+        ++iter;
     }
-    DCP();
 }
 
-void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag ifl) {
+void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, ESoundInterruptFlag ifl)
+{
     DTRACE();
 
     for (auto iter = m_array.begin(); iter < m_array.end(); ++iter)
@@ -1030,48 +1143,41 @@ void CSoundArray::AddSound(ESound snd, const D3DXVECTOR3 &pos, ESoundLayer sl, E
 
             // oops. the same sound
             // only set ttl and fade
-            iter->ttl = CSound::m_Sounds[snd].ttl;
-            iter->fade = CSound::m_Sounds[snd].fadetime;
+            iter->ttl = m_Sounds[snd].ttl;
+            iter->fade = m_Sounds[snd].fadetime;
             return;
         }
     }
 
-    DWORD id = CSound::Play(snd, pos, sl, ifl);
+    uint32_t id = CSound::Play(snd, pos, sl, ifl);
     if (id == SOUND_ID_EMPTY)
         return;
-
-    //#ifdef _DEBUG
-    //    if (snd == S_WEAPON_HIT_ABLAZE)
-    //    {
-    //        DCNT("Ablaze!");
-    //
-    //    }
-    //
-    //#endif
 
     m_array.emplace_back();
     auto& item = m_array.back();
 
     item.snd = snd;
     item.id = id;
-    item.pan0 = CSound::m_Sounds[snd].pan0;
-    item.pan1 = CSound::m_Sounds[snd].pan1;
-    item.vol0 = CSound::m_Sounds[snd].vol0;
-    item.vol1 = CSound::m_Sounds[snd].vol1;
-    item.attn = CSound::m_Sounds[snd].attn;
-    item.ttl = CSound::m_Sounds[snd].ttl;
-    item.fade = CSound::m_Sounds[snd].fadetime;
+    item.pan0 = m_Sounds[snd].pan0;
+    item.pan1 = m_Sounds[snd].pan1;
+    item.vol0 = m_Sounds[snd].vol0;
+    item.vol1 = m_Sounds[snd].vol1;
+    item.attn = m_Sounds[snd].attn;
+    item.ttl = m_Sounds[snd].ttl;
+    item.fade = m_Sounds[snd].fadetime;
     return;
 }
 
-void CSound::SaveSoundLog(void) {
+void CSound::SaveSoundLog()
+{
     DTRACE();
 
-    CBuf b;
-    b.StrNZ("Sounds:\n");
+    std::ofstream out("log_sounds.txt");
+    out << "Sounds:\n";
 
-    for (int i = 0; i < MAX_SOUNDS; ++i) {
-        auto ss =
+    for (int i = 0; i < MAX_SOUNDS; ++i)
+    {
+        out <<
             utils::format(
                 "%d - id:%d, idi:%d, vol:%.8f, pan:%.8f, rvol:%.8f, is_play:%d\n",
                 i,
@@ -1081,9 +1187,5 @@ void CSound::SaveSoundLog(void) {
                 m_AllSounds[i].curpan,
                 g_RangersInterface->m_SoundGetVolume(m_AllSounds[i].id_internal),
                 g_RangersInterface->m_SoundIsPlay(m_AllSounds[i].id_internal));
-
-        b.StrNZ(ss);
     }
-
-    b.SaveInFile(L"log_sounds.txt");
 }
