@@ -6,8 +6,6 @@
 #include <new>
 #include <algorithm>
 
-#include "stdafx.h"
-
 #include "MatrixObjectBuilding.hpp"
 #include "MatrixShadowManager.hpp"
 #include "MatrixRenderPipeline.hpp"

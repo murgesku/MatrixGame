@@ -6,8 +6,6 @@
 #include <new>
 #include <algorithm>
 
-#include "stdafx.h"
-
 #include <windows.h>
 #include "MatrixMap.hpp"
 #include "MatrixMapStatic.hpp"
@@ -30,6 +28,7 @@
 #include "Logic/MatrixTactics.h"
 #include "MatrixGameDll.hpp"
 #include "MatrixSampleStateManager.hpp"
+#include "MatrixMultiSelection.hpp"
 
 #include "Effects/MatrixEffectLandscapeSpot.hpp"
 

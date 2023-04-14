@@ -6,6 +6,8 @@
 #ifndef MATRIX_MAP_TEXTURE
 #define MATRIX_MAP_TEXTURE
 
+#include "Texture.hpp"
+
 class CBottomTextureUnion : public CMain {
     CTextureManaged *m_Texture;
 

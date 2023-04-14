@@ -5,6 +5,9 @@
 
 #pragma once
 
+#include "CReminder.hpp"
+#include "VectorObject.hpp"
+
 #include <utils.hpp>
 
 class CMatrixMapGroup;

@@ -8,6 +8,8 @@
 
 #include "StringConstants.hpp"
 
+#include "3g.hpp"
+
 #include <vector>
 
 class CMatrixMapStatic;

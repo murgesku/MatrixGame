@@ -3,11 +3,11 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
+#include <windows.h>
 #include "d3d9types.h"
 #include "MatrixSampleStateManager.hpp"
 #include "MatrixGameDll.hpp"
+#include "3g.hpp"
 
 CMatrixSampleStateManager::CMatrixSampleStateManager(void) {}
 

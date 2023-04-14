@@ -6,6 +6,13 @@
 #ifndef MATRIXDEBUGINFO_INCLUDE
 #define MATRIXDEBUGINFO_INCLUDE
 
+#include "CMain.hpp"
+
+#include "d3d9.h"
+#include "d3dx9tex.h"
+
+#include <string>
+
 #define MAX_DEBUG_INFO_ITEMS 128
 
 #define DI_DRAWFPS       SETBIT(0)

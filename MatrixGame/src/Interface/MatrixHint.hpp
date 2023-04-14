@@ -8,7 +8,10 @@
 
 #define HINT_Z 0.0000f
 
-#include "../MatrixSoundManager.hpp"
+#include "MatrixSoundManager.hpp"
+#include "MatrixGame.h"
+#include "Texture.hpp"
+#include "CBitmap.hpp"
 
 struct SHintBitmap {
     CBitmap *bmp;

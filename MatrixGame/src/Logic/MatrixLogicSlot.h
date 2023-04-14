@@ -6,6 +6,7 @@
 #pragma once
 
 #include "MatrixTactics.h"
+#include "CMain.hpp"
 
 class CMatrixState;
 class CMatrixRobotAI;
@@ -35,9 +36,9 @@ public:
     CMatrixRule *GetRule() { return m_Rule; }
 
     CLogicSlotRobot() {
-        m_NextRobot = NULL;
-        m_PrevRobot = NULL;
-        m_Rule = NULL;
+        m_NextRobot = nullptr;
+        m_PrevRobot = nullptr;
+        m_Rule = nullptr;
     }
     ~CLogicSlotRobot() {}
 };

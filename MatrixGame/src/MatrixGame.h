@@ -8,6 +8,9 @@
 #include "MatrixFormGame.hpp"
 #include "MatrixGameDll.hpp"
 
+#include "CHeap.hpp"
+#include "CBlockPar.hpp"
+
 class CMatrixMapLogic;
 class CIFaceList;
 class CRenderPipeline;

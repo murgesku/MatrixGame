@@ -6,11 +6,10 @@
 #include <new>
 #include <algorithm>
 
-#include "stdafx.h"
-
 #include "StringConstants.hpp"
 #include "MatrixConfig.hpp"
 #include "MatrixGameDll.hpp"
+#include "MatrixGame.h"
 
 struct SKeyCodes {
     const wchar *name;

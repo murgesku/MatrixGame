@@ -5,8 +5,6 @@
 
 #include <new>
 
-#include "../stdafx.h"
-
 #include "../MatrixMap.hpp"
 #include "../MatrixObject.hpp"
 #include "../MatrixFlyer.hpp"

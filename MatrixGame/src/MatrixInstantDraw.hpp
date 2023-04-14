@@ -6,6 +6,8 @@
 #ifndef MATRIX_INSTANT_DRAW_INCLUDE
 #define MATRIX_INSTANT_DRAW_INCLUDE
 
+#include "D3DControl.hpp"
+
 struct SVertBase {};
 
 struct SVert_V3_C_UV : public SVertBase {

@@ -11,6 +11,8 @@
 
 #include "../MatrixSoundManager.hpp"
 
+#include "StringConstants.hpp"
+
 // weapon
 #define FLAME_PUFF_TTL 2000
 

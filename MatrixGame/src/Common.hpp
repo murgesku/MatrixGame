@@ -6,6 +6,10 @@
 #ifndef COMMON_INCLUDE
 #define COMMON_INCLUDE
 
+#include <cstdint>
+#include <cstring> // for memcmp
+#include <cmath>
+
 #define MAP_GROUP_SIZE (10)
 
 #define WATER_LEVEL         (-2.0f)
@@ -199,17 +203,17 @@ enum EObjectTypeProperty {
 struct SCompilePoint {
     int move;
     float z;
-    BYTE b;
-    BYTE g;
-    BYTE r;
-    BYTE flags;  // flags for cell
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+    uint8_t flags;  // flags for cell
 };
 
 struct SCompileMove {
     int m_Zone;
-    DWORD m_Move;
-    DWORD m_Sphere;
-    DWORD m_Zubchik;
+    uint32_t m_Move;
+    uint32_t m_Sphere;
+    uint32_t m_Zubchik;
 };
 
 struct SCompileMoveCell {
@@ -219,8 +223,8 @@ struct SCompileMoveCell {
 };
 
 struct SCompileBottomVert {
-    WORD x, y;  // point. z and color in points list
-    WORD tx, ty;
+    uint16_t x, y;  // point. z and color in points list
+    uint16_t tx, ty;
     // float tu, tv;
     // float tum, tvm; // calc it from x and y
 

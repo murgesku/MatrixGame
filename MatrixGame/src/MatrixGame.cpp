@@ -8,8 +8,6 @@
 #include <new>
 #include <fstream>
 
-#include "stdafx.h"
-
 #include "CStorage.hpp"
 #include "CFile.hpp"
 
@@ -24,6 +22,7 @@
 #include "Interface/MatrixHint.hpp"
 #include "Interface/CHistory.h"
 #include "MatrixSampleStateManager.hpp"
+#include "MatrixMultiSelection.hpp"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ CMatrixMapLogic *g_MatrixMap;
 CRenderPipeline *g_Render;
 CLoadProgress *g_LoadProgress;
 
-int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
     const wchar *cmd = GetCommandLineW();
 
     int numarg;

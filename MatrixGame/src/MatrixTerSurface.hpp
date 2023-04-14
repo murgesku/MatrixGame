@@ -6,6 +6,9 @@
 #ifndef MATRIX_TER_SURFACE_INCLUDE
 #define MATRIX_TER_SURFACE_INCLUDE
 
+#include "BigVB.hpp"
+#include "BigIB.hpp"
+
 #define SURFF_MACRO SETBIT(0)
 #define SURFF_GLOSS SETBIT(1)
 #define SURFF_WHITE SETBIT(2)

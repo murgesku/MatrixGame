@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "Texture.hpp"
+
 class CInterface;
 class CIFaceStatic;
 class CIFaceElement;

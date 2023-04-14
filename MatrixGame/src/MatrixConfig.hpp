@@ -9,6 +9,7 @@
 #include "Effects/MatrixEffect.hpp"
 #include "Effects/MatrixEffectWeapon.hpp"
 #include "MatrixMapStatic.hpp"
+#include "MatrixGameDll.hpp"
 
 #define BUILDING_TYPE_CNT 6
 #define CANNON_TYPE_CNT   4

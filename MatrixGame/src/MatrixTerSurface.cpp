@@ -5,8 +5,6 @@
 
 #include <new>
 
-#include "stdafx.h"
-
 #include "MatrixTerSurface.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRenderPipeline.hpp"
