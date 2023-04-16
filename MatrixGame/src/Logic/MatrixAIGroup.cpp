@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
 #include "MatrixAIGroup.h"
 #include "../MatrixMap.hpp"
 #include "../MatrixRobot.hpp"

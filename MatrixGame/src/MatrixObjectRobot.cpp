@@ -6,8 +6,6 @@
 #include <new>
 #include <algorithm>
 
-#include "stdafx.h"
-
 #include "MatrixObject.hpp"
 #include "MatrixObjectBuilding.hpp"
 #include "MatrixObjectRobot.hpp"

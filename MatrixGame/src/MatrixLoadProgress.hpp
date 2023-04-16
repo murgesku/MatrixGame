@@ -6,6 +6,8 @@
 #ifndef MATRIX_LOAD_PROGRESS_INCLUDE
 #define MATRIX_LOAD_PROGRESS_INCLUDE
 
+#include "CMain.hpp"
+
 #define LPACCURACY 100
 
 #define LP_PRELOADROBOTS     0
@@ -14,7 +16,7 @@
 #define LP_PREPARININTERFACE 3
 
 struct SLoadProcessProps {
-    const wchar *description;
+    const wchar_t *description;
     int len;
 };
 

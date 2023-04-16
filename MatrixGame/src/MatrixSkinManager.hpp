@@ -6,6 +6,8 @@
 #ifndef MATRIX_SKIN_MANAGER
 #define MATRIX_SKIN_MANAGER
 
+#include "VectorObject.hpp"
+
 enum GSParam {
     GSP_SIDE,
     GSP_ORDINAL,

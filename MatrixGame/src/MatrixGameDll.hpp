@@ -6,6 +6,7 @@
 #pragma once
 
 #include <BaseDef.hpp>
+#include <windows.h>
 
 enum ESupportError {
     SUPE_OK = 0,

@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
 #include "CHistory.h"
 #include "../MatrixGame.h"
 #include "../MatrixMap.hpp"

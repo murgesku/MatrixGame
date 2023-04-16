@@ -8,6 +8,7 @@
 
 #include "Common.hpp"
 #include "MatrixConfig.hpp"
+#include "MatrixGame.h"
 
 #include "CStorage.hpp"
 

@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
 #include "MatrixEnvironment.h"
 #include "MatrixRule.h"
 #include "../MatrixMap.hpp"
@@ -190,7 +188,7 @@ CEnemy *CInfo::SearchEnemy(CMatrixMapStatic *ms) {
     return NULL;
 }
 
-CMatrixMapStatic *CInfo::GetEnemyByKind(DWORD kind) {
+CMatrixMapStatic *CInfo::GetEnemyByKind(uint32_t kind) {
     CEnemy *enemies = m_FirstEnemy;
     while (enemies) {
         if (enemies->GetKind() == kind)

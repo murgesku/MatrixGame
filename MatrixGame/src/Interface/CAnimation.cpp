@@ -5,8 +5,6 @@
 
 #include <new>
 
-#include "../stdafx.h"
-
 #include "CAnimation.h"
 #include "CIFaceStatic.h"
 #include "CIFaceElement.h"

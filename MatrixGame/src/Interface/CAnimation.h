@@ -6,6 +6,8 @@
 class CIFaceStatic;
 class CIFaceElement;
 
+#include "Texture.hpp"
+
 struct SFrame {
     float pos_x;
     float pos_y;

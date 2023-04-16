@@ -3,6 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include "Form.hpp"
+
 #include <deque>
 #include <string>
 
@@ -15,13 +17,13 @@
 struct SKeyScan {
     SKeyScan() = default;
 
-    SKeyScan(DWORD _time, DWORD _scan)
+    SKeyScan(uint32_t _time, uint32_t _scan)
     : time{_time}
     , scan{_scan}
     {}
 
-    DWORD time;
-    DWORD scan;
+    uint32_t time;
+    uint32_t scan;
 };
 
 class CFormMatrixGame : public CForm {

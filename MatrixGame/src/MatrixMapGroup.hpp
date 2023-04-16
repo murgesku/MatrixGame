@@ -6,6 +6,10 @@
 #pragma once
 
 #include "MatrixWater.hpp"
+#include "CReminder.hpp"
+
+#include "BigVB.hpp"
+#include "BigIB.hpp"
 
 //#define TEXTURES_OFF
 

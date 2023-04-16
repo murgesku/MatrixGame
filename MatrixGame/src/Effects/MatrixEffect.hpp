@@ -8,7 +8,8 @@
 #define MAX_EFFECTS_COUNT   1280
 #define MAX_EFFECT_PRIORITY 10000
 
-#include "../stdafx.h"
+#include "VectorObject.hpp"
+#include "CBillboard.hpp"
 
 // #include "MatrixEffectWeapon.hpp"
 enum EWeapon : unsigned int;

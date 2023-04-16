@@ -6,6 +6,7 @@
 #pragma once
 
 #include "MatrixTactics.h"
+#include "3g.hpp"
 
 // Groups
 #define DIF_GROUP_R    200

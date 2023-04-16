@@ -3,10 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
-#include <algorithm>
-
 #include "MatrixSide.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
@@ -25,6 +21,9 @@
 #include "MatrixObjectCannon.hpp"
 #include "MatrixFlyer.hpp"
 #include "Interface/CCounter.h"
+#include "MatrixMultiSelection.hpp"
+
+#include <algorithm>
 #include <time.h>
 
 // robot->GetEnv()->m_Place -   место куда робот идет или где стоит.

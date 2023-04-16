@@ -3,14 +3,11 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "../stdafx.h"
-
-#include <algorithm>
-
-using namespace Base;
-
 #include "MatrixRoadNetwork.hpp"
+#include "CException.hpp"
+
 #include <math.h>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 CMatrixRoad::CMatrixRoad() : CMain() {

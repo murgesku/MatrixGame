@@ -6,8 +6,6 @@
 #ifndef MATRIX_RENDER_PIPELINE_INCLUDE
 #define MATRIX_RENDER_PIPELINE_INCLUDE
 
-#include "stdafx.h"
-
 #include "MatrixMapTexture.hpp"
 #include "MatrixMapGroup.hpp"
 #include "MatrixMapStatic.hpp"

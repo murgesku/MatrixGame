@@ -3,9 +3,8 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "stdafx.h"
-
 #include "MatrixInstantDraw.hpp"
+#include "D3DControl.hpp"
 
 SFVF_VB CInstDraw::m_FVFs[IDFVF_CNT];
 E_FVF CInstDraw::m_Current;

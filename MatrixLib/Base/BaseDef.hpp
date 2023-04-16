@@ -90,6 +90,8 @@ public:
 // lint +e1401
 }  // namespace Base
 
+using namespace Base; // TODO: this namespace is not needed, remove it
+
 typedef wchar_t wchar;
 typedef unsigned char byte;
 typedef unsigned short word;
