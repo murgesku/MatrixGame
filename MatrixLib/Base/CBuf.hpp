@@ -8,6 +8,7 @@
 #include "CException.hpp"
 
 #include <vector>
+#include <cstdint>
 #include <cstring> // for memset
 
 namespace Base {
