@@ -259,7 +259,7 @@ public:
 public:
     CExceptionD3D(const char *file, int line, HRESULT err) : CException(file, line) { m_Error = err; }
 
-    virtual std::wstring Info(void);
+    std::wstring Info(void) const;
 };
 
 #define FAILED_DX(x)                                     \
