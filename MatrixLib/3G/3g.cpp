@@ -113,7 +113,8 @@ void D3DResource::Dump(D3DResType t) {
 }
 #endif
 
-std::wstring CExceptionD3D::Info() {
+std::wstring CExceptionD3D::Info() const
+{
     return CException::Info() +
            utils::format(
                L"Text: {%ls} %s",
