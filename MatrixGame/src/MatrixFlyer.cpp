@@ -617,7 +617,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
             m_Units[i].m_Graph->BeforeDraw();
             if (g_Config.m_ShowStencilShadows) {
                 if (m_Units[i].m_ShadowStencil == NULL) {
-                    m_Units[i].m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil(g_MatrixHeap);
+                    m_Units[i].m_ShadowStencil = HNew(g_MatrixHeap) CVOShadowStencil();
                 }
 
                 bool invert = (m_Units[i].m_Type == FLYER_UNIT_ENGINE && m_Units[i].m_Engine.m_Inversed != 0) ||

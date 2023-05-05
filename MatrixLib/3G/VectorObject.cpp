@@ -1944,7 +1944,7 @@ void CVectorObjectGroupUnit::RNeed(dword need) {
             // if(m_Obj->VO()->EdgeExist())
             {
                 if (!m_ShadowStencil)
-                    m_ShadowStencil = HNew(g_CacheHeap) CVOShadowStencil(g_MatrixHeap);
+                    m_ShadowStencil = HNew(g_CacheHeap) CVOShadowStencil();
 
                 // m_ShadowStencil->Build(*(m_Obj->VO()),m_Obj->FrameVO(),m_Parent->m_ShadowStencilLight,m_MatrixWorld,m_Parent->m_ShadowStencilCutPlane);
                 // STENCIL

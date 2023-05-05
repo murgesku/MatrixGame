@@ -10,10 +10,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+static const DWORD SVOShadowStencilVertex_FVF = D3DFVF_XYZ;
+
 CVOShadowStencil *CVOShadowStencil::m_First;
 CVOShadowStencil *CVOShadowStencil::m_Last;
 
-void CVOShadowStencil::MarkAllBuffersNoNeed(void) {
+void CVOShadowStencil::BeforeRenderAll()
+{
+    ASSERT_DX(g_D3DD->SetFVF(SVOShadowStencilVertex_FVF));
+}
+
+void CVOShadowStencil::MarkAllBuffersNoNeed()
+{
     CVOShadowStencil *s = m_First;
     for (; s; s = s->m_Next) {
         s->m_DirtyDX = true;
@@ -24,7 +32,8 @@ void CVOShadowStencil::MarkAllBuffersNoNeed(void) {
     }
 }
 
-CVOShadowStencil::CVOShadowStencil(CHeap *heap) : CMain(), m_Heap(heap) {
+CVOShadowStencil::CVOShadowStencil()
+{
     DTRACE();
 
     m_VB = NULL;
@@ -38,7 +47,6 @@ CVOShadowStencil::CVOShadowStencil(CHeap *heap) : CMain(), m_Heap(heap) {
     m_vo = NULL;
 
     m_FrameFor = -1;
-    m_Frames = NULL;
     m_FramesCnt = 0;
 
     LIST_ADD(this, m_First, m_Last, m_Prev, m_Next);
@@ -47,14 +55,6 @@ CVOShadowStencil::CVOShadowStencil(CHeap *heap) : CMain(), m_Heap(heap) {
 CVOShadowStencil::~CVOShadowStencil() {
     DTRACE();
 
-    for (int i = 0; i < m_FramesCnt; ++i) {
-        if (m_Frames[i].m_preVerts)
-            HFree(m_Frames[i].m_preVerts, m_Heap);
-        if (m_Frames[i].m_preInds)
-            HFree(m_Frames[i].m_preInds, m_Heap);
-    }
-    if (m_Frames)
-        HFree(m_Frames, m_Heap);
     DX_Free();
 
     LIST_DEL(this, m_First, m_Last, m_Prev, m_Next);
@@ -70,23 +70,17 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
 
     if (m_vo != &obj) {
         // prepare frames
-        for (int i = 0; i < m_FramesCnt; ++i) {
-            if (m_Frames[i].m_preVerts)
-                HFree(m_Frames[i].m_preVerts, m_Heap);
-        }
-        if (m_Frames)
-            HFree(m_Frames, m_Heap);
 
-        m_Frames = (SSSFrameData *)HAllocEx(m_Frames, sizeof(SSSFrameData) * obj.GetFramesCnt(), m_Heap);
+        // all the info inside the frames will be rewritten now, so we don't bother destoying are recreating objects
         m_FramesCnt = obj.GetFramesCnt();
-        for (int i = 0; i < m_FramesCnt; ++i) {
-            m_Frames[i].m_preVertsAllocated = sizeof(SVOShadowStencilVertex) * 256;
-            m_Frames[i].m_preVerts = (SVOShadowStencilVertex *)HAlloc(m_Frames[i].m_preVertsAllocated, m_Heap);
-            m_Frames[i].m_preVertsSize = 0;
+        m_Frames.resize(m_FramesCnt);
+        for (int i = 0; i < m_FramesCnt; ++i)
+        {
+            m_Frames[i].m_preVerts.reserve(256);
+            m_Frames[i].m_preVerts.clear();
 
-            m_Frames[i].m_preIndsAllocated = sizeof(WORD) * 256;
-            m_Frames[i].m_preInds = (WORD *)HAlloc(m_Frames[i].m_preIndsAllocated, m_Heap);
-            m_Frames[i].m_preIndsSize = 0;
+            m_Frames[i].m_preInds.reserve(256);
+            m_Frames[i].m_preInds.clear();
 
             m_Frames[i].m_len = 0;
             m_Frames[i].m_light.all = 0;
@@ -114,7 +108,7 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
         vlight.z = Float2Int(vlightf.z * 255.0f);
     }
 
-    SSSFrameData *fd = m_Frames + frame;
+    SSSFrameData *fd = &m_Frames[frame];
     SVOKadr *k = obj.m_Geometry.m_Frames + frame;
 
     len += k->m_Radius * 2 + k->m_GeoCenter.z;
@@ -143,23 +137,11 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
 
     D3DXVECTOR3 lenv(vLight * len);
 
-    int a = sizeof(SVOShadowStencilVertex) * k->m_EdgeCnt * 4;
+    fd->m_preVerts.reserve(k->m_EdgeCnt * 4);
+    fd->m_preVerts.clear();
 
-    if (a > fd->m_preVertsAllocated) {
-        fd->m_preVertsAllocated = a;
-        fd->m_preVerts = (SVOShadowStencilVertex *)HAllocEx(fd->m_preVerts, a, m_Heap);
-    }
-
-    fd->m_preVertsSize = 0;
-
-    a = sizeof(WORD) * k->m_EdgeCnt * 4;
-
-    if (a > fd->m_preIndsAllocated) {
-        fd->m_preIndsAllocated = a;
-        fd->m_preInds = (WORD *)HAllocEx(fd->m_preInds, a, m_Heap);
-    }
-
-    fd->m_preIndsSize = 0;
+    fd->m_preInds.reserve(k->m_EdgeCnt * 4);
+    fd->m_preInds.clear();
 
     // TAKT_BEGIN();
 
@@ -238,11 +220,8 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
             const D3DXVECTOR3 *vv = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v00))->v);
             D3DXVECTOR3 vv_(*vv + lenv);
 
-            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = *vv;
-            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-
-            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = vv_;
-            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
+            fd->m_preVerts.emplace_back(*vv);
+            fd->m_preVerts.emplace_back(vv_);
         }
         else {
             vi0 = verts[vi0];
@@ -254,82 +233,44 @@ void CVOShadowStencil::Build(CVectorObject &obj, int frame, const D3DXVECTOR3 &v
             const D3DXVECTOR3 *vv = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v01))->v);
             D3DXVECTOR3 vv_(*vv + lenv);
 
-            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = *vv;
-            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-
-            ((SVOShadowStencilVertex *)(((BYTE *)fd->m_preVerts) + fd->m_preVertsSize))->v = vv_;
-            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
+            fd->m_preVerts.emplace_back(*vv);
+            fd->m_preVerts.emplace_back(vv_);
         }
         else {
             vi1 = verts[vi1];
         }
 
-        if (((temp0 & 0x80000000) == 0) ^ invert) {
+        DWORD p0, p1, p2;
+
+        if (((temp0 & 0x80000000) == 0) ^ invert)
+        {
             // 0: vi1 * 2
             // 1: vi0 * 2
             // 2: vi1 * 2 + 1
             // 3: vi0 * 2 + 1
 
-            DWORD *p = (DWORD *)(((BYTE *)fd->m_preInds) + fd->m_preIndsSize);
-
-            *(DWORD *)(p + 0) = (vi1 * 2) | ((vi0 * 2) << 16);
-            *(DWORD *)(p + 1) = (vi1 * 2 + 1) | ((vi0 * 2) << 16);
-            *(DWORD *)(p + 2) = (vi0 * 2 + 1) | ((vi1 * 2 + 1) << 16);
+            p0 = (vi1 * 2) | ((vi0 * 2) << 16);
+            p1 = (vi1 * 2 + 1) | ((vi0 * 2) << 16);
+            p2 = (vi0 * 2 + 1) | ((vi1 * 2 + 1) << 16);
         }
-        else {
+        else
+        {
             // 0: vi1 * 2 + 1
             // 1: vi0 * 2 + 1
             // 2: vi1 * 2
             // 3: vi0 * 2
 
-            DWORD *p = (DWORD *)(((BYTE *)fd->m_preInds) + fd->m_preIndsSize);
-
-            *(DWORD *)(p + 0) = (vi1 * 2 + 1) | ((vi0 * 2 + 1) << 16);
-            *(DWORD *)(p + 1) = (vi1 * 2) | ((vi0 * 2 + 1) << 16);
-            *(DWORD *)(p + 2) = (vi0 * 2) | ((vi1 * 2) << 16);
+            p0 = (vi1 * 2 + 1) | ((vi0 * 2 + 1) << 16);
+            p1 = (vi1 * 2) | ((vi0 * 2 + 1) << 16);
+            p2 = (vi0 * 2) | ((vi1 * 2) << 16);
         }
-        fd->m_preIndsSize += sizeof(WORD) * 6;
 
-        //
-        //
-        //
-        //
-        //
-        //
-        //        const D3DXVECTOR3 * v1 = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v00))->v);
-        //        const D3DXVECTOR3 * v2 = &(((SVOVertex *)(((BYTE *)obj.m_Geometry.m_Vertices.verts) + keb->v01))->v);
-        //
-        //
-        //        D3DXVECTOR3 v3(*v1 + lenv);
-        //        D3DXVECTOR3 v4(*v2 + lenv);
-        //
-        //#define VBUF_LOCAL fd->m_preVerts
-        //
-        //        if(((temp0 & 0x80000000) == 0) ^ invert)
-        //        {
-        //
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = *v2;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //		    ((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = *v1;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = v4;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = v3;
-        //
-        //		} else
-        //        {
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = v4;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //		    ((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = v3;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = *v2;
-        //            fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //			((SVOShadowStencilVertex *)(((BYTE *)VBUF_LOCAL) + fd->m_preVertsSize))->v = *v1;
-        //		}
-        //        fd->m_preVertsSize += sizeof(SVOShadowStencilVertex);
-        //#undef VBUF_LOCAL
-        //
-        // if (fd->m_preVertsSize == sizeof(SVOShadowStencilVertex) * 4 * 2) break;
+        fd->m_preInds.emplace_back(0xFFFF & p0);
+        fd->m_preInds.emplace_back(0xFFFF & p0 >> 16);
+        fd->m_preInds.emplace_back(0xFFFF & p1);
+        fd->m_preInds.emplace_back(0xFFFF & p1 >> 16);
+        fd->m_preInds.emplace_back(0xFFFF & p2);
+        fd->m_preInds.emplace_back(0xFFFF & p2 >> 16);
     }
 }
 
@@ -339,56 +280,53 @@ void CVOShadowStencil::DX_Prepare(void) {
     if (m_FrameFor < 0)
         return;
 
-    SSSFrameData *fd = m_Frames + m_FrameFor;
+    SSSFrameData *fd = &m_Frames[m_FrameFor];
 
-    if (!IS_VB(m_VB) || fd->m_preVertsSize > m_VBSize) {
+    if (!IS_VB(m_VB) || fd->m_preVerts.size() > m_VBSize) {
         if (IS_VB(m_VB)) {
             DESTROY_VB(m_VB);
         }
-        CREATE_VB_DYNAMIC(fd->m_preVertsSize, SVOShadowStencilVertex::FVF, m_VB);
+        CREATE_VB_DYNAMIC(fd->m_preVerts.size() * sizeof(SVOShadowStencilVertex), SVOShadowStencilVertex_FVF, m_VB);
         if (m_VB == NULL)
             return;
 
-        m_VBSize = fd->m_preVertsSize;
+        m_VBSize = fd->m_preVerts.size();
     }
 
-    if (!IS_IB(m_IB) || fd->m_preIndsSize > m_IBSize) {
-        if (IS_VB(m_IB)) {
+    if (!IS_IB(m_IB) || fd->m_preInds.size() > m_IBSize)
+    {
+        if (IS_VB(m_IB))
+        {
             DESTROY_VB(m_IB);
         }
-        CREATE_IBD16(fd->m_preIndsSize, m_IB);
+        CREATE_IBD16(fd->m_preInds.size() * sizeof(WORD), m_IB);
         if (m_IB == NULL)
             return;
 
-        m_IBSize = fd->m_preIndsSize;
+        m_IBSize = fd->m_preInds.size();
     }
 
     {
         SVOShadowStencilVertex *p;
 
-        LOCKP_VB_DYNAMIC(m_VB, 0, fd->m_preVertsSize, &p);
-        memcpy(p, fd->m_preVerts, fd->m_preVertsSize);
+        LOCKP_VB_DYNAMIC(m_VB, 0, fd->m_preVerts.size() * sizeof(SVOShadowStencilVertex), &p);
+        memcpy(p, fd->m_preVerts.data(), fd->m_preVerts.size() * sizeof(SVOShadowStencilVertex));
         UNLOCK_VB(m_VB);
     }
 
     {
         WORD *p;
 
-        LOCKPD_IB(m_IB, 0, fd->m_preIndsSize, &p);
-        memcpy(p, fd->m_preInds, fd->m_preIndsSize);
+        LOCKPD_IB(m_IB, 0, fd->m_preInds.size() * sizeof(WORD), &p);
+        memcpy(p, fd->m_preInds.data(), fd->m_preInds.size() * sizeof(WORD));
         UNLOCK_IB(m_IB);
     }
 
     m_DirtyDX = false;
 }
 
-// void   CVOShadowStencil::DX_Free(void)
-//{
-//    if (m_tempVB) DESTROY_VB(m_tempVB);
-//
-//}
-
-void CVOShadowStencil::Render(const D3DXMATRIX &objma) {
+void CVOShadowStencil::Render(const D3DXMATRIX &objma)
+{
     DTRACE();
 
     if (m_DirtyDX)
@@ -404,13 +342,9 @@ void CVOShadowStencil::Render(const D3DXMATRIX &objma) {
     g_D3DD->SetStreamSource(0, GET_VB(m_VB), 0, sizeof(SVOShadowStencilVertex));
     g_D3DD->SetIndices(GET_IB(m_IB));
 
-    SSSFrameData *fd = m_Frames + m_FrameFor;
+    SSSFrameData& fd = m_Frames[m_FrameFor];
 
-    // const uint n = fd->m_preVertsSize / (sizeof(SVOShadowStencilVertex));
-    // for (uint i=0; i<n; i+=4)
-    //    ASSERT_DX(g_D3DD->DrawPrimitive( D3DPT_TRIANGLESTRIP,i, 2));
-
-    int vcnt = fd->m_preVertsSize / sizeof(SVOShadowStencilVertex);
-    int tcnt = fd->m_preIndsSize / (sizeof(WORD) * 3);
+    int vcnt = fd.m_preVerts.size();
+    int tcnt = fd.m_preInds.size() / 3;
     g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, vcnt, 0, tcnt);
 }
