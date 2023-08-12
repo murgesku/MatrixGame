@@ -42,7 +42,6 @@ extern int g_ScreenX, g_ScreenY;
 extern int g_DrawFPS;
 extern int g_MaxFPS;
 extern int g_AvailableTexMem;
-// extern CReminder *g_Reminder;
 extern D3DPRESENT_PARAMETERS g_D3Dpp;
 
 // global config flags
