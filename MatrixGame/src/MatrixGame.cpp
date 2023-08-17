@@ -24,8 +24,11 @@
 #include "MatrixSampleStateManager.hpp"
 #include "MatrixMultiSelection.hpp"
 
-
 ////////////////////////////////////////////////////////////////////////////////
+#include <stupid_logger.hpp>
+logger_type lgr{"test.log"};
+////////////////////////////////////////////////////////////////////////////////
+
 CHeap *g_MatrixHeap;
 CBlockPar *g_MatrixData;
 CMatrixMapLogic *g_MatrixMap;
