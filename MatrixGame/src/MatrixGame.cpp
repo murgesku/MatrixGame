@@ -7,6 +7,7 @@
 
 #include <new>
 #include <fstream>
+#include <iostream>
 
 #include "CStorage.hpp"
 #include "CFile.hpp"
@@ -26,7 +27,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <stupid_logger.hpp>
-logger_type lgr{"test.log"};
+// logger_type lgr{"test.log"};
+logger_type lgr{std::cout};
 ////////////////////////////////////////////////////////////////////////////////
 
 CHeap *g_MatrixHeap;

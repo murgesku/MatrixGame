@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <string>
-
 #include "MatrixFormGame.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
@@ -29,6 +27,143 @@
 #include "stdio.h"
 
 #include <utils.hpp>
+
+#include <string>
+#include <chrono>
+#include <format>
+
+void make_screenshot()
+{
+    const std::wstring screenshots_dir{PathToOutputFiles(FOLDER_NAME_SCREENSHOTS)};
+
+    static uint16_t index = 0;
+    index++;
+
+    CreateDirectoryW(screenshots_dir.c_str(), NULL);
+
+    std::wstring filename =
+        utils::format(
+            L"%ls\\%ls-%ls-%03d.png",
+            screenshots_dir.c_str(),
+            FILE_NAME_SCREENSHOT,
+            std::format(L"{:%Y-%m-%d-%H-%M-%S}", std::chrono::system_clock::now()).c_str(),
+            index);
+
+    DeleteFileW(filename.c_str());
+
+    if (!g_D3Dpp.Windowed) {
+        IDirect3DSurface9 *pTargetSurface = NULL;
+        HRESULT hr = D3D_OK;
+
+        if (!g_D3Dpp.MultiSampleType)
+            hr = g_D3DD->GetRenderTarget(0, &pTargetSurface);
+
+        if (hr == D3D_OK) {
+            D3DSURFACE_DESC desc;
+
+            if (!g_D3Dpp.MultiSampleType) {
+                hr = pTargetSurface->GetDesc(&desc);
+            }
+            else {
+                desc.Width = g_ScreenX;
+                desc.Height = g_ScreenY;
+                desc.Format = D3DFMT_A8R8G8B8;
+            }
+            if (hr == D3D_OK) {
+                IDirect3DSurface9 *pSurface = NULL;
+                hr = g_D3DD->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3DPOOL_SYSTEMMEM,
+                                                         &pSurface, NULL);
+                if (hr == D3D_OK) {
+                    if (!g_D3Dpp.MultiSampleType) {
+                        hr = g_D3DD->GetRenderTargetData(pTargetSurface, pSurface);
+                    }
+                    else {
+                        hr = g_D3DD->GetFrontBufferData(0, pSurface);
+                    }
+                    if (hr == D3D_OK) {
+                        D3DLOCKED_RECT lockrect;
+                        hr = pSurface->LockRect(&lockrect, NULL, 0);
+                        if (hr == D3D_OK) {
+                            CBitmap bm;
+                            bm.CreateRGB(desc.Width, desc.Height);
+
+                            for (UINT y = 0; y < desc.Height; y++) {
+                                unsigned char *buf_src = (unsigned char *)lockrect.pBits + lockrect.Pitch * y;
+                                unsigned char *buf_des = (unsigned char *)bm.Data() + bm.Pitch() * y;
+
+                                for (UINT x = 0; x < desc.Width; x++) {
+                                    // memcpy(buf_des, buf_src, 3);
+                                    buf_des[0] = buf_src[2];
+                                    buf_des[1] = buf_src[1];
+                                    buf_des[2] = buf_src[0];
+
+                                    buf_src += 4;
+                                    buf_des += 3;
+                                }
+                            }
+
+                            pSurface->UnlockRect();
+
+                            bm.SaveInPNG(filename.c_str());
+                            g_MatrixMap->m_DI.T((L"Screen shot has been saved into " + filename).c_str(), L"");
+                        }
+                        else {
+                            // LockRect fail
+                            // OutputDebugStringA("LockRect fail\n");
+                        }
+                    }
+                    else {
+                        // GetRenderTargetData fail
+                        // char s[256];
+                        // sprintf_s(s, sizeof(s), "GetRenderTargetData fail - 0x%08X, %u, %d\n", hr, hr, hr);
+                        // OutputDebugStringA(s);
+                    }
+                    pSurface->Release();
+                }
+                else {
+                    // CreateOffscreenPlainSurface fail
+                    // OutputDebugStringA("CreateOffscreenPlainSurface fail\n");
+                }
+            }
+            else {
+                // GetDesc fail
+                // OutputDebugStringA("GetDesc fail\n");
+            }
+
+            if (pTargetSurface)
+                pTargetSurface->Release();
+        }
+        else {
+            // GetRenderTarget fail
+            // OutputDebugStringA("GetRenderTarget fail\n");
+        }
+
+        return;
+    }
+
+    CBitmap bm(g_CacheHeap);
+    CBitmap bmout(g_CacheHeap);
+    bmout.CreateRGB(g_ScreenX, g_ScreenY);
+
+    HDC hdc = GetDC(g_Wnd);
+
+    bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
+    bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
+    if (SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0) {
+        ReleaseDC(g_Wnd, hdc);
+        return;
+    }
+    BitBlt(bm.WBM_BitmapDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
+
+    ReleaseDC(g_Wnd, hdc);
+
+    bm.WBM_Save(true);
+
+    bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
+    bmout.SaveInPNG(filename.c_str());
+
+    g_MatrixMap->m_DI.T((L"Screen shot has been saved: " + filename).c_str(), L"");
+}
 
 CFormMatrixGame::CFormMatrixGame() : CForm() {
     DTRACE();
@@ -90,56 +225,51 @@ void CFormMatrixGame::Draw(void) {
     DTRACE();
 
     if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_VIDEO_RESOURCES_READY))
+    {
         return;
+    }
 
     CInstDraw::DrawFrameBegin();
 
-    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE)) {
+    if (FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE))
+    {
         g_MatrixMap->m_DI.T(L"Automatic mode", L"");
     }
 
     if (FLAG(g_Config.m_DIFlags, DI_DRAWFPS))
+    {
         g_MatrixMap->m_DI.T(L"FPS", utils::format(L"%d", g_DrawFPS).c_str());
-    if (FLAG(g_Config.m_DIFlags, DI_TMEM)) {
+    }
+    if (FLAG(g_Config.m_DIFlags, DI_TMEM))
+    {
         g_MatrixMap->m_DI.T(L"Free Texture Mem", utils::format(L"%d", g_AvailableTexMem).c_str());
     }
-    if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD)) {
-        std::wstring txt;
-        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().x * 10.0f));
-        txt.insert(txt.length() - 1, L".");
-        txt += L", ";
-        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetXYStrategy().y * 10.0f));
-        txt.insert(txt.length() - 1, L".");
-        // txt += L", ";
-        // txt += Float2Int((g_MatrixMap->m_Camera.GetTarget().z+g_MatrixMap->m_Camera.GetZRel()) * 10.0f);
-        // txt.Insert(txt.length()-1,L".",1);
-        g_MatrixMap->m_DI.T(L"Camera target", txt.c_str());
+    if (FLAG(g_Config.m_DIFlags, DI_TARGETCOORD))
+    {
+        g_MatrixMap->m_DI.T(
+            L"Camera target",
+            utils::format(
+                L"%0.1f, %0.1f",
+                g_MatrixMap->m_Camera.GetXYStrategy().x,
+                g_MatrixMap->m_Camera.GetXYStrategy().y).c_str()
+            );
     }
-    if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER)) {
-        std::wstring txt;
-        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().x * 10.0f));
-        txt.insert(txt.length() - 1, L".");
-        txt += L", ";
-        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().y * 10.0f));
-        txt.insert(txt.length() - 1, L".");
-        txt += L", ";
-        txt += utils::format(L"%d", Float2Int(g_MatrixMap->m_Camera.GetFrustumCenter().z * 10.0f));
-        txt.insert(txt.length() - 1, L".");
-        g_MatrixMap->m_DI.T(L"Frustum Center", txt.c_str());
-
-        // txt =
-        // Float2Int(D3DXVec3Length(&(g_MatrixMap->m_Camera.GetFrustumCenter()-(g_MatrixMap->m_Camera.GetTarget()+D3DXVECTOR3(0,0,g_MatrixMap->m_Camera.GetZRel()))))
-        // * 10.0f); txt.Insert(txt.length()-1,L".",1); g_MatrixMap->m_DI.T(L"Cam dist",txt.Get());
-
-        // g_MatrixMap->m_DI.T(L"Z rel",std::wstring(g_MatrixMap->m_Camera.GetZRel()));
+    if (FLAG(g_Config.m_DIFlags, DI_FRUSTUMCENTER))
+    {
+        g_MatrixMap->m_DI.T(
+            L"Frustum Center",
+            utils::format(
+                L"%0.1f, %0.1f, %0.1f",
+                g_MatrixMap->m_Camera.GetFrustumCenter().x,
+                g_MatrixMap->m_Camera.GetFrustumCenter().y,
+                g_MatrixMap->m_Camera.GetFrustumCenter().z).c_str()
+            );
     }
 
     g_MatrixMap->BeforeDraw();
 
-    // ASSERT_DX(g_D3DD->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL,
-    // D3DCOLOR_XRGB(255,0,0), 1.0f, 0 ));
-
-    if (FLAG(g_Flags, GFLAG_STENCILAVAILABLE)) {
+    if (FLAG(g_Flags, GFLAG_STENCILAVAILABLE))
+    {
 #if defined _DEBUG || defined EXE_VERSION
         ASSERT_DX(g_D3DD->Clear(0, NULL, D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL | D3DCLEAR_TARGET,
                                 D3DCOLOR_XRGB(255, 0, 255), 1.0f, 0));
@@ -169,32 +299,6 @@ void CFormMatrixGame::Draw(void) {
     g_MatrixMap->Draw();
 
     ASSERT_DX(g_D3DD->EndScene());
-
-    // SETFLAG(g_Flags, GFLAG_PRESENT_REQUIRED);
-    static int current_delay = 0;
-
-    static DWORD last_time = 0;
-    DWORD ctime = timeGetTime();
-    int step1 = (last_time <= ctime) ? (ctime - last_time) : (0xFFFFFFFF - last_time + ctime);
-    last_time = ctime;
-
-    float cfps = 1000.0f / float(step1);
-
-    if (cfps > float(g_MaxFPS)) {
-        ++current_delay;
-    }
-    else {
-        --current_delay;
-        if (current_delay < 0)
-            current_delay = 0;
-    }
-
-    Sleep(current_delay);
-    // if (FLAG(g_Flags, GFLAG_PRESENT_REQUIRED))
-    //{
-    //    ASSERT_DX(g_D3DD->Present(NULL,NULL,NULL,NULL));
-    //    RESETFLAG(g_Flags, GFLAG_PRESENT_REQUIRED);
-    //}
     ASSERT_DX(g_D3DD->Present(NULL, NULL, NULL, NULL));
 
 #ifdef _DEBUG
@@ -238,179 +342,50 @@ void CFormMatrixGame::Takt(int step) {
     if (g_MatrixMap->m_Console.IsActive())
         return;
 
-    if (!g_MatrixMap->GetPlayerSide()->IsArcadeMode()) {
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_LEFT_ALT]) & 0x8000) == 0x8000)) {
+    auto isKeyPressed = [](auto key) { return (GetAsyncKeyState(g_Config.m_KeyActions[key]) & 0x8000) == 0x8000; };
+
+    if (!g_MatrixMap->GetPlayerSide()->IsArcadeMode())
+    {
+        if (isKeyPressed(KA_SCROLL_LEFT) || isKeyPressed(KA_SCROLL_LEFT_ALT))
+        {
             g_MatrixMap->m_Camera.MoveLeft();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_RIGHT_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_SCROLL_RIGHT) || isKeyPressed(KA_SCROLL_RIGHT_ALT))
+        {
             g_MatrixMap->m_Camera.MoveRight();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_UP_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_SCROLL_UP) || isKeyPressed(KA_SCROLL_UP_ALT))
+        {
             g_MatrixMap->m_Camera.MoveUp();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SCROLL_DOWN_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_SCROLL_DOWN) || isKeyPressed(KA_SCROLL_DOWN_ALT))
+        {
             g_MatrixMap->m_Camera.MoveDown();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_LEFT_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_ROTATE_LEFT) || isKeyPressed(KA_ROTATE_LEFT_ALT))
+        {
             g_MatrixMap->m_Camera.RotLeft();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_RIGHT_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_ROTATE_RIGHT) || isKeyPressed(KA_ROTATE_RIGHT_ALT))
+        {
             g_MatrixMap->m_Camera.RotRight();
         }
     }
 
     {
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_UP]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_ROTATE_UP))
+        {
             g_MatrixMap->m_Camera.RotUp();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_ROTATE_DOWN]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_ROTATE_DOWN))
+        {
             g_MatrixMap->m_Camera.RotDown();
         }
     }
 
-    if (GetAsyncKeyState(/*VK_SNAPSHOT*/ VK_F9) != 0) {
-        const std::wstring screenshots_dir{PathToOutputFiles(FOLDER_NAME_SCREENSHOTS)};
-
-        static uint16_t index = 0;
-        index++;
-
-        CreateDirectoryW(screenshots_dir.c_str(), NULL);
-
-        time_t cur_time = time(NULL);
-        struct tm tstruct = *localtime(&cur_time);
-        wchar_t time_str[20];
-        wcsftime(time_str, sizeof(time_str), L"%Y-%m-%d-%H-%M-%S", &tstruct);
-
-        std::wstring filename =
-            utils::format(
-                L"%ls\\%ls-%ls-%03d.png",
-                screenshots_dir.c_str(),
-                FILE_NAME_SCREENSHOT,
-                time_str,
-                index);
-
-        DeleteFileW(filename.c_str());
-
-        if (!g_D3Dpp.Windowed) {
-            IDirect3DSurface9 *pTargetSurface = NULL;
-            HRESULT hr = D3D_OK;
-
-            if (!g_D3Dpp.MultiSampleType)
-                hr = g_D3DD->GetRenderTarget(0, &pTargetSurface);
-
-            if (hr == D3D_OK) {
-                D3DSURFACE_DESC desc;
-
-                if (!g_D3Dpp.MultiSampleType) {
-                    hr = pTargetSurface->GetDesc(&desc);
-                }
-                else {
-                    desc.Width = g_ScreenX;
-                    desc.Height = g_ScreenY;
-                    desc.Format = D3DFMT_A8R8G8B8;
-                }
-                if (hr == D3D_OK) {
-                    IDirect3DSurface9 *pSurface = NULL;
-                    hr = g_D3DD->CreateOffscreenPlainSurface(desc.Width, desc.Height, desc.Format, D3DPOOL_SYSTEMMEM,
-                                                             &pSurface, NULL);
-                    if (hr == D3D_OK) {
-                        if (!g_D3Dpp.MultiSampleType) {
-                            hr = g_D3DD->GetRenderTargetData(pTargetSurface, pSurface);
-                        }
-                        else {
-                            hr = g_D3DD->GetFrontBufferData(0, pSurface);
-                        }
-                        if (hr == D3D_OK) {
-                            D3DLOCKED_RECT lockrect;
-                            hr = pSurface->LockRect(&lockrect, NULL, 0);
-                            if (hr == D3D_OK) {
-                                CBitmap bm;
-                                bm.CreateRGB(desc.Width, desc.Height);
-
-                                for (UINT y = 0; y < desc.Height; y++) {
-                                    unsigned char *buf_src = (unsigned char *)lockrect.pBits + lockrect.Pitch * y;
-                                    unsigned char *buf_des = (unsigned char *)bm.Data() + bm.Pitch() * y;
-
-                                    for (UINT x = 0; x < desc.Width; x++) {
-                                        // memcpy(buf_des, buf_src, 3);
-                                        buf_des[0] = buf_src[2];
-                                        buf_des[1] = buf_src[1];
-                                        buf_des[2] = buf_src[0];
-
-                                        buf_src += 4;
-                                        buf_des += 3;
-                                    }
-                                }
-
-                                pSurface->UnlockRect();
-
-                                bm.SaveInPNG(filename.c_str());
-                                g_MatrixMap->m_DI.T((L"Screen shot has been saved into " + filename).c_str(), L"");
-                            }
-                            else {
-                                // LockRect fail
-                                // OutputDebugStringA("LockRect fail\n");
-                            }
-                        }
-                        else {
-                            // GetRenderTargetData fail
-                            // char s[256];
-                            // sprintf_s(s, sizeof(s), "GetRenderTargetData fail - 0x%08X, %u, %d\n", hr, hr, hr);
-                            // OutputDebugStringA(s);
-                        }
-                        pSurface->Release();
-                    }
-                    else {
-                        // CreateOffscreenPlainSurface fail
-                        // OutputDebugStringA("CreateOffscreenPlainSurface fail\n");
-                    }
-                }
-                else {
-                    // GetDesc fail
-                    // OutputDebugStringA("GetDesc fail\n");
-                }
-
-                if (pTargetSurface)
-                    pTargetSurface->Release();
-            }
-            else {
-                // GetRenderTarget fail
-                // OutputDebugStringA("GetRenderTarget fail\n");
-            }
-
-            return;
-        }
-
-        CBitmap bm(g_CacheHeap);
-        CBitmap bmout(g_CacheHeap);
-        bmout.CreateRGB(g_ScreenX, g_ScreenY);
-
-        HDC hdc = GetDC(g_Wnd);
-
-        bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
-        bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
-        if (SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0) {
-            ReleaseDC(g_Wnd, hdc);
-            return;
-        }
-        BitBlt(bm.WBM_BitmapDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
-
-        ReleaseDC(g_Wnd, hdc);
-
-        bm.WBM_Save(true);
-
-        bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
-        bmout.SaveInPNG(filename.c_str());
-
-        // HFree(data, g_CacheHeap);
-
-        g_MatrixMap->m_DI.T(L"Screen shot has been saved", L"");
+    if (GetAsyncKeyState(/*VK_SNAPSHOT*/ VK_F9) != 0)
+    {
+        make_screenshot();
     }
 }
 
