@@ -38,7 +38,7 @@ public:
             if constexpr (_level != logger::level::nolog)
             {
                 _caller = caller;
-                _format = format;
+                _log_line = format;
             }
         }
 
@@ -53,7 +53,7 @@ public:
                         "{:%F %T} |{}| {} | {}:{}\n",
                         std::chrono::system_clock::now(),
                         get_formatted_level(),
-                        std::vformat(_format, _args).c_str(),
+                        _log_line,
                         _caller.file_name(),
                         _caller.line());;
                 _out.flush();
@@ -63,7 +63,10 @@ public:
         template<typename... Args>
         void operator() (Args&&... args)
         {
-            _args = std::make_format_args(args...);
+            if constexpr (_level != logger::level::nolog)
+            {
+                _log_line = std::vformat(_log_line, std::make_format_args(args...));
+            }
         }
     
     private:
@@ -85,8 +88,7 @@ public:
 
         std::ostream& _out;
         std::source_location _caller;
-        std::string_view _format;
-        std::format_args _args;
+        std::string _log_line;
     };
 
     stupid(const std::string& path)
