@@ -3,17 +3,14 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#ifndef MATRIXDEBUGINFO_INCLUDE
-#define MATRIXDEBUGINFO_INCLUDE
+#pragma once
 
-#include "CMain.hpp"
+#include "BaseDef.hpp"
 
-#include "d3d9.h"
-#include "d3dx9tex.h"
+#include <d3dx9core.h>
 
 #include <string>
-
-#define MAX_DEBUG_INFO_ITEMS 128
+#include <vector>
 
 #define DI_DRAWFPS       SETBIT(0)
 #define DI_VISOBJ        SETBIT(1)
@@ -24,47 +21,30 @@
 #define DI_FRUSTUMCENTER SETBIT(6)
 
 struct SDIItem {
-    std::wstring* key;
-    std::wstring* val;
+    std::wstring key;
+    std::wstring val;
     int ttl;
     int bttl;
 };
 
-class CMatrixDebugInfo : public CMain {
-    SDIItem m_Items[MAX_DEBUG_INFO_ITEMS];
-    int m_ItemsCnt;
-    ID3DXFont *m_Font;
+class CMatrixDebugInfo
+{
+    std::vector<SDIItem> m_Items;
+    ID3DXFont* m_Font;
 
     CPoint m_Pos;
 
 public:
-    CMatrixDebugInfo(void);
-    ~CMatrixDebugInfo(void) { Clear(); };
+    CMatrixDebugInfo();
+    ~CMatrixDebugInfo();
 
-    void Clear(void);
-    void Draw(void);
+    void Draw();
     void Takt(int ms);
 
-    void SetStartPos(const CPoint &pos) { m_Pos = pos; }
+    void SetStartPos(const CPoint& pos);
 
-    void T(const wchar *key, const wchar *val, int ttl = 3000, int bttl = 0, bool add = false);
+    void T(const wchar_t* key, const wchar_t* val, int ttl = 3000, int bttl = 0, bool add = false);
 
-    void InitFont(void);
-    void ClearFont(void) {
-        if (m_Font) {
-            m_Font->Release();
-            m_Font = NULL;
-        }
-    };
-
-    void OnLostDevice(void) {
-        if (m_Font)
-            m_Font->OnLostDevice();
-    }
-    void OnResetDevice(void) {
-        if (m_Font)
-            m_Font->OnResetDevice();
-    }
+    void OnLostDevice();
+    void OnResetDevice();
 };
-
-#endif

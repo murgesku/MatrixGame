@@ -27,8 +27,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <stupid_logger.hpp>
-// logger_type lgr{"test.log"};
-logger_type lgr{std::cout};
+logger_type lgr{"test.log"};
 ////////////////////////////////////////////////////////////////////////////////
 
 CHeap *g_MatrixHeap;
@@ -37,8 +36,11 @@ CMatrixMapLogic *g_MatrixMap;
 CRenderPipeline *g_Render;
 CLoadProgress *g_LoadProgress;
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
+{
     const wchar *cmd = GetCommandLineW();
+
+    lgr.info("===== Started =====");
 
     int numarg;
     wchar **args = CommandLineToArgvW(cmd, &numarg);
@@ -104,16 +106,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int) {
         }
         L3GDeinit();
 
+        lgr.fatal("{}")(utils::from_wstring(ex.Info().c_str()));
         MessageBox(NULL, utils::from_wstring(ex.Info().c_str()).c_str(), "Exception:", MB_OK);
     }
     catch (const std::exception& e)
     {
+        lgr.fatal(e.what());
         MessageBox(NULL, e.what(), "Exception:", MB_OK);
     }
     catch (...) {
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
 #endif
+        lgr.fatal("Unknown bug :(");
         MessageBox(NULL, "Unknown bug :(", "Exception:", MB_OK);
     }
 
@@ -535,16 +540,17 @@ void CGame::ApplyVideoParams(SRobotsSettings &set) {
     bool change_refresh_rate = set.m_RefreshRate != 0 && set.m_RefreshRate != d3ddm.RefreshRate;
     int refresh_rate_required = change_refresh_rate ? set.m_RefreshRate : 0;
 
-    RECT rect;
-    GetClientRect(g_Wnd, &rect);
-    bool was_in_window_mode = (rect.right != d3ddm.Width || rect.bottom != d3ddm.Height);
-    bool now_in_window_mode = was_in_window_mode && (bpp == set.m_BPP) && !change_refresh_rate;
 
     if (set.m_FSAASamples > 16)
         ERROR_S(L"Invalid multisample type");
     _D3DMULTISAMPLE_TYPE expectedMultiSampleType = (_D3DMULTISAMPLE_TYPE)set.m_FSAASamples;  //(m_FSAASamples >> 24);
 
     ZeroMemory(&g_D3Dpp, sizeof(g_D3Dpp));
+
+    RECT rect;
+    GetClientRect(g_Wnd, &rect);
+    bool was_in_window_mode = (rect.right != d3ddm.Width || rect.bottom != d3ddm.Height);
+    bool now_in_window_mode = was_in_window_mode && (bpp == set.m_BPP) && !change_refresh_rate;
 
     if (now_in_window_mode) {
         RESETFLAG(g_Flags, GFLAG_FULLSCREEN);

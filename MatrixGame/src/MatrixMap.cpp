@@ -199,7 +199,6 @@ void CMatrixMap::Clear(void) {
         DESTROY_VB(m_ShadowVB);
 
     m_Cursor.Clear();
-    m_DI.Clear();
 
     if (m_DeviceState != NULL) {
         HDelete(CDeviceState, m_DeviceState, g_MatrixHeap);

@@ -4,6 +4,9 @@
 // Refer to the LICENSE file included
 
 #include "Tracer.hpp"
+
+#include <stupid_logger.hpp>
+
 #include <windows.h>
 #include <stdio.h>
 #include <exception>
@@ -166,17 +169,18 @@ static const S_EXCEPT_CODE_T s_ecodes[] = {{EXCEPTION_ACCESS_VIOLATION, "EXCEPTI
 //===========================================================================//
 //                      L O C A L    F U N C T I O N S
 
-static void cpp_except_terminate(void) throw() {
+static void cpp_except_terminate(void) noexcept
+{
     std::string message = generate_trace_text();
+    lgr.fatal(message.c_str());
     MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
     ExitProcess(-1);
 }
 
 //---------------------------------------------------------------------------//
 
-static LONG WINAPI sys_except_handler(
-
-        EXCEPTION_POINTERS *info) throw() {
+static LONG WINAPI sys_except_handler(EXCEPTION_POINTERS *info) noexcept
+{
     const char *ecode_str;
     int i;
     int k;
@@ -221,6 +225,7 @@ static LONG WINAPI sys_except_handler(
     message += "++FATAL ERROR++\n";
     message += generate_trace_text();
 
+    lgr.fatal(message.c_str());
     MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
 
     return EXCEPTION_EXECUTE_HANDLER;
