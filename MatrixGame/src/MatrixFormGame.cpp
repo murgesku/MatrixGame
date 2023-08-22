@@ -27,6 +27,7 @@
 #include "stdio.h"
 
 #include <utils.hpp>
+#include <stupid_logger.hpp>
 
 #include <string>
 #include <chrono>
@@ -320,7 +321,9 @@ void CFormMatrixGame::Takt(int step) {
     DTRACE();
 
     if (g_MatrixMap->CheckLostDevice())
+    {
         return;
+    }
 
     g_MatrixMap->Takt(step);
 
