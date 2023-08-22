@@ -210,6 +210,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
                 (int)(tr.right - tr.left),
                 (int)(tr.bottom - tr.top));
 
+        lgr.error(str);
         ERROR_S(utils::to_wstring(str));
     }
 

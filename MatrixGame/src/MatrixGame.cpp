@@ -106,8 +106,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
         }
         L3GDeinit();
 
-        lgr.fatal("{}")(utils::from_wstring(ex.Info().c_str()));
-        MessageBox(NULL, utils::from_wstring(ex.Info().c_str()).c_str(), "Exception:", MB_OK);
+        lgr.fatal(utils::from_wstring(ex.Info()));
+        MessageBox(NULL, utils::from_wstring(ex.Info()).c_str(), "Exception:", MB_OK);
     }
     catch (const std::exception& e)
     {
