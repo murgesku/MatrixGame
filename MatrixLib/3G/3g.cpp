@@ -14,6 +14,7 @@
 
 #include <utils.hpp>
 #include <fps_counter.hpp>
+#include <stupid_logger.hpp>
 
 #include <fstream>
 #include <chrono>
@@ -184,18 +185,32 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     tr.top = 0;
     tr.right = g_ScreenX;
     tr.bottom = g_ScreenY;
-    if (!FLAG(g_Flags, GFLAG_FULLSCREEN)) {
+    lgr.debug("Requested resolution: {}x{}")(g_ScreenX, g_ScreenY);
+    if (!FLAG(g_Flags, GFLAG_FULLSCREEN))
+    {
+        lgr.debug("CreateWindow() in windowed mode");
+
         AdjustWindowRectEx(&tr, WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU, false, 0);
-        g_Wnd = CreateWindow(classname.c_str(), utils::from_wstring(captionname).c_str(),
-                             WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER, 0, 0, tr.right - tr.left,
-                             tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
+
+        lgr.debug("Adjusted window: pos {}x{}, size {}x{}")(tr.left, tr.top, tr.right - tr.left, tr.bottom - tr.top);
+        g_Wnd =
+            CreateWindow(
+                classname.c_str(), utils::from_wstring(captionname).c_str(),
+                WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU,
+                0, 0, tr.right - tr.left, tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
-    else {
-        g_Wnd = CreateWindow(classname.c_str(), utils::from_wstring(captionname).c_str(), WS_POPUP, 0, 0, tr.right - tr.left,
-                             tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
+    else
+    {
+        lgr.debug("CreateWindow() in fullscreen mode");
+        g_Wnd =
+            CreateWindow(
+                classname.c_str(), utils::from_wstring(captionname).c_str(),
+                WS_POPUP,
+                0, 0, tr.right - tr.left, tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     if (!g_Wnd)
     {
+        lgr.error("CreateWindow() failed");
         ERROR_E;
     }
 
