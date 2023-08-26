@@ -296,33 +296,22 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         }
 
         g_D3Dpp.Windowed = TRUE;
-        // g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
         g_D3Dpp.BackBufferFormat = d3ddm.Format;
-        g_D3Dpp.EnableAutoDepthStencil = TRUE;
-        g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
         // d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-        g_D3Dpp.PresentationInterval = interval;  // vsync off
         g_D3Dpp.BackBufferCount = 2;              // triple buffer
-
-        g_D3Dpp.BackBufferWidth = g_ScreenX;
-        g_D3Dpp.BackBufferHeight = g_ScreenY;
     }
     else {
         g_D3Dpp.Windowed = FALSE;
-        // g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
         g_D3Dpp.BackBufferFormat = (bpp == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
-        g_D3Dpp.EnableAutoDepthStencil = TRUE;
-        g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-        g_D3Dpp.PresentationInterval = interval;  // vsync off
-
         g_D3Dpp.FullScreen_RefreshRateInHz = refresh;
-
-        g_D3Dpp.BackBufferWidth = g_ScreenX;
-        g_D3Dpp.BackBufferHeight = g_ScreenY;
     }
 
+    g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
+    g_D3Dpp.EnableAutoDepthStencil = TRUE;
+    g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+    g_D3Dpp.PresentationInterval = interval;  // vsync off
+    g_D3Dpp.BackBufferWidth = g_ScreenX;
+    g_D3Dpp.BackBufferHeight = g_ScreenY;
     g_D3Dpp.EnableAutoDepthStencil = TRUE;
     g_D3Dpp.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
     g_D3Dpp.hDeviceWindow = g_Wnd;
@@ -599,20 +588,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 g_FormCur->MouseKey(B_DOWN /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
             return 0;
         case WM_LBUTTONDBLCLK:
-            /*POINT p;
-            if (GetCursorPos(&p))
-            {if (ScreenToClient(g_Wnd, &p))
-            {
-                if (p.y>=g_ScreenY*0.9) {
-                    if (g_FormCur) g_FormCur->SystemEvent(SYSEV_DEACTIVATING);
-                    RESETFLAG(g_Flags, GFLAG_APPACTIVE);
-                    ShowWindow(g_Wnd, SW_MINIMIZE);
-                    ClipCursor(NULL);
-                    g_D3DD->TestCooperativeLevel();
-                    break;
-                }}}
-            */
-
             if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
                 g_FormCur->MouseKey(B_DOUBLE /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
             return 0;
