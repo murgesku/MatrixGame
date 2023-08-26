@@ -229,8 +229,6 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         ERROR_S(utils::to_wstring(str));
     }
 
-    SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
-
     g_D3D = Direct3DCreate9(D3D_SDK_VERSION);
     if (!g_D3D)
     {
@@ -273,6 +271,8 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         case D3DERR_OUTOFVIDEOMEMORY:
             ERROR_S(L"CreateDevice failed: D3DERR_OUTOFVIDEOMEMORY");
     }
+
+    SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
 
     IDirect3DSurface9 *surf;
     g_D3DD->GetRenderTarget(0, &surf);
@@ -523,8 +523,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 SETFLAG(g_Flags, GFLAG_APPACTIVE);
                 if (FLAG(g_Flags, GFLAG_FULLSCREEN))
                 {
-                    g_D3Dpp.Windowed = FALSE;
-                    g_D3DD->Reset(&g_D3Dpp);
                     ShowWindow(g_Wnd, SW_MAXIMIZE);
                 }
                 else
@@ -545,11 +543,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     g_FormCur->SystemEvent(SYSEV_DEACTIVATING);
                 }
 
-                if (FLAG(g_Flags, GFLAG_FULLSCREEN))
-                {
-                    g_D3Dpp.Windowed = TRUE;
-                    g_D3DD->Reset(&g_D3Dpp);
-                }
                 ShowWindow(g_Wnd, SW_MINIMIZE);
                 ClipCursor(NULL);
             }
