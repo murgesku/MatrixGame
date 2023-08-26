@@ -106,8 +106,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
         }
         L3GDeinit();
 
-        lgr.fatal("{}")(utils::from_wstring(ex.Info().c_str()));
-        MessageBox(NULL, utils::from_wstring(ex.Info().c_str()).c_str(), "Exception:", MB_OK);
+        lgr.fatal(utils::from_wstring(ex.Info()));
+        MessageBox(NULL, utils::from_wstring(ex.Info()).c_str(), "Exception:", MB_OK);
     }
     catch (const std::exception& e)
     {
@@ -553,6 +553,7 @@ void CGame::ApplyVideoParams(SRobotsSettings &set) {
     bool now_in_window_mode = was_in_window_mode && (bpp == set.m_BPP) && !change_refresh_rate;
 
     if (now_in_window_mode) {
+        lgr.debug("Apply window mode");
         RESETFLAG(g_Flags, GFLAG_FULLSCREEN);
         g_D3Dpp.Windowed = TRUE;
 
@@ -564,6 +565,7 @@ void CGame::ApplyVideoParams(SRobotsSettings &set) {
                      SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE | SWP_NOACTIVATE);
     }
     else {
+        lgr.debug("Apply fullscreen mode");
         SETFLAG(g_Flags, GFLAG_FULLSCREEN);
         g_D3Dpp.Windowed = FALSE;
 

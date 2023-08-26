@@ -14,6 +14,7 @@
 
 #include <utils.hpp>
 #include <fps_counter.hpp>
+#include <stupid_logger.hpp>
 
 #include <fstream>
 #include <chrono>
@@ -184,18 +185,32 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     tr.top = 0;
     tr.right = g_ScreenX;
     tr.bottom = g_ScreenY;
-    if (!FLAG(g_Flags, GFLAG_FULLSCREEN)) {
+    lgr.debug("Requested resolution: {}x{}")(g_ScreenX, g_ScreenY);
+    if (!FLAG(g_Flags, GFLAG_FULLSCREEN))
+    {
+        lgr.debug("CreateWindow() in windowed mode");
+
         AdjustWindowRectEx(&tr, WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU, false, 0);
-        g_Wnd = CreateWindow(classname.c_str(), utils::from_wstring(captionname).c_str(),
-                             WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_BORDER, 0, 0, tr.right - tr.left,
-                             tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
+
+        lgr.debug("Adjusted window: pos {}x{}, size {}x{}")(tr.left, tr.top, tr.right - tr.left, tr.bottom - tr.top);
+        g_Wnd =
+            CreateWindow(
+                classname.c_str(), utils::from_wstring(captionname).c_str(),
+                WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU,
+                0, 0, tr.right - tr.left, tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
-    else {
-        g_Wnd = CreateWindow(classname.c_str(), utils::from_wstring(captionname).c_str(), WS_POPUP, 0, 0, tr.right - tr.left,
-                             tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
+    else
+    {
+        lgr.debug("CreateWindow() in fullscreen mode");
+        g_Wnd =
+            CreateWindow(
+                classname.c_str(), utils::from_wstring(captionname).c_str(),
+                WS_POPUP,
+                0, 0, tr.right - tr.left, tr.bottom - tr.top, NULL, NULL, g_HInst, NULL);
     }
     if (!g_Wnd)
     {
+        lgr.error("CreateWindow() failed");
         ERROR_E;
     }
 
@@ -210,10 +225,9 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
                 (int)(tr.right - tr.left),
                 (int)(tr.bottom - tr.top));
 
+        lgr.error(str);
         ERROR_S(utils::to_wstring(str));
     }
-
-    SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
 
     g_D3D = Direct3DCreate9(D3D_SDK_VERSION);
     if (!g_D3D)
@@ -240,7 +254,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
             D3DADAPTER_DEFAULT,
             D3DDEVTYPE_HAL,
             g_Wnd,
-            D3DCREATE_HARDWARE_VERTEXPROCESSING,
+            D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
             &d3dpp,
             &g_D3DD
         );
@@ -257,6 +271,8 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         case D3DERR_OUTOFVIDEOMEMORY:
             ERROR_S(L"CreateDevice failed: D3DERR_OUTOFVIDEOMEMORY");
     }
+
+    SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
 
     IDirect3DSurface9 *surf;
     g_D3DD->GetRenderTarget(0, &surf);
@@ -280,33 +296,22 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         }
 
         g_D3Dpp.Windowed = TRUE;
-        // g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
         g_D3Dpp.BackBufferFormat = d3ddm.Format;
-        g_D3Dpp.EnableAutoDepthStencil = TRUE;
-        g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
         // d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
-        g_D3Dpp.PresentationInterval = interval;  // vsync off
         g_D3Dpp.BackBufferCount = 2;              // triple buffer
-
-        g_D3Dpp.BackBufferWidth = g_ScreenX;
-        g_D3Dpp.BackBufferHeight = g_ScreenY;
     }
     else {
         g_D3Dpp.Windowed = FALSE;
-        // g_D3Dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-        g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
         g_D3Dpp.BackBufferFormat = (bpp == 16) ? D3DFMT_R5G6B5 : D3DFMT_A8R8G8B8;
-        g_D3Dpp.EnableAutoDepthStencil = TRUE;
-        g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
-        g_D3Dpp.PresentationInterval = interval;  // vsync off
-
         g_D3Dpp.FullScreen_RefreshRateInHz = refresh;
-
-        g_D3Dpp.BackBufferWidth = g_ScreenX;
-        g_D3Dpp.BackBufferHeight = g_ScreenY;
     }
 
+    g_D3Dpp.SwapEffect = D3DSWAPEFFECT_FLIP;
+    g_D3Dpp.EnableAutoDepthStencil = TRUE;
+    g_D3Dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+    g_D3Dpp.PresentationInterval = interval;  // vsync off
+    g_D3Dpp.BackBufferWidth = g_ScreenX;
+    g_D3Dpp.BackBufferHeight = g_ScreenY;
     g_D3Dpp.EnableAutoDepthStencil = TRUE;
     g_D3Dpp.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
     g_D3Dpp.hDeviceWindow = g_Wnd;
@@ -518,8 +523,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 SETFLAG(g_Flags, GFLAG_APPACTIVE);
                 if (FLAG(g_Flags, GFLAG_FULLSCREEN))
                 {
-                    g_D3Dpp.Windowed = FALSE;
-                    g_D3DD->Reset(&g_D3Dpp);
                     ShowWindow(g_Wnd, SW_MAXIMIZE);
                 }
                 else
@@ -540,11 +543,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                     g_FormCur->SystemEvent(SYSEV_DEACTIVATING);
                 }
 
-                if (FLAG(g_Flags, GFLAG_FULLSCREEN))
-                {
-                    g_D3Dpp.Windowed = TRUE;
-                    g_D3DD->Reset(&g_D3Dpp);
-                }
                 ShowWindow(g_Wnd, SW_MINIMIZE);
                 ClipCursor(NULL);
             }
@@ -583,20 +581,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 g_FormCur->MouseKey(B_DOWN /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
             return 0;
         case WM_LBUTTONDBLCLK:
-            /*POINT p;
-            if (GetCursorPos(&p))
-            {if (ScreenToClient(g_Wnd, &p))
-            {
-                if (p.y>=g_ScreenY*0.9) {
-                    if (g_FormCur) g_FormCur->SystemEvent(SYSEV_DEACTIVATING);
-                    RESETFLAG(g_Flags, GFLAG_APPACTIVE);
-                    ShowWindow(g_Wnd, SW_MINIMIZE);
-                    ClipCursor(NULL);
-                    g_D3DD->TestCooperativeLevel();
-                    break;
-                }}}
-            */
-
             if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
                 g_FormCur->MouseKey(B_DOUBLE /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
             return 0;

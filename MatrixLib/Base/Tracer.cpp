@@ -172,7 +172,7 @@ static const S_EXCEPT_CODE_T s_ecodes[] = {{EXCEPTION_ACCESS_VIOLATION, "EXCEPTI
 static void cpp_except_terminate(void) noexcept
 {
     std::string message = generate_trace_text();
-    lgr.fatal(message.c_str());
+    lgr.fatal(message);
     MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
     ExitProcess(-1);
 }
@@ -225,7 +225,7 @@ static LONG WINAPI sys_except_handler(EXCEPTION_POINTERS *info) noexcept
     message += "++FATAL ERROR++\n";
     message += generate_trace_text();
 
-    lgr.fatal(message.c_str());
+    lgr.fatal(message);
     MessageBoxA(0, message.c_str(), "Unhandled Exception", MB_ICONEXCLAMATION);
 
     return EXCEPTION_EXECUTE_HANDLER;

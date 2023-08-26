@@ -3,8 +3,6 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <algorithm>
-
 #include "MatrixMap.hpp"
 #include "MatrixObject.hpp"
 #include "MatrixObjectBuilding.hpp"
@@ -17,6 +15,10 @@
 #include "MatrixGamePathUtils.hpp"
 
 #include <utils.hpp>
+#include <stupid_logger.hpp>
+
+#include <algorithm>
+#include <filesystem>
 
 #define MINIMAP_Z 0.0000f
 
@@ -85,31 +87,39 @@ void CMinimap::Clear(void) {
     }
 }
 
-void CMinimap::StoreTexture(void) {
+void CMinimap::StoreTexture(void)
+{
     DTRACE();
+    lgr.trace("CMinimap::StoreTexture");
     if (m_Texture == NULL || m_TextureStore != NULL)
+    {
         return;
+    }
 
     IDirect3DSurface9 *surf_to, *surf_from;
     if (D3D_OK != g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM,
-                                        &m_TextureStore, NULL)) {
+                                        &m_TextureStore, NULL))
+    {
         goto really_lost;
     }
 
-    if (D3D_OK != m_TextureStore->GetSurfaceLevel(0, &surf_to)) {
+    if (D3D_OK != m_TextureStore->GetSurfaceLevel(0, &surf_to))
+    {
         m_TextureStore->Release();
         m_TextureStore = NULL;
         goto really_lost;
     }
 
-    if (D3D_OK != m_Texture->Tex()->GetSurfaceLevel(0, &surf_from)) {
+    if (D3D_OK != m_Texture->Tex()->GetSurfaceLevel(0, &surf_from))
+    {
         surf_to->Release();
         m_TextureStore->Release();
         m_TextureStore = NULL;
         goto really_lost;
     }
 
-    if (D3D_OK != D3DXLoadSurfaceFromSurface(surf_to, NULL, NULL, surf_from, NULL, NULL, D3DX_FILTER_NONE, 0)) {
+    if (D3D_OK != D3DXLoadSurfaceFromSurface(surf_to, NULL, NULL, surf_from, NULL, NULL, D3DX_FILTER_NONE, 0))
+    {
         surf_from->Release();
         surf_to->Release();
         m_TextureStore->Release();
@@ -125,14 +135,19 @@ really_lost:
     m_Texture = NULL;
 }
 
-void CMinimap::RestoreTexture(void) {
+void CMinimap::RestoreTexture(void)
+{
     DTRACE();
+    lgr.trace("CMinimap::RestoreTexture");
     if (m_Texture != NULL || m_TextureStore == NULL)
+    {
         return;
+    }
 
     LPDIRECT3DTEXTURE9 newTexture;
     if (D3D_OK != g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8,
-                                        D3DPOOL_DEFAULT, &newTexture, NULL)) {
+                                        D3DPOOL_DEFAULT, &newTexture, NULL))
+    {
         m_TextureStore->Release();
         m_TextureStore = NULL;
         return;
@@ -888,58 +903,56 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
     // newTexture->SetPriority(0xFFFFFFFF);
     ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
 
+    std::error_code ec;
+    if (std::filesystem::exists(mmname.c_str(), ec))
     {
-        WIN32_FIND_DATAW fd;
-        HANDLE ff = FindFirstFileW(mmname.c_str(), &fd);
-        if (ff != INVALID_HANDLE_VALUE) {
-            CBitmap bm(g_CacheHeap);
-            bm.LoadFromPNG(mmname.c_str());
-            if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
-                goto render;
+        lgr.debug("Found minimap cache file at {}")(utils::from_wstring(mmname));
+        CBitmap bm(g_CacheHeap);
+        bm.LoadFromPNG(mmname.c_str());
+        if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
+            goto render;
 
-            LPDIRECT3DTEXTURE9 lt;
-            ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lt,
-                                            NULL));
+        LPDIRECT3DTEXTURE9 lt;
+        ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lt,
+                                        NULL));
 
-            D3DLOCKED_RECT lr;
-            ASSERT_DX(lt->LockRect(0, &lr, NULL, 0));
+        D3DLOCKED_RECT lr;
+        ASSERT_DX(lt->LockRect(0, &lr, NULL, 0));
 
-            BYTE *sou = (BYTE *)bm.Data();
-            BYTE *des = (BYTE *)lr.pBits;
-            for (int y = 0; y < MINIMAP_SIZE;
-                 y++, sou += bm.Pitch() - MINIMAP_SIZE * 3, des += lr.Pitch - MINIMAP_SIZE * 4) {
-                for (int x = 0; x < MINIMAP_SIZE; x++, sou += 3, des += 4) {
-                    *(des) = *(sou + 2);
-                    *(des + 1) = *(sou + 1);
-                    *(des + 2) = *(sou + 0);
-                    *(des + 3) = 255;
-                }
+        BYTE *sou = (BYTE *)bm.Data();
+        BYTE *des = (BYTE *)lr.pBits;
+        for (int y = 0; y < MINIMAP_SIZE;
+             y++, sou += bm.Pitch() - MINIMAP_SIZE * 3, des += lr.Pitch - MINIMAP_SIZE * 4) {
+            for (int x = 0; x < MINIMAP_SIZE; x++, sou += 3, des += 4) {
+                *(des) = *(sou + 2);
+                *(des + 1) = *(sou + 1);
+                *(des + 2) = *(sou + 0);
+                *(des + 3) = 255;
             }
+        }
 
-            ASSERT_DX(lt->UnlockRect(0));
+        ASSERT_DX(lt->UnlockRect(0));
 
-            IDirect3DSurface9 *ltt;
-            ASSERT_DX(lt->GetSurfaceLevel(0, &ltt));
+        IDirect3DSurface9 *ltt;
+        ASSERT_DX(lt->GetSurfaceLevel(0, &ltt));
 
-            HRESULT hr = g_D3DD->UpdateSurface(ltt, NULL, newTarget, NULL);
+        HRESULT hr = g_D3DD->UpdateSurface(ltt, NULL, newTarget, NULL);
 
-            ltt->Release();
-            lt->Release();
-            newTarget->Release();
-            FindClose(ff);
+        ltt->Release();
+        lt->Release();
+        newTarget->Release();
 
-            if (hr == D3D_OK) {
-                m_Texture->Set(newTexture);
+        if (hr == D3D_OK)
+        {
+            m_Texture->Set(newTexture);
 
-                // MessageBox(NULL, CStr(int(newTexture)), "tex 1", MB_OK);
-                // MessageBox(NULL, CStr(int(m_Texture->Tex())), "", MB_OK);
-
-                RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
-                return;
-            }
+            RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+            return;
         }
     }
 render:
+
+    lgr.debug("Rendering minimap background from scratch");
 
     IDirect3DSurface9 *newZ, *oldZ = NULL;
     bool CustomZ = (MINIMAP_SIZE > g_ScreenY) || (MINIMAP_SIZE > g_ScreenX);

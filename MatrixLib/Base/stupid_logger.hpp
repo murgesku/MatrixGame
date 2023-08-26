@@ -106,39 +106,39 @@ public:
     {
     }
 
-    auto fatal(const char* format, std::source_location caller = std::source_location::current())
+    auto fatal(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::fatal>(caller, format);
     }
 
-    auto error(const char* format, std::source_location caller = std::source_location::current())
+    auto error(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::error>(caller, format);
     }
 
-    auto warning(const char* format, std::source_location caller = std::source_location::current())
+    auto warning(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::warning>(caller, format);
     }
 
-    auto info(const char* format, std::source_location caller = std::source_location::current())
+    auto info(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::info>(caller, format);
     }
 
-    auto debug(const char* format, std::source_location caller = std::source_location::current())
+    auto debug(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::debug>(caller, format);
     }
 
-    auto trace(const char* format, std::source_location caller = std::source_location::current())
+    auto trace(std::string_view format, std::source_location caller = std::source_location::current())
     {
         return create_entry<level::trace>(caller, format);
     }
 
 private:
     template <logger::level value>
-    auto create_entry(std::source_location caller, const char* format)
+    auto create_entry(std::source_location caller, std::string_view format)
     {
         if constexpr (value <= type)
         {
