@@ -29,14 +29,14 @@ jobs:
     - name: Compile with MSVC
       run: |
         cmake -A Win32 . -B build_msvc
-        cmake --build build_msvc
+        cmake --build build_msvc --config Release
       shell: bash
     - name: Store artifacts
       uses: actions/upload-artifact@v3
       with:
         name: dll_msvc
         path: |
-          ${{ github.workspace }}/build_msvc/MatrixGame/Debug/MatrixGame.dll
+          ${{ github.workspace }}/build_msvc/MatrixGame/Release/MatrixGame.dll
 
   gcc:
     name: Build with GCC
@@ -64,7 +64,7 @@ jobs:
         # ninja wants cmd.exe to be in the path
         export PATH=/c/Windows/System32:$PATH
         cmake . -G "Ninja" -B build_gcc
-        cmake --build build_gcc
+        cmake --build build_gcc --config Release
       shell: bash
     - name: Store artifacts
       uses: actions/upload-artifact@v3
