@@ -55,7 +55,7 @@ public:
                         get_formatted_level(),
                         _log_line,
                         _caller.file_name(),
-                        _caller.line());;
+                        _caller.line());
                 _out.flush();
             }
         }
@@ -70,7 +70,7 @@ public:
         }
     
     private:
-        static consteval const char* get_formatted_level()
+        static consteval std::string_view get_formatted_level()
         {
             switch(_level)
             {
