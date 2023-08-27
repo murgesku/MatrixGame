@@ -939,29 +939,28 @@ bool CMinimap::LoadMinimapFromCache(const std::wstring& filename, LPDIRECT3DTEXT
 
 bool CMinimap::StoreMinimapToCache(const std::wstring& filename, LPDIRECT3DTEXTURE9 texture)
 {
-    CreateDirectoryW(PathToOutputFiles(FOLDER_NAME_CACHE).c_str(), NULL);
+    namespace fs = std::filesystem;
 
-    // seek files
-    auto n = utils::format(L"%ls\\%ls.*",
-        PathToOutputFiles(FOLDER_NAME_CACHE),
-        filename.c_str());
+    fs::path filepath{filename};
+    lgr.debug("Storing minimap into cache file at {}")(utils::from_wstring(filename));
 
-    HANDLE ff;
-    for (;;) {
-        WIN32_FIND_DATAW fd;
-        ff = FindFirstFileW(n.c_str(), &fd);
-        if (ff != INVALID_HANDLE_VALUE) {
-            auto nn =
-                utils::format(
-                    L"%ls\\%ls",
-                    PathToOutputFiles(FOLDER_NAME_CACHE),
-                    fd.cFileName);
-            DeleteFileW(nn.c_str());
+    std::error_code ec;
+
+    if (!fs::exists(filepath, ec))
+    {
+        if (!fs::create_directory(filepath.parent_path(), ec) && ec)
+        {
+            lgr.warning("Failed to create cache folder: {}")(ec.message());
+            return false;
         }
-        else {
-            break;
+    }
+    else
+    {
+        if (!fs::remove(filepath, ec))
+        {
+            lgr.warning("Failed to remove old cache file: {}")(ec.message());
+            return false;
         }
-        FindClose(ff);
     }
 
     IDirect3DSurface9* newTarget;
@@ -993,6 +992,8 @@ bool CMinimap::StoreMinimapToCache(const std::wstring& filename, LPDIRECT3DTEXTU
     outtgt->Release();
     out->Release();
     newTarget->Release();
+
+    lgr.debug("Stored minimap into cache file");
 
     return true;
 }
@@ -1240,12 +1241,9 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
         ms = ms->GetNextLogic();
     }
 
-    if (StoreMinimapToCache(mmname, newTexture))
-    {
-        lgr.debug("Stored minimap into cache file at {}")(utils::from_wstring(mmname));
-    }
-
     RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+
+    StoreMinimapToCache(mmname, newTexture);
 }
 
 void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s) {
