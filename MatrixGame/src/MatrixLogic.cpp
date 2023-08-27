@@ -2312,6 +2312,13 @@ int CMatrixMapLogic::RandomizeMovePath(int nsh, int size, int cnt, CPoint *path)
     return cnt;
 }
 
+/////////////////////////////////////////////////////////////////////////
+// TODO: hotfix for error C1001: Internal compiler error.
+// The code of this function seems to be too complicated for MSVC.
+#ifdef _MSC_VER
+    #pragma optimize("g", off)
+#endif
+/////////////////////////////////////////////////////////////////////////
 int CMatrixMapLogic::FindNearPlace(byte mm, const CPoint &mappos) {
     int i;
     int sme = 0;
@@ -2367,6 +2374,13 @@ int CMatrixMapLogic::FindNearPlace(byte mm, const CPoint &mappos) {
         m_ZoneDataZero[m_ZoneIndex[i]] = 0;
     return -1;
 }
+/////////////////////////////////////////////////////////////////////////
+// TODO: hotfix for error C1001: Internal compiler error.
+// The code of this function seems to be too complicated for MSVC.
+#ifdef _MSC_VER
+    #pragma optimize("g", on)
+#endif
+/////////////////////////////////////////////////////////////////////////
 
 int CMatrixMapLogic::FindPlace(const CPoint &mappos) {
     SMatrixMapMove *mm = MoveGetTest(mappos.x, mappos.y);
