@@ -998,30 +998,25 @@ bool CMinimap::StoreMinimapToCache(const std::wstring& filename, LPDIRECT3DTEXTU
     return true;
 }
 
-void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
+void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq)
+{
     DTRACE();
-    SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
-    std::wstring mmname = PathToOutputFiles(FOLDER_NAME_CACHE) + L"\\" + name + L".";
+    std::wstring mmname = std::format(L"{}\\{}.{:X}", PathToOutputFiles(FOLDER_NAME_CACHE), name, uniq);
 
-    for (int i = 0; i < 8; i++) {
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
-    }
-
-    // create and set render target
     LPDIRECT3DTEXTURE9 newTexture;
 
     if (D3D_OK != g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8,
                                         D3DPOOL_DEFAULT, &newTexture, NULL)) {
         return;
     }
-    // newTexture->SetPriority(0xFFFFFFFF);
 
     if (LoadMinimapFromCache(mmname, newTexture))
     {
         return;
     }
+
+    SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
 
     IDirect3DSurface9 *newTarget;
     ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
@@ -1223,8 +1218,6 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
         g_D3DD->SetDepthStencilSurface(oldZ);
         oldZ->Release();
     }
-
-    // m_MiniMap = (CTexture *)g_Cache->Get(cc_Texture,L"Matrix\\helicopter_w.png");
 
     ASSERT_DX(g_D3DD->SetViewport(&oldViewport));
 
