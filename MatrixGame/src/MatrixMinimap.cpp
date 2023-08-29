@@ -897,49 +897,43 @@ bool CMinimap::LoadMinimapFromCache(const std::wstring& filename, LPDIRECT3DTEXT
         return false;
     }
 
-    IDirect3DSurface9 *newTarget;
-    ASSERT_DX(texture->GetSurfaceLevel(0, &newTarget));
-
-    LPDIRECT3DTEXTURE9 lt;
-    ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lt,
+    LPDIRECT3DTEXTURE9 loaded_tex;
+    ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &loaded_tex,
                                     NULL));
 
-    D3DLOCKED_RECT lr;
-    ASSERT_DX(lt->LockRect(0, &lr, NULL, 0));
+    D3DLOCKED_RECT rect;
+    ASSERT_DX(loaded_tex->LockRect(0, &rect, NULL, 0));
 
-    uint8_t* sou = (uint8_t*)bm.Data();
-    uint8_t* des = (uint8_t*)lr.pBits;
-    for (int y = 0; y < MINIMAP_SIZE;
-         y++, sou += bm.Pitch() - MINIMAP_SIZE * 3, des += lr.Pitch - MINIMAP_SIZE * 4)
+    uint8_t* src = (uint8_t*)bm.Data();
+    uint8_t* dst = (uint8_t*)rect.pBits;
+    for (size_t y = 0; y < MINIMAP_SIZE; y++)
     {
-        for (int x = 0; x < MINIMAP_SIZE; x++, sou += 3, des += 4)
+        size_t src_offset = 0;
+        size_t dst_offset = 0;
+        for (size_t x = 0; x < MINIMAP_SIZE; x++)
         {
-            *(des) = *(sou + 2);
-            *(des + 1) = *(sou + 1);
-            *(des + 2) = *(sou + 0);
-            *(des + 3) = 255;
+            *(dst + dst_offset)     = *(src + src_offset + 2);
+            *(dst + dst_offset + 1) = *(src + src_offset + 1);
+            *(dst + dst_offset + 2) = *(src + src_offset + 0);
+            *(dst + dst_offset + 3) = 255;
+
+            src_offset += 3;
+            dst_offset += 4;
         }
+        src += bm.Pitch();
+        dst += rect.Pitch;
     }
 
-    ASSERT_DX(lt->UnlockRect(0));
+    ASSERT_DX(loaded_tex->UnlockRect(0));
 
-    IDirect3DSurface9 *ltt;
-    ASSERT_DX(lt->GetSurfaceLevel(0, &ltt));
+    g_D3DD->UpdateTexture(loaded_tex, texture);
 
-    HRESULT hr = g_D3DD->UpdateSurface(ltt, NULL, newTarget, NULL);
-
-    ltt->Release();
-    lt->Release();
-    newTarget->Release();
-
-    if (hr != D3D_OK)
-    {
-        return false;
-    }
+    loaded_tex->Release();
 
     m_Texture->Set(texture);
 
-    RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+    lgr.debug("Loaded minimap from cache file");
+
     return true;
 }
 
@@ -1025,7 +1019,6 @@ void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
 
     if (LoadMinimapFromCache(mmname, newTexture))
     {
-        lgr.debug("Loaded minimap from cache");
         return;
     }
 
