@@ -1770,7 +1770,8 @@ void CMatrixMap::Restart(void) {
     ReloadDynamics(stor, RS_RESOURCES);
     int allobj = ReloadDynamics(stor, RS_MAPOBJECTS);  // objects
     allobj += ReloadDynamics(stor, RS_BUILDINGS);      // buildings
-    CBuf robots;
+
+    std::vector<SPreRobot> robots;
     allobj += ReloadDynamics(stor, RS_ROBOTS, &robots);
     allobj += ReloadDynamics(stor, RS_CANNONS);
 
