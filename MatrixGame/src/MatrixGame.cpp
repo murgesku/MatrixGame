@@ -5,10 +5,6 @@
 
 // MatrixGame.cpp : Defines the entry point for the application.
 
-#include <new>
-#include <fstream>
-#include <iostream>
-
 #include "CStorage.hpp"
 #include "CFile.hpp"
 
@@ -25,6 +21,11 @@
 #include "MatrixSampleStateManager.hpp"
 #include "MatrixMultiSelection.hpp"
 
+#include <new>
+#include <fstream>
+#include <iostream>
+#include <filesystem>
+
 ////////////////////////////////////////////////////////////////////////////////
 #include <stupid_logger.hpp>
 logger_type lgr{"test.log"};
@@ -40,11 +41,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
     const wchar *cmd = GetCommandLineW();
 
-    lgr.info("===== Started =====");
+    lgr.info("===== Started as EXE =====");
 
     int numarg;
     wchar **args = CommandLineToArgvW(cmd, &numarg);
     wchar *map = NULL;
+
+    std::filesystem::path app_path{args[0]};
+
+    lgr.info(utils::from_wstring(app_path.native()));
+    std::filesystem::current_path(app_path.parent_path());
 
     if (numarg > 1) {
         map = args[1];
