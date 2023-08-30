@@ -192,4 +192,8 @@ public:
     void __stdcall ButtonZoomOut(void *object);
     void __stdcall ButtonClick(void *object);
     void __stdcall ShowPlayerBots(void *object);
+
+private:
+    bool LoadMinimapFromCache(const std::wstring& filename, LPDIRECT3DTEXTURE9 texture);
+    bool StoreMinimapToCache(const std::wstring& filename, LPDIRECT3DTEXTURE9 texture);
 };

@@ -881,76 +881,145 @@ void CMinimap::Draw(void) {
     ASSERT_DX(g_D3DD->SetViewport(&wp));
 }
 
-void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq) {
-    DTRACE();
-    SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
-
-    std::wstring mmname = PathToOutputFiles(FOLDER_NAME_CACHE) + L"\\" + name + L".";
-
-    for (int i = 0; i < 8; i++) {
-        mmname += (char)('A' + (uniq & 0x0F));
-        uniq >>= 4;
+bool CMinimap::LoadMinimapFromCache(const std::wstring& filename, LPDIRECT3DTEXTURE9 texture)
+{
+    std::error_code ec;
+    if (!std::filesystem::exists(filename.c_str(), ec))
+    {
+        return false;
     }
 
-    // create and set render target
+    lgr.debug("Found minimap cache file at {}")(utils::from_wstring(filename));
+    CBitmap bm;
+    bm.LoadFromPNG(filename.c_str());
+    if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
+    {
+        return false;
+    }
+
+    LPDIRECT3DTEXTURE9 loaded_tex;
+    ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &loaded_tex,
+                                    NULL));
+
+    D3DLOCKED_RECT rect;
+    ASSERT_DX(loaded_tex->LockRect(0, &rect, NULL, 0));
+
+    uint8_t* src = (uint8_t*)bm.Data();
+    uint8_t* dst = (uint8_t*)rect.pBits;
+    for (size_t y = 0; y < MINIMAP_SIZE; y++)
+    {
+        size_t src_offset = 0;
+        size_t dst_offset = 0;
+        for (size_t x = 0; x < MINIMAP_SIZE; x++)
+        {
+            *(dst + dst_offset)     = *(src + src_offset + 2);
+            *(dst + dst_offset + 1) = *(src + src_offset + 1);
+            *(dst + dst_offset + 2) = *(src + src_offset + 0);
+            *(dst + dst_offset + 3) = 255;
+
+            src_offset += 3;
+            dst_offset += 4;
+        }
+        src += bm.Pitch();
+        dst += rect.Pitch;
+    }
+
+    ASSERT_DX(loaded_tex->UnlockRect(0));
+
+    g_D3DD->UpdateTexture(loaded_tex, texture);
+
+    loaded_tex->Release();
+
+    m_Texture->Set(texture);
+
+    lgr.debug("Loaded minimap from cache file");
+
+    return true;
+}
+
+bool CMinimap::StoreMinimapToCache(const std::wstring& filename, LPDIRECT3DTEXTURE9 texture)
+{
+    namespace fs = std::filesystem;
+
+    fs::path filepath{filename};
+    lgr.debug("Storing minimap into cache file at {}")(utils::from_wstring(filename));
+
+    std::error_code ec;
+
+    if (!fs::exists(filepath, ec))
+    {
+        if (!fs::create_directory(filepath.parent_path(), ec) && ec)
+        {
+            lgr.warning("Failed to create cache folder: {}")(ec.message());
+            return false;
+        }
+    }
+    else
+    {
+        if (!fs::remove(filepath, ec))
+        {
+            lgr.warning("Failed to remove old cache file: {}")(ec.message());
+            return false;
+        }
+    }
+
+    IDirect3DSurface9* newTarget;
+    LPDIRECT3DTEXTURE9 out;
+    IDirect3DSurface9 *outtgt;
+    ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &out,
+                                    NULL));
+
+    ASSERT_DX(texture->GetSurfaceLevel(0, &newTarget));
+    ASSERT_DX(out->GetSurfaceLevel(0, &outtgt));
+
+    ASSERT_DX(g_D3DD->GetRenderTargetData(newTarget, outtgt));
+
+    D3DLOCKED_RECT lr;
+    outtgt->LockRect(&lr, NULL, 0);
+
+    CBitmap bm;
+    bm.CreateRGBA(MINIMAP_SIZE, MINIMAP_SIZE, lr.Pitch, lr.pBits);
+    bm.SwapByte(CPoint(0, 0), CPoint(MINIMAP_SIZE, MINIMAP_SIZE), 0, 2);
+
+    CBitmap bm2;
+    bm2.CreateRGB(MINIMAP_SIZE, MINIMAP_SIZE);
+    bm2.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
+
+    bm2.SaveInPNG(filename.c_str());
+
+    outtgt->UnlockRect();
+
+    outtgt->Release();
+    out->Release();
+    newTarget->Release();
+
+    lgr.debug("Stored minimap into cache file");
+
+    return true;
+}
+
+void CMinimap::RenderBackground(const std::wstring &name, DWORD uniq)
+{
+    DTRACE();
+
+    std::wstring mmname = std::format(L"{}\\{}.{:X}", PathToOutputFiles(FOLDER_NAME_CACHE), name, uniq);
+
     LPDIRECT3DTEXTURE9 newTexture;
-    IDirect3DSurface9 *newTarget;
 
     if (D3D_OK != g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8,
                                         D3DPOOL_DEFAULT, &newTexture, NULL)) {
         return;
     }
-    // newTexture->SetPriority(0xFFFFFFFF);
-    ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
 
-    std::error_code ec;
-    if (std::filesystem::exists(mmname.c_str(), ec))
+    if (LoadMinimapFromCache(mmname, newTexture))
     {
-        lgr.debug("Found minimap cache file at {}")(utils::from_wstring(mmname));
-        CBitmap bm(g_CacheHeap);
-        bm.LoadFromPNG(mmname.c_str());
-        if (bm.SizeX() != MINIMAP_SIZE || bm.SizeY() != MINIMAP_SIZE)
-            goto render;
-
-        LPDIRECT3DTEXTURE9 lt;
-        ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lt,
-                                        NULL));
-
-        D3DLOCKED_RECT lr;
-        ASSERT_DX(lt->LockRect(0, &lr, NULL, 0));
-
-        BYTE *sou = (BYTE *)bm.Data();
-        BYTE *des = (BYTE *)lr.pBits;
-        for (int y = 0; y < MINIMAP_SIZE;
-             y++, sou += bm.Pitch() - MINIMAP_SIZE * 3, des += lr.Pitch - MINIMAP_SIZE * 4) {
-            for (int x = 0; x < MINIMAP_SIZE; x++, sou += 3, des += 4) {
-                *(des) = *(sou + 2);
-                *(des + 1) = *(sou + 1);
-                *(des + 2) = *(sou + 0);
-                *(des + 3) = 255;
-            }
-        }
-
-        ASSERT_DX(lt->UnlockRect(0));
-
-        IDirect3DSurface9 *ltt;
-        ASSERT_DX(lt->GetSurfaceLevel(0, &ltt));
-
-        HRESULT hr = g_D3DD->UpdateSurface(ltt, NULL, newTarget, NULL);
-
-        ltt->Release();
-        lt->Release();
-        newTarget->Release();
-
-        if (hr == D3D_OK)
-        {
-            m_Texture->Set(newTexture);
-
-            RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
-            return;
-        }
+        return;
     }
-render:
+
+    SETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+
+    IDirect3DSurface9 *newTarget;
+    ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
 
     lgr.debug("Rendering minimap background from scratch");
 
@@ -1150,8 +1219,6 @@ render:
         oldZ->Release();
     }
 
-    // m_MiniMap = (CTexture *)g_Cache->Get(cc_Texture,L"Matrix\\helicopter_w.png");
-
     ASSERT_DX(g_D3DD->SetViewport(&oldViewport));
 
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_LIGHTING, FALSE));
@@ -1167,65 +1234,9 @@ render:
         ms = ms->GetNextLogic();
     }
 
-    {
-        CreateDirectoryW(PathToOutputFiles(FOLDER_NAME_CACHE).c_str(), NULL);
-
-        // seek files
-        auto n = utils::format(L"%ls\\%ls.*",
-            PathToOutputFiles(FOLDER_NAME_CACHE),
-            name.c_str());
-
-        HANDLE ff;
-        for (;;) {
-            WIN32_FIND_DATAW fd;
-            ff = FindFirstFileW(n.c_str(), &fd);
-            if (ff != INVALID_HANDLE_VALUE) {
-                auto nn =
-                    utils::format(
-                        L"%ls\\%ls",
-                        PathToOutputFiles(FOLDER_NAME_CACHE),
-                        fd.cFileName);
-                DeleteFileW(nn.c_str());
-            }
-            else {
-                break;
-            }
-            FindClose(ff);
-        }
-
-        LPDIRECT3DTEXTURE9 out;
-        IDirect3DSurface9 *outtgt;
-        ASSERT_DX(g_D3DD->CreateTexture(MINIMAP_SIZE, MINIMAP_SIZE, 1, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &out,
-                                        NULL));
-
-        ASSERT_DX(newTexture->GetSurfaceLevel(0, &newTarget));
-        ASSERT_DX(out->GetSurfaceLevel(0, &outtgt));
-
-        ASSERT_DX(g_D3DD->GetRenderTargetData(newTarget, outtgt));
-
-        D3DLOCKED_RECT lr;
-        outtgt->LockRect(&lr, NULL, 0);
-
-        CBitmap bm(g_CacheHeap);
-        bm.CreateRGBA(MINIMAP_SIZE, MINIMAP_SIZE, lr.Pitch, lr.pBits);
-        bm.SwapByte(CPoint(0, 0), CPoint(MINIMAP_SIZE, MINIMAP_SIZE), 0, 2);
-
-        CBitmap bm2(g_CacheHeap);
-        bm2.CreateRGB(MINIMAP_SIZE, MINIMAP_SIZE);
-        bm2.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
-
-        //*(des)=*(sou+2);
-        //*(des+2)=*(sou+0);
-
-        bm2.SaveInPNG(mmname.c_str());
-
-        outtgt->UnlockRect();
-
-        newTarget->Release();
-        outtgt->Release();
-        out->Release();
-    }
     RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS);
+
+    StoreMinimapToCache(mmname, newTexture);
 }
 
 void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s) {
