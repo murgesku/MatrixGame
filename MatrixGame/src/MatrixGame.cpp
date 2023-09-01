@@ -172,7 +172,7 @@ static void static_init(void) {
 
 void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSettings *set, wchar *lang,
                  wchar *txt_start, wchar *txt_win, wchar *txt_loss, wchar *planet) {
-    srand(seed);
+    random::seed(seed);
     static_init();
 
     DTRACE();

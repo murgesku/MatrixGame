@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include <cmath>
-
 #include "d3d9.h"
 #include "d3dx9tex.h"
 
 #include "CHeap.hpp"
 #include "CMain.hpp"
 #include "CException.hpp"
+
+#include <random.hpp>
 
 using namespace Base; // TODO: remove
 
@@ -32,11 +32,6 @@ using namespace Base; // TODO: remove
 
 #define LERPFLOAT(k, c1, c2)  (((k) * (float(c2) - float(c1))) + float(c1))
 #define LERPVECTOR(k, v1, v2) (((k) * ((v2) - (v1))) + (v1))
-
-#define RND(from, to) ((double)rand() * (1.0 / (RAND_MAX)) * (fabs(double((to) - (from)))) + (from))
-#define FRND(x)       ((float)(RND(0, (x))))
-#define FSRND(x)      (FRND(2.0f * (x)) - float(x))
-#define IRND(n)       Double2Int(RND(0, double(n) - 0.55))
 
 #define KSCALE(k, k1, k2) ((k) < (k1) ? 0.0f : (k) > (k2) ? 1.0f : ((k) - (k1)) / ((k2) - (k1)))
 

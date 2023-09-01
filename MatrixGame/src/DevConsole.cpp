@@ -92,7 +92,7 @@ static void hTestSpdTrace(
     [[maybe_unused]] const std::wstring& cmd,
     [[maybe_unused]] const std::wstring& params)
 {
-    srand(1);
+    random::seed(1);
     D3DXVECTOR3 pos1, pos2;
 
     DWORD time1 = timeGetTime();

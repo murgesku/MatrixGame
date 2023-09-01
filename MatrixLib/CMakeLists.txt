@@ -43,6 +43,7 @@ set(BASE_SOURCES
     Base/Pack.cpp
     Base/Registry.cpp
     Base/Tracer.cpp
+    Base/random.cpp
 )
 set(BASE_HEADERS
     Base/BaseDef.hpp
