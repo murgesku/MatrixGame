@@ -72,8 +72,6 @@ public:
     // int m_Takt;				// Game takt
     int m_TaktNext;
 
-    int m_Rnd;
-
     int m_GatherInfoLast;
 
 public:

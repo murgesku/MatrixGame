@@ -15,6 +15,8 @@
 #include "MatrixGameDll.hpp"
 #include "MatrixMultiSelection.hpp"
 
+#include <random.hpp>
+
 // CPoint MatrixDir45[8]={	CPoint(-1,0),	CPoint(1,0),CPoint(0,-1),CPoint(0,1),
 //						CPoint(-1,-1),CPoint(1,1),CPoint(-1,1),CPoint(1,-1)};
 
@@ -45,7 +47,6 @@ CMatrixMapLogic::CMatrixMapLogic() : CMatrixMap() {
 
     m_TaktNext = 0;
 
-    m_Rnd = rand();
     Rnd(0, 1);
 
     m_GatherInfoLast = 0;
@@ -99,32 +100,22 @@ void CMatrixMapLogic::Clear() {
 
 int CMatrixMapLogic::Rnd() {
     DTRACE();
-
-    m_Rnd = 16807 * (m_Rnd % 127773) - 2836 * (m_Rnd / 127773);
-    if (m_Rnd <= 0)
-        m_Rnd = m_Rnd + 2147483647;
-    return m_Rnd - 1;
+    return random::Rnd();
 }
 
 double CMatrixMapLogic::RndFloat(void) {
     DTRACE();
-
-    return float(Rnd()) / float(2147483647 - 2);
+    return random::RndFloat();
 }
 
 int CMatrixMapLogic::Rnd(int zmin, int zmax) {
     DTRACE();
-
-    if (zmin <= zmax)
-        return zmin + (Rnd() % (zmax - zmin + 1));
-    else
-        return zmax + (Rnd() % (zmin - zmax + 1));
+    return random::Rnd(zmin, zmax);
 }
 
 double CMatrixMapLogic::RndFloat(double zmin, double zmax) {
     DTRACE();
-
-    return zmin + RndFloat() * (zmax - zmin);
+    return random::RndFloat(zmin, zmax);
 }
 
 void CMatrixMapLogic::GatherInfo(int type) {

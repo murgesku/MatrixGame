@@ -6,6 +6,8 @@
 #ifndef TRACER_HPP
 #define TRACER_HPP
 
+#include <string>
+#include <cstdint>
 #include <utils.hpp>
 
 #include <windows.h>
