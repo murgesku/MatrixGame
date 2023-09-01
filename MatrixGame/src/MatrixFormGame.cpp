@@ -1039,6 +1039,16 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             g_MatrixMap->m_DI.T(L"4SPEED flag is set to ", FLAG(g_Flags, GFLAG_4SPEED) ? L"true" : L"false", 1000);
         }
 
+        if (IsInputEqual("IAMTESTER"))
+        {
+            m_LastScans.clear();
+            SETFLAG(g_Config.m_DIFlags, DI_SIDEINFO);
+            SETFLAG(g_Config.m_DIFlags, DI_DRAWFPS);
+            SETFLAG(g_Flags, GFLAG_KEEPALIVE);
+            SETFLAG(g_Flags, GFLAG_4SPEED);
+            SETFLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE);
+        }
+
         if (IsInputEqual("CRASH"))
         {
             abort();
