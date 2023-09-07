@@ -9,6 +9,7 @@
 #include "BaseDef.hpp"
 
 #include <cstring> // for std::memset
+#include <cstdint>
 
 #if (defined _DEBUG) || (defined FORCE_ENABLE_MEM_SPY)
 #define MEM_SPY_ENABLE
