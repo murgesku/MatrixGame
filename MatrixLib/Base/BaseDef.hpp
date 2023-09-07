@@ -38,10 +38,6 @@ public:
         x = ax;
         y = ay;
     }
-    CPoint(const CPoint &p) {
-        x = p.x;
-        y = p.y;
-    }
 
     bool operator==(const CPoint &zn) const { return (x == zn.x) && (y == zn.y); }
     CPoint &operator+=(const CPoint &zn) {
