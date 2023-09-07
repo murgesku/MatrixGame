@@ -11,11 +11,17 @@
 
 #include <utils.hpp>
 
-static void hHelp(const std::wstring& cmd, const std::wstring& params) {
+static void hHelp(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     g_MatrixMap->m_Console.ShowHelp();
 }
 
-static void hShadows(const std::wstring& cmd, const std::wstring& params) {
+static void hShadows(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     if (params.length() == 2) {
         g_Config.m_ShowStencilShadows = params[0] == '1';
         g_Config.m_ShowProjShadows = params[1] == '1';
@@ -24,14 +30,20 @@ static void hShadows(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->m_DI.T(L"Proj shadows", g_Config.m_ShowProjShadows ? L"ON" : L"OFF");
 }
 
-static void hCannon(const std::wstring& cmd, const std::wstring& params) {
+static void hCannon(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     if (params.length() == 1) {
         g_Config.m_CannonsLogic = params[0] == '1';
     }
     g_MatrixMap->m_DI.T(L"Cannon's logic", g_Config.m_CannonsLogic ? L"ON" : L"OFF");
 }
 
-static void hLog(const std::wstring& cmd, const std::wstring& params) {
+static void hLog(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     if (params == L"s") {
         CSound::SaveSoundLog();
     }
@@ -41,7 +53,8 @@ static void hLog(const std::wstring& cmd, const std::wstring& params) {
 
         for (int i = 0; i < EFFECT_TYPE_COUNT; ++i) {
             int cnt = 0;
-            for (PCMatrixEffect e = g_MatrixMap->m_EffectsFirst; e != NULL; e = e->m_Next) {
+            for (PCMatrixEffect e = g_MatrixMap->m_EffectsFirst; e != NULL; e = e->m_Next)
+            {
                 if (e->GetType() == (EEffectType)i) {
                     ++cnt;
                 }
@@ -56,7 +69,10 @@ static void hLog(const std::wstring& cmd, const std::wstring& params) {
     }
 }
 
-static void hBuildCFG(const std::wstring& cmd, const std::wstring& params) {
+static void hBuildCFG(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     CBlockPar bpi;
     bpi.LoadFromTextFile(IF_PATH);
 
@@ -72,7 +88,10 @@ static void hBuildCFG(const std::wstring& cmd, const std::wstring& params) {
     stor.Save(FILE_CONFIGURATION, true);
 }
 
-static void hTestSpdTrace(const std::wstring& cmd, const std::wstring& params) {
+static void hTestSpdTrace(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     srand(1);
     D3DXVECTOR3 pos1, pos2;
 
@@ -96,18 +115,27 @@ static void hTestSpdTrace(const std::wstring& cmd, const std::wstring& params) {
     g_MatrixMap->m_DI.T(L"Trace time (ms)", utils::format(L"%u", time2 - time1).c_str(), 5000);
 }
 
-static void hMusic(const std::wstring& cmd, const std::wstring& params) {
+static void hMusic(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     if (params == L"1")
         g_MatrixMap->RestoreMusicVolume();
     else if (params == L"0")
         g_MatrixMap->SetMusicVolume(0);
 }
 
-static void hCalcVis(const std::wstring& cmd, const std::wstring& params) {
+static void hCalcVis(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     g_MatrixMap->CalcVis();
 }
 
-static void hCompress(const std::wstring& cmd, const std::wstring& params) {
+static void hCompress(
+    [[maybe_unused]] const std::wstring& cmd,
+    [[maybe_unused]] const std::wstring& params)
+{
     std::wstring name;
     if (CFile::FileExist(name, params.c_str())) {
         CBuf fil;

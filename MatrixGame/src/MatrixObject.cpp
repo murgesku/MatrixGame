@@ -94,8 +94,13 @@ CMatrixMapObject::~CMatrixMapObject() {
     }
 }
 
-bool CMatrixMapObject::Damage(EWeapon weap, const D3DXVECTOR3 &, const D3DXVECTOR3 &, int attacker_side,
-                              CMatrixMapStatic *attaker) {
+bool CMatrixMapObject::Damage(
+    EWeapon weap,
+    const D3DXVECTOR3 &,
+    const D3DXVECTOR3 &,
+    int attacker_side,
+    [[maybe_unused]] CMatrixMapStatic *attaker)
+{
     DTRACE();
 
     if (attacker_side != PLAYER_SIDE && FLAG(m_ObjectState, OBJECT_STATE_SPECIAL))
@@ -1086,7 +1091,8 @@ bool CMatrixMapObject::CalcBounds(D3DXVECTOR3 &minv, D3DXVECTOR3 &maxv) {
         return false;*/
 }
 
-void CMatrixMapObject::PauseTakt(int cms) {
+void CMatrixMapObject::PauseTakt(int)
+{
     if (m_BehFlag == BEHF_TERRON && m_PB) {
         m_PB->Modify(100000.0f, 0);
     }
@@ -1100,7 +1106,7 @@ void CMatrixMapObject::PauseTakt(int cms) {
     }
 }
 
-static bool FindOnlyPlayerRobots(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
+static bool FindOnlyPlayerRobots(const D3DXVECTOR3&, CMatrixMapStatic *ms, DWORD user) {
     if (ms->GetSide() == PLAYER_SIDE) {
         *(bool *)user = true;
         return false;
@@ -1108,7 +1114,7 @@ static bool FindOnlyPlayerRobots(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, 
     return true;
 }
 
-static bool FindOnlyPlayerRobotsTgt(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
+static bool FindOnlyPlayerRobotsTgt(const D3DXVECTOR3&, CMatrixMapStatic *ms, DWORD user) {
     if (ms->GetSide() == PLAYER_SIDE) {
         *(CMatrixRobotAI **)user = ms->AsRobot();
         return false;

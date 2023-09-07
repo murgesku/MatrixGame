@@ -315,7 +315,7 @@ void CBlockPar::Clear() {
 void CBlockPar::CopyFrom(CBlockPar &bp) {
     DTRACE();
     Clear();
-    for(auto& el : m_Units)
+    for(auto& el : bp.m_Units)
     {
         CBlockParUnit& el2 = UnitAdd(el.m_Type);
         el2 = el;

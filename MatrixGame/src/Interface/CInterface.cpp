@@ -5159,7 +5159,8 @@ bool CIFaceList::CheckShowHintLogic(const std::wstring &element_name) {
     return true;
 }
 
-void __stdcall CIFaceList::JumpToBuilding(void *o) {
+void __stdcall CIFaceList::JumpToBuilding(void*)
+{
     CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
     if (ps->m_CurrSel == BUILDING_SELECTED ||
@@ -5169,7 +5170,8 @@ void __stdcall CIFaceList::JumpToBuilding(void *o) {
     }
 }
 
-void __stdcall CIFaceList::JumpToRobot(void *o) {
+void __stdcall CIFaceList::JumpToRobot(void*)
+{
     CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
     if (!ps->GetCurGroup())

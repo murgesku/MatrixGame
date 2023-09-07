@@ -80,7 +80,7 @@ struct SSearchRec {
     DWORD T;
     CHsFolder *Folder;
 
-    SSearchRec(CHeap *heap) {}
+    SSearchRec(CHeap*) {}
 };
 
 class CHsFolder : public CMain {

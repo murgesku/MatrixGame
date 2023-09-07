@@ -68,7 +68,6 @@ else()
         -Wno-strict-aliasing
         -Wno-array-bounds
         -Wno-empty-body
-        -Wno-unused-parameter
         -Wno-deprecated-copy
         -Wno-pedantic
     )

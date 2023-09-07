@@ -1951,7 +1951,7 @@ CMatrixRoadRoute *CMatrixRoadNetwork::GetRoute(CMatrixCrotch *cstart, CMatrixCro
 #endif
 
 void CMatrixRoadNetwork::FindPathFromCrotchToRegion(byte mm, CMatrixCrotch *cstart, int region, CMatrixRoadRoute *rr,
-                                                    bool test) {
+                                                    [[maybe_unused]] bool test) {
     // cstart в rr не добовляется
     int i;
     if (cstart->m_Region == region)

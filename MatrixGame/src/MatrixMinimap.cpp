@@ -1352,17 +1352,20 @@ void CMinimap::RenderObjectToBackground(CMatrixMapStatic *s) {
 // if (m_KeyDown && m_KeyScan == KEY_PGDN) {m_KeyDown = false; m_Minimap.SetOutParams(m_Minimap.GetScale() * 0.8f);}
 // if (m_KeyDown && m_KeyScan == KEY_PGUP) {m_KeyDown = false; m_Minimap.SetOutParams(m_Minimap.GetScale() * 1.25f);}
 
-void __stdcall CMinimap::ButtonZoomIn(void *object) {
+void __stdcall CMinimap::ButtonZoomIn(void*)
+{
     SetOutParams(GetScale() * 1.8f);
     CSound::Play(S_MAP_PLUS, SL_ALL);
 }
 
-void __stdcall CMinimap::ButtonZoomOut(void *object) {
+void __stdcall CMinimap::ButtonZoomOut(void*)
+{
     SetOutParams(GetScale() * 0.5f);
     CSound::Play(S_MAP_MINUS, SL_ALL);
 }
 
-void __stdcall CMinimap::ButtonClick(void *object) {
+void __stdcall CMinimap::ButtonClick(void*)
+{
     CPoint mp = g_MatrixMap->m_Cursor.GetPos();
     D3DXVECTOR2 tgt;
     if (CalcMinimap2World(tgt)) {
@@ -1370,7 +1373,8 @@ void __stdcall CMinimap::ButtonClick(void *object) {
     }
 }
 
-bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt) {
+bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt)
+{
     CPoint mp = g_MatrixMap->m_Cursor.GetPos();
     if (mp.x >= m_PosX && mp.x <= m_PosX + m_SizeX && mp.y >= m_PosY && mp.y <= m_PosY + m_SizeY) {
         D3DXVECTOR2 t;
@@ -1385,7 +1389,8 @@ bool CMinimap::CalcMinimap2World(D3DXVECTOR2 &tgt) {
     return false;
 }
 
-void __stdcall CMinimap::ShowPlayerBots(void *object) {
+void __stdcall CMinimap::ShowPlayerBots(void*)
+{
     CMatrixMapStatic *objects = CMatrixMapStatic::GetFirstLogic();
     while (objects) {
         if (objects->IsRobot() && objects->GetSide() == PLAYER_SIDE) {

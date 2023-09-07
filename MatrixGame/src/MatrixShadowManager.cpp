@@ -453,9 +453,18 @@ void ShadowProjBuildTexture(CMatrixMapObject *mo, CVOShadowProj &sp, CVectorObje
     }
 }
 
-void ShadowProjBuildTextureList(CVOShadowProj &sp, int cnt, CVectorObjectAnim **obj, CTexture *tex, int *noframe,
-                                D3DXMATRIX *wm, const D3DXMATRIX &objma, const D3DXMATRIX &iobjma, D3DXVECTOR3 &light,
-                                int texsize) {
+void ShadowProjBuildTextureList(
+    CVOShadowProj &sp,
+    int cnt,
+    CVectorObjectAnim **obj,
+    CTexture *tex,
+    int *noframe,
+    D3DXMATRIX *wm,
+    [[maybe_unused]] const D3DXMATRIX &objma,
+    const D3DXMATRIX &iobjma,
+    D3DXVECTOR3 &light,
+    int texsize)
+{
     DTRACE();
 
     SProjData pd;

@@ -1703,7 +1703,9 @@ int CPackFile::GetFreeHandle(void) {
     return -1;
 }
 
-DWORD CPackFile::Open(const std::string& filename, DWORD modeopen) {
+DWORD CPackFile::Open(
+    const std::string& filename,
+    [[maybe_unused]] DWORD modeopen) {
     SFileRec *PFile;
 
     int H = GetFreeHandle();
@@ -2307,7 +2309,11 @@ bool CPackFile::FileExists(const std::string& path) {
 //    Result:=true;
 // end;
 
-int CPackFile::FindFirst(const std::string& path, DWORD Attr, SSearchRec &S) {
+int CPackFile::FindFirst(
+    const std::string& path,
+    [[maybe_unused]] DWORD Attr,
+    SSearchRec &S)
+{
     S.Path = path;
     S.Ind = 0;
     S.Name = "";

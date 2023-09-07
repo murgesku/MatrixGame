@@ -55,8 +55,16 @@ bool CIFaceMenu::LoadMenuGraphics(CBlockPar &bp) {
 }
 
 // width poshitan snaruzhi - max. dlina kakogo-to elementa
-void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, int y, CIFaceElement *caller,
-                            SMenuItemText *labels, DWORD color) {
+void CIFaceMenu::CreateMenu(
+    EMenuParent parent,
+    int elements,
+    int width,
+    int x,
+    int y,
+    CIFaceElement *caller,
+    SMenuItemText *labels,
+    [[maybe_unused]] DWORD color)
+{
     DTRACE();
 
     //

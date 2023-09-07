@@ -177,7 +177,11 @@ void SAutoFlyData::AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attacker)
 
 //}
 
-static bool SeekCamObjects(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool SeekCamObjects(
+    [[maybe_unused]] const D3DXVECTOR2 &center,
+    CMatrixMapStatic *ms,
+    DWORD user)
+{
     DTRACE();
 
     D3DXVECTOR3 *vecs = (D3DXVECTOR3 *)user;

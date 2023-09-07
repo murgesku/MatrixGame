@@ -33,7 +33,9 @@ void error_callback(png_structp, png_const_charp message)
     throw std::runtime_error{message};
 }
 
-void warning_callback(png_structp png_ptr, png_const_charp message)
+void warning_callback(
+    [[maybe_unused]] png_structp png_ptr,
+    [[maybe_unused]] png_const_charp message)
 {
     // TODO: maybe some logging
 }

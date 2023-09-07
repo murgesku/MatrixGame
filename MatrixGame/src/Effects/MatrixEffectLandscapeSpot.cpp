@@ -177,8 +177,14 @@ bool CMatrixEffectLandscapeSpot::PrepareDX(void) {
     return true;
 }
 
-void CMatrixEffectLandscapeSpot::BuildLand(const D3DXVECTOR2 &pos, float angle, float scalex, float scaley, float addz,
-                                           bool scale_by_normal) {
+void CMatrixEffectLandscapeSpot::BuildLand(
+    const D3DXVECTOR2 &pos,
+    float angle,
+    float scalex,
+    float scaley,
+    [[maybe_unused]] float addz,
+    bool scale_by_normal)
+{
     DTRACE();
 
     typedef struct {

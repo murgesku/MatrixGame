@@ -1317,7 +1317,7 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
                                    CPoint **other_path_list,  // Список указателей на другие пути
                                    int *other_path_cnt,  // Список кол-во элементов в других путях
                                    CPoint *other_des,  // Список конечных точек в других путях
-                                   bool test) {
+                                   [[maybe_unused]] bool test) {
     SMatrixMapMove *smm2, *smm;
     int i, u, x, y, sme, cnt, next, level, findok, findbest;
     CPoint tp, tpfind;
@@ -1596,7 +1596,8 @@ void CMatrixMapLogic::SetZoneAccess(int *list, int cnt, bool value) {
 }
 
 int CMatrixMapLogic::FindPathInZone(int nsh, int zstart, int zend, const CMatrixRoadRoute *route, int routeno,
-                                    int *path, bool test) {
+                                    int *path,
+                                    [[maybe_unused]] bool test) {
 #if (defined _DEBUG) && !(defined _RELDEBUG)
     if (test && !g_TestLocal)
         CHelper::DestroyByGroup(100);
@@ -2737,7 +2738,11 @@ float NORM(D3DXVECTOR3 &vo, const D3DXVECTOR3 &v) {
 //    return std::wstring(L"---");
 //}
 
-static bool Egg1(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool Egg1(
+    [[maybe_unused]] const D3DXVECTOR2 &center,
+    CMatrixMapStatic *ms,
+    DWORD user)
+{
     int *egg = (int *)user;
     if (ms->IsLiveRobot()) {
         ++(*egg);
@@ -2756,7 +2761,11 @@ static bool Egg1(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
     return true;
 }
 
-static bool Egg2(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool Egg2(
+    [[maybe_unused]] const D3DXVECTOR2 &center,
+    CMatrixMapStatic *ms,
+    DWORD user)
+{
     int *egg = (int *)user;
     if (ms->IsLiveRobot()) {
         ++(*egg);

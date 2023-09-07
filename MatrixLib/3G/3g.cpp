@@ -343,8 +343,15 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
 #endif
 }
 
-void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname, HWND hwnd, long FDirect3D,
-                  long FD3DDevice) {
+void L3GInitAsDLL(
+    HINSTANCE hinst,
+    [[maybe_unused]] CBlockPar& bpcfg,
+    [[maybe_unused]] const wchar* sysname,
+    [[maybe_unused]] const wchar* captionname,
+    HWND hwnd,
+    long FDirect3D,
+    long FD3DDevice)
+{
     // RECT tr;
 
     L3GDeinit();

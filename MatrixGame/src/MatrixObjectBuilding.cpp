@@ -278,8 +278,13 @@ void CMatrixBuilding::RNeed(dword need) {
     }
 }
 
-bool CMatrixBuilding::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &, int attacker_side,
-                             CMatrixMapStatic *attaker) {
+bool CMatrixBuilding::Damage(
+    EWeapon weap,
+    const D3DXVECTOR3 &pos,
+    const D3DXVECTOR3&,
+    int attacker_side,
+    [[maybe_unused]] CMatrixMapStatic *attaker)
+{
     DTRACE();
 
     if (m_State == BUILDING_DIP || m_State == BUILDING_DIP_EXPLODED)
@@ -467,7 +472,11 @@ struct SFindRobotForCaptureAny {
     float dist2;
 };
 
-static bool FindCaptureMe(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FindCaptureMe(
+    [[maybe_unused]] const D3DXVECTOR2 &center,
+    CMatrixMapStatic *ms,
+    DWORD user)
+{
     DTRACE();
 
     CMatrixBuilding *b = (CMatrixBuilding *)user;

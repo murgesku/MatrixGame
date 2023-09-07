@@ -660,7 +660,8 @@ void CMatrixMapGroup::SortObjects(const D3DXMATRIX &sort) {
     }
 }
 
-void CMatrixMapGroup::PauseTakt(int step) {
+void CMatrixMapGroup::PauseTakt([[maybe_unused]] int step)
+{
     auto tmp = g_MatrixMap->m_Camera.GetFrustumCenter() -
                                D3DXVECTOR3(0.5f * (p0.x + p1.x), 0.5f * (p0.y + p1.y), 0.5f * (m_minz + m_maxz));
     m_CamDistSq = D3DXVec3LengthSq(&tmp);

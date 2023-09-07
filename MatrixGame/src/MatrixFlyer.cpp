@@ -1086,8 +1086,15 @@ void CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td) {
 //    }
 //}
 
-void CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder order, float ang, int place,
-                              const CPoint &bpos, int botpar_i) {
+void CMatrixFlyer::ApplyOrder(
+    const D3DXVECTOR2 &pos,
+    int side,
+    EFlyerOrder order,
+    float ang,
+    int place,
+    [[maybe_unused]] const CPoint &bpos,
+    int botpar_i)
+{
     RESETFLAG(m_Flags, FLYER_IN_SPAWN);
 
     m_Side = side;
@@ -1650,8 +1657,13 @@ void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td) {
     }
 }
 
-bool CMatrixFlyer::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
-                          CMatrixMapStatic *attaker) {
+bool CMatrixFlyer::Damage(
+    EWeapon weap,
+    const D3DXVECTOR3 &pos,
+    [[maybe_unused]] const D3DXVECTOR3 &dir,
+    [[maybe_unused]] int attacker_side,
+    [[maybe_unused]] CMatrixMapStatic *attaker)
+{
     DTRACE();
 
     if (weap == WEAPON_REPAIR) {
