@@ -30,11 +30,11 @@ void CMatrixMap::PointCalcNormals(int x, int y) {
     SMatrixMapPoint *p3;  // down
     SMatrixMapPoint *p4;  // left
 
-    D3DXVECTOR3 pv0;
-    D3DXVECTOR3 pv1;
-    D3DXVECTOR3 pv2;
-    D3DXVECTOR3 pv3;
-    D3DXVECTOR3 pv4;
+    D3DXVECTOR3 pv0(0,0,0);
+    D3DXVECTOR3 pv1(0,0,0);
+    D3DXVECTOR3 pv2(0,0,0);
+    D3DXVECTOR3 pv3(0,0,0);
+    D3DXVECTOR3 pv4(0,0,0);
 
     p0 = PointGetTest(x, y);
     if (p0 == NULL)
