@@ -69,7 +69,6 @@ else()
         -Wno-address
         -Wno-strict-aliasing
         -Wno-array-bounds
-        -Wno-use-after-free
         -Wno-empty-body
         -Wno-unused-parameter
         -Wno-deprecated-copy
