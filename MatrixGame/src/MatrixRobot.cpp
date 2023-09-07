@@ -1812,8 +1812,6 @@ bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECT
                             CMatrixMapStatic *attaker) {
     DTRACE();
 
-    ASSERT(this);
-
     if (m_CurrState == ROBOT_DIP)
         return true;
     DCP();
