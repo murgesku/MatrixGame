@@ -175,7 +175,7 @@ static void obj_shadow(const SSkin *sk) {
     }
 }
 
-static void obj_clear(const SSkin *, DWORD user_param) {
+static void obj_clear(const SSkin *, [[maybe_unused]] DWORD user_param) {
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE));
@@ -194,7 +194,7 @@ static void obj_clear(const SSkin *, DWORD user_param) {
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_LIGHTING, TRUE));
 }
 
-static void obj_clear3stage(const SSkin *, DWORD user_param) {
+static void obj_clear3stage(const SSkin *, [[maybe_unused]] DWORD user_param) {
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE));
@@ -205,7 +205,7 @@ static void obj_clear3stage(const SSkin *, DWORD user_param) {
     g_D3DD->SetTransform(D3DTS_TEXTURE3, &g_MatrixMap->GetIdentityMatrix());
 }
 
-static void obj_clear5stage(const SSkin *, DWORD user_param) {
+static void obj_clear5stage(const SSkin *, [[maybe_unused]] DWORD user_param) {
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_CURRENT));
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1));
     ASSERT_DX(g_D3DD->SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 2));
@@ -220,7 +220,7 @@ static void obj_clear5stage(const SSkin *, DWORD user_param) {
     g_D3DD->SetTransform(D3DTS_TEXTURE5, &g_MatrixMap->GetIdentityMatrix());
 }
 
-static void obj_clear4stage(const SSkin *, DWORD user_param) {
+static void obj_clear4stage(const SSkin*, [[maybe_unused]] DWORD user_param) {
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_CURRENT));
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1));
     ASSERT_DX(g_D3DD->SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 2));
@@ -234,7 +234,7 @@ static void obj_clear4stage(const SSkin *, DWORD user_param) {
     g_D3DD->SetTransform(D3DTS_TEXTURE4, &g_MatrixMap->GetIdentityMatrix());
 }
 
-static void obj_clear2stage(const SSkin *, DWORD user_param) {
+static void obj_clear2stage(const SSkin*, [[maybe_unused]] DWORD user_param) {
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE));
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE));
@@ -246,7 +246,11 @@ static void obj_clear2stage(const SSkin *, DWORD user_param) {
     g_D3DD->SetTransform(D3DTS_TEXTURE2, &g_MatrixMap->GetIdentityMatrix());
 }
 
-static void obj_side_tex6(const SSkin *sk, DWORD user_param, int pass) {
+static void obj_side_tex6(
+    const SSkin *sk,
+    DWORD user_param,
+    [[maybe_unused]] int pass)
+{
     SMatrixSkin *ms = (SMatrixSkin *)sk;
 
     // gloss present
@@ -266,7 +270,11 @@ static void obj_side_tex6(const SSkin *sk, DWORD user_param, int pass) {
     }
 }
 
-static void obj_side_tex6NA(const SSkin *sk, DWORD, int pass) {
+static void obj_side_tex6NA(
+    const SSkin *sk,
+    DWORD,
+    [[maybe_unused]] int pass)
+{
     SMatrixSkin *ms = (SMatrixSkin *)sk;
 
     // gloss present
@@ -284,7 +292,11 @@ static void obj_side_tex6NA(const SSkin *sk, DWORD, int pass) {
     }
 }
 
-static bool obj_side6(const SSkin *sk, DWORD user_param, int pass) {
+static bool obj_side6(
+    const SSkin *sk,
+    [[maybe_unused]] DWORD user_param,
+    [[maybe_unused]] int pass)
+{
     SMatrixSkin *ms = (SMatrixSkin *)sk;
 
     // gloss present
@@ -348,7 +360,7 @@ static bool obj_side6(const SSkin *sk, DWORD user_param, int pass) {
     return false;
 }
 
-static bool obj_side6NA(const SSkin *sk, DWORD, int pass) {
+static bool obj_side6NA(const SSkin *sk, DWORD, [[maybe_unused]] int pass) {
     SMatrixSkin *ms = (SMatrixSkin *)sk;
 
     // gloss present
@@ -454,7 +466,7 @@ static void obj_side_tex4(const SSkin *sk, DWORD user_param, int pass) {
     }
 }
 
-static bool obj_side4(const SSkin *sk, DWORD user_param, int pass) {
+static bool obj_side4(const SSkin *sk, [[maybe_unused]] DWORD user_param, int pass) {
     SMatrixSkin *ms = (SMatrixSkin *)sk;
 
     if (pass == 0) {
@@ -717,7 +729,7 @@ static bool obj_side4NA(const SSkin *sk, DWORD, int pass) {
     return false;
 }
 
-static bool obj_side3(const SSkin *sk, DWORD user_param, int pass) {
+static bool obj_side3(const SSkin *sk, [[maybe_unused]] DWORD user_param, int pass) {
     SMatrixSkin *ms = (SMatrixSkin *)sk;
     if (pass == 0) {
         ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP));
@@ -941,7 +953,7 @@ static void obj_side_tex2NA(const SSkin *sk, DWORD, int pass) {
     }
 }
 
-static bool obj_side2(const SSkin *sk, DWORD user_param, int pass) {
+static bool obj_side2(const SSkin *sk, [[maybe_unused]] DWORD user_param, int pass) {
     SMatrixSkin *ms = (SMatrixSkin *)sk;
     if (pass == 0) {
         ASSERT_DX(g_D3DD->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP));

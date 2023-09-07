@@ -19,7 +19,7 @@ CEnemy::CEnemy() {
 
 CEnemy::~CEnemy() {}
 
-void CEnemy::ClassifyEnemy(CMatrixMapStatic *relTo) {
+void CEnemy::ClassifyEnemy([[maybe_unused]] CMatrixMapStatic *relTo) {
     m_EnemyKind = ENEMY_ANY;
 }
 

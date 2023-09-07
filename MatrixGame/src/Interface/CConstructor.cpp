@@ -131,7 +131,7 @@ SNewBorn *CConstructor::ProduceRobot(void *) {
     return NULL;
 }
 
-void CConstructor::StackRobot(void *pObject, int team) {
+void CConstructor::StackRobot([[maybe_unused]] void *pObject, int team) {
     DTRACE();
 
     bool crazy_bot = false;

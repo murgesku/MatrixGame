@@ -216,11 +216,8 @@ void CHeap::Free(void *buf, const char *file, int line) {
 
 #endif
 
-void CHeap::AllocationError(int zn) {
-#ifdef _DEBUG
-    debugbreak();
-#else
-
+void CHeap::AllocationError(int zn)
+{
     wchar buf[256];
     wcscpy(buf, L"NULL memory allocated on ");
 
@@ -253,7 +250,6 @@ void CHeap::AllocationError(int zn) {
     wcscat(buf, L" bytes request.");
 
     ERROR_S(buf);
-#endif
 }
 
 }  // namespace Base

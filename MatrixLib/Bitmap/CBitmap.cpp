@@ -49,7 +49,7 @@ inline DWORD LIC(DWORD c0, DWORD c1, float t) {
 
 using namespace Base;
 
-CBitmap::CBitmap(void* heap)
+CBitmap::CBitmap(void*)
 {
     m_Pos.x = 0;
     m_Pos.y = 0;

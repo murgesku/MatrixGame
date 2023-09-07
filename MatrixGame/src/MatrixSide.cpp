@@ -359,7 +359,10 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
     base_i = (base_cnt * RESOURCES_INCOME_BASE * fu / 100) /* * 15000 / g_Config.m_Timings[RESOURCE_BASE]*/;
 }
 
-int CMatrixSideUnit::GetIncomePerTime(int building, int ms) {
+int CMatrixSideUnit::GetIncomePerTime(
+    int building,
+    [[maybe_unused]] int ms)
+{
     DTRACE();
 
     // ETimings tim;
@@ -763,7 +766,9 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &) {
     }
 }
 
-void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse) {
+void CMatrixSideUnit::OnLButtonDouble(
+    [[maybe_unused]] const CPoint &mouse)
+{
     DTRACE();
     if (IsArcadeMode())
         return;
@@ -953,13 +958,17 @@ void CMatrixSideUnit::OnBackward(bool down) {
     }
 }
 
-void CMatrixSideUnit::OnLeft(bool down) {
+void CMatrixSideUnit::OnLeft(
+    [[maybe_unused]] bool down)
+{
     DTRACE();
     if (!IsRobotMode() || !m_Arcaded)
         return;
 }
 
-void CMatrixSideUnit::OnRight(bool down) {
+void CMatrixSideUnit::OnRight(
+    [[maybe_unused]] bool down)
+{
     DTRACE();
     if (!IsRobotMode() || !m_Arcaded)
         return;
@@ -10846,7 +10855,13 @@ bool CMatrixSideUnit::CanMoveNoEnemy(byte mm, int r1, int r2) {
     return dist2 <= Float2Int(1.3f * dist);
 }
 
-void CMatrixSideUnit::DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar *format, ...) {
+void CMatrixSideUnit::DMTeam(
+    [[maybe_unused]] int team,
+    [[maybe_unused]] EMatrixLogicActionType ot,
+    int state,
+    const wchar *format,
+    ...)
+{
     const wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
                     L"mlat_Retreat", L"mlat_Capture", L"mlat_Intercept"};
     const wchar *sstate;

@@ -42,13 +42,13 @@ public:
         m_Counter = DOWN_LIMIT;
         ManageButtons();
     }
-    void __stdcall Up(void *object) {
+    void __stdcall Up(void*) {
         Inc();
         ManageButtons();
         MulRes();
         CheckUp();
     }
-    void __stdcall Down(void *object) {
+    void __stdcall Down(void*) {
         Dec();
         ManageButtons();
         DivRes();

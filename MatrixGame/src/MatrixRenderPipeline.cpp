@@ -233,7 +233,11 @@ void WaterClearAlpha_t2_bpp32(void) {
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_COLORWRITEENABLE, 0xF));
 }
 
-void WaterAlpha_t2_bpp16(CTextureManaged *tex, CTextureManaged *refl, int pass) {
+void WaterAlpha_t2_bpp16(
+    CTextureManaged *tex,
+    [[maybe_unused]] CTextureManaged *refl,
+    [[maybe_unused]] int pass)
+{
     DTRACE();
 
     // if (pass == 0)
@@ -309,7 +313,10 @@ void WaterClearAlpha_t2_bpp16(void) {
     // ASSERT_DX(g_D3DD->SetRenderState(D3DRS_COLORWRITEENABLE, 0xF));
 }
 
-void WaterSolid_t2_bpp16(CTextureManaged *tex, CTextureManaged *refl, int) {
+void WaterSolid_t2_bpp16(
+    CTextureManaged *tex,
+    [[maybe_unused]] CTextureManaged *refl,
+    int) {
     DTRACE();
 
     ASSERT_DX(g_D3DD->SetRenderState(D3DRS_AMBIENT, g_MatrixMap->m_WaterColor));
@@ -452,7 +459,10 @@ static void type01_macro(int) {
 // type 2
 
 // type 2 texture
-static void textype2(CMatrixMapTextureFinal *tex, int) {
+static void textype2(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int)
+{
     // CTextureManaged *gloss;
     // ASSERT_DX(g_D3DD->SetTexture(0,tex->GetTextureBottom(&gloss)->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(1,tex->GetTextureTop(&gloss)->Tex()));
@@ -466,7 +476,10 @@ static void textype2(CMatrixMapTextureFinal *tex, int) {
     //}
 }
 
-static void textype2_macro_t3(CMatrixMapTextureFinal *tex, int) {
+static void textype2_macro_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int)
+{
     //   CTextureManaged *gloss;
     //   ASSERT_DX(g_D3DD->SetTexture(0,tex->GetTextureBottom(&gloss)->Tex()));
     //   ASSERT_DX(g_D3DD->SetTexture(1,tex->GetTextureTop(&gloss)->Tex()));
@@ -533,7 +546,10 @@ static void type2_macro_clear_t2(void) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 }
 
-static void textype2_macro_t2(CMatrixMapTextureFinal *tex, int pass) {
+static void textype2_macro_t2(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     // if (pass == 0)
     //{
     //    CTextureManaged *gloss;
@@ -553,7 +569,9 @@ static void textype2_macro_t2(CMatrixMapTextureFinal *tex, int pass) {
     //}
 }
 
-static void type2_macro_t2(int pass) {
+static void type2_macro_t2(
+    int pass)
+{
     DTRACE();
 
     if (pass == 0) {
@@ -605,14 +623,20 @@ static void type34_clear_t2(void) {
 }
 
 // type 3 texture
-static void textype3_t3(CMatrixMapTextureFinal *tex, int) {
+static void textype3_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int)
+{
     // CTextureManaged *gloss;
     // ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureBottom(&gloss)->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(0,gloss->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(1,g_MatrixMap->GetReflectionTexture()->Tex()));
 }
 
-static void textype3_t2(CMatrixMapTextureFinal *tex, int pass) {
+static void textype3_t2(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     // CTextureManaged *gloss;
     // if (pass == 0)
     //{
@@ -669,7 +693,10 @@ static void type34_t2(int pass) {
     }
 }
 
-static void textype3_macro_t3(CMatrixMapTextureFinal *tex, int pass) {
+static void textype3_macro_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     //   CTextureManaged *gloss;
     //   ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureBottom(&gloss)->Tex()));
     //   ASSERT_DX(g_D3DD->SetTexture(0,gloss->Tex()));
@@ -713,14 +740,20 @@ static void type34_macro_t3(int) {
 //###############################################################################################################
 //###############################################################################################################
 
-static void textype4_t3(CMatrixMapTextureFinal *tex, int) {
+static void textype4_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int)
+{
     // CTextureManaged *gloss;
     // ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureTop(&gloss)->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(0,gloss->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(1,g_MatrixMap->GetReflectionTexture()->Tex()));
 }
 
-static void textype4_t2(CMatrixMapTextureFinal *tex, int pass) {
+static void textype4_t2(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     // CTextureManaged *gloss;
     // if (pass == 0)
     //{
@@ -733,7 +766,10 @@ static void textype4_t2(CMatrixMapTextureFinal *tex, int pass) {
     //}
 }
 
-static void textype4_macro_t3(CMatrixMapTextureFinal *tex, int) {
+static void textype4_macro_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    int)
+{
     //   CTextureManaged *gloss;
     //   ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureTop(&gloss)->Tex()));
     //   ASSERT_DX(g_D3DD->SetTexture(0,gloss->Tex()));
@@ -754,7 +790,10 @@ static void type5_clear_t2(void) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 }
 
-static void textype5_t2(CMatrixMapTextureFinal *tex, int pass) {
+static void textype5_t2(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     // CTextureManaged *gloss;
     // if (pass == 0)
     //{
@@ -825,7 +864,10 @@ static void type5_clear_t4(void) {
     g_D3DD->SetTextureStageState(1, D3DTSS_RESULTARG, D3DTA_CURRENT);
 }
 
-static void textype5_t4(CMatrixMapTextureFinal *tex, int) {
+static void textype5_t4(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    int)
+{
     // CTextureManaged *gloss;
     // ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureBottom(&gloss)->Tex()));
     // ASSERT_DX(g_D3DD->SetTexture(3,tex->GetTextureTop(&gloss)->Tex()));
@@ -883,7 +925,10 @@ static void type5_clear_macro_t3(void) {
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE));
 }
 
-static void textype5_macro_t3(CMatrixMapTextureFinal *tex, int pass) {
+static void textype5_macro_t3(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex,
+    [[maybe_unused]] int pass)
+{
     // CTextureManaged *gloss;
     // if (pass == 0)
     //{
@@ -971,7 +1016,8 @@ static void type5_clear_macro_t5(void) {
 #endif
 }
 
-static void textype5_macro_t5(CMatrixMapTextureFinal *tex, int) {
+static void textype5_macro_t5(
+    [[maybe_unused]] CMatrixMapTextureFinal *tex, int) {
     //   CTextureManaged *gloss;
     //   ASSERT_DX(g_D3DD->SetTexture(2,tex->GetTextureBottom(&gloss)->Tex()));
     //   ASSERT_DX(g_D3DD->SetTexture(3,tex->GetTextureTop(&gloss)->Tex()));
@@ -989,7 +1035,9 @@ static void textype5_macro_t5(CMatrixMapTextureFinal *tex, int) {
     //   }
 }
 
-static void type5_macro_t5(int pass) {
+static void type5_macro_t5(
+    [[maybe_unused]] int pass)
+{
     DTRACE();
 
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 1));
@@ -1039,18 +1087,24 @@ static void TerBotClear(void) {
     g_D3DD->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
-static void TerBotTex(int tex, int pass) {
+static void TerBotTex(
+    int tex,
+    [[maybe_unused]] int pass)
+{
     CTextureManaged *t = CBottomTextureUnion::Get(tex).GetTexture();
     ASSERT_DX(g_D3DD->SetTexture(0, t->Tex()));
 }
-static void TerBotTexM(int tex, int pass) {
+static void TerBotTexM(
+    int tex,
+    [[maybe_unused]] int pass)
+{
     CTextureManaged *t = CBottomTextureUnion::Get(tex).GetTexture();
 
     ASSERT_DX(g_D3DD->SetTexture(0, t->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(1, g_MatrixMap->m_Macrotexture->Tex()));
 }
 
-static void TerBot(int pass) {
+static void TerBot([[maybe_unused]] int pass) {
     // SetColorOpSelect(0, D3DTA_TEXTURE);
     SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE);
     SetAlphaOpDisable(0);
@@ -1061,7 +1115,7 @@ static void TerBot(int pass) {
 
     g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
 }
-static void TerBotM(int pass) {
+static void TerBotM([[maybe_unused]] int pass) {
     SetColorOpSelect(0, D3DTA_TEXTURE);
     SetAlphaOpDisable(0);
     SetColorOp(1, D3DTOP_BLENDTEXTUREALPHA, D3DTA_TEXTURE, D3DTA_CURRENT);
@@ -1141,13 +1195,13 @@ static void TerSurfClearGloss(void) {
     ASSERT_DX(g_D3DD->SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 2));
 }
 
-static void TerSurfTexGloss(CTextureManaged *tex, CTextureManaged *gloss, int pass) {
+static void TerSurfTexGloss(CTextureManaged *tex, CTextureManaged *gloss, [[maybe_unused]] int pass) {
     ASSERT_DX(g_D3DD->SetTexture(0, gloss->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(1, g_MatrixMap->GetReflectionTexture()->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(2, tex->Tex()));
 }
 
-static void TerSurfGloss(int pass, bool wrapy) {
+static void TerSurfGloss([[maybe_unused]] int pass, bool wrapy) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2));
@@ -1188,7 +1242,7 @@ static void TerSurfGloss(int pass, bool wrapy) {
     g_D3DD->SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);  // refl
 }
 
-static void TerSurfGlossW(int pass, bool wrapy) {
+static void TerSurfGlossW([[maybe_unused]] int pass, bool wrapy) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2));
@@ -1236,14 +1290,14 @@ static void TerSurfClearGlossM(void) {
     ASSERT_DX(g_D3DD->SetTextureStageState(3, D3DTSS_TEXCOORDINDEX, 3));
 }
 
-static void TerSurfTexGlossM(CTextureManaged *tex, CTextureManaged *gloss, int pass) {
+static void TerSurfTexGlossM(CTextureManaged *tex, CTextureManaged *gloss, [[maybe_unused]] int pass) {
     ASSERT_DX(g_D3DD->SetTexture(0, gloss->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(1, g_MatrixMap->GetReflectionTexture()->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(2, tex->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(3, g_MatrixMap->m_Macrotexture->Tex()));
 }
 
-static void TerSurfGlossM(int pass, bool wrapy) {
+static void TerSurfGlossM([[maybe_unused]] int pass, bool wrapy) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2));
@@ -1289,7 +1343,7 @@ static void TerSurfGlossM(int pass, bool wrapy) {
     g_D3DD->SetSamplerState(3, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);  // macro
 }
 
-static void TerSurfGlossMW(int pass, bool wrapy) {
+static void TerSurfGlossMW([[maybe_unused]] int pass, bool wrapy) {
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
 
     ASSERT_DX(g_D3DD->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2));
@@ -1451,7 +1505,7 @@ static void TerSurfTexGloss2M(CTextureManaged *tex, CTextureManaged *gloss, int 
 }
 
 void TerSurfM_sux(int pass);
-static void TerSurfGloss2M(int pass) {
+static void TerSurfGloss2M([[maybe_unused]] int pass) {
     // TerSurfM_sux(pass);
     return;
 }
@@ -1488,15 +1542,15 @@ static void TerSurfGloss2MW(int pass) {
 
 static void TerSurfClear(void) {}
 
-static void TerSurfTex(CTextureManaged *tex, CTextureManaged *gloss, int pass) {
+static void TerSurfTex(CTextureManaged *tex, [[maybe_unused]] CTextureManaged *gloss, [[maybe_unused]] int pass) {
     ASSERT_DX(g_D3DD->SetTexture(0, tex->Tex()));
 }
-static void TerSurfTexM(CTextureManaged *tex, CTextureManaged *gloss, int pass) {
+static void TerSurfTexM(CTextureManaged *tex, [[maybe_unused]] CTextureManaged *gloss, [[maybe_unused]] int pass) {
     ASSERT_DX(g_D3DD->SetTexture(0, tex->Tex()));
     ASSERT_DX(g_D3DD->SetTexture(1, g_MatrixMap->m_Macrotexture->Tex()));
 }
 
-static void TerSurf(int pass, bool wrapy) {
+static void TerSurf([[maybe_unused]] int pass, bool wrapy) {
     SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
     SetAlphaOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
 
@@ -1516,7 +1570,7 @@ static void TerSurf(int pass, bool wrapy) {
     g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
 }
 
-static void TerSurfW(int pass, bool wrapy) {
+static void TerSurfW([[maybe_unused]] int pass, bool wrapy) {
     SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE);
     SetAlphaOpSelect(0, D3DTA_TEXTURE);
     SetAlphaOpDisable(1);
@@ -1533,7 +1587,7 @@ static void TerSurfW(int pass, bool wrapy) {
     g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
 }
 
-static void TerSurfMW(int pass, bool wrapy) {
+static void TerSurfMW([[maybe_unused]] int pass, bool wrapy) {
     SetColorOpSelect(0, D3DTA_TEXTURE);
     SetAlphaOpSelect(0, D3DTA_TEXTURE);
 
@@ -1562,7 +1616,7 @@ static void TerSurfMW(int pass, bool wrapy) {
     g_D3DD->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
 }
 
-static void TerSurfM(int pass, bool wrapy) {
+static void TerSurfM([[maybe_unused]] int pass, bool wrapy) {
     SetColorOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
     SetAlphaOpAnyOrder(0, D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_TFACTOR);
 
@@ -1624,7 +1678,7 @@ static void TerSurfMW_sux(int pass, bool wrapy) {
     }
 }
 
-static void TerSurfTexM_sux(CTextureManaged *tex, CTextureManaged *gloss, int pass) {
+static void TerSurfTexM_sux(CTextureManaged *tex, [[maybe_unused]] CTextureManaged *gloss, int pass) {
     if (pass == 0) {
         ASSERT_DX(g_D3DD->SetTexture(0, tex->Tex()));
         ASSERT_DX(g_D3DD->SetTexture(1, g_MatrixMap->m_Macrotexture->Tex()));
@@ -1729,7 +1783,7 @@ static void obj_clear(void) {
 //    }
 //}
 
-bool obj_ordinal_t2(DWORD user_param, int) {
+bool obj_ordinal_t2([[maybe_unused]] DWORD user_param, int) {
     obj_clear();
 
     // ordinal mapping
@@ -1958,7 +2012,7 @@ bool obj_ordinal_gloss_t4(DWORD user_param, int) {
 
 ///////////// side
 
-bool obj_side_t3(DWORD user_param, int) {
+bool obj_side_t3([[maybe_unused]] DWORD user_param, int) {
     obj_clear();
 
     // ordinal mapping
@@ -1986,7 +2040,7 @@ bool obj_side_t3(DWORD user_param, int) {
 //    ASSERT_DX(g_D3DD->SetTexture(1, coltex));
 //}
 
-bool obj_side_t2(DWORD user_param, int) {
+bool obj_side_t2([[maybe_unused]] DWORD user_param, int) {
     obj_clear();
 
     // ASSERT_DX(g_D3DD->SetTextureStageState(0,D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 ));
@@ -2022,7 +2076,7 @@ bool obj_side_t2(DWORD user_param, int) {
 //    ASSERT_DX(g_D3DD->SetTexture(3, coltex));
 //}
 
-bool obj_side_gloss_t5(DWORD user_param, int) {
+bool obj_side_gloss_t5([[maybe_unused]] DWORD user_param, int) {
     obj_clear();
 
     ASSERT_DX(g_D3DD->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0));
@@ -2055,7 +2109,8 @@ bool obj_side_gloss_t5(DWORD user_param, int) {
 
 /////////
 
-void CRenderPipeline::SetupTerrains(bool macro) {
+void CRenderPipeline::SetupTerrains([[maybe_unused]] bool macro)
+{
     // + - done for this adapter
     // - - not present. used other stuff. visual quality loss
     // * - the same as previous adapter

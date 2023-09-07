@@ -246,7 +246,7 @@ void CMatrixGroup::FindNearObjects(CMatrixGroupObject *fn_object) {
 //    m_Tactics = NULL;
 //}
 
-void CMatrixGroup::LogicTakt(CMatrixSideUnit *side) {
+void CMatrixGroup::LogicTakt([[maybe_unused]] CMatrixSideUnit *side) {
     if (m_SimpleTimer >= JUST_PERIOD || m_SimpleTimer == -1) {
         CalcGroupPosition();
         CalcGroupSpeed();
