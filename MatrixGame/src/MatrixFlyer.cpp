@@ -4,6 +4,8 @@
 // Refer to the LICENSE file included
 
 #include <algorithm>
+#include <format>
+#include <stdexcept>
 
 #include "MatrixFlyer.hpp"
 #include "MatrixMap.hpp"
@@ -1673,7 +1675,13 @@ bool CMatrixFlyer::Damage(
     CMatrixEffectWeapon::SoundHit(weap, pos);
 
     int idx = Weap2Index(weap);
-    if (m_HitPoint > g_Config.m_FlyerDamages[idx].mindamage) {
+    if (idx == -1)
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+    }
+
+    if (m_HitPoint > g_Config.m_FlyerDamages[idx].mindamage)
+    {
         m_HitPoint -= g_Config.m_FlyerDamages[idx].damage;
         if (m_HitPoint >= 0) {
             m_PB.Modify(m_HitPoint * m_MaxHitPointInversed);
