@@ -132,7 +132,6 @@ struct SDebugCallInfo {
     const char *_file;
     int _line;
     SDebugCallInfo(const char *file, int line) : _file(file), _line(line) {}
-    SDebugCallInfo(const SDebugCallInfo &ci) { *this = ci; }
 };
 #define DEBUG_CALL_INFO SDebugCallInfo(__FILE__, __LINE__)
 
