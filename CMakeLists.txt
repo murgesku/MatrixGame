@@ -68,7 +68,6 @@ else()
         -Wno-switch
         -Wno-address
         -Wno-strict-aliasing
-        -Wno-maybe-uninitialized
         -Wno-array-bounds
         -Wno-use-after-free
         -Wno-empty-body

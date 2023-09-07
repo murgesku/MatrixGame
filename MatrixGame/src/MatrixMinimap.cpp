@@ -414,7 +414,7 @@ void CMinimap::DrawRadar(float x, float y, float radius) {
     CMatrixMapStatic *arcaded = g_MatrixMap->GetPlayerSide()->GetArcadedObject();
     if (arcaded == NULL)
         return;
-    float mapradius;
+    float mapradius = 0;
 
     if (arcaded->IsRobot()) {
         mapradius = arcaded->AsRobot()->m_RadarRadius;

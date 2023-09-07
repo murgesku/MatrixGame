@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <array> // for std::begin, std::end
+#include <format>
+#include <stdexcept>
 
 #include "CIFaceButton.h"
 #include "CIFaceStatic.h"
@@ -747,6 +749,10 @@ bool CInterface::Load(CBlockPar &bp, const wchar *name) {
                             }
                             else if (state == IF_STATE_PRESSED_UNFOCUSED) {
                                 st = IFACE_PRESSED_UNFOCUSED;
+                            }
+                            else
+                            {
+                                throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
                             }
                             if (labels->BlockGetName(bl_cnt) == IF_STATE_STATIC_LABEL) {
                                 std::wstring t_code = if_elem->m_strName;

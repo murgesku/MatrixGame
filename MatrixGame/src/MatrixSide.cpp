@@ -24,6 +24,8 @@
 #include "MatrixMultiSelection.hpp"
 
 #include <algorithm>
+#include <stdexcept>
+#include <format>
 #include <time.h>
 
 // robot->GetEnv()->m_Place -   место куда робот идет или где стоит.
@@ -336,6 +338,10 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
         type = BUILDING_ENERGY;
         tim = RESOURCE_ENERGY;
     }
+    else
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+    }
 
     CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
     for (; ms; ms = ms->GetNextLogic()) {
@@ -356,19 +362,23 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
 int CMatrixSideUnit::GetIncomePerTime(int building, int ms) {
     DTRACE();
 
-    ETimings tim;
-    if (building == int(BUILDING_TITAN)) {
-        tim = RESOURCE_TITAN;
-    }
-    else if (building == int(BUILDING_ELECTRONIC)) {
-        tim = RESOURCE_ELECTRONICS;
-    }
-    else if (building == int(BUILDING_PLASMA)) {
-        tim = RESOURCE_PLASMA;
-    }
-    else if (building == int(BUILDING_ENERGY)) {
-        tim = RESOURCE_ENERGY;
-    }
+    // ETimings tim;
+    // if (building == int(BUILDING_TITAN)) {
+    //     tim = RESOURCE_TITAN;
+    // }
+    // else if (building == int(BUILDING_ELECTRONIC)) {
+    //     tim = RESOURCE_ELECTRONICS;
+    // }
+    // else if (building == int(BUILDING_PLASMA)) {
+    //     tim = RESOURCE_PLASMA;
+    // }
+    // else if (building == int(BUILDING_ENERGY)) {
+    //     tim = RESOURCE_ENERGY;
+    // }
+    // else
+    // {
+    //     assert((void("should never happen"), false));
+    // }
 
     int fu = GetResourceForceUp();
 
@@ -2625,7 +2635,7 @@ void CMatrixSideUnit::TaktHL() {
 
     Regroup();
 
-    int i, u, t, k, p, team, cnt, sme, level, next, dist;
+    int i, u, t, k = 0, p, team, cnt, sme, level, next, dist;
     //    int skipregion[MAX_ROBOTS];
     //    int skipregioncnt;
     SMatrixLogicAction *ac;
@@ -10276,7 +10286,7 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no) {
 
     int u, t, k, cnt, sme, dist, next;
     CMatrixMapStatic *obj;
-    byte mm;
+    byte mm = 0;
 
     cnt = 0;
     sme = 0;
