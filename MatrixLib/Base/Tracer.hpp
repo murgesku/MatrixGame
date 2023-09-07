@@ -6,7 +6,6 @@
 #ifndef TRACER_HPP
 #define TRACER_HPP
 
-#include <string>
 #include <utils.hpp>
 
 #include <windows.h>
@@ -14,6 +13,9 @@
 #ifdef __GNUC__
 #include <x86intrin.h>
 #endif
+
+#include <string>
+#include <cstdint>
 
 #ifdef DMM
 void writedump(const char *txt);

@@ -60,7 +60,6 @@ else()
         -Wno-unused-function
         -Wno-unused-variable
         -Wno-unused-but-set-variable
-        -Wno-unused-value
         -Wno-class-memaccess
         -Wno-parentheses
         -Wno-switch
