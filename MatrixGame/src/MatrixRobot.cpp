@@ -1602,7 +1602,7 @@ void CMatrixRobotAI::ZoneMoveCalc() {
             if (r->GetMoveToCoords(tp)) {
                 ASSERT(other_cnt < 200);
                 other_size[other_cnt] = 4;
-                if (r->m_MovePath && r->m_MovePathCur < r->m_MovePathCnt) {
+                if (r->m_MovePathCur < r->m_MovePathCnt) {
                     other_path_list[other_cnt] = r->m_MovePath + r->m_MovePathCur;
                     other_path_cnt[other_cnt] = r->m_MovePathCnt - r->m_MovePathCur;
                 }
