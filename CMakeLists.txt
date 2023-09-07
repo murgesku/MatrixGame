@@ -75,7 +75,6 @@ else()
         -Wno-unused-parameter
         -Wno-deprecated-copy
         -Wno-type-limits
-        -Wno-missing-field-initializers
         -Wno-pedantic
     )
 endif()
