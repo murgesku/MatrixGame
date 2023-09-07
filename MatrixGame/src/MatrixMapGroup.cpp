@@ -481,13 +481,8 @@ void CMatrixMapGroup::InitInshoreWaves(int n, const float *xx, const float *yy, 
     }
 }
 
-void CMatrixMapGroup::BeforeDraw(void) {
-#ifdef _DEBUG
-    if (this == NULL) {
-        debugbreak();
-    }
-#endif
-
+void CMatrixMapGroup::BeforeDraw(void)
+{
     m_RemindCore.Use(FREE_TIME_PERIOD);
     DX_Prepare();
 

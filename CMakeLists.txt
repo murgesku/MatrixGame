@@ -64,7 +64,6 @@ else()
         -Wno-format
         -Wno-class-memaccess
         -Wno-parentheses
-        -Wno-nonnull-compare
         -Wno-switch
         -Wno-address
         -Wno-strict-aliasing
