@@ -50,6 +50,7 @@ else()
     # -Wno-... options should be fixed and removed.
     list(APPEND COMPILE_OPTIONS
         $<$<CONFIG:Release>:-Os>
+        -ftrivial-auto-var-init=zero
 
         -Wall
         -Wextra
