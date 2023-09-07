@@ -938,7 +938,7 @@ void CMatrixRoadNetwork::CalcZoneColor() {
         }
 
         for (i = 0; i < m_ZoneCnt; i++) {
-            if (m_Zone[i].m_Color < 0 || m_Zone[i].m_Color > colorscnt)
+            if (m_Zone[i].m_Color > colorscnt)
                 ERROR_E;
             m_Zone[i].m_Color = colors[m_Zone[i].m_Color];
         }

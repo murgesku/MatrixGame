@@ -2353,7 +2353,7 @@ void CPackCollection::DelPacketFile(const wchar *name)
 
 bool CPackCollection::OpenPacketFiles(void)
 {
-    size_t iter = 0;
+    int iter = 0;
     for (; iter < m_PackFiles.size(); ++iter)
     {
         if (!m_PackFiles[iter]->OpenPacketFile())
@@ -2388,7 +2388,7 @@ bool CPackCollection::ClosePacketFiles(void)
 
 bool CPackCollection::OpenPacketFilesEx(void)
 {
-    size_t iter = 0;
+    int iter = 0;
     for (; iter < m_PackFiles.size(); ++iter)
     {
         if (!m_PackFiles[iter]->OpenPacketFileEx())
