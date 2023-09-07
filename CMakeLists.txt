@@ -65,7 +65,6 @@ else()
         -Wno-parentheses
         -Wno-switch
         -Wno-strict-aliasing
-        -Wno-array-bounds
         -Wno-empty-body
         -Wno-pedantic
     )
