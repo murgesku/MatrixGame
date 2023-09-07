@@ -22,9 +22,8 @@ void CBuf::Len(size_t zn)
         return;
     }
     m_Buf.resize(zn);
-    if (m_Pointer < 0)
-        m_Pointer = 0;
-    else if (m_Pointer > m_Buf.size())
+
+    if (m_Pointer > m_Buf.size())
         m_Pointer = m_Buf.size();
 }
 
@@ -78,9 +77,6 @@ void CBuf::LoadFromFile(const std::wstring &filename)
 
 void CBuf::SaveInFile(const std::wstring &filename) const
 {
-    if (m_Buf.size() < 0)
-        return;
-
     CFile file(filename.c_str(), filename.length());
     file.Create();
     file.Write(const_cast<uint8_t*>(m_Buf.data()), m_Buf.size());

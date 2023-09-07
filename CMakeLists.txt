@@ -73,7 +73,6 @@ else()
         -Wno-empty-body
         -Wno-unused-parameter
         -Wno-deprecated-copy
-        -Wno-type-limits
         -Wno-pedantic
     )
 endif()
