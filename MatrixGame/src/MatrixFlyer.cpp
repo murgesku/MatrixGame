@@ -4,6 +4,8 @@
 // Refer to the LICENSE file included
 
 #include <algorithm>
+#include <format>
+#include <stdexcept>
 
 #include "MatrixFlyer.hpp"
 #include "MatrixMap.hpp"
@@ -1086,8 +1088,15 @@ void CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td) {
 //    }
 //}
 
-void CMatrixFlyer::ApplyOrder(const D3DXVECTOR2 &pos, int side, EFlyerOrder order, float ang, int place,
-                              const CPoint &bpos, int botpar_i) {
+void CMatrixFlyer::ApplyOrder(
+    const D3DXVECTOR2 &pos,
+    int side,
+    EFlyerOrder order,
+    float ang,
+    int place,
+    [[maybe_unused]] const CPoint &bpos,
+    int botpar_i)
+{
     RESETFLAG(m_Flags, FLYER_IN_SPAWN);
 
     m_Side = side;
@@ -1650,8 +1659,13 @@ void CMatrixFlyer::ProceedTrajectory(SFlyerTaktData &td) {
     }
 }
 
-bool CMatrixFlyer::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
-                          CMatrixMapStatic *attaker) {
+bool CMatrixFlyer::Damage(
+    EWeapon weap,
+    const D3DXVECTOR3 &pos,
+    [[maybe_unused]] const D3DXVECTOR3 &dir,
+    [[maybe_unused]] int attacker_side,
+    [[maybe_unused]] CMatrixMapStatic *attaker)
+{
     DTRACE();
 
     if (weap == WEAPON_REPAIR) {
@@ -1661,7 +1675,13 @@ bool CMatrixFlyer::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR
     CMatrixEffectWeapon::SoundHit(weap, pos);
 
     int idx = Weap2Index(weap);
-    if (m_HitPoint > g_Config.m_FlyerDamages[idx].mindamage) {
+    if (idx == -1)
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+    }
+
+    if (m_HitPoint > g_Config.m_FlyerDamages[idx].mindamage)
+    {
         m_HitPoint -= g_Config.m_FlyerDamages[idx].damage;
         if (m_HitPoint >= 0) {
             m_PB.Modify(m_HitPoint * m_MaxHitPointInversed);

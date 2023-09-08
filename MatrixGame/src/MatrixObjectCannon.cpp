@@ -24,7 +24,12 @@ float CMatrixCannon::GetStrength(void) {
     return g_Config.m_CannonsProps[m_Num - 1].m_Strength * (0.4f + 0.6f * (m_HitPoint / m_HitPointMax));
 }
 
-void CMatrixCannon::FireHandler(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user, DWORD flags) {
+void CMatrixCannon::FireHandler(
+    [[maybe_unused]] CMatrixMapStatic *hit,
+    [[maybe_unused]] const D3DXVECTOR3 &pos,
+    DWORD user,
+    DWORD flags)
+{
     SObjectCore *oc = (SObjectCore *)user;
 
     if (oc->m_Object && FLAG(flags, FEHF_DAMAGE_ROBOT)) {

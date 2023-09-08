@@ -60,22 +60,11 @@ else()
         -Wno-unused-function
         -Wno-unused-variable
         -Wno-unused-but-set-variable
-        -Wno-unused-value
-        -Wno-format
         -Wno-class-memaccess
         -Wno-parentheses
-        -Wno-nonnull-compare
         -Wno-switch
-        -Wno-address
         -Wno-strict-aliasing
-        -Wno-maybe-uninitialized
-        -Wno-array-bounds
-        -Wno-use-after-free
         -Wno-empty-body
-        -Wno-unused-parameter
-        -Wno-deprecated-copy
-        -Wno-type-limits
-        -Wno-missing-field-initializers
         -Wno-pedantic
     )
 endif()

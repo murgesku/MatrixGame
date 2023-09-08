@@ -1485,7 +1485,8 @@ void CMatrixMap::BeforeDrawLandscapeSurfaces(bool all) {
     }
 }
 
-void CMatrixMap::DrawLandscapeSurfaces(bool all) {
+void CMatrixMap::DrawLandscapeSurfaces([[maybe_unused]] bool all)
+{
     DTRACE();
 
     for (int i = 0; i < 8; i++) {

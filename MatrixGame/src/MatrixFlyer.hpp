@@ -376,7 +376,7 @@ public:
 
     virtual void FreeDynamicResources(void);
 
-    virtual void Load(CBuf &buf, CTemporaryLoadData *td){};
+    virtual void Load(CBuf&, CTemporaryLoadData*) {};
 
     virtual bool CalcBounds(D3DXVECTOR3 &omin, D3DXVECTOR3 &omax);
     virtual int GetSide(void) const { return m_Side; };

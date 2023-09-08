@@ -49,7 +49,7 @@ inline DWORD LIC(DWORD c0, DWORD c1, float t) {
 
 using namespace Base;
 
-CBitmap::CBitmap(void* heap)
+CBitmap::CBitmap(void*)
 {
     m_Pos.x = 0;
     m_Pos.y = 0;
@@ -231,7 +231,7 @@ bool CBitmap::ConvertFrom(CBitmap &bm) {
         DWORD _sG, _cbG, _cG;
         DWORD _sB, _cbB, _cB;
         DWORD _sA, _cbA, _cA;
-        DWORD color, r, g, b, a;
+        DWORD color = 0, r, g, b, a;
 
         BuildByMask(bm.m_MColor[0], &sR, &cbR, &cR);
         int ssR = 8 - cbR;

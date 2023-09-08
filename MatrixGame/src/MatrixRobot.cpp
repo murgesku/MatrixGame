@@ -1602,7 +1602,7 @@ void CMatrixRobotAI::ZoneMoveCalc() {
             if (r->GetMoveToCoords(tp)) {
                 ASSERT(other_cnt < 200);
                 other_size[other_cnt] = 4;
-                if (r->m_MovePath && r->m_MovePathCur < r->m_MovePathCnt) {
+                if (r->m_MovePathCur < r->m_MovePathCnt) {
                     other_path_list[other_cnt] = r->m_MovePath + r->m_MovePathCur;
                     other_path_cnt[other_cnt] = r->m_MovePathCnt - r->m_MovePathCur;
                 }
@@ -1808,11 +1808,14 @@ void CMatrixRobotAI::MoveByMovePath(int ms) {
 //	}
 //}
 
-bool CMatrixRobotAI::Damage(EWeapon weap, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, int attacker_side,
-                            CMatrixMapStatic *attaker) {
+bool CMatrixRobotAI::Damage(
+    EWeapon weap,
+    const D3DXVECTOR3 &pos,
+    [[maybe_unused]] const D3DXVECTOR3 &dir,
+    int attacker_side,
+    CMatrixMapStatic *attaker)
+{
     DTRACE();
-
-    ASSERT(this);
 
     if (m_CurrState == ROBOT_DIP)
         return true;
@@ -2883,7 +2886,11 @@ struct CollisionData {
     bool far_col;
 };
 
-static bool CollisionCallback(const D3DXVECTOR3 &fpos, CMatrixMapStatic *pObject, DWORD user) {
+static bool CollisionCallback(
+    [[maybe_unused]] const D3DXVECTOR3 &fpos,
+    CMatrixMapStatic *pObject,
+    DWORD user)
+{
     CollisionData *data = (CollisionData *)user;
 
     const int tm = 2;
@@ -4045,7 +4052,12 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 //    SwitchAnimation(ANIMATION_STAY);
 //}
 
-void robot_weapon_hit(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user, DWORD flags) {
+void robot_weapon_hit(
+    CMatrixMapStatic *hit,
+    const D3DXVECTOR3 &pos,
+    DWORD user,
+    [[maybe_unused]] DWORD flags)
+{
     CMatrixMapStatic *obj = CMatrixMapStatic::GetFirstLogic();
     while (obj) {
         if (user == DWORD(obj)) {
@@ -4058,7 +4070,10 @@ void robot_weapon_hit(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user,
     }
 }
 
-void CMatrixRobotAI::HitTo(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos) {
+void CMatrixRobotAI::HitTo(
+    CMatrixMapStatic *hit,
+    [[maybe_unused]] const D3DXVECTOR3 &pos)
+{
     if (IS_TRACE_STOP_OBJECT(hit)) {
         if (GetEnv()->m_Target == hit)
             GetEnv()->m_LastHitEnemy = GetEnv()->m_LastHitTarget = g_MatrixMap->GetTime();

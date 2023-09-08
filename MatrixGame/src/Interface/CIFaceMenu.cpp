@@ -11,6 +11,9 @@
 #include "../MatrixGame.h"
 #include "../MatrixSide.hpp"
 
+#include <format>
+#include <stdexcept>
+
 CInterface *CIFaceMenu::m_MenuGraphics;
 CIFaceMenu *g_PopupMenu;
 
@@ -52,8 +55,16 @@ bool CIFaceMenu::LoadMenuGraphics(CBlockPar &bp) {
 }
 
 // width poshitan snaruzhi - max. dlina kakogo-to elementa
-void CIFaceMenu::CreateMenu(EMenuParent parent, int elements, int width, int x, int y, CIFaceElement *caller,
-                            SMenuItemText *labels, DWORD color) {
+void CIFaceMenu::CreateMenu(
+    EMenuParent parent,
+    int elements,
+    int width,
+    int x,
+    int y,
+    CIFaceElement *caller,
+    SMenuItemText *labels,
+    [[maybe_unused]] DWORD color)
+{
     DTRACE();
 
     //
@@ -538,6 +549,10 @@ void CIFaceMenu::CalcSelectedItem(bool set) {
         else if (m_CurMenuPos == 2) {
             kind = RUK_WEAPON_BOMB;
         }
+        else
+        {
+            throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+        }
     }
     else if (m_InterfaceParent == MENU_PARENT_HEAD) {
         pilon = 0;
@@ -562,6 +577,10 @@ void CIFaceMenu::CalcSelectedItem(bool set) {
         pilon = 0;
         type = MRT_CHASSIS;
         kind = (ERobotUnitKind)(m_CurMenuPos + 1);
+    }
+    else
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
     }
 
     if (set)

@@ -193,7 +193,12 @@ void CMultiSelection::Draw(void) {
     g_D3DD->DrawPrimitiveUP(D3DPT_LINESTRIP, 4, &v2, sizeof(D3DXVECTOR4));
 }
 
-void CMultiSelection::Update(const Base::CPoint &pos, DWORD mask, SELECT_ENUM callback, DWORD param) {
+void CMultiSelection::Update(
+    const Base::CPoint &pos,
+    DWORD mask,
+    [[maybe_unused]] SELECT_ENUM callback,
+    [[maybe_unused]] DWORD param)
+{
     m_RB = pos;
 
     CRect r(m_LT.x, m_LT.y, m_RB.x, m_RB.y);

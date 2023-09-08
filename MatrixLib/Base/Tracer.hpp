@@ -6,7 +6,6 @@
 #ifndef TRACER_HPP
 #define TRACER_HPP
 
-#include <string>
 #include <utils.hpp>
 
 #include <windows.h>
@@ -14,6 +13,9 @@
 #ifdef __GNUC__
 #include <x86intrin.h>
 #endif
+
+#include <string>
+#include <cstdint>
 
 #ifdef DMM
 void writedump(const char *txt);
@@ -132,7 +134,6 @@ struct SDebugCallInfo {
     const char *_file;
     int _line;
     SDebugCallInfo(const char *file, int line) : _file(file), _line(line) {}
-    SDebugCallInfo(const SDebugCallInfo &ci) { *this = ci; }
 };
 #define DEBUG_CALL_INFO SDebugCallInfo(__FILE__, __LINE__)
 

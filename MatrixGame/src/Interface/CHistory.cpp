@@ -80,7 +80,7 @@ void CHistory::LoadCurrentConfigToConstructor() {
     }
 }
 
-void __stdcall CHistory::PrevConfig(void *object) {
+void __stdcall CHistory::PrevConfig(void*) {
     DTRACE();
     if (m_CurrentConfig && m_CurrentConfig->m_PrevConfig) {
         m_CurrentConfig = m_CurrentConfig->m_PrevConfig;
@@ -88,7 +88,7 @@ void __stdcall CHistory::PrevConfig(void *object) {
     }
 }
 
-void __stdcall CHistory::NextConfig(void *object) {
+void __stdcall CHistory::NextConfig(void*) {
     DTRACE();
     if (m_CurrentConfig && m_CurrentConfig->m_NextConfig) {
         m_CurrentConfig = m_CurrentConfig->m_NextConfig;

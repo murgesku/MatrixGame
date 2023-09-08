@@ -15,11 +15,15 @@ SMGDRobotInterface g_RobotInterface;
 SMGDRangersInterface *g_RangersInterface = nullptr;
 int g_ExitState = 0;
 
-long __stdcall ExceptionHandler(PEXCEPTION_POINTERS pExceptionInfo) {
+long __stdcall ExceptionHandler(PEXCEPTION_POINTERS) {
     return EXCEPTION_EXECUTE_HANDLER;
 }
 
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+BOOL APIENTRY DllMain(
+    [[maybe_unused]] HANDLE hModule,
+    DWORD ul_reason_for_call,
+    [[maybe_unused]] LPVOID lpReserved)
+{
     SetUnhandledExceptionFilter(ExceptionHandler);
     switch (ul_reason_for_call) {
         case DLL_PROCESS_ATTACH:

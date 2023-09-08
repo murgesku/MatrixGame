@@ -289,7 +289,8 @@ void CMatrixWater::Draw(const D3DXMATRIX &m) {
     ASSERT_DX(g_D3DD->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, pole, 0, all_idxs - 2));
 }
 
-void CMatrixWater::Takt(int step) {
+void CMatrixWater::Takt(int)
+{
     bool skip = true;
 
     int k = 1;

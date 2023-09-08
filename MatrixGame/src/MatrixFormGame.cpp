@@ -711,8 +711,8 @@ static STextInfo stuff[] = {{L"3D Robots game information....", L"", 3000},
                             {L"Coding....", L"", 10000},
                             {L" Alexander <ZakkeR> Zeberg", L"", 0},
                             {L"", L"Engine lead coder", 0},
-                            {L"", L"MapEditor lead coder"},
-                            {L"", L"Optimizations"},
+                            {L"", L"MapEditor lead coder", 0},
+                            {L"", L"Optimizations", 0},
                             {L" Alexey <Dab> Dubovoy", L"", 0},
                             {L"", L"High-AI lead coder", 0},
                             {L"", L"MapEditor base coder", 0},
@@ -763,7 +763,7 @@ static STextInfo stuff[] = {{L"3D Robots game information....", L"", 3000},
                             {L" Ilia <Ilik> Plusnin", L"", 0},
 
                             {L"Thats all folks :)", L"", 3000},
-                            {NULL, NULL}};
+                            {NULL, NULL, 0}};
 
 bool CFormMatrixGame::IsInputEqual(std::string str)
 {

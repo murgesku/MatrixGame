@@ -872,7 +872,7 @@ void SMatrixRobotUnit::PrepareForDIP(void) {
 }
 
 void CMatrixRobot::ApplyNaklon(const D3DXVECTOR3 &dir) {
-    *(D3DXVECTOR3 *)&m_Core->m_Matrix._31;  // = LERPVECTOR(mul, *(D3DXVECTOR3*)&m_Core->m_Matrix._31, up);
+    // *(D3DXVECTOR3 *)&m_Core->m_Matrix._31;  // = LERPVECTOR(mul, *(D3DXVECTOR3*)&m_Core->m_Matrix._31, up);
     auto tmp = *(D3DXVECTOR3 *)&m_Core->m_Matrix._31 + dir;
     D3DXVec3Normalize((D3DXVECTOR3 *)&m_Core->m_Matrix._31, &tmp);
 }

@@ -189,8 +189,13 @@ struct SVisGroup {
         }
     }
 
-    void CalcVis(SVisGroup *visibilityGroup, int groupCount, int pointsCount, STempPoints *points, STempCalcs *calcs,
-                 const std::vector<SPotEdge>& pe)
+    void CalcVis(
+        [[maybe_unused]] SVisGroup *visibilityGroup,
+        [[maybe_unused]] int groupCount,
+        int pointsCount,
+        STempPoints *points,
+        [[maybe_unused]] STempCalcs *calcs,
+        const std::vector<SPotEdge>& pe)
     {
         float z0 = minz + GLOBAL_SCALE + 1;
 

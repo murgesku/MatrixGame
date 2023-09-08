@@ -314,7 +314,7 @@ void CIFaceElement::LogicTakt(int ms) {
         int i = player_side->GetCurSelNum();
         float pos = (i + 1.0f) / 3.0f;
 
-        float x, y;
+        float x = 0, y = 0;
         if (pos <= 1) {
             x = (float)(223 + 48 * i);
             y = 45;

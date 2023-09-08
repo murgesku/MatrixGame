@@ -4,6 +4,8 @@
 // Refer to the LICENSE file included
 
 #include <new>
+#include <format>
+#include <stdexcept>
 
 #include "../MatrixMap.hpp"
 #include "../MatrixObject.hpp"
@@ -83,6 +85,11 @@ CMatrixEffectWeapon::CMatrixEffectWeapon(const D3DXVECTOR3 &pos, const D3DXVECTO
     // its ok. I'v added some crap to this shit :). Zak
 
     int widx = Weap2Index(m_Type);
+
+    if (widx == -1)
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+    }
 
     m_WeaponDist = g_Config.m_WeaponRadius[widx];
     m_WeaponCoefficient = DEFBOT_WEAPON_COEFF;

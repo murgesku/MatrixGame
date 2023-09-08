@@ -24,6 +24,8 @@
 #include "MatrixMultiSelection.hpp"
 
 #include <algorithm>
+#include <stdexcept>
+#include <format>
 #include <time.h>
 
 // robot->GetEnv()->m_Place -   место куда робот идет или где стоит.
@@ -336,6 +338,10 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
         type = BUILDING_ENERGY;
         tim = RESOURCE_ENERGY;
     }
+    else
+    {
+        throw std::runtime_error(std::format("this should never happen: {}:{}", __FILE__, __LINE__));
+    }
 
     CMatrixMapStatic *ms = CMatrixMapStatic::GetFirstLogic();
     for (; ms; ms = ms->GetNextLogic()) {
@@ -353,22 +359,29 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
     base_i = (base_cnt * RESOURCES_INCOME_BASE * fu / 100) /* * 15000 / g_Config.m_Timings[RESOURCE_BASE]*/;
 }
 
-int CMatrixSideUnit::GetIncomePerTime(int building, int ms) {
+int CMatrixSideUnit::GetIncomePerTime(
+    int building,
+    [[maybe_unused]] int ms)
+{
     DTRACE();
 
-    ETimings tim;
-    if (building == int(BUILDING_TITAN)) {
-        tim = RESOURCE_TITAN;
-    }
-    else if (building == int(BUILDING_ELECTRONIC)) {
-        tim = RESOURCE_ELECTRONICS;
-    }
-    else if (building == int(BUILDING_PLASMA)) {
-        tim = RESOURCE_PLASMA;
-    }
-    else if (building == int(BUILDING_ENERGY)) {
-        tim = RESOURCE_ENERGY;
-    }
+    // ETimings tim;
+    // if (building == int(BUILDING_TITAN)) {
+    //     tim = RESOURCE_TITAN;
+    // }
+    // else if (building == int(BUILDING_ELECTRONIC)) {
+    //     tim = RESOURCE_ELECTRONICS;
+    // }
+    // else if (building == int(BUILDING_PLASMA)) {
+    //     tim = RESOURCE_PLASMA;
+    // }
+    // else if (building == int(BUILDING_ENERGY)) {
+    //     tim = RESOURCE_ENERGY;
+    // }
+    // else
+    // {
+    //     assert((void("should never happen"), false));
+    // }
 
     int fu = GetResourceForceUp();
 
@@ -753,7 +766,9 @@ void CMatrixSideUnit::OnLButtonDown(const CPoint &) {
     }
 }
 
-void CMatrixSideUnit::OnLButtonDouble(const CPoint &mouse) {
+void CMatrixSideUnit::OnLButtonDouble(
+    [[maybe_unused]] const CPoint &mouse)
+{
     DTRACE();
     if (IsArcadeMode())
         return;
@@ -943,13 +958,17 @@ void CMatrixSideUnit::OnBackward(bool down) {
     }
 }
 
-void CMatrixSideUnit::OnLeft(bool down) {
+void CMatrixSideUnit::OnLeft(
+    [[maybe_unused]] bool down)
+{
     DTRACE();
     if (!IsRobotMode() || !m_Arcaded)
         return;
 }
 
-void CMatrixSideUnit::OnRight(bool down) {
+void CMatrixSideUnit::OnRight(
+    [[maybe_unused]] bool down)
+{
     DTRACE();
     if (!IsRobotMode() || !m_Arcaded)
         return;
@@ -2625,7 +2644,7 @@ void CMatrixSideUnit::TaktHL() {
 
     Regroup();
 
-    int i, u, t, k, p, team, cnt, sme, level, next, dist;
+    int i, u, t, k = 0, p, team, cnt, sme, level, next, dist;
     //    int skipregion[MAX_ROBOTS];
     //    int skipregioncnt;
     SMatrixLogicAction *ac;
@@ -10276,7 +10295,7 @@ void CMatrixSideUnit::PGFindDefenceTarget(int no) {
 
     int u, t, k, cnt, sme, dist, next;
     CMatrixMapStatic *obj;
-    byte mm;
+    byte mm = 0;
 
     cnt = 0;
     sme = 0;
@@ -10836,7 +10855,13 @@ bool CMatrixSideUnit::CanMoveNoEnemy(byte mm, int r1, int r2) {
     return dist2 <= Float2Int(1.3f * dist);
 }
 
-void CMatrixSideUnit::DMTeam(int team, EMatrixLogicActionType ot, int state, const wchar *format, ...) {
+void CMatrixSideUnit::DMTeam(
+    [[maybe_unused]] int team,
+    [[maybe_unused]] EMatrixLogicActionType ot,
+    int state,
+    const wchar *format,
+    ...)
+{
     const wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
                     L"mlat_Retreat", L"mlat_Capture", L"mlat_Intercept"};
     const wchar *sstate;

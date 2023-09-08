@@ -137,7 +137,11 @@ struct HMData {
     bool found;
 };
 
-static bool HMEnum(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
+static bool HMEnum(
+    [[maybe_unused]] const D3DXVECTOR3 &fpos,
+    CMatrixMapStatic *ms,
+    DWORD user)
+{
     D3DXVECTOR3 to_dir;
     const D3DXVECTOR3 *p;
     bool selectnew;
@@ -704,12 +708,15 @@ void CMatrixEffectBuoy::Takt(float step) {
     }
 }
 
-void BuoySetupTex(SVOSurface *vo, DWORD user_param, int) {
+void BuoySetupTex(
+    [[maybe_unused]] SVOSurface *vo,
+    [[maybe_unused]] DWORD user_param,
+    int) {
     //    ASSERT_DX(g_D3DD->SetTexture(0, vo->m_Tex->Tex()));
     return;
 }
 
-bool BuoySetupStages(DWORD user_param, int) {
+bool BuoySetupStages([[maybe_unused]] DWORD user_param, int) {
     DTRACE();
 
     ASSERT_DX(g_D3DD->SetFVF(VO_FVF));

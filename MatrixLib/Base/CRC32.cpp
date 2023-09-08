@@ -102,7 +102,10 @@ dword CalcCRC32(const void *buf, int len) {
     return ~crc;
 }
 
-dword CalcCRC32_Begin(const void *buf, int len) {
+dword CalcCRC32_Begin(
+    [[maybe_unused]] const void *buf,
+    [[maybe_unused]] int len)
+{
     return 0xFFFFFFFF;
 }
 

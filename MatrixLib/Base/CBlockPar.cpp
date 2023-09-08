@@ -104,7 +104,7 @@ double ParamParser::GetDouble() const {
     }
     i++;
     double tra = 10.0;
-    for (i; i < tlen; i++) {
+    for (; i < tlen; i++) {
         ch = tstr[i];
         if (ch >= L'0' && ch <= L'9') {
             zn = zn + ((double)(ch - L'0')) / tra;
@@ -315,7 +315,7 @@ void CBlockPar::Clear() {
 void CBlockPar::CopyFrom(CBlockPar &bp) {
     DTRACE();
     Clear();
-    for(auto& el : m_Units)
+    for(auto& el : bp.m_Units)
     {
         CBlockParUnit& el2 = UnitAdd(el.m_Type);
         el2 = el;

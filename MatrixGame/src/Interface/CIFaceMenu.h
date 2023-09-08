@@ -67,7 +67,7 @@ enum EMenuParent {
 struct SMenuItemText {
     std::wstring text;
     DWORD color;
-    SMenuItemText(CHeap *heap) : text{} { color = DEFAULT_LABELS_COLOR; }
+    SMenuItemText(void*) : text{} { color = DEFAULT_LABELS_COLOR; }
 };
 
 inline int GetIndexFromTK(ERobotUnitType type, ERobotUnitKind kind);
