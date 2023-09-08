@@ -321,22 +321,22 @@ void CMatrixSideUnit::GetResourceIncome(int &base_i, int &fa_i, ERes resource_ty
     int fa_cnt = 0;
 
     EBuildingType type;
-    ETimings tim;
+    // ETimings tim;
     if (resource_type == TITAN) {
         type = BUILDING_TITAN;
-        tim = RESOURCE_TITAN;
+        // tim = RESOURCE_TITAN;
     }
     else if (resource_type == ELECTRONICS) {
         type = BUILDING_ELECTRONIC;
-        tim = RESOURCE_ELECTRONICS;
+        // tim = RESOURCE_ELECTRONICS;
     }
     else if (resource_type == PLASMA) {
         type = BUILDING_PLASMA;
-        tim = RESOURCE_PLASMA;
+        // tim = RESOURCE_PLASMA;
     }
     else if (resource_type == ENERGY) {
         type = BUILDING_ENERGY;
-        tim = RESOURCE_ENERGY;
+        // tim = RESOURCE_ENERGY;
     }
     else
     {
@@ -10858,30 +10858,32 @@ bool CMatrixSideUnit::CanMoveNoEnemy(byte mm, int r1, int r2) {
 void CMatrixSideUnit::DMTeam(
     [[maybe_unused]] int team,
     [[maybe_unused]] EMatrixLogicActionType ot,
-    int state,
-    const wchar *format,
+    [[maybe_unused]] int state,
+    [[maybe_unused]] const wchar *format,
     ...)
 {
-    const wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
-                    L"mlat_Retreat", L"mlat_Capture", L"mlat_Intercept"};
-    const wchar *sstate;
-    if (state < 0)
-        sstate = L" Cancel";
-    else if (state > 0)
-        sstate = L" Accept";
-    else
-        sstate = L"";
+    // const wchar *ots[] = {L"mlat_None",    L"mlat_Defence", L"mlat_Attack",   L"mlat_Forward",
+    //                 L"mlat_Retreat", L"mlat_Capture", L"mlat_Intercept"};
+    // const wchar *sstate;
+    // if (state < 0)
+    //     sstate = L" Cancel";
+    // else if (state > 0)
+    //     sstate = L" Accept";
+    // else
+    //     sstate = L"";
 
-    va_list marker;
-    va_start(marker, format);
+    // va_list marker;
+    // va_start(marker, format);
     // DM( std::wstring().Format(L"Size.<i>.Team.<i>",m_Id,team).c_str(),
     //    std::wstring().Format(L"[<s><s>] <s>",ots[ot],sstate,std::wstring().Format(format,marker).c_str()).c_str()
     //    );
 }
 
-void CMatrixSideUnit::DMSide(const wchar *format, ...) {
-    va_list marker;
-    va_start(marker, format);
+void CMatrixSideUnit::DMSide(
+    [[maybe_unused]] const wchar *format, ...)
+{
+    // va_list marker;
+    // va_start(marker, format);
     // DM( std::wstring().Format(L"Size.<i>",m_Id).c_str(),
     //    std::wstring().Format(format,marker).c_str()
     //    );
