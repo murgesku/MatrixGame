@@ -696,14 +696,12 @@ inline bool CMatrixMap::AddEffect(CMatrixEffect *ef) {
 
     if (m_EffectsCnt >= MAX_EFFECTS_COUNT) {
         PCMatrixEffect ef2del = NULL;
-        int pri = ef->Priority();
         for (PCMatrixEffect e = m_EffectsFirst; e != NULL; e = e->m_Next) {
             if (e->IsDIP())
                 continue;
             int p = e->Priority();
             if (p < MAX_EFFECT_PRIORITY) {
                 ef2del = e;
-                pri = p;
             }
         }
         if (ef2del == NULL) {

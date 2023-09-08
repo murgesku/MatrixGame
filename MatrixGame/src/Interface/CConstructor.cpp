@@ -767,13 +767,8 @@ void CConstructor::OperateUnit(ERobotUnitType type, ERobotUnitKind kind) {
         }
     }
 
-    int we_are = 0;
     CMatrixSideUnit *player_side = g_MatrixMap->GetPlayerSide();
     int cfg_num = player_side->m_ConstructPanel->m_CurrentConfig;
-
-    if (player_side && g_MatrixMap->GetPlayerSide()->m_Constructor == this) {
-        we_are = 1;
-    }
 
     m_nUnitCnt = 0;
     if (m_Chassis.m_nKind != 0) {
@@ -1085,8 +1080,8 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
         memcpy(item_res, &g_Config.m_Price[HEAD1_TITAN + (int(kind) - 1) * 4], sizeof(int) * 4);
     }
     else if (type == MRT_ARMOR) {
-        int set_common = 0;
-        int set_extra = 0;
+        // int set_common = 0;
+        // int set_extra = 0;
         int try_common = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].common;
         int try_extra = g_MatrixMap->m_RobotWeaponMatrix[kind - 1].extra;
 
@@ -1094,8 +1089,8 @@ bool CConstructorPanel::IsEnoughResourcesForThisPieceOfShit(int pilon, ERobotUni
         //        m_Armor.m_MaxExtraWeaponCnt = g_MatrixMap->m_RobotWeaponMatrix[kind-1].extra;
 
         if (m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind) {
-            set_common = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind - 1].common;
-            set_extra = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind - 1].extra;
+            // set_common = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind - 1].common;
+            // set_extra = g_MatrixMap->m_RobotWeaponMatrix[m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind - 1].extra;
             memcpy(minus_res,
                    &g_Config.m_Price[ARMOR1_TITAN + (int(m_Configs[m_CurrentConfig].m_Hull.m_Unit.m_nKind) - 1) * 4],
                    sizeof(int) * 4);

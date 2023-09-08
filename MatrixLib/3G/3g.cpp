@@ -442,11 +442,11 @@ int L3GRun()
 
     constexpr auto to_milliseconds = [](auto dur) { return std::chrono::duration_cast<std::chrono::milliseconds>(dur); };
 
-    int smooth[SMOOTH_COUNT];
-    int smooths = SMOOTH_COUNT * 10;
-    int smp = 0;
-    for (int i = 0; i < SMOOTH_COUNT; ++i)
-        smooth[i] = 10;
+    // int smooth[SMOOTH_COUNT];
+    // int smooths = SMOOTH_COUNT * 10;
+    // int smp = 0;
+    // for (int i = 0; i < SMOOTH_COUNT; ++i)
+    //     smooth[i] = 10;
 
     fps_counter<100> fps;
     MSG msg;

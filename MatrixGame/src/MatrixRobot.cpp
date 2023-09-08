@@ -3104,7 +3104,6 @@ D3DXVECTOR3 CMatrixRobotAI::RobotToObjectCollision(const D3DXVECTOR3 &vel, int m
 }
 
 void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest) {
-    D3DXVECTOR3 prev_coll = m_CollAvoid;
     m_CollAvoid = D3DXVECTOR3(0, 0, 0);
     return;
     if (o.x != 0 || o.y != 0) {
@@ -3144,12 +3143,6 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest) {
                 else
                     m_CollAvoid = D3DXVECTOR3(1, 0, 0);
             }
-            // if(prev_coll.y == -1){
-            //    if(o.x < 0)
-            //        m_CollAvoid = D3DXVECTOR3(-1, 0, 0);
-            //    else
-            //        m_CollAvoid = D3DXVECTOR3(1, 0, 0);
-            //}
         }
         else if (o.x != 0 /* || ((o.x != 0 && o.y != 0) && fabs(o.x) > fabs(o.y))*/) {
             //это условие избыточно, оно зарезервировано для возможных изменений
