@@ -431,6 +431,15 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
         new(&g_PopupChassis[i]) SMenuItemText(g_MatrixHeap);
     }
 
+    if (set)
+    {
+        ApplyVideoParams(*set);
+    }
+    else
+    {
+        ApplyVideoParams(settings);
+    }
+
     CIFaceMenu::m_MenuGraphics = HNew(g_MatrixHeap) CInterface;
 
     g_PopupMenu = HNew(g_MatrixHeap) CIFaceMenu;
@@ -468,6 +477,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
 
     g_LoadProgress->SetCurLPPos(500);
 
+
     pInterface = HNew(g_MatrixHeap) CInterface;
     iface_save |= pInterface->Load(bpi, IF_HINTS);
     LIST_ADD(pInterface, g_IFaceList->m_First, g_IFaceList->m_Last, m_PrevInterface, m_NextInterface);
@@ -491,15 +501,6 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
         g_MatrixMap->m_Transition.BuildTexture();
         // g_D3DD->Reset(&g_D3Dpp);
         g_RangersInterface->m_Begin();
-    }
-
-    if (set)
-    {
-        ApplyVideoParams(*set);
-    }
-    else
-    {
-        ApplyVideoParams(settings);
     }
 
     /*IDirect3DSurface9 * surf;
