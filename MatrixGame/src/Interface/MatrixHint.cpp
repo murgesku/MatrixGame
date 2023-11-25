@@ -7,9 +7,12 @@
 #include "../MatrixGameDll.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
+#include "../RangersText.hpp"
 
 #include "StringConstants.hpp"
 #include "CFile.hpp"
+
+#include <stupid_logger.hpp>
 
 #include <vector>
 
@@ -653,38 +656,161 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_TEXT:")) {
-            if (g_RangersInterface) {
-                CRect cr(0, 0, w, h);
-                // if (w == 0) w = g_ScreenX;
-                // if (h == 0) h = 200;
+        else if (utils::starts_with(temp, L"_TEXT:"))
+        {
+            Base::CRect cr(0, 0, w, h);
 
-                std::wstring text(temp.c_str() + 6);
+            std::wstring text(temp.c_str() + 6);
 
-                if (repl)
-                    Replace(text, baserepl, repl);
+            // static int num = 0;
+            // num++;
+            // lgr.debug("HT: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
+            //     num,
+            //     utils::from_wstring(text),
+            //     utils::from_wstring(font),
+            //     color,
+            //     w,
+            //     h,
+            //     alignx,
+            //     aligny,
+            //     (w == 0) ? 0 : 1,
+            //     0,
+            //     0,
+            //     cr.left,
+            //     cr.top,
+            //     cr.right,
+            //     cr.bottom);
 
-                //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
-                //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
+            if (repl)
+                Replace(text, baserepl, repl);
 
-                utils::replace(text, L"<br>", L"\r\n");
+            utils::replace(text, L"<br>", L"\r\n");
 
-                SMGDRangersInterfaceText *it =
-                        (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            auto* it = new SMGDRangersInterfaceText();
+            auto* bmsrc = new CBitmap();
+
+            //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
+            //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
+            if (g_RangersInterface)
+            {
                 g_RangersInterface->m_RangersText((wchar*)text.c_str(), (wchar*)font.c_str(), color, w, h, alignx, aligny,
                                                   (w == 0) ? 0 : 1, 0, 0, &cr, it);
 
-                CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
                 bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
-
-                its.Add<uint32_t>((DWORD)it);
-                bmps.Add<uint32_t>((DWORD)bmsrc);
-                ssz++;
-
-                elems[nelem].bmp = bmsrc;
-                elems[nelem].hem = modif;
-                ++nelem;
             }
+            else
+            {
+                Base::CRect rect(0, 0, w, h);
+                RangersText::CreateText(text, font, color, w, h, alignx, aligny,
+                                                 (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
+            }
+
+            // bmsrc->SaveInBMP((std::to_wstring(num) + L"_hint.bmp").c_str());
+
+            its.Add<uint32_t>((DWORD)it);
+            bmps.Add<uint32_t>((DWORD)bmsrc);
+            ssz++;
+
+
+            elems[nelem].bmp = bmsrc;
+            elems[nelem].hem = modif;
+            ++nelem;
+
+            //===============================================================================
+
+            // {
+            //     int num = 2;
+            //     RECT cr{0,0,250,0};
+
+            //     RangersText rtxt1;
+
+            //     SMGDRangersInterfaceText *it =
+            //             (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //     rtxt1.CreateText((wchar_t*)L"<Color=11,204,235>Роботы.</Color> Количество: <Color=247,195,0>2</Color> из <Color=247,195,0>7</Color>.\r\nМаксимальное число роботов ограничено. Главная база дает <Color=247,195,0>семь</Color> мест, каждая последующая - <Color=247,195,0>три</Color> места, каждый завод дает <Color=247,195,0>одно</Color> место.",
+            //                      (wchar_t*)L"Font.2Small", 4291546318, 250, 0, 0, 0, 1, 0, 0, &cr, it);
+
+            //     CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+            //     bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
+
+            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
+            //     rtxt1.DestroyText(it);
+            // }
+
+            // {
+            //     int num = 3;
+            //     RECT cr{0,0,250,0};
+
+            //     RangersText rtxt1;
+
+            //     SMGDRangersInterfaceText *it =
+            //             (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //     rtxt1.CreateText((wchar_t*)L"<Color=11,204,235>Титан.</Color> Приход <Color=247,195,0>3</Color> ед. Базовый ресурс, необходимый для постройки роботов.",
+            //                      (wchar_t*)L"Font.2Small", 4291546318, 250, 0, 0, 0, 1, 0, 0, &cr, it);
+
+            //     CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+            //     bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
+
+            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
+            //     rtxt1.DestroyText(it);
+            // }
+
+            // {
+            //     int num = 4;
+            //     RECT cr{0,0,250,0};
+
+            //     RangersText rtxt1;
+
+            //     SMGDRangersInterfaceText *it =
+            //             (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //     rtxt1.CreateText((wchar_t*)L"<Color=11,204,235>Микрочипы.</Color> Приход <Color=247,195,0>3</Color> ед. Электронная начинка роботов на основе микромодулей доминаторов.",
+            //                      (wchar_t*)L"Font.2Small", 4291546318, 250, 0, 0, 0, 1, 0, 0, &cr, it);
+
+            //     CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+            //     bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
+
+            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
+            //     rtxt1.DestroyText(it);
+            // }
+
+            // {
+            //     int num = 5;
+            //     RECT cr{0,0,250,0};
+
+            //     RangersText rtxt1;
+
+            //     SMGDRangersInterfaceText *it =
+            //             (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //     rtxt1.CreateText((wchar_t*)L"<Color=11,204,235>Энергетические батареи.</Color> Приход <Color=247,195,0>3</Color> ед. Применяются в оборудовании, требующем больших расходов энергии.",
+            //                      (wchar_t*)L"Font.2Small", 4291546318, 250, 0, 0, 0, 1, 0, 0, &cr, it);
+
+            //     CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+            //     bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
+
+            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
+            //     rtxt1.DestroyText(it);
+            // }
+
+            // {
+            //     int num = 6;
+            //     RECT cr{0,0,250,0};
+
+            //     RangersText rtxt1;
+
+            //     SMGDRangersInterfaceText *it =
+            //             (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //     rtxt1.CreateText((wchar_t*)L"<Color=11,204,235>Плазма.</Color> Приход <Color=247,195,0>3</Color> ед. Ионизир. газ с равной концентрацией положительных и отрицательных зарядов.",
+            //                      (wchar_t*)L"Font.2Small", 4291546318, 250, 0, 0, 0, 1, 0, 0, &cr, it);
+
+            //     CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+            //     bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
+
+            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
+            //     rtxt1.DestroyText(it);
+            // }
+
+            // exit(0);
+
+            //===============================================================================
         }
     }
 
@@ -694,9 +820,12 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
     CMatrixHint *hint = Build(border, soundin, soundout, elems, otstup ? (&otstup_r) : NULL);
 
     for (int i = 0; i < ssz; ++i) {
-        g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i]);
-        HFree((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i], g_CacheHeap);
-        HDelete(CBitmap, (CBitmap *)bmps.Buff<DWORD>()[i], g_CacheHeap);
+        if (g_RangersInterface)
+        {
+            g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText*)its.Buff<DWORD>()[i]);
+        }
+        delete (SMGDRangersInterfaceText*)its.Buff<DWORD>()[i];
+        delete (CBitmap*)bmps.Buff<DWORD>()[i];
     }
 
     return hint;
