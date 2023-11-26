@@ -300,13 +300,6 @@ void CMatrixRobot::RNeed(dword need) {
     if (need & m_RChange & (MR_Graph)) {
         m_RChange &= ~MR_Graph;
 
-        //#ifdef _DEBUG
-        //        SETFLAG(g_Flags, SETBIT(22));
-        //#endif
-
-        // float hp = (float)g_Config.m_RobotHitPoint;
-        // InitMaxHitpoint(hp);
-
         std::wstring name, name_e;
         std::wstring path;
 
@@ -402,8 +395,9 @@ void CMatrixRobot::RNeed(dword need) {
             m_Core->m_Matrix._32 = up.y;
             m_Core->m_Matrix._33 = up.z;
             m_Core->m_Matrix._34 = 0;
-            // m_Core->m_Matrix._41 = m_PosX;                     m_Core->m_Matrix._42 = m_PosY; m_Core->m_Matrix._43 =
-            // roboz;
+            // m_Core->m_Matrix._41 = m_PosX;                     
+            // m_Core->m_Matrix._42 = m_PosY;
+            // m_Core->m_Matrix._43 = roboz;
             m_Core->m_Matrix._44 = 1;
 
             m_HullForward = m_Forward;
@@ -506,15 +500,15 @@ void CMatrixRobot::RNeed(dword need) {
             m_Unit[0].u1.s1.m_IMatrix = m_Core->m_IMatrix;
         }
 
-        bool www = false;
+        bool robot_has_repair_weapon = false;
 
         for (int i = 1; i < m_UnitCnt; i++) {
             DCP();
             if (m_Unit[i].m_Type == MRT_WEAPON) {
                 ASSERT(narmor >= 0);
 
-                if (!www && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
-                    www = true;
+                if (!robot_has_repair_weapon && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
+                    robot_has_repair_weapon = true;
                 }
 
                 tm = m_Unit[narmor].m_Graph->GetMatrixById(m_Unit[i].u1.s1.m_LinkMatrix);
@@ -593,9 +587,8 @@ void CMatrixRobot::RNeed(dword need) {
             m_ChassisData.u1.s1.m_RStream->SetPos(spos, spos + sdir * m_ChassisData.u1.s1.m_StreamLen);
         }
 
-        if (www) {
+        if (robot_has_repair_weapon) {
             if (IsInterfaceDraw()) {
-                // if (0)
                 for (int i = 0; i < m_UnitCnt; i++) {
                     if (m_Unit[i].m_Type == MRT_WEAPON && m_Unit[i].u1.s1.m_Kind == RUK_WEAPON_REPAIR) {
                         if (m_Unit[i].u1.s1.m_WeaponRepairData == NULL) {
@@ -820,7 +813,6 @@ void CMatrixRobot::DoAnimation(int cms) {
     if (m_Animation == ANIMATION_MOVE || m_Animation == ANIMATION_BEGINMOVE || m_Animation == ANIMATION_ENDMOVE ||
         m_Animation == ANIMATION_MOVE_BACK || m_Animation == ANIMATION_BEGINMOVE_BACK ||
         m_Animation == ANIMATION_ENDMOVE_BACK) {
-        // DCNT("c");
         for (int i = 0; i < 1; i++) {
             // if (m_Unit[i].m_Type != MRT_CHASSIS) continue;
             if (m_Unit[i].m_Graph) {
@@ -896,7 +888,6 @@ void CMatrixRobot::Takt(int cms) {
         }
         if (m_Unit[0].u1.s1.m_Kind == RUK_CHASSIS_HOVERCRAFT) {
             while (m_ChassisData.u1.s2.m_DustCount > 1.0) {
-                // CDText::T("spd", m_Speed);
                 D3DXVECTOR2 spd(m_Velocity.x, m_Velocity.y);
                 spd *= float(float(cms) / LOGIC_TAKT_PERIOD);
                 CMatrixEffect::CreateDust(NULL, *(D3DXVECTOR2 *)&GetGeoCenter(), spd, 500);

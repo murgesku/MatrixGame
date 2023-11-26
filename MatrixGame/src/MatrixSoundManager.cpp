@@ -286,12 +286,12 @@ void CSound::Init(void) {
     m_Sounds[S_CHASSIS_HOVERCRAFT_LOOP] = SSoundItem(L"s_chassis_hovercraft_l");
     m_Sounds[S_CHASSIS_ANTIGRAVITY_LOOP] = SSoundItem(L"s_chassis_antigravity_l");
 
-    m_Sounds[S_HULL_PASSIVE] = SSoundItem(L"s_hull_passive");
-    m_Sounds[S_HULL_ACTIVE] = SSoundItem(L"s_hull_active");
-    m_Sounds[S_HULL_FIREPROOF] = SSoundItem(L"s_hull_fireproof");
-    m_Sounds[S_HULL_PLASMIC] = SSoundItem(L"s_hull_plasmic");
-    m_Sounds[S_HULL_NUCLEAR] = SSoundItem(L"s_hull_nuclear");
-    m_Sounds[S_HULL_6] = SSoundItem(L"s_hull_6");
+    m_Sounds[S_HULL_BIREX] = SSoundItem(L"s_hull_passive");
+    m_Sounds[S_HULL_DIPLOID] = SSoundItem(L"s_hull_active");
+    m_Sounds[S_HULL_PARAGON] = SSoundItem(L"s_hull_fireproof");
+    m_Sounds[S_HULL_TRIDENT] = SSoundItem(L"s_hull_plasmic");
+    m_Sounds[S_HULL_FULLSTACK] = SSoundItem(L"s_hull_nuclear");
+    m_Sounds[S_HULL_MONOSTACK] = SSoundItem(L"s_hull_6");
 
     m_Sounds[S_MAINTENANCE] = SSoundItem(L"s_maintenance");
     m_Sounds[S_MAINTENANCE_ON] = SSoundItem(L"s_maintenance_on");

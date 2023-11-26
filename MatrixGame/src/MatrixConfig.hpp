@@ -56,12 +56,12 @@ enum ERobotUnitKind : unsigned int {
     ROBOT_WEAPON_CNT = 10,
 
     // armor
-    RUK_ARMOR_PASSIVE = 1,
-    RUK_ARMOR_ACTIVE = 2,
-    RUK_ARMOR_FIREPROOF = 3,
-    RUK_ARMOR_PLASMIC = 4,
-    RUK_ARMOR_NUCLEAR = 5,
-    RUK_ARMOR_6 = 6,
+    RUK_ARMOR_BIREX = 1,
+    RUK_ARMOR_DIPLOID = 2,
+    RUK_ARMOR_PARAGON = 3,
+    RUK_ARMOR_TRIDENT = 4,
+    RUK_ARMOR_FULLSTACK = 5,
+    RUK_ARMOR_MONOSTACK = 6,
 
     ROBOT_ARMOR_CNT = 6,
 
