@@ -313,6 +313,9 @@ public:
     virtual bool InRect(const CRect &rect) const;
 
     void OnOutScreen(void){};
+
+    // Set Robot's rotation around local Z-axis(points up and a.k.a. roll) to some value in radians.
+    void SetRotationZ(float roll) override;
 };
 
 inline bool CMatrixMapStatic::IsLiveRobot(void) const {
