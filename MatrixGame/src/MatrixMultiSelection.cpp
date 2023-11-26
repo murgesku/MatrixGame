@@ -19,6 +19,7 @@ int CMultiSelection::m_Time;
 //#define MS_SELBACK_COLOR    0x4AFFFFFF
 
 #define MS_Z 0
+#define MAX_SELECTED_ITEMS 30 // i.e. robots
 
 CMultiSelection::CMultiSelection(const Base::CPoint &pos) : m_LT(pos), m_RB(pos), m_Flags(0) {
     // m_Tex = (CTextureManaged *)g_Cache->Get(cc_TextureManaged, TEXTURE_PATH_SELBACK);
@@ -253,7 +254,7 @@ void CMultiSelection::Update(
                 SETFLAG(m_Flags, MS_FLAG_BUILDINGS);
             }
 
-            if (m_SelItems.size() < 9) {
+            if (m_SelItems.size() < MAX_SELECTED_ITEMS) {
                 m_SelItems.push_back(o);
                 if (o->IsRobot()) {
                     if (!o->AsRobot()->IsSelected()) {
