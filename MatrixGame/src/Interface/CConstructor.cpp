@@ -1520,17 +1520,17 @@ void SSpecialBot::LoadAIRobotType(CBlockPar &bp)
         str2 = utils::trim(str.GetStrPar(1, L","));
 
         if (str2 == L"1")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_6;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_MONOSTACK;
         else if (str2 == L"1S")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_PASSIVE;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_BIREX;
         else if (str2 == L"2")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_ACTIVE;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_DIPLOID;
         else if (str2 == L"2S")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_FIREPROOF;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_PARAGON;
         else if (str2 == L"3")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_PLASMIC;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_TRIDENT;
         else if (str2 == L"4S")
-            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+            m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
         else
             ERROR_S2(L"LoadAIRobotType Armor no=", utils::format(L"%d", i).c_str());
 

@@ -689,8 +689,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
 
     DCP();
 
-    // normal...
-
+    // Normals. This makes robots slanted on slopes
     {
         float mul = (float)(1.0 - pow(0.996, double(ms)));
         D3DXVECTOR3 up;
@@ -949,8 +948,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
 
         if (FLAG(m_ObjectState, ROBOT_FLAG_ROT_LEFT)) {
             ang -= GRAD2RAD(90.0f);
-        }
-        if (FLAG(m_ObjectState, ROBOT_FLAG_ROT_RIGHT)) {
+        } else {
             ang += GRAD2RAD(90.0f);
         }
 
@@ -4249,27 +4247,27 @@ void CMatrixRobotAI::CalcRobotMass() {
         }
         if (m_Unit[nC].m_Type == MRT_ARMOR) {
             switch (m_Unit[nC].u1.s1.m_Kind) {
-                case RUK_ARMOR_PASSIVE:
+                case RUK_ARMOR_BIREX:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR1_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR1_STRUCTURE];
                     break;
-                case RUK_ARMOR_ACTIVE:
+                case RUK_ARMOR_DIPLOID:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR2_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR2_STRUCTURE];
                     break;
-                case RUK_ARMOR_FIREPROOF:
+                case RUK_ARMOR_PARAGON:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR3_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR3_STRUCTURE];
                     break;
-                case RUK_ARMOR_PLASMIC:
+                case RUK_ARMOR_TRIDENT:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR4_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR4_STRUCTURE];
                     break;
-                case RUK_ARMOR_NUCLEAR:
+                case RUK_ARMOR_FULLSTACK:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR5_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR5_STRUCTURE];
                     break;
-                case RUK_ARMOR_6:
+                case RUK_ARMOR_MONOSTACK:
                     m_maxHullSpeed = g_Config.m_ItemChars[ARMOR6_ROTATION_SPEED];
                     hp += g_Config.m_ItemChars[ARMOR6_STRUCTURE];
                     break;
@@ -5431,23 +5429,23 @@ void CMatrixRobotAI::CreateTextures() {
 }
 
 void CMatrixRobotAI::PlayHullSound() {
-    if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_PASSIVE) {
-        CSound::Play(S_HULL_PASSIVE, GetGeoCenter(), SL_HULL);
+    if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_BIREX) {
+        CSound::Play(S_HULL_BIREX, GetGeoCenter(), SL_HULL);
     }
-    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_ACTIVE) {
-        CSound::Play(S_HULL_ACTIVE, GetGeoCenter(), SL_HULL);
+    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_DIPLOID) {
+        CSound::Play(S_HULL_DIPLOID, GetGeoCenter(), SL_HULL);
     }
-    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_FIREPROOF) {
-        CSound::Play(S_HULL_FIREPROOF, GetGeoCenter(), SL_HULL);
+    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_PARAGON) {
+        CSound::Play(S_HULL_PARAGON, GetGeoCenter(), SL_HULL);
     }
-    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_PLASMIC) {
-        CSound::Play(S_HULL_PLASMIC, GetGeoCenter(), SL_HULL);
+    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_TRIDENT) {
+        CSound::Play(S_HULL_TRIDENT, GetGeoCenter(), SL_HULL);
     }
-    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_NUCLEAR) {
-        CSound::Play(S_HULL_NUCLEAR, GetGeoCenter(), SL_HULL);
+    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_FULLSTACK) {
+        CSound::Play(S_HULL_FULLSTACK, GetGeoCenter(), SL_HULL);
     }
-    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_6) {
-        CSound::Play(S_HULL_6, GetGeoCenter(), SL_HULL);
+    else if (m_Unit[1].u1.s1.m_Kind == RUK_ARMOR_MONOSTACK) {
+        CSound::Play(S_HULL_MONOSTACK, GetGeoCenter(), SL_HULL);
     }
 }
 

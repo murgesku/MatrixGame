@@ -845,7 +845,7 @@ void CMatrixCamera::CalcLinkPoint(D3DXVECTOR3 &lp, float &angz) {
         CMatrixMapStatic *arcade_object = g_MatrixMap->GetPlayerSide()->GetArcadedObject();
         if (arcade_object->IsRobot()) {
             DCP();
-            CMatrixRobotAI *bot = (CMatrixRobotAI *)arcade_object;
+            CMatrixRobotAI *bot = arcade_object->AsRobot();
 
             lp.x = bot->m_PosX;
             lp.y = bot->m_PosY;

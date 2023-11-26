@@ -443,7 +443,7 @@ public:
     void RotateRobotRight() { SETFLAG(m_ObjectState, ROBOT_FLAG_ROT_RIGHT); }
 
     // Orders stack processing
-    SOrder *AllocPlaceForOrderOnTop(void);  // make sure that order will bi initialized after this call
+    SOrder *AllocPlaceForOrderOnTop(void);  // make sure that order will be initialized after this call
     // void AddOrderToEnd(const SOrder &order);
 
     void RemoveOrderFromTop(void) { RemoveOrder(0); }
@@ -499,7 +499,6 @@ public:
     void GatherInfo(int ms);
 
     void GetLost(const D3DXVECTOR3 &v);
-    //
 
     void RobotSpawn(CMatrixBuilding *pBase);  // spawn робота
     void DIPTakt(float ms);                   // death in progress takt

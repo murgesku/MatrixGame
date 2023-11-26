@@ -59,17 +59,6 @@ CMatrixMapStatic *CMatrixMapStatic::m_LastLogicTemp;
 SObjectCore *CMatrixMapStatic::GetCore(const SDebugCallInfo &dci) {
     m_Core->m_dci = dci;
 
-    //#ifdef _DEBUG
-    //
-    //        FILE *f = fopen("Errors\\"+CStr(int(m_Core))+".log","a");
-    //        CStr    s("get ");
-    //        s = s + dci._file + " " + dci._line + "\n";
-    //        fwrite(s.Get(), s.Len(), 1, f);
-    //
-    //        fclose(f);
-    //
-    //#endif
-
     m_Core->RefInc();
     return m_Core;
 }
@@ -465,27 +454,27 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
     for (int i = 0; i < r->m_UnitCnt; ++i) {
         if (r->m_Unit[i].m_Type == MRT_ARMOR) {
             switch (r->m_Unit[i].u1.s1.m_Kind) {
-                case RUK_ARMOR_ACTIVE:
+                case RUK_ARMOR_DIPLOID:
                     h += 9.0f;
                     ra += 5.5f;
                     break;
-                case RUK_ARMOR_FIREPROOF:
+                case RUK_ARMOR_PARAGON:
                     h += 5.5f;
                     ra += 3.0f;
                     break;
-                case RUK_ARMOR_NUCLEAR:
+                case RUK_ARMOR_FULLSTACK:
                     h += 13.5;
                     ra += 6;
                     break;
-                case RUK_ARMOR_PASSIVE:
+                case RUK_ARMOR_BIREX:
                     h += 7.0f;
                     ra += 2.5f;
                     break;
-                case RUK_ARMOR_PLASMIC:
+                case RUK_ARMOR_TRIDENT:
                     h += 10.0f;
                     ra += 5.5f;
                     break;
-                case RUK_ARMOR_6:
+                case RUK_ARMOR_MONOSTACK:
                     h += 7.5f;
                     ra += 6.5f;
                     break;

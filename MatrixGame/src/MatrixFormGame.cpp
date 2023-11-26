@@ -1598,7 +1598,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
-            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
             sb.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
             sb.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
             sb.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
@@ -1653,7 +1653,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
-            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
             sb.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
             sb.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
             sb.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
