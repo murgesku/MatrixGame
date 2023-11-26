@@ -1733,3 +1733,9 @@ bool CMatrixRobot::InRect(const CRect &rect) const {
 
     return false;
 }
+
+// Set Robots's rotation around local Z-axis(points up and a.k.a. roll) to some value in radians.
+inline void CMatrixRobot::SetRotationZ(float roll_angle) {
+    this->m_Forward.x = -sin(roll_angle);
+    this->m_Forward.y = cos(roll_angle);
+}
