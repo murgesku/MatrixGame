@@ -417,7 +417,7 @@ void CMatrixSideUnit::BuildCrazyBot(void) {
     ZeroMemory(&bot, sizeof(SSpecialBot));
 
     bot.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
-    bot.m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+    bot.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
     bot.m_Head.m_nKind = RUK_HEAD_FIREWALL;
 
     bot.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_CANNON;

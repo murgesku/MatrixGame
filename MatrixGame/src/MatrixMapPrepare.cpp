@@ -565,6 +565,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, voi
                 if (c7->GetArrayLength(i) > 0) {
                     BYTE *sh = c7->GetFirst<BYTE>(i);
 
+// Get Int - reads int from the stream and then advances the pointer to the next integer
 #define GINT()    \
     (*(int *)sh); \
     sh += sizeof(int)

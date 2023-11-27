@@ -837,6 +837,35 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             INVERTFLAG(g_MatrixMap->m_Flags, MMFLAG_FLYCAM);
             return;
         }
+        // spawn a robot at cursor
+        if (IsInputEqual("SPAWN")) {
+            D3DXVECTOR3 pos = g_MatrixMap->m_TraceStopPos;
+
+            SSpecialBot bot{};
+
+            bot.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+            bot.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
+            bot.m_Head.m_nKind = RUK_HEAD_DYNAMO;
+
+            bot.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[2].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[3].m_Unit.m_nKind = RUK_WEAPON_LASER;
+
+            CMatrixRobotAI *r = bot.GetRobot(pos, PLAYER_SIDE);
+
+            g_MatrixMap->AddObject(r, true);
+
+            r->JoinToGroup();
+            r->CreateTextures();
+            r->InitMaxHitpoint(10000.0);
+
+            SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+            g_MatrixMap->GetPlayerSide()->PGOrderStop(g_MatrixMap->GetPlayerSide()->RobotToLogicGroup(r));
+            RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+
+            return;
+        }
         if (IsInputEqual("BABKI"))
         {
             m_LastScans.clear();
@@ -1598,7 +1627,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
-            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
             sb.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
             sb.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
             sb.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
@@ -1653,7 +1682,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
-            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_NUCLEAR;
+            sb.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
             sb.m_Chassis.m_nKind = RUK_CHASSIS_HOVERCRAFT;
             sb.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_MISSILE;
             sb.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_MISSILE;

@@ -1328,7 +1328,7 @@ void CInterface::Init(void) {
                 robots = player_side->GetCurGroup()->GetRobotsCnt();
                 gsel = true;
                 rsel = ((objects_cnt == 1) && (player_side->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot()));
-                sel_bot = (CMatrixRobotAI *)player_side->GetCurGroup()->m_FirstObject->GetObject();
+                sel_bot = player_side->GetCurGroup()->m_FirstObject->GetObject()->AsRobot();
                 work_group = player_side->GetCurGroup();
             }
 
@@ -1369,7 +1369,7 @@ void CInterface::Init(void) {
             CMatrixFlyer *cur_f = NULL;
 
             if (player_side->IsRobotMode()) {
-                cur_r = (CMatrixRobotAI *)player_side->GetArcadedObject();
+                cur_r = player_side->GetArcadedObject()->AsRobot();
                 robot_sel = true;
                 if (!sel_bot) {
                     sel_bot = player_side->GetArcadedObject()->AsRobot();
@@ -1389,10 +1389,10 @@ void CInterface::Init(void) {
                         go = go->m_NextObject;
                     }
                     if (go) {
-                        CMatrixRobotAI *r = (CMatrixRobotAI *)go->GetObject();
+                        CMatrixRobotAI *r = go->GetObject()->AsRobot();
                         if (go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
                             robot_sel = true;
-                            cur_r = (CMatrixRobotAI *)go->GetObject();
+                            cur_r = go->GetObject()->AsRobot();
                             if (r->FindWeapon(WEAPON_BIGBOOM))
                                 bomber_sel = true;
                             if (r->FindWeapon(WEAPON_REPAIR))
@@ -1704,17 +1704,15 @@ void CInterface::Init(void) {
                             if (so) {
                                 if (so->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
                                     if (i == player_side->GetCurSelNum()) {
-                                        ((CMatrixRobotAI *)so->GetObject())
-                                                ->CreateProgressBarClone(m_xPos + 68, m_yPos + 179, 68, PBC_CLONE2);
+                                        so->GetObject()->AsRobot()->CreateProgressBarClone(m_xPos + 68, m_yPos + 179, 68, PBC_CLONE2);
                                     }
                                     if (!singlem) {
-                                        ((CMatrixRobotAI *)so->GetObject())
-                                                ->CreateProgressBarClone(pElement->m_xPos + m_xPos,
+                                        so->GetObject()->AsRobot()->CreateProgressBarClone(pElement->m_xPos + m_xPos,
                                                                          pElement->m_yPos + m_yPos + 36, 46,
                                                                          PBC_CLONE1);
                                     }
                                     else {
-                                        ((CMatrixRobotAI *)so->GetObject())->DeleteProgressBarClone(PBC_CLONE1);
+                                        so->GetObject()->AsRobot()->DeleteProgressBarClone(PBC_CLONE1);
                                     }
                                 }
                             }
@@ -4772,7 +4770,7 @@ void CIFaceList::ConstructorButtonsInit() {
         return;
 
     ps->m_Constructor->SuperDjeans(MRT_CHASSIS, RUK_CHASSIS_PNEUMATIC, 0);
-    ps->m_Constructor->SuperDjeans(MRT_ARMOR, RUK_ARMOR_6, 0);
+    ps->m_Constructor->SuperDjeans(MRT_ARMOR, RUK_ARMOR_MONOSTACK, 0);
     ps->m_Constructor->SuperDjeans(MRT_HEAD, ERobotUnitKind(0), 0);
     WeaponPilonsInit();
     ps->m_Constructor->SuperDjeans(MRT_WEAPON, RUK_WEAPON_MACHINEGUN, 0);

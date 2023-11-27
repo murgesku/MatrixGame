@@ -481,6 +481,25 @@ public:
     bool RenderToTexture(SRenderTexture *rt, int n, /*float *fff=NULL,*/ float anglez = GRAD2RAD(30),
                          float anglex = GRAD2RAD(30), float fov = GRAD2RAD(60));
 
+
+    // Get Object's rotation around local X-axis(a.k.a. pitch) in radians. Output is normalized to [0, 2pi]
+    virtual float GetRotationX(void);
+
+    // Get Object's rotation around local Y-axis(a.k.a. yaw) in radians. Output is normalized to [0, 2pi]
+    virtual float GetRotationY(void);
+
+    // Get Object's rotation around local Z-axis(points up and a.k.a. roll) in radians. Output is normalized to [0, 2pi]
+    virtual float GetRotationZ(void);
+
+    // Set Object's rotation around local X-axis(a.k.a. pitch) to some value in radians.
+    virtual void SetRotationX(float pitch);
+
+    // Set Object's rotation around local Y-axis(a.k.a. yaw) to some value in radians.
+    virtual void SetRotationY(float yaw);
+
+    // Set Object's rotation around local Z-axis(points up and a.k.a. roll) to some value in radians.
+    virtual void SetRotationZ(float roll);
+
 #ifdef SHOW_ASSIGNED_GROUPS
     void ShowGroups(void);
 #endif
