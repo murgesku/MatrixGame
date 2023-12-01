@@ -1,15 +1,14 @@
 
 #include "RangersText.hpp"
 
+#include "Text/Font.hpp"
+
 #include <utils.hpp>
 #include <stupid_logger.hpp>
 
-#include <list>
-#include <cstdio>
+#include <d3dx9tex.h>
 
 extern IDirect3DDevice9* g_D3DD;
-
-std::map<std::wstring_view, RangersText::Font> RangersText::m_fonts;
 
 namespace {
 
@@ -36,10 +35,27 @@ std::wstring GetTextWithoutTags(std::wstring_view text)
     return result;
 }
 
-D3DCOLOR GetColorFromTag(std::wstring text, D3DCOLOR defaultColor)
+bool icase_starts_with(std::wstring_view text, std::wstring_view prefix)
 {
-    utils::to_lower(text);
-    if (text.starts_with(L"<color="))
+    if (text.length() < prefix.length())
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < prefix.length(); ++i)
+    {
+        if (std::towlower(text[i]) != std::towlower(prefix[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+D3DCOLOR GetColorFromTag(std::wstring_view text, D3DCOLOR defaultColor)
+{
+    if (icase_starts_with(text, L"<color="))
     {
         try
         {
@@ -63,127 +79,173 @@ D3DCOLOR GetColorFromTag(std::wstring text, D3DCOLOR defaultColor)
     return defaultColor;
 }
 
-int GetFontSpaceSize(const LPD3DXFONT pFont)
+int GetTextWidth(LPD3DXFONT pFont, std::wstring_view text)
 {
-    SIZE size = {};
-    GetTextExtentPoint32W(pFont->GetDC(), L" ", 1, &size);
-    return size.cx;
+    const DWORD tformat = DT_CALCRECT | DT_NOCLIP | DT_SINGLELINE;
+    RECT rr;
+    pFont->DrawTextW(NULL, text.data(), text.length(), &rr, tformat, 0);
+    return rr.right;
 }
 
-int GetFontHeight(LPD3DXFONT pDXFont)
+struct Token
 {
-    D3DXFONT_DESCW desc;
-    pDXFont->GetDescW(&desc);
-    // lgr.info("Font height: {}")(desc.Height);
-    return desc.Height;
-}
+    std::wstring_view text;
+    uint32_t color{0};
+    RECT rect{0,0,0,0};
+};
 
-std::vector<std::wstring> split(std::wstring str, const std::wstring& delim)
+std::vector<Token> parse_tokens(std::wstring_view str, LPD3DXFONT pFont)
 {
-    std::vector<std::wstring> result;
+    std::vector<Token> result;
 
-    size_t pos;
-    while((pos = str.find(delim)) != std::string::npos)
+    size_t pos = 0;
+    while((pos = str.find_first_of(L" \r"), pos) != std::string::npos)
     {
-        result.push_back(str.substr(0, pos));
-        str.erase(0, pos + delim.length());
+        if (str[pos] == L' ') // space - just split words
+        {
+            result.emplace_back(str.substr(0, pos));
+            result.emplace_back(L" ");
+            str.remove_prefix(pos + 1);
+        }
+        else if(str[pos] == L'\r') // new line
+        {
+            result.emplace_back(str.substr(0, pos));
+            result.emplace_back(L"\r\n");
+            str.remove_prefix(pos + 2);
+        }
     }
 
-    result.push_back(str);
+    result.emplace_back(str);
+
+    ////////////////////////////////////////////////////////////////////
+    // special case for "<Color=247,195,0>+</color><Color=247,195,0>3</Color>"
+    pos = str.find(L"><");
+    if (pos != std::wstring::npos)
+    {
+        auto sub = str.substr(pos + 1);
+        str.remove_suffix(str.length() - pos - 1);
+        result.clear();
+        result.emplace_back(str);
+        result.emplace_back(sub);
+    }
+    ////////////////////////////////////////////////////////////////////
+
+    bool in_color_tag = false;
+    uint32_t color = 0;
+    for (auto& token : result)
+    {
+        if (token.text == L" " || token.text == L"\r\n")
+        {
+            continue;
+        }
+
+        std::wstring_view text = token.text;
+
+        if (!in_color_tag)
+        {
+            color = 0;
+        }
+
+        if (icase_starts_with(text, L"<color"))
+        {
+            in_color_tag = true;
+            color = GetColorFromTag(text, 0);
+            text.remove_prefix(text.find(L">") + 1);
+        }
+
+        auto pos = text.find(L"</");
+        if (pos != std::wstring::npos)
+        {
+            in_color_tag = false;
+            text.remove_suffix(text.length() - pos);
+        }
+
+        token.color = color;
+        token.text = text;
+
+        const DWORD tformat = DT_CALCRECT | DT_SINGLELINE | DT_NOCLIP;
+        pFont->DrawTextW(NULL, token.text.data(), token.text.length(), &token.rect, tformat, 0);
+    }
+
     return result;
 }
 
-struct Word
+size_t calc_lines(const std::vector<Token>& text, LPD3DXFONT pFont, const RECT &rect)
 {
-    std::wstring text;
-    uint32_t color;
-};
+    const size_t line_width = rect.right - rect.left;
 
-using Line = std::vector<Word>;
-
-std::vector<Line> prepareText(std::wstring_view text, LPD3DXFONT pFont, const RECT& rect)
-{
-    std::wstring textWithoutTags{text}; // GetTextWithoutTags(text);
-
-    // TODO: this function assumes there is always only one word in color tag.
-    //       this is not true, so to be fixed
-
-    std::vector<Line> lines;
-    const DWORD tformat = DT_CALCRECT | DT_WORDBREAK | DT_NOCLIP | DT_SINGLELINE;
-
-    for (const auto& line : split(textWithoutTags, L"\r\n"))
+    size_t lines = 1;
+    size_t cur_width = 0;
+    for (auto& token : text)
     {
-        const auto words = split(line, L" ");
-        std::wstring str;
-
-        Line words_in_line;
-
-        for (const auto& wordRaw : words)
+        if (token.text == L"\r\n")
         {
-            std::wstring word = GetTextWithoutTags(wordRaw);
-            uint32_t color = GetColorFromTag(wordRaw, 0);
-            RECT resRect = rect;
-            std::wstring test = str.empty() ? word : str + L" " + word;
-            pFont->DrawTextW(NULL, test.c_str(), test.length(), &resRect, tformat, 0);
-
-            if (resRect.right <= rect.right)
+            cur_width = 0;
+            lines++;
+        }
+        else if (token.text == L" ")
+        {
+            if (cur_width != 0) // if not a new line
             {
-                str = test;
-                words_in_line.emplace_back(word, color);
+                cur_width += GetFontSpaceSize(pFont);
+            }
+        }
+        else
+        {
+            if (cur_width + token.rect.right < line_width)
+            {
+                cur_width += token.rect.right;
             }
             else
             {
-                if (str.empty())
-                {
-                    lgr.fatal("{} > {}")(resRect.right, rect.right);
-                    throw std::runtime_error("String didn't fit into provided rect");
-                }
-
-                lines.push_back(words_in_line);
-                words_in_line.clear();
-
-                // TODO: potential bug here, if one words fits the line, but two already not
-                str = word;
-                words_in_line.emplace_back(word, color);
+                cur_width = 0;
+                lines++;
             }
-        }
-
-        if (!str.empty())
-        {
-            lines.push_back(words_in_line);
-            words_in_line.clear();
-            str.clear();
         }
     }
 
     return lines;
 }
 
-void DrawRangersText(const std::vector<Line> lines, LPD3DXFONT pFont, RECT &rect, DWORD format, D3DCOLOR defaultColor)
+void DrawRangersText(const std::vector<Token>& text, LPD3DXFONT pFont, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
 {
-    (void)format;
-    (void)defaultColor;
+    const int lineHeight = GetFontHeight(pFont);
 
-    const int lineHeight = GetFontHeight(pFont) + -1;
-    const DWORD rformat = DT_NOCLIP | DT_SINGLELINE | format;
-    size_t i = 0;
-    for (const auto& line : lines)
+    size_t x = rect.left;
+    size_t y = rect.top;
+    for (const auto& token : text)
     {
-        size_t y = rect.left;
-        for (const auto& word : line)
+        if (token.text == L"\r\n")
+        {
+            x = rect.left;
+            y += lineHeight;
+        }
+        else if (token.text == L" ")
+        {
+            x += GetFontSpaceSize(pFont);
+        }
+        else
         {
             RECT resRect = rect;
-            resRect.top += lineHeight * i;
-            resRect.left = y;
+            resRect.left = x;
+            resRect.top = y;
 
-            const DWORD tformat = DT_CALCRECT | format;
-            pFont->DrawTextW(NULL, word.text.c_str(), word.text.length(), &resRect, tformat, 0);
-            y = resRect.right + GetFontSpaceSize(pFont);
+            if (x + token.rect.right < rect.right)
+            {
+                x += token.rect.right;
+            }
+            else
+            {
+                x = rect.left + token.rect.right - token.rect.left; // length of the word
+                y += lineHeight;
 
-            uint32_t color = word.color ? word.color : defaultColor;
-            pFont->DrawTextW(NULL, word.text.c_str(), word.text.size(), &resRect, rformat, color);
+                resRect.left = rect.left;
+                resRect.top = y;
+            }
+
+            uint32_t color = token.color ? token.color : defaultColor;
+            pFont->DrawTextW(NULL, token.text.data(), token.text.size(), &resRect, format, color);
         }
-        i++;
     }
 
     return;
@@ -191,17 +253,27 @@ void DrawRangersText(const std::vector<Line> lines, LPD3DXFONT pFont, RECT &rect
 
 } // namespace
 
-void RangersText::CreateText(std::wstring_view text, std::wstring_view font, uint32_t color, int sizex, int sizey, int alignx,
-                             int aligny, int wordwrap, int smex, int smy, const Base::CRect& clipr,
-                             CBitmap& dst)
+void RenderText(
+    std::wstring_view text,
+    std::wstring_view font,
+    uint32_t color,
+    int sizex,
+    int sizey,
+    int alignx,
+    int aligny,
+    int wordwrap,
+    int smex,
+    int smy,
+    const Base::CRect& clipr,
+    CBitmap& dst)
 {
-    int res = 0;
+    (void)wordwrap;
 
-    LPD3DXFONT pFont = GetFont(font);
+    LPD3DXFONT pFont = GetFont(g_D3DD, font);
 
     if (!pFont)
     {
-        lgr.error("Failed to load font");
+        lgr.error("Failed to load font: {}")(utils::from_wstring(font.data()));
         return;
     }
     RECT clipRect{clipr.left, clipr.top, clipr.right, clipr.bottom};
@@ -210,17 +282,21 @@ void RangersText::CreateText(std::wstring_view text, std::wstring_view font, uin
     clipRect.right -= 2;
     // clipRect.bottom -= smy;
 
-    const auto lines = prepareText(text, pFont, clipRect);
+    auto tokens = parse_tokens(text, pFont);
 
     if (sizey == 0)
     {
-        const int lineHeight = GetFontHeight(pFont) + -1;
-        sizey = lines.size() * lineHeight + 2;
+        sizey = calc_lines(tokens, pFont, clipRect) * GetFontHeight(pFont);
+    }
+
+    if (clipRect.bottom == 0)
+    {
+        clipRect.bottom = sizey;
     }
 
     // Prepare texture
     IDirect3DTexture9* texture{nullptr};
-    res = g_D3DD->CreateTexture(sizex, sizey, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture,
+    auto res = g_D3DD->CreateTexture(sizex, sizey, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture,
                                 NULL);
     if (FAILED(res)) {
         return;
@@ -243,84 +319,75 @@ void RangersText::CreateText(std::wstring_view text, std::wstring_view font, uin
 
     res = g_D3DD->Clear(0, 0, D3DCLEAR_TARGET, 0, 0, 0);
 
-    if (FAILED(res)) {
+    if (FAILED(res))
+    {
         return;
     }
 
-    // Render text
+    /////////////////////////////////////////////////////////
+    // ACHTUNG: dirtiest trick for robot building menu text
+    if (sizey == 18)
+    {
+        clipRect.bottom -= 1;
+        aligny = 2;
+    }
+    /////////////////////////////////////////////////////////
 
+    // Render text
     DWORD format = DT_NOCLIP;
-    switch (alignx) {
+
+    switch (alignx)
+    {
+        case 0:
+            format = format | DT_LEFT;
+            break;
         case 1:
             format = format | DT_CENTER;
             break;
         case 2:
             format = format | DT_RIGHT;
             break;
+        case 3:
+            // auto (full width) should be here
         default:
-            format = format | DT_LEFT;
             break;
     }
 
-    switch (aligny) {
+    switch (aligny)
+    {
+        case 0:
+            format = format | DT_TOP;
+            break;
         case 1:
             format = format | DT_VCENTER;
-            // format = format | DT_BOTTOM;
             break;
         case 2:
             format = format | DT_BOTTOM;
             break;
         default:
-            format = format | DT_TOP;
             break;
     }
 
-    if (wordwrap)
-        format = format | DT_WORDBREAK;
+    if (text == GetTextWithoutTags(text) && GetTextWidth(pFont, text) <= clipRect.right - clipRect.left)
+    {
+        // simple text optimization
+        lgr.debug("Optimized render for: {}")(utils::from_wstring(text));
+        pFont->DrawTextW(NULL, text.data(), text.size(), &clipRect, DT_NOCLIP | DT_SINGLELINE | format, color);
+    }
+    else
+    {
+        DrawRangersText(tokens, pFont, clipRect, format, color);
+    }
 
-    DrawRangersText(lines, pFont, clipRect, format, color);
 
     texture->UnlockRect(0);
     pSurfaceRender->EndScene(0);
-
-    // Unload resource
-
-    pSurfaceRender->Release();
-    surface->Release();
 
     CBitmap tmp;
     tmp.CreateRGBA(sizex, sizey, rect.Pitch, (uint8_t*)rect.pBits);
     tmp.BitmapDuplicate(dst);
 
+    pSurfaceRender->Release();
+    surface->Release();
     texture->Release();
-}
-
-LPD3DXFONT RangersText::GetFont(std::wstring_view font_name)
-{
-    LPD3DXFONT font{nullptr};
-    if (!m_fonts.contains(font_name))
-    {
-        if(font_name == L"Font.2Small")
-        {
-            D3DXCreateFontW(g_D3DD, 13, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                            DEFAULT_PITCH, L"Verdana", &font);
-        }
-        else if(font_name == L"Font.2Ranger")
-        {
-            D3DXCreateFontW(g_D3DD, 10, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_TT_ONLY_PRECIS, DEFAULT_QUALITY,
-                            DEFAULT_PITCH, L"Rangers", &font);
-        }
-        // else if(font_name == L"Font.2Normal")
-        // {
-        // }
-        else
-        {
-            D3DXCreateFontW(g_D3DD, 13, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                            DEFAULT_PITCH, L"Verdana", &font);
-        }
-
-        m_fonts.emplace(font_name, font);
-    }
-
-    return m_fonts[font_name].m_font;
 }
