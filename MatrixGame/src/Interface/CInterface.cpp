@@ -5307,45 +5307,39 @@ void SStateImages::SetStateText(bool copy) {
     CTextureManaged *texture = pImage;
     D3DLOCKED_RECT lr;
 
-    // static int num = 0;
-    // num++;
-    // lgr.debug("IF: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
-    //     num,
-    //     utils::from_wstring(m_Caption),
-    //     utils::from_wstring(m_Font),
-    //     m_Color, m_boundX, m_boundY, m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY,
-    //     m_ClipRect.left,
-    //     m_ClipRect.top,
-    //     m_ClipRect.right,
-    //     m_ClipRect.bottom);
+
 
     CBitmap bmsrc;
+    SMGDRangersInterfaceText it;
     if (g_RangersInterface)
     {
-        SMGDRangersInterfaceText it;
         g_RangersInterface->m_RangersText((wchar *)m_Caption.c_str(), (wchar *)m_Font.c_str(), m_Color, m_boundX, m_boundY,
                                           m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, &m_ClipRect, &it);
 
         bmsrc.CreateRGBA(it.m_SizeX, it.m_SizeY, it.m_Pitch, it.m_Buf);
-        g_RangersInterface->m_RangersTextClear(&it);
     }
     else
     {
-        RangersText::CreateText(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
-                                          m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
+        RenderText(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
+                   m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
     }
 
-    // bmsrc.SaveInBMP((std::to_wstring(num) + L"_iface.bmp").c_str());
+    if(m_Font == L"Font.2Mini")
+    {
+        static int num = 0;
+        num++;
+        lgr.debug("IF: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
+            num,
+            utils::from_wstring(m_Caption),
+            utils::from_wstring(m_Font),
+            m_Color, m_boundX, m_boundY, m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY,
+            m_ClipRect.left,
+            m_ClipRect.top,
+            m_ClipRect.right,
+            m_ClipRect.bottom);
 
-    // if (m_Caption == L"Бирекс" ||
-    //     m_Caption == L"Диплоид" ||
-    //     m_Caption == L"Парагон" ||
-    //     m_Caption == L"Трайдент" ||
-    //     m_Caption == L"Фулстек" ||
-    //     m_Caption == L"Моностек")
-    // {
-    //     bmsrc.SaveInBMP((std::to_wstring(num) + L"_" + m_Caption + L"_iface.bmp").c_str());
-    // }
+        bmsrc.SaveInBMP((std::to_wstring(num) + L"_iface.bmp").c_str());
+    }
 
     texture->LockRect(lr, 0);
 
@@ -5358,6 +5352,11 @@ void SStateImages::SetStateText(bool copy) {
     else {
         bmdes.MergeWithAlpha(CPoint(Float2Int(xTexPos) + m_x, Float2Int(yTexPos) + m_y), CPoint(m_boundX, m_boundY),
                              bmsrc, CPoint(0, 0));
+    }
+
+    if (g_RangersInterface)
+    {
+        g_RangersInterface->m_RangersTextClear(&it);
     }
 
     texture->UnlockRect();
