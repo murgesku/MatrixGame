@@ -6,8 +6,13 @@
 #include <D3dx9core.h>
 
 #include <string>
+#include <algorithm>
+#include <functional>
 
 namespace Text {
+
+constexpr std::wstring_view COLOR_TAG_START{L"<color="};
+constexpr std::wstring_view COLOR_TAG_END{L"</color>"};
 
 bool icase_starts_with(std::wstring_view text, std::wstring_view prefix)
 {
@@ -25,6 +30,23 @@ bool icase_starts_with(std::wstring_view text, std::wstring_view prefix)
     }
 
     return true;
+}
+
+size_t icase_find(std::wstring_view text, std::wstring_view prefix)
+{
+    auto it =
+        std::search(
+            text.begin(), text.end(),
+            prefix.begin(), prefix.end(),
+            [](auto a, auto b) { return std::towlower(a) == std::towlower(b); }
+        );
+
+    if (it == text.end())
+    {
+        return std::wstring::npos;
+    }
+
+    return std::distance(text.begin(), it);
 }
 
 std::wstring GetTextWithoutTags(std::wstring_view text)
@@ -52,7 +74,7 @@ std::wstring GetTextWithoutTags(std::wstring_view text)
 
 D3DCOLOR GetColorFromTag(std::wstring_view text, D3DCOLOR defaultColor)
 {
-    if (icase_starts_with(text, L"<color="))
+    if (icase_starts_with(text, COLOR_TAG_START))
     {
         try
         {
@@ -87,27 +109,60 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
 {
     std::vector<Token> result;
 
+    const std::function<void(std::wstring_view str)> processWord = [&result, &processWord](std::wstring_view str){
+        size_t pos = icase_find(str, COLOR_TAG_START);
+        if (pos == std::wstring::npos)
+        {
+            // no color tag
+            result.emplace_back(str);
+            return;
+        }
+
+        if (pos != 0) // color not from the str beginning
+        {
+            result.emplace_back(str.substr(0, pos));
+            str.remove_prefix(pos);
+        }
+
+        pos = icase_find(str, COLOR_TAG_END);
+        if (pos == std::wstring::npos)
+        {
+            // no color end tag
+            result.emplace_back(str);
+            return;
+        }
+
+        result.emplace_back(str.substr(0, pos + COLOR_TAG_END.length())); // TODO: use contants
+        str.remove_prefix(pos + COLOR_TAG_END.length());
+
+        if (!str.empty())
+        {
+            processWord(str);
+        }
+    };
+
     size_t pos = 0;
     while((pos = str.find_first_of(L" \r"), pos) != std::string::npos)
     {
         if (str[pos] == L' ') // space - just split words
         {
-            result.emplace_back(str.substr(0, pos));
+            processWord(str.substr(0, pos));
             result.emplace_back(L" ");
             str.remove_prefix(pos + 1);
         }
         else if(str[pos] == L'\r') // new line
         {
-            result.emplace_back(str.substr(0, pos));
+            processWord(str.substr(0, pos));
             result.emplace_back(L"\r\n");
             str.remove_prefix(pos + 2);
         }
     }
 
-    result.emplace_back(str);
+    processWord(str);
 
     ////////////////////////////////////////////////////////////////////
     // trick for "<Color=247,195,0>+</color><Color=247,195,0>3</Color>"
+    // may be removed once center aligned text is properly implemented
     pos = str.find(L"><");
     if (pos != std::wstring::npos)
     {
@@ -145,14 +200,14 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
             color = token.color;
         }
 
-        if (icase_starts_with(text, L"<color"))
+        if (icase_starts_with(text, COLOR_TAG_START))
         {
             in_color_tag = true;
             color = GetColorFromTag(text, token.color);
             text.remove_prefix(text.find(L">") + 1);
         }
 
-        auto pos = text.find(L"</");
+        auto pos = icase_find(text, COLOR_TAG_END);
         if (pos != std::wstring::npos)
         {
             in_color_tag = false;
