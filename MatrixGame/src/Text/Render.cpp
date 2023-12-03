@@ -13,7 +13,38 @@ using namespace Text;
 
 namespace {
 
-void DrawRangersText(const std::vector<Token>& text, Font& font, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
+template<typename T>
+class AutoRelease
+{
+public:
+    AutoRelease(T* obj)
+    : m_obj{obj}
+    {}
+
+    ~AutoRelease()
+    {
+        m_obj->Release();
+    }
+
+    operator T* ()
+    {
+        return m_obj;
+    }
+
+    operator T** ()
+    {
+        return &m_obj;
+    }
+
+    T* operator -> ()
+    {
+        return m_obj;
+    }
+private:
+    T* m_obj;
+};
+
+void DrawText(const std::vector<Token>& text, Font& font, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
 {
     const int lineHeight = font.GetHeight();
 
@@ -81,14 +112,14 @@ void Render(
 
     if (!font)
     {
-        lgr.error("Failed to load font: {}")(utils::from_wstring(font_name.data()));
+        // can't render text
         return;
     }
+
     RECT clipRect{clipr.left, clipr.top, clipr.right, clipr.bottom};
     clipRect.left += smex + 2;
     clipRect.top += smy;
     clipRect.right -= 2;
-    // clipRect.bottom -= smy;
 
     auto tokens = parse_tokens(text, font);
 
@@ -147,24 +178,23 @@ void Render(
     }
 
     // Prepare texture
-    IDirect3DTexture9* texture{nullptr};
-    auto res = g_D3DD->CreateTexture(sizex, sizey, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture,
-                                NULL);
+    AutoRelease<IDirect3DTexture9> texture{nullptr};
+    auto res = g_D3DD->CreateTexture(sizex, sizey, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, texture, NULL);
     if (FAILED(res))
     {
         return;
     }
 
-    IDirect3DSurface9 *surface;
+    AutoRelease<IDirect3DSurface9> surface{nullptr};
 
-    texture->GetSurfaceLevel(0, &surface);
+    texture->GetSurfaceLevel(0, surface);
 
     D3DLOCKED_RECT rect{};
     texture->LockRect(0, &rect, NULL, 0);
 
-    LPD3DXRENDERTOSURFACE pSurfaceRender = nullptr;
+    AutoRelease<ID3DXRenderToSurface> pSurfaceRender{nullptr};
 
-    D3DXCreateRenderToSurface(g_D3DD, sizex, sizey, D3DFMT_A8R8G8B8, 0, D3DFMT_UNKNOWN, &pSurfaceRender);
+    D3DXCreateRenderToSurface(g_D3DD, sizex, sizey, D3DFMT_A8R8G8B8, 0, D3DFMT_UNKNOWN, pSurfaceRender);
 
     pSurfaceRender->BeginScene(surface, NULL);
 
@@ -178,12 +208,12 @@ void Render(
     if (text == GetTextWithoutTags(text))
     {
         // simple text optimization
-        lgr.debug("Optimized render for: {}")(utils::from_wstring(text));
+        // lgr.debug("Optimized render for: {}")(utils::from_wstring(text));
         font->DrawTextW(NULL, text.data(), text.size(), &clipRect, DT_NOCLIP | DT_WORDBREAK | format, color);
     }
     else
     {
-        DrawRangersText(tokens, font, clipRect, format, color);
+        DrawText(tokens, font, clipRect, format, color);
     }
 
     texture->UnlockRect(0);
@@ -192,10 +222,6 @@ void Render(
     CBitmap tmp;
     tmp.CreateRGBA(sizex, sizey, rect.Pitch, (uint8_t*)rect.pBits);
     tmp.BitmapDuplicate(dst);
-
-    pSurfaceRender->Release();
-    surface->Release();
-    texture->Release();
 }
 
 
