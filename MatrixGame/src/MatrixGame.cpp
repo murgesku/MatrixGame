@@ -258,7 +258,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
         }
         else {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Планета Каракис Мальора, система Маркаб");
+            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
         }
     }
 
@@ -476,7 +476,6 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     LIST_ADD(pInterface, g_IFaceList->m_First, g_IFaceList->m_Last, m_PrevInterface, m_NextInterface);
 
     g_LoadProgress->SetCurLPPos(500);
-
 
     pInterface = HNew(g_MatrixHeap) CInterface;
     iface_save |= pInterface->Load(bpi, IF_HINTS);

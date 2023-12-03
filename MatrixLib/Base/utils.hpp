@@ -36,13 +36,13 @@ inline std::wstring format(const wchar_t* format, Args... args)
 inline std::string from_wstring(std::wstring_view wstr)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    return converter.to_bytes(std::wstring{wstr});
+    return converter.to_bytes(wstr.begin(), wstr.end());
 }
 
 inline std::wstring to_wstring(std::string_view str)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    return converter.from_bytes(std::string{str});
+    return converter.from_bytes(str.begin(), str.end());
 }
 
 // TODO: replace with string::starts_with from C++20
