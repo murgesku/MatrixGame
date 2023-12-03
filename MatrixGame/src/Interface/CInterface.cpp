@@ -5307,8 +5307,6 @@ void SStateImages::SetStateText(bool copy) {
     CTextureManaged *texture = pImage;
     D3DLOCKED_RECT lr;
 
-
-
     CBitmap bmsrc;
     SMGDRangersInterfaceText it;
     if (g_RangersInterface)
@@ -5323,23 +5321,6 @@ void SStateImages::SetStateText(bool copy) {
         Text::Render(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
                      m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
     }
-
-    // if(m_Font == L"Font.1Normal")
-    // {
-    //     static int num = 0;
-    //     num++;
-    //     lgr.debug("IF: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
-    //         num,
-    //         utils::from_wstring(m_Caption),
-    //         utils::from_wstring(m_Font),
-    //         m_Color, m_boundX, m_boundY, m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY,
-    //         m_ClipRect.left,
-    //         m_ClipRect.top,
-    //         m_ClipRect.right,
-    //         m_ClipRect.bottom);
-
-    //     bmsrc.SaveInBMP((std::to_wstring(num) + L"_iface.bmp").c_str());
-    // }
 
     texture->LockRect(lr, 0);
 

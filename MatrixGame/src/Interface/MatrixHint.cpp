@@ -687,106 +687,13 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
                 Text::Render(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
             }
 
-            // if(font == L"Font.1Normal")
-            {
-                static int num = 0;
-                num++;
-                lgr.debug("HT: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
-                    num,
-                    utils::from_wstring(text),
-                    utils::from_wstring(font),
-                    color,
-                    w,
-                    h,
-                    alignx,
-                    aligny,
-                    (w == 0) ? 0 : 1,
-                    0,
-                    0,
-                    cr.left,
-                    cr.top,
-                    cr.right,
-                    cr.bottom);
-
-                bmsrc->SaveInBMP((std::to_wstring(num) + L"_hint.bmp").c_str());
-            }
-
             its.Add<uint32_t>((DWORD)it);
             bmps.Add<uint32_t>((DWORD)bmsrc);
             ssz++;
 
-
             elems[nelem].bmp = bmsrc;
             elems[nelem].hem = modif;
             ++nelem;
-
-            //===============================================================================
-
-            const auto test_render =
-                [&](int num, const auto... args){
-                    const auto [text, font, color, sizex, sizey, alignx, aligny, wordwrap, smex, smy] = std::make_tuple(args...);
-                    Base::CRect cr{0,0,sizex,sizey};
-                    CBitmap bmsrc;
-
-                    Text::Render(args..., cr, bmsrc);
-                    bmsrc.SaveInBMP((std::to_wstring(num) + L"_new.bmp").c_str());
-                };
-
-            // test_render(107, L"Моностек", L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-            // test_render(108, L"Бирекс",   L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-            // test_render(109, L"Диплоид",  L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-            // test_render(110, L"Парагон",  L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-            // test_render(111, L"Трайдент", L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-            // test_render(112, L"Фулстек",  L"Font.2Ranger", 4294361088, 98, 18, 0, 1, 0, 0, 0);
-
-            // int num = 13;
-            // test_render(num++, L"продолжить (esc)", L"Font.2Ranger", 4278190080, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"продолжить (esc)", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"настройки (c)",    L"Font.2Ranger", 4278190080, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"настройки (c)",    L"Font.2Ranger", 4284978339, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"справка (h)",      L"Font.2Ranger", 4278190080, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"справка (h)",      L"Font.2Ranger", 4289570707, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"рестарт (r)",      L"Font.2Ranger", 4278190080, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"рестарт (r)",      L"Font.2Ranger", 4289570707, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"сдаться (s)",      L"Font.2Ranger", 4278190080, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"сдаться (s)",      L"Font.2Ranger", 4289570707, 200, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)", L"Font.2Ranger", 4278190080, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-
-            // test_render(num++, L"выход в меню (e)", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)  asdasd", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)  asdasd sdfsdfsdf", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)  asdasd sdfsdfsdf asdasda", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-            // test_render(num++, L"выход в меню (e)  asdasd sdfsdfsdf asdasda asdfa sdfxv", L"Font.2Ranger", 4289570707, 300, 0, 1, 1, 1, 0, 0);
-
-            // test_render(100, L"<Color=11,204,235>Энергетические батареи.</Color> Приход <Color=247,195,0>3</Color> ед. Применяются в оборудовании, требующем больших расходов энергии.",
-            //                    L"Font.2Small", 4291546318, 1000, 0, 0, 0, 0, 0, 0);
-
-            // test_render(200, L"Энергетические батареи. Приход 3 ед. Применяются в оборудовании, требующем больших расходов энергии.",
-            //                    L"Font.2Small", 4291546318, 500, 0, 0, 0, 0, 0, 0);
-
-            // test_render(300, L"Энергетические батареи. Приход 3 ед. Применяются в оборудовании, требующем больших расходов энергии.",
-            //                    L"Font.2Small", 4291546318, 250, 0, 0, 0, 0, 0, 0);
-
-            // test_render(400, L"a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a",
-            //                    L"Font.2Small", 4291546318, 250, 0, 0, 0, 0, 0, 0);
-
-
-            // test_render(10, L"Скорость оружия: +<Color=247,195,0>20</color>%\r\nПерегрев оружия: -<Color=247,195,0>20</color>%\r\nСкорость шасси: +<Color=247,195,0>20</color>%",
-            //                 L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
-
-            // test_render(20, L"Используя гранулярный принцип диффузии металлов, покрывает поверхность корпуса дополнительным слоем брони.",
-            //                 L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
-
-            // test_render(30, L"Попадания врага: -<Color=247,195,0>50</color>%\r\nБлок разрядника: <Color=247,195,0>100</color>%\r\nЗащита от бомбы: +<Color=247,195,0>30</color>%",
-            //                 L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
-
-            // test_render(40, L"Излучает направленные помехи и тем самым сбивает электронные блоки наведения противника. Полностью блокирует действие разрядника. Защищает от взрыва атомной бомбы.",
-            //                 L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
-
-            // exit(0);
-
-            //===============================================================================
         }
     }
 
