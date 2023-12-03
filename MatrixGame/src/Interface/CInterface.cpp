@@ -25,7 +25,7 @@
 #include "MatrixHint.hpp"
 #include "../MatrixFormGame.hpp"
 
-#include "../RangersText.hpp"
+#include "../Text/Render.hpp"
 #include <stupid_logger.hpp>
 
 CIFaceList *g_IFaceList = NULL;
@@ -5320,8 +5320,8 @@ void SStateImages::SetStateText(bool copy) {
     }
     else
     {
-        RenderText(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
-                   m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
+        Text::Render(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
+                     m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
     }
 
     if(m_Font == L"Font.2Mini")

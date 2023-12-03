@@ -77,6 +77,7 @@ endif()
 add_matrix_directory(src/Effects)
 add_matrix_directory(src/Interface)
 add_matrix_directory(src/Logic)
+add_matrix_directory(src/Text)
 
 source_group("Resources" FILES ${MATRIX_RESOURCES})
 

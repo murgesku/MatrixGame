@@ -5,20 +5,68 @@
 #include <string>
 #include <map>
 
-LPD3DXFONT GetFont(IDirect3DDevice9* device, std::wstring_view font_name)
-{
-    struct Font
-    {
-        LPD3DXFONT m_font{nullptr};
-        ~Font()
-        {
-            if (m_font)
-            {
-                m_font->Release();
-            }
-        }
-    };
+namespace Text {
 
+class Font
+{
+public:
+    // no copy, no move
+    Font(const Font&) = delete;
+    Font(Font&&) = delete;
+    Font& operator = (const Font&) = delete;
+    Font& operator = (Font&&) = delete;
+
+    Font(LPD3DXFONT font)
+    : m_font{font}
+    {
+    }
+
+    ~Font()
+    {
+        if (m_font)
+        {
+            m_font->Release();
+        }
+    }
+
+    LPD3DXFONT operator -> () const
+    {
+        return m_font;
+    }
+
+    explicit operator bool () const
+    {
+        return !(m_font == nullptr);
+    }
+
+    size_t GetHeight() const
+    {
+        D3DXFONT_DESCW desc;
+        m_font->GetDescW(&desc);
+        return desc.Height;
+    }
+
+    size_t GetSpaceWidth() const
+    {
+        SIZE size{};
+        GetTextExtentPoint32W(m_font->GetDC(), L" ", 1, &size);
+        return size.cx;
+    }
+
+    size_t CalcTextWidth(std::wstring_view text)
+    {
+        const DWORD format = DT_CALCRECT | DT_NOCLIP | DT_SINGLELINE;
+        RECT rect;
+        m_font->DrawTextW(NULL, text.data(), text.length(), &rect, format, 0);
+        return rect.right;
+    }
+
+public:
+    LPD3DXFONT m_font{nullptr};
+};
+
+Font& GetFont(IDirect3DDevice9* device, std::wstring_view font_name)
+{
     static std::map<std::wstring_view, Font> m_fonts;
 
     LPD3DXFONT font{nullptr};
@@ -52,19 +100,7 @@ LPD3DXFONT GetFont(IDirect3DDevice9* device, std::wstring_view font_name)
         m_fonts.emplace(font_name, font);
     }
 
-    return m_fonts[font_name].m_font;
+    return m_fonts.at(font_name);
 }
 
-int GetFontSpaceSize(const LPD3DXFONT pFont)
-{
-    SIZE size{};
-    GetTextExtentPoint32W(pFont->GetDC(), L" ", 1, &size);
-    return size.cx;
-}
-
-int GetFontHeight(LPD3DXFONT pDXFont)
-{
-    D3DXFONT_DESCW desc;
-    pDXFont->GetDescW(&desc);
-    return desc.Height;
-}
+} // namespace Text
