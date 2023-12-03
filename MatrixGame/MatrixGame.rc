@@ -79,6 +79,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 IDI_MATRIXGAME          ICON                    "MatrixGame.ico"
 IDI_SMALL               ICON                    "small.ico"
 
+IDF_RANGERS_FONT        FONT                    "Rangers.ttf"
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
