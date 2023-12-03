@@ -8,8 +8,9 @@
 #include <utils.hpp>
 #include <shlobj.h>
 
-std::wstring PathToOutputFiles(const wchar_t *dest) {
-    static std::wstring path{};
+std::wstring PathToOutputFiles(const wchar_t *dest)
+{
+    std::wstring path{};
 
     if (path.empty()) {
         ITEMIDLIST *pidl;
