@@ -688,28 +688,28 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             }
 
             // if(font == L"Font.1Normal")
-            // {
-            //     static int num = 0;
-            //     num++;
-            //     lgr.debug("HT: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
-            //         num,
-            //         utils::from_wstring(text),
-            //         utils::from_wstring(font),
-            //         color,
-            //         w,
-            //         h,
-            //         alignx,
-            //         aligny,
-            //         (w == 0) ? 0 : 1,
-            //         0,
-            //         0,
-            //         cr.left,
-            //         cr.top,
-            //         cr.right,
-            //         cr.bottom);
+            {
+                static int num = 0;
+                num++;
+                lgr.debug("HT: {} text=[{}] font=[{}] color=[{}] width=[{}] height=[{}] alignx=[{}] aligny=[{}] wordwrap=[{}] smex=[{}] smey=[{}] clip=[l:{},t:{},r:{},b:{}]")(
+                    num,
+                    utils::from_wstring(text),
+                    utils::from_wstring(font),
+                    color,
+                    w,
+                    h,
+                    alignx,
+                    aligny,
+                    (w == 0) ? 0 : 1,
+                    0,
+                    0,
+                    cr.left,
+                    cr.top,
+                    cr.right,
+                    cr.bottom);
 
-            //     bmsrc->SaveInBMP((std::to_wstring(num) + L"_hint.bmp").c_str());
-            // }
+                bmsrc->SaveInBMP((std::to_wstring(num) + L"_hint.bmp").c_str());
+            }
 
             its.Add<uint32_t>((DWORD)it);
             bmps.Add<uint32_t>((DWORD)bmsrc);
@@ -772,17 +772,17 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             //                    L"Font.2Small", 4291546318, 250, 0, 0, 0, 0, 0, 0);
 
 
-            test_render(10, L"Скорость оружия: +<Color=247,195,0>20</color>%\r\nПерегрев оружия: -<Color=247,195,0>20</color>%\r\nСкорость шасси: +<Color=247,195,0>20</color>%",
-                            L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
+            // test_render(10, L"Скорость оружия: +<Color=247,195,0>20</color>%\r\nПерегрев оружия: -<Color=247,195,0>20</color>%\r\nСкорость шасси: +<Color=247,195,0>20</color>%",
+            //                 L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
 
-            test_render(20, L"Используя гранулярный принцип диффузии металлов, покрывает поверхность корпуса дополнительным слоем брони.",
-                            L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
+            // test_render(20, L"Используя гранулярный принцип диффузии металлов, покрывает поверхность корпуса дополнительным слоем брони.",
+            //                 L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
 
-            test_render(30, L"Попадания врага: -<Color=247,195,0>50</color>%\r\nБлок разрядника: <Color=247,195,0>100</color>%\r\nЗащита от бомбы: +<Color=247,195,0>30</color>%",
-                            L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
+            // test_render(30, L"Попадания врага: -<Color=247,195,0>50</color>%\r\nБлок разрядника: <Color=247,195,0>100</color>%\r\nЗащита от бомбы: +<Color=247,195,0>30</color>%",
+            //                 L"Font.2Small", 4290032820, 157, 38, 0, 0, 1, 0, 0);
 
-            test_render(40, L"Излучает направленные помехи и тем самым сбивает электронные блоки наведения противника. Полностью блокирует действие разрядника. Защищает от взрыва атомной бомбы.",
-                            L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
+            // test_render(40, L"Излучает направленные помехи и тем самым сбивает электронные блоки наведения противника. Полностью блокирует действие разрядника. Защищает от взрыва атомной бомбы.",
+            //                 L"Font.2Small", 4283464588, 170, 129, 0, 0, 1, 0, 0);
 
             // exit(0);
 
