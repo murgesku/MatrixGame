@@ -18,7 +18,7 @@ bool icase_starts_with(std::wstring_view text, std::wstring_view prefix)
 
     for (size_t i = 0; i < prefix.length(); ++i)
     {
-        if (std::towlower(text[i]) != std::towlower(prefix[i]))
+        if (towlower(text[i]) != towlower(prefix[i]))
         {
             return false;
         }
@@ -33,7 +33,7 @@ size_t icase_find(std::wstring_view text, std::wstring_view prefix)
         std::search(
             text.begin(), text.end(),
             prefix.begin(), prefix.end(),
-            [](auto a, auto b) { return std::towlower(a) == std::towlower(b); }
+            [](auto a, auto b) { return towlower(a) == towlower(b); }
         );
 
     if (it == text.end())
