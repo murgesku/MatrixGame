@@ -7,7 +7,7 @@
 #include "../MatrixGameDll.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
-#include "../RangersText.hpp"
+#include "../Text/Render.hpp"
 
 #include "StringConstants.hpp"
 #include "CFile.hpp"
@@ -684,7 +684,7 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             else
             {
                 Base::CRect rect(0, 0, w, h);
-                RenderText(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
+                Text::Render(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
             }
 
             if(font == L"Font.2Mini")
