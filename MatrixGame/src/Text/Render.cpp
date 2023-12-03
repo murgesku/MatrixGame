@@ -9,8 +9,6 @@
 
 extern IDirect3DDevice9* g_D3DD;
 
-using namespace Text;
-
 namespace {
 
 template<typename T>
@@ -40,11 +38,12 @@ public:
     {
         return m_obj;
     }
+
 private:
     T* m_obj;
 };
 
-void DrawText(const std::vector<Token>& text, Font& font, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
+void DrawComplexText(const std::vector<Text::Token>& text, Text::Font& font, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
 {
     const int lineHeight = font.GetHeight();
 
@@ -205,15 +204,14 @@ void Render(
         return;
     }
 
-    if (text == GetTextWithoutTags(text))
+    if (icase_find(text, COLOR_TAG_START) == std::wstring::npos)
     {
         // simple text optimization
-        // lgr.debug("Optimized render for: {}")(utils::from_wstring(text));
         font->DrawTextW(NULL, text.data(), text.size(), &clipRect, DT_NOCLIP | DT_WORDBREAK | format, color);
     }
     else
     {
-        DrawText(tokens, font, clipRect, format, color);
+        DrawComplexText(tokens, font, clipRect, format, color);
     }
 
     texture->UnlockRect(0);
@@ -223,7 +221,5 @@ void Render(
     tmp.CreateRGBA(sizex, sizey, rect.Pitch, (uint8_t*)rect.pBits);
     tmp.BitmapDuplicate(dst);
 }
-
-
 
 } // namespace Text
