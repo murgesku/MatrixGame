@@ -21,7 +21,10 @@ public:
 
     ~AutoRelease()
     {
-        m_obj->Release();
+        if (m_obj)
+        {
+            m_obj->Release();
+        }
     }
 
     operator T* ()
@@ -121,6 +124,13 @@ void Render(
     clipRect.right -= 2;
 
     auto tokens = parse_tokens(text, font);
+
+    if (sizex == 0)
+    {
+        sizex = tokens[0].rect.right + 4;
+        clipRect.right = sizex;
+        lgr.info("======> {} -> {}")(utils::from_wstring(text), sizex);
+    }
 
     if (sizey == 0)
     {
