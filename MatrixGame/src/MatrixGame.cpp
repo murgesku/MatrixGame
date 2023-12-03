@@ -258,7 +258,7 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
             repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, planet);
         }
         else {
-            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Luna");
+            repl->ParSetAdd(PAR_REPLACE_END_TEXT_PLANET, L"Планета Каракис Мальора, система Маркаб");
         }
     }
 

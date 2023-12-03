@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stupid_logger.hpp>
+
 #include <D3dx9core.h>
 
 #include <string>
@@ -61,30 +63,21 @@ public:
         return rect.right;
     }
 
-public:
+private:
     LPD3DXFONT m_font{nullptr};
 };
 
 Font& GetFont(IDirect3DDevice9* device, std::wstring_view font_name)
 {
-    static std::map<std::wstring_view, Font> m_fonts;
+    static std::map<std::wstring, Font> m_fonts;
+    const std::wstring font_name_str{font_name};
 
     LPD3DXFONT font{nullptr};
-    if (!m_fonts.contains(font_name))
+    if (!m_fonts.contains(font_name_str))
     {
-        if(font_name == L"Font.2Small")
+        if(font_name == L"Font.1Normal")
         {
             D3DXCreateFontW(device, 13, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                            DEFAULT_PITCH, L"Verdana", &font);
-        }
-        else if(font_name == L"Font.2Ranger")
-        {
-            D3DXCreateFontW(device, 10, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_TT_ONLY_PRECIS, DEFAULT_QUALITY,
-                            DEFAULT_PITCH, L"Rangers", &font);
-        }
-        else if(font_name == L"Font.2Normal")
-        {
-            D3DXCreateFontW(device, 14, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
                             DEFAULT_PITCH, L"Verdana", &font);
         }
         else if(font_name == L"Font.2Mini")
@@ -92,15 +85,31 @@ Font& GetFont(IDirect3DDevice9* device, std::wstring_view font_name)
             D3DXCreateFontW(device, 12, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
                             DEFAULT_PITCH, L"Verdana", &font);
         }
+        else if(font_name == L"Font.2Small")
+        {
+            D3DXCreateFontW(device, 13, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                            DEFAULT_PITCH, L"Verdana", &font);
+        }
+        else if(font_name == L"Font.2Normal")
+        {
+            D3DXCreateFontW(device, 14, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                            DEFAULT_PITCH, L"Verdana", &font);
+        }
+        else if(font_name == L"Font.2Ranger")
+        {
+            D3DXCreateFontW(device, 10, 0, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, OUT_TT_ONLY_PRECIS, DEFAULT_QUALITY,
+                            DEFAULT_PITCH, L"Rangers", &font);
+        }
         else
         {
-            throw std::runtime_error("Failed to load font: " + utils::from_wstring(font_name));
+            throw std::runtime_error("Unknown font: " + utils::from_wstring(font_name));
         }
 
-        m_fonts.emplace(font_name, font);
+        m_fonts.emplace(std::wstring{font_name}, font);
     }
 
-    return m_fonts.at(font_name);
+    lgr.info("Get font: {}")(utils::from_wstring(font_name));
+    return m_fonts.at(font_name_str);
 }
 
 } // namespace Text

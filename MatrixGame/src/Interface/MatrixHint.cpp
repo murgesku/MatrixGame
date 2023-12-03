@@ -687,7 +687,7 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
                 Text::Render(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
             }
 
-            if(font == L"Font.2Mini")
+            if(font == L"Font.1Normal")
             {
                 static int num = 0;
                 num++;

@@ -5324,7 +5324,7 @@ void SStateImages::SetStateText(bool copy) {
                      m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
     }
 
-    if(m_Font == L"Font.2Mini")
+    if(m_Font == L"Font.1Normal")
     {
         static int num = 0;
         num++;
