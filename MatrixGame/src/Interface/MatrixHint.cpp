@@ -7,9 +7,12 @@
 #include "../MatrixGameDll.hpp"
 #include "../MatrixInstantDraw.hpp"
 #include "../MatrixSampleStateManager.hpp"
+#include "../Text/Render.hpp"
 
 #include "StringConstants.hpp"
 #include "CFile.hpp"
+
+#include <stupid_logger.hpp>
 
 #include <vector>
 
@@ -653,38 +656,44 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_TEXT:")) {
-            if (g_RangersInterface) {
-                CRect cr(0, 0, w, h);
-                // if (w == 0) w = g_ScreenX;
-                // if (h == 0) h = 200;
+        else if (utils::starts_with(temp, L"_TEXT:"))
+        {
+            Base::CRect cr(0, 0, w, h);
 
-                std::wstring text(temp.c_str() + 6);
+            std::wstring text(temp.c_str() + 6);
 
-                if (repl)
-                    Replace(text, baserepl, repl);
+            if (repl)
+            {
+                Replace(text, baserepl, repl);
+            }
 
-                //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
-                //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
+            utils::replace(text, L"<br>", L"\r\n");
 
-                utils::replace(text, L"<br>", L"\r\n");
+            auto* it = new SMGDRangersInterfaceText();
+            auto* bmsrc = new CBitmap();
 
-                SMGDRangersInterfaceText *it =
-                        (SMGDRangersInterfaceText *)HAlloc(sizeof(SMGDRangersInterfaceText), g_CacheHeap);
+            //(wchar * text, wchar * font, DWORD color, int sizex, int sizey, int alignx, int aligny, int wordwrap,
+            //int smex, int smy, CRect * clipr, SMGDRangersInterfaceText * it);
+            if (g_RangersInterface)
+            {
                 g_RangersInterface->m_RangersText((wchar*)text.c_str(), (wchar*)font.c_str(), color, w, h, alignx, aligny,
                                                   (w == 0) ? 0 : 1, 0, 0, &cr, it);
 
-                CBitmap *bmsrc = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
                 bmsrc->CreateRGBA(it->m_SizeX, it->m_SizeY, it->m_Pitch, it->m_Buf);
-
-                its.Add<uint32_t>((DWORD)it);
-                bmps.Add<uint32_t>((DWORD)bmsrc);
-                ssz++;
-
-                elems[nelem].bmp = bmsrc;
-                elems[nelem].hem = modif;
-                ++nelem;
             }
+            else
+            {
+                Base::CRect rect(0, 0, w, h);
+                Text::Render(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
+            }
+
+            its.Add<uint32_t>((DWORD)it);
+            bmps.Add<uint32_t>((DWORD)bmsrc);
+            ssz++;
+
+            elems[nelem].bmp = bmsrc;
+            elems[nelem].hem = modif;
+            ++nelem;
         }
     }
 
@@ -694,9 +703,12 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
     CMatrixHint *hint = Build(border, soundin, soundout, elems, otstup ? (&otstup_r) : NULL);
 
     for (int i = 0; i < ssz; ++i) {
-        g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i]);
-        HFree((SMGDRangersInterfaceText *)its.Buff<DWORD>()[i], g_CacheHeap);
-        HDelete(CBitmap, (CBitmap *)bmps.Buff<DWORD>()[i], g_CacheHeap);
+        if (g_RangersInterface)
+        {
+            g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText*)its.Buff<DWORD>()[i]);
+        }
+        delete (SMGDRangersInterfaceText*)its.Buff<DWORD>()[i];
+        delete (CBitmap*)bmps.Buff<DWORD>()[i];
     }
 
     return hint;

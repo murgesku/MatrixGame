@@ -25,6 +25,9 @@
 #include "MatrixHint.hpp"
 #include "../MatrixFormGame.hpp"
 
+#include "../Text/Render.hpp"
+#include <stupid_logger.hpp>
+
 CIFaceList *g_IFaceList = NULL;
 
 SMenuItemText *g_PopupHead;
@@ -5304,30 +5307,41 @@ void SStateImages::SetStateText(bool copy) {
     CTextureManaged *texture = pImage;
     D3DLOCKED_RECT lr;
 
-    if (g_RangersInterface) {
-        SMGDRangersInterfaceText it;
+    CBitmap bmsrc;
+    SMGDRangersInterfaceText it;
+    if (g_RangersInterface)
+    {
         g_RangersInterface->m_RangersText((wchar *)m_Caption.c_str(), (wchar *)m_Font.c_str(), m_Color, m_boundX, m_boundY,
                                           m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, &m_ClipRect, &it);
 
-        texture->LockRect(lr, 0);
-
-        CBitmap bmsrc(g_CacheHeap);
         bmsrc.CreateRGBA(it.m_SizeX, it.m_SizeY, it.m_Pitch, it.m_Buf);
-        CBitmap bmdes(g_CacheHeap);
-        bmdes.CreateRGBA(Float2Int(TexWidth), Float2Int(TexHeight), lr.Pitch, lr.pBits);
-        if (copy) {
-            bmdes.Copy(CPoint(Float2Int(xTexPos) + m_x, Float2Int(yTexPos) + m_y), CPoint(m_boundX, m_boundY), bmsrc,
-                       CPoint(0, 0));
-        }
-        else {
-            bmdes.MergeWithAlpha(CPoint(Float2Int(xTexPos) + m_x, Float2Int(yTexPos) + m_y), CPoint(m_boundX, m_boundY),
-                                 bmsrc, CPoint(0, 0));
-        }
-        g_RangersInterface->m_RangersTextClear(&it);
-
-        texture->UnlockRect();
-        texture->Unload();
     }
+    else
+    {
+        Text::Render(m_Caption, m_Font, m_Color, m_boundX, m_boundY,
+                     m_xAlign, m_yAlign, m_Perenos, m_SmeX, m_SmeY, m_ClipRect, bmsrc);
+    }
+
+    texture->LockRect(lr, 0);
+
+    CBitmap bmdes;
+    bmdes.CreateRGBA(Float2Int(TexWidth), Float2Int(TexHeight), lr.Pitch, lr.pBits);
+    if (copy) {
+        bmdes.Copy(CPoint(Float2Int(xTexPos) + m_x, Float2Int(yTexPos) + m_y), CPoint(m_boundX, m_boundY), bmsrc,
+                   CPoint(0, 0));
+    }
+    else {
+        bmdes.MergeWithAlpha(CPoint(Float2Int(xTexPos) + m_x, Float2Int(yTexPos) + m_y), CPoint(m_boundX, m_boundY),
+                             bmsrc, CPoint(0, 0));
+    }
+
+    if (g_RangersInterface)
+    {
+        g_RangersInterface->m_RangersTextClear(&it);
+    }
+
+    texture->UnlockRect();
+    texture->Unload();
 }
 
 CBuf *CInterface::m_ClearRects;

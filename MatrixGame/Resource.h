@@ -13,6 +13,8 @@
 #define IDR_MAINFRAME                   128
 #define IDC_STATIC                      -1
 
+#define IDF_RANGERS_FONT                1234
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
