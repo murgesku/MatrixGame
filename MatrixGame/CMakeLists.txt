@@ -94,3 +94,9 @@ target_sources(MatrixGame PRIVATE
 )
 
 target_link_libraries(MatrixGame MatrixGameInternal)
+
+target_link_options(
+    MatrixGame
+    PRIVATE
+        ${LINK_OPTIONS}
+)
