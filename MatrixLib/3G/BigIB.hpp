@@ -177,7 +177,7 @@ __inline void CBigIB::ReleaseBuffers(void) {
 }
 
 __inline void CBigIB::AddSource(SBigIBSource *src) {
-    int index;
+    int index = 0;
 
     if (m_IB_count == 0) {
         ASSERT(src->size <= BIB_MAX_SIZE);

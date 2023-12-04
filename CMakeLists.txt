@@ -49,6 +49,8 @@ else()
     # All the warnings below are potential bugs.
     # -Wno-... options should be fixed and removed.
     list(APPEND COMPILE_OPTIONS
+        $<$<CONFIG:Release>:-Os>
+
         -Wall
         -Wextra
         -Wpedantic
@@ -66,6 +68,10 @@ else()
         -Wno-strict-aliasing
         -Wno-empty-body
         -Wno-pedantic
+    )
+
+    set(LINK_OPTIONS
+        -static -s
     )
 endif()
 

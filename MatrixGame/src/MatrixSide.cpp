@@ -6873,7 +6873,7 @@ void CMatrixSideUnit::TaktPL(int onlygroup) {
     CPoint tp;
     CMatrixMapStatic *obj;
     CMatrixBuilding *building;
-    CMatrixRobotAI *robot, *robot2;
+    CMatrixRobotAI *robot{nullptr}, *robot2{nullptr};
     bool orderok[MAX_LOGIC_GROUP];
 
     // Запускаем логику раз в 100 тактов

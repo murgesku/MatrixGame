@@ -265,7 +265,7 @@ inline void CBigVB<V>::ReleaseBuffers(void) {
 
 template <class V>
 inline void CBigVB<V>::AddSource(SBigVBSource<V> *src) {
-    int index;
+    int index = 0;
 
     if (m_VB_count == 0) {
         ASSERT(src->size <= BVB_MAX_SIZE);

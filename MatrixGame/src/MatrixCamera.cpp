@@ -764,7 +764,7 @@ void CMatrixCamera::BeforeDraw(void) {
 }
 
 float CMatrixCamera::GetFrustPlaneDist(EFrustumPlane plane, const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir) {
-    const SPlane *pl;
+    const SPlane *pl = nullptr;
 
     switch (plane) {
         case FPLANE_LEFT:
