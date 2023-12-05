@@ -2106,7 +2106,6 @@ void CBitmap::SaveInDDSUncompressed(const wchar *filename, int filenamelen) cons
     buf.SaveInFile(std::wstring{filename, static_cast<size_t>(filenamelen)});
 }
 
-#ifdef USE_PNGLIB
 bool CBitmap::LoadFromPNG(void *buf, int buflen) {
     Clear();
 
@@ -2200,5 +2199,3 @@ bool CBitmap::SaveInPNG(const wchar *filename, int filenamelen) {
 
     return true;
 }
-
-#endif
