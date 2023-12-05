@@ -9,18 +9,35 @@
 #include "../MatrixSampleStateManager.hpp"
 #include "../Text/Render.hpp"
 
+#include "MatrixSoundManager.hpp"
 #include "StringConstants.hpp"
 #include "CFile.hpp"
 
 #include <stupid_logger.hpp>
 
 #include <vector>
+#include <list>
 
-CMatrixHint *CMatrixHint::m_First;
-CMatrixHint *CMatrixHint::m_Last;
+static std::list<CMatrixHint*> m_hints;
 
-SHintBitmap *CMatrixHint::m_Bitmaps;
-int CMatrixHint::m_BitmapsCnt;
+static std::vector<SHintBitmap> m_Bitmaps;
+
+CMatrixHint::CMatrixHint(CTextureManaged *tex, int w, int h, const std::wstring &si, const std::wstring &so)
+  : m_Texture(tex), m_Width(w), m_Height(h), m_SoundIn{si},
+    m_SoundOut(so), m_Flags(0)
+{
+    SetVisible(false);
+    m_PosX = 0;
+    m_PosY = 0;
+
+    m_hints.push_back(this);
+};
+
+CMatrixHint::~CMatrixHint()
+{
+    m_hints.remove(this);
+    g_Cache->Destroy(m_Texture);
+}
 
 CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const std::wstring &soundout, SHintElement *elems,
                                 CRect *otstup) {
@@ -31,10 +48,8 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
 
         if (bph) {
             std::wstring src;
-            if (!CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png")) {
-                // return NULL;
-            }
-            else {
+            if (CFile::FileExist(src, bph->ParGet(PAR_SOURCE_HINTS_SOURCE).c_str(), L"png"))
+            {
                 bmps.LoadFromPNG(src.c_str());
                 bmps.SwapByte(CPoint(0, 0), bmps.Size(), 0, 2);
             }
@@ -367,8 +382,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
         }
     }
 
-    CPoint *copypos = NULL;
-    int copyposcnt = 0;
+    std::vector<CPoint> copypos;
 
     idx = 0;
     bool copy = false;
@@ -380,9 +394,7 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             if (copy) {
                 bmpf.Copy(item, elems[idx].bmp->Size(), *elems[idx].bmp, CPoint(0, 0));
 
-                ++copyposcnt;
-                copypos = (CPoint *)HAllocEx(copypos, sizeof(CPoint) * copyposcnt, g_MatrixHeap);
-                copypos[copyposcnt - 1] = item;
+                copypos.push_back(item);
             }
             else {
                 if (elems[idx].bmp->BytePP() == 3) {
@@ -415,25 +427,24 @@ CMatrixHint *CMatrixHint::Build(int border, const std::wstring &soundin, const s
             CMatrixHint(tex, clw + ots.left + ots.right, clh + ots.top + ots.bottom, soundin, soundout);
 
     hint->m_CopyPos = copypos;
-    hint->m_CopyPosCnt = copyposcnt;
 
     return hint;
 }
 
 void CMatrixHint::PreloadBitmaps(void) {
     CBlockPar *bph = g_MatrixData->BlockGet(PAR_SOURCE_HINTS)->BlockGet(PAR_SOURCE_HINTS_BITMAPS);
-    m_BitmapsCnt = bph->ParCount();
-    m_Bitmaps = (SHintBitmap *)HAlloc(sizeof(SHintBitmap) * m_BitmapsCnt, g_MatrixHeap);
+    m_Bitmaps.resize(bph->ParCount());
+
     std::wstring src;
-    for (int i = 0; i < m_BitmapsCnt; ++i) {
-        if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png")) {
-            ERROR_S2(L"Hint bitmap not found:", m_Bitmaps[i].name->c_str());
+    for (int i = 0; i < m_Bitmaps.size(); ++i)
+    {
+        if (!CFile::FileExist(src, bph->ParGet(i).c_str(), L"png"))
+        {
+            ERROR_S2(L"Hint bitmap not found:", bph->ParGet(i).c_str());
         }
-        m_Bitmaps[i].name = new std::wstring(bph->ParGetName(i));
-        m_Bitmaps[i].bmp = HNew(g_MatrixHeap) CBitmap(g_MatrixHeap);
-        m_Bitmaps[i].bmp->LoadFromPNG(src.c_str());
-        m_Bitmaps[i].bmp->SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp->Size(), 0,
-                                   2);  // store format should be [A]RGB, not [A]BGR
+        m_Bitmaps[i].name = bph->ParGetName(i).c_str();
+        m_Bitmaps[i].bmp.LoadFromPNG(src.c_str());
+        m_Bitmaps[i].bmp.SwapByte(CPoint(0, 0), m_Bitmaps[i].bmp.Size(), 0, 2);  // store format should be [A]RGB, not [A]BGR
     }
 }
 
@@ -562,16 +573,22 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
 
     bool skip = false;
 
-    for (; idx < cnt; ++idx) {
+    for (; idx < cnt; ++idx)
+    {
         if (nelem >= 255)
+        {
             break;
+        }
+
         auto temp = ParamParser{str}.GetStrPar(idx, L"|");
 
-        if (utils::starts_with(temp, L"_ENDIF")) {
+        if (temp.starts_with(L"_ENDIF"))
+        {
             skip = false;
             continue;
         }
-        else if (utils::starts_with(temp, L"_IF:")) {
+        else if (temp.starts_with(L"_IF:"))
+        {
             std::wstring text(temp.c_str() + 4);
             if (repl)
                 Replace(text, baserepl, repl);
@@ -580,74 +597,93 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
         }
 
         if (skip)
+        {
             continue;
+        }
 
-        if (utils::starts_with(temp, L"_FONT:")) {
+        if (temp.starts_with(L"_FONT:"))
+        {
             font = (temp.c_str() + 6);
         }
-        else if (utils::starts_with(temp, L"_COLOR:")) {
+        else if (temp.starts_with(L"_COLOR:"))
+        {
             // DWORD c = temp.GetStrPar(1,L":").GetHexUnsigned();
             // color = BGR2RGB(c);
             color = temp.GetStrPar(1, L":").GetHexUnsigned();
         }
-        else if (utils::starts_with(temp, L"_SOUNDIN:")) {
+        else if (temp.starts_with(L"_SOUNDIN:"))
+        {
             soundin = (temp.c_str() + 9);
         }
-        else if (utils::starts_with(temp, L"_SOUNDOUT:")) {
+        else if (temp.starts_with(L"_SOUNDOUT:"))
+        {
             soundout = (temp.c_str() + 10);
         }
-        else if (utils::starts_with(temp, L"_BORDER:")) {
+        else if (temp.starts_with(L"_BORDER:"))
+        {
             otstup = true;
             otstup_r.left = temp.GetStrPar(1, L":").GetInt();
             otstup_r.top = temp.GetStrPar(2, L":").GetInt();
             otstup_r.right = temp.GetStrPar(3, L":").GetInt();
             otstup_r.bottom = temp.GetStrPar(4, L":").GetInt();
         }
-        else if (utils::starts_with(temp, L"_POS:")) {
+        else if (temp.starts_with(L"_POS:"))
+        {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].y = temp.GetStrPar(2, L":").GetInt();
             elems[nelem].hem = HEM_COORD;
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_DOWN:")) {
+        else if (temp.starts_with(L"_DOWN:"))
+        {
             elems[nelem].y = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_DOWN;
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_RIGHT:")) {
+        else if (temp.starts_with(L"_RIGHT:"))
+        {
             elems[nelem].x = temp.GetStrPar(1, L":").GetInt();
             elems[nelem].hem = HEM_RIGHT;
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_ALIGN:")) {
+        else if (temp.starts_with(L"_ALIGN:"))
+        {
             alignx = temp.GetStrPar(1, L":").GetInt();
             aligny = temp.GetStrPar(2, L":").GetInt();
         }
-        else if (utils::starts_with(temp, L"_WIDTH:")) {
+        else if (temp.starts_with(L"_WIDTH:"))
+        {
             w = temp.GetInt();
         }
-        else if (utils::starts_with(temp, L"_HEIGHT:")) {
+        else if (temp.starts_with(L"_HEIGHT:"))
+        {
             h = temp.GetInt();
         }
-        else if (utils::starts_with(temp, L"_MOD:")) {
+        else if (temp.starts_with(L"_MOD:"))
+        {
             elems[nelem].bmp = NULL;
             elems[nelem].hem = Convert(bmpn, temp, 1);
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_TEXTP:")) {
+        else if (temp.starts_with(L"_TEXTP:"))
+        {
             modif = Convert(bmpn, temp, 1);
         }
-        else if (utils::starts_with(temp, L"_BITMAP:")) {
+        else if (temp.starts_with(L"_BITMAP:"))
+        {
             bmpn = temp.GetStrPar(1, L":");
 
             if (repl)
                 Replace(bmpn, baserepl, repl);
 
             elems[nelem].bmp = NULL;
-            if (!bmpn.empty()) {
-                for (int i = 0; i < m_BitmapsCnt; ++i) {
-                    if (*m_Bitmaps[i].name == bmpn) {
-                        elems[nelem].bmp = m_Bitmaps[i].bmp;
+            if (!bmpn.empty())
+            {
+                for (int i = 0; i < m_Bitmaps.size(); ++i)
+                {
+                    if (m_Bitmaps[i].name == bmpn)
+                    {
+                        elems[nelem].bmp = &m_Bitmaps[i].bmp;
                         break;
                     }
                 }
@@ -656,7 +692,7 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
             elems[nelem].hem = Convert(bmpn, temp, 2);
             ++nelem;
         }
-        else if (utils::starts_with(temp, L"_TEXT:"))
+        else if (temp.starts_with(L"_TEXT:"))
         {
             Base::CRect cr(0, 0, w, h);
 
@@ -712,6 +748,18 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
     }
 
     return hint;
+}
+
+void CMatrixHint::SoundIn(void) const
+{
+    if (!m_SoundIn.empty())
+        CSound::Play(m_SoundIn.c_str());
+}
+
+void CMatrixHint::SoundOut(void) const
+{
+    if (!m_SoundOut.empty())
+        CSound::Play(m_SoundOut.c_str());
 }
 
 static void bdh(void) {
@@ -790,8 +838,8 @@ void CMatrixHint::DrawAll(void) {
 
     CInstDraw::BeginDraw(IDFVF_V4_UV);
 
-    CMatrixHint *h = m_First;
-    for (; h; h = h->m_Next) {
+    for (CMatrixHint* h : m_hints)
+    {
         if (!h->IsVisible())
             continue;
 
@@ -812,13 +860,5 @@ void CMatrixHint::DrawAll(void) {
 }
 
 void CMatrixHint::ClearAll(void) {
-    if (m_Bitmaps) {
-        for (int i = 0; i < m_BitmapsCnt; ++i) {
-            HDelete(CBitmap, m_Bitmaps[i].bmp, g_MatrixHeap);
-            delete(m_Bitmaps[i].name);
-        }
-        HFree(m_Bitmaps, g_MatrixHeap);
-        m_Bitmaps = NULL;
-        m_BitmapsCnt = 0;
-    }
+    m_Bitmaps.clear();
 }
