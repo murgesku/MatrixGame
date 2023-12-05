@@ -279,12 +279,10 @@ public:
         SaveInDDSUncompressed(filename, std::wcslen(filename));
     }
 
-#ifdef USE_PNGLIB
     bool LoadFromPNG(void *buf, int buflen);
     bool LoadFromPNG(const wchar *filename);
     int SaveInPNG(void *buf, int buflen);
     bool SaveInPNG(Base::CBuf &buf);
     bool SaveInPNG(const wchar *filename, int filenamelen);
     bool SaveInPNG(const wchar *filename) { return SaveInPNG(filename, std::wcslen(filename)); }
-#endif
 };
