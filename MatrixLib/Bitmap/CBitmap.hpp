@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include <algorithm>
+#include "BaseDef.hpp"
+#include "CBuf.hpp"
 
 #include <windows.h>
 #include <stdlib.h>
 
-#include "BaseDef.hpp"
-#include "CBuf.hpp"
-#include "CHeap.hpp"
+#include <algorithm>
+#include <string>
 
 #define BMF_USER        0
 #define BMF_FLAT        1
@@ -30,8 +30,6 @@ enum EAreaType {
 class CBitmap
 {
 private:
-    Base::CHeap *m_Heap;
-
     Base::CPoint m_Pos;   // Смещение изображения
     Base::CPoint m_Size;  // Размер изображения
 
@@ -270,19 +268,15 @@ public:
     void WBM_BitmapDC(HDC hdc) { m_WindowDC = hdc; }
 
     void SaveInBMP(Base::CBuf &buf) const;
-    void SaveInBMP(const wchar *filename, int filenamelen) const;
-    void SaveInBMP(const wchar *filename) const { SaveInBMP(filename, std::wcslen(filename)); }
+    void SaveInBMP(const std::wstring_view filename) const;
 
     void SaveInDDSUncompressed(Base::CBuf &buf) const;
-    void SaveInDDSUncompressed(const wchar *filename, int filenamelen) const;
-    void SaveInDDSUncompressed(const wchar *filename) const {
-        SaveInDDSUncompressed(filename, std::wcslen(filename));
-    }
+    void SaveInDDSUncompressed(const std::wstring_view filename) const;
 
     bool LoadFromPNG(void *buf, int buflen);
-    bool LoadFromPNG(const wchar *filename);
+    bool LoadFromPNG(const std::wstring_view filename);
+
     int SaveInPNG(void *buf, int buflen);
     bool SaveInPNG(Base::CBuf &buf);
-    bool SaveInPNG(const wchar *filename, int filenamelen);
-    bool SaveInPNG(const wchar *filename) { return SaveInPNG(filename, std::wcslen(filename)); }
+    bool SaveInPNG(const std::wstring_view filename);
 };
