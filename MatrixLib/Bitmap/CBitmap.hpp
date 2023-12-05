@@ -9,23 +9,7 @@
 #include "CBuf.hpp"
 
 #include <windows.h>
-#include <stdlib.h>
-
-#include <algorithm>
 #include <string>
-
-#define BMF_USER        0
-#define BMF_FLAT        1
-#define BMF_PALATE      2
-#define BMF_FLAT_PALATE 3  // Alpha in data
-
-enum EAreaType {
-    AREA_TRANSPARENT,
-    AREA_SOLID,
-    AREA_SEMITRANSPARENT,
-
-    EAreaType_FORCE_DWORD = 0x7FFFFFFF
-};
 
 class CBitmap
 {
