@@ -81,14 +81,10 @@ CBitmap::CBitmap()
     m_AddDataVal[1] = 0;
     m_AddDataVal[2] = 0;
     m_AddDataVal[3] = 0;
-
-    m_WindowBitmap = 0;
-    m_WindowDC = 0;
 }
 
 CBitmap::~CBitmap() {
     Clear();
-    WBM_Clear();
 }
 
 void CBitmap::CreateRGB(int lenx, int leny)
@@ -509,36 +505,6 @@ void CBitmap::Fill(const Base::CPoint &pdes, const Base::CPoint &size, dword col
     }
 }
 
-void CBitmap::FlipY(void) {
-    byte *l1 = (BYTE *)m_Data;
-    byte *l2 = (BYTE *)m_Data + m_Pitch * (m_Size.y - 1);
-
-    while (l1 < l2) {
-        int cnt = m_Pitch;
-        byte *p0 = l1;
-        byte *p1 = l2;
-        while (cnt >= 4) {
-            DWORD temp = *(DWORD *)p0;
-            *(DWORD *)p0 = *(DWORD *)p1;
-            *(DWORD *)p1 = temp;
-            p0 += 4;
-            p1 += 4;
-            cnt -= 4;
-        }
-        while (cnt > 0) {
-            BYTE temp = *p0;
-            *p0 = *p1;
-            *p1 = temp;
-            ++p0;
-            ++p1;
-            --cnt;
-        }
-
-        l1 += m_Pitch;
-        l2 -= m_Pitch;
-    }
-}
-
 void CBitmap::MergeByMask(const Base::CPoint &pdes, const Base::CPoint &size, const CBitmap &bm1,
                           const Base::CPoint &sp1, const CBitmap &bm2, const Base::CPoint &sp2, const CBitmap &mask,
                           const Base::CPoint &spm) {
@@ -753,118 +719,49 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
     }
 }
 
-void CBitmap::WBM_Clear() {
-    if (m_WindowDC) {
-        DeleteDC(m_WindowDC);
-        m_WindowDC = 0;
-    }
-    if (m_WindowBitmap) {
-        DeleteObject(m_WindowBitmap);
-        m_WindowBitmap = 0;
+void CBitmap::FlipY(void) {
+    byte *l1 = (BYTE *)m_Data;
+    byte *l2 = (BYTE *)m_Data + m_Pitch * (m_Size.y - 1);
+
+    while (l1 < l2) {
+        int cnt = m_Pitch;
+        byte *p0 = l1;
+        byte *p1 = l2;
+        while (cnt >= 4) {
+            DWORD temp = *(DWORD *)p0;
+            *(DWORD *)p0 = *(DWORD *)p1;
+            *(DWORD *)p1 = temp;
+            p0 += 4;
+            p1 += 4;
+            cnt -= 4;
+        }
+        while (cnt > 0) {
+            BYTE temp = *p0;
+            *p0 = *p1;
+            *p1 = temp;
+            ++p0;
+            ++p1;
+            --cnt;
+        }
+
+        l1 += m_Pitch;
+        l2 -= m_Pitch;
     }
 }
 
-void CBitmap::WBM_Init() {
-    WBM_Clear();
-
-    if (m_Format != BMF_FLAT)
-        return;
-
-    BITMAPV4HEADER bmi;
-
-    ZeroMemory(&bmi, sizeof(bmi));
-    bmi.bV4Size = sizeof(bmi);
-    bmi.bV4Width = SizeX();
-    bmi.bV4Height = SizeY();
-    bmi.bV4Planes = 1;
-    bmi.bV4BitCount = (WORD)BitPP();
-    if (m_BytePP >= 3) {
-        bmi.bV4V4Compression = BI_RGB;
-        bmi.bV4SizeImage = 0;
-    }
-    else {
-        bmi.bV4V4Compression = BI_BITFIELDS;
-        bmi.bV4RedMask = 0x0000f800;
-        bmi.bV4GreenMask = 0x000007e0;
-        bmi.bV4BlueMask = 0x0000001f;
-        bmi.bV4AlphaMask = 0;
-        bmi.bV4SizeImage = SizeX() * SizeY() * BytePP();
-    }
-
-    HDC tdc = GetDC(0);
-
-    void *pvBits;
-
-    m_WindowBitmap = CreateDIBSection(tdc, (BITMAPINFO *)&bmi, DIB_RGB_COLORS, &pvBits, 0, 0);
-    if (m_WindowBitmap == 0)
-        ERROR_E;
-
-    //	DWORD lenLine=DWORD(SizeX()*BytePP());
-
-    if ((m_BytePP == 3 || m_BytePP == 4) && m_MColor[0] == 0x0ff && m_MColor[1] == 0x0ff00 && m_MColor[2] == 0x0ff0000)
-        SwapByte(CPoint(0, 0), m_Size, 0, 2);
-
-    DWORD ll = DWORD(SizeX() * BytePP());
-    DWORD lls = (ll + 3) & (~3);
-    BYTE *bdes = (BYTE *)(pvBits) + lls * DWORD(SizeY() - 1);
-    BYTE *bsou = (BYTE *)(Data());
-    for (int y = 0; y < SizeY(); y++) {
-        CopyMemory(bdes, bsou, SizeX() * BytePP());
-        bsou = bsou + ll;
-        bdes = bdes - lls;
-    }
-
-    if ((m_BytePP == 3 || m_BytePP == 4) && m_MColor[0] == 0x0ff && m_MColor[1] == 0x0ff00 && m_MColor[2] == 0x0ff0000)
-        SwapByte(CPoint(0, 0), m_Size, 0, 2);
-
-    m_WindowDC = CreateCompatibleDC(tdc);
-    if (m_WindowDC == 0)
-        ERROR_E;
-
-    if (SelectObject(m_WindowDC, m_WindowBitmap) == 0)
-        ERROR_E;
-
-    ReleaseDC(0, tdc);
-}
-
-void CBitmap::WBM_Save(bool save16as32) {
-    if (!m_WindowDC || !m_WindowBitmap)
-        return;
-
-    struct {
-        struct {
-            BITMAPV4HEADER bmiHeader;
-        } bmi;
-        DWORD pal[256];
-    } b;
-
-    ZeroMemory(&b, sizeof(b));
-    b.bmi.bmiHeader.bV4Size = sizeof(BITMAPINFOHEADER);
-    if (GetDIBits(m_WindowDC, m_WindowBitmap, 0, 0, NULL, (LPBITMAPINFO)&b.bmi, DIB_RGB_COLORS) == 0)
-        return;
-
-    if (b.bmi.bmiHeader.bV4BitCount != 16 && b.bmi.bmiHeader.bV4BitCount != 24 && b.bmi.bmiHeader.bV4BitCount != 32)
-        return;
-
-    if (save16as32 && b.bmi.bmiHeader.bV4BitCount == 16) {
-        b.bmi.bmiHeader.bV4BitCount = 32;
-    }
-
-    if (b.bmi.bmiHeader.bV4BitCount == 16)
-        Create16(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
-    else if (b.bmi.bmiHeader.bV4BitCount == 24)
-        CreateRGB(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
-    else if (b.bmi.bmiHeader.bV4BitCount == 32)
-        CreateRGBA(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
-    Fill(CPoint(0, 0), Size(), 0);
-
-    if (GetDIBits(m_WindowDC, m_WindowBitmap, 0, b.bmi.bmiHeader.bV4Height, Data(), (LPBITMAPINFO)&b.bmi,
-                  DIB_RGB_COLORS) == 0)
-        return;
-
-    FlipY();
-    if (b.bmi.bmiHeader.bV4BitCount == 24 || b.bmi.bmiHeader.bV4BitCount == 32)
-        SwapByte(CPoint(0, 0), Size(), 0, 2);
+void CBitmap::Create16(int lenx, int leny)
+{
+    Clear();
+    m_Size.x = lenx;
+    m_Size.y = leny;
+    m_Pitch = lenx * 2;
+    m_Format = BMF_FLAT;
+    m_BytePP = 2;
+    m_BitPP = 16;
+    m_MColor[0] = 0x0000f800;
+    m_MColor[1] = 0x000007e0;
+    m_MColor[2] = 0x0000001f;
+    AllocData();
 }
 
 void CBitmap::SaveInBMP(Base::CBuf &buf) const {
@@ -1251,4 +1148,126 @@ bool CBitmap::SaveInPNG(const std::wstring_view filename) {
     file.Close();
 
     return true;
+}
+
+
+
+
+void WinBitmap::Clear()
+{
+    if (m_dc)
+    {
+        DeleteDC(m_dc);
+        m_dc = nullptr;
+    }
+    if (m_handle)
+    {
+        DeleteObject(m_handle);
+        m_handle = nullptr;
+    }
+}
+
+void WinBitmap::Init()
+{
+    Clear();
+
+    if (Format() != BMF_FLAT)
+        return;
+
+    BITMAPV4HEADER bmi;
+
+    ZeroMemory(&bmi, sizeof(bmi));
+    bmi.bV4Size = sizeof(bmi);
+    bmi.bV4Width = SizeX();
+    bmi.bV4Height = SizeY();
+    bmi.bV4Planes = 1;
+    bmi.bV4BitCount = (WORD)BitPP();
+    if (BytePP() >= 3) {
+        bmi.bV4V4Compression = BI_RGB;
+        bmi.bV4SizeImage = 0;
+    }
+    else {
+        bmi.bV4V4Compression = BI_BITFIELDS;
+        bmi.bV4RedMask = 0x0000f800;
+        bmi.bV4GreenMask = 0x000007e0;
+        bmi.bV4BlueMask = 0x0000001f;
+        bmi.bV4AlphaMask = 0;
+        bmi.bV4SizeImage = SizeX() * SizeY() * BytePP();
+    }
+
+    HDC tdc = ::GetDC(0);
+
+    void *pvBits;
+
+    m_handle = CreateDIBSection(tdc, (BITMAPINFO *)&bmi, DIB_RGB_COLORS, &pvBits, 0, 0);
+    if (m_handle == 0)
+        ERROR_E;
+
+    //  DWORD lenLine=DWORD(SizeX()*BytePP());
+
+    if ((BytePP() == 3 || BytePP() == 4) && ColorMask(0) == 0x0ff && ColorMask(1) == 0x0ff00 && ColorMask(2) == 0x0ff0000)
+        SwapByte(CPoint(0, 0), this->Size(), 0, 2);
+
+    DWORD ll = DWORD(SizeX() * BytePP());
+    DWORD lls = (ll + 3) & (~3);
+    BYTE *bdes = (BYTE *)(pvBits) + lls * DWORD(SizeY() - 1);
+    BYTE *bsou = (BYTE *)(Data());
+    for (int y = 0; y < SizeY(); y++) {
+        CopyMemory(bdes, bsou, SizeX() * BytePP());
+        bsou = bsou + ll;
+        bdes = bdes - lls;
+    }
+
+    if ((BytePP() == 3 || BytePP() == 4) && ColorMask(0) == 0x0ff && ColorMask(1) == 0x0ff00 && ColorMask(2) == 0x0ff0000)
+        SwapByte(CPoint(0, 0), this->Size(), 0, 2);
+
+    m_dc = CreateCompatibleDC(tdc);
+    if (m_dc == 0)
+        ERROR_E;
+
+    if (SelectObject(m_dc, m_handle) == 0)
+        ERROR_E;
+
+    ReleaseDC(0, tdc);
+}
+
+void WinBitmap::Save(bool save16as32)
+{
+    if (!m_dc || !m_handle)
+        return;
+
+    struct {
+        struct {
+            BITMAPV4HEADER bmiHeader;
+        } bmi;
+        DWORD pal[256];
+    } b;
+
+    ZeroMemory(&b, sizeof(b));
+    b.bmi.bmiHeader.bV4Size = sizeof(BITMAPINFOHEADER);
+    if (GetDIBits(m_dc, m_handle, 0, 0, NULL, (LPBITMAPINFO)&b.bmi, DIB_RGB_COLORS) == 0)
+        return;
+
+    if (b.bmi.bmiHeader.bV4BitCount != 16 && b.bmi.bmiHeader.bV4BitCount != 24 && b.bmi.bmiHeader.bV4BitCount != 32)
+        return;
+
+    if (save16as32 && b.bmi.bmiHeader.bV4BitCount == 16) {
+        b.bmi.bmiHeader.bV4BitCount = 32;
+    }
+
+    if (b.bmi.bmiHeader.bV4BitCount == 16)
+        Create16(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
+    else if (b.bmi.bmiHeader.bV4BitCount == 24)
+        CreateRGB(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
+    else if (b.bmi.bmiHeader.bV4BitCount == 32)
+        CreateRGBA(b.bmi.bmiHeader.bV4Width, b.bmi.bmiHeader.bV4Height);
+    Fill(CPoint(0, 0), Size(), 0);
+
+    if (GetDIBits(m_dc, m_handle, 0, b.bmi.bmiHeader.bV4Height, Data(), (LPBITMAPINFO)&b.bmi,
+                  DIB_RGB_COLORS) == 0)
+        return;
+
+    FlipY();
+    if (b.bmi.bmiHeader.bV4BitCount == 24 || b.bmi.bmiHeader.bV4BitCount == 32)
+        SwapByte(CPoint(0, 0), Size(), 0, 2);
 }
