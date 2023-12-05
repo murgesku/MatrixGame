@@ -53,7 +53,7 @@ private:
     HBITMAP m_WindowBitmap;  // Windows-кий bitmap
     HDC m_WindowDC;          // Context windows-кого bitmap-а
 public:
-    CBitmap(void* heap = nullptr); // TODO: remove param
+    CBitmap();
     ~CBitmap();
 
     void Clear(void);

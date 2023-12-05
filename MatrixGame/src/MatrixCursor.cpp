@@ -103,9 +103,9 @@ void CMatrixCursor::Select(const std::wstring& name) {
         CalcUV();
     }
     else {
-        CBitmap frame(g_CacheHeap);
+        CBitmap frame;
         frame.CreateRGBA(m_CursorSize, m_CursorSize);
-        CBitmap bm(g_CacheHeap);
+        CBitmap bm;
         DCP();
 
         std::wstring tn;

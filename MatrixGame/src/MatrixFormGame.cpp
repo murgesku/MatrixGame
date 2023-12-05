@@ -142,8 +142,8 @@ void make_screenshot()
         return;
     }
 
-    CBitmap bm(g_CacheHeap);
-    CBitmap bmout(g_CacheHeap);
+    CBitmap bm;
+    CBitmap bmout;
     bmout.CreateRGB(g_ScreenX, g_ScreenY);
 
     HDC hdc = GetDC(g_Wnd);
