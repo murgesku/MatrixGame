@@ -3,19 +3,17 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#ifndef MATRIX_HINT_INCLUDE
-#define MATRIX_HINT_INCLUDE
+#pragma once
 
 #define HINT_Z 0.0000f
 
-#include "MatrixSoundManager.hpp"
 #include "MatrixGame.h"
 #include "Texture.hpp"
 #include "CBitmap.hpp"
 
 struct SHintBitmap {
-    CBitmap *bmp;
-    const std::wstring *name;
+    CBitmap bmp;
+    std::wstring name;
 };
 
 enum EHintElementModificator {
@@ -59,43 +57,18 @@ struct SHintElement {
     EHintElementModificator hem;
 };
 
-class CMatrixHint : public CMain {
-    static SHintBitmap *m_Bitmaps;
-    static int m_BitmapsCnt;
-
-    static CMatrixHint *m_First;
-    static CMatrixHint *m_Last;
-
-    CMatrixHint *m_Next;
-    CMatrixHint *m_Prev;
-
+class CMatrixHint : public CMain
+{
     std::wstring m_SoundIn;
     std::wstring m_SoundOut;
 
     DWORD m_Flags;
     CTextureManaged *m_Texture;
 
-    CPoint *m_CopyPos;
-    int m_CopyPosCnt;
+    std::vector<CPoint> m_CopyPos;
 
-    CMatrixHint(CTextureManaged *tex, int w, int h, const std::wstring &si, const std::wstring &so)
-      : m_Texture(tex), m_Width(w), m_Height(h), m_CopyPos(NULL), m_CopyPosCnt(0), m_SoundIn{si},
-        m_SoundOut(so), m_Flags(0) {
-        SetVisible(false);
-        m_PosX = 0;
-        m_PosY = 0;
-
-        LIST_ADD(this, m_First, m_Last, m_Prev, m_Next);
-    };
-
-    ~CMatrixHint() {
-        if (m_CopyPos) {
-            HFree(m_CopyPos, g_MatrixHeap);
-        }
-
-        LIST_DEL(this, m_First, m_Last, m_Prev, m_Next);
-        g_Cache->Destroy(m_Texture);
-    }
+    CMatrixHint(CTextureManaged *tex, int w, int h, const std::wstring &si, const std::wstring &so);
+    ~CMatrixHint();
 
 public:
     int m_PosX;
@@ -104,10 +77,6 @@ public:
     int m_Height;
 
     static void StaticInit(void) {
-        m_First = nullptr;
-        m_Last = nullptr;
-        m_Bitmaps = nullptr;
-        m_BitmapsCnt = 0;
     }
 
     static void PreloadBitmaps(void);
@@ -121,15 +90,8 @@ public:
         HDelete(CMatrixHint, this, g_MatrixHeap);
     }
 
-    void SoundIn(void) const {
-        if (!m_SoundIn.empty())
-            CSound::Play(m_SoundIn.c_str());
-    }
-
-    void SoundOut(void) const {
-        if (!m_SoundOut.empty())
-            CSound::Play(m_SoundOut.c_str());
-    }
+    void SoundIn(void) const;
+    void SoundOut(void) const;
 
     bool IsVisible(void) const { return m_Flags != 0; }
     void SetVisible(bool flag) {
@@ -150,12 +112,10 @@ public:
         SetVisible(true);
     }
 
-    int GetCopyPosCnt(void) const { return m_CopyPosCnt; }
+    int GetCopyPosCnt(void) const { return m_CopyPos.size(); }
     const CPoint &GetCopyPos(int i) const { return m_CopyPos[i]; }
 
     void DrawNow(void);
     static void DrawAll(void);
     static void ClearAll(void);
 };
-
-#endif
