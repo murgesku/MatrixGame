@@ -229,7 +229,10 @@ void Render(
 
     CBitmap tmp;
     tmp.CreateRGBA(sizex, sizey, rect.Pitch, (uint8_t*)rect.pBits);
-    tmp.BitmapDuplicate(dst);
+
+    // tmp now does not own the image bytes, so we need to duplicate it
+    dst.CreateRGBA(sizex, sizey);
+    dst.Copy(CPoint(0, 0), tmp.Size(), tmp, CPoint(0, 0));
 }
 
 } // namespace Text
