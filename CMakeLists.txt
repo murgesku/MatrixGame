@@ -71,7 +71,7 @@ else()
     )
 
     set(LINK_OPTIONS
-        -static -s
+        $<$<CONFIG:Release>:-static -s>
     )
 endif()
 
