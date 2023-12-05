@@ -103,7 +103,7 @@ void CMatrixCursor::Select(const std::wstring& name) {
         CalcUV();
     }
     else {
-        CBitmap frame;
+        WinBitmap frame;
         frame.CreateRGBA(m_CursorSize, m_CursorSize);
         CBitmap bm;
         DCP();
@@ -134,11 +134,11 @@ void CMatrixCursor::Select(const std::wstring& name) {
                 break;
             }
             frame.Copy(CPoint(0, 0), frame.Size(), bm, CPoint(x, y));
-            frame.WBM_Init();
+            frame.Init();
             DCP();
 
-            ii.hbmMask = frame.WBM_Bitmap();
-            ii.hbmColor = frame.WBM_Bitmap();
+            ii.hbmMask = frame.GetHandle();
+            ii.hbmColor = frame.GetHandle();
 
             m_CursorIcons[i++] = CreateIconIndirect(&ii);
             DCP();
