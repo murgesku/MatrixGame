@@ -48,11 +48,10 @@ private:
 
     HBITMAP m_WindowBitmap;  // Windows-кий bitmap
     HDC m_WindowDC;          // Context windows-кого bitmap-а
+
 public:
     CBitmap();
     ~CBitmap();
-
-    void Clear(void);
 
     int SizeX(void) const { return m_Size.x; }
     int SizeY(void) const { return m_Size.y; }
@@ -76,10 +75,6 @@ public:
     void Make2xSmaller(void);
     void Make2xSmaller(const Base::CPoint &left_up_corner, const Base::CPoint &size, CBitmap &des_bitmap) const;
 
-private:
-    void FlipY(void);
-
-public:
     void MergeByMask(const Base::CPoint &pdes, const Base::CPoint &size, const CBitmap &bm1, const Base::CPoint &sp1,
                      const CBitmap &bm2, const Base::CPoint &sp2, const CBitmap &mask, const Base::CPoint &spm);
     void SwapByte(const Base::CPoint &pos, const Base::CPoint &size, int n1, int n2);
@@ -95,19 +90,35 @@ public:
     void WBM_Bitmap(HBITMAP bm) { m_WindowBitmap = bm; }
     void WBM_BitmapDC(HDC hdc) { m_WindowDC = hdc; }
 
-    void SaveInBMP(Base::CBuf &buf) const;
     void SaveInBMP(const std::wstring_view filename) const;
-
     void SaveInDDSUncompressed(Base::CBuf &buf) const;
-
-    bool LoadFromPNG(const std::wstring_view filename);
     bool SaveInPNG(const std::wstring_view filename);
-    bool LoadFromPNG(void *buf, int buflen);
-
-    bool LoadFromPNG(void *buf, int buflen);
     bool LoadFromPNG(const std::wstring_view filename);
+    bool LoadFromPNG(void *buf, int buflen);
 
-    int SaveInPNG(void *buf, int buflen);
+private:
+    void Clear(void);
+    void AllocData(void);
+    void CreatePalate(int lenx, int leny, int palcnt);
+    void CreateGrayscale(int lenx, int leny);
+
+    void Create16(int lenx, int leny) {
+        Clear();
+        m_Size.x = lenx;
+        m_Size.y = leny;
+        m_Pitch = lenx * 2;
+        m_Format = BMF_FLAT;
+        m_BytePP = 2;
+        m_BitPP = 16;
+        m_MColor[0] = 0x0000f800;
+        m_MColor[1] = 0x000007e0;
+        m_MColor[2] = 0x0000001f;
+        AllocData();
+    }
+
+    void FlipY(void);
+
+    void SaveInBMP(Base::CBuf &buf) const;
     bool SaveInPNG(Base::CBuf &buf);
-    bool SaveInPNG(const std::wstring_view filename);
+    int SaveInPNG(void *buf, int buflen);
 };
