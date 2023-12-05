@@ -3,52 +3,22 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <cmath>
-#include <cstdint>
-
 #include "CBitmap.hpp"
 #include "FilePNG.hpp"
 
 #include "CFile.hpp"
-#include "CException.hpp"
-#include "CRC32.hpp"
 #include "CHeap.hpp"
 
-#include <malloc.h>
 #include <ddraw.h>
 
-#ifndef BASE_MATH_DEFINED
-inline int TruncFloat(float x) {
-    return static_cast<int>(std::trunc(x));
-}
-inline int Float2Int(float x) {
-    return static_cast<int>(std::round(x));
-}
-inline int Double2Int(double x) {
-    return static_cast<int>(std::round(x));
-}
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
 
-inline DWORD LIC(DWORD c0, DWORD c1, float t) {
-    DWORD c = 0;
-
-    c |= 0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t);
-
-    c0 >>= 8;
-    c1 >>= 8;
-    c |= (0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t)) << 8;
-
-    c0 >>= 8;
-    c1 >>= 8;
-    c |= (0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t)) << 16;
-
-    c0 >>= 8;
-    c1 >>= 8;
-    c |= (0xFF & Float2Int((0xFF & c0) + (int(0xFF & c1) - int(0xFF & c0)) * t)) << 24;
-    return c;
-}
-#endif // BASE_MATH_DEFINED
-
-using namespace Base;
+#define BMF_USER        0
+#define BMF_FLAT        1
+#define BMF_PALATE      2
+#define BMF_FLAT_PALATE 3  // Alpha in data
 
 CBitmap::CBitmap()
 {
@@ -651,9 +621,9 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
                     float A = float(alpha) / 255.0f;
                     float nA = 1.0f - A;
 
-                    int oiB = Float2Int(float(B) * A + float(oB) * nA);
-                    int oiG = Float2Int(float(G) * A + float(oG) * nA);
-                    int oiR = Float2Int(float(R) * A + float(oR) * nA);
+                    int oiB = static_cast<int>(float(B) * A + float(oB) * nA);
+                    int oiG = static_cast<int>(float(G) * A + float(oG) * nA);
+                    int oiR = static_cast<int>(float(R) * A + float(oR) * nA);
 
                     ocolor = ((oiB > 255) ? 255 : oiB) | (((oiG > 255) ? 255 : oiG) << 8) |
                              (((oiR > 255) ? 255 : oiR) << 16);
@@ -689,11 +659,11 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
                     float A = float(alpha) / 255.0f;
                     float nA = 1.0f - A;
 
-                    int oiB = Float2Int(float(B) * A + float(oB) * nA);
-                    int oiG = Float2Int(float(G) * A + float(oG) * nA);
-                    int oiR = Float2Int(float(R) * A + float(oR) * nA);
+                    int oiB = static_cast<int>(float(B) * A + float(oB) * nA);
+                    int oiG = static_cast<int>(float(G) * A + float(oG) * nA);
+                    int oiR = static_cast<int>(float(R) * A + float(oR) * nA);
 
-                    int oiA = Float2Int(oalpha + float(255 - oalpha) * A);
+                    int oiA = static_cast<int>(oalpha + float(255 - oalpha) * A);
 
                     ocolor = ((oiB > 255) ? 255 : oiB) | (((oiG > 255) ? 255 : oiG) << 8) |
                              (((oiR > 255) ? 255 : oiR) << 16) | (((oiA > 255) ? 255 : oiA) << 24);
@@ -1149,9 +1119,6 @@ bool CBitmap::SaveInPNG(const std::wstring_view filename) {
 
     return true;
 }
-
-
-
 
 void WinBitmap::Clear()
 {
