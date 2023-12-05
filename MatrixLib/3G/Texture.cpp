@@ -44,7 +44,7 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
             goto autoload;
 
         CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
-        CBitmap bm(g_CacheHeap);
+        CBitmap bm;
         bm.LoadFromPNG(tn.c_str());
         tex->LoadFromBitmap(bm, true, FLAG(m_Flags, TF_NOMIPMAP) ? 1 : 0);
 
@@ -920,7 +920,7 @@ void CTextureManaged::LoadFromBitmap(const CBitmap &bm, bool convert_to_16bit, i
 #else
     int lcnt = m_TexFrom->GetLevelCount();
 #endif
-    CBitmap bc(g_CacheHeap);
+    CBitmap bc;
 
     if (bm.BytePP() == 4)
         bc.CreateRGBA(lx, ly);

@@ -44,8 +44,8 @@ void CTransition::BuildTexture(void) {
     if (m_GeomCnt == 0)
         return;
 
-    CBitmap bm(g_CacheHeap);
-    CBitmap bmout(g_CacheHeap);
+    CBitmap bm;
+    CBitmap bmout;
     bmout.CreateRGB(DetermineGreaterPowerOfTwo(m_ScreenX), DetermineGreaterPowerOfTwo(m_ScreenY));
     bmout.Fill(CPoint(0, 0), bmout.Size(), 0);
 
