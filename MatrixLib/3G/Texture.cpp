@@ -703,8 +703,6 @@ void CTextureManaged::LoadFromBitmap(const CBitmap &bm, D3DFORMAT fmt, int level
     CBuf buf;
 
     bm.SaveInDDSUncompressed(buf);
-    // bm.SaveInBMP(buf);
-    //((CBitmap *)&bm)->SaveInPNG(buf);   // const hack
 
 #ifdef USE_DX_MANAGED_TEXTURES
     D3DXCreateTextureFromFileInMemoryEx(g_D3DD, buf.Get(), buf.Len(), 0, 0, levels, 0, fmt, D3DPOOL_MANAGED,

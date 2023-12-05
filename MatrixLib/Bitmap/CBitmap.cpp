@@ -12,6 +12,7 @@
 #include "CFile.hpp"
 #include "CException.hpp"
 #include "CRC32.hpp"
+#include "CHeap.hpp"
 
 #include <malloc.h>
 #include <ddraw.h>
@@ -1904,10 +1905,10 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     // SwapByte(CPoint(0,0),m_Size,0,2);
 }
 
-void CBitmap::SaveInBMP(const wchar *filename, int filenamelen) const {
+void CBitmap::SaveInBMP(const std::wstring_view filename) const {
     CBuf buf;
     SaveInBMP(buf);
-    buf.SaveInFile(std::wstring{filename, static_cast<size_t>(filenamelen)});
+    buf.SaveInFile(std::wstring{filename});
 }
 
 #pragma warning(disable : 4731)
@@ -2100,10 +2101,10 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
 }
 #pragma warning(default : 4731)
 
-void CBitmap::SaveInDDSUncompressed(const wchar *filename, int filenamelen) const {
+void CBitmap::SaveInDDSUncompressed(const std::wstring_view filename) const {
     CBuf buf;
     SaveInDDSUncompressed(buf);
-    buf.SaveInFile(std::wstring{filename, static_cast<size_t>(filenamelen)});
+    buf.SaveInFile(std::wstring{filename});
 }
 
 bool CBitmap::LoadFromPNG(void *buf, int buflen) {
@@ -2138,8 +2139,8 @@ bool CBitmap::LoadFromPNG(void *buf, int buflen) {
     return true;
 }
 
-bool CBitmap::LoadFromPNG(const wchar *filename) {
-    CFile file(filename);
+bool CBitmap::LoadFromPNG(const std::wstring_view filename) {
+    CFile file(filename.data());
     file.OpenRead();
     int size = file.Size();
     if (size < 0)
@@ -2187,12 +2188,12 @@ bool CBitmap::SaveInPNG(CBuf &buf) {
     return len > 0;
 }
 
-bool CBitmap::SaveInPNG(const wchar *filename, int filenamelen) {
+bool CBitmap::SaveInPNG(const std::wstring_view filename) {
     CBuf buf;
     if (!SaveInPNG(buf))
         return false;
 
-    CFile file(filename, filenamelen);
+    CFile file(filename.data());
     file.Create();
     file.Write(buf.Get(), buf.Len());
     file.Close();
