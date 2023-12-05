@@ -369,58 +369,6 @@ void CIFaceElement::RecalcPos(const float &x, const float &y, bool ichanged) {
     }
 }
 
-// void    CIFaceElement::GenerateClearRect(void)
-//{
-//
-//    D3DSURFACE_DESC desc;
-//    m_StateImages[IFACE_NORMAL].pImage->Tex()->GetLevelDesc(0,&desc);
-//
-//    int x = Float2Int(m_StateImages[IFACE_NORMAL].xTexPos);
-//    int y = Float2Int(m_StateImages[IFACE_NORMAL].yTexPos);
-//    int szx = Float2Int(this->m_xSize);
-//    int szy = Float2Int(this->m_ySize);
-//
-//    //if (desc.Format != D3DFMT_A8R8G8B8)
-//    {
-//        m_ClearRect.left = 0;
-//        m_ClearRect.top = 0;
-//        m_ClearRect.right = szx;
-//        m_ClearRect.bottom = szy;
-//
-//        return;
-//    }
-//
-//
-//    CBitmap bmp(g_CacheHeap);
-//    bmp.CreateGrayscale(szx,szy);
-//
-//    D3DLOCKED_RECT lr;
-//    m_StateImages[IFACE_NORMAL].pImage->LockRect(lr, D3DLOCK_READONLY);
-//
-//    DWORD *src = (DWORD *)((BYTE *)lr.pBits + y * lr.Pitch + x * sizeof(DWORD));
-//    BYTE  *dst = (BYTE *)bmp.Data();
-//    for (int j = 0; j<szy; ++j, src = (DWORD *)(((BYTE *)src) + lr.Pitch), dst += bmp.Pitch() )
-//    {
-//        for (int i = 0; i<szx; ++i)
-//        {
-//            dst[i] = ((src[i] & 0xFF000000) == 0xFF000000) ? 255 : 0;
-//        }
-//    }
-//
-//    //static int cnt = 0;
-//    //bmp.SaveInPNG(m_StateImages[IFACE_NORMAL].pImage->m_Name + L"_" + (cnt++) + L".bmp");
-//
-//
-//    m_StateImages[IFACE_NORMAL].pImage->UnlockRect();
-//
-//
-//    m_ClearRect.top = 1;
-//    m_ClearRect.left = 2;
-//    m_ClearRect.right = 3;
-//    m_ClearRect.bottom = 4;
-//
-//}
-
 void CIFaceElement::SetVisibility(bool visible) {
     INITFLAG(m_Flags, IFEF_VISIBLE, visible);
     // if(!visible && g_IFaceList && g_IFaceList->m_CurrentHintControlName == m_strName){
