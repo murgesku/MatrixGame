@@ -160,7 +160,7 @@ void CBitmap::AllocData() {
     m_Data = HAllocEx(m_Data, m_Pitch * m_Size.y, nullptr);
 }
 
-void BuildByMask(DWORD m, DWORD *s, DWORD *cb, DWORD *c) {
+void BuildByMask(uint32_t m, uint32_t *s, uint32_t *cb, uint32_t *c) {
     *s = 0;   // бит до начала
     *cb = 0;  // бит в цвете
     *c = 0;   // кол-во цветов
@@ -174,13 +174,13 @@ void BuildByMask(DWORD m, DWORD *s, DWORD *cb, DWORD *c) {
 }
 
 #pragma warning(disable : 4731)
-void CBitmap::Make2xSmaller(void) {
+void CBitmap::Make2xSmaller() {
     DTRACE();
     // void *d = HAlloc(m_Pitch*m_Size.y / 4,nullptr);
 
-    // byte * des=(byte *)d;
-    byte *des = (byte *)m_Data;
-    byte *sou = (byte *)m_Data;
+    // uint8_t * des=(uint8_t *)d;
+    uint8_t *des = (uint8_t *)m_Data;
+    uint8_t *sou = (uint8_t *)m_Data;
 
     // int add = m_BytePP;
     // int addl = m_Pitch/2;
@@ -198,7 +198,7 @@ void CBitmap::Make2xSmaller(void) {
                 c += *(sou + m_Pitch);
                 c += *(sou + m_Pitch + 1);
                 sou += 2;
-                *des++ = (BYTE)(c >> 2);
+                *des++ = (uint8_t)(c >> 2);
             }
             while (--x > 0);
             sou += m_Pitch;
@@ -229,9 +229,9 @@ void CBitmap::Make2xSmaller(void) {
                 b1 += *(sou + 4 + m_Pitch);
                 b2 += *(sou + 5 + m_Pitch);
 
-                *(des + 0) = (byte)(b0 >> 2);
-                *(des + 1) = (byte)(b1 >> 2);
-                *(des + 2) = (byte)(b2 >> 2);
+                *(des + 0) = (uint8_t)(b0 >> 2);
+                *(des + 1) = (uint8_t)(b1 >> 2);
+                *(des + 2) = (uint8_t)(b2 >> 2);
                 sou += 6;
                 des += 3;
             }
@@ -246,10 +246,10 @@ void CBitmap::Make2xSmaller(void) {
         {
             for (int x = 0; x < m_Size.x; ++x)
             {
-                byte* pix1 = sou;
-                byte* pix2 = sou + 4;
-                byte* pix3 = sou + m_Pitch;
-                byte* pix4 = sou + m_Pitch + 4;
+                uint8_t* pix1 = sou;
+                uint8_t* pix2 = sou + 4;
+                uint8_t* pix3 = sou + m_Pitch;
+                uint8_t* pix4 = sou + m_Pitch + 4;
 
                 des[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0]) / 4;
                 des[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1]) / 4;
@@ -289,8 +289,8 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
             des_bitmap.CreateRGBA(newx, newy);
     }
 
-    byte *des = (byte *)des_bitmap.m_Data;
-    byte *sou = (byte *)m_Data + lu.x * m_BytePP + m_Pitch * lu.y;
+    uint8_t *des = (uint8_t *)des_bitmap.m_Data;
+    uint8_t *sou = (uint8_t *)m_Data + lu.x * m_BytePP + m_Pitch * lu.y;
 
     int desnl = des_bitmap.m_Pitch - newx * m_BytePP;
     int sounl = m_Pitch - size.x * m_BytePP;
@@ -306,7 +306,7 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
 
                 b0 += *(sou + x + 1 + m_Pitch);
 
-                *(des + 0) = (byte)(b0 / 4);
+                *(des + 0) = (uint8_t)(b0 / 4);
             }
 
             sou += m_Pitch * 2;
@@ -331,9 +331,9 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
                 b1 += *(sou + 4 + m_Pitch);
                 b2 += *(sou + 5 + m_Pitch);
 
-                *(des + 0) = (byte)(b0 >> 2);
-                *(des + 1) = (byte)(b1 >> 2);
-                *(des + 2) = (byte)(b2 >> 2);
+                *(des + 0) = (uint8_t)(b0 >> 2);
+                *(des + 1) = (uint8_t)(b1 >> 2);
+                *(des + 2) = (uint8_t)(b2 >> 2);
             }
         }
     }
@@ -343,10 +343,10 @@ void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CB
         {
             for (int x = 0; x < newx; ++x)
             {
-                byte* pix1 = sou;
-                byte* pix2 = sou + 4;
-                byte* pix3 = sou + m_Pitch;
-                byte* pix4 = sou + m_Pitch + 4;
+                uint8_t* pix1 = sou;
+                uint8_t* pix2 = sou + 4;
+                uint8_t* pix3 = sou + m_Pitch;
+                uint8_t* pix4 = sou + m_Pitch + 4;
 
                 des[0] = (pix1[0] + pix2[0] + pix3[0] + pix4[0]) / 4;
                 des[1] = (pix1[1] + pix2[1] + pix3[1] + pix4[1]) / 4;
@@ -399,8 +399,8 @@ void CBitmap::Copy(const Base::CPoint &pdes, const Base::CPoint &size, const CBi
     if ((pdes.x + size.x) > m_Size.x || (pdes.y + size.y) > m_Size.y)
         return;
 
-    byte *des = (byte *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
-    byte *sou = (byte *)bmsou.m_Data + bmsou.m_BytePP * spsou.x + bmsou.m_Pitch * spsou.y;
+    uint8_t *des = (uint8_t *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
+    uint8_t *sou = (uint8_t *)bmsou.m_Data + bmsou.m_BytePP * spsou.x + bmsou.m_Pitch * spsou.y;
 
     if (bmsou.m_Format != m_Format)
         return;
@@ -416,13 +416,13 @@ void CBitmap::Copy(const Base::CPoint &pdes, const Base::CPoint &size, const CBi
     else
     // fix this brunch for non 3 or 4 bytePP images
     {
-        DWORD alpha = bmsou.m_BytePP == 3 ? 0xFF000000 : 0;
+        uint32_t alpha = bmsou.m_BytePP == 3 ? 0xFF000000 : 0;
         for (int y = 0; y < size.y; y++, des += m_Pitch, sou += bmsou.m_Pitch) {
-            BYTE *des1 = des;
-            BYTE *sou1 = sou;
+            uint8_t *des1 = des;
+            uint8_t *sou1 = sou;
             for (int i = 0; i < (size.x - 1); ++i, sou1 += bmsou.m_BytePP, des1 += m_BytePP) {
-                DWORD color = *((DWORD *)sou1) | alpha;
-                *((DWORD *)des1) = color;
+                uint32_t color = *((uint32_t *)sou1) | alpha;
+                *((uint32_t *)des1) = color;
             }
             int c = std::min(bmsou.m_BytePP, m_BytePP);
             while (c--) {
@@ -434,42 +434,42 @@ void CBitmap::Copy(const Base::CPoint &pdes, const Base::CPoint &size, const CBi
     }
 }
 
-void CBitmap::Fill(const Base::CPoint &pdes, const Base::CPoint &size, dword color) {
+void CBitmap::Fill(const Base::CPoint &pdes, const Base::CPoint &size, uint32_t color) {
     if (pdes.x < 0 || pdes.y < 0)
         return;
     if ((pdes.x + size.x) > m_Size.x || (pdes.y + size.y) > m_Size.y)
         return;
 
-    byte *des = (byte *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
+    uint8_t *des = (uint8_t *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
     int desnl = m_Pitch - size.x * m_BytePP;
     int desnp = m_BytePP;
 
     if (m_BytePP == 1) {
         for (int y = 0; y < size.y; y++, des += desnl) {
             for (int x = 0; x < size.x; x++, des += desnp) {
-                *(byte *)des = (byte)color;
+                *(uint8_t *)des = (uint8_t)color;
             }
         }
     }
     else if (m_BytePP == 2) {
         for (int y = 0; y < size.y; y++, des += desnl) {
             for (int x = 0; x < size.x; x++, des += desnp) {
-                *(word *)des = (word)color;
+                *(uint16_t *)des = (uint16_t)color;
             }
         }
     }
     else if (m_BytePP == 3) {
         for (int y = 0; y < size.y; y++, des += desnl) {
             for (int x = 0; x < size.x; x++, des += desnp) {
-                *(word *)des = (word)color;
-                *(byte *)(des + 2) = (byte)(color >> 16);
+                *(uint16_t *)des = (uint16_t)color;
+                *(uint8_t *)(des + 2) = (uint8_t)(color >> 16);
             }
         }
     }
     else if (m_BytePP == 4) {
         for (int y = 0; y < size.y; y++, des += desnl) {
             for (int x = 0; x < size.x; x++, des += desnp) {
-                *(dword *)des = color;
+                *(uint32_t *)des = color;
             }
         }
     }
@@ -512,16 +512,16 @@ void CBitmap::MergeByMask(const Base::CPoint &pdes, const Base::CPoint &size, co
     if (mask.m_BitPP < 8)
         return;
 
-    byte *des = (byte *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
+    uint8_t *des = (uint8_t *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
     int desnl = m_Pitch - size.x * m_BytePP;
 
-    byte *sou1 = (byte *)bm1.m_Data + bm1.m_BytePP * sp1.x + bm1.m_Pitch * sp1.y;
+    uint8_t *sou1 = (uint8_t *)bm1.m_Data + bm1.m_BytePP * sp1.x + bm1.m_Pitch * sp1.y;
     int sou1nl = bm1.m_Pitch - size.x * bm1.m_BytePP;
 
-    byte *sou2 = (byte *)bm2.m_Data + bm2.m_BytePP * sp2.x + bm2.m_Pitch * sp2.y;
+    uint8_t *sou2 = (uint8_t *)bm2.m_Data + bm2.m_BytePP * sp2.x + bm2.m_Pitch * sp2.y;
     int sou2nl = bm2.m_Pitch - size.x * bm2.m_BytePP;
 
-    byte *m = (byte *)mask.m_Data + mask.m_BytePP * spm.x + mask.m_Pitch * spm.y;
+    uint8_t *m = (uint8_t *)mask.m_Data + mask.m_BytePP * spm.x + mask.m_Pitch * spm.y;
     int mnl = mask.m_Pitch - size.x * mask.m_BytePP;
     int mnp = mask.m_BytePP;
 
@@ -533,8 +533,8 @@ void CBitmap::MergeByMask(const Base::CPoint &pdes, const Base::CPoint &size, co
                 else if (*m == 255)
                     *des = *sou1;
                 else
-                    *des = byte((DWORD(*sou1) * (DWORD(*m) << 8)) >> 16) +
-                           byte((DWORD(*sou2) * (DWORD(255 - *m) << 8)) >> 16);  // не совсем точная формула =(
+                    *des = uint8_t((uint32_t(*sou1) * (uint32_t(*m) << 8)) >> 16) +
+                           uint8_t((uint32_t(*sou2) * (uint32_t(255 - *m) << 8)) >> 16);  // не совсем точная формула =(
             }
         }
     }
@@ -550,11 +550,11 @@ void CBitmap::SwapByte(const Base::CPoint &pos, const Base::CPoint &size, int n1
     if (m_BytePP <= 1)
         return;
 
-    byte *buf = (byte *)m_Data + m_BytePP * pos.x + m_Pitch * pos.y;
+    uint8_t *buf = (uint8_t *)m_Data + m_BytePP * pos.x + m_Pitch * pos.y;
     int bufnl = m_Pitch - size.x * m_BytePP;
     int bufnp = m_BytePP;
 
-    byte zn;
+    uint8_t zn;
 
     for (int y = 0; y < size.y; y++, buf += bufnl) {
         for (int x = 0; x < size.x; x++, buf += bufnp) {
@@ -577,11 +577,11 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
     if ((pdes.x + size.x) > m_Size.x || (pdes.y + size.y) > m_Size.y)
         return;
 
-    byte *des = (byte *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
+    uint8_t *des = (uint8_t *)m_Data + m_BytePP * pdes.x + m_Pitch * pdes.y;
     int desnl = m_Pitch - size.x * m_BytePP;
     int desnp = m_BytePP;
 
-    byte *sou = (byte *)bmsou.m_Data + bmsou.m_BytePP * spsou.x + bmsou.m_Pitch * spsou.y;
+    uint8_t *sou = (uint8_t *)bmsou.m_Data + bmsou.m_BytePP * spsou.x + bmsou.m_Pitch * spsou.y;
     int sounl = bmsou.m_Pitch - size.x * bmsou.m_BytePP;
     int sounp = bmsou.m_BytePP;
 
@@ -600,17 +600,17 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
     if (m_BytePP == 3) {
         for (int y = 0; y < size.y; y++, des += desnl, sou += sounl) {
             for (int x = 0; x < size.x; x++, des += desnp, sou += sounp) {
-                dword color = *(dword *)sou;
-                dword ocolor = dword(*(word *)des) | (dword(*((byte *)des + 2)) << 16);
+                uint32_t color = *(uint32_t *)sou;
+                uint32_t ocolor = uint32_t(*(uint16_t *)des) | (uint32_t(*((uint8_t *)des + 2)) << 16);
 
-                byte alpha = byte(color >> 24);
-                byte R = byte((color >> 16) & 0xFF);
-                byte G = byte((color >> 8) & 0xFF);
-                byte B = byte((color)&0xFF);
+                uint8_t alpha = uint8_t(color >> 24);
+                uint8_t R = uint8_t((color >> 16) & 0xFF);
+                uint8_t G = uint8_t((color >> 8) & 0xFF);
+                uint8_t B = uint8_t((color)&0xFF);
 
-                byte oR = byte((ocolor >> 16) & 0xFF);
-                byte oG = byte((ocolor >> 8) & 0xFF);
-                byte oB = byte((ocolor)&0xFF);
+                uint8_t oR = uint8_t((ocolor >> 16) & 0xFF);
+                uint8_t oG = uint8_t((ocolor >> 8) & 0xFF);
+                uint8_t oB = uint8_t((ocolor)&0xFF);
 
                 if (alpha == 0)
                     continue;
@@ -629,26 +629,26 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
                              (((oiR > 255) ? 255 : oiR) << 16);
                 }
 
-                *des = byte(ocolor & 0xFF);
-                *(des + 1) = byte((ocolor >> 8) & 0xFF);
-                *(des + 2) = byte((ocolor >> 16) & 0xFF);
+                *des = uint8_t(ocolor & 0xFF);
+                *(des + 1) = uint8_t((ocolor >> 8) & 0xFF);
+                *(des + 2) = uint8_t((ocolor >> 16) & 0xFF);
             }
         }
     }
     else {
         for (int y = 0; y < size.y; y++, des += desnl, sou += sounl) {
             for (int x = 0; x < size.x; x++, des += desnp, sou += sounp) {
-                dword color = *(dword *)sou;
-                dword ocolor = *(dword *)des;
-                byte alpha = byte(color >> 24);
-                byte R = byte((color >> 16) & 0xFF);
-                byte G = byte((color >> 8) & 0xFF);
-                byte B = byte((color)&0xFF);
+                uint32_t color = *(uint32_t *)sou;
+                uint32_t ocolor = *(uint32_t *)des;
+                uint8_t alpha = uint8_t(color >> 24);
+                uint8_t R = uint8_t((color >> 16) & 0xFF);
+                uint8_t G = uint8_t((color >> 8) & 0xFF);
+                uint8_t B = uint8_t((color)&0xFF);
 
-                byte oalpha = byte(ocolor >> 24);
-                byte oR = byte((ocolor >> 16) & 0xFF);
-                byte oG = byte((ocolor >> 8) & 0xFF);
-                byte oB = byte((ocolor)&0xFF);
+                uint8_t oalpha = uint8_t(ocolor >> 24);
+                uint8_t oR = uint8_t((ocolor >> 16) & 0xFF);
+                uint8_t oG = uint8_t((ocolor >> 8) & 0xFF);
+                uint8_t oB = uint8_t((ocolor)&0xFF);
 
                 if (alpha == 0)
                     continue;
@@ -669,44 +669,44 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
                              (((oiR > 255) ? 255 : oiR) << 16) | (((oiA > 255) ? 255 : oiA) << 24);
 
                     /*
-                    ocolor = byte ( float(B)*A + float(oB)*nA ) |
-                            (byte ( float(G)*A + float(oG)*nA ) << 8) |
-                            (byte ( float(R)*A + float(oR)*nA ) << 16) |
-                            (( oalpha + byte(((255-oalpha)*(DWORD(alpha)<<8))>>16) ) << 24);
+                    ocolor = uint8_t ( float(B)*A + float(oB)*nA ) |
+                            (uint8_t ( float(G)*A + float(oG)*nA ) << 8) |
+                            (uint8_t ( float(R)*A + float(oR)*nA ) << 16) |
+                            (( oalpha + uint8_t(((255-oalpha)*(uint32_t(alpha)<<8))>>16) ) << 24);
                     */
                 }
 
                 if (m_BytePP == 3) {
-                    *des = byte(ocolor);
-                    *(des + 1) = byte(ocolor >> 8);
-                    *(des + 2) = byte(ocolor >> 16);
+                    *des = uint8_t(ocolor);
+                    *(des + 1) = uint8_t(ocolor >> 8);
+                    *(des + 2) = uint8_t(ocolor >> 16);
                 }
                 else {
-                    *(dword *)des = ocolor;
+                    *(uint32_t *)des = ocolor;
                 }
             }
         }
     }
 }
 
-void CBitmap::FlipY(void) {
-    byte *l1 = (BYTE *)m_Data;
-    byte *l2 = (BYTE *)m_Data + m_Pitch * (m_Size.y - 1);
+void CBitmap::FlipY() {
+    uint8_t *l1 = (uint8_t *)m_Data;
+    uint8_t *l2 = (uint8_t *)m_Data + m_Pitch * (m_Size.y - 1);
 
     while (l1 < l2) {
         int cnt = m_Pitch;
-        byte *p0 = l1;
-        byte *p1 = l2;
+        uint8_t *p0 = l1;
+        uint8_t *p1 = l2;
         while (cnt >= 4) {
-            DWORD temp = *(DWORD *)p0;
-            *(DWORD *)p0 = *(DWORD *)p1;
-            *(DWORD *)p1 = temp;
+            uint32_t temp = *(uint32_t *)p0;
+            *(uint32_t *)p0 = *(uint32_t *)p1;
+            *(uint32_t *)p1 = temp;
             p0 += 4;
             p1 += 4;
             cnt -= 4;
         }
         while (cnt > 0) {
-            BYTE temp = *p0;
+            uint8_t temp = *p0;
             *p0 = *p1;
             *p1 = temp;
             ++p0;
@@ -761,7 +761,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     bmInfoHeader.biWidth = m_Size.x;
     bmInfoHeader.biHeight = m_Size.y;
     bmInfoHeader.biPlanes = 1;
-    bmInfoHeader.biBitCount = (WORD)m_BitPP;
+    bmInfoHeader.biBitCount = (uint16_t)m_BitPP;
     bmInfoHeader.biCompression = 0;
     bmInfoHeader.biSizeImage = lPitch * m_Size.y;
     buf.Add(&bmInfoHeader, sizeof(BITMAPINFOHEADER));
@@ -770,7 +770,7 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
         buf.Add(m_AddData[0], m_AddDataVal[0] * 4);
     }
 
-    BYTE *sou = (byte *)m_Data + (m_Size.y - 1) * m_Pitch;
+    uint8_t *sou = (uint8_t *)m_Data + (m_Size.y - 1) * m_Pitch;
 
     // if((m_BytePP==3 || m_BytePP==4) && m_MColor[0]==0x0ff && m_MColor[1]==0x0ff00 && m_MColor[2]==0x0ff0000)
     // SwapByte(CPoint(0,0),m_Size,0,2);
@@ -779,11 +779,11 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
     if (m_MColor[0] == 0x0ff && m_MColor[1] == 0x0ff00 && m_MColor[2] == 0x0ff0000) {
         if (m_BytePP == 3) {
             for (int y = 0; y < m_Size.y; y++, sou -= m_Pitch) {
-                BYTE *sb = (BYTE *)sou;
+                uint8_t *sb = (uint8_t *)sou;
                 buf.Expand(len);
-                BYTE *db = ((BYTE *)buf.Get()) + buf.Pointer();
+                uint8_t *db = ((uint8_t *)buf.Get()) + buf.Pointer();
                 buf.Pointer(buf.Pointer() + len);
-                BYTE *de = db + len;
+                uint8_t *de = db + len;
 
                 for (; db < de; db += 3, sb += 3) {
                     *(db + 2) = *(sb + 0);
@@ -797,11 +797,11 @@ void CBitmap::SaveInBMP(Base::CBuf &buf) const {
         }
         else if (m_BytePP == 4) {
             for (int y = 0; y < m_Size.y; y++, sou -= m_Pitch) {
-                BYTE *sb = (BYTE *)sou;
+                uint8_t *sb = (uint8_t *)sou;
                 buf.Expand(len);
-                BYTE *db = ((BYTE *)buf.Get()) + buf.Pointer();
+                uint8_t *db = ((uint8_t *)buf.Get()) + buf.Pointer();
                 buf.Pointer(buf.Pointer() + len);
-                BYTE *de = db + len;
+                uint8_t *de = db + len;
 
                 for (; db < de; db += 4, sb += 4) {
                     *(db + 2) = *(sb + 0);
@@ -845,9 +845,9 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
     int sz = m_Size.x * m_Size.y * m_BytePP;
 
     buf.Clear();
-    buf.Expand(sz + sizeof(DDSURFACEDESC2) + sizeof(DWORD));
+    buf.Expand(sz + sizeof(DDSURFACEDESC2) + sizeof(uint32_t));
 
-    DWORD *dds = (DWORD *)buf.Get();
+    uint32_t *dds = (uint32_t *)buf.Get();
     *dds = 0x20534444;  // "DDS "
 
     DDSURFACEDESC2 *ddsp = (DDSURFACEDESC2 *)(dds + 1);
@@ -872,8 +872,8 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
 
     if (m_Size.x < 4) {
         int cnt = m_Size.x * m_Size.y;
-        BYTE *des = (BYTE *)(ddsp + 1);
-        BYTE *sou = (BYTE *)m_Data;
+        uint8_t *des = (uint8_t *)(ddsp + 1);
+        uint8_t *sou = (uint8_t *)m_Data;
         if (m_BytePP == 3) {
             while (cnt-- > 0) {
                 *des = *(sou + 2);
@@ -895,18 +895,18 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
         }
     }
     else {
-        // DWORD *des = (DWORD *)(ddsp + 1);
-        // DWORD *sou = (DWORD *)m_Data;
+        // uint32_t *des = (uint32_t *)(ddsp + 1);
+        // uint32_t *sou = (uint32_t *)m_Data;
         // for (int i=0; i<1000; ++i)
         //{
-        //    DWORD s = *sou;
+        //    uint32_t s = *sou;
         //    *des = (s & 0xFF00FF00) | ((s >> 16) & 0xFF) | ((s << 16) & 0xFF0000);
         //    ++sou;
         //    ++des;
         //}
 
-        BYTE *des = (BYTE *)(ddsp + 1);
-        BYTE *sou = (BYTE *)m_Data;
+        uint8_t *des = (uint8_t *)(ddsp + 1);
+        uint8_t *sou = (uint8_t *)m_Data;
 
         if (m_BytePP == 3)
         {
@@ -915,7 +915,7 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
             // a shit. would be nice to rewrite it again into something meaningful.
             uint32_t ebx, ebp;
 
-            // converts every 4 pixels (3 DWORD's)
+            // converts every 4 pixels (3 uint32_t's)
             for (int i = 0; i < m_Size.y * m_Size.x / 4; ++i)
             {
                 uint32_t byte1 = *((uint32_t*)(sou));
@@ -1031,7 +1031,7 @@ bool CBitmap::LoadFromPNG(void *buf, int buflen) {
 
     uint32_t lenx, leny, countcolor, format;
 
-    DWORD id = FilePNG::ReadStart_Buf(buf, buflen, &lenx, &leny, &countcolor, &format);
+    uint32_t id = FilePNG::ReadStart_Buf(buf, buflen, &lenx, &leny, &countcolor, &format);
     if (id == 0)
         return false;
 
@@ -1148,7 +1148,7 @@ void WinBitmap::Init()
     bmi.bV4Width = SizeX();
     bmi.bV4Height = SizeY();
     bmi.bV4Planes = 1;
-    bmi.bV4BitCount = (WORD)BitPP();
+    bmi.bV4BitCount = (uint16_t)BitPP();
     if (BytePP() >= 3) {
         bmi.bV4V4Compression = BI_RGB;
         bmi.bV4SizeImage = 0;
@@ -1170,15 +1170,15 @@ void WinBitmap::Init()
     if (m_handle == 0)
         ERROR_E;
 
-    //  DWORD lenLine=DWORD(SizeX()*BytePP());
+    //  uint32_t lenLine=uint32_t(SizeX()*BytePP());
 
     if ((BytePP() == 3 || BytePP() == 4) && ColorMask(0) == 0x0ff && ColorMask(1) == 0x0ff00 && ColorMask(2) == 0x0ff0000)
         SwapByte(CPoint(0, 0), this->Size(), 0, 2);
 
-    DWORD ll = DWORD(SizeX() * BytePP());
-    DWORD lls = (ll + 3) & (~3);
-    BYTE *bdes = (BYTE *)(pvBits) + lls * DWORD(SizeY() - 1);
-    BYTE *bsou = (BYTE *)(Data());
+    uint32_t ll = uint32_t(SizeX() * BytePP());
+    uint32_t lls = (ll + 3) & (~3);
+    uint8_t *bdes = (uint8_t *)(pvBits) + lls * uint32_t(SizeY() - 1);
+    uint8_t *bsou = (uint8_t *)(Data());
     for (int y = 0; y < SizeY(); y++) {
         CopyMemory(bdes, bsou, SizeX() * BytePP());
         bsou = bsou + ll;
@@ -1207,7 +1207,7 @@ void WinBitmap::Save(bool save16as32)
         struct {
             BITMAPV4HEADER bmiHeader;
         } bmi;
-        DWORD pal[256];
+        uint32_t pal[256];
     } b;
 
     ZeroMemory(&b, sizeof(b));
