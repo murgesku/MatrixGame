@@ -175,16 +175,12 @@ void BuildByMask(uint32_t m, uint32_t *s, uint32_t *cb, uint32_t *c) {
 }
 
 #pragma warning(disable : 4731)
-void CBitmap::Make2xSmaller() {
+void CBitmap::Make2xSmaller()
+{
     DTRACE();
-    // void *d = HAlloc(m_Pitch*m_Size.y / 4,nullptr);
 
-    // uint8_t * des=(uint8_t *)d;
     uint8_t *des = (uint8_t *)m_Data;
     uint8_t *sou = (uint8_t *)m_Data;
-
-    // int add = m_BytePP;
-    // int addl = m_Pitch/2;
 
     m_Size.x /= 2;
     m_Size.y /= 2;
@@ -267,9 +263,6 @@ void CBitmap::Make2xSmaller() {
 
     m_Pitch /= 2;
     m_Data = HReAlloc(m_Data, m_Pitch * m_Size.y, nullptr);
-    // HFree(m_Data,nullptr);
-
-    // m_Data = d;
 }
 
 void CBitmap::Make2xSmaller(const Base::CPoint &lu, const Base::CPoint &size, CBitmap &des_bitmap) const {
@@ -824,8 +817,10 @@ void CBitmap::SaveInBMP(const std::wstring_view filename) const {
 }
 
 #pragma warning(disable : 4731)
-void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
-    if (m_BytePP != 3 && m_BytePP != 4) {
+void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const
+{
+    if (m_BytePP != 3 && m_BytePP != 4)
+    {
         ERROR_S(L"Unsupported format to convert");
     }
 
@@ -857,99 +852,30 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
 
     ddsp->ddsCaps.dwCaps = DDSCAPS_TEXTURE;
 
-    if (m_Size.x < 4) {
-        int cnt = m_Size.x * m_Size.y;
-        uint8_t *des = (uint8_t *)(ddsp + 1);
-        uint8_t *sou = (uint8_t *)m_Data;
-        if (m_BytePP == 3) {
-            while (cnt-- > 0) {
-                *des = *(sou + 2);
-                *(des + 1) = *(sou + 1);
-                *(des + 2) = *(sou + 0);
-                sou += 3;
-                des += 3;
-            }
-        }
-        else {
-            while (cnt-- > 0) {
-                *des = *(sou + 2);
-                *(des + 1) = *(sou + 1);
-                *(des + 2) = *(sou + 0);
-                *(des + 3) = *(sou + 3);
-                sou += 3;
-                des += 3;
-            }
+    int cnt = m_Size.x * m_Size.y;
+    uint8_t *des = (uint8_t *)(ddsp + 1);
+    uint8_t *sou = (uint8_t *)m_Data;
+    if (m_BytePP == 3)
+    {
+        while (cnt-- > 0)
+        {
+            *(des + 0) = *(sou + 2);
+            *(des + 1) = *(sou + 1);
+            *(des + 2) = *(sou + 0);
+            sou += 3;
+            des += 3;
         }
     }
-    else {
-        // uint32_t *des = (uint32_t *)(ddsp + 1);
-        // uint32_t *sou = (uint32_t *)m_Data;
-        // for (int i=0; i<1000; ++i)
-        //{
-        //    uint32_t s = *sou;
-        //    *des = (s & 0xFF00FF00) | ((s >> 16) & 0xFF) | ((s << 16) & 0xFF0000);
-        //    ++sou;
-        //    ++des;
-        //}
-
-        uint8_t *des = (uint8_t *)(ddsp + 1);
-        uint8_t *sou = (uint8_t *)m_Data;
-
-        if (m_BytePP == 3)
+    else
+    {
+        while (cnt-- > 0)
         {
-            // TODO: this piece of code is literally an asm rewritten into C++.
-            // i have absolutely no idea what is going on here, so it looks like
-            // a shit. would be nice to rewrite it again into something meaningful.
-            uint32_t ebx, ebp;
-
-            // converts every 4 pixels (3 uint32_t's)
-            for (int i = 0; i < m_Size.y * m_Size.x / 4; ++i)
-            {
-                uint32_t byte1 = *((uint32_t*)(sou));
-                uint32_t byte2 = *((uint32_t*)(sou + 4));
-                uint32_t byte3 = *((uint32_t*)(sou + 8));
-
-                ebx = byte1;
-                byte1 &= 0x0000FF00;
-                ebx = (ebx >> 16 | ebx << (32 - 16));
-
-                ebp = ebx & 0x0000FF00;
-
-                byte1 |= ebx & 0x00FF00FF;
-
-                ebx = byte2 & 0x0000FF00;
-
-                byte1 |= ebx << 16;
-                ebx = byte2;
-
-                byte2 &= 0xFF0000FF;
-                ebx = ebx >> 16;
-                byte2 |= ebp;
-
-                ebx &= 0x000000FF;
-                ebp = byte3;
-
-                byte3 &= 0x00FF0000;
-                ebp = (ebp >> 16 | ebp << (32 - 16));
-                byte3 |= ebx;
-
-                byte3 |= ebp & 0xFF00FF00;
-
-                byte2 |= ebp & 0x00FF0000;
-
-                *((uint32_t*)des) = byte1;
-                *((uint32_t*)(des + 4)) = byte2;
-                *((uint32_t*)(des + 8)) = byte3;
-
-                sou += 12;
-                des += 12;
-            }
-        }
-        else
-        {
-            // it does not look like this branch is used at all.
-            // but if it is - fire a bug about it
-            ASSERT(false);
+            *(des + 0) = *(sou + 2);
+            *(des + 1) = *(sou + 1);
+            *(des + 2) = *(sou + 0);
+            *(des + 3) = *(sou + 3);
+            sou += 4;
+            des += 4;
         }
     }
 }
