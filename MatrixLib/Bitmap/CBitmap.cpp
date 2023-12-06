@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <span>
 
 #define BMF_USER        0
 #define BMF_FLAT        1
@@ -689,33 +690,19 @@ void CBitmap::MergeWithAlpha(const Base::CPoint &pdes, const Base::CPoint &size,
     }
 }
 
-void CBitmap::FlipY() {
-    uint8_t *l1 = (uint8_t *)m_Data;
-    uint8_t *l2 = (uint8_t *)m_Data + m_Pitch * (m_Size.y - 1);
+void CBitmap::FlipY()
+{
+    auto data = (uint8_t*)m_Data;
 
-    while (l1 < l2) {
-        int cnt = m_Pitch;
-        uint8_t *p0 = l1;
-        uint8_t *p1 = l2;
-        while (cnt >= 4) {
-            uint32_t temp = *(uint32_t *)p0;
-            *(uint32_t *)p0 = *(uint32_t *)p1;
-            *(uint32_t *)p1 = temp;
-            p0 += 4;
-            p1 += 4;
-            cnt -= 4;
-        }
-        while (cnt > 0) {
-            uint8_t temp = *p0;
-            *p0 = *p1;
-            *p1 = temp;
-            ++p0;
-            ++p1;
-            --cnt;
-        }
-
-        l1 += m_Pitch;
-        l2 -= m_Pitch;
+    size_t y_first = 0;
+    size_t y_last = m_Size.y - 1;
+    while(y_first < y_last)
+    {
+        std::span first{data + m_Pitch * y_first, data + m_Pitch * (y_first + 1)};
+        std::span second{data + m_Pitch * y_last, data + m_Pitch * (y_last + 1)};
+        std::swap_ranges(first.begin(), first.end(), second.begin());
+        ++y_first;
+        --y_last;
     }
 }
 
