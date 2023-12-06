@@ -947,69 +947,11 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const {
         }
         else
         {
-            // it does not look like this code is called at all.
+            // it does not look like this branch is used at all.
             // but if it is - fire a bug about it
             ASSERT(false);
-        //     _asm {
-        //         // dest
-        //         mov     edi, des
-
-        //                 // source
-        //         mov     esi, this
-        //         mov     ecx, [esi + m_Size]
-        //         mov     ebx, [esi + m_BytePP]
-        //         shr     ecx, 2
-        //         mov     eax, [esi + m_Size + 4]
-        //         mul     ecx
-        //         mov     esi, sou
-        //         mov     ecx, eax
-
-        //         push    ebp
-        // loop1:
-        //         mov     eax, [esi]
-        //         mov     edx, [esi + 4]
-
-        //         mov     ebx, eax
-        //         and     eax, 0xFF00FF00
-        //         ror     ebx, 16
-        //         add     edi, 16
-        //         and     ebx, 0x00FF00FF
-        //         or      eax, ebx
-        //         mov     ebx, edx
-        //         and     edx, 0xFF00FF00
-        //         ror     ebx, 16
-        //         add     esi, 16
-        //         and     ebx, 0x00FF00FF
-        //         or      edx, ebx
-
-        //         mov     [edi - 16], eax
-        //         mov     [edi - 12], edx
-
-        //         mov     eax, [esi - 8]
-        //         mov     edx, [esi - 4]
-
-        //         mov     ebx, eax
-        //         and     eax, 0xFF00FF00
-        //         ror     ebx, 16
-        //         and     ebx, 0x00FF00FF
-        //         or      eax, ebx
-        //         mov     ebx, edx
-        //         and     edx, 0xFF00FF00
-        //         ror     ebx, 16
-        //         and     ebx, 0x00FF00FF
-        //         or      edx, ebx
-
-        //         mov     [edi - 8], eax
-        //         mov     [edi - 4], edx
-
-        //         dec     ecx
-        //         jnz     loop1
-
-        //         pop     ebp
-        //     };
         }
     }
-    // memcpy(des,sou,sz);
 }
 #pragma warning(default : 4731)
 
