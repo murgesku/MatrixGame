@@ -1165,7 +1165,7 @@ void WinBitmap::Init()
     uint32_t ll = uint32_t(SizeX() * BytePP());
     uint32_t lls = (ll + 3) & (~3);
     uint8_t *bdes = (uint8_t *)(pvBits) + lls * uint32_t(SizeY() - 1);
-    uint8_t *bsou = (uint8_t *)(Data());
+    uint8_t *bsou = Data();
     for (int y = 0; y < SizeY(); y++) {
         CopyMemory(bdes, bsou, SizeX() * BytePP());
         bsou = bsou + ll;

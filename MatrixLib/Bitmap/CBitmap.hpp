@@ -40,8 +40,7 @@ public:
     const Base::CPoint &Size() const { return m_Size; }
     int BytePP() const { return m_BytePP; }
     int BitPP() { return m_BitPP; }
-    void *Data() const { return m_Data; }
-    const uint8_t *ByteData() const { return (const uint8_t *)m_Data; }
+    uint8_t* Data() const { return (uint8_t*)m_Data; }
     int Pitch() const { return m_Pitch; }
     uint32_t ColorMask(int index) const { return m_MColor[index]; }
 
