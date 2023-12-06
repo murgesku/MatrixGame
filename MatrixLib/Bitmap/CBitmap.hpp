@@ -20,7 +20,7 @@ private:
     int m_Format;       // BMF_*
     int m_BytePP;       // Байт на пиксель
     int m_BitPP;        // Бит на пиксель
-    dword m_MColor[4];  // Маска для каждой компоненты цвета
+    uint32_t m_MColor[4];  // Маска для каждой компоненты цвета
 
     void *m_Data;    // Изображение
     int m_Pitch;     // Байт на одну строку
@@ -35,15 +35,15 @@ public:
     ~CBitmap();
 
     int Format() const { return m_Format; }
-    int SizeX(void) const { return m_Size.x; }
-    int SizeY(void) const { return m_Size.y; }
-    const Base::CPoint &Size(void) const { return m_Size; }
-    int BytePP(void) const { return m_BytePP; }
-    int BitPP(void) { return m_BitPP; }
-    void *Data(void) const { return m_Data; }
-    const BYTE *ByteData(void) const { return (const BYTE *)m_Data; }
-    int Pitch(void) const { return m_Pitch; }
-    dword ColorMask(int index) const { return m_MColor[index]; }
+    int SizeX() const { return m_Size.x; }
+    int SizeY() const { return m_Size.y; }
+    const Base::CPoint &Size() const { return m_Size; }
+    int BytePP() const { return m_BytePP; }
+    int BitPP() { return m_BitPP; }
+    void *Data() const { return m_Data; }
+    const uint8_t *ByteData() const { return (const uint8_t *)m_Data; }
+    int Pitch() const { return m_Pitch; }
+    uint32_t ColorMask(int index) const { return m_MColor[index]; }
 
     void CreateRGB(int lenx, int leny);
     void CreateRGBA(int lenx, int leny, int pitch = 0, void* data = nullptr);
@@ -53,9 +53,9 @@ public:
     void Tile(const Base::CPoint &pdes, const Base::CPoint &desize, const CBitmap &bmsou, const Base::CPoint &spsou,
               const Base::CPoint &szsou);
 
-    void Fill(const Base::CPoint &pdes, const Base::CPoint &size, dword color);
+    void Fill(const Base::CPoint &pdes, const Base::CPoint &size, uint32_t color);
 
-    void Make2xSmaller(void);
+    void Make2xSmaller();
     void Make2xSmaller(const Base::CPoint &left_up_corner, const Base::CPoint &size, CBitmap &des_bitmap) const;
 
     void MergeByMask(const Base::CPoint &pdes, const Base::CPoint &size, const CBitmap &bm1, const Base::CPoint &sp1,
@@ -72,12 +72,12 @@ public:
     bool LoadFromPNG(void *buf, int buflen);
 
 protected:
-    void FlipY(void);
+    void FlipY();
     void Create16(int lenx, int leny);
 
 private:
-    void Clear(void);
-    void AllocData(void);
+    void Clear();
+    void AllocData();
     void CreatePalate(int lenx, int leny, int palcnt);
     void CreateGrayscale(int lenx, int leny);
 
@@ -95,11 +95,11 @@ public:
     {
         Clear();
     }
-    void Clear(void);
-    void Init(void);
+    void Clear();
+    void Init();
     void Save(bool save16as32 = false);
-    HBITMAP GetHandle(void) { return m_handle; }
-    HDC GetDC(void) { return m_dc; }
+    HBITMAP GetHandle() { return m_handle; }
+    HDC GetDC() { return m_dc; }
     void SetHandle(HBITMAP bm) { m_handle = bm; }
     void SetDC(HDC hdc) { m_dc = hdc; }
 
