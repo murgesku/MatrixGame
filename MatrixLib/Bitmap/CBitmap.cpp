@@ -816,7 +816,6 @@ void CBitmap::SaveInBMP(const std::wstring_view filename) const {
     buf.SaveInFile(std::wstring{filename});
 }
 
-#pragma warning(disable : 4731)
 void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const
 {
     if (m_BytePP != 3 && m_BytePP != 4)
@@ -879,7 +878,6 @@ void CBitmap::SaveInDDSUncompressed(Base::CBuf &buf) const
         }
     }
 }
-#pragma warning(default : 4731)
 
 bool CBitmap::LoadFromPNG(void *buf, int buflen) {
     Clear();
