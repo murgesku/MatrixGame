@@ -576,7 +576,7 @@ void CTextureManaged::LoadFromBitmap(int level, const CBitmap &bm, bool convert_
 
             //            m_SizeInMemory+=lr.Pitch*ly;
 
-            const BYTE *sou = bm.ByteData();
+            const BYTE *sou = bm.Data();
             BYTE *des = (BYTE *)lr.pBits;
             for (int y = 0; y < ly; y++, sou += bm.Pitch() - lx * 4, des += lr.Pitch - lx * 2) {
                 for (int x = 0; x < lx; x++, sou += 4, des += 2) {
