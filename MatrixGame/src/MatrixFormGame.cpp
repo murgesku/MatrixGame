@@ -142,23 +142,23 @@ void make_screenshot()
         return;
     }
 
-    CBitmap bm(g_CacheHeap);
-    CBitmap bmout(g_CacheHeap);
+    WinBitmap bm;
+    CBitmap bmout;
     bmout.CreateRGB(g_ScreenX, g_ScreenY);
 
     HDC hdc = GetDC(g_Wnd);
 
-    bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
-    bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
-    if (SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0) {
+    bm.SetHandle(CreateCompatibleBitmap(hdc, g_ScreenX, g_ScreenY));
+    bm.SetDC(CreateCompatibleDC(hdc));
+    if (SelectObject(bm.GetDC(), bm.GetHandle()) == 0) {
         ReleaseDC(g_Wnd, hdc);
         return;
     }
-    BitBlt(bm.WBM_BitmapDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
+    BitBlt(bm.GetDC(), 0, 0, g_ScreenX, g_ScreenY, hdc, 0, 0, SRCCOPY);
 
     ReleaseDC(g_Wnd, hdc);
 
-    bm.WBM_Save(true);
+    bm.Save(true);
 
     bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
     bmout.SaveInPNG(filename.c_str());

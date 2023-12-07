@@ -44,7 +44,7 @@ LPDIRECT3DTEXTURE9 CBaseTexture::LoadTextureFromFile(bool to16, D3DPOOL pool) {
             goto autoload;
 
         CTextureManaged *tex = CACHE_CREATE_TEXTUREMANAGED();
-        CBitmap bm(g_CacheHeap);
+        CBitmap bm;
         bm.LoadFromPNG(tn.c_str());
         tex->LoadFromBitmap(bm, true, FLAG(m_Flags, TF_NOMIPMAP) ? 1 : 0);
 
@@ -576,7 +576,7 @@ void CTextureManaged::LoadFromBitmap(int level, const CBitmap &bm, bool convert_
 
             //            m_SizeInMemory+=lr.Pitch*ly;
 
-            const BYTE *sou = bm.ByteData();
+            const BYTE *sou = bm.Data();
             BYTE *des = (BYTE *)lr.pBits;
             for (int y = 0; y < ly; y++, sou += bm.Pitch() - lx * 4, des += lr.Pitch - lx * 2) {
                 for (int x = 0; x < lx; x++, sou += 4, des += 2) {
@@ -703,8 +703,6 @@ void CTextureManaged::LoadFromBitmap(const CBitmap &bm, D3DFORMAT fmt, int level
     CBuf buf;
 
     bm.SaveInDDSUncompressed(buf);
-    // bm.SaveInBMP(buf);
-    //((CBitmap *)&bm)->SaveInPNG(buf);   // const hack
 
 #ifdef USE_DX_MANAGED_TEXTURES
     D3DXCreateTextureFromFileInMemoryEx(g_D3DD, buf.Get(), buf.Len(), 0, 0, levels, 0, fmt, D3DPOOL_MANAGED,
@@ -920,7 +918,7 @@ void CTextureManaged::LoadFromBitmap(const CBitmap &bm, bool convert_to_16bit, i
 #else
     int lcnt = m_TexFrom->GetLevelCount();
 #endif
-    CBitmap bc(g_CacheHeap);
+    CBitmap bc;
 
     if (bm.BytePP() == 4)
         bc.CreateRGBA(lx, ly);

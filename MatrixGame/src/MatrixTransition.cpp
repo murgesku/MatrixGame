@@ -44,8 +44,8 @@ void CTransition::BuildTexture(void) {
     if (m_GeomCnt == 0)
         return;
 
-    CBitmap bm(g_CacheHeap);
-    CBitmap bmout(g_CacheHeap);
+    WinBitmap bm;
+    CBitmap bmout;
     bmout.CreateRGB(DetermineGreaterPowerOfTwo(m_ScreenX), DetermineGreaterPowerOfTwo(m_ScreenY));
     bmout.Fill(CPoint(0, 0), bmout.Size(), 0);
 
@@ -95,17 +95,17 @@ void CTransition::BuildTexture(void) {
         m_Geom[i].dir *= (float)tra->ParGetName(i).GetStrPar(1, L",").GetDouble();
     }
 
-    bm.WBM_Bitmap(CreateCompatibleBitmap(hdc, r.right, r.bottom));
-    bm.WBM_BitmapDC(CreateCompatibleDC(hdc));
-    if (SelectObject(bm.WBM_BitmapDC(), bm.WBM_Bitmap()) == 0) {
+    bm.SetHandle(CreateCompatibleBitmap(hdc, r.right, r.bottom));
+    bm.SetDC(CreateCompatibleDC(hdc));
+    if (SelectObject(bm.GetDC(), bm.GetHandle()) == 0) {
         ReleaseDC(g_Wnd, hdc);
         return;
     }
-    BitBlt(bm.WBM_BitmapDC(), 0, 0, r.right, r.bottom, hdc, 0, 0, SRCCOPY);
+    BitBlt(bm.GetDC(), 0, 0, r.right, r.bottom, hdc, 0, 0, SRCCOPY);
 
     ReleaseDC(g_Wnd, hdc);
 
-    bm.WBM_Save(true);
+    bm.Save(true);
 
     bmout.Copy(CPoint(0, 0), bm.Size(), bm, CPoint(0, 0));
 

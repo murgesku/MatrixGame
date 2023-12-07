@@ -535,8 +535,8 @@ bool CMatrixMapStatic::RenderToTexture(SRenderTexture *rt, int n, /*float *fff,*
     {
         int curt = 0;
 
-        CBitmap bm(g_CacheHeap);
-        CBitmap src(g_CacheHeap);
+        CBitmap bm;
+        CBitmap src;
 
         D3DLOCKED_RECT lor;
         newTarget->LockRect(&lor, NULL, 0);

@@ -133,7 +133,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
 
     CBottomTextureUnion::Init(cnt);
 
-    CBitmap bmp(g_CacheHeap);
+    CBitmap bmp;
     bmp.CreateRGB((TEX_BOTTOM_SIZE * g_MatrixMap->m_TexUnionDim), (TEX_BOTTOM_SIZE * g_MatrixMap->m_TexUnionDim));
 
     CBitmap **srcb = (CBitmap **)_alloca(sizeof(CBitmap *) * g_MatrixMap->IdsGetCount());
@@ -167,7 +167,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
 
                 if (srcb[*bot] == NULL) {
                     // source bitmap not yet loaded
-                    srcb[*bot] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+                    srcb[*bot] = HNew(g_CacheHeap) CBitmap();
                     srcb[*bot]->LoadFromPNG(g_MatrixMap->IdsGet(*bot).c_str());
                 }
                 bmp.Copy(CPoint(xx, yy), CPoint(TEX_BOTTOM_SIZE, TEX_BOTTOM_SIZE), *srcb[*bot], CPoint(0, 0));
@@ -180,7 +180,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
 
                     if (inmapb[ibm] == NULL) {
                         // source bitmap not yet loaded
-                        inmapb[ibm] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+                        inmapb[ibm] = HNew(g_CacheHeap) CBitmap();
                         inmapb[ibm]->LoadFromPNG(bmpc->GetFirst<BYTE>(ibm), bmpc->GetArrayLength(ibm));
                     }
 
@@ -188,7 +188,7 @@ static int BuildTexUnions(CStorage &stor, int lp1, int lp2) {
                         // load source and mix with mask
                         if (srcb[ids] == NULL) {
                             // source bitmap not yet loaded
-                            srcb[ids] = HNew(g_CacheHeap) CBitmap(g_CacheHeap);
+                            srcb[ids] = HNew(g_CacheHeap) CBitmap();
                             srcb[ids]->LoadFromPNG(g_MatrixMap->IdsGet(ids).c_str());
                         }
 
