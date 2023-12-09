@@ -13,7 +13,6 @@ Improve path finding algorithm? Create better robots AI? If you'd like to be a p
 ## Dependencies
 Game uses DirectX 9 API, therefore requires DirectX SDK with corresponding headers/libs to be installed. In the original repo *DirectX SDK (June 2010)* have being used, and as it works I see no reason to change it.<br>
 Fortunately you can simply use the commands from a [workflow file](https://github.com/vladislavrv/MatrixGame/blob/ae6bf8ef127642e9a3d82825a5d05fa867a83808/.github/workflows/win-build.yml) ("Get DXSDK" section) to get everything you need. Just don't forget to configure DXSDK_DIR environment variable.<br>
-Also *3ds Max 2012 SDK* is optional dependency - I have no idea why and what it should do, see Extras/MaxExp folder for details. Anyway it's not necessary for a game building, so you can skip it.
 
 ## Building
 
@@ -57,7 +56,7 @@ There are two ways to playtest it...
 ### Build as a DLL (canonical way)<br>
 Simply replace library file in the _Space Rangers_ game folder (_MatrixGame.dll_) with the one from build folder.<br>
 Then run the game and start a battle from menu - everything should work smooth and fine. If it's not - well, something went wrong.  
-### Build as an EXE (alternative way; not recommended)<br>
+### Build as an EXE (alternative way)<br>
 You have to prepare a specific folders structure with all the resources:
 ```
 game (top-level folder; name does not matter, it might be your build folder)
@@ -67,8 +66,6 @@ game (top-level folder; name does not matter, it might be your build folder)
 │ └ robots.pkg (taken from the main game)
 └ MatrixGame.exe (your built executable)
 ```
-Then if game will start and work you'll meet [The Problem](https://github.com/vladislavrv/MatrixGame/issues/3), which does not have any solution for now. That's why this option is not canonical, and probably will never be.
-
 ## Contribution
 The whole project is a bunch of low-quality C++ code from late 90x. There is a huge space for an improvements, so feel free to just take any part and refactor it as you wish.<br>
 This project implements and uses its own memory management system (see MatrixLib/Base/CHeap.hpp), which in fact does not introduce any custom functions and simply wraps the calls of windows-style memory-management function (like HeapAlloc). So feel free to use C++ standard library with any of its features (C++14 only for a moment due to VS 2015 as "canonical" compiler; will be changed in the future).<br>
