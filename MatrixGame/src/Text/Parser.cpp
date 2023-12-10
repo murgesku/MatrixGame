@@ -167,7 +167,8 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
         }
         else
         {
-            throw std::runtime_error("You shouldn't see this");
+            lgr.debug("Parsing workaround used for string: {}")(utils::from_wstring(str));
+            result.emplace_back(L"+X", color);
         }
     }
     ////////////////////////////////////////////////////////////////////
