@@ -32,13 +32,14 @@ public:
     {
         friend class stupid;
 
-        entry(std::ostream& out, std::source_location caller, std::string_view format)
+        entry(std::ostream& out, std::source_location caller, std::string_view format, size_t tick)
         : _out{out}
         {
             if constexpr (_level != logger::level::nolog)
             {
                 _caller = caller;
                 _log_line = format;
+                _tick = tick;
             }
         }
 
@@ -50,8 +51,9 @@ public:
             {
                 _out <<
                     std::format(
-                        "{:%F %T} |{}| {} | {}:{}\n",
+                        "{:%F %T} |{:05d}|{}| {} | {}:{}\n",
                         std::chrono::system_clock::now(),
+                        _tick,
                         get_formatted_level(),
                         _log_line,
                         _caller.file_name(),
@@ -89,6 +91,7 @@ public:
         std::ostream& _out;
         std::source_location _caller;
         std::string _log_line;
+        size_t _tick;
     };
 
     stupid(const std::string& path)
@@ -104,6 +107,11 @@ public:
     stupid(std::ostream& out)
     : _out{out}
     {
+    }
+
+    void add_ticks(size_t ticks)
+    {
+        _tick += ticks;
     }
 
     auto fatal(std::string_view format, std::source_location caller = std::source_location::current())
@@ -142,16 +150,17 @@ private:
     {
         if constexpr (value <= type)
         {
-            return entry<value>(_out, caller, format);
+            return entry<value>(_out, caller, format, _tick);
         }
         else
         {
-            return entry<logger::level::nolog>(_out, caller, format);
+            return entry<logger::level::nolog>(_out, caller, format, _tick);
         }
     }
 
     std::ofstream _out_file;
     std::ostream& _out;
+    size_t _tick{0};
 };
 
 } // namespace logger
