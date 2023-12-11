@@ -490,6 +490,8 @@ int L3GRun()
 #ifdef _DEBUG
         SETFLAG(g_Flags, GFLAG_TAKTINPROGRESS);
 #endif
+
+        lgr.add_ticks(delta);
         SRemindCore::Takt(delta);
         g_FormCur->Takt(delta);
 #ifdef _DEBUG
