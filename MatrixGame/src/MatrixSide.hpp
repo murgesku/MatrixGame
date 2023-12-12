@@ -623,4 +623,4 @@ public:
     void DMSide(const wchar *format, ...);
 };
 
-void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param);
+void SideSelectionCallBack(CMatrixMapStatic *ms, uintptr_t param);

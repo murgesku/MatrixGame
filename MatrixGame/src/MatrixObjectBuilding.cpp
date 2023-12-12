@@ -475,7 +475,7 @@ struct SFindRobotForCaptureAny {
 static bool FindCaptureMe(
     [[maybe_unused]] const D3DXVECTOR2 &center,
     CMatrixMapStatic *ms,
-    DWORD user)
+    uintptr_t user)
 {
     DTRACE();
 
@@ -486,7 +486,7 @@ static bool FindCaptureMe(
     return true;
 }
 
-static bool FindRobotForCaptureAny(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FindRobotForCaptureAny(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, uintptr_t user) {
     DTRACE();
 
     SFindRobotForCaptureAny *data = (SFindRobotForCaptureAny *)user;
@@ -529,7 +529,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
             }
 
             g_MatrixMap->FindObjects(m_Pos, DISTANCE_CAPTURE_ME, 1, TRACE_ROBOT, m_Capturer, FindCaptureMe,
-                                     (DWORD)this);
+                                     (uintptr_t)this);
 
             // should not be captured...
             r = CMatrixMapStatic::GetFirstLogic();
@@ -559,7 +559,7 @@ void CMatrixBuilding::LogicTakt(int cms) {
                 // CHelper::Create(300,0)->Line(D3DXVECTOR3(m_Pos.x, m_Pos.y, 0), D3DXVECTOR3(m_Pos.x, m_Pos.y, 1000));
 
                 g_MatrixMap->FindObjects(m_Pos, CAPTURE_RADIUS, 1, TRACE_ROBOT, NULL, FindRobotForCaptureAny,
-                                         (DWORD)&data);
+                                         (uintptr_t)&data);
 
                 if (data.found && m_Side != data.found->GetSide()) {
                     Capture(data.found);
@@ -937,7 +937,7 @@ void CMatrixBuilding::Draw(void) {
 
     //	ASSERT_DX(g_D3DD->SetTransform(D3DTS_WORLD,&m_Matrix));
     //	m_Graph->DrawSide(map.SideToColor(m_Side),flags);
-    DWORD coltex = (DWORD)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
+    uintptr_t coltex = (uintptr_t)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
     g_D3DD->SetRenderState(D3DRS_TEXTUREFACTOR, m_Core->m_TerainColor);
     //	m_Graph->Draw(flags);
     m_GGraph->Draw(coltex);
@@ -1078,7 +1078,7 @@ struct SFindRobotForCapture {
     float dist2;
 };
 
-static bool FindRobotForCapture(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FindRobotForCapture(const D3DXVECTOR2 &center, CMatrixMapStatic *ms, uintptr_t user) {
     SFindRobotForCapture *data = (SFindRobotForCapture *)user;
 
     auto tmp = center - *(D3DXVECTOR2 *)&ms->GetGeoCenter();
@@ -1119,7 +1119,7 @@ ECaptureStatus CMatrixBuilding::Capture(CMatrixRobotAI *by) {
     data.found = NULL;
     data.dist2 = CAPTURE_RADIUS * CAPTURE_RADIUS;
 
-    g_MatrixMap->FindObjects(m_Pos, CAPTURE_RADIUS, 1, TRACE_ROBOT, NULL, FindRobotForCapture, (DWORD)&data);
+    g_MatrixMap->FindObjects(m_Pos, CAPTURE_RADIUS, 1, TRACE_ROBOT, NULL, FindRobotForCapture, (uintptr_t)&data);
 
     if (data.by == NULL || data.by != data.found)
         return CAPTURE_TOOFAR;
@@ -1391,7 +1391,7 @@ bool CMatrixBuilding::InRect(const CRect &rect) const {
     d.found = false;
     d.rect = &rect;
 
-    m_GGraph->EnumFrameVerts_transform_position(EnumVertsHandler, (DWORD)&d);
+    m_GGraph->EnumFrameVerts_transform_position(EnumVertsHandler, (uintptr_t)&d);
     if (d.found)
         return true;
 
@@ -1891,7 +1891,7 @@ void CBuildStack::ClearStack() {
             if (ifs->m_strName == IF_MAIN) {
                 CIFaceElement *els = ifs->m_FirstElement;
                 while (els) {
-                    if (IS_STACK_ICON(els->m_nId) && els->m_iParam == int(m_ParentBase)) {
+                    if (IS_STACK_ICON(els->m_nId) && els->m_iParam == uintptr_t(m_ParentBase)) {
                         els = ifs->DelElement(els);
                         continue;
                     }

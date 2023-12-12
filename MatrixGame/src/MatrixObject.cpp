@@ -838,7 +838,7 @@ void CMatrixMapObject::Draw(void) {
         m_Graph->Draw(0);
     }
     else {
-        m_Graph->Draw((DWORD)this);
+        m_Graph->Draw((uintptr_t)this);
     }
 
     if (FLAG(m_ObjectState, OBJECT_STATE_NORMALIZENORMALS))
@@ -1106,7 +1106,7 @@ void CMatrixMapObject::PauseTakt(int)
     }
 }
 
-static bool FindOnlyPlayerRobots(const D3DXVECTOR3&, CMatrixMapStatic *ms, DWORD user) {
+static bool FindOnlyPlayerRobots(const D3DXVECTOR3&, CMatrixMapStatic *ms, uintptr_t user) {
     if (ms->GetSide() == PLAYER_SIDE) {
         *(bool *)user = true;
         return false;
@@ -1114,7 +1114,7 @@ static bool FindOnlyPlayerRobots(const D3DXVECTOR3&, CMatrixMapStatic *ms, DWORD
     return true;
 }
 
-static bool FindOnlyPlayerRobotsTgt(const D3DXVECTOR3&, CMatrixMapStatic *ms, DWORD user) {
+static bool FindOnlyPlayerRobotsTgt(const D3DXVECTOR3&, CMatrixMapStatic *ms, uintptr_t user) {
     if (ms->GetSide() == PLAYER_SIDE) {
         *(CMatrixRobotAI **)user = ms->AsRobot();
         return false;
@@ -1241,7 +1241,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
                 int addt = 107;
                 bool found = false;
                 g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, m_SensRadius, 1, TRACE_ROBOT, NULL,
-                                         FindOnlyPlayerRobots, (DWORD)&found);
+                                         FindOnlyPlayerRobots, (uintptr_t)&found);
                 if (found) {
                     auto temp(g_MatrixMap->IdsGet(m_Type).GetStrPar(OTP_BEHAVIOUR, L"*"));
                     m_PrevStateRobotsInRadius = 1;
@@ -1320,7 +1320,7 @@ void CMatrixMapObject::LogicTakt(int ms) {
 
                     CMatrixRobotAI *tgt = NULL;
                     g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Core->m_Matrix._41, m_SensRadius, 1, TRACE_ROBOT, NULL,
-                                             FindOnlyPlayerRobotsTgt, (DWORD)&tgt);
+                                             FindOnlyPlayerRobotsTgt, (uintptr_t)&tgt);
 
                     CPoint pos(Float2Int(m_Core->m_Matrix._41 * INVERT(GLOBAL_SCALE_MOVE)),
                                Float2Int(m_Core->m_Matrix._42 * INVERT(GLOBAL_SCALE_MOVE)));
@@ -1481,7 +1481,7 @@ bool CMatrixMapObject::InRect(const CRect &rect) const {
     d.m *= s;
     d.rect = &rect;
     d.found = false;
-    m_Graph->EnumFrameVerts(EnumVertsHandler, (DWORD)&d);
+    m_Graph->EnumFrameVerts(EnumVertsHandler, (uintptr_t)&d);
     if (d.found)
         return true;
 

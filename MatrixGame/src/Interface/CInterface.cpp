@@ -1760,7 +1760,7 @@ void CInterface::Init(void) {
                     }
                     else if (bld->m_BS.GetItemsCnt() &&
                              (pElement->m_strName == IF_STACK_ICON || pElement->m_strName == IF_STACK_OTHER ||
-                              (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == int(bld)))) {
+                              (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == uintptr_t(bld)))) {
                         pElement->SetVisibility(true);
                     }
                     else if (pElement->m_strName == IF_BASE_LINE) {
@@ -4714,7 +4714,7 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding *base, CMatrixMapStati
                 }
             }
             if (s) {
-                s->m_iParam = int(base);
+                s->m_iParam = uintptr_t(base);
                 s->SetVisibility(false);
             }
 
@@ -4739,7 +4739,7 @@ void CIFaceList::DeleteStackIcon(int num, CMatrixBuilding *base) {
         if (ifs->m_strName == IF_MAIN) {
             CIFaceElement *els = ifs->m_FirstElement;
             while (els) {
-                if (IS_STACK_ICON(els->m_nId) && els->m_iParam == (int)base) {
+                if (IS_STACK_ICON(els->m_nId) && els->m_iParam == (uintptr_t)base) {
                     if (num == 1 && els->m_nId == STACK_ICON + 1) {
                         els = ifs->DelElement(els);
                         continue;

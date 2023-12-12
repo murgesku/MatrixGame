@@ -723,8 +723,8 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
                 Text::Render(text, font, color, w, h, alignx, aligny, (w == 0) ? 0 : 1, 0, 0, rect, *bmsrc);
             }
 
-            its.Add<uint32_t>((DWORD)it);
-            bmps.Add<uint32_t>((DWORD)bmsrc);
+            its.Add<uintptr_t>((uintptr_t)it);
+            bmps.Add<uintptr_t>((uintptr_t)bmsrc);
             ssz++;
 
             elems[nelem].bmp = bmsrc;
@@ -741,10 +741,10 @@ CMatrixHint *CMatrixHint::Build(const std::wstring &str, CBlockPar *repl, const 
     for (int i = 0; i < ssz; ++i) {
         if (g_RangersInterface)
         {
-            g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText*)its.Buff<DWORD>()[i]);
+            g_RangersInterface->m_RangersTextClear((SMGDRangersInterfaceText*)its.Buff<uintptr_t>()[i]);
         }
-        delete (SMGDRangersInterfaceText*)its.Buff<DWORD>()[i];
-        delete (CBitmap*)bmps.Buff<DWORD>()[i];
+        delete (SMGDRangersInterfaceText*)its.Buff<uintptr_t>()[i];
+        delete (CBitmap*)bmps.Buff<uintptr_t>()[i];
     }
 
     return hint;

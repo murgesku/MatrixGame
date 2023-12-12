@@ -275,8 +275,8 @@ public:
 #endif
 
 void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname);
-void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname, HWND hwnd, long FDirect3D,
-                  long FD3DDevice);
+void L3GInitAsDLL(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname, HWND hwnd, uintptr_t FDirect3D,
+                  uintptr_t FD3DDevice);
 void L3GDeinit(void);
 int L3GRun(void);
 

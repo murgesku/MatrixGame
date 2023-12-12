@@ -248,7 +248,7 @@ class CMatrixEffectWeapon : public CMatrixEffect {
     DWORD m_Sound;
     ESound m_SoundType;
 
-    DWORD m_User;
+    uintptr_t m_User;
     FIRE_END_HANDLER m_Handler;
     int m_Ref;
 
@@ -272,7 +272,7 @@ class CMatrixEffectWeapon : public CMatrixEffect {
     SObjectCore *m_Owner;
     int m_SideStorage;  // side storage (if owner will be killed)
 
-    CMatrixEffectWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, DWORD user, FIRE_END_HANDLER handler,
+    CMatrixEffectWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, uintptr_t user, FIRE_END_HANDLER handler,
                         EWeapon type, int cooldown);
     virtual ~CMatrixEffectWeapon();
     void Fire(void);
@@ -285,7 +285,7 @@ public:
     float GetWeaponDist(void) const { return m_WeaponDist * m_WeaponCoefficient; }
     friend class CMatrixEffect;
 
-    static void WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &pos, DWORD user, DWORD flags);
+    static void WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &pos, uintptr_t user, DWORD flags);
 
     void SetOwner(CMatrixMapStatic *ms);
     int GetSideStorage(void) const { return m_SideStorage; };

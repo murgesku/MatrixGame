@@ -488,7 +488,7 @@ void CMatrixSideUnit::LogicTakt(int ms) {
 
             CMultiSelection::m_GameSelection->Update(g_MatrixMap->m_Cursor.GetPos(),
                                                      TRACE_ROBOT /*|TRACE_FLYER*/ | TRACE_BUILDING,
-                                                     SideSelectionCallBack, (DWORD)&cbs);
+                                                     SideSelectionCallBack, (uintptr_t)&cbs);
         }
         DCP();
         PumpGroups();
@@ -1759,7 +1759,7 @@ void CMatrixSideUnit::SetCurGroup(CMatrixGroup *group) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void SideSelectionCallBack(CMatrixMapStatic *ms, DWORD param) {
+void SideSelectionCallBack(CMatrixMapStatic *ms, uintptr_t param) {
     DTRACE();
     if (!ms ||
         (ms->GetObjectType() != OBJECT_TYPE_ROBOTAI && ms->GetObjectType() != OBJECT_TYPE_FLYER &&
@@ -4083,7 +4083,7 @@ void CMatrixSideUnit::TaktHL() {
                 ms = CMatrixMapStatic::GetFirstLogic();
                 while (ms) {
                     if (ms->IsLiveRobot() && ms->GetSide() == m_Id && GetGroupLogic(ms) == gi[u]) {
-                        DMSide(L"Robot=<b=16><u> Change team for defence <b=10><i>-><i>", DWORD(ms), k, i);
+                        DMSide(L"Robot=<b=16><u> Change team for defence <b=10><i>-><i>", uintptr_t(ms), k, i);
 
                         //                    m_Team[ms->AsRobot()->GetTeam()].m_RobotCnt--;
                         //                    m_Team[ms->AsRobot()->GetTeam()].m_Strength-=ms->AsRobot()->GetStrength();
@@ -4141,7 +4141,7 @@ void CMatrixSideUnit::TaktHL() {
             ms = CMatrixMapStatic::GetFirstLogic();
             while (ms) {
                 if (ms->IsLiveRobot() && ms->GetSide() == m_Id && ms->AsRobot()->GetTeam() == u) {
-                    DMSide(L"Robot=<b=16><u> Change team war <b=10><i>-><i>", DWORD(ms), k, i);
+                    DMSide(L"Robot=<b=16><u> Change team war <b=10><i>-><i>", uintptr_t(ms), k, i);
                     ms->AsRobot()->SetTeam(i);
                     ms->AsRobot()->SetGroupLogic(-1);
                 }
@@ -4197,7 +4197,7 @@ void CMatrixSideUnit::TaktHL() {
             ms = CMatrixMapStatic::GetFirstLogic();
             while (ms) {
                 if (ms->IsLiveRobot() && ms->GetSide() == m_Id && ms->AsRobot()->GetTeam() == u) {
-                    DMSide(L"Robot=<b=16><u> Change team union group <b=10><i>-><i>", DWORD(ms), k, i);
+                    DMSide(L"Robot=<b=16><u> Change team union group <b=10><i>-><i>", uintptr_t(ms), k, i);
                     ms->AsRobot()->SetTeam(i);
                     ms->AsRobot()->SetGroupLogic(-1);
                 }
@@ -4246,7 +4246,7 @@ void CMatrixSideUnit::TaktHL() {
                 ms = CMatrixMapStatic::GetFirstLogic();
                 while (ms && u) {
                     if (ms->IsLiveRobot() && ms->GetSide() == m_Id && ms->AsRobot()->GetTeam() == k) {
-                        DMSide(L"Robot=<b=16><u> Change team to empty <b=10><i>-><i>", DWORD(ms), k, i);
+                        DMSide(L"Robot=<b=16><u> Change team to empty <b=10><i>-><i>", uintptr_t(ms), k, i);
                         ms->AsRobot()->SetTeam(i);
                         ms->AsRobot()->SetGroupLogic(-1);
                         u--;
@@ -4266,7 +4266,7 @@ void CMatrixSideUnit::TaktHL() {
                     ms = CMatrixMapStatic::GetFirstLogic();
                     while (ms) {
                         if (ms->IsLiveRobot() && ms->GetSide() == m_Id && GetGroupLogic(ms) == t) {
-                            DMSide(L"Robot=<b=16><u> Change team to empty <b=10><i>-><i>", DWORD(ms), k, i);
+                            DMSide(L"Robot=<b=16><u> Change team to empty <b=10><i>-><i>", uintptr_t(ms), k, i);
                             ms->AsRobot()->SetTeam(i);
                             ms->AsRobot()->SetGroupLogic(-1);
                         }
@@ -4330,7 +4330,7 @@ void CMatrixSideUnit::TaktHL() {
             ms = CMatrixMapStatic::GetFirstLogic();
             while (ms && u) {
                 if (ms->IsLiveRobot() && ms->GetSide() == m_Id && ms->AsRobot()->GetTeam() == k) {
-                    DMSide(L"Robot=<b=16><u> Change team if nerest <b=10><i>-><i>", DWORD(ms), k, i);
+                    DMSide(L"Robot=<b=16><u> Change team if nerest <b=10><i>-><i>", uintptr_t(ms), k, i);
                     ms->AsRobot()->SetTeam(i);
                     ms->AsRobot()->SetGroupLogic(-1);
                     u--;
@@ -4384,7 +4384,7 @@ void CMatrixSideUnit::TaktHL() {
                 ms = CMatrixMapStatic::GetFirstLogic();
                 while (ms) {
                     if (ms->IsLiveRobot() && ms->GetSide() == m_Id && ms->AsRobot()->GetTeam() == u) {
-                        DMSide(L"Robot=<b=16><u> Change team union defence group <b=10><i>-><i>", DWORD(ms), u, i);
+                        DMSide(L"Robot=<b=16><u> Change team union defence group <b=10><i>-><i>", uintptr_t(ms), u, i);
                         ms->AsRobot()->SetTeam(i);
                         ms->AsRobot()->SetGroupLogic(-1);
                     }
@@ -4404,7 +4404,7 @@ void CMatrixSideUnit::TaktHL() {
 #if (defined _DEBUG) && !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
     //    if(m_Id==PLAYER_SIDE)
     for (i = 0; i < m_TeamCnt; i++) {
-        CHelper::DestroyByGroup(DWORD(m_Team + i));
+        CHelper::DestroyByGroup(uintptr_t(m_Team + i));
 
         if (m_Team[i].m_Action.m_Type == mlat_None)
             continue;
@@ -4415,7 +4415,7 @@ void CMatrixSideUnit::TaktHL() {
 
         CPoint tp = g_MatrixMap->m_RN.m_Region[m_Team[i].m_Action.m_Region].m_Center;
         float z = g_MatrixMap->GetZ(GLOBAL_SCALE_MOVE * tp.x, GLOBAL_SCALE_MOVE * tp.y);
-        CHelper::Create(0, DWORD(m_Team + i))
+        CHelper::Create(0, uintptr_t(m_Team + i))
                 ->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE * tp.x, GLOBAL_SCALE_MOVE * tp.y, z),
                        D3DXVECTOR3(GLOBAL_SCALE_MOVE * tp.x, GLOBAL_SCALE_MOVE * tp.y, z + 30 - 2.0f * i),
                        4.0f + 1.0f * i, 4.0f + 1.0f * i, colors[i], colors[i], 5);
@@ -7759,9 +7759,9 @@ void CMatrixSideUnit::TaktPL(int onlygroup) {
                 v4.y = (tp.y + 4) * GLOBAL_SCALE_MOVE;
                 v4.z = g_MatrixMap->GetZ(v4.x, v4.y) + 1.0f;
 
-                CHelper::DestroyByGroup(DWORD(obj) + 1);
-                CHelper::Create(10, DWORD(obj) + 1)->Triangle(v1, v2, v3, 0x8000ff00);
-                CHelper::Create(10, DWORD(obj) + 1)->Triangle(v1, v3, v4, 0x8000ff00);
+                CHelper::DestroyByGroup(uintptr_t(obj) + 1);
+                CHelper::Create(10, uintptr_t(obj) + 1)->Triangle(v1, v2, v3, 0x8000ff00);
+                CHelper::Create(10, uintptr_t(obj) + 1)->Triangle(v1, v3, v4, 0x8000ff00);
             }
             //            D3DXVECTOR2 v=GetWorldPos(obj);
             //            CHelper::DestroyByGroup(DWORD(obj)+2);

@@ -89,8 +89,8 @@ inline bool CMatrixMapStatic::FitToMask(DWORD mask) {
     return false;
 }
 
-typedef bool (*ENUM_OBJECTS)(const D3DXVECTOR3 &center, CMatrixMapStatic *o, DWORD user);
-typedef bool (*ENUM_OBJECTS2D)(const D3DXVECTOR2 &center, CMatrixMapStatic *o, DWORD user);
+typedef bool (*ENUM_OBJECTS)(const D3DXVECTOR3 &center, CMatrixMapStatic *o, uintptr_t user);
+typedef bool (*ENUM_OBJECTS2D)(const D3DXVECTOR2 &center, CMatrixMapStatic *o, uintptr_t user);
 
 class CMatrixBuilding;
 
@@ -620,9 +620,9 @@ public:
     CMatrixMapStatic *Trace(D3DXVECTOR3 *out, const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, DWORD mask,
                             CMatrixMapStatic *skip = NULL);
     bool FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
-                     ENUM_OBJECTS callback, DWORD user);
+                     ENUM_OBJECTS callback, uintptr_t user);
     bool FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
-                     ENUM_OBJECTS2D callback, DWORD user);
+                     ENUM_OBJECTS2D callback, uintptr_t user);
 
     // CMatrixMapGroup * GetGroupByCell(int x, int y) { return m_Group[(x/MATRIX_MAP_GROUP_SIZE) +
     // (y/MATRIX_MAP_GROUP_SIZE) * m_GroupSize.x ];  }

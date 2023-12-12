@@ -981,7 +981,7 @@ void CMatrixRobot::BeforeDraw(void) {
 }
 
 void CMatrixRobot::Draw(void) {
-    DWORD coltex = (DWORD)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
+    uintptr_t coltex = (uintptr_t)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
     // g_D3DD->SetRenderState( D3DRS_NORMALIZENORMALS,  TRUE );
 
     for (int i = 0; i < 4; i++) {
@@ -1713,7 +1713,7 @@ bool CMatrixRobot::InRect(const CRect &rect) const {
         if (m_Unit[i].m_Graph) {
             d.found = false;
             d.m = m_Unit[i].m_Matrix * t;
-            m_Unit[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (DWORD)&d);
+            m_Unit[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (uintptr_t)&d);
             if (d.found)
                 return true;
         }

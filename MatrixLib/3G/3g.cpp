@@ -272,7 +272,7 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
             ERROR_S(L"CreateDevice failed: D3DERR_OUTOFVIDEOMEMORY");
     }
 
-    SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc));
+    SetWindowLongPtr(g_Wnd, GWL_WNDPROC, uintptr_t((WNDPROC)L3G_WndProc));
 
     IDirect3DSurface9 *surf;
     g_D3DD->GetRenderTarget(0, &surf);
@@ -349,8 +349,8 @@ void L3GInitAsDLL(
     [[maybe_unused]] const wchar* sysname,
     [[maybe_unused]] const wchar* captionname,
     HWND hwnd,
-    long FDirect3D,
-    long FD3DDevice)
+    uintptr_t FDirect3D,
+    uintptr_t FD3DDevice)
 {
     // RECT tr;
 
@@ -366,7 +366,7 @@ void L3GInitAsDLL(
     g_WndOldProg = GetWindowLong(g_Wnd, GWL_WNDPROC);
     if (g_WndOldProg == 0)
         ERROR_E;
-    if (SetWindowLong(g_Wnd, GWL_WNDPROC, DWORD((WNDPROC)L3G_WndProc)) == 0)
+    if (SetWindowLongPtr(g_Wnd, GWL_WNDPROC, uintptr_t((WNDPROC)L3G_WndProc)) == 0)
         ERROR_E;
 
     /*IDirect3DSurface9 * surf;

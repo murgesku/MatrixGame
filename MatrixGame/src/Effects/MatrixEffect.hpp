@@ -127,7 +127,7 @@ typedef void (*ADD_TAKT)(CMatrixEffectBillboard *bb, float ms);
 #define FEHF_LASTHIT      SETBIT(0)
 #define FEHF_DAMAGE_ROBOT SETBIT(1)
 
-typedef void (*FIRE_END_HANDLER)(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user, DWORD flags);
+typedef void (*FIRE_END_HANDLER)(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, uintptr_t user, DWORD flags);
 
 #define SMOKE_SPEED (1.0f / 25.0f)
 // fire
@@ -458,13 +458,13 @@ public:
                                int ttl);  // automaticaly adds to Effects list; can return NULL
     static void CreateFirePlasma(const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, float speed, DWORD hitmask,
                                  CMatrixMapStatic *skip, FIRE_END_HANDLER handler,
-                                 DWORD user);  // automaticaly adds to Effects list; can return NULL
+                                 uintptr_t user);  // automaticaly adds to Effects list; can return NULL
     static void CreateLandscapeSpot(
             SEffectHandler *eh, const D3DXVECTOR2 &pos, float angle, float scale,
             ESpotType type = SPOT_CONSTANT);  // automaticaly adds to Effects list; can return NULL
     static void CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask, CMatrixMapStatic *skip,
                                    FIRE_END_HANDLER = NULL,
-                                   DWORD user = 0);  // automaticaly adds to Effects list; can return NULL
+                                   uintptr_t user = 0);  // automaticaly adds to Effects list; can return NULL
     static void CreateBuoy(SEffectHandler *eh, const D3DXVECTOR3 &pos, EBuoyType bt);
     static void CreateMoveto(void);
     static void CreateMoveto(const D3DXVECTOR3 &pos);
@@ -477,12 +477,12 @@ public:
                             float height, float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
     static void CreateKonusSplash(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float radius, float height,
                                   float angle, float ttl, bool intense, CTextureManaged *tex = NULL);
-    static CMatrixEffect *CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, DWORD user,
+    static CMatrixEffect *CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, uintptr_t user,
                                        FIRE_END_HANDLER handler, EWeapon type, int cooldown = 0);
-    static void CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic *skip, DWORD user,
+    static void CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic *skip, uintptr_t user,
                             FIRE_END_HANDLER handler);
     static void CreateBigBoom(const D3DXVECTOR3 &pos, float radius, float ttl, DWORD hitmask, CMatrixMapStatic *skip,
-                              DWORD user, FIRE_END_HANDLER handler,
+                              uintptr_t user, FIRE_END_HANDLER handler,
                               DWORD light = 0);  // automaticaly adds to Effects list; can return NULL
     static void CreateLightening(SEffectHandler *eh, const D3DXVECTOR3 &pos0, const D3DXVECTOR3 &pos1, float ttl,
                                  float dispers, float width,
