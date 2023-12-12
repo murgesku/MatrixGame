@@ -407,22 +407,22 @@ static CMatrixEffectPath *path = 0;
 static CMatrixEffectSelection *sel = 0;
 static CMatrixEffectRepair *repair = 0;
 
-void selcallback(CMatrixMapStatic *ms, DWORD param) {
+void selcallback(CMatrixMapStatic *ms, uintptr_t param) {
     if (ms->GetObjectType() == OBJECT_TYPE_MAPOBJECT)
-        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Mesh", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%llu", (uintptr_t)ms).c_str(), L"Mesh", 1000);
     else if (ms->IsRobot())
-        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Robot", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%llu", (uintptr_t)ms).c_str(), L"Robot", 1000);
     else if (ms->IsCannon())
-        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Cannon", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%llu", (uintptr_t)ms).c_str(), L"Cannon", 1000);
     else if (ms->IsBuilding())
-        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Building", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%llu", (uintptr_t)ms).c_str(), L"Building", 1000);
     else if (ms->GetObjectType() == OBJECT_TYPE_FLYER)
-        g_MatrixMap->m_DI.T(utils::format(L"%d", (int)ms).c_str(), L"Flyer", 1000);
+        g_MatrixMap->m_DI.T(utils::format(L"%llu", (uintptr_t)ms).c_str(), L"Flyer", 1000);
     SideSelectionCallBack(ms, param);
 }
 #else
 
-void selcallback(CMatrixMapStatic *ms, DWORD param) {
+void selcallback(CMatrixMapStatic *ms, uintptr_t param) {
     SideSelectionCallBack(ms, param);
 }
 
@@ -462,7 +462,7 @@ void CFormMatrixGame::MouseMove(int x, int y) {
         cbs.mp = CPoint(x, y);
         cbs.calls = 0;
         CMultiSelection::m_GameSelection->Update(g_MatrixMap->m_Cursor.GetPos(), TRACE_ROBOT | TRACE_BUILDING,
-                                                 selcallback, (DWORD)&cbs);
+                                                 selcallback, (uintptr_t)&cbs);
     }
 
     // interface
@@ -682,7 +682,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
                     cbs.calls = 0;
 
                     CMultiSelection::m_GameSelection->Update(g_MatrixMap->m_Cursor.GetPos(),
-                                                             TRACE_ROBOT | TRACE_BUILDING, selcallback, (DWORD)&cbs);
+                                                             TRACE_ROBOT | TRACE_BUILDING, selcallback, (uintptr_t)&cbs);
                 }
             }
             g_MatrixMap->GetPlayerSide()->OnLButtonDown(CPoint(x, y));

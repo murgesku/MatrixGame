@@ -74,7 +74,7 @@ struct SMatrixCannonUnit {
 };
 
 class CMatrixCannon : public CMatrixMapStatic {
-    static void FireHandler(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, DWORD user, DWORD flags);
+    static void FireHandler(CMatrixMapStatic *hit, const D3DXVECTOR3 &pos, uintptr_t user, DWORD flags);
 
 protected:
     // hitpoint

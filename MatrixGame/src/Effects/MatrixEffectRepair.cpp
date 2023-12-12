@@ -82,7 +82,7 @@ struct SFindPatientData {
     int side_of_owner;
 };
 
-static bool FindPatient(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, DWORD user) {
+static bool FindPatient(const D3DXVECTOR3 &fpos, CMatrixMapStatic *ms, uintptr_t user) {
     if (!ms->NeedRepair())
         return true;
     SFindPatientData *data = (SFindPatientData *)user;
@@ -166,7 +166,7 @@ void CMatrixEffectRepair::Takt(float t) {
 
         // g_MatrixMap->m_DI.T(L"ishem...",L"",1000);
         g_MatrixMap->FindObjects(m_Pos + m_Dir * m_SeekRadius * 0.5f, m_SeekRadius * 0.5f, 1.0f,
-                                 TRACE_ROBOT | TRACE_BUILDING | TRACE_CANNON, m_Skip, FindPatient, (DWORD)&data);
+                                 TRACE_ROBOT | TRACE_BUILDING | TRACE_CANNON, m_Skip, FindPatient, (uintptr_t)&data);
 
         if (data.tgt) {
             // ok

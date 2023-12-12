@@ -20,7 +20,7 @@
 #include "MatrixEffectMovingObject.hpp"
 #include "MatrixEffectExplosion.hpp"
 
-void CMatrixEffectWeapon::WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &pos, DWORD user, DWORD flags) {
+void CMatrixEffectWeapon::WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &pos, uintptr_t user, DWORD flags) {
     DTRACE();
 
     CMatrixEffectWeapon *w = (CMatrixEffectWeapon *)user;
@@ -67,7 +67,7 @@ void CMatrixEffectWeapon::WeaponHit(CMatrixMapStatic *hiti, const D3DXVECTOR3 &p
     }
 }
 
-CMatrixEffectWeapon::CMatrixEffectWeapon(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, DWORD user,
+CMatrixEffectWeapon::CMatrixEffectWeapon(const D3DXVECTOR3 &pos, const D3DXVECTOR3 &dir, uintptr_t user,
                                          FIRE_END_HANDLER handler, EWeapon type, int cooldown)
   : CMatrixEffect(), m_Type(type), m_User(user), m_Handler(handler), m_Pos(pos), m_Dir(dir),
     m_CoolDown(cooldown ? float(cooldown) : ((float)(int)type)), m_Time(0), m_Volcano(NULL), m_Ref(1),
@@ -287,7 +287,7 @@ void CMatrixEffectWeapon::Fire(void) {
             CMatrixEffect::CreateKonus(&m_Effect, m_Pos, m_Dir, 10, 10, ang, 300, true, NULL);
             m_Ref++;
             CMatrixEffect::CreateFirePlasma(m_Pos, m_Pos + (m_Dir * m_WeaponDist * m_WeaponCoefficient), 0.5f,
-                                            TRACE_ALL, m_Skip, WeaponHit, (DWORD)this);
+                                            TRACE_ALL, m_Skip, WeaponHit, (uintptr_t)this);
             break;
         }
         case WEAPON_VOLCANO: {
@@ -366,7 +366,7 @@ void CMatrixEffectWeapon::Fire(void) {
             mo.shleif->effect = NULL;
             CMatrixEffect::CreateShleif(mo.shleif);
             m_Ref++;
-            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (DWORD)this);
+            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (uintptr_t)this);
 
             break;
         }
@@ -456,7 +456,7 @@ void CMatrixEffectWeapon::Fire(void) {
             CMatrixEffect::CreateShleif(mo.shleif);
 
             m_Ref++;
-            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (DWORD)this);
+            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (uintptr_t)this);
 
             break;
         }
@@ -477,7 +477,7 @@ void CMatrixEffectWeapon::Fire(void) {
             mo.object = LoadObject(OBJECT_PATH_GUN, m_Heap);
             mo.handler = MO_Gun_Takt;
             m_Ref++;
-            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (DWORD)this);
+            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (uintptr_t)this);
 
 #ifdef _DEBUG
             SEffectHandler eh(DEBUG_CALL_INFO);
@@ -602,7 +602,7 @@ void CMatrixEffectWeapon::Fire(void) {
 
             if (m_Effect.effect == NULL) {
                 float ttl = m_WeaponDist * m_WeaponCoefficient * 8.333f;
-                CMatrixEffect::CreateFlame(&m_Effect, ttl, TRACE_ALL, m_Skip, (DWORD)this, WeaponHit);
+                CMatrixEffect::CreateFlame(&m_Effect, ttl, TRACE_ALL, m_Skip, (uintptr_t)this, WeaponHit);
                 if (m_Effect.effect == NULL)
                     break;
                 ++m_Ref;
@@ -615,7 +615,7 @@ void CMatrixEffectWeapon::Fire(void) {
 
             m_Ref++;
             CMatrixEffect::CreateBigBoom(m_Pos, m_WeaponDist * m_WeaponCoefficient, 300, TRACE_ALL, NULL /*m_Skip*/,
-                                         (DWORD)this, WeaponHit);
+                                         (uintptr_t)this, WeaponHit);
             CMatrixEffect::CreateBigBoom(m_Pos, m_WeaponDist, 350, 0, 0, 0, 0);
             CMatrixEffect::CreateBigBoom(m_Pos, m_WeaponDist, 400, 0, 0, 0, 0, 0xFFAFAF40);
             CMatrixEffect::CreateExplosion(m_Pos, ExplosionBigBoom, true);
@@ -667,7 +667,7 @@ void CMatrixEffectWeapon::Fire(void) {
             mo.object = LoadObject(OBJECT_PATH_GUN, m_Heap);
             mo.handler = MO_Gun_cannon_Takt;
             m_Ref++;
-            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (DWORD)this);
+            CMatrixEffect::CreateMovingObject(NULL, mo, TRACE_ALL, m_Skip, WeaponHit, (uintptr_t)this);
 
 #ifdef _DEBUG
             SEffectHandler eh(DEBUG_CALL_INFO);

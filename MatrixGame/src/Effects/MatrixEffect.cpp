@@ -145,7 +145,7 @@ struct FOwner {
     CMatrixMapStatic **target;
 };
 
-static bool FindOwner(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FindOwner(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     FOwner *d = (FOwner *)user;
 
     D3DXVECTOR3 bmin, bmax;
@@ -183,7 +183,7 @@ void CEffectSpawner::Takt(float) {
         data.target = &m_Under;
 
         g_MatrixMap->FindObjects(m_Props->m_Pos, 100, 1.0f, TRACE_BUILDING | TRACE_OBJECT, NULL, FindOwner,
-                                 (DWORD)&data);
+                                 (uintptr_t)&data);
         if (m_Under == NULL) {
             m_Under = TRACE_STOP_LANDSCAPE;
         }
@@ -567,7 +567,7 @@ void CMatrixEffect::CreateFireAnim(SEffectHandler *eh, const D3DXVECTOR3 &pos, f
 }
 
 void CMatrixEffect::CreateFirePlasma(const D3DXVECTOR3 &start, const D3DXVECTOR3 &end, float speed, DWORD hitmask,
-                                     CMatrixMapStatic *skip, FIRE_END_HANDLER handler, DWORD user) {
+                                     CMatrixMapStatic *skip, FIRE_END_HANDLER handler, uintptr_t user) {
     DTRACE();
 
     CMatrixEffectFirePlasma *e = HNew(m_Heap) CMatrixEffectFirePlasma(start, end, speed, hitmask, skip, handler, user);
@@ -643,7 +643,7 @@ void CMatrixEffect::CreateLandscapeSpot(SEffectHandler *eh, const D3DXVECTOR2 &p
 }
 
 void CMatrixEffect::CreateMovingObject(SEffectHandler *eh, const SMOProps &props, DWORD hitmask, CMatrixMapStatic *skip,
-                                       FIRE_END_HANDLER handler, DWORD user) {
+                                       FIRE_END_HANDLER handler, uintptr_t user) {
     DTRACE();
     CMatrixEffectMovingObject *e = HNew(m_Heap) CMatrixEffectMovingObject(props, hitmask, skip, handler, user);
     if (!g_MatrixMap->AddEffect(e))
@@ -792,14 +792,14 @@ void CMatrixEffect::CreateKonusSplash(const D3DXVECTOR3 &start, const D3DXVECTOR
     }
 }
 
-CMatrixEffect *CMatrixEffect::CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, DWORD user,
+CMatrixEffect *CMatrixEffect::CreateWeapon(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, uintptr_t user,
                                            FIRE_END_HANDLER handler, EWeapon type, int cooldown) {
     DTRACE();
     CMatrixEffectWeapon *e = HNew(m_Heap) CMatrixEffectWeapon(start, dir, user, handler, type, cooldown);
     return e;
 }
 
-void CMatrixEffect::CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic *skip, DWORD user,
+void CMatrixEffect::CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CMatrixMapStatic *skip, uintptr_t user,
                                 FIRE_END_HANDLER handler) {
     DTRACE();
     CMatrixEffectFlame *e = HNew(m_Heap) CMatrixEffectFlame(ttl, hitmask, skip, user, handler);
@@ -817,7 +817,7 @@ void CMatrixEffect::CreateFlame(SEffectHandler *eh, float ttl, DWORD hitmask, CM
 }
 
 void CMatrixEffect::CreateBigBoom(const D3DXVECTOR3 &pos, float radius, float ttl, DWORD hitmask,
-                                  CMatrixMapStatic *skip, DWORD user, FIRE_END_HANDLER handler, DWORD light) {
+                                  CMatrixMapStatic *skip, uintptr_t user, FIRE_END_HANDLER handler, DWORD light) {
     DTRACE();
     CMatrixEffectBigBoom *e = HNew(m_Heap) CMatrixEffectBigBoom(pos, radius, ttl, hitmask, skip, user, handler, light);
     g_MatrixMap->AddEffect(e);

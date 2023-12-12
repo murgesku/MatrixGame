@@ -27,7 +27,7 @@ float CMatrixCannon::GetStrength(void) {
 void CMatrixCannon::FireHandler(
     [[maybe_unused]] CMatrixMapStatic *hit,
     [[maybe_unused]] const D3DXVECTOR3 &pos,
-    DWORD user,
+    uintptr_t user,
     DWORD flags)
 {
     SObjectCore *oc = (SObjectCore *)user;
@@ -231,7 +231,7 @@ void CMatrixCannon::RNeed(DWORD need) {
                     if (id >= 50 && id <= 59) {
                         m_FireMatrix[m_WeaponCnt] = i;
                         m_Weapons[m_WeaponCnt] = (CMatrixEffectWeapon *)CMatrixEffect::CreateWeapon(
-                                D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (DWORD)this->m_Core, FireHandler,
+                                D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (uintptr_t)this->m_Core, FireHandler,
                                 props->weapon);
                         m_Weapons[m_WeaponCnt]->SetOwner(this);
                         ++m_WeaponCnt;
@@ -521,7 +521,7 @@ void CMatrixCannon::BeforeDraw(void) {
 
 void CMatrixCannon::Draw(void) {
     // g_D3DD->SetRenderState( D3DRS_NORMALIZENORMALS,  TRUE );
-    DWORD coltex = (DWORD)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
+    uintptr_t coltex = (uintptr_t)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
 
     for (int i = 0; i < 4; i++) {
         ASSERT_DX(g_D3DD->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *((LPDWORD)(&g_MatrixMap->m_BiasCannons))));
@@ -749,7 +749,7 @@ struct FTData {
     CMatrixMapStatic *skip;
 };
 
-static bool FindTarget(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FindTarget(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     FTData *d = (FTData *)user;
 
     if (ms->GetSide() == d->side)
@@ -982,7 +982,7 @@ void CMatrixCannon::LogicTakt(int takt) {
         m_TargetDisp = D3DXVECTOR3(0, 0, 0);
 
         g_MatrixMap->FindObjects(GetGeoCenter(), props->seek_radius, 1, TRACE_ROBOT | TRACE_FLYER, NULL, FindTarget,
-                                 (DWORD)&data);
+                                 (uintptr_t)&data);
 
         if (tgt) {
             if (m_TargetCore)
@@ -1541,7 +1541,7 @@ bool CMatrixCannon::InRect(const CRect &rect) const {
         if (m_Unit[i].m_Graph) {
             d.found = false;
             d.m = m_Unit[i].m_Matrix * t;
-            m_Unit[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (DWORD)&d);
+            m_Unit[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (uintptr_t)&d);
             if (d.found)
                 return true;
         }

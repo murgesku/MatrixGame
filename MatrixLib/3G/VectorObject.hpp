@@ -42,9 +42,9 @@ struct SSkin;
 
 typedef const SSkin *(*SKIN_GET)(const wchar *tex, DWORD param);  // skin setup
 
-typedef void (*SKIN_SETUP_TEX)(const SSkin *vo, DWORD user_param, int pass);
-typedef bool (*SKIN_SETUP_STAGES)(const SSkin *vo, DWORD user_param, int pass);
-typedef void (*SKIN_SETUP_CLEAR)(const SSkin *vo, DWORD user_param);
+typedef void (*SKIN_SETUP_TEX)(const SSkin *vo, uintptr_t user_param, int pass);
+typedef bool (*SKIN_SETUP_STAGES)(const SSkin *vo, uintptr_t user_param, int pass);
+typedef void (*SKIN_SETUP_CLEAR)(const SSkin *vo, uintptr_t user_param);
 typedef void (*SKIN_SETUP_SHADOW)(const SSkin *vo);
 typedef void (*SKIN_PRELOAD)(const SSkin *vo);
 
@@ -311,7 +311,7 @@ struct SVOGeometry {
     // SVONormal      *m_Normals;
 };
 
-typedef bool (*ENUM_VERTS_HANDLER)(const SVOVertex &v, DWORD data);
+typedef bool (*ENUM_VERTS_HANDLER)(const SVOVertex &v, uintptr_t data);
 
 class CVectorObjectAnim;
 class CVectorObject : public CCacheData {
@@ -406,7 +406,7 @@ public:
     bool PickFull(int noframe, const D3DXMATRIX &ma, const D3DXMATRIX &ima, const D3DXVECTOR3 &origin,
                   const D3DXVECTOR3 &dir, float *outt) const;
 
-    void EnumFrameVerts(int noframe, ENUM_VERTS_HANDLER evh, DWORD data) const;
+    void EnumFrameVerts(int noframe, ENUM_VERTS_HANDLER evh, uintptr_t data) const;
 
     const std::wstring &GetSurfaceFileName(int i) const { return m_Geometry.m_Surfaces[i].texname; }
 
@@ -629,7 +629,7 @@ public:
         m_VO->CalcShadowProjMatrix(noframe, pd, dir, addsize);
     }
 
-    void EnumFrameVerts(ENUM_VERTS_HANDLER evh, DWORD data) const { m_VO->EnumFrameVerts(m_VOFrame, evh, data); };
+    void EnumFrameVerts(ENUM_VERTS_HANDLER evh, uintptr_t data) const { m_VO->EnumFrameVerts(m_VOFrame, evh, data); };
 
     bool Takt(int cms);  // True-if change
     DWORD NextFrame(void);

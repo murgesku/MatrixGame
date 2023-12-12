@@ -1146,8 +1146,8 @@ void CMatrixMap::BeforeDraw(void) {
             m_DI.T(L"Under cursor", L"Mesh", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
             m_DI.T(L"Under cursor",
-                   utils::format(L"Robot %x   S%d T%d G%d",
-                                 DWORD(m_TraceStopObj),
+                   utils::format(L"Robot %llx   S%d T%d G%d",
+                                 uintptr_t(m_TraceStopObj),
                                  m_TraceStopObj->GetSide(),
                                  ((CMatrixRobotAI *)m_TraceStopObj)->GetTeam(),
                                  ((CMatrixRobotAI *)m_TraceStopObj)->GetGroupLogic())
@@ -1157,7 +1157,7 @@ void CMatrixMap::BeforeDraw(void) {
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_CANNON)
             m_DI.T(L"Under cursor", L"Cannon", 1000);
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_BUILDING) {
-            m_DI.T(L"Under cursor", utils::format(L"Building: 0x%X", reinterpret_cast<dword>((void*)m_TraceStopObj)).c_str(), 1000);
+            m_DI.T(L"Under cursor", utils::format(L"Building: 0x%llx", reinterpret_cast<uintptr_t>((void*)m_TraceStopObj)).c_str(), 1000);
         }
         else if (m_TraceStopObj->GetObjectType() == OBJECT_TYPE_FLYER)
             m_DI.T(L"Under cursor", L"Flyer", 1000);
@@ -2526,7 +2526,7 @@ void CMatrixMap::Takt(int step) {
 }
 
 bool CMatrixMap::FindObjects(const D3DXVECTOR2 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
-                             ENUM_OBJECTS2D callback, DWORD user) {
+                             ENUM_OBJECTS2D callback, uintptr_t user) {
 #ifdef _DEBUG
     static int intercount = 0;
 
@@ -2718,7 +2718,7 @@ skip:;
 }
 
 bool CMatrixMap::FindObjects(const D3DXVECTOR3 &pos, float radius, float oscale, DWORD mask, CMatrixMapStatic *skip,
-                             ENUM_OBJECTS callback, DWORD user) {
+                             ENUM_OBJECTS callback, uintptr_t user) {
 #ifdef _DEBUG
     static int intercount = 0;
 

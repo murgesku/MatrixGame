@@ -44,8 +44,8 @@ struct SFileRec {
     EFileType m_NType;                     // Тип который должен быть присвоен файлу
     DWORD m_Free;                          // Свободна данная структура или занята
     DWORD m_Date;                          // Дата и время файла
-    DWORD m_Offset;  // Смещение данных относительно начала файла
-    DWORD m_Extra;   // Данные во время работы объекта
+    uintptr_t m_Offset;  // Смещение данных относительно начала файла
+    uintptr_t m_Extra;   // Данные во время работы объекта
 };
 #pragma pack(pop)
 typedef SFileRec *PSFileRec;
@@ -58,7 +58,7 @@ struct SFolderRec {
 typedef SFolderRec *PSFolderRec;
 
 struct SFileHandleRec {
-    DWORD m_Handle;  // Логический номер файла
+    uintptr_t m_Handle;  // Логический номер файла
     DWORD m_StartOffset;  // Смещение начала файла относительно начала пакетного файла
     DWORD m_Offset;     // Настоящее смещение
     DWORD m_Size;       // Размер файла
@@ -109,7 +109,7 @@ public:
     CHsFolder(const std::string& name, CHsFolder *Parent, CHeap *heap);  // Создает пустую папку, не пригодную к работе
     ~CHsFolder() { Clear(); };  // Уничтожает все данные, связанные с объектом
 
-    bool ReadFolder(DWORD Handle, DWORD Offset);  // Читает данные из пакетного файла
+    bool ReadFolder(uintptr_t Handle, uintptr_t Offset);  // Читает данные из пакетного файла
     // void    AllocEmptyFolder(void);
 
     void Clear(void);                         // Очищает память и информацию о файлах
@@ -186,7 +186,7 @@ public:
 #endif
 
     // Позволяет создавать виртуальные пакеты в памяти - не связаны с файлом
-    DWORD m_Handle;           // Файловый номер
+    uintptr_t m_Handle;           // Файловый номер
     CHsFolder *m_RootFolder;  // Корневой каталог
     SFileHandleRec m_Handles[MAX_VIRTUAL_HANDLE_COUNT];
     DWORD m_RootOffset;  // Смещение корневого каталога относительно начала файла

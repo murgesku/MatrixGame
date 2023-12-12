@@ -68,8 +68,8 @@ protected:
 
 public:
     friend class CMatrixEffect;
-    static bool BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user);
-    static bool BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user);
+    static bool BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user);
+    static bool BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user);
 
     const D3DXVECTOR3 &GetPos(void) const { return *(D3DXVECTOR3 *)&m_Mat._41; }
 

@@ -1387,12 +1387,12 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
 
 #if (defined _DEBUG) && !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
     if (test && g_TestLocal) {
-        CHelper::DestroyByGroup(DWORD(this) + 4);
+        CHelper::DestroyByGroup(uintptr_t(this) + 4);
         smm = MoveGet(re.left, re.top);
         for (y = re.top; y < re.bottom; y++, smm += m_SizeMove.x - (re.right - re.left)) {
             for (x = re.left; x < re.right; x++, smm++) {
                 if (smm->m_Weight >= 10)
-                    CHelper::Create(100, DWORD(this) + 4)
+                    CHelper::Create(100, uintptr_t(this) + 4)
                             ->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE * x + GLOBAL_SCALE_MOVE / 2,
                                                GLOBAL_SCALE_MOVE * y + GLOBAL_SCALE_MOVE / 2, 0),
                                    D3DXVECTOR3(GLOBAL_SCALE_MOVE * x + GLOBAL_SCALE_MOVE / 2,
@@ -1474,7 +1474,7 @@ int CMatrixMapLogic::FindLocalPath(int nsh, int size, int mx, int my,  // Нач
 
 #if (defined _DEBUG) && !(defined _RELDEBUG) && !(defined _DISABLE_AI_HELPERS)
             if (test && g_TestLocal) {
-                CHelper::Create(100, DWORD(this) + 3)
+                CHelper::Create(100, uintptr_t(this) + 3)
                         ->Cone(D3DXVECTOR3(GLOBAL_SCALE_MOVE * tp.x + GLOBAL_SCALE_MOVE / 2,
                                            GLOBAL_SCALE_MOVE * tp.y + GLOBAL_SCALE_MOVE / 2, 0),
                                D3DXVECTOR3(GLOBAL_SCALE_MOVE * tp.x + GLOBAL_SCALE_MOVE / 2,
@@ -2732,7 +2732,7 @@ float NORM(D3DXVECTOR3 &vo, const D3DXVECTOR3 &v) {
 static bool Egg1(
     [[maybe_unused]] const D3DXVECTOR2 &center,
     CMatrixMapStatic *ms,
-    DWORD user)
+    uintptr_t user)
 {
     int *egg = (int *)user;
     if (ms->IsLiveRobot()) {
@@ -2755,7 +2755,7 @@ static bool Egg1(
 static bool Egg2(
     [[maybe_unused]] const D3DXVECTOR2 &center,
     CMatrixMapStatic *ms,
-    DWORD user)
+    uintptr_t user)
 {
     int *egg = (int *)user;
     if (ms->IsLiveRobot()) {
@@ -3037,9 +3037,9 @@ void CMatrixMapLogic::Takt(int step) {
         utils::to_lower(mn);
         if (mn.find(L"terron") != std::wstring::npos) {
             int egg1 = 0, egg2 = 0;
-            FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (DWORD)&egg1);
+            FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 50, 1, TRACE_ROBOT, NULL, Egg1, (uintptr_t)&egg1);
             if (egg1 == 1) {
-                FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 160, 1, TRACE_ROBOT, NULL, Egg2, (DWORD)&egg2);
+                FindObjects(D3DXVECTOR2(3833.8f, 2298.1f), 160, 1, TRACE_ROBOT, NULL, Egg2, (uintptr_t)&egg2);
                 if (egg2 == 1) {
                     SETFLAG(g_MatrixMap->m_Flags, MMFLAG_ROBOT_IN_POSITION);
                 }
