@@ -233,7 +233,8 @@ public:
     }
 };
 
-class CMatrixRobotAI : public CMatrixRobot {
+class CMatrixRobotAI : public CMatrixRobot
+{
     CTextureManaged *m_BigTexture;
     CTextureManaged *m_MedTexture;
 #ifdef USE_SMALL_TEXTURE_IN_ROBOT_ICON
@@ -303,6 +304,15 @@ class CMatrixRobotAI : public CMatrixRobot {
     CMatrixEffectSelection *m_Selection;
 
     int m_LastDelayDamageSide;
+
+///////////////////////////////////////////////////////////////////////
+// each robot will have its own unique ID, so collision detection will
+// compare them by ID instead of memory addresses
+private:
+    static size_t nextUID;
+public:
+    const size_t UID{++nextUID};
+///////////////////////////////////////////////////////////////////////
 
 public:
     DWORD m_SoundChassis;
