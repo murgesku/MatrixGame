@@ -13,6 +13,8 @@
 #include "MatrixEffectExplosion.hpp"
 #include "MatrixEffectPointLight.hpp"
 
+#include <random.hpp>
+
 // explosions
 const SExplosionProperties ExplosionNormal = {
         0,    // float min_speed;
@@ -430,7 +432,7 @@ CMatrixEffectExplosion::CMatrixEffectExplosion(const D3DXVECTOR3 &pos, const SEx
         m_Deb[i].u1.s1.u2.s4.angley = FSRND(1);
         m_Deb[i].u1.s1.u2.s4.anglep = FSRND(1);
         m_Deb[i].u1.s1.u2.s4.angler = FSRND(1);
-        m_Deb[i].index = dt_idx + (rand() % dt_cnt);
+        m_Deb[i].index = dt_idx + (random::Rnd() % dt_cnt);
 
         ASSERT(m_Deb[i].index >= 0);
 

@@ -18,6 +18,8 @@
 #include "Effects/MatrixEffectSelection.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
 
+size_t CMatrixRobotAI::nextUID{0};
+
 void SWeaponRepairData::Release(void) {
     m_b0.Release();
     m_b1.Release();
@@ -2928,7 +2930,7 @@ static bool CollisionCallback(
                                     0) {  // И движется приблезительно в одну сторону
 
                                     if ((pCurrBot->m_Velocity.x * vDist.x + pCurrBot->m_Velocity.y * vDist.y) > 0 &&
-                                        DWORD(pCurrBot) < DWORD(data->robot))
+                                        pCurrBot->UID < data->robot->UID)
                                         ;  // Только один из двух роботов моежт двигатся
                                     else {
                                         data->stop = true;
@@ -3030,7 +3032,7 @@ static bool CollisionCallback(
                                 0) {  // И движется приблезительно в одну сторону
 
                                 if ((pCurrBot->m_Velocity.x * vDist.x + pCurrBot->m_Velocity.y * vDist.y) > 0 &&
-                                    DWORD(pCurrBot) < DWORD(data->robot))
+                                    pCurrBot->UID < data->robot->UID)
                                     ;  // Только один из двух роботов моежт двигатся
                                 else {
                                     data->far_col = true;

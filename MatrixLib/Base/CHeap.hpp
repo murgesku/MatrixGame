@@ -229,7 +229,7 @@ inline void *CHeap::AllocClearEx(void *buf, uint32_t size, const char *file, int
 #endif // MEM_SPY_ENABLE
 
 inline void *CHeap::Alloc(size_t size) {
-    void *buf = malloc(size);
+    void *buf = calloc(size, 1);
     if (!buf) AllocationError(size);
     return buf;
 }
