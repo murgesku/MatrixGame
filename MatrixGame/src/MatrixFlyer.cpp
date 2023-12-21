@@ -21,6 +21,14 @@
 #include "Effects/MatrixEffectSmokeAndFire.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
 
+#include <Keyboard.hpp>
+
+namespace {
+
+using Keyboard::isKeyPressed;
+
+} // namespace
+
 D3D_VB CMatrixFlyer::m_VB;
 int CMatrixFlyer::m_VB_ref;
 
@@ -720,28 +728,24 @@ struct SFlyerTaktData {
 //{
 //
 //    {
-//        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD]) & 0x8000)==0x8000) ||
-//        ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD_ALT]) & 0x8000)==0x8000))
+//        if(isKeyPressed(KA_UNIT_FORWARD) || isKeyPressed(KA_UNIT_FORWARD_ALT))
 //        {
 //            MoveForward();
 //            SETFLAG(m_Flags, FLYER_MANUAL);
 //        }
-//        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD]) & 0x8000)==0x8000) ||
-//        ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD_ALT]) & 0x8000)==0x8000))
+//        if(isKeyPressed(KA_UNIT_BACKWARD) || isKeyPressed(KA_UNIT_BACKWARD_ALT))
 //        {
 //            MoveBackward();
 //            SETFLAG(m_Flags, FLYER_MANUAL);
 //        }
 //
-//        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000)==0x8000) ||
-//        ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT_ALT]) & 0x8000)==0x8000))
+//        if(isKeyPressed(KA_UNIT_LEFT) || isKeyPressed(KA_UNIT_LEFT_ALT))
 //        {
 //            MoveLeft();
 //            SETFLAG(m_Flags, FLYER_MANUAL);
 //
 //        }
-//        if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT]) & 0x8000)==0x8000) ||
-//        ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT_ALT]) & 0x8000)==0x8000))
+//        if(isKeyPressed(KA_UNIT_RIGHT) || isKeyPressed(KA_UNIT_RIGHT_ALT))
 //        {
 //            MoveRight();
 //            SETFLAG(m_Flags, FLYER_MANUAL);
@@ -758,7 +762,7 @@ struct SFlyerTaktData {
 //
 //    }
 //
-//    if(((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000)==0x8000) && g_IFaceList->m_InFocus != INTERFACE)
+//    if(isKeyPressed(KA_FIRE) && g_IFaceList->m_InFocus != INTERFACE)
 //    {
 //        FireBegin();
 //
