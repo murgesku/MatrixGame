@@ -18,6 +18,15 @@
 #include "Effects/MatrixEffectSelection.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
 
+#include <Keyboard.hpp>
+
+namespace {
+
+using Keyboard::isKeyPressed;
+using Keyboard::isVKeyPressed;
+
+} // namespace
+
 size_t CMatrixRobotAI::nextUID{0};
 
 void SWeaponRepairData::Release(void) {
@@ -920,16 +929,17 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     // ORDERS PROCESSING/////////////////////////////////////////////////////
 
     if (this == (CMatrixRobotAI *)g_MatrixMap->GetPlayerSide()
-                        ->GetArcadedObject() /* && !((GetAsyncKeyState(VK_RBUTTON) & 0x8000) == 0x8000)*/) {
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT_ALT]) & 0x8000) == 0x8000)) {
+                        ->GetArcadedObject() /* && !isVKeyPressed(VK_RBUTTON)*/) {
+        if (isKeyPressed(KA_UNIT_LEFT) || isKeyPressed(KA_UNIT_LEFT_ALT))
+        {
             RotateRobotLeft();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT]) & 0x8000) == 0x8000) ||
-            ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT_ALT]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_UNIT_RIGHT) || isKeyPressed(KA_UNIT_RIGHT_ALT))
+        {
             RotateRobotRight();
         }
-        if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000) == 0x8000)) {
+        if (isKeyPressed(KA_FIRE))
+        {
             if (!FindOrderLikeThat(ROT_FIRE) && g_IFaceList->m_InFocus != INTERFACE) {
                 Fire(g_MatrixMap->m_TraceStopPos);
             }
@@ -983,14 +993,14 @@ void CMatrixRobotAI::LogicTakt(int ms) {
             case ROT_MOVE_TO_BACK: {
                 DCP();
                 if (this == (CMatrixRobotAI *)g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
-                    if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD]) & 0x8000) == 0x8000) ||
-                        ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_FORWARD_ALT]) & 0x8000) == 0x8000)) {
+                    if (isKeyPressed(KA_UNIT_FORWARD) || isKeyPressed(KA_UNIT_FORWARD_ALT))
+                    {
                         D3DXVECTOR3 dest(m_PosX, m_PosY, 0);
                         dest += m_Forward * m_maxSpeed;
                         LowLevelMove(ms, dest, true, true, false);
                     }
-                    else if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD]) & 0x8000) == 0x8000) ||
-                             ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_BACKWARD_ALT]) & 0x8000) == 0x8000)) {
+                    else if (isKeyPressed(KA_UNIT_BACKWARD) || isKeyPressed(KA_UNIT_BACKWARD_ALT))
+                    {
                         D3DXVECTOR3 dest(m_PosX, m_PosY, 0);
                         dest -= m_Forward * m_maxSpeed;
                         LowLevelMove(ms, dest, true, true, false, true);
@@ -3190,9 +3200,10 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest) {
         float cos = dest_n.x * m_CollAvoid.x + dest_n.y * m_CollAvoid.y;
         float angle = (float)acos(cos);
 
-        if (this == g_MatrixMap->GetPlayerSide()->GetArcadedObject()) {
-            if (((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_LEFT]) & 0x8000) == 0x8000) ||
-                ((GetAsyncKeyState(g_Config.m_KeyActions[KA_UNIT_RIGHT]) & 0x8000) == 0x8000)) {
+        if (this == g_MatrixMap->GetPlayerSide()->GetArcadedObject())
+        {
+            if (isKeyPressed(KA_UNIT_LEFT) || isKeyPressed(KA_UNIT_RIGHT))
+            {
                 ZeroMemory(&m_CollAvoid, sizeof(D3DXVECTOR3));
             }
         }
