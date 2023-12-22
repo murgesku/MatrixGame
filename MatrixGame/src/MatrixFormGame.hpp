@@ -5,6 +5,8 @@
 
 #include "Form.hpp"
 
+#include <cheats.hpp>
+
 #include <deque>
 #include <string>
 #include <cstdint>
@@ -15,25 +17,12 @@
 #define MOUSE_BORDER          4
 #define DOUBLESCAN_TIME_DELTA 200
 
-struct SKeyScan {
-    SKeyScan() = default;
-
-    SKeyScan(uint32_t _time, uint32_t _scan)
-    : time{_time}
-    , scan{_scan}
-    {}
-
-    uint32_t time;
-    uint32_t scan;
-};
-
 class CFormMatrixGame : public CForm {
 private:
     float m_LastWorldX, m_LastWorldY;
     int m_Action;
 
     std::deque<SKeyScan> m_LastScans{MAX_SCANS};
-    bool IsInputEqual(std::string str);
 
 public:
     CFormMatrixGame(void);
