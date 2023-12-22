@@ -785,13 +785,23 @@ bool CFormMatrixGame::IsInputEqual(std::string str)
     return true;
 }
 
-void CFormMatrixGame::Keyboard(bool down, int scan) {
+void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
+{
     DTRACE();
+
+    if (down)
+    {
+        Keyboard::on_key_down(vk);
+    }
+    else
+    {
+        Keyboard::on_key_up(vk);
+    }
 
     bool fCtrl = isVKeyPressed(VK_CONTROL);
 
-    if (g_MatrixMap->m_Console.IsActive()) {
-        // g_MatrixMap->m_Console.SetActive(true);
+    if (g_MatrixMap->m_Console.IsActive())
+    {
         g_MatrixMap->m_Console.Keyboard(scan, down);
         return;
     }

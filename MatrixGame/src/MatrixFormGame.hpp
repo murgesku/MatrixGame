@@ -48,6 +48,6 @@ public:
     virtual void MouseMove(int x, int y);
     virtual void MouseKey(ButtonStatus status, int key, int x, int y);
 
-    virtual void Keyboard(bool down, int scan);
+    virtual void Keyboard(bool down, int scan, uint8_t vk);
     virtual void SystemEvent(ESysEvent se);
 };

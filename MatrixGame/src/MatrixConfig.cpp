@@ -259,10 +259,10 @@ void CMatrixConfig::SetDefaults(void) {
     m_KeyActions[KA_SCROLL_LEFT] = VK_LEFT;
     m_KeyActions[KA_SCROLL_RIGHT] = VK_RIGHT;
 
-    m_KeyActions[KA_UNIT_FORWARD] = 0x57;
-    m_KeyActions[KA_UNIT_BACKWARD] = 0x53;
-    m_KeyActions[KA_UNIT_LEFT] = 0x41;
-    m_KeyActions[KA_UNIT_RIGHT] = 0x44;
+    m_KeyActions[KA_UNIT_FORWARD] = 0x57; // W
+    m_KeyActions[KA_UNIT_BACKWARD] = 0x53; // S
+    m_KeyActions[KA_UNIT_LEFT] = 0x41; // A
+    m_KeyActions[KA_UNIT_RIGHT] = 0x44; // D
 
     m_KeyActions[KA_UNIT_FORWARD_ALT] = VK_UP;
     m_KeyActions[KA_UNIT_BACKWARD_ALT] = VK_DOWN;
@@ -275,41 +275,41 @@ void CMatrixConfig::SetDefaults(void) {
     m_KeyActions[KA_SHIFT] = VK_SHIFT;
     m_KeyActions[KA_CTRL] = VK_CONTROL;
 
-    m_KeyActions[KA_ROTATE_LEFT_ALT] = VK_OEM_4;   // zak
-    m_KeyActions[KA_ROTATE_RIGHT_ALT] = VK_OEM_6;  // zak
+    m_KeyActions[KA_ROTATE_LEFT_ALT] = VK_OEM_4;  // [{ key
+    m_KeyActions[KA_ROTATE_RIGHT_ALT] = VK_OEM_6; // ]} key
 
-    m_KeyActions[KA_MINIMAP_ZOOMIN] = VK_OEM_PLUS;    // sub
-    m_KeyActions[KA_MINIMAP_ZOOMOUT] = VK_OEM_MINUS;  // sub
+    m_KeyActions[KA_MINIMAP_ZOOMIN] = VK_OEM_PLUS;   // + key
+    m_KeyActions[KA_MINIMAP_ZOOMOUT] = VK_OEM_MINUS; // - key
 
-    m_KeyActions[KA_CAM_SETDEFAULT] = VK_OEM_5;  // zak
+    m_KeyActions[KA_CAM_SETDEFAULT] = VK_OEM_5; // \| key
 
-    m_KeyActions[KA_AUTOORDER_CAPTURE] = 0x43;  // sub
-    m_KeyActions[KA_AUTOORDER_ATTACK] = 0x55;   // sub
-    m_KeyActions[KA_AUTOORDER_DEFEND] = 0x44;   // sub
+    m_KeyActions[KA_AUTOORDER_CAPTURE] = 0x43;  // C
+    m_KeyActions[KA_AUTOORDER_ATTACK] = 0x55;   // U
+    m_KeyActions[KA_AUTOORDER_DEFEND] = 0x44;   // D
 
-    m_KeyActions[KA_ORDER_MOVE] = 0x4D;     // sub
-    m_KeyActions[KA_ORDER_STOP] = 0x53;     // sub
-    m_KeyActions[KA_ORDER_CAPTURE] = 0x4B;  // sub
-    m_KeyActions[KA_ORDER_PATROL] = 0x50;   // sub
-    m_KeyActions[KA_ORDER_EXPLODE] = 0x45;  // sub
-    m_KeyActions[KA_ORDER_REPAIR] = 0x52;   // sub
-    m_KeyActions[KA_ORDER_ATTACK] = 0x41;   // sub
-    m_KeyActions[KA_ORDER_CANCEL] = 0x58;
-    m_KeyActions[KA_ORDER_ROBOT_SWITCH1] = VK_OEM_COMMA;   // sub
-    m_KeyActions[KA_ORDER_ROBOT_SWITCH2] = VK_OEM_PERIOD;  // sub
+    m_KeyActions[KA_ORDER_MOVE] = 0x4D;     // M
+    m_KeyActions[KA_ORDER_STOP] = 0x53;     // S
+    m_KeyActions[KA_ORDER_CAPTURE] = 0x4B;  // K
+    m_KeyActions[KA_ORDER_PATROL] = 0x50;   // P
+    m_KeyActions[KA_ORDER_EXPLODE] = 0x45;  // E
+    m_KeyActions[KA_ORDER_REPAIR] = 0x52;   // R
+    m_KeyActions[KA_ORDER_ATTACK] = 0x41;   // A
+    m_KeyActions[KA_ORDER_CANCEL] = 0x58;   // X
+    m_KeyActions[KA_ORDER_ROBOT_SWITCH1] = VK_OEM_COMMA;   // , key
+    m_KeyActions[KA_ORDER_ROBOT_SWITCH2] = VK_OEM_PERIOD;  // . key
 
-    m_KeyActions[KA_UNIT_BOOM] = 0x45;           // sub
-    m_KeyActions[KA_UNIT_ENTER] = VK_RETURN;     // sub (! if not dialog mode)
-    m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE;  // sub (! if not dialog mode)
+    m_KeyActions[KA_UNIT_BOOM] = 0x45;           // E
+    m_KeyActions[KA_UNIT_ENTER] = VK_RETURN;     // (! if not dialog mode)
+    m_KeyActions[KA_UNIT_ENTER_ALT] = VK_SPACE;  // (! if not dialog mode)
 
-    m_KeyActions[KA_BUILD_ROBOT] = 0x42;   // sub
-    m_KeyActions[KA_BUILD_TURRET] = 0x54;  // sub
-    m_KeyActions[KA_BUILD_HELP] = 0x48;    // sub
+    m_KeyActions[KA_BUILD_ROBOT] = 0x42;   // B
+    m_KeyActions[KA_BUILD_TURRET] = 0x54;  // T
+    m_KeyActions[KA_BUILD_HELP] = 0x48;    // H
 
-    m_KeyActions[KA_TURRET_CANNON] = 0x43;
-    m_KeyActions[KA_TURRET_GUN] = 0x47;
-    m_KeyActions[KA_TURRET_LASER] = 0x4C;
-    m_KeyActions[KA_TURRET_ROCKET] = 0x52;
+    m_KeyActions[KA_TURRET_CANNON] = 0x43; // C
+    m_KeyActions[KA_TURRET_GUN] = 0x47;    // G
+    m_KeyActions[KA_TURRET_LASER] = 0x4C;  // L
+    m_KeyActions[KA_TURRET_ROCKET] = 0x52; // R
 
     m_CaptureTimeErase = 750;
     m_CaptureTimePaint = 500;

@@ -79,7 +79,7 @@ struct SStringPair {
     std::wstring val;
 };
 
-enum EKeyAction {
+enum EKeyAction : int {
     KA_SCROLL_LEFT,
     KA_SCROLL_RIGHT,
     KA_SCROLL_UP,
