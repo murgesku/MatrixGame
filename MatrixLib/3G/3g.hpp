@@ -287,14 +287,6 @@ void S3D_Default(void);
 
 // keyboard
 
-inline byte __fastcall lp2key(dword lp) {
-    byte scan = (lp >> 16) & 0x7F;
-    byte extFlag = (lp & (1 << 24)) ? 1 : 0;
-    scan = scan | (extFlag << 7);
-
-    return scan;
-}
-
 #define KEY_ESC 1
 #define KEY_F1  59
 #define KEY_F2  60

@@ -1,21 +1,17 @@
 #pragma once
 
-#include <MatrixConfig.hpp>
+#include <cstdint>
 
-#include <windows.h>
-
-extern CMatrixConfig g_Config;
+enum EKeyAction : int; // predeclaration
 
 namespace Keyboard {
 
-inline bool isKeyPressed(EKeyAction ka)
-{
-    return (GetAsyncKeyState(g_Config.m_KeyActions[ka]) & 0x8000) == 0x8000;
-}
+void on_key_down(uint8_t vk);
+void on_key_up(uint8_t vk);
+bool is_down(uint8_t vk);
 
-inline bool isVKeyPressed(uint32_t key)
-{
-    return (GetAsyncKeyState(key) & 0x8000) == 0x8000;
-}
+bool isVKeyPressed(uint32_t key);
+
+bool isKeyPressed(EKeyAction ka);
 
 } // namespace Keyboard
