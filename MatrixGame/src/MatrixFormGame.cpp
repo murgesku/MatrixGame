@@ -720,7 +720,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         return;
     }
 
-    if (scan == KEY_F9 && down)
+    if (vk == VK_F9 && down)
     {
         make_screenshot();
     }

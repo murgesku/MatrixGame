@@ -6,15 +6,17 @@
 #include <MatrixObjectCannon.hpp>
 #include <Interface/CConstructor.h>
 
+#include <keyboard.hpp>
+
 #include <functional>
 
 extern CMatrixMapLogic* g_MatrixMap;
 extern DWORD g_Flags;
 
 struct STextInfo {
-    const wchar *t1;
-    const wchar *t2;
-    int time;
+    const wchar_t* t1;
+    const wchar_t* t2;
+    uint32_t time;
 };
 
 static STextInfo stuff[] = {{L"3D Robots game information....", L"", 3000},
