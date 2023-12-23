@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include "MatrixFormGame.hpp"
 #include "MatrixGameDll.hpp"
 
 #include "CHeap.hpp"
 #include "CBlockPar.hpp"
 
+class CFormMatrixGame;
 class CMatrixMapLogic;
 class CIFaceList;
 class CRenderPipeline;

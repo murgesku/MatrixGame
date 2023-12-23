@@ -220,48 +220,64 @@ void CDevConsole::Takt(int ms) {
 
     g_MatrixMap->m_DI.T(L"Console", out.c_str(), 1000);
 }
-void CDevConsole::Keyboard(int scan, bool down) {
-    if (down) {
+void CDevConsole::Keyboard(uint8_t vk, bool down)
+{
+    if (down)
+    {
         SETFLAG(m_Flags, DCON_CURSOR);
-        if (scan == KEY_BACKSPACE) {
-            if (m_CurPos > 0) {
+        if (vk == VK_BACK)
+        {
+            if (m_CurPos > 0)
+            {
                 --m_CurPos;
                 m_Text.erase(m_CurPos, 1);
             }
         }
-        else if (scan == KEY_DELETE) {
-            if (m_CurPos < m_Text.length()) {
+        else if (vk == VK_DELETE)
+        {
+            if (m_CurPos < m_Text.length())
+            {
                 m_Text.erase(m_CurPos, 1);
             }
         }
-        else if (scan == KEY_LEFT) {
-            if (m_CurPos > 0) {
+        else if (vk == VK_LEFT)
+        {
+            if (m_CurPos > 0)
+            {
                 --m_CurPos;
             }
         }
-        else if (scan == KEY_RIGHT) {
-            if (m_CurPos < m_Text.length()) {
+        else if (vk == VK_RIGHT)
+        {
+            if (m_CurPos < m_Text.length())
+            {
                 ++m_CurPos;
             }
         }
-        else if (scan == KEY_HOME) {
+        else if (vk == VK_HOME)
+        {
             m_CurPos = 0;
         }
-        else if (scan == KEY_END) {
+        else if (vk == VK_END)
+        {
             m_CurPos = m_Text.length();
         }
-        else if (scan == KEY_ENTER) {
+        else if (vk == VK_RETURN)
+        {
             std::wstring cmd;
             std::wstring params;
             int i = 0;
-            while (i < m_Text.length()) {
+            while (i < m_Text.length())
+            {
                 if (m_Text[i] == ' ')
                     break;
                 ++i;
             }
             cmd = std::wstring{m_Text.c_str(), static_cast<size_t>(i)};
             if (i < m_Text.length())
+            {
                 params = (m_Text.c_str() + i + 1);
+            }
 
             for (auto& sym : cmd)
             {
@@ -269,8 +285,10 @@ void CDevConsole::Keyboard(int scan, bool down) {
             }
 
             i = 0;
-            while (m_Commands[i].cmd != NULL) {
-                if (m_Commands[i].cmd == cmd) {
+            while (m_Commands[i].cmd != NULL)
+            {
+                if (m_Commands[i].cmd == cmd)
+                {
                     m_Commands[i].handler(cmd, params);
                     m_Text.clear();
                     m_CurPos = 0;
@@ -279,31 +297,43 @@ void CDevConsole::Keyboard(int scan, bool down) {
                 ++i;
             }
         }
-        else if (scan == KEY_ESC) {
+        else if (vk == VK_ESCAPE)
+        {
             if (m_Text.length() == 0)
+            {
                 SetActive(false);
-            else {
+            }
+            else
+            {
                 m_Text.clear();
                 m_CurPos = 0;
             }
         }
-        else if (scan == KEY_LSHIFT || scan == KEY_RSHIFT) {
+        else if (vk == VK_SHIFT)
+        {
             SETFLAG(m_Flags, DCON_SHIFT);
         }
-        else {
-            wchar c = static_cast<wchar>(Scan2Char(scan));
-            if (c != 0) {
-                if (!FLAG(m_Flags, DCON_SHIFT)) {
+        else
+        {
+            wchar c = static_cast<wchar>(VKey2Char(vk));
+            if (c != 0)
+            {
+                if (!FLAG(m_Flags, DCON_SHIFT))
+                {
                     if (c >= 'A' && c <= 'Z')
+                    {
                         c |= 32;
+                    }
                 }
                 m_Text.insert(m_CurPos, 1, c);
                 ++m_CurPos;
             }
         }
     }
-    else {
-        if (scan == KEY_LSHIFT || scan == KEY_RSHIFT) {
+    else
+    {
+        if (vk == VK_SHIFT)
+        {
             RESETFLAG(m_Flags, DCON_SHIFT);
         }
     }

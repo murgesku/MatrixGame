@@ -129,7 +129,6 @@ void Render(
     {
         sizex = tokens[0].rect.right + 4;
         clipRect.right = sizex;
-        lgr.info("======> {} -> {}")(utils::from_wstring(text), sizex);
     }
 
     if (sizey == 0)

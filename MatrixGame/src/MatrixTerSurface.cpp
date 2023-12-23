@@ -378,7 +378,7 @@ void CTerSurface::DrawAll(void) {
 
     for (int i = m_SurfaceLeft; i < m_SurfaceRite; ++i) {
 #ifdef _DEBUG
-        if (g_MatrixMap->m_KeyDown && g_MatrixMap->m_KeyScan == KEY_0) {}
+        if (g_MatrixMap->m_VKeyDown == VK_0) {}
         else
 #endif
 
