@@ -27,15 +27,9 @@ bool is_down(uint8_t vk)
     return down_keys.test(vk);
 }
 
-bool isVKeyPressed(uint32_t key)
-{
-    // return (GetAsyncKeyState(key) & 0x8000) == 0x8000;
-    return is_down(key);
-}
-
 bool isKeyPressed(EKeyAction ka)
 {
-    return isVKeyPressed(g_Config.m_KeyActions[ka]);
+    return is_down(g_Config.m_KeyActions[ka]);
 }
 
 } // namespace Keyboard

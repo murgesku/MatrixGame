@@ -378,8 +378,9 @@ public:
 
     CMinimap m_Minimap;
 
-    int m_KeyDown;
-    int m_KeyScan;
+    // int m_KeyDown;
+    // int m_KeyScan;
+    int m_VKeyDown{0};
 
     CMatrixCursor m_Cursor;
 

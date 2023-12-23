@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <windows.h>
 
 enum EKeyAction : int; // predeclaration
 
@@ -10,12 +11,9 @@ void on_key_down(uint8_t vk);
 void on_key_up(uint8_t vk);
 bool is_down(uint8_t vk);
 
-bool isVKeyPressed(uint32_t key);
-
 bool isKeyPressed(EKeyAction ka);
 
 } // namespace Keyboard
-
 
 #define KEY_ESC 1
 #define KEY_F1  59
@@ -134,47 +132,90 @@ bool isKeyPressed(EKeyAction ka);
 #define KEY_N 49
 #define KEY_M 50
 
-static char Scan2Char(int scan)
+#define VK_0 0x30
+#define VK_1 0x31
+#define VK_2 0x32
+#define VK_3 0x33
+#define VK_4 0x34
+#define VK_5 0x35
+#define VK_6 0x36
+#define VK_7 0x37
+#define VK_8 0x38
+#define VK_9 0x39
+#define VK_A 0x41
+#define VK_B 0x42
+#define VK_C 0x43
+#define VK_D 0x44
+#define VK_E 0x45
+#define VK_F 0x46
+#define VK_G 0x47
+#define VK_H 0x48
+#define VK_I 0x49
+#define VK_J 0x4A
+#define VK_K 0x4B
+#define VK_L 0x4C
+#define VK_M 0x4D
+#define VK_N 0x4E
+#define VK_O 0x4F
+#define VK_P 0x50
+#define VK_Q 0x51
+#define VK_R 0x52
+#define VK_S 0x53
+#define VK_T 0x54
+#define VK_U 0x55
+#define VK_V 0x56
+#define VK_W 0x57
+#define VK_X 0x58
+#define VK_Y 0x59
+#define VK_Z 0x5A
+
+#define VK_LSLASH   VK_OEM_2
+#define VK_TILDA    VK_OEM_3
+#define VK_PERIOD   VK_OEM_PERIOD
+#define VK_LBRACKET VK_OEM_4
+#define VK_RBRACKET VK_OEM_6
+
+static char VKey2Char(uint8_t vk)
 {
-    if (scan == KEY_SPACE)  return ' ';
-    if (scan == KEY_A)      return 'A';
-    if (scan == KEY_B)      return 'B';
-    if (scan == KEY_C)      return 'C';
-    if (scan == KEY_D)      return 'D';
-    if (scan == KEY_E)      return 'E';
-    if (scan == KEY_F)      return 'F';
-    if (scan == KEY_G)      return 'G';
-    if (scan == KEY_H)      return 'H';
-    if (scan == KEY_I)      return 'I';
-    if (scan == KEY_J)      return 'J';
-    if (scan == KEY_K)      return 'K';
-    if (scan == KEY_L)      return 'L';
-    if (scan == KEY_M)      return 'M';
-    if (scan == KEY_N)      return 'N';
-    if (scan == KEY_O)      return 'O';
-    if (scan == KEY_P)      return 'P';
-    if (scan == KEY_Q)      return 'Q';
-    if (scan == KEY_R)      return 'R';
-    if (scan == KEY_S)      return 'S';
-    if (scan == KEY_T)      return 'T';
-    if (scan == KEY_U)      return 'U';
-    if (scan == KEY_V)      return 'V';
-    if (scan == KEY_W)      return 'W';
-    if (scan == KEY_X)      return 'X';
-    if (scan == KEY_Y)      return 'Y';
-    if (scan == KEY_Z)      return 'Z';
-    if (scan == KEY_0)      return '0';
-    if (scan == KEY_1)      return '1';
-    if (scan == KEY_2)      return '2';
-    if (scan == KEY_3)      return '3';
-    if (scan == KEY_4)      return '4';
-    if (scan == KEY_5)      return '5';
-    if (scan == KEY_6)      return '6';
-    if (scan == KEY_7)      return '7';
-    if (scan == KEY_8)      return '8';
-    if (scan == KEY_9)      return '9';
-    if (scan == KEY_LSLASH) return '\\';
-    if (scan == KEY_COMMA)  return '.'; // WTF?
-    if (scan == KEY_TILDA)  return '~';
+    if (vk == VK_SPACE)  return ' ';
+    if (vk == VK_A)      return 'A';
+    if (vk == VK_B)      return 'B';
+    if (vk == VK_C)      return 'C';
+    if (vk == VK_D)      return 'D';
+    if (vk == VK_E)      return 'E';
+    if (vk == VK_F)      return 'F';
+    if (vk == VK_G)      return 'G';
+    if (vk == VK_H)      return 'H';
+    if (vk == VK_I)      return 'I';
+    if (vk == VK_J)      return 'J';
+    if (vk == VK_K)      return 'K';
+    if (vk == VK_L)      return 'L';
+    if (vk == VK_M)      return 'M';
+    if (vk == VK_N)      return 'N';
+    if (vk == VK_O)      return 'O';
+    if (vk == VK_P)      return 'P';
+    if (vk == VK_Q)      return 'Q';
+    if (vk == VK_R)      return 'R';
+    if (vk == VK_S)      return 'S';
+    if (vk == VK_T)      return 'T';
+    if (vk == VK_U)      return 'U';
+    if (vk == VK_V)      return 'V';
+    if (vk == VK_W)      return 'W';
+    if (vk == VK_X)      return 'X';
+    if (vk == VK_Y)      return 'Y';
+    if (vk == VK_Z)      return 'Z';
+    if (vk == VK_0)      return '0';
+    if (vk == VK_1)      return '1';
+    if (vk == VK_2)      return '2';
+    if (vk == VK_3)      return '3';
+    if (vk == VK_4)      return '4';
+    if (vk == VK_5)      return '5';
+    if (vk == VK_6)      return '6';
+    if (vk == VK_7)      return '7';
+    if (vk == VK_8)      return '8';
+    if (vk == VK_9)      return '9';
+    if (vk == VK_LSLASH) return '\\';
+    if (vk == VK_PERIOD) return '.';
+    if (vk == VK_TILDA)  return '~';
     return 0;
 }

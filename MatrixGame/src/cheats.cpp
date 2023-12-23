@@ -8,6 +8,7 @@
 
 #include <keyboard.hpp>
 
+#include <deque>
 #include <functional>
 
 extern CMatrixMapLogic* g_MatrixMap;
@@ -299,7 +300,7 @@ void processCheat_CRASH()
     abort();
 }
 
-bool IsInputEqual(const std::deque<SKeyScan>& input, std::string_view str)
+bool IsInputEqual(const std::deque<uint8_t>& input, std::string_view str)
 {
     if (input.size() < str.size())
     {
@@ -312,7 +313,7 @@ bool IsInputEqual(const std::deque<SKeyScan>& input, std::string_view str)
          istr != str.rend();
          istr++, iscan++)
     {
-        if (*istr != Scan2Char(iscan->scan))
+        if (*istr != VKey2Char(*iscan))
         {
             return false;
         }
@@ -321,11 +322,11 @@ bool IsInputEqual(const std::deque<SKeyScan>& input, std::string_view str)
     return true;
 }
 
-bool processCheats(std::deque<SKeyScan>& input)
+bool Cheats::processInput(uint8_t vk)
 {
     using cheatProc = std::pair<std::string_view, std::function<void()>>;
 
-    static std::vector<cheatProc> cheats{
+    const static std::vector<cheatProc> cheats{
         {"DEVCON",     processCheat_DEVCON},
         {"~",          processCheat_DEVCON},
         {"SHOWFPS",    processCheat_SHOWFPS},
@@ -348,10 +349,18 @@ bool processCheats(std::deque<SKeyScan>& input)
         {"CRASH",      processCheat_CRASH},
     };
 
+    constexpr int MAX_SCANS = 16;
+    static std::deque<uint8_t> input{MAX_SCANS};
+    if (input.size() == MAX_SCANS)
+    {
+        input.pop_front();
+    }
+    input.push_back(vk);
+
     auto iter =
         std::ranges::find_if(
             cheats,
-            [&input](const auto& item){ return IsInputEqual(input, item.first); });
+            [](const auto& item){ return IsInputEqual(input, item.first); });
 
     if (iter != cheats.end())
     {

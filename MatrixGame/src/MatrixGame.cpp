@@ -9,6 +9,7 @@
 #include "CFile.hpp"
 
 #include "MatrixGame.h"
+#include "MatrixFormGame.hpp"
 #include "MatrixMap.hpp"
 #include "Interface/CInterface.h"
 #include "MatrixRenderPipeline.hpp"

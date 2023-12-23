@@ -20,8 +20,6 @@
 #include <chrono>
 #include <thread>
 
-#include "../../MatrixGame/src/keyboard.hpp"
-
 #include <stdio.h>
 
 #ifdef __GNUC__
@@ -520,12 +518,6 @@ int L3GRun()
 // returns true if input should be propagated, false otherwise
 bool processInput(UINT message, WPARAM wParam, LPARAM lParam)
 {
-    const auto lp2key = [](uint32_t lp){
-        uint8_t scan = (lp >> 16) & 0x7F;
-        uint8_t extFlag = (lp & (1 << 24)) ? 1 : 0;
-        return scan | (extFlag << 7);
-    };
-
     int16_t hi_lparam = HIWORD(lParam);
     int16_t lo_lparam = LOWORD(lParam);
     int16_t hi_wparam = HIWORD(wParam);
@@ -566,12 +558,12 @@ bool processInput(UINT message, WPARAM wParam, LPARAM lParam)
             break;
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-            g_FormCur->Keyboard(true, lp2key(lParam), wParam);
+            g_FormCur->Keyboard(true, wParam);
             propagate = true;
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-            g_FormCur->Keyboard(false, lp2key(lParam), wParam);
+            g_FormCur->Keyboard(false, wParam);
             propagate = true;
             break;
         default:

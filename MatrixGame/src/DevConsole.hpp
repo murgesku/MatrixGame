@@ -8,7 +8,8 @@
 
 typedef void (*CMD_HANDLER)(const std::wstring& cmd, const std::wstring& params);
 
-struct SCmdItem {
+struct SCmdItem
+{
     const wchar *cmd;
     CMD_HANDLER handler;
 };
@@ -40,7 +41,7 @@ public:
     void ShowHelp(void);
 
     void Takt(int ms);
-    void Keyboard(int scan, bool down);
+    void Keyboard(uint8_t vk, bool down);
 };
 
 #endif

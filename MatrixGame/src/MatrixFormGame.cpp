@@ -30,7 +30,9 @@
 
 #include <utils.hpp>
 #include <stupid_logger.hpp>
+#include <cheats.hpp>
 
+#include <deque>
 #include <string>
 #include <chrono>
 #include <format>
@@ -38,7 +40,8 @@
 namespace {
 
 using Keyboard::isKeyPressed;
-using Keyboard::isVKeyPressed;
+
+constexpr auto DOUBLEPRESS_TIME_DELTA = 200;
 
 } // namespace
 
@@ -530,7 +533,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
     m_Action = 0;
 
     /*
-        if(fCtrl && down && key==VK_RBUTTON){
+        if(Keyboard::is_down(VK_CONTROL) && down && key==VK_RBUTTON){
             D3DXVECTOR3 vpos,vdir;
             g_MatrixMap->CalcPickVector(CPoint(x,y), vdir);
             g_MatrixMap->UnitPickWorld(g_MatrixMap->GetFrustumCenter(),vdir,&m_LastWorldX,&m_LastWorldY);
@@ -699,48 +702,42 @@ void ConfirmCancelHandler(void);
 void ResetRequestHandler(void);
 void SurrenderRequestHandler(void);
 
-void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
+void CFormMatrixGame::Keyboard(bool down, uint8_t vk)
 {
     DTRACE();
 
     if (down)
     {
         Keyboard::on_key_down(vk);
+        g_MatrixMap->m_VKeyDown = vk;
     }
     else
     {
         Keyboard::on_key_up(vk);
+        g_MatrixMap->m_VKeyDown = 0;
     }
-
-    bool fCtrl = isVKeyPressed(VK_CONTROL);
 
     if (g_MatrixMap->m_Console.IsActive())
     {
-        g_MatrixMap->m_Console.Keyboard(scan, down);
+        g_MatrixMap->m_Console.Keyboard(vk, down);
         return;
     }
 
     if (vk == VK_F9 && down)
     {
         make_screenshot();
+        return;
     }
 
-    if (down)
-    {
-        if (m_LastScans.size() == MAX_SCANS)
-        {
-            m_LastScans.pop_front();
-        }
-        m_LastScans.emplace_back(g_MatrixMap->GetTime(), scan);
 #ifdef CHEATS_ON
-        if (processCheats(m_LastScans))
-        {
-            return;
-        }
-#endif
+    if (down && Cheats::processInput(vk))
+    {
+        return;
     }
+#endif
 
-    if (scan == KEY_ENTER && down) {
+    if (vk == VK_RETURN && down)
+    {
         if (g_MatrixMap->m_DialogModeName && (g_MatrixMap->m_DialogModeHints.size() > 1 ||
                                               wcscmp(g_MatrixMap->m_DialogModeName, TEMPLATE_DIALOG_MENU) != 0)) {
             g_IFaceList->PressHintButton(HINT_OK);
@@ -748,7 +745,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         }
     }
 
-    if (scan == KEY_E && down) {
+    if (vk == VK_E && down) {
         if (g_MatrixMap->m_DialogModeName && wcscmp(g_MatrixMap->m_DialogModeName, TEMPLATE_DIALOG_MENU) == 0) {
             if (g_MatrixMap->m_DialogModeHints.size() > 1) {}
             else {
@@ -757,7 +754,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
     }
-    if (scan == KEY_S && down) {
+    if (vk == VK_S && down) {
         if (g_MatrixMap->m_DialogModeName && wcscmp(g_MatrixMap->m_DialogModeName, TEMPLATE_DIALOG_MENU) == 0) {
             if (g_MatrixMap->m_DialogModeHints.size() > 1) {}
             else {
@@ -766,7 +763,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
     }
-    if (scan == KEY_R && down) {
+    if (vk == VK_R && down) {
         if (g_MatrixMap->m_DialogModeName && wcscmp(g_MatrixMap->m_DialogModeName, TEMPLATE_DIALOG_MENU) == 0) {
             if (g_MatrixMap->m_DialogModeHints.size() > 1) {}
             else {
@@ -776,7 +773,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         }
     }
 
-    if (scan == KEY_ESC && down) {
+    if (vk == VK_ESCAPE && down) {
         if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) {
             g_ExitState = 1;
             SETFLAG(g_Flags, GFLAG_EXITLOOP);
@@ -803,14 +800,15 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         }
 
 #ifdef _TRACE
-        if (isVKeyPressed(VK_LSHIFT))
+        // TODO: check this SHIFTs, not sure if this part works
+        if (Keyboard::is_down(VK_LSHIFT))
         {
             g_ExitState = 2;
             // SETFLAG(g_Flags, GFLAG_EXITLOOP);
             g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_LOOSE);
             return;
         }
-        if (isVKeyPressed(VK_RSHIFT))
+        if (Keyboard::is_down(VK_RSHIFT))
         {
             g_ExitState = 3;
             // SETFLAG(g_Flags, GFLAG_EXITLOOP);
@@ -821,9 +819,6 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_MENU);
         return;
     }
-
-    g_MatrixMap->m_KeyDown = down;
-    g_MatrixMap->m_KeyScan = scan;
 
     if (isKeyPressed(KA_UNIT_FORWARD) || isKeyPressed(KA_UNIT_FORWARD_ALT))
     {
@@ -843,7 +838,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         }
 
         CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
-        if (scan == KEY_PAUSE) {
+        if (vk == VK_PAUSE) {
             g_MatrixMap->Pause(!g_MatrixMap->IsPaused());
             return;
         }
@@ -1002,11 +997,9 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                         //"Н"elp - Вызов подкрепления
                         bld->Maintenance();
                     }
-                    else if (scan > 1 && scan <= 11 && ps->m_ConstructPanel->IsActive() &&
+                    else if (vk >= VK_0 && vk <= VK_9 && ps->m_ConstructPanel->IsActive() &&
                              ps->m_ConstructPanel->m_FocusedElement) {
-                        int key = 0;
-                        if (scan != 11)
-                            key = scan - 1;
+                        int key = vk - VK_0;
 
                         ERobotUnitType type = MRT_EMPTY;
                         ERobotUnitKind kind = RUK_UNKNOWN;
@@ -1206,7 +1199,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
 
-        if (scan > 1 && scan < 11 && !ps->IsArcadeMode() && !ps->m_ConstructPanel->IsActive()) {
+        if (vk >= VK_0 && vk <= VK_9 && !ps->IsArcadeMode() && !ps->m_ConstructPanel->IsActive()) {
             if (CMultiSelection::m_GameSelection) {
                 CMultiSelection::m_GameSelection->End(false);
             }
@@ -1218,13 +1211,13 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
 
             g_IFaceList->ResetOrderingMode();
 
-            if (fCtrl) {
+            if (Keyboard::is_down(VK_CONTROL)) {
                 CMatrixMapStatic *o = CMatrixMapStatic::GetFirstLogic();
                 while (o) {
-                    if (o->IsRobot() && ((CMatrixRobotAI *)o)->GetCtrlGroup() == scan) {
+                    if (o->IsRobot() && ((CMatrixRobotAI *)o)->GetCtrlGroup() == vk) {
                         ((CMatrixRobotAI *)o)->SetCtrlGroup(0);
                     }
-                    else if (o->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer *)o)->GetCtrlGroup() == scan) {
+                    else if (o->GetObjectType() == OBJECT_TYPE_FLYER && ((CMatrixFlyer *)o)->GetCtrlGroup() == vk) {
                         ((CMatrixFlyer *)o)->SetCtrlGroup(0);
                     }
                     o = o->GetNextLogic();
@@ -1234,10 +1227,10 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                     CMatrixGroupObject *go = ps->GetCurGroup()->m_FirstObject;
                     while (go) {
                         if (go->GetObject()->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
-                            ((CMatrixRobotAI *)go->GetObject())->SetCtrlGroup(scan);
+                            ((CMatrixRobotAI *)go->GetObject())->SetCtrlGroup(vk);
                         }
                         else if (go->GetObject()->GetObjectType() == OBJECT_TYPE_FLYER) {
-                            ((CMatrixFlyer *)go->GetObject())->SetCtrlGroup(scan);
+                            ((CMatrixFlyer *)go->GetObject())->SetCtrlGroup(vk);
                         }
                         go = go->m_NextObject;
                     }
@@ -1246,22 +1239,23 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             else {
                 CMatrixMapStatic *o = CMatrixMapStatic::GetFirstLogic();
 
-                auto iscan = m_LastScans.rbegin();
+                static uint8_t prev_key = 0;
+                static uint32_t prev_key_time = 0;
+
                 bool prev_unselected = false;
                 if (!ps->GetCurGroup()) {
                     prev_unselected = true;
                 }
                 else if (ps->GetCurGroup() &&
-                         iscan->scan == scan &&
-                         (iscan+1)->scan == scan &&
-                         (iscan->time - (iscan+1)->time) < DOUBLESCAN_TIME_DELTA)
+                         prev_key == vk &&
+                         (g_MatrixMap->GetTime() - prev_key_time) < DOUBLEPRESS_TIME_DELTA)
                 {
                     CMatrixMapStatic *object = NULL;
                     if (ps->GetCurGroup()->m_FirstObject)
                         object = ps->GetCurGroup()->m_FirstObject->GetObject();
 
                     if (object && object->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
-                        if (((CMatrixRobotAI *)object)->GetCtrlGroup() == scan) {
+                        if (((CMatrixRobotAI *)object)->GetCtrlGroup() == vk) {
                             // set camera to group position. out
 
                             g_MatrixMap->m_Camera.SetXYStrategy(
@@ -1270,7 +1264,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                         }
                     }
                     else if (object && object->GetObjectType() == OBJECT_TYPE_FLYER) {
-                        if (((CMatrixFlyer *)object)->GetCtrlGroup() == scan) {
+                        if (((CMatrixFlyer *)object)->GetCtrlGroup() == vk) {
                             // set camera to group position. out
                             g_MatrixMap->m_Camera.SetXYStrategy(
                                     D3DXVECTOR2(object->GetGeoCenter().x, object->GetGeoCenter().y + 100.0f));
@@ -1279,9 +1273,12 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                     }
                 }
 
+                prev_key = vk;
+                prev_key_time = g_MatrixMap->GetTime();
+
                 while (o) {
                     if (o->GetSide() == PLAYER_SIDE) {
-                        if (o->IsLiveRobot() && o->AsRobot()->GetCtrlGroup() == scan) {
+                        if (o->IsLiveRobot() && o->AsRobot()->GetCtrlGroup() == vk) {
                             if (!prev_unselected) {
                                 prev_unselected = true;
                                 ps->SelectedGroupUnselect();
@@ -1312,11 +1309,10 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
         // BUTTON UNPRESSED
-        if (!down) {
-            if (scan == KEY_LSHIFT) {}
-
+        if (!down)
+        {
 #if (defined _DEBUG) && !(defined _RELDEBUG)
-            if (scan == KEY_SPACE) {
+            if (vk == VK_SPACE) {
                 if (sel) {
                     sel->Kill();
                 }
@@ -1337,11 +1333,11 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
 // BUTTON PRESSED
 #if (defined _DEBUG) && !(defined _RELDEBUG)
 
-        if (scan == KEY_Q) {
+        if (vk == VK_Q) {
             g_MatrixMap->DumpLogic();
             g_MatrixMap->m_DI.T(L"LogicDump", L"LogicDump", 1000);
         }
-        else if (/*scan == KEY_T*/ 0) {
+        else if (/*vk == VK_T*/ 0) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
@@ -1396,7 +1392,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                 }
             }
         }
-        else if (/*scan == KEY_Y*/ 0) {
+        else if (/*vk == VK_Y*/ 0) {
             SSpecialBot sb;
             ZeroMemory(&sb, sizeof(SSpecialBot));
 
@@ -1452,9 +1448,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
 
-        if (scan > 1 && scan < 12) {}
-
-        // if(scan==KEY_R) {
+        // if(vk == VK_R) {
         //    CMatrixSideUnit* s = g_MatrixMap->GetPlayerSide();
         //    if(s){
         //        s->AddTitan(1000);
@@ -1463,32 +1457,32 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         //        s->AddPlasma(1000);
         //    }
         //}
-        // if(scan == KEY_RBRACKET){
+        // if(vk == VK_RBRACKET){
         //    if(g_IFaceList){
         //        g_IFaceList->SlideFocusedInterfaceRight();
         //    }
         //}
 
-        // if(scan == KEY_LBRACKET){
+        // if(vk == VK_LBRACKET){
         //    if(g_IFaceList){
         //        g_IFaceList->SlideFocusedInterfaceLeft();
         //    }
         //}
 
-        if (scan == KEY_F11) {
+        if (vk == VK_F11) {
             D3DResource::Dump(D3DRESTYPE_VB);
             // CCache::Dump();
         }
-        if (scan == KEY_DELETE) {
+        if (vk == VK_DELETE) {
             if (path)
                 path->Kill();
             path = 0;
         }
-        if (scan == KEY_E) {
+        if (vk == VK_E) {
             g_MatrixMap->m_Minimap.AddEvent(g_MatrixMap->m_TraceStopPos.x, g_MatrixMap->m_TraceStopPos.y, 0xFF00FF00,
                                             0xFF000000);
         }
-        if (scan == KEY_F) {
+        if (vk == VK_F) {
             g_MatrixMap->ResetMaintenanceTime();
             if (IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj) && g_MatrixMap->m_TraceStopObj->IsBuilding()) {
                 g_MatrixMap->m_TraceStopObj->AsBuilding()->Maintenance();
@@ -1496,7 +1490,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
         }
 #endif
 #if (defined _DEBUG) && !(defined _RELDEBUG)
-        if (scan == KEY_F3) {
+        if (vk == VK_F3) {
             static bool prev = false;
             static D3DXVECTOR3 prevp;
             D3DXVECTOR3 newp, p1, p2;
@@ -1545,14 +1539,14 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             // static int to = 100000;
             // static D3DXVECTOR3 ptfrom;
 
-            // bool fShift=isVKeyPressed(VK_SHIFT);
+            // bool fShift=Keyboard::is_down(VK_SHIFT);
 
-            if (scan == KEY_F7) {
+            if (vk == VK_F7) {
                 // ptfrom = g_MatrixMap->m_Camera.GetFrustumCenter();
                 // g_MatrixMap->CalcVisTemp(from, to, ptfrom);
                 g_MatrixMap->CalcVis();
             }
-            // if (scan == KEY_F8)
+            // if (vk == VK_F8)
             //{
             //    if (fShift) --to; else ++to;
             //    if (to < from) to = from;
@@ -1562,7 +1556,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
 
             //    g_MatrixMap->CalcVisTemp(from, to, ptfrom);
             //}
-            // if (scan == KEY_F6)
+            // if (vk == VK_F6)
             //{
             //    if (fShift) --from; else ++from;
             //    if (from > to) from = to;
@@ -1574,13 +1568,13 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             //    g_MatrixMap->CalcVisTemp(from, to, ptfrom);
             //}
         }
-        // if (scan == KEY_F8)
+        // if (vk == VK_F8)
         //{
         //    D3DXVECTOR3 p;
         //    g_MatrixMap->TraceLand(&p, g_MatrixMap->m_Camera.GetFrustumCenter(), g_MatrixMap->m_MouseDir);
         //    CHelper::Create(10000,888)->Line(g_MatrixMap->m_Camera.GetFrustumCenter(), p);
         //}
-        if (scan == KEY_F6) {
+        if (vk == VK_F6) {
             const D3DXVECTOR3 &cam = g_MatrixMap->m_Camera.GetFrustumCenter();
             int gx = TruncFloat(cam.x / (GLOBAL_SCALE * MAP_GROUP_SIZE));
             int gy = TruncFloat(cam.y / (GLOBAL_SCALE * MAP_GROUP_SIZE));
@@ -1608,7 +1602,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
             }
         }
 
-        if (scan == KEY_F5 && IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj)) {
+        if (vk == VK_F5 && IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj)) {
             if (g_MatrixMap->m_TraceStopObj->IsRobot()) {
                 g_MatrixMap->m_TraceStopObj->AsRobot()->m_PosX = 4110.0f;
                 g_MatrixMap->m_TraceStopObj->AsRobot()->m_PosY = 2295.0f;
@@ -1623,7 +1617,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                         NULL);
             }
         }
-        if (scan == KEY_K && IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj)) {
+        if (vk == VK_K && IS_TRACE_STOP_OBJECT(g_MatrixMap->m_TraceStopObj)) {
             CMatrixMapStatic *f = g_MatrixMap->m_TraceStopObj;
             if (f->GetObjectType() == OBJECT_TYPE_FLYER || f->GetObjectType() == OBJECT_TYPE_ROBOTAI) {
                 CMatrixMapStatic::SortBegin();
@@ -1647,7 +1641,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan, uint8_t vk)
                     killed = f->Damage(WEAPON_BIGBOOM, f->GetGeoCenter(), D3DXVECTOR3(0, 0, 0), 0, NULL);
             }
         }
-        if (scan == KEY_SPACE) {
+        if (vk == VK_SPACE) {
             D3DXVECTOR3 pos = g_MatrixMap->m_TraceStopPos;
             pos.z += 10.0f;
 
