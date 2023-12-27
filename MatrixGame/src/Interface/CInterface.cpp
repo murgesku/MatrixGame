@@ -26,6 +26,8 @@
 #include "../MatrixFormGame.hpp"
 
 #include "../Text/Render.hpp"
+#include <input.hpp>
+
 #include <stupid_logger.hpp>
 
 CIFaceList *g_IFaceList = NULL;
@@ -1073,11 +1075,13 @@ bool CInterface::OnMouseMove(CPoint mouse) {
 
     if (!bCatch && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN) &&
         FLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG)) {
-        if (!IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_FIRE]) & 0x8000) == 0x8000)) {
+        if (!IS_PREORDERING_NOSELECT && Input::isKeyPressed(KA_FIRE))
+        {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
         }
-        else if (IS_PREORDERING_NOSELECT && ((GetAsyncKeyState(g_Config.m_KeyActions[KA_AUTO]) & 0x8000) == 0x8000)) {
+        else if (IS_PREORDERING_NOSELECT && Input::isKeyPressed(KA_AUTO))
+        {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
         }
@@ -1143,7 +1147,8 @@ bool CInterface::OnMouseLBDown() {
                     else if (IS_GROUP_ICON(pObjectsList->m_nId)) {
                         CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
-                        if ((GetAsyncKeyState(g_Config.m_KeyActions[KA_SHIFT]) & 0x8000) == 0x8000) {
+                        if (Input::isKeyPressed(KA_SHIFT))
+                        {
                             CMatrixMapStatic *o = ps->GetCurGroup()->GetObjectByN(pObjectsList->m_nId - GROUP_ICONS_ID);
                             ps->RemoveObjectFromSelectedGroup(o);
                         }
@@ -3127,23 +3132,19 @@ void CInterface::LogicTakt(int ms) {
         if (FLAG(m_InterfaceFlags, (INTERFACE_SLIDE_LEFT | INTERFACE_SLIDE_RIGHT))) {
             SlideStep();
         }
-        // if(!ps->IsArcadeMode() && (GetAsyncKeyState(g_MatrixMap->m_Config.m_KeyActions[KA_UNIT_LEFT]) &
-        // 0x8000)==0x8000){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_LEFT)){
         //    MoveLeft();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && (GetAsyncKeyState(g_MatrixMap->m_Config.m_KeyActions[KA_UNIT_RIGHT]) &
-        // 0x8000)==0x8000){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_RIGHT)){
         //    MoveRight();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && (GetAsyncKeyState(g_MatrixMap->m_Config.m_KeyActions[KA_UNIT_FORWARD]) &
-        // 0x8000)==0x8000){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_FORWARD)){
         //    MoveUp();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && (GetAsyncKeyState(g_MatrixMap->m_Config.m_KeyActions[KA_UNIT_BACKWARD]) &
-        // 0x8000)==0x8000){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_BACKWARD)){
         //    MoveDown();
         //    ReCalcElementsPos();
         //}

@@ -434,6 +434,8 @@ void L3GDeinit() {
     g_WndExtern = false;
 }
 
+bool processInput(UINT message, WPARAM wParam, LPARAM lParam);
+
 int L3GRun()
 {
     using clock = std::chrono::high_resolution_clock;
@@ -513,6 +515,65 @@ int L3GRun()
     return 1;
 }
 
+// returns true if input should be propagated, false otherwise
+bool processInput(UINT message, WPARAM wParam, LPARAM lParam)
+{
+    int16_t hi_lparam = HIWORD(lParam);
+    int16_t lo_lparam = LOWORD(lParam);
+    int16_t hi_wparam = HIWORD(wParam);
+
+    bool propagate = false;
+
+    switch (message)
+    {
+        case WM_MOUSEWHEEL:
+            g_FormCur->MouseKey(B_WHEEL, hi_wparam / 120, lo_lparam, hi_lparam);
+            break;
+        case WM_MOUSEMOVE:
+            g_FormCur->MouseMove(lo_lparam, hi_lparam);
+            break;
+        case WM_LBUTTONDOWN:
+            g_FormCur->MouseKey(B_DOWN, VK_LBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_LBUTTONDBLCLK:
+            g_FormCur->MouseKey(B_DOUBLE, VK_LBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_RBUTTONDOWN:
+            g_FormCur->MouseKey(B_DOWN, VK_RBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_RBUTTONDBLCLK:
+            g_FormCur->MouseKey(B_DOUBLE, VK_RBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_MBUTTONDOWN:
+            g_FormCur->MouseKey(B_DOWN, VK_MBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_LBUTTONUP:
+            g_FormCur->MouseKey(B_UP, VK_LBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_RBUTTONUP:
+            g_FormCur->MouseKey(B_UP, VK_RBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_MBUTTONUP:
+            g_FormCur->MouseKey(B_UP, VK_MBUTTON, lo_lparam, hi_lparam);
+            break;
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+            g_FormCur->Keyboard(true, wParam);
+            propagate = true;
+            break;
+        case WM_KEYUP:
+        case WM_SYSKEYUP:
+            g_FormCur->Keyboard(false, wParam);
+            propagate = true;
+            break;
+        default:
+            propagate = true;
+            break;
+    }
+
+    return propagate;
+}
+
 LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -565,69 +626,17 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             SETFLAG(g_Flags, GFLAG_APPCLOSE);
             //          PostQuitMessage(0);
             return 0;
+    }
 
-
-
-        case WM_MOUSEWHEEL:
+    if (g_FormCur && FLAG(g_Flags, GFLAG_APPACTIVE))
+    {
+        bool propagate = processInput(message, wParam, lParam);
+        if (!propagate)
         {
-//#define GET_KEYSTATE_WPARAM(wParam)     (LOWORD(wParam))
-#define GET_WHEEL_DELTA_WPARAM(wParam) ((short)HIWORD(wParam))
-
-            // int fwKeys = GET_KEYSTATE_WPARAM(wParam);
-            int zDelta = GET_WHEEL_DELTA_WPARAM(wParam) / 120;
-
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_WHEEL, zDelta, short(LOWORD(lParam)), short(HIWORD(lParam)));
-
             return 0;
         }
-        case WM_MOUSEMOVE:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseMove(short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_LBUTTONDOWN:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_DOWN /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_LBUTTONDBLCLK:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_DOUBLE /*true*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_RBUTTONDOWN:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_DOWN /*true*/, VK_RBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_RBUTTONDBLCLK:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_DOUBLE /*true*/, VK_RBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_MBUTTONDOWN:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_DOWN /*true*/, VK_MBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_LBUTTONUP:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_UP /*false*/, VK_LBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_RBUTTONUP:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_UP /*false*/, VK_RBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_MBUTTONUP:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->MouseKey(B_UP /*false*/, VK_MBUTTON, short(LOWORD(lParam)), short(HIWORD(lParam)));
-            return 0;
-        case WM_KEYDOWN:
-        case WM_SYSKEYDOWN:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->Keyboard(true, lp2key(lParam));
-            break;
-        case WM_KEYUP:
-        case WM_SYSKEYUP:
-            if (FLAG(g_Flags, GFLAG_APPACTIVE) && g_FormCur)
-                g_FormCur->Keyboard(false, lp2key(lParam));
-            break;
     }
+
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 

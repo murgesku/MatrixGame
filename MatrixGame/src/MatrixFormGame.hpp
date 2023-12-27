@@ -3,37 +3,18 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include "Form.hpp"
-
-#include <deque>
-#include <string>
-#include <cstdint>
-
 #pragma once
 
-#define MAX_SCANS             16
+#include "Form.hpp"
+
+#include <cstdint>
+
 #define MOUSE_BORDER          4
-#define DOUBLESCAN_TIME_DELTA 200
-
-struct SKeyScan {
-    SKeyScan() = default;
-
-    SKeyScan(uint32_t _time, uint32_t _scan)
-    : time{_time}
-    , scan{_scan}
-    {}
-
-    uint32_t time;
-    uint32_t scan;
-};
 
 class CFormMatrixGame : public CForm {
 private:
     float m_LastWorldX, m_LastWorldY;
     int m_Action;
-
-    std::deque<SKeyScan> m_LastScans{MAX_SCANS};
-    bool IsInputEqual(std::string str);
 
 public:
     CFormMatrixGame(void);
@@ -48,6 +29,6 @@ public:
     virtual void MouseMove(int x, int y);
     virtual void MouseKey(ButtonStatus status, int key, int x, int y);
 
-    virtual void Keyboard(bool down, int scan);
+    virtual void Keyboard(bool down, uint8_t vk);
     virtual void SystemEvent(ESysEvent se);
 };
