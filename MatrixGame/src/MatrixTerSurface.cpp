@@ -12,7 +12,7 @@
 #include "CFile.hpp"
 #include "Mem.hpp"
 
-#include <keyboard.hpp>
+#include <input.hpp>
 
 CBigIB *CTerSurface::m_BigIB;
 CBigVB<CTerSurface::STerSurfVertex> *CTerSurface::m_BigVB;

@@ -22,7 +22,7 @@
 #include "Interface/CCounter.h"
 #include "MatrixGamePathUtils.hpp"
 
-#include <Keyboard.hpp>
+#include <input.hpp>
 
 #include <time.h>
 #include <sys/timeb.h>
@@ -39,7 +39,8 @@
 
 namespace {
 
-using Keyboard::isKeyPressed;
+using Input::isKeyPressed;
+using Input::isVKeyPressed;
 
 constexpr auto DOUBLEPRESS_TIME_DELTA = 200;
 
@@ -504,11 +505,11 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
 
     if (status == B_DOWN)
     {
-        Keyboard::on_key_down(key);
+        Input::onKeyDown(key);
     }
     else if (status == B_UP)
     {
-        Keyboard::on_key_up(key);
+        Input::onKeyUp(key);
     }
 
     if (status == B_WHEEL) {
@@ -542,7 +543,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
     m_Action = 0;
 
     /*
-        if(Keyboard::is_down(VK_CONTROL) && down && key==VK_RBUTTON){
+        if(Input::isVKeyPressed(VK_CONTROL) && down && key==VK_RBUTTON){
             D3DXVECTOR3 vpos,vdir;
             g_MatrixMap->CalcPickVector(CPoint(x,y), vdir);
             g_MatrixMap->UnitPickWorld(g_MatrixMap->GetFrustumCenter(),vdir,&m_LastWorldX,&m_LastWorldY);
@@ -717,12 +718,12 @@ void CFormMatrixGame::Keyboard(bool down, uint8_t vk)
 
     if (down)
     {
-        Keyboard::on_key_down(vk);
+        Input::onKeyDown(vk);
         g_MatrixMap->m_VKeyDown = vk;
     }
     else
     {
-        Keyboard::on_key_up(vk);
+        Input::onKeyUp(vk);
         g_MatrixMap->m_VKeyDown = 0;
     }
 
@@ -810,14 +811,14 @@ void CFormMatrixGame::Keyboard(bool down, uint8_t vk)
 
 #ifdef _TRACE
         // TODO: check this SHIFTs, not sure if this part works
-        if (Keyboard::is_down(VK_LSHIFT))
+        if (Input::isVKeyPressed(VK_LSHIFT))
         {
             g_ExitState = 2;
             // SETFLAG(g_Flags, GFLAG_EXITLOOP);
             g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_LOOSE);
             return;
         }
-        if (Keyboard::is_down(VK_RSHIFT))
+        if (Input::isVKeyPressed(VK_RSHIFT))
         {
             g_ExitState = 3;
             // SETFLAG(g_Flags, GFLAG_EXITLOOP);
@@ -1220,7 +1221,7 @@ void CFormMatrixGame::Keyboard(bool down, uint8_t vk)
 
             g_IFaceList->ResetOrderingMode();
 
-            if (Keyboard::is_down(VK_CONTROL)) {
+            if (Input::isVKeyPressed(VK_CONTROL)) {
                 CMatrixMapStatic *o = CMatrixMapStatic::GetFirstLogic();
                 while (o) {
                     if (o->IsRobot() && ((CMatrixRobotAI *)o)->GetCtrlGroup() == vk) {
@@ -1548,7 +1549,7 @@ void CFormMatrixGame::Keyboard(bool down, uint8_t vk)
             // static int to = 100000;
             // static D3DXVECTOR3 ptfrom;
 
-            // bool fShift=Keyboard::is_down(VK_SHIFT);
+            // bool fShift=Input::isVKeyPressed(VK_SHIFT);
 
             if (vk == VK_F7) {
                 // ptfrom = g_MatrixMap->m_Camera.GetFrustumCenter();

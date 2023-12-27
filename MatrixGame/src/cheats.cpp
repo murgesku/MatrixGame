@@ -6,7 +6,7 @@
 #include <MatrixObjectCannon.hpp>
 #include <Interface/CConstructor.h>
 
-#include <keyboard.hpp>
+#include <input.hpp>
 
 #include <deque>
 #include <functional>

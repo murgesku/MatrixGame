@@ -5,15 +5,15 @@
 
 enum EKeyAction : int; // predeclaration
 
-namespace Keyboard {
+namespace Input {
 
-void on_key_down(uint8_t vk);
-void on_key_up(uint8_t vk);
-bool is_down(uint8_t vk);
+void onKeyDown(uint8_t vk);
+void onKeyUp(uint8_t vk);
 
+bool isVKeyPressed(uint8_t vk);
 bool isKeyPressed(EKeyAction ka);
 
-} // namespace Keyboard
+} // namespace Input
 
 #define KEY_ESC 1
 #define KEY_F1  59
