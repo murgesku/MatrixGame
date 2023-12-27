@@ -502,6 +502,15 @@ void CFormMatrixGame::MouseMove(int x, int y) {
 void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
     DTRACE();
 
+    if (status == B_DOWN)
+    {
+        Keyboard::on_key_down(key);
+    }
+    else if (status == B_UP)
+    {
+        Keyboard::on_key_up(key);
+    }
+
     if (status == B_WHEEL) {
         while (key > 0) {
             g_MatrixMap->m_Camera.ZoomInStep();
