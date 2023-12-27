@@ -34,7 +34,7 @@
 
 #include "CFile.hpp"
 
-#include <Keyboard.hpp>
+#include <input.hpp>
 
 #define RENDER_PROJ_SHADOWS_IN_STENCIL_PASS
 
@@ -1169,7 +1169,7 @@ void CMatrixMap::BeforeDraw(void) {
 
     // CDText::T("sel", player_side->m_CurrSel);
     // if(player_side->IsArcadeMode() &&  player_side->GetArcadedObject()->GetObjectType() == OBJECT_TYPE_FLYER &&
-    // (Keyboard::isKeyPressed(KA_AUTO) && g_IFaceList->m_InFocus != INTERFACE)
+    // (Input::isKeyPressed(KA_AUTO) && g_IFaceList->m_InFocus != INTERFACE)
     //{
     //    CMatrixFlyer * fl = (CMatrixFlyer *)player_side->GetArcadedObject();
 
@@ -1197,7 +1197,7 @@ void CMatrixMap::BeforeDraw(void) {
 
     if (player_side->m_ActiveObject != m_TraceStopObj && player_side->m_ActiveObject &&
         player_side->m_ActiveObject->GetObjectType() == OBJECT_TYPE_FLYER &&
-        Keyboard::isKeyPressed(KA_AUTO) && g_IFaceList->m_InFocus != INTERFACE) {
+        Input::isKeyPressed(KA_AUTO) && g_IFaceList->m_InFocus != INTERFACE) {
         CMatrixFlyer *fl = (CMatrixFlyer *)player_side->m_ActiveObject;
 
         SPlane hp;

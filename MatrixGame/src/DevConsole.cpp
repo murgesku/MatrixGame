@@ -10,7 +10,7 @@
 #include "CFile.hpp"
 
 #include <utils.hpp>
-#include <keyboard.hpp>
+#include <input.hpp>
 
 static void hHelp(
     [[maybe_unused]] const std::wstring& cmd,

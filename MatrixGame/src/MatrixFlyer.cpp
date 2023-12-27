@@ -21,11 +21,11 @@
 #include "Effects/MatrixEffectSmokeAndFire.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
 
-#include <Keyboard.hpp>
+#include <input.hpp>
 
 namespace {
 
-using Keyboard::isKeyPressed;
+using Input::isKeyPressed;
 
 } // namespace
 

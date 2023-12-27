@@ -18,11 +18,11 @@
 #include "Effects/MatrixEffectSelection.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
 
-#include <Keyboard.hpp>
+#include <input.hpp>
 
 namespace {
 
-using Keyboard::isKeyPressed;
+using Input::isKeyPressed;
 
 } // namespace
 
@@ -928,7 +928,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     // ORDERS PROCESSING/////////////////////////////////////////////////////
 
     if (this == (CMatrixRobotAI *)g_MatrixMap->GetPlayerSide()
-                        ->GetArcadedObject() /* && !Keyboard::is_down(VK_RBUTTON)*/) {
+                        ->GetArcadedObject() /* && !Input::is_down(VK_RBUTTON)*/) {
         if (isKeyPressed(KA_UNIT_LEFT) || isKeyPressed(KA_UNIT_LEFT_ALT))
         {
             RotateRobotLeft();

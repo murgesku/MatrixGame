@@ -26,7 +26,7 @@
 #include "../MatrixFormGame.hpp"
 
 #include "../Text/Render.hpp"
-#include <Keyboard.hpp>
+#include <input.hpp>
 
 #include <stupid_logger.hpp>
 
@@ -1075,12 +1075,12 @@ bool CInterface::OnMouseMove(CPoint mouse) {
 
     if (!bCatch && FLAG(g_IFaceList->m_IfListFlags, MINIMAP_BUTTON_DOWN) &&
         FLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG)) {
-        if (!IS_PREORDERING_NOSELECT && Keyboard::isKeyPressed(KA_FIRE))
+        if (!IS_PREORDERING_NOSELECT && Input::isKeyPressed(KA_FIRE))
         {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
         }
-        else if (IS_PREORDERING_NOSELECT && Keyboard::isKeyPressed(KA_AUTO))
+        else if (IS_PREORDERING_NOSELECT && Input::isKeyPressed(KA_AUTO))
         {
             g_MatrixMap->m_Minimap.ButtonClick(NULL);
             RESETFLAG(g_IFaceList->m_IfListFlags, MINIMAP_ENABLE_DRAG);
@@ -1147,7 +1147,7 @@ bool CInterface::OnMouseLBDown() {
                     else if (IS_GROUP_ICON(pObjectsList->m_nId)) {
                         CMatrixSideUnit *ps = g_MatrixMap->GetPlayerSide();
 
-                        if (Keyboard::isKeyPressed(KA_SHIFT))
+                        if (Input::isKeyPressed(KA_SHIFT))
                         {
                             CMatrixMapStatic *o = ps->GetCurGroup()->GetObjectByN(pObjectsList->m_nId - GROUP_ICONS_ID);
                             ps->RemoveObjectFromSelectedGroup(o);
@@ -3132,19 +3132,19 @@ void CInterface::LogicTakt(int ms) {
         if (FLAG(m_InterfaceFlags, (INTERFACE_SLIDE_LEFT | INTERFACE_SLIDE_RIGHT))) {
             SlideStep();
         }
-        // if(!ps->IsArcadeMode() && Keyboard::isKeyPressed(KA_UNIT_LEFT)){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_LEFT)){
         //    MoveLeft();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && Keyboard::isKeyPressed(KA_UNIT_RIGHT)){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_RIGHT)){
         //    MoveRight();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && Keyboard::isKeyPressed(KA_UNIT_FORWARD)){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_FORWARD)){
         //    MoveUp();
         //    ReCalcElementsPos();
         //}
-        // if(!ps->IsArcadeMode() && Keyboard::isKeyPressed(KA_UNIT_BACKWARD)){
+        // if(!ps->IsArcadeMode() && Input::isKeyPressed(KA_UNIT_BACKWARD)){
         //    MoveDown();
         //    ReCalcElementsPos();
         //}
