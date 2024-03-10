@@ -18,7 +18,7 @@ struct Token
 {
     std::wstring_view text;
     uint32_t color{0};
-    RECT rect{0,0,0,0};
+    size_t width{0};
 };
 
 std::vector<Token> parse_tokens(std::wstring_view str, Font& font);

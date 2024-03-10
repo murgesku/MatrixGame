@@ -62,6 +62,27 @@ void DrawComplexText(
         size_t y{0};
     };
 
+    struct
+    {
+        std::wstring text{};
+        size_t width{0};
+        uint32_t color{0};
+
+        void operator = (const Text::Token& token)
+        {
+            text = token.text;
+            color = token.color;
+            width = token.width;
+        }
+
+        void clear()
+        {
+            text.clear();
+            width = 0;
+            color = 0;
+        }
+    } current;
+
     const auto drawLine = [&](const std::wstring& str, uint32_t color, Point pos) {
         RECT posRect = rect;
         posRect.left = pos.x;
@@ -73,21 +94,14 @@ void DrawComplexText(
     size_t x = rect.left;
     size_t y = rect.top;
 
-    std::wstring curLine{};
-    size_t curLineWidth{0};
-    uint32_t curLineColor{0};
-
     for (const auto& token : text)
     {
         if (token.text == L"\r\n")
         {
-            if (!curLine.empty())
+            if (!current.text.empty())
             {
-                drawLine(curLine, curLineColor, {x,y});
-
-                curLine.clear();
-                curLineWidth = 0;
-                curLineColor = 0;
+                drawLine(current.text, current.color, {x,y});
+                current.clear();
             }
 
             x = rect.left;
@@ -96,55 +110,47 @@ void DrawComplexText(
         }
         else if (token.text == L" ")
         {
-            curLine += L" ";
-            curLineWidth += spaceWidth;
+            current.text += L" ";
+            current.width += spaceWidth;
+            continue;
         }
-        else
+
+        if (current.text.empty())
         {
-            if (curLine.empty())
-            {
-                curLine = token.text;
-                curLineColor = token.color;
-                curLineWidth = token.rect.right - token.rect.left;
-                continue;
-            }
-
-            // if current text + new token does not fit into the line - draw current text
-
-            if (x + curLineWidth + token.rect.right > rect.right)
-            {
-                drawLine(curLine, curLineColor, {x,y});
-
-                curLine = token.text;
-                curLineColor = token.color;
-                curLineWidth = token.rect.right - token.rect.left;
-
-                x = rect.left;
-                y += lineHeight;
-                continue;
-            }
-
-            // if current text color is not the new token color - draw current text
-            if (curLineColor != token.color)
-            {
-                drawLine(curLine, curLineColor, {x,y});
-
-                x += curLineWidth;
-
-                curLine = token.text;
-                curLineColor = token.color;
-                curLineWidth = token.rect.right - token.rect.left;
-                continue;
-            }
-
-            curLine += token.text;
-            curLineWidth += token.rect.right - token.rect.left;
+            current = token;
+            continue;
         }
+
+        // if current text + new token does not fit into the line - draw current text
+        if (x + current.width + token.width > rect.right)
+        {
+            drawLine(current.text, current.color, {x,y});
+
+            current = token;
+
+            x = rect.left;
+            y += lineHeight;
+            continue;
+        }
+
+        // if current text color is not the new token color - draw current text
+        if (current.color != token.color)
+        {
+            drawLine(current.text, current.color, {x,y});
+
+            x += current.width;
+
+            current = token;
+            continue;
+        }
+
+        current.text += token.text;
+        current.width += token.width;
     }
 
-    if (!curLine.empty())
+    if (!current.text.empty())
     {
-        drawLine(curLine, curLineColor, {x,y});
+        drawLine(current.text, current.color, {x,y});
     }
 
     return;
@@ -187,7 +193,7 @@ void Render(
 
     if (sizex == 0)
     {
-        sizex = tokens[0].rect.right + 4;
+        sizex = tokens[0].width + 4;
         clipRect.right = sizex;
     }
 

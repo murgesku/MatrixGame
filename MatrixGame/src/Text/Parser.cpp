@@ -44,29 +44,6 @@ size_t icase_find(std::wstring_view text, std::wstring_view prefix)
     return std::distance(text.begin(), it);
 }
 
-std::wstring GetTextWithoutTags(std::wstring_view text)
-{
-    std::wstring result;
-    bool insideTag = false;
-
-    for (const wchar_t c : text)
-    {
-        if (c == L'<')
-        {
-            insideTag = true;
-        }
-        else if (c == L'>')
-        {
-            insideTag = false;
-        }
-        else if (!insideTag)
-        {
-            result += c;
-        }
-    }
-    return result;
-}
-
 D3DCOLOR GetColorFromTag(std::wstring_view text, D3DCOLOR defaultColor)
 {
     if (icase_starts_with(text, COLOR_TAG_START))
@@ -178,11 +155,13 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
             text.remove_suffix(text.length() - pos);
         }
 
-        token.color = color;
-        token.text = text;
-
         const DWORD tformat = DT_CALCRECT | DT_SINGLELINE | DT_NOCLIP;
-        font->DrawTextW(NULL, token.text.data(), token.text.length(), &token.rect, tformat, 0);
+        RECT rect{0,0,0,0};
+        font->DrawTextW(NULL, text.data(), text.length(), &rect, tformat, 0);
+
+        token.text  = text;
+        token.color = color;
+        token.width = rect.right;
     }
 
     return result;
@@ -210,9 +189,9 @@ size_t calc_lines(const std::vector<Token>& text, Font& font, const RECT &rect)
         }
         else
         {
-            if (cur_width + token.rect.right < line_width)
+            if (cur_width + token.width < line_width)
             {
-                cur_width += token.rect.right;
+                cur_width += token.width;
             }
             else
             {
