@@ -46,45 +46,105 @@ private:
     T* m_obj;
 };
 
-void DrawComplexText(const std::vector<Text::Token>& text, Text::Font& font, const RECT &rect, DWORD format, D3DCOLOR defaultColor)
+void DrawComplexText(
+    const std::vector<Text::Token>& text,
+    const Text::Font& font,
+    const RECT &rect,
+    const DWORD format,
+    const D3DCOLOR defaultColor)
 {
-    const int lineHeight = font.GetHeight();
+    const size_t lineHeight = font.GetHeight();
+    const size_t spaceWidth = font.GetSpaceWidth();
+
+    struct Point
+    {
+        size_t x{0};
+        size_t y{0};
+    };
+
+    const auto drawLine = [&](const std::wstring& str, uint32_t color, Point pos) {
+        RECT posRect = rect;
+        posRect.left = pos.x;
+        posRect.top = pos.y;
+        uint32_t textColor = color ? color : defaultColor;
+        font->DrawTextW(NULL, str.data(), str.size(), &posRect, format, textColor);
+    };
 
     size_t x = rect.left;
     size_t y = rect.top;
+
+    std::wstring curLine{};
+    size_t curLineWidth{0};
+    uint32_t curLineColor{0};
+
     for (const auto& token : text)
     {
         if (token.text == L"\r\n")
         {
+            if (!curLine.empty())
+            {
+                drawLine(curLine, curLineColor, {x,y});
+
+                curLine.clear();
+                curLineWidth = 0;
+                curLineColor = 0;
+            }
+
             x = rect.left;
             y += lineHeight;
+            continue;
         }
         else if (token.text == L" ")
         {
-            x += font.GetSpaceWidth();
+            curLine += L" ";
+            curLineWidth += spaceWidth;
         }
         else
         {
-            RECT resRect = rect;
-            resRect.left = x;
-            resRect.top = y;
-
-            if (x + token.rect.right < rect.right)
+            if (curLine.empty())
             {
-                x += token.rect.right;
+                curLine = token.text;
+                curLineColor = token.color;
+                curLineWidth = token.rect.right - token.rect.left;
+                continue;
             }
-            else
+
+            // if current text + new token does not fit into the line - draw current text
+
+            if (x + curLineWidth + token.rect.right > rect.right)
             {
-                x = rect.left + token.rect.right - token.rect.left; // length of the word
+                drawLine(curLine, curLineColor, {x,y});
+
+                curLine = token.text;
+                curLineColor = token.color;
+                curLineWidth = token.rect.right - token.rect.left;
+
+                x = rect.left;
                 y += lineHeight;
-
-                resRect.left = rect.left;
-                resRect.top = y;
+                continue;
             }
 
-            uint32_t color = token.color ? token.color : defaultColor;
-            font->DrawTextW(NULL, token.text.data(), token.text.size(), &resRect, format, color);
+            // if current text color is not the new token color - draw current text
+            if (curLineColor != token.color)
+            {
+                drawLine(curLine, curLineColor, {x,y});
+
+                x += curLineWidth;
+
+                curLine = token.text;
+                curLineColor = token.color;
+                curLineWidth = token.rect.right - token.rect.left;
+                continue;
+            }
+
+            curLine += token.text;
+            curLineWidth += token.rect.right - token.rect.left;
         }
+    }
+
+    if (!curLine.empty())
+    {
+        drawLine(curLine, curLineColor, {x,y});
     }
 
     return;
