@@ -148,31 +148,6 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
 
     processWord(str);
 
-    ////////////////////////////////////////////////////////////////////
-    // trick for "<Color=247,195,0>+</color><Color=247,195,0>3</Color>"
-    // may be removed once center aligned text is properly implemented
-    pos = str.find(L"><");
-    if (pos != std::wstring::npos)
-    {
-        result.clear();
-        auto noTagsText = GetTextWithoutTags(str);
-        auto color = GetColorFromTag(str, 0);
-        if (noTagsText == L"+3")
-        {
-            result.emplace_back(L"+3", color);
-        }
-        else if (noTagsText == L"+10")
-        {
-            result.emplace_back(L"+10", color);
-        }
-        else
-        {
-            lgr.debug("Parsing workaround used for string: {}")(utils::from_wstring(str));
-            result.emplace_back(L"+X", color);
-        }
-    }
-    ////////////////////////////////////////////////////////////////////
-
     bool in_color_tag = false;
     uint32_t color = 0;
     for (auto& token : result)
