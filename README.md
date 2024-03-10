@@ -68,10 +68,9 @@ game (top-level folder; name does not matter, it might be your build folder)
 ```
 ## Contribution
 The whole project is a bunch of low-quality C++ code from late 90x. There is a huge space for an improvements, so feel free to just take any part and refactor it as you wish.<br>
-This project implements and uses its own memory management system (see MatrixLib/Base/CHeap.hpp), which in fact does not introduce any custom functions and simply wraps the calls of windows-style memory-management function (like HeapAlloc). So feel free to use C++ standard library with any of its features (C++14 only for a moment due to VS 2015 as "canonical" compiler; will be changed in the future).<br>
+This project implements and uses its own memory management system (see MatrixLib/Base/CHeap.hpp), which in fact does not introduce any custom functions and simply wraps the calls of windows-style memory-management function (like HeapAlloc). So feel free to use C++ standard library with any of its features supported by compilers.<br>
 Once you prepared some update and tested it - create a pull request, it will be automatically checked for compilability with both MSVC and GCC. Approve of the request is not formally required but always considered a good practise.<br>
 If you've found any bugs while playing the game - feel free to create an issue and provide as much details about the problem as you can. It might happen that someone will fix it :grin:<br>
-Let's make _Space Rangers_ great again! :wink:
 
 ## License
 According to the copyright holder's permission, the source code of the MatrixGame engine itself (the content of the MatrixGame and MatrixLib directories) is released as open source and should continue to be distributed under the GNU General Public License v2 or a newer one.<br>
