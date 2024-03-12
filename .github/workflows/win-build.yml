@@ -14,7 +14,7 @@ jobs:
     name: Build with MSVC
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Get DXSDK
       run:  |
             DXDIR=$TEMP/DXDIR
@@ -32,7 +32,7 @@ jobs:
         cmake --build build_msvc --config Release
       shell: bash
     - name: Store artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dll_msvc
         path: |
@@ -42,7 +42,7 @@ jobs:
     name: Build with GCC
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Get MinGW
       run: |
            MINGW_DIR=$TEMP/mingw
@@ -67,7 +67,7 @@ jobs:
         cmake --build build_gcc --config Release
       shell: bash
     - name: Store artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dll_gcc
         path: |
