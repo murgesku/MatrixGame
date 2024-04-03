@@ -5,12 +5,11 @@
 
 #pragma once
 
-#define ZAHVAT_SPOT_SIZE    6
-#define ZAHVAT_SPOT_GRAY1   0x00ffffff
-#define ZAHVAT_SPOT_GRAY2   0xf0808080
-#define ZAHVAT_FLASH_PERIOD 3000
+#include "MatrixEffect.hpp"
+#include "MatrixEffectBillboard.hpp"
 
-class CMatrixEffectZahvat : public CMatrixEffect {
+class CMatrixEffectZahvat : public CMatrixEffect
+{
     int m_Count;
     CMatrixEffectBillboard *m_BBoards;
 
