@@ -110,7 +110,7 @@ size_t Font::GetSpaceWidth() const
 size_t Font::CalcTextWidth(std::wstring_view text) const
 {
     const DWORD format = DT_CALCRECT | DT_NOCLIP | DT_SINGLELINE;
-    RECT rect;
+    RECT rect{0,0,0,0};
     m_font->DrawTextW(NULL, text.data(), text.length(), &rect, format, 0);
     return rect.right;
 }
