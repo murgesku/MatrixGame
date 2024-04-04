@@ -180,7 +180,7 @@ void SAutoFlyData::AddWarPair(CMatrixMapStatic *tgt, CMatrixMapStatic *attacker)
 static bool SeekCamObjects(
     [[maybe_unused]] const D3DXVECTOR2 &center,
     CMatrixMapStatic *ms,
-    DWORD user)
+    uintptr_t user)
 {
     DTRACE();
 
@@ -232,7 +232,7 @@ void SAutoFlyData::Takt(float ms) {
         vecs[1] = D3DXVECTOR3(0, 0, 0);
 
         g_MatrixMap->FindObjects(*(D3DXVECTOR2 *)&m_Cur, 700, 1, TRACE_ROBOT | TRACE_CANNON, NULL, SeekCamObjects,
-                                 (DWORD)&vecs);
+                                 (uintptr_t)&vecs);
 
         float dl = D3DXVec3LengthSq(vecs + 1);
         if (dl > 0.00001f) {

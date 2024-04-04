@@ -1028,7 +1028,7 @@ bool CInterface::OnMouseMove(CPoint mouse) {
     bool bCatch = false;
     bool bCatchStatic = false;
     bool MiniMapFocused = false;
-    bool static_have_hint = false;
+    // bool static_have_hint = false;
     g_IFaceList->m_FocusedElement = NULL;
     std::wstring static_name(L"");
 
@@ -1043,9 +1043,9 @@ bool CInterface::OnMouseMove(CPoint mouse) {
                         g_IFaceList->m_FocusedElement = pObjectsList;
                         bCatchStatic = true;
                         static_name = pObjectsList->m_strName;
-                        if (pObjectsList->m_Hint.HintTemplate != L"") {
-                            static_have_hint = true;
-                        }
+                        // if (pObjectsList->m_Hint.HintTemplate != L"") {
+                        //     static_have_hint = true;
+                        // }
                     }
                     else {
                         if (pObjectsList->m_nId == POPUP_SELECTOR_CATCHERS_ID && pObjectsList->ElementCatch(mouse)) {
@@ -1319,7 +1319,7 @@ void CInterface::Init(void) {
             CPoint pl[MAX_PLACES];
 
             int objects_cnt = 0;
-            int robots = 0;
+            // int robots = 0;
 
             bool rsel = false;
             bool gsel = false;
@@ -1333,7 +1333,7 @@ void CInterface::Init(void) {
 
             if (player_side->GetCurGroup() && player_side->GetCurGroup()->GetObjectsCnt()) {
                 objects_cnt = player_side->GetCurGroup()->GetObjectsCnt();
-                robots = player_side->GetCurGroup()->GetRobotsCnt();
+                // robots = player_side->GetCurGroup()->GetRobotsCnt();
                 gsel = true;
                 rsel = ((objects_cnt == 1) && (player_side->GetCurGroup()->m_FirstObject->GetObject()->IsLiveRobot()));
                 sel_bot = player_side->GetCurGroup()->m_FirstObject->GetObject()->AsRobot();
@@ -1341,7 +1341,7 @@ void CInterface::Init(void) {
             }
 
             bool bombers = false;
-            bool repairers = false;
+            // bool repairers = false;
             bool heliors = false;
 
             bool stop = false;
@@ -1362,8 +1362,8 @@ void CInterface::Init(void) {
             bool new_lives = false;
             bool new_speed = false;
             bool new_weight = false;
-            bool new_turmax = false;
-            bool new_turhave = false;
+            // bool new_turmax = false;
+            // bool new_turhave = false;
             bool cant_build_tu = false;
 
             if (!player_side->IsEnoughResources(g_Config.m_CannonsProps[0].m_Resources) &&
@@ -1475,9 +1475,9 @@ void CInterface::Init(void) {
                     if (bombers_cnt == objects_cnt) {
                         bombers = true;
                     }
-                    if (repairers_cnt == objects_cnt) {
-                        repairers = true;
-                    }
+                    // if (repairers_cnt == objects_cnt) {
+                    //     repairers = true;
+                    // }
                 }
             }
 
@@ -1548,7 +1548,7 @@ void CInterface::Init(void) {
                     if (player_side->m_CurrSel == BUILDING_SELECTED || player_side->m_CurrSel == BASE_SELECTED) {
                         if (player_side->m_ActiveObject->AsBuilding()->m_TurretsMax != turmax) {
                             turmax = player_side->m_ActiveObject->AsBuilding()->m_TurretsMax;
-                            new_turmax = true;
+                            // new_turmax = true;
                         }
                     }
                 }
@@ -1557,7 +1557,7 @@ void CInterface::Init(void) {
                         CMatrixBuilding *bld = (CMatrixBuilding *)player_side->m_ActiveObject;
                         if (bld->GetPlacesForTurrets(pl) != turhave) {
                             turhave = bld->GetPlacesForTurrets(pl);
-                            new_turhave = true;
+                            // new_turhave = true;
                         }
                     }
                 }
@@ -1760,7 +1760,7 @@ void CInterface::Init(void) {
                     }
                     else if (bld->m_BS.GetItemsCnt() &&
                              (pElement->m_strName == IF_STACK_ICON || pElement->m_strName == IF_STACK_OTHER ||
-                              (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == int(bld)))) {
+                              (IS_STACK_ICON(pElement->m_nId) && pElement->m_iParam == uintptr_t(bld)))) {
                         pElement->SetVisibility(true);
                     }
                     else if (pElement->m_strName == IF_BASE_LINE) {
@@ -4714,7 +4714,7 @@ void CIFaceList::CreateStackIcon(int num, CMatrixBuilding *base, CMatrixMapStati
                 }
             }
             if (s) {
-                s->m_iParam = int(base);
+                s->m_iParam = uintptr_t(base);
                 s->SetVisibility(false);
             }
 
@@ -4739,7 +4739,7 @@ void CIFaceList::DeleteStackIcon(int num, CMatrixBuilding *base) {
         if (ifs->m_strName == IF_MAIN) {
             CIFaceElement *els = ifs->m_FirstElement;
             while (els) {
-                if (IS_STACK_ICON(els->m_nId) && els->m_iParam == (int)base) {
+                if (IS_STACK_ICON(els->m_nId) && els->m_iParam == (uintptr_t)base) {
                     if (num == 1 && els->m_nId == STACK_ICON + 1) {
                         els = ifs->DelElement(els);
                         continue;

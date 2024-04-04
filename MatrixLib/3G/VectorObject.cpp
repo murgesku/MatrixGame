@@ -84,7 +84,7 @@ void CVectorObject::Unload() {
         // if(m_Geometry.m_EdgesIdx != NULL) { HFree(m_Geometry.m_EdgesIdx, g_CacheHeap); }
 
         if (m_Geometry.m_Vertices.verts != NULL) {
-            if ((DWORD)m_Geometry.m_Vertices.verts != 0xFFFFFFFF) {
+            if ((uintptr_t)m_Geometry.m_Vertices.verts != 0xFFFFFFFF) {
                 if (m_VB->DelSource(&m_Geometry.m_Vertices)) {
                     CBigVB<SVOVertex>::DestroyBigVB(m_VB);
                     m_VB = NULL;
@@ -476,7 +476,7 @@ const D3DXMATRIX *CVectorObject::GetMatrixByName(int frame, const std::wstring& 
     return NULL;
 }
 
-void CVectorObject::EnumFrameVerts(int noframe, ENUM_VERTS_HANDLER evh, DWORD data) const {
+void CVectorObject::EnumFrameVerts(int noframe, ENUM_VERTS_HANDLER evh, uintptr_t data) const {
     SVOKadr *fr = m_Geometry.m_Frames + noframe;
     int *verts = m_Geometry.m_VerticesIdx + fr->m_VerStart;
     int *vertse = verts + fr->m_VerCnt;
@@ -2227,7 +2227,7 @@ struct SEVH_data_group {
     ENUM_VERTS_HANDLER evh;
 };
 
-static bool evhg_tp(const SVOVertex &v, DWORD data) {
+static bool evhg_tp(const SVOVertex &v, uintptr_t data) {
     SEVH_data_group *d = (SEVH_data_group *)data;
     SVOVertex vv = v;
     D3DXVec3TransformCoord(&vv.v, &v.v, d->m);
@@ -2242,7 +2242,7 @@ void CVectorObjectGroup::EnumFrameVerts_transform_position(ENUM_VERTS_HANDLER ev
     CVectorObjectGroupUnit *u = m_First;
     while (u) {
         d.m = &u->m_MatrixWorld;
-        u->m_Obj->EnumFrameVerts(evhg_tp, (DWORD)&d);
+        u->m_Obj->EnumFrameVerts(evhg_tp, (uintptr_t)&d);
         u = u->m_Next;
     }
 }

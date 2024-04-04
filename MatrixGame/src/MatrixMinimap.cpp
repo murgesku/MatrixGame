@@ -1366,7 +1366,6 @@ void __stdcall CMinimap::ButtonZoomOut(void*)
 
 void __stdcall CMinimap::ButtonClick(void*)
 {
-    CPoint mp = g_MatrixMap->m_Cursor.GetPos();
     D3DXVECTOR2 tgt;
     if (CalcMinimap2World(tgt)) {
         g_MatrixMap->m_Camera.SetXYStrategy(tgt);

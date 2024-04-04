@@ -3,8 +3,7 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#ifndef STRING_CONSTANTS
-#define STRING_CONSTANTS
+#pragma once
 
 #define FILE_CONFIGURATION          L"robots.dat"
 #define FILE_CONFIGURATION_LOCATION L"cfg\\"
@@ -1040,5 +1039,3 @@
 
 #define IF_MAIN_PROG   L"prog"
 #define IF_BASE_RCNAME L"rcname"
-
-#endif

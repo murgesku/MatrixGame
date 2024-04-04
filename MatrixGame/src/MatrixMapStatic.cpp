@@ -878,7 +878,7 @@ void CMatrixMapStatic::RemoveFromSorted(CMatrixMapStatic *ms) {
     }
 }
 
-bool CMatrixMapStatic::EnumVertsHandler(const SVOVertex &v, DWORD data) {
+bool CMatrixMapStatic::EnumVertsHandler(const SVOVertex &v, uintptr_t data) {
     CMatrixMapStatic::SEVH_data *d = (CMatrixMapStatic::SEVH_data *)data;
     D3DXVECTOR3 p;
     D3DXVec3TransformCoord(&p, &v.v, &d->m);

@@ -155,13 +155,9 @@ std::vector<Token> parse_tokens(std::wstring_view str, Font& font)
             text.remove_suffix(text.length() - pos);
         }
 
-        const DWORD tformat = DT_CALCRECT | DT_SINGLELINE | DT_NOCLIP;
-        RECT rect{0,0,0,0};
-        font->DrawTextW(NULL, text.data(), text.length(), &rect, tformat, 0);
-
         token.text  = text;
         token.color = color;
-        token.width = rect.right;
+        token.width = font.CalcTextWidth(text);
     }
 
     return result;

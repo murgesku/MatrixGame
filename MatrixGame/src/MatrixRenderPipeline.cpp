@@ -1840,7 +1840,7 @@ bool obj_ordinal_t2([[maybe_unused]] DWORD user_param, int) {
 //    }
 //}
 
-bool obj_ordinal_t4(DWORD user_param, int) {
+bool obj_ordinal_t4(uintptr_t user_param, int) {
     obj_clear();
 
     if (user_param == 0) {
@@ -1929,7 +1929,7 @@ bool obj_ordinal_t4(DWORD user_param, int) {
 //    }
 //}
 
-bool obj_ordinal_gloss_t4(DWORD user_param, int) {
+bool obj_ordinal_gloss_t4(uintptr_t user_param, int) {
     obj_clear();
 
     if (user_param == 0) {

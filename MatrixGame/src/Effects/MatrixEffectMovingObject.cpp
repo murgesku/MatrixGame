@@ -140,7 +140,7 @@ struct HMData {
 static bool HMEnum(
     [[maybe_unused]] const D3DXVECTOR3 &fpos,
     CMatrixMapStatic *ms,
-    DWORD user)
+    uintptr_t user)
 {
     D3DXVECTOR3 to_dir;
     const D3DXVECTOR3 *p;
@@ -190,7 +190,7 @@ static bool HMEnum(
     return true;
 }
 
-static bool MOEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool MOEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     SMOProps *props = (SMOProps *)user;
     if (props->endhandler) {
         auto tmp = center - props->startpos;
@@ -236,7 +236,7 @@ void MO_Homing_Missile_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     data.found = false;
 
     g_MatrixMap->FindObjects(seekcenter, HOMING_RADIUS, 1, TRACE_BUILDING | TRACE_ROBOT | TRACE_CANNON | TRACE_FLYER,
-                             props.skip, HMEnum, (DWORD)&data);
+                             props.skip, HMEnum, (uintptr_t)&data);
 
     if (data.found == false) {
         if (props.common.hm.target)
@@ -316,7 +316,7 @@ skip_obj_seek:
         // seek objects
 
         hit |= g_MatrixMap->FindObjects(props.curpos, MISSILE_IMPACT_RADIUS, 1, props.hitmask, props.skip, MOEnum,
-                                        (DWORD)&props);
+                                        (uintptr_t)&props);
 
         if (hit) {
             bool fire = false;
@@ -406,7 +406,7 @@ void MO_Bomb_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     // CMatrixMapStatic *target = NULL;
 
     if ((newpos.z - g_MatrixMap->GetZ(newpos.x, newpos.y)) < (BOMB_DAMAGE_RADIUS + 10)) {
-        hit = g_MatrixMap->FindObjects(newpos, BOMB_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (DWORD)&props);
+        hit = g_MatrixMap->FindObjects(newpos, BOMB_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (uintptr_t)&props);
     }
     D3DXVECTOR3 hitpos = newpos;
     // DDVECT("bla0", hitpos);
@@ -480,7 +480,7 @@ void MO_Gun_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     props.common.gun.dist += vel * dtime;
 
     if ((newpos.z - g_MatrixMap->GetZ(newpos.x, newpos.y)) < (GUN_DAMAGE_RADIUS + 10)) {
-        hit = g_MatrixMap->FindObjects(newpos, GUN_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (DWORD)&props);
+        hit = g_MatrixMap->FindObjects(newpos, GUN_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (uintptr_t)&props);
     }
 
     D3DXVECTOR3 hitpos = newpos;
@@ -557,7 +557,7 @@ void MO_Gun_cannon_Takt(D3DXMATRIX &m, SMOProps &props, float takt) {
     props.common.gun.dist += vel * dtime;
 
     if ((newpos.z - g_MatrixMap->GetZ(newpos.x, newpos.y)) < (GUN_DAMAGE_RADIUS + 10)) {
-        hit = g_MatrixMap->FindObjects(newpos, GUN_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (DWORD)&props);
+        hit = g_MatrixMap->FindObjects(newpos, GUN_DAMAGE_RADIUS, 1, props.hitmask, props.skip, MOEnum, (uintptr_t)&props);
     }
 
     D3DXVECTOR3 hitpos = newpos;

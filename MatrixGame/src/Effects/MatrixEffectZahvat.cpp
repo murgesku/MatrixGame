@@ -3,14 +3,16 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#include <new>
+#include "MatrixEffectZahvat.hpp"
+#include "StringConstants.hpp"
 
-#include "MatrixEffect.hpp"
-#include "../MatrixMap.hpp"
+#include <new>
 #include <math.h>
 
-#include "MatrixEffectZahvat.hpp"
-#include "MatrixEffectBillboard.hpp"
+#define ZAHVAT_SPOT_SIZE    6
+#define ZAHVAT_SPOT_GRAY1   0x00ffffff
+#define ZAHVAT_SPOT_GRAY2   0xf0808080
+#define ZAHVAT_FLASH_PERIOD 3000
 
 CMatrixEffectZahvat::CMatrixEffectZahvat(const D3DXVECTOR3 &pos, float radius, float angle, int cnt)
   : CMatrixEffect(), m_Count(cnt) {

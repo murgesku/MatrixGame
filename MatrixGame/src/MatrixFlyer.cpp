@@ -464,7 +464,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                         continue;
                     }
                     m_Units[uindex].m_Weapon.m_Weapon = (CMatrixEffectWeapon *)CMatrixEffect::CreateWeapon(
-                            D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (DWORD)this, NULL, w);
+                            D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (uintptr_t)this, NULL, w);
                     m_Units[uindex].m_Weapon.m_Weapon->SetOwner(this);
                     m_Units[uindex].m_Weapon.m_Unit = -1;
 
@@ -562,7 +562,7 @@ void CMatrixFlyer::RNeed(DWORD need) {
                         continue;
                     }
                     m_Units[uindex].m_Weapon.m_Weapon = (CMatrixEffectWeapon *)CMatrixEffect::CreateWeapon(
-                            D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (DWORD)this, NULL, w);
+                            D3DXVECTOR3(0, 0, 0), D3DXVECTOR3(0, 0, 1), (uintptr_t)this, NULL, w);
                     m_Units[uindex].m_Weapon.m_Weapon->SetOwner(this);
                 }
 
@@ -1008,7 +1008,7 @@ struct SFlyerTaktData {
 //
 //}
 
-static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user) {
+static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, uintptr_t user) {
     SFlyerTaktData *td = (SFlyerTaktData *)user;
 
     // static float jj = 1;
@@ -1028,7 +1028,7 @@ static bool DoCollsion(const D3DXVECTOR3 &pos, CMatrixMapStatic *ms, DWORD user)
 void CMatrixFlyer::CalcCollisionDisplace(SFlyerTaktData &td) {
     td.reaction = D3DXVECTOR3(0, 0, 0);
 
-    if (g_MatrixMap->FindObjects(GetPos(), FLYER_RADIUS * 2, 1.0f, TRACE_FLYER, this, DoCollsion, (DWORD)&td)) {
+    if (g_MatrixMap->FindObjects(GetPos(), FLYER_RADIUS * 2, 1.0f, TRACE_FLYER, this, DoCollsion, (uintptr_t)&td)) {
         D3DXVec3Normalize(&td.reaction, &td.reaction);
         m_Pos += td.reaction * td.ms * 0.01f;
     }
@@ -1742,7 +1742,7 @@ bool CMatrixFlyer::Pick(const D3DXVECTOR3 &start, const D3DXVECTOR3 &dir, float 
 
 void CMatrixFlyer::Draw(void) {
     DTRACE();
-    DWORD coltex = (DWORD)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
+    uintptr_t coltex = (uintptr_t)g_MatrixMap->GetSideColorTexture(m_Side)->Tex();
 
     for (int i = 0; i < m_UnitCnt; i++) {
         if (m_Units[i].m_Type == FLYER_UNIT_WEAPON_HOLLOW)
@@ -2081,7 +2081,7 @@ bool CMatrixFlyer::InRect(const CRect &rect) const {
         if (m_Units[i].m_Graph) {
             d.found = false;
             d.m = m_Units[i].m_Matrix * t;
-            m_Units[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (DWORD)&d);
+            m_Units[i].m_Graph->EnumFrameVerts(EnumVertsHandler, (uintptr_t)&d);
             if (d.found)
                 return true;
         }

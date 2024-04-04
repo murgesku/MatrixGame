@@ -287,7 +287,7 @@ struct RCData {
     float neardist2;
 };
 
-static bool CollisionRobots(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool CollisionRobots(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     RCData *d = (RCData *)user;
 
     D3DXVECTOR3 v(center - ms->GetGeoCenter());
@@ -654,7 +654,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
         data.nearest = NULL;
 
         bool hit = g_MatrixMap->FindObjects(m_Core->m_GeoCenter, m_Core->m_Radius * 0.5f, 0.5f, TRACE_ALL, NULL,
-                                            CollisionRobots, (DWORD)&data);
+                                            CollisionRobots, (uintptr_t)&data);
 
         if (hit) {
             float dist = (float)sqrt(data.neardist2);
@@ -2898,7 +2898,7 @@ struct CollisionData {
 static bool CollisionCallback(
     [[maybe_unused]] const D3DXVECTOR3 &fpos,
     CMatrixMapStatic *pObject,
-    DWORD user)
+    uintptr_t user)
 {
     CollisionData *data = (CollisionData *)user;
 
@@ -3092,7 +3092,7 @@ D3DXVECTOR3 CMatrixRobotAI::RobotToObjectCollision(const D3DXVECTOR3 &vel, int m
     data.ms = ms;
     data.far_col = false;
     g_MatrixMap->FindObjects(D3DXVECTOR3(m_PosX, m_PosY, m_Core->m_GeoCenter.z), COLLIDE_BOT_R * 3, 1,
-                             TRACE_ROBOT | TRACE_CANNON, this, CollisionCallback, (DWORD)&data);
+                             TRACE_ROBOT | TRACE_CANNON, this, CollisionCallback, (uintptr_t)&data);
 
     if (!data.far_col)
         m_ColSpeed = 100.0f;
@@ -3104,7 +3104,6 @@ D3DXVECTOR3 CMatrixRobotAI::RobotToObjectCollision(const D3DXVECTOR3 &vel, int m
 }
 
 void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest) {
-    D3DXVECTOR3 prev_coll = m_CollAvoid;
     m_CollAvoid = D3DXVECTOR3(0, 0, 0);
     return;
     if (o.x != 0 || o.y != 0) {
@@ -3144,12 +3143,6 @@ void CMatrixRobotAI::WallAvoid(const D3DXVECTOR3 &o, const D3DXVECTOR3 &dest) {
                 else
                     m_CollAvoid = D3DXVECTOR3(1, 0, 0);
             }
-            // if(prev_coll.y == -1){
-            //    if(o.x < 0)
-            //        m_CollAvoid = D3DXVECTOR3(-1, 0, 0);
-            //    else
-            //        m_CollAvoid = D3DXVECTOR3(1, 0, 0);
-            //}
         }
         else if (o.x != 0 /* || ((o.x != 0 && o.y != 0) && fabs(o.x) > fabs(o.y))*/) {
             //это условие избыточно, оно зарезервировано для возможных изменений
@@ -4065,12 +4058,12 @@ bool CMatrixRobotAI::SphereToAABBCheck(const D3DXVECTOR2 &p, const D3DXVECTOR2 &
 void robot_weapon_hit(
     CMatrixMapStatic *hit,
     const D3DXVECTOR3 &pos,
-    DWORD user,
+    uintptr_t user,
     [[maybe_unused]] DWORD flags)
 {
     CMatrixMapStatic *obj = CMatrixMapStatic::GetFirstLogic();
     while (obj) {
-        if (user == DWORD(obj)) {
+        if (user == uintptr_t(obj)) {
             if (obj->AsRobot()->m_CurrState != ROBOT_DIP) {
                 obj->AsRobot()->HitTo(hit, pos);
             }
@@ -4123,62 +4116,62 @@ void CMatrixRobotAI::RobotWeaponInit() {
         if (m_Unit[C].m_Type == MRT_WEAPON) {
             switch (m_Unit[C].u1.s1.m_Kind) {
                 case RUK_WEAPON_MACHINEGUN:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_VOLCANO);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_VOLCANO);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_VOLCANO_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_VOLCANO_COOL];
                     break;
                 case RUK_WEAPON_CANNON:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_GUN);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_GUN);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_GUN_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_GUN_COOL];
 
                     break;
                 case RUK_WEAPON_MISSILE:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_HOMING_MISSILE);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_HOMING_MISSILE);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_HOMING_MISSILE_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_HOMING_MISSILE_COOL];
 
                     break;
                 case RUK_WEAPON_FLAMETHROWER:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_FLAMETHROWER);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_FLAMETHROWER);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_FLAMETHROWER_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_FLAMETHROWER_COOL];
 
                     break;
                 case RUK_WEAPON_MORTAR:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_BOMB);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_BOMB);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_BOMB_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_BOMB_COOL];
 
                     break;
                 case RUK_WEAPON_LASER:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_LASER);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_LASER);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_LASER_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_LASER_COOL];
 
                     break;
                 case RUK_WEAPON_BOMB:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_BIGBOOM);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_BIGBOOM);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = 10;
                     m_Weapons[Weap].m_CoolDownMod = 10;
 
                     break;
                 case RUK_WEAPON_PLASMA:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_PLASMA);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_PLASMA);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_PLASMA_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_PLASMA_COOL];
 
                     break;
                 case RUK_WEAPON_ELECTRIC:
-                    m_Weapons[Weap].CreateEffect((DWORD)this, NULL, WEAPON_LIGHTENING);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, NULL, WEAPON_LIGHTENING);
                     m_Weapons[Weap].m_Unit = &m_Unit[C];
                     m_Weapons[Weap].m_HeatMod = g_Config.m_Overheat[WEAPON_LIGHTENING_HEAT];
                     m_Weapons[Weap].m_CoolDownMod = g_Config.m_Overheat[WEAPON_LIGHTENING_COOL];
@@ -4188,7 +4181,7 @@ void CMatrixRobotAI::RobotWeaponInit() {
                     m_Weapons[Weap].m_Unit = m_Unit + C;
                     m_Weapons[Weap].m_HeatMod = 10;
                     m_Weapons[Weap].m_CoolDownMod = 10;
-                    m_Weapons[Weap].CreateEffect((DWORD)this, &robot_weapon_hit, WEAPON_REPAIR);
+                    m_Weapons[Weap].CreateEffect((uintptr_t)this, &robot_weapon_hit, WEAPON_REPAIR);
 
                     break;
 

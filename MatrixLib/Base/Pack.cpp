@@ -196,7 +196,7 @@ SFileRec *CHsFolder::GetFreeRec(void) const {
 //    UpdateFileRec;
 // end;
 
-bool CHsFolder::ReadFolder(DWORD Handle, DWORD Offset) {
+bool CHsFolder::ReadFolder(uintptr_t Handle, uintptr_t Offset) {
     DWORD temp;
 
     if (m_Files)
@@ -232,7 +232,7 @@ bool CHsFolder::ReadFolder(DWORD Handle, DWORD Offset) {
     for (DWORD i = 0; i < m_FolderRec.m_Recnum; ++i) {
         if (m_Files[i].m_Type == FILEEC_FOLDER && m_Files[i].m_Free == 0) {
             CHsFolder *PFolder = HNew(m_Heap) CHsFolder(m_Files[i].m_RealName, this, m_Heap);
-            m_Files[i].m_Extra = DWORD(PFolder);
+            m_Files[i].m_Extra = uintptr_t(PFolder);
             if (!PFolder->ReadFolder(Handle, m_Files[i].m_Offset)) {
                 Clear();
                 return false;
@@ -1543,11 +1543,11 @@ bool CPackFile::OpenPacketFile(void) {
 
     // Открываем файл для записи/чтения
     if (IS_UNICODE()) {
-        m_Handle = (DWORD)CreateFileW(m_FileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        m_Handle = (uintptr_t)CreateFileW(m_FileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
-        m_Handle = (DWORD)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+        m_Handle = (uintptr_t)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                       NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 
@@ -1655,12 +1655,12 @@ bool CPackFile::OpenPacketFileEx() {
     // Открываем файл для записи/чтения
     if (IS_UNICODE()) {
         m_Handle =
-                (DWORD)CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                (uintptr_t)CreateFileW(m_FileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                    NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
     else {
         m_Handle =
-                (DWORD)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
+                (uintptr_t)CreateFileA(utils::from_wstring(m_FileName.c_str()).c_str(), GENERIC_READ | GENERIC_WRITE,
                                    FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     }
 

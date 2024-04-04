@@ -472,7 +472,7 @@ public:
     virtual int GetSide(void) const = 0;
     virtual bool NeedRepair(void) const = 0;
 
-    static bool EnumVertsHandler(const SVOVertex &v, DWORD data);
+    static bool EnumVertsHandler(const SVOVertex &v, uintptr_t data);
     virtual bool InRect(const CRect &rect) const = 0;
 
     void JoinToGroup(void);

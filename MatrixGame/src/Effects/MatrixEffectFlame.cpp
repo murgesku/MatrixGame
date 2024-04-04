@@ -111,7 +111,7 @@ struct FlameData {
     DWORD uvalue;
 };
 
-static bool FlameEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+static bool FlameEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     FlameData *fd = (FlameData *)user;
 
     if (ms->GetObjectType() != OBJECT_TYPE_ROBOTAI) {
@@ -193,7 +193,7 @@ void CFlamePuff::Takt(float step) {
         m_NextSeekTime = m_Time + FLAME_TIME_SEEK_PERIOD;
         if (m_Owner->m_hitmask & TRACE_ANYOBJECT) {
             hit = g_MatrixMap->FindObjects(m_Pos, m_Scale, 0.7f, m_Owner->m_hitmask, m_Owner->m_skip, FlameEnum,
-                                           (DWORD)&data);
+                                           (uintptr_t)&data);
         }
     }
 

@@ -14,7 +14,7 @@
 
 class CMatrixMapStatic;
 
-typedef void (*SELECT_ENUM)(CMatrixMapStatic *ms, DWORD param);
+typedef void (*SELECT_ENUM)(CMatrixMapStatic *ms, uintptr_t param);
 
 #define MS_DIP_TIME 50
 

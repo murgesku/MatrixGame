@@ -72,7 +72,7 @@ namespace FilePNG
 {
 
 // format: 1-gray 2-rgb 3-rgba 4-palate
-uint32_t ReadStart_Buf(void *soubuf, uint32_t soubuflen, uint32_t *lenx, uint32_t *leny, uint32_t *countcolor, uint32_t *format)
+uintptr_t ReadStart_Buf(void *soubuf, uint32_t soubuflen, uint32_t *lenx, uint32_t *leny, uint32_t *countcolor, uint32_t *format)
 {
     SPNGData *data = new SPNGData;
     memset(data, 0, sizeof(SPNGData));
@@ -127,10 +127,10 @@ uint32_t ReadStart_Buf(void *soubuf, uint32_t soubuflen, uint32_t *lenx, uint32_
         delete data;
         return 0;
     }
-    return (uint32_t)data;
+    return (uintptr_t)data;
 }
 
-uint32_t Read(uint32_t id, void *buf, uint32_t lenline, uint32_t *arraycolor) {
+uint32_t Read(uintptr_t id, void *buf, uint32_t lenline, uint32_t *arraycolor) {
     SPNGData *data = (SPNGData *)id;
     png_bytep *row_pointers = NULL;
     uint8_t* tbuf;

@@ -45,11 +45,7 @@ CMatrixEffectFirePlasma::~CMatrixEffectFirePlasma() {
     m_BB3.Release();
     m_BB4.Release();
 
-#ifdef _DEBUG
     m_Light.Release(DEBUG_CALL_INFO);
-#else
-    m_Light.Release();
-#endif
 
     if (m_Handler)
         m_Handler(TRACE_STOP_NONE, m_Pos, m_UserData, FEHF_LASTHIT);

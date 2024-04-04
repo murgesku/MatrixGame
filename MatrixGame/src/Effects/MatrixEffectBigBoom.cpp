@@ -265,7 +265,7 @@ void CMatrixEffectBigBoom::Draw(void) {
     g_D3DD->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
-bool CMatrixEffectBigBoom::BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+bool CMatrixEffectBigBoom::BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     D3DXVECTOR3 anorm;
     auto tmp = center - ms->GetGeoCenter();
@@ -274,7 +274,7 @@ bool CMatrixEffectBigBoom::BoomEnum(const D3DXVECTOR3 &center, CMatrixMapStatic 
     return true;
 }
 
-bool CMatrixEffectBigBoom::BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, DWORD user) {
+bool CMatrixEffectBigBoom::BoomEnumNaklon(const D3DXVECTOR3 &center, CMatrixMapStatic *ms, uintptr_t user) {
     CMatrixEffectBigBoom *boom = (CMatrixEffectBigBoom *)user;
     if (ms->IsLiveRobot()) {
         D3DXVECTOR3 anorm;
@@ -304,7 +304,7 @@ void CMatrixEffectBigBoom::Takt(float step) {
             }
             if (m_hitmask & TRACE_ANYOBJECT) {
                 g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Mat._41, m_Radius, 1, m_hitmask, m_skip, BoomEnum,
-                                         (DWORD)this);
+                                         (uintptr_t)this);
             }
         }
 #ifdef _DEBUG
@@ -318,7 +318,7 @@ void CMatrixEffectBigBoom::Takt(float step) {
     if (m_Handler) {
         if (m_hitmask & TRACE_ANYOBJECT) {
             g_MatrixMap->FindObjects(*(D3DXVECTOR3 *)&m_Mat._41, m_Radius, 1, m_hitmask, m_skip, BoomEnumNaklon,
-                                     (DWORD)this);
+                                     (uintptr_t)this);
         }
     }
 
