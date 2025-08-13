@@ -1732,7 +1732,7 @@ bool SSpecialBot::BuildFromPar(const CWStr & parname, int parval, bool with_hp)
     m_Armor.m_MaxCommonWeaponCnt = 0;
     m_Armor.m_MaxExtraWeaponCnt = 0;
 
-    m_Head.m_nType = MRT_WEAPON;
+    m_Head.m_nType = MRT_HEAD;
     m_Head.m_nKind = RUK_UNKNOWN;
 
     m_HaveBomb = false;
