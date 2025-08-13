@@ -1384,7 +1384,7 @@ void SSpecialBot::LoadAIRobotType(CBlockPar & bp)
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxCommonWeaponCnt=0;
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Armor.m_MaxExtraWeaponCnt=0;
 
-        m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nType=MRT_WEAPON;
+        m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nType=MRT_HEAD;
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_Head.m_nKind=RUK_UNKNOWN;
 
         m_AIRobotTypeList[m_AIRobotTypeCnt].m_HaveBomb=false;
