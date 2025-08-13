@@ -45,7 +45,7 @@
 #define TRACE_STOP_LANDSCAPE ((CMatrixMapStatic *)1)
 #define TRACE_STOP_WATER     ((CMatrixMapStatic *)2)
 
-#define IS_TRACE_STOP_OBJECT(o) (((int)o > 100))
+#define IS_TRACE_STOP_OBJECT(o) (((DWORD)o > 100))
 #define IS_TRACE_UNIT(o) ((o->GetObjectType() == OBJECT_TYPE_ROBOTAI)||(o->GetObjectType() == OBJECT_TYPE_FLYER))
 
 #define SHADER_PERC     20
