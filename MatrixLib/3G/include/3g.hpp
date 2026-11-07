@@ -192,6 +192,13 @@ void L3GInitAsDLL(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * c
 void L3GDeinit(void);
 int L3GRun(void);
 
+// SR coop port (M2): optional per-iteration idle hook for the run loop below.
+// NULL (the default) costs nothing and changes nothing; the co-op harness
+// installs SRNetPump here at init time so the session can settle BEFORE the
+// first map Takt (pre-battle handshake, menu/idle). Keep this hook neutral:
+// 3G must not link against game-side network code, only invert the dependency.
+extern void (*L3GNetPumpHook)(void);
+
 void S3D_Default(void);
 
 #include "Texture.hpp"

@@ -20,6 +20,9 @@ if(MSVC)
     set(PNG_COMPILE_DEFINITIONS
         $<$<CONFIG:Release>:_LIB>
         $<$<CONFIG:Debug>:_LIB _CRT_SECURE_NO_WARNINGS>
+        # Port note (2026-11-03): same /Zp1 vs winnt.h packing static_assert as the
+        # root CMakeLists — use the documented opt-out (see root CMakeLists.txt).
+        WINDOWS_IGNORE_PACKING_MISMATCH
     )
     source_group("LibPNG" FILES ${LIBPNG_SOURCES})
 endif()

@@ -22,6 +22,8 @@
 #include "Interface/MatrixHint.hpp"
 #include "MatrixInstantDraw.hpp"
 
+#include "Net/SRNetHarness.hpp"     // SR coop port: co-op pump hook (M1)
+
 #include "Interface/CInterface.h"
 #include "Logic/MatrixTactics.h"
 #include "MatrixGameDll.hpp"
@@ -2489,6 +2491,10 @@ void CMatrixMap::Takt(int step)
 {
     DTRACE();
 
+    // SR coop port (M2): the battle-time net pump now lives at the entry of
+    // CMatrixMapLogic::Takt — this function never runs while the map is
+    // paused (the paused branch returns early), and the pump must keep the
+    // session alive regardless of pause state.
 
     float fstep = float(step);
 

@@ -9,6 +9,7 @@
 #include "MatrixObjectRobot.hpp"
 #include "MatrixFlyer.hpp"
 #include "MatrixObjectCannon.hpp"
+#include "MatrixObjectBuilding.hpp"
 
 typedef struct
 {

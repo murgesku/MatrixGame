@@ -176,15 +176,21 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * c
 
 	GetClientRect(g_Wnd,&tr);
 	if((g_ScreenX!=(tr.right-tr.left)) || (g_ScreenY!=(tr.bottom-tr.top))) ERROR_S(L"Resolution error");
-    
+
 
     SetWindowLong(g_Wnd,GWL_WNDPROC,DWORD((WNDPROC)L3G_WndProc));
 
-
-	IDirect3DSurface9 * surf;
-	g_D3DD->GetRenderTarget(0,&surf);
-	if (!(surf==NULL)) g_D3DD->ColorFill(surf, NULL, 0);
-	surf->Release();
+    // Port note (2026-11-04): upstream shipped this exe path without ever calling
+    // Direct3DCreate9()/CreateDevice() — g_D3D/g_D3DD are only assigned in the DLL
+    // path (L3GInitAsDLL receives them from the host game), so the standalone exe
+    // crashed with an AV at the first g_D3DD-> call (GetAdapterDisplayMode /
+    // GetDefaultRenderTarget). Base D3D object is created here, the device right
+    // after the D3Dpp setup below.
+    if (g_D3D == NULL)
+    {
+        g_D3D = Direct3DCreate9(D3D_SDK_VERSION);
+        if (g_D3D == NULL) ERROR_E;
+    }
 
 	DWORD interval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
@@ -241,6 +247,14 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar & bpcfg, wchar * sysname, wchar * c
 	
 
     SETFLAG(g_Flags, GFLAG_STENCILAVAILABLE);
+
+    // (see port note above) create the device now that g_D3Dpp is ready
+    if (g_D3DD == NULL)
+    {
+        ASSERT_DX(g_D3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_Wnd,
+                                      D3DCREATE_MIXED_VERTEXPROCESSING, &g_D3Dpp,
+                                      &g_D3DD));
+    }
 
 	ASSERT_DX(g_D3DD->GetDeviceCaps(&g_D3DDCaps));
 
@@ -353,10 +367,13 @@ void L3GDeinit()
     g_WndExtern=false;
 }
 
+// SR coop port (M2): per-iteration idle hook, installed by game-side code.
+// NULL (default): the loop behaves exactly as upstream.
+void (*L3GNetPumpHook)(void) = NULL;
+
 int L3GRun()
 {
 	MSG msg; //ZeroMemory(&msg,sizeof(MSG));
-
     double      freq_inv;
     union
     {
@@ -399,6 +416,12 @@ int L3GRun()
 		if(msg.message==WM_QUIT) break;
 		if(FLAG(g_Flags, GFLAG_APPCLOSE)) break;
         if(FLAG(g_Flags, GFLAG_EXITLOOP)) break;
+
+        // SR coop port (M2): give the co-op session a service slice every
+        // iteration so it can settle before the first map Takt (and keep
+        // ticking in idle). Guarded no-op when the hook is not installed.
+        if (L3GNetPumpHook != NULL) L3GNetPumpHook();
+
 		if(FLAG(g_Flags, GFLAG_APPACTIVE))
         {
             union
@@ -474,7 +497,12 @@ int L3GRun()
 			}
 
 //			Sleep(10);
-		} else Sleep(1);
+		} else
+        {
+            // SR coop port (M2): keep the session alive while inactive.
+            if (L3GNetPumpHook != NULL) L3GNetPumpHook();
+            Sleep(1);
+        }
 	}
 
 	return 1;

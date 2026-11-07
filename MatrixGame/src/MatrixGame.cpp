@@ -26,11 +26,45 @@
 #include "MatrixInstantDraw.hpp"
 #include "MatrixSampleStateManager.hpp"
 
+#include "Net/SRNetHarness.hpp"     // SR coop port: harness startup (M1)
+
 
 #include <stdio.h>
 #include <time.h>
 
 #include <ddraw.h>
+
+// SR coop port: headless smoke diagnostics. Writes a stage trace so an
+// automated run shows exactly how far the standalone exe got before dying
+// or exiting. SR_SMOKE_HEADLESS=1 also turns the fatal-exception popups
+// into process termination with distinct exit codes (see Tracer.cpp).
+// Log prefix: two instances on one machine must not share files; SR_LOG_NAME
+// (via the harness SRLogName helper) keeps them apart for smoke logs too.
+static void SmokeTrace(const char *stage)
+{
+    FILE *f = fopen(SRLogName("smoke_trace.log"), "a");
+    if (f == NULL) return;
+    fprintf(f, "%s\n", stage);
+    fclose(f);
+}
+
+static bool SmokeHeadless(void)
+{
+    char buf[16];
+    return GetEnvironmentVariableA("SR_SMOKE_HEADLESS", buf, sizeof(buf)) != 0;
+}
+
+static void SmokeFatal(const char *what, const char *info)
+{
+    FILE *f = fopen(SRLogName("smoke_fatal.log"), "a");
+    if (f != NULL)
+    {
+        fprintf(f, "%s\n----\n%s\n\n", what, info != NULL ? info : "(no info)");
+        fclose(f);
+    }
+    ExitProcess(2);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 CHeap * g_MatrixHeap;
@@ -85,14 +119,25 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     }
 
+    {
+        char tbuf[512];
+        _snprintf(tbuf, sizeof(tbuf) - 1, "WinMain enter: numarg=%d map=%ls", numarg, map != NULL ? map : L"(none)");
+        tbuf[sizeof(tbuf) - 1] = 0;
+        SmokeTrace(tbuf);
+    }
+
 	try {
 
 		srand((unsigned)time( NULL ));
 
 		MatrixGameInit(hInstance, NULL, map);
 
+		SmokeTrace("MatrixGameInit ok");
+
 		CFormMatrixGame * formgame=HNew(NULL) CFormMatrixGame();
 		FormChange(formgame);
+
+		SmokeTrace("FormChange ok");
 
 		timeBeginPeriod(1);
 
@@ -102,8 +147,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
         if (map)
         {
+            SmokeTrace("map branch started");
+
             FILE *file;
-            file = fopen("calcvis.log","a");
+            file = fopen(SRLogName("calcvis.log"),"a");
             CStr name(g_MatrixMap->MapName(), g_MatrixHeap);
             fwrite(name.Get(), name.Len(),1, file);
             fwrite(" ...", 4,1, file);
@@ -111,15 +158,31 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
             g_MatrixMap->CalcVis();
 
-            file = fopen("calcvis.log","a");
+            SmokeTrace("CalcVis ok");
+
+            file = fopen(SRLogName("calcvis.log"),"a");
             fwrite("done\n", 5,1, file);
             fclose(file);
 
-            
-            
+            // SR coop port (M2): headless battle-loop smoke. SR_SMOKE_BATTLE=1
+            // keeps going after CalcVis and runs the real form Takt loop for
+            // SR_SMOKE_TICKS ticks (absent/0 -> until window close), so the
+            // co-op session can exchange handshake/pose/order packets while
+            // both engine instances actually simulate. Without the env switch
+            // the standalone exits here exactly like before (M1 gate intact).
+            char bbuf[16];
+            if (GetEnvironmentVariableA("SR_SMOKE_BATTLE", bbuf, sizeof(bbuf)) != 0)
+            {
+                SmokeTrace("smoke battle branch started");
+                SETFLAG(g_Flags, GFLAG_APPACTIVE);
+                RESETFLAG(g_Flags, GFLAG_EXITLOOP);
+                L3GRun();               // returns on GFLAG_EXITLOOP / window close
+                SmokeTrace("smoke battle loop finished");
+            }
 
         } else
         {
+            SmokeTrace("L3GRun branch started");
 		    L3GRun();
         }
 
@@ -145,7 +208,21 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #endif
         g_Cache->Clear();
 		L3GDeinit();
-        
+
+        SmokeTrace("caught CException");
+        if (SmokeHeadless())
+        {
+            if (ex != NULL)
+            {
+                CStr info(ex->Info());
+                SmokeFatal("CException", info.Get());
+            }
+            else
+            {
+                SmokeFatal("CException", "(ex null)");
+            }
+        }
+
 		MessageBox(NULL,CStr(ex->Info()).Get(),"Exception:",MB_OK);
 
 		delete ex;
@@ -155,6 +232,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #ifdef ENABLE_HISTORY
         CDebugTracer::SaveHistory();
 #endif
+        SmokeTrace("caught unknown exception");
+        if (SmokeHeadless())
+        {
+            SmokeFatal("Unknown exception", NULL);
+        }
+
         MessageBox(NULL,"Unknown bug :(","Exception:",MB_OK);
 
 
@@ -209,6 +292,9 @@ static void static_init(void)
 void MatrixGameInit(HINSTANCE inst,HWND wnd,wchar * map,SRobotsSettings * set,wchar * lang,wchar * txt_start,wchar * txt_win,wchar * txt_loss, wchar *planet)
 {
     static_init();
+
+    SRNetInit();                        // SR coop port: read the co-op switch (M1)
+    SRNetSetMapName(map);               // SR coop port: handshake map identity (M2)
 
     DTRACE();
 
@@ -694,6 +780,8 @@ void SRobotsSettings::ApplyVideoParams(void)
 void MatrixGameDeinit(void)
 {
     DTRACE();
+
+    SRNetDeinit();                      // SR coop port: drop the co-op session (M1)
 
     SSpecialBot::ClearAIRobotType();
 

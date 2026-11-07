@@ -1,2 +1,22 @@
+# Build artifacts
 build/
-bin/
+build-exe/
+*.obj
+*.lib
+*.dll
+*.exe
+*.exp
+*.ilk
+*.pdb
+*.log
+*.map
+
+# IDE
+.vs/
+*.sln.dir/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db

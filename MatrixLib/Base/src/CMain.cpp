@@ -5,6 +5,10 @@
 
 #include "stdafx.h"
 
+// SR coop port: declared C so the /Gr-compiled CMain.cpp calls the plain-cdecl
+// Tracer.cpp definition without mangling surprises (def in Tracer.cpp).
+extern "C" void SRBase_InstallCrashReporter(void);
+
 namespace Base
 {
 
@@ -148,6 +152,20 @@ void CMain::BaseInit(void)
 #endif
 #if defined _DEBUG || defined _TRACE
     CDebugTracer::StaticInit();
+#else
+    // SR coop port: release builds used to run with no unhandled-exception
+    // reporter (0xC0000005 went straight to WER with no smoke_crash.log).
+    // Automated headless runs need the on-disk crash report, so install the
+    // same filter when SR_SMOKE_HEADLESS is set. Normal release behavior
+    // (no env) stays exactly upstream.
+    {
+        char sbuf[16] = "";
+        if (GetEnvironmentVariableA("SR_SMOKE_HEADLESS", sbuf, sizeof(sbuf)) != 0 &&
+            sbuf[0]                       != '\0')
+        {
+            SRBase_InstallCrashReporter();
+        }
+    }
 #endif
 
 }

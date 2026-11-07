@@ -193,11 +193,29 @@ static const S_EXCEPT_CODE_T    s_ecodes[] =
 //===========================================================================//
 //                      L O C A L    F U N C T I O N S
 
+static void     report_to_file_and_maybe_mboxA( const char * text )
+{
+    FILE *crashf = fopen( "smoke_crash.log", "a" );
+    if (crashf != NULL)
+    {
+        fprintf( crashf, "%s\n", text );
+        fclose( crashf );
+    }
+
+    char        flagbuf[16];
+    if (GetEnvironmentVariableA( "SR_SMOKE_HEADLESS", flagbuf, sizeof(flagbuf) ) != 0)
+    {
+        ExitProcess( 3 );
+    }
+
+    MessageBoxA( 0, text, "Unhandled Exception", MB_ICONEXCLAMATION );
+}
+
 static void     cpp_except_terminate( void )    throw()
 {
     char buff[65536];
     strcpy(buff, generate_trace_text());
-    MessageBoxA(0,buff,"Unhandled Exception", MB_ICONEXCLAMATION);
+    report_to_file_and_maybe_mboxA(buff);
     ExitProcess( -1 );
 }
 
@@ -264,7 +282,7 @@ static LONG WINAPI  sys_except_handler(
 
     strcpy(buff, generate_trace_text());
 
-    MessageBoxA(0,buff,"Unhandled Exception", MB_ICONEXCLAMATION);
+    report_to_file_and_maybe_mboxA(buff);
 
     return EXCEPTION_EXECUTE_HANDLER;
 }
@@ -358,6 +376,14 @@ void CDebugTracer::StaticInit( void )      throw()
 
     SetUnhandledExceptionFilter( sys_except_handler );
 }
+
+// SR coop port: release builds install no crash reporter at all; headless
+// smoke runs need one (on-disk report instead of a program death trace).
+// This version expects to live OUTSIDE the debug guards (see the copy at the
+// bottom of this file); the guarded sys_except_handler is not compiled in
+// Release. Here we only mark the symbol's intended shape for the readers.
+// The real free-standing release reporter is SRBase_InstallCrashReporter at
+// the end of this file.
 
 //===========================================================================//
 //                          G L O B A L    V A R I A B L E S
@@ -552,4 +578,122 @@ char * generate_trace_text(void)
 
     return call_trace;
 }
+
+#include <dbghelp.h>
+
+// SR coop port: release builds install no unhandled-exception reporter at all
+// (everything required lives inside the debug guards above, so 0xC0000005
+// went straight to WER with no smoke_crash.log). Headless automated runs need
+// an on-disk report instead: crash code + address + parameters + a Symbolized
+// stack walk (StackWalk64/SymFromAddr against the build PDB) go to
+// smoke_crash.log, then in headless mode terminate with the same code (3) the
+// debug path uses. Installed (and only installed) by CMain::BaseInit when
+// SR_SMOKE_HEADLESS is present.
+static const char * SmokeCrashFileName(void)
+{
+    static char namebuf[80];
+    static char done = 0;
+    if (done == 0)
+    {
+        char prefix[32] = "";
+        done = 1;
+        namebuf[0] = '\0';
+        if (GetEnvironmentVariableA("SR_LOG_PREFIX", prefix, sizeof(prefix)) != 0 && prefix[0] != '\0')
+            _snprintf(namebuf, sizeof(namebuf) - 1, "%s_smoke_crash.log", prefix);
+        else
+            strcpy(namebuf, "smoke_crash.log");
+        namebuf[sizeof(namebuf) - 1] = 0;
+    }
+    return namebuf;
+}
+
+#pragma comment(lib, "dbghelp.lib")
+
+static void SRRelWalkAndReport(FILE * crashf, EXCEPTION_POINTERS * info)
+{
+    HANDLE proc = GetCurrentProcess();
+    HANDLE thrd = GetCurrentThread();
+
+    if (SymInitialize(proc, NULL, TRUE) == FALSE)
+    {
+        fprintf(crashf, "SymInitialize failed\n");
+        return;
+    }
+
+    STACKFRAME64 frame;
+    memset(&frame, 0, sizeof(frame));
+
+    CONTEXT * ctx = info->ContextRecord;
+    frame.AddrPC.Offset    = ctx->Eip;
+    frame.AddrPC.Mode      = AddrModeFlat;
+    frame.AddrFrame.Offset = ctx->Ebp;
+    frame.AddrFrame.Mode   = AddrModeFlat;
+    frame.AddrStack.Offset = ctx->Esp;
+    frame.AddrStack.Mode   = AddrModeFlat;
+
+    for (int depth = 0; depth < 24; ++depth)
+    {
+        if (StackWalk64(IMAGE_FILE_MACHINE_I386, proc, thrd, &frame, ctx,
+                        NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL) == FALSE)
+        {
+            break;
+        }
+        if (frame.AddrPC.Offset == 0) break;
+
+        char name[128] = "(?)";
+        unsigned long offset = 0;
+        char siab[sizeof(SYMBOL_INFO) + 128 * sizeof(char)];
+        memset(siab, 0, sizeof(siab));
+        SYMBOL_INFO * ssi = (SYMBOL_INFO *)siab;
+        ssi->SizeOfStruct = sizeof(SYMBOL_INFO);
+        ssi->MaxNameLen   = 127;
+        DWORD64 disp = 0;
+        if (SymFromAddr(proc, frame.AddrPC.Offset, &disp, ssi) != FALSE)
+            _snprintf(name, sizeof(name) - 1, "%s", ssi->Name);
+
+        fprintf(crashf, "frame%02d %08X %+03ld %s\n", depth, (unsigned long)frame.AddrPC.Offset,
+                (long)disp, name);
+    }
+    SymCleanup(proc);
+}
+
+// Per-instance filename via SR_LOG_PREFIX (see the port note in
+// MatrixGame/src/Net/SRNetHarness.cpp) so two engine instances never scribble
+// the same crash log.
+static LONG WINAPI SRRel_except_handler(EXCEPTION_POINTERS * info) throw()
+{
+    unsigned long ecode = info->ExceptionRecord->ExceptionCode;
+
+    FILE *crashf = fopen(SmokeCrashFileName(), "a");
+    if (crashf != NULL)
+    {
+        fprintf(crashf, "RELEASE UNHANDLED EXCEPTION\nexception code: 0x%08X\nexception address: %p\n",
+                ecode, info->ExceptionRecord->ExceptionAddress);
+        for (unsigned int p = 0; p < info->ExceptionRecord->NumberParameters && p < 2; ++p)
+        {
+            fprintf(crashf, "exception parameter %u) 0x%p\n", p,
+                    (void *)(uintptr_t)info->ExceptionRecord->ExceptionInformation[p]);
+        }
+        SRRelWalkAndReport(crashf, info);
+        fclose(crashf);
+    }
+
+    char flagbuf[16] = "";
+    if (GetEnvironmentVariableA("SR_SMOKE_HEADLESS", flagbuf, sizeof(flagbuf)) != 0)
+    {
+        ExitProcess(3);
+    }
+    MessageBoxA(0, "Release unhandled exception (see smoke_crash.log)", "Unhandled Exception", MB_ICONEXCLAMATION);
+    return EXCEPTION_EXECUTE_HANDLER;
+}
+
+#if 0 // never: the engine compiles everything /Gr, cdecl is the mismatch case
+extern "C" void __cdecl SRBase_InstallCrashReporter(void)
+#else
+extern "C" void __fastcall SRBase_InstallCrashReporter(void)
+#endif
+{
+    SetUnhandledExceptionFilter(SRRel_except_handler);
+}
+
 

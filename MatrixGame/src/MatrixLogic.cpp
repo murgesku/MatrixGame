@@ -14,6 +14,7 @@
 #include "Interface/MatrixHint.hpp"
 #include <stdio.h>
 #include "MatrixGameDll.hpp"
+#include "Net/SRNetHarness.hpp"   // SR coop port (M2): SRNetPumpTakt
 
 //CPoint MatrixDir45[8]={	CPoint(-1,0),	CPoint(1,0),CPoint(0,-1),CPoint(0,1),
 //						CPoint(-1,-1),CPoint(1,1),CPoint(-1,1),CPoint(1,-1)};
@@ -2470,6 +2471,184 @@ void CMatrixMapLogic::Takt(int step)
 {
     DTRACE();
 
+    // SR coop port (M2): battle-time pump point. Runs before the pause
+    // branches so the session stays serviced while the map is paused; when
+    // co-op is off it is a no-op besides a counter.
+    SRNetPumpTakt();
+
+    // SR coop port (M2 step 3+4): host sends poses (ch B), guest sends orders (ch A).
+    // Both run every Takt from CMatrixMapLogic::Takt. No-op when co-op off.
+    if (SRNetEnabled() && SRNetSessionUp())
+    {
+        // ---------- Step 3: host -> guest pose snapshots (channel B) ----------
+        if (SRNetIsHost())
+        {
+            unsigned char poseBuf[4 + 60 * sizeof(SPKTPoseEntry)];
+            SPKTPoseEntry *entries = (SPKTPoseEntry *)(poseBuf + 4);
+            int count = 0;
+
+            CMatrixSideUnit *side = &g_MatrixMap->m_Side[1];
+            for (int i = 0; i < side->GetRobotsCnt() && count < 60; ++i)
+            {
+                SRobot *r = &side->m_Robots[i];
+                if (r->m_Robot == NULL) continue;
+
+                CMatrixRobotAI *ai = r->m_Robot;
+                entries[count].unitId = (unsigned long)i;
+                entries[count].x      = ai->m_PosX;
+                entries[count].y      = ai->m_PosY;
+                entries[count].heading= ai->m_Unit[0].m_Angle;
+                SOrder *o0 = ai->GetOrder(0);
+                entries[count].phase  = (o0 != NULL && o0->GetOrderType() != ROT_EMPTY_ORDER)
+                                        ? (unsigned long)o0->GetOrderPhase()
+                                        : (unsigned long)ROP_EMPTY_PHASE;
+                entries[count].speed  = ai->m_Speed;
+                ++count;
+            }
+
+            poseBuf[0] = PKT_POSE;
+            poseBuf[1] = (unsigned char)1;
+            *(unsigned short *)(poseBuf + 2) = (unsigned short)count;
+
+            SRNetSendPosePod(poseBuf, 4 + count * sizeof(SPKTPoseEntry));
+            SRNetLogPoseSent((unsigned long)count);
+        }
+        else
+        {
+            // Guest: apply received poses to host's side (side 1) on our map.
+            SPKTPoseEntry recvBuf[60];
+            int rcnt = SRNetGetPoseBuf(recvBuf, 60);
+            if (rcnt > 0)
+            {
+                CMatrixSideUnit *side = &g_MatrixMap->m_Side[1];
+                int applied = 0;
+                for (int i = 0; i < rcnt; ++i)
+                {
+                    SPKTPoseEntry *e = &recvBuf[i];
+                    if (e->unitId >= (unsigned long)side->GetRobotsCnt()) continue;
+                    SRobot *r = &side->m_Robots[e->unitId];
+                    if (r->m_Robot == NULL) continue;
+
+                    CMatrixRobotAI *ai = r->m_Robot;
+                    ai->m_PosX = e->x;
+                    ai->m_PosY = e->y;
+                    ai->m_Unit[0].m_Angle = e->heading;
+                    ai->m_Speed = e->speed;
+                    ++applied;
+                }
+                if (applied > 0)
+                {
+                    static bool s_firstApplied = false;
+                    if (!s_firstApplied)
+                    {
+                        s_firstApplied = true;
+                        FILE *f = fopen(SRLogName("srnet.log"), "a");
+                        if (f)
+                        {
+                            fprintf(f, "cycle=%lu guest: first PKT_POSE applied %d 1\n",
+                                    (unsigned long)0, applied);
+                            fclose(f);
+                        }
+                    }
+                }
+            }
+        }
+
+        // ---------- Step 4: guest -> host orders (channel A) ----------
+        if (!SRNetIsHost())
+        {
+            // Guest: send side-2 robots' active orders to host on channel A (reliable).
+            unsigned char orderBuf[4 + 60 * sizeof(SPKTOrderEntry)];
+            SPKTOrderEntry *oentries = (SPKTOrderEntry *)(orderBuf + 4);
+            int ocount = 0;
+
+            CMatrixSideUnit *gside = &g_MatrixMap->m_Side[2];
+            for (int i = 0; i < gside->GetRobotsCnt() && ocount < 60; ++i)
+            {
+                SRobot *gr = &gside->m_Robots[i];
+                if (gr->m_Robot == NULL) continue;
+
+                CMatrixRobotAI *gai = gr->m_Robot;
+                SOrder *go0 = gai->GetOrder(0);
+                if (go0 == NULL || go0->GetOrderType() == ROT_EMPTY_ORDER) continue;
+
+                oentries[ocount].unitId   = (unsigned long)i;
+                oentries[ocount].orderType = (unsigned long)go0->GetOrderType();
+                oentries[ocount].orderPhase = (unsigned long)go0->GetOrderPhase();
+                oentries[ocount].param1 = go0->m_Param1;
+                oentries[ocount].param2 = go0->m_Param2;
+                oentries[ocount].param3 = go0->m_Param3;
+                oentries[ocount].param4 = (unsigned long)go0->m_Param4;
+                ++ocount;
+            }
+
+            orderBuf[0] = PKT_ORDER;
+            orderBuf[1] = (unsigned char)2;
+            *(unsigned short *)(orderBuf + 2) = (unsigned short)ocount;
+
+            SRNetSendOrderPod(orderBuf, 4 + ocount * sizeof(SPKTOrderEntry));
+            {
+                static bool s_guestFirstOrderSent = false;
+                if (!s_guestFirstOrderSent)
+                {
+                    s_guestFirstOrderSent = true;
+                    FILE *f = fopen(SRLogName("srnet.log"), "a");
+                    if (f)
+                    {
+                        fprintf(f, "cycle=%lu guest: first PKT_ORDER sent %d 2\n",
+                                (unsigned long)0, ocount);
+                        fclose(f);
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Host: apply received orders from guest (side 2) to our side-2 robots.
+            SPKTOrderEntry recvBuf[60];
+            int rcnt = SRNetGetOrderBuf(recvBuf, 60);
+            if (rcnt > 0)
+            {
+                CMatrixSideUnit *side = &g_MatrixMap->m_Side[2];
+                int applied = 0;
+                for (int i = 0; i < rcnt; ++i)
+                {
+                    SPKTOrderEntry *e = &recvBuf[i];
+                    if (e->unitId >= (unsigned long)side->GetRobotsCnt()) continue;
+                    SRobot *r = &side->m_Robots[e->unitId];
+                    if (r->m_Robot == NULL) continue;
+
+                    CMatrixRobotAI *hai = r->m_Robot;
+                    SOrder *ho0 = hai->GetOrder(0);
+                    if (ho0 == NULL) continue;
+
+                    ho0->m_OrderType = static_cast<OrderType>(e->orderType);
+                    ho0->m_OrderPhase = static_cast<OrderPhase>(e->orderPhase);
+                    ho0->m_Param1 = e->param1;
+                    ho0->m_Param2 = e->param2;
+                    ho0->m_Param3 = e->param3;
+                    ho0->m_Param4 = static_cast<int>(e->param4);
+                    ++applied;
+                }
+                if (applied > 0)
+                {
+                    static bool s_hostFirstOrderApplied = false;
+                    if (!s_hostFirstOrderApplied)
+                    {
+                        s_hostFirstOrderApplied = true;
+                        FILE *f = fopen(SRLogName("srnet.log"), "a");
+                        if (f)
+                        {
+                            fprintf(f, "cycle=%lu host: first PKT_ORDER applied %d 2\n",
+                                    (unsigned long)0, applied);
+                            fclose(f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     if(g_RangersInterface)
     {
         g_RangersInterface->m_Takt();
@@ -2604,7 +2783,7 @@ void CMatrixMapLogic::Takt(int step)
         m_Console.Takt(step);
     }
 
-    if (IsPaused()) 
+    if (IsPaused())
     {
         if (m_PauseHint == NULL && g_RangersInterface && !FLAG(m_Flags, MMFLAG_DIALOG_MODE))
         {
@@ -3317,4 +3496,43 @@ void CMatrixMapLogic::DumpLogic()
     }
 
     fclose(fi);
+}
+
+// SR coop port (M2 step 4): send pose snapshot from idle hook.
+// Called from SRNetPumpHooked() when Takt() is not available (e.g. menu/idle).
+// Builds and sends PKT_POSE from host's side-1 robots every call.
+void __cdecl SRNetSendPosesFromTick(void)
+{
+    if (!SRNetEnabled() || !SRNetSessionUp() || !SRNetIsHost()) return;
+    if (g_MatrixMap == NULL) return;
+
+    CMatrixSideUnit *side = &g_MatrixMap->m_Side[1];
+    unsigned char poseBuf[4 + 60 * sizeof(SPKTPoseEntry)];
+    SPKTPoseEntry *entries = (SPKTPoseEntry *)(poseBuf + 4);
+    int count = 0;
+
+    for (int i = 0; i < side->GetRobotsCnt() && count < 60; ++i)
+    {
+        SRobot *r = &side->m_Robots[i];
+        if (r->m_Robot == NULL) continue;
+
+        CMatrixRobotAI *ai = r->m_Robot;
+        entries[count].unitId = (unsigned long)i;
+        entries[count].x      = ai->m_PosX;
+        entries[count].y      = ai->m_PosY;
+        entries[count].heading= ai->m_Unit[0].m_Angle;
+        SOrder *o0 = ai->GetOrder(0);
+        entries[count].phase  = (o0 != NULL && o0->GetOrderType() != ROT_EMPTY_ORDER)
+                                ? (unsigned long)o0->GetOrderPhase()
+                                : (unsigned long)ROP_EMPTY_PHASE;
+        entries[count].speed  = ai->m_Speed;
+        ++count;
+    }
+
+    poseBuf[0] = PKT_POSE;
+    poseBuf[1] = (unsigned char)1;
+    *(unsigned short *)(poseBuf + 2) = (unsigned short)count;
+
+    SRNetSendPosePod(poseBuf, 4 + count * sizeof(SPKTPoseEntry));
+    SRNetLogPoseSent((unsigned long)count);
 }

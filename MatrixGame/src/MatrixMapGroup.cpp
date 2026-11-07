@@ -7,6 +7,8 @@
 #include "MatrixMap.hpp"
 #include "MatrixMapGroup.hpp"
 #include "MatrixObject.hpp"
+#include "MatrixObjectCannon.hpp"
+#include "MatrixObjectBuilding.hpp"
 #include "MatrixRobot.hpp"
 #include "MatrixRenderPipeline.hpp"
 #include "MatrixTerSurface.hpp"

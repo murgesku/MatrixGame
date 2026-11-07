@@ -19,6 +19,8 @@
 #include "MatrixObjectCannon.hpp"
 #include "Interface/CCounter.h"
 
+#include "Net/SRNetHarness.hpp"     // SR coop port: SRLogName for log separation
+
 #include <time.h>
 #include <sys/timeb.h>
 #include "stdio.h"
@@ -223,7 +225,29 @@ void CFormMatrixGame::Takt(int step)
 {
     DTRACE();
 
-    if (g_MatrixMap->CheckLostDevice()) return;
+    // SR coop port (M2): headless battle smoke runs the loop for a bounded
+    // number of engine ticks (SR_SMOKE_TICKS); afterwards the form signals
+    // GFLAG_EXITLOOP and L3GRun unwinds. Absent/unset -> loop as upstream.
+    static int s_SmokeTickLimit = -1;     // -1 = not read yet, 0 = unlimited
+    static int s_SmokeTicksRun  = 0;
+    if (s_SmokeTickLimit < 0)
+    {
+        char sbuf[16] = "";
+        s_SmokeTickLimit = 0;
+        if (GetEnvironmentVariableA("SR_SMOKE_TICKS", sbuf, sizeof(sbuf)) != 0)
+        {
+            int v = atoi(sbuf);
+            if (v > 0) s_SmokeTickLimit = v;
+        }
+    }
+    if (s_SmokeTickLimit > 0 && ++s_SmokeTicksRun > s_SmokeTickLimit)
+    {
+        SETFLAG(g_Flags, GFLAG_EXITLOOP);
+        return;
+    }
+
+    bool lost = (g_MatrixMap->CheckLostDevice() != 0);
+    if (lost) return;
 
 	g_MatrixMap->Takt(step);
 
